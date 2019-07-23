@@ -1,11 +1,46 @@
 <?php
+
 use yii\helpers\Url;
+
+$this->title = Yii::t('frontend', 'Companies Reviews | Reviews');
+
+$keywords = 'Company Reviews,Reviews,Top Companies Reviews,Best Companies Reviews,Companies Rating,Top Rating Companies,Real Company reviews & rating,Top rated workplaces,Quora Rating Companies,Top 10 Companies';
+
+$description = "Search companies and get the genuine reviews and rating and find the top rated work place, where you can do your dream job
+With full passion and dedication.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section class="cri-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pos-rel">
+                    <div class="pos-rels">
                         <div class="head-bg-black">
                             <div class="hbb-heading">Choose a great company to work in</div>
                             <div class="hbb-sub-heading">Find a great company</div>
@@ -15,20 +50,22 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' id="search_company" name="search_company" placeholder='Search Companies' type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fa fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_company"
+                                           name="search_company" placeholder='Search Companies' type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
+                                </form>
                             </div>
-                            <!--                        <div class="hbb-text">Explore companies on the basis of </div>-->
-                            <!--                        <div class="hbb-sub-text">-->
-                            <!--                            <a href="">Company Review</a> |-->
-                            <!--                            <a href="">Career Growth</a> |-->
-                            <!--                            <a href="">Company Environment</a> |-->
-                            <!--                            <a href="">Salary & Benefits</a> |-->
-                            <!--                            <a href="">Skill Development</a>-->
-                            <!---->
-                            <!--                        </div>-->
+                            <div class="btn_add_new_org">
+                                <?php if (Yii::$app->user->isGuest): ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                       class="btn_add_org">Add New Company</a>
+                                <?php else : ?>
+                                    <a href="#" class="add_new_org btn_add_org">Add New Company</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -44,28 +81,31 @@ use yii\helpers\Url;
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
-                        <div class="rb-heading">Growth and Development </div>
-                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>, <span>Skill Development</span></div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>,
+                            <span>Skill Development</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png') ?>">
                         </div>
-                        <div class="rb-heading">Human Resources </div>
-                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>, <span>Work - Life Balance</span> </div>
+                        <div class="rb-heading">Human Resources</div>
+                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>,
+                            <span>Work - Life Balance</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png') ?>">
                         </div>
                         <div class="rb-heading">Financial Sustainability</div>
-                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>, <span>Job Security</span> </div>
+                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>,
+                            <span>Job Security</span></div>
                     </div>
                 </div>
             </div>
@@ -87,27 +127,32 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="wu-m-heading"><img src="<?= Url::to('@commonAssets/logos/eyfooter.png')?>"> Helps Employers</div>
+                    <div class="wu-m-heading"><img src="<?= Url::to('@commonAssets/logos/eyfooter.png') ?>"> Helps
+                        Employers
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png') ?>">
+                        </div>
                         <div class="wu-heading">Attract</div>
                         <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png') ?>">
+                        </div>
                         <div class="wu-heading">Convert</div>
                         <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png') ?>">
+                        </div>
                         <div class="wu-heading">Retain</div>
                         <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
@@ -119,8 +164,31 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rated Companies</div>
+                    <div class="heading-style">Top Rated Organizations</div>
                     <div id="review_container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
 
                     </div>
                 </div>
@@ -130,6 +198,80 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.footer{
+    margin-top:0px !important;
+}
+.qr-bg{
+    margin-top:20px;
+    background:#ecf5fe;
+    padding:30px 0;
+}
+.quick-review-box{
+   padding:5px 10px; 
+}
+.qr-heading{
+    font-size:18px;
+    font-weight:bold;
+    font-family: lora;
+    color:#000;
+}
+.quick-review-box:hover{
+    box-shadow:0 0 5px rgba(0,0,0,.2);
+    border-radius:10px;
+    transition:.3s ease;
+    background:#fff;
+    padding:5px 10px;
+}
+.qrb-details{
+    padding-top:10px;
+}
+.qr-name{
+    font-size:14px;
+}
+.qrb-thumb{
+    width:80px;
+    height:80px;
+    position:relative;
+}
+.qrb-thumb a{
+    max-height:50px;
+    max-width:50px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+}
+.qr-stars i{ 
+    color:#ff7803
+}
+.qr-stars ul li {
+    display:inline;
+}
+.qr-stars ul li img{
+    max-width:15px;
+    max-height:20px;
+}
+.qr-stars ul{
+    margin-left:0px;
+}
+
+
+.btn_add_org{
+    color:#fff;
+    position:absolute;
+    right: 25px;
+    font-size:15px;
+    bottom: 10px;
+    font-weight:500;
+    font-family:roboto;
+}
+.btn_add_org:hover{
+    color:#00A0E3;
+}
+.btn_add_new_org {
+    padding:10px;    
+}
 .rating-stars{
     font-size:20px;
 }
@@ -226,6 +368,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -283,6 +426,8 @@ review-benifit{
 }
 .with-us-block{
     text-align:center;
+    font-family:roboto;
+    font-weight:300;
 }
 .cri-bg{
     background:url(' . Url::to('@eyAssets/images/pages/review/company-bg.png') . ');
@@ -290,12 +435,14 @@ review-benifit{
     background-size: cover;
     min-height: 400px;
 }
-.pos-rel{
+.pos-rels{
     position:relative;
     min-height:400px;
 }
 .head-bg-black{
     max-width:400px;
+    font-family:lora;
+    font-weight:bold;
     background:rgba(0,0,0,.65);
     color:#fff;
     padding:25px 25px;
@@ -304,6 +451,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     left:10px;
+    z-index:999;
 }
 .rb-icon{
    text-align:center; 
@@ -337,6 +485,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;
@@ -348,6 +498,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
@@ -451,6 +602,11 @@ width:100%;
     vertical-align: middle;
     max-width: 70%;
 }
+@media screen and (max-width: 400px) {
+    .suggestion{
+        max-width: 65%;
+    }
+}
 .tt-suggestion {
   padding: 3px 20px;
   font-size: 14px;
@@ -468,6 +624,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {
@@ -490,7 +649,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 15px 1px;
 }
 
 .load-suggestions span:nth-child(1){
@@ -533,7 +692,11 @@ float:right;
 }
 /*Load Suggestions loader css ends */
 ');
-echo $this->render('/widgets/mustache/review-cards', [
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/review/review-search-bar');
+echo $this->render('/widgets/mustache/top-user-reviews');
+echo $this->render('/widgets/mustache/review-cards-company', [
 ]);
 $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
@@ -541,47 +704,12 @@ $(document).on('click','.add_new_org',function(e) {
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
-fetch_cards(params={'rating':[4,5],'limit':3},template=$('#review_container'));
-fetch_cards(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_company').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
+fetch_cards_new_latest_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':4},template=$('#latest_reviews_card_new'));
+fetch_cards_new_top_user(params={'rating':[5,4],'limit':4},template=$('#top_user_reviews_card_new'));
+fetch_cards_new_most_comp(params={'rating':[5,4],'limit':4,'most_reviewed':1},template=$('#most_reviews_card_new'));
+fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
+fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
 JS;
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

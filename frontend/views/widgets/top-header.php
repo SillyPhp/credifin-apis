@@ -1,17 +1,19 @@
 <?php
 
-use yii\helpers\Url;
+/* @var $referral string */
 
+use yii\helpers\Url;
 ?>
     <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews'); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
-        <li><a href="<?= Url::to('/blog'); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
+        <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
+        <li><a href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <li><a href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+        <li><a href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
         <?php if (!Yii::$app->user->isGuest): ?>
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
         <?php else: ?>
-            <li><a href="javascript:;" data-toggle="modal" data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
+            <li><a href="javascript:;" data-toggle="modal"
+                   data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
         <?php endif; ?>
     </ul>
 <?php
@@ -23,7 +25,7 @@ $this->registerCss('
     border-bottom: 1px solid #ddd !important;
 }
 .menuzord-menu li{
-    padding: 6px 0px !important;
+    padding: 7px 0px !important;
 }
 .menuzord-menu li a{
     font-size: 19px !important;
@@ -31,8 +33,8 @@ $this->registerCss('
     font-family: Georgia;
 }
 .menuzord-menu > li > a {
-    padding: 6px 15px !important;
-    border-radius: 10px !important;
+    padding: 5px 15px !important;
+    border-radius: 4px !important;
 }
 .menuzord-brand{
     margin-top: 7px !important;

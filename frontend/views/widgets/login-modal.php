@@ -18,7 +18,7 @@ use yii\bootstrap\ActiveForm;
                         </div>
                         <div class="log-icon">
                             <span></span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-image.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/login-signup-modal/login-img.png') ?>"
                                  class="centerthis">
                         </div>
                         <div class="bottom-circle">
@@ -409,7 +409,7 @@ $(document).on('submit', '#login-form', function(event) {
         cache:false,
         processData: false,
         beforeSend:function(){
-            $('.lg-form').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');  
+            $('.lg-form').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');  
         },
         success: function (response) {
             $('#page-loading').fadeOut(1000);

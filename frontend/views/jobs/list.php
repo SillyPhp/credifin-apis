@@ -1,6 +1,34 @@
 <?php
 $this->title = Yii::t('frontend', 'Jobs');
 $this->params['header_dark'] = true;
+
+$keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+$description = '';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 $this->registerCss('
 .change-hr{
     margin-bottom: 30px;
@@ -19,8 +47,8 @@ $this->registerCss('
 ?>
 
     <section class="applications-cards-list">
-        <div class="row">
-            <div class="col-md-2 col-sm-3 sidebar-review-bar">
+        <div class="row m-0">
+            <div class="col-md-2 col-sm-3 sidebar-review-bar pl-0">
                 <?=
                 $this->render('/widgets/sidebar-review', [
                     'type' => 'jobs',
@@ -34,7 +62,7 @@ $this->registerCss('
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card'); ?>
-                        <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+                        <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>
                             <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                                  stroke="currentColor">
@@ -65,8 +93,6 @@ $this->registerCss('
                                 </g>
                             </svg>
                         </a>
-                    <hr class="change-hr">
-                    <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
                 </div>
             </div>
         </div>
@@ -82,8 +108,40 @@ echo $this->render('/widgets/mustache/application-card', [
 
 $script = <<<JS
 
-$('#loadMore').on('click', function(e){
+var loading = false;
+var load_more_cards = true;
+$(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1300);
+
+setTimeout(
+    function(){
+        loading = true;
+    }, 900);
+
+$(window).scroll(function() { //detact scroll
+    
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
+                if(load_more_cards && loading){
+                    loading = false;
+                    $('#loadMore').removeClass("loading_more");
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
+				    getCards();
+                    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 900);
+                }
+			}
+		});
+
+$(document).on('click','.loading_more', function(e){
     e.preventDefault();
+    $('#loadMore').removeClass("loading_more");
     getCards();
 });
 

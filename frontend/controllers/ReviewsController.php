@@ -4,7 +4,6 @@ namespace frontend\controllers;
 
 use common\models\BusinessActivities;
 use common\models\Organizations;
-use common\models\OrganizationTypes;
 use common\models\UnclaimedOrganizations;
 use frontend\models\reviews\RegistrationForm;
 use Yii;
@@ -15,6 +14,12 @@ use yii\helpers\ArrayHelper;
 
 class ReviewsController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $model = new RegistrationForm();
@@ -40,37 +45,36 @@ class ReviewsController extends Controller
         return $this->render('filter-companies', ['keywords' => $keywords, 'business_activity' => $business_activity]);
     }
 
-    public function actionSearchOrg($type=null,$query)
+    public function actionSearchOrg($type = null, $query)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         Yii::$app->response->format = Response::FORMAT_JSON;
         $params1 = (new \yii\db\Query())
-            ->select(['name', 'slug', 'initials_color color', 'logo', '(CASE
+            ->select(['name', 'CONCAT(slug, "/reviews", "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
-            ->where('name LIKE "%' . $query . '%"');
-        if ($type!=null) {
+            ->where("replace(name, '.', '') LIKE '%$query%'");
+        if ($type != null) {
             $query1 = $params1->andWhere(['business_activity' => $type])
                 ->andWhere(['is_deleted' => 0]);
-            }
-        else{
+        } else {
             $query1 = $params1->andWhere(['is_deleted' => 0]);
         }
 
         $params2 = (new \yii\db\Query())
-            ->select(['name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->select(['name', 'CONCAT(slug, "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
-            ->where('name LIKE "%' . $query . '%"');
-            if ($type!=null) {
-                $query2 = $params2->andWhere(['business_activity' => $type])
-                    ->andWhere(['is_deleted' => 0]);
-            }
-            else{
-                $query2 = $params2->andWhere(['is_deleted' => 0]);
-            }
+            ->where("replace(name, '.', '') LIKE '%$query%'");
+        if ($type != null) {
+            $query2 = $params2->andWhere(['business_activity' => $type])
+                ->andWhere(['is_deleted' => 0]);
+        } else {
+            $query2 = $params2->andWhere(['is_deleted' => 0]);
+        }
 
         return $query1->union($query2)->all();
 
@@ -80,8 +84,10 @@ class ReviewsController extends Controller
     {
         $model = new RegistrationForm();
         $org_type = $model->types();
+        $referral = Yii::$app->referral->getReferralCode();
         if (!empty(Yii::$app->user->identity->organization) || Yii::$app->user->isGuest) {
-            return 'You are not authorized to access this page as Your are not login as User';
+            $this->layout = 'main-secondary';
+            return $this->render('without-login');
         }
         if (Yii::$app->request->isPost) {
             $org_name = Yii::$app->request->post('org_name');
@@ -92,19 +98,19 @@ class ReviewsController extends Controller
             if ($response['status'] == 200) {
                 if ($type == 'company') {
                     if ($model->postReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
                     }
                 } else if ($type == 'college') {
                     if ($model->postCollegeReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
                     }
                 } else if ($type == 'school') {
                     if ($model->postSchoolReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
                     }
                 } else if ($type == 'institute') {
                     if ($model->postInstituteReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews');
+                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
                     }
                 }
             } else {
@@ -135,4 +141,3 @@ class ReviewsController extends Controller
         return $this->render('educational-institutes');
     }
 }
-

@@ -11,23 +11,24 @@ use yii\helpers\Url;
 
 class ApplicationCards
 {
-    public static function cards($lat,$long,$radius,$num,$keyword,$type,$walkin)
+    public static function cards($lat, $long, $radius, $num, $keyword, $type, $walkin)
     {
-        return self::_getCardsFromJobs($lat,$long,$radius,$num,$keyword,$type,$walkin);
+        return self::_getCardsFromJobs($lat, $long, $radius, $num, $keyword, $type, $walkin);
     }
 
-    private static function _getCardsFromJobs($lat,$long,$radius,$num,$keyword,$type,$walkin)
+    private static function _getCardsFromJobs($lat, $long, $radius, $num, $keyword, $type, $walkin)
     {
+        $referral = Yii::$app->referral->getReferralCode();
         $date = Date('Y-m-d H:i:s');
         $data = EmployerApplications::find()
             ->alias('a')
             ->select([
                 'a.application_enc_id',
                 'a.type',
-                'i.slug as organization_slug',
+                'CONCAT(i.slug, "' . $referral . '") as organization_slug',
                 'a.experience',
                 'h.name as job_title',
-                'a.slug',
+                'CONCAT(a.slug, "' . $referral . '") as slug',
                 'a.last_date',
                 'e.name as city_name',
                 'c.location_name',
@@ -56,51 +57,54 @@ class ApplicationCards
                 'CASE WHEN i.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", i.logo_location, "/", i.logo) ELSE NULL END logo',
                 "( 6371 * acos( cos( radians('$lat') ) * cos( radians( c.latitude ) ) * cos( radians( c.longitude ) - radians('$long') ) + sin( radians('$lat') ) * sin( radians( c.latitude ) ) ) )  distance",
             ]);
-        if($walkin){
-            $data->joinWith(['applicationInterviewLocations as b'=>function($x){
-                $x->joinWith(['locationEnc as c'=>function($y){
+        if ($walkin) {
+            $data->joinWith(['applicationInterviewLocations as b' => function ($x) {
+                $x->joinWith(['locationEnc as c' => function ($y) {
                     $y->joinWith(['cityEnc as e']);
-                }],false);
-            }],false, 'INNER JOIN');
+                }], false);
+            }], false, 'INNER JOIN');
 
-            $data->joinWith(['applicationOptions as q'=>function($q) use($date){
+            $data->joinWith(['applicationOptions as q' => function ($q) use ($date) {
                 $q->andWhere(['<=', 'q.interview_start_date', $date]);
                 $q->andWhere(['>=', 'q.interview_end_date', $date]);
-            }],false);
+            }], false);
 
-        }else{
-            $data->joinWith(['applicationPlacementLocations as b'=>function($x){
-                $x->joinWith(['locationEnc as c'=>function($y){
+        } else {
+            $data->joinWith(['applicationPlacementLocations as b' => function ($x) {
+                $x->joinWith(['locationEnc as c' => function ($y) {
                     $y->joinWith(['cityEnc as e']);
-                }],false);
-            }],false, 'INNER JOIN');
+                }], false);
+            }], false, 'INNER JOIN');
         }
 
-            $data->joinWith(['applicationOptions as f'],false)
-            ->joinWith(['title g'=>function($z){
-                $z->joinWith(['categoryEnc as h'],false);
+        $data->joinWith(['applicationOptions as f'], false)
+            ->joinWith(['title g' => function ($z) {
+                $z->joinWith(['categoryEnc as h'], false);
                 $z->joinWith(['parentEnc p'], false);
-            }],false)
+            }], false)
             ->joinWith(['organizationEnc as i'])
             ->joinWith(['applicationTypeEnc as j'])
             ->joinWith(['designationEnc l'], false)
             ->joinWith(['preferredIndustry o'], false)
             ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0]);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0]);
+
         if (!empty($keyword)) {
             $data->andWhere([
                 'or',
-                ['like', 'l.designation',$keyword],
+                ['like', 'l.designation', $keyword],
                 ['like', 'a.type', $keyword],
                 ['like', 'h.name', $keyword],
                 ['like', 'o.industry', $keyword],
                 ['like', 'p.name', $keyword],
             ]);
         }
+
+
         $result = $data->limit(20)->offset($num)->asArray()
             ->all();
 
-        if($type == 'Jobs') {
+        if ($type == 'Jobs') {
             $i = 0;
             foreach ($result as $val) {
                 $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -149,7 +153,7 @@ class ApplicationCards
                 }
                 $i++;
             }
-        }elseif ($type == 'Internships'){
+        } elseif ($type == 'Internships') {
             $i = 0;
             foreach ($result as $val) {
                 $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -176,7 +180,7 @@ class ApplicationCards
                         }
                     } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                         if ($val['salary_duration'] == "Monthly") {
-                            $result[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
+                            $result[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
                         } elseif ($val['salary_duration'] == "Hourly") {
                             $result[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
                         } elseif ($val['salary_duration'] == "Weekly") {

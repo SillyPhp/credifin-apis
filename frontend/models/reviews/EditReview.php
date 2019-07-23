@@ -93,7 +93,7 @@ class EditReview extends Model {
         $modal->compensation = $this->salary_benefits;
         $modal->organization_culture = $this->compnay_culture;
         $modal->growth = $this->career_growth;
-        $modal->category_enc_id = $this->dept;
+        $modal->average_rating = (($this->job_security+$this->skill_devel+$this->work_life+$this->work_satisfaction+$this->salary_benefits+$this->compnay_culture+$this->career_growth)/7);
         $modal->show_user_details = $this->identity;
         $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
@@ -102,7 +102,7 @@ class EditReview extends Model {
          return true;
      }
      else{
-         return false;
+        return false;
      }
     }
 
@@ -177,6 +177,16 @@ class EditReview extends Model {
         return NewOrganizationReviews::find()
             ->alias('a')
             ->where(['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1])
+            ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->joinWith(['createdBy b'], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->one();
+    }
+    public function getEditClaimedReview($org)
+    {
+        return OrganizationReviews::find()
+            ->alias('a')
+            ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
             ->andWhere(['a.created_by' => Yii::$app->user->identity->user_enc_id])
             ->joinWith(['createdBy b'], false)
             ->joinWith(['categoryEnc c'], false)

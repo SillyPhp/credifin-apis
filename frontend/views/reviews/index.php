@@ -1,12 +1,14 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = Yii::t('frontend', 'Reviews page | Latest Reviews');
+$referral = Yii::$app->referral->getReferralCode();
 
-$keywords = 'Company Reviews, School Reviews, Best Compamies Reviews, Best School Reviews, Top Schools of Mumbai, Best IT Colleges Reviews,
-Best MBA colleges reviews, Best Ielts Institutes Reviews, Best CBSE Schools in Delhi, Artificial Intelligence Course Reviews.';
+$this->title = Yii::t('frontend', 'Reviews | Latest Reviews');
+
+$keywords = 'Reviews,School Reviews,College Reviews,Review,Company Reviews,top 10 Companies,Top 10 Schools in India,Top 10 Colleges in India';
 
 $description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
 watch the reviews and see the ratings and you can also post your reviews of any sector.";
@@ -39,7 +41,9 @@ $this->params['seo_tags'] = [
 ];
 
 ?>
+
     <section class="head-bg">
+        <div class="overlay-bg"></div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -47,18 +51,20 @@ $this->params['seo_tags'] = [
                         <div class="header-bg">
                             <div class="search-box">
                                 <div class="head-text">
-                                    <p>Find your next great place to work</p>
+                                    <p>earn credibility, attract talent</p>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
                                         <div class="load-suggestions Typeahead-spinner">
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </div>
-                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies" name="keywords">
+                                        <input type="text" id="search_company" class="form-control"
+                                               placeholder="Search Companies, Colleges, Schools, Educational Institutes"
+                                               name="keywords">
                                         <div class="input-group-btn">
-                                            <button class="loader_btn_search"><i class="fa fa-search"></i></button>
+                                            <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>
                                     </div>
                                 </form>
@@ -69,80 +75,287 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <section class="review-benifit">
+    <section class="review-categories">
         <div class="container">
             <div class="row">
-                <div class="review-benifits">
-                    <div class="col-md-8 col-sm-8 ">
-                        <div class="benifit-heading">Unquestionable Reputation</div>
-                        <div class=""> Consumers share their experiences, unveiling the working atmosphere.
-                            Know more by going through and make a right choice.</div>
-                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
-                    </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="benifits-icon bi-left"><img src="<?= Url::to('@eyAssets/images/pages/review/reputation.png') ?>"></div>
-                    </div>
+                <div class="col-md-12">
+                    <div class="heading-style">Reviews</div>
                 </div>
             </div>
             <div class="row">
-                <div class="review-benifits">
-                    <div class="col-md-4 col-sm-4">
-                        <div class="benifits-icon bi-right"><img src="<?= Url::to('@eyAssets/images/pages/review/overview.png') ?>"></div>
+                <div class="tc">
+                    <div class="col-md-3">
+                        <a href="<?= Url::to("/reviews/companies" . $referral); ?>">
+                            <div class="review-cat-box com-hover">
+                                <div class="rcb-icon" id="company-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Companies</div>
+                            </div>
+                        </a>
                     </div>
-                    <div class="col-md-8 col-sm-8">
-                        <div class="benifit-heading">Perception overview</div>
-                        <div class="">   As said “Don’t judge a book by its cover” i.e conjecture.
-                            Employees share real time views and make it easier to draw a judgement. Tap to unfold.</div>
-                        <div class="benifit-bttn"><a href="/reviews/search?keywords=">Read Reviews</a></div>
+                    <div class="col-md-3">
+                        <a href="<?= Url::to("/reviews/colleges" . $referral); ?>">
+                            <div class="review-cat-box college-hover">
+                                <div class="rcb-icon" id="college-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Colleges/Universities</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="<?= Url::to("/reviews/schools" . $referral); ?>">
+                            <div class="review-cat-box sch-hover">
+                                <div class="rcb-icon" id="school-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Schools</div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="<?= Url::to("/reviews/institutes" . $referral); ?>">
+                            <div class="review-cat-box ei-hover">
+                                <div class="rcb-icon" id="education-cont">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
+                                </div>
+                                <div class="rcb-name">Educational Institutes</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="ey-helps">
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Organizations</h1>
+            <div class="row">
+                <div id="review_container_compnay">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="top-com-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="wu-m-heading"><span class="blue">Empower</span> <span class="orange">Youth</span> Helps Employers</div>
+                    <div class="pos-rel-help">
+                        <div class="pos-abso">
+                            <div class="tc-heading">Let us Help You</div>
+                            <div class="tc-text">Empower Youth is a platform open to everyone. Share your experiences to
+                                help
+                                others make better choices, and help Organizations up their game.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
+    <!---->
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Colleges</h1>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
-                        <div class="wu-heading">Attract</div>
-                        <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
-                    </div>
+                <div id="review_colleges">
                 </div>
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
-                        <div class="wu-heading">Convert</div>
-                        <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
-                        <div class="wu-heading">Retain</div>
-                        <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
-                    </div>
+            </div>
+        </div>
+    </section>
+    <!---->
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Top Schools</h1>
+            <div class="row">
+                <div id="review_school">
                 </div>
             </div>
         </div>
     </section>
     <section>
         <div class="container">
-            <h1 class="heading-style">Recent Reviews</h1>
+            <h1 class="heading-style">Top Educational Institutes</h1>
             <div class="row">
-                <div id="review_container">
-
+                <div id="review_institutes">
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 <?php
+echo $this->render('/widgets/mustache/review-cards');
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
+
 $this->registerCss('
+.footer{
+    margin-top:0px !important;
+}
+.qr-bg{
+    margin-top:20px;
+    background:#ecf5fe;
+    padding:30px 0;
+}
+.pos-rel-help   {
+    position:relative;
+    min-height:400px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+}
+.tc-heading{
+    color:#fff;
+    font-size:30px;
+    font-weight:Bold;
+    font-family:lora;
+}
+.tc-text{
+    color:#fff;
+    font-family:lora;
+    font-size:19px;
+    max-width:600px;
+}
+.quick-review-box{
+   padding:5px 10px; 
+}
+.top-com-bg{
+   background:url("' . Url::to('@eyAssets/images/pages/review/review-section-bg.png') . '");
+   background-size: cover;
+   background-attachment: fixed;
+   background-repeat: no-repeat;
+   min-height:400px;
+   
+}
+.qr-heading{
+    font-size:18px;
+    font-weight:bold;
+    font-family: lora;
+    color:#000;
+}
+.quick-review-box:hover{
+    box-shadow:0 0 5px rgba(0,0,0,.2);
+    border-radius:10px;
+    transition:.3s ease;
+    background:#fff;
+    padding:5px 10px;
+}
+.qrb-details{
+    padding-top:10px;
+}
+.qr-name{
+    font-size:14px;
+}
+.qrb-thumb{
+    width:80px;
+    height:80px;
+    position:relative;
+}
+.qrb-thumb a{
+    max-height:50px;
+    max-width:50px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+}
+.qr-stars i{ 
+    color:#ff7803
+}
+.qr-stars ul li {
+    display:inline;
+}
+.qr-stars ul li img{
+    max-width:15px;
+    max-height:20px;
+}
+.qr-stars ul{
+    margin-left:0px;
+}
+.bg-img{
+    position:absolute;
+    height: 100%;
+    width: 100%;
+    top:0;
+    right:0;
+    background:url("' . Url::to('@eyAssets/images/pages/review/review-bg2.png') . '");
+    background-position: right top;
+    background-repeat: no-repeat;
+    background-size: auto 450px;
+}
+.quick-view{
+    padding:20px 15px;
+}
+.com-hover, .college-hover, .sch-hover, .ei-hover{
+    color:#4b4646;
+} 
+.com-hover:hover{
+    color:#00A0E3 !important;
+}
+.college-hover:hover{
+    color:#7453C6 !important;
+}
+.sch-hover:hover{
+    color:#0CAA41 !important;
+}
+.ei-hover:hover{
+    color:#DA4453 !important;
+}
+.rcb-icon{
+    height:125px;
+    width:125px;
+    margin:0 auto;
+}
+.review-cat-box > .rcb-icon img {
+    -webkit-transform: rotate(10deg) scale(1.2);
+    transform: rotate(0deg) scale(1.2);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+}
+.review-cat-box:hover > .rcb-icon img {
+    -webkit-transform: rotate(-10deg) scale(1);
+    transform: rotate(-10deg) scale(1);
+}
+.tc{
+    text-align:center;
+}
+.review-categories{
+    padding:0 0 50px 0;
+}
+.rcb-icon{
+    max-height:125px;
+    max-width:125px;
+    margin:0 auto;
+}
+.rcb-name{
+    padding-top:40px;
+    font-size:23px;
+    text-transform:capitalize;
+    font-family: lora;
+    line-height: 25px;  
+}
 /*----ey helps block-----*/
 .wu-m-heading{
     font-size: 25px;
@@ -163,7 +376,6 @@ $this->registerCss('
     color:#00a0e3;
 }
 .ey-helps{
-    background:#f0f4fb;
     padding:20px 0 40px;
 }
 .with-us-block{
@@ -179,10 +391,19 @@ $this->registerCss('
     position: relative;
     padding-bottom: 50px;
     z-index: -1;
-}    
+}
+.cm-btns {
+    margin-top:10px;
+}  
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
 .com-review-box{
     text-align:center;
-    border:1px solid #eee;
+     border:1px solid #e5e5e5;
     padding:20px 0 3px 0;
     margin-bottom:20px;
     border-radius:10px; 
@@ -193,7 +414,7 @@ $this->registerCss('
     height:100px;
     margin:0 auto;
     border-radius:10px;
-    border:2px solid rgba(238,238,238,.5);
+     border:1px solid #e5e5e5;
     position:relative;
 }
 .com-logo img{
@@ -305,34 +526,29 @@ color: initial;
 }
     
 .head-bg{
-    background: url(../assets/themes/ey/images/pages/review/fgb.png) no-repeat fixed;
+    background: url(../assets/themes/ey/images/pages/review/review2.png);
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
-    text-align:center
+    text-align:center;
 }  
-.head-text{
-    font-size:30px;
-    text-transform:uppercase;
+.overlay-bg{
+    position:absolute;
+    background-image: linear-gradient(155deg, rgba(255,255,255,.8)0%, rgba(255,255,255,.7)40%, rgba(255,255,255,.0)65%, rgba(255,255,255,.0)100%);
+    width:100%;
+    height:100%;
 }
 .pos-relative{
     position:relative;
-    height:450px
+    height:550px
 }
 .header-bg{
+    max-width:600px;
     text-align:center;
-    width:100%;
     position:absolute;
     top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
-}  
-.search-box{
-    position:relative;
-    top: 50%;
-    left:50%;
-    transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
+    transform:translateY(-50%);
+    z-index:9;
 }
 .search-bar{
     border:1px solid #ddd;
@@ -345,16 +561,20 @@ color: initial;
     border:none;
 }
 .search-bar button{
-    padding:13px 16px 14px 16px;
+    padding:13px 19px 12px 16px;
     border:none;
     background:#fff;
     color:#999;
 }
 .head-text{
-    padding-bottom:20px;
+    padding-bottom:10px;
+    color:#000;
+    font-family:lobster;
+     font-size:40px;
+    text-transform:capitalize;
 }
 .head-text p{
-    line-height:20px;
+    line-height:35px;
 }
 /*top categories css*/
 .cat-box{
@@ -386,7 +606,6 @@ color: initial;
     border-radius: 0 0 13px 13px;
     border-top: 1px solid #eee;
     margin: 18px 0px 0 0px;
-    
     transition: .1s all;
     -webkit-transition: .1s all;
     -moz-transition: .1s all;
@@ -421,14 +640,13 @@ color: initial;
     left: 0;
     width: 148px;
     height: 148px;
-    border: 2px solid #afafaf;/* #DEDEDE*/
+    border: 2px solid #afafaf;
     border-radius: 50%;
     content: "";
     -webkit-transition: all .1s ease-out;
     transition: all .1s ease-out;
 }
 .categories:hover .grids::after {
-    /*opacity: .3;*/
     top: -1px;
     left: -1px;
     border: 2px solid #f08440;
@@ -955,6 +1173,19 @@ body.modal-open{
     .head-text p{
         line-height: 35px;
     }
+     .review-cat-box {
+        padding-bottom:50px;
+     
+    }
+    .rcb-name{
+        padding-top:20px;
+    }
+    .review-categories{
+        padding:0 0 0 0;
+    }
+    .com-review-box{
+        height: 320px !important;
+    }
 }
 
 @media only screen and (max-width: 450px) {
@@ -964,56 +1195,61 @@ body.modal-open{
     }
      .review-benifits{
         padding:30px 15px;
-    {
+    }
+    .review-cat-box {
+        padding-bottom:50px;
+    }
+    .rcb-name{
+        padding-top:20px;
+    }
+    .review-categories{
+        padding:0 0 0 0;
+    }
+    .com-review-box{
+        height: 320px !important;
+    }
+}
+@media only screen and (max-width: 768px){
+    .bg-img{
+        position:relative;
+        background-position: center;
+        height: 280px;
+        background-size: auto 100%;
+    }
+    .pos-relative, .header-bg{
+        height: auto;
+    }
+    .header-bg{
+        position:relative;
+        transform: translateY(-0%);
+        margin:auto;
+    }
+    .head-text {
+        margin-top: 80px;
+    }
 }
 ');
-echo $this->render('/widgets/mustache/review-cards', [
-]);
+echo $this->render('/widgets/mustache/review-cards-company');
+echo $this->render('/widgets/mustache/review-cards-unclaimed');
+echo $this->render('/widgets/review/review-search-bar');
+echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
+fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#review_institutes'));
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
-})
-fetch_cards(params={'rating':[4,5],'limit':3});  
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 });
-$('#search_comp').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
+var array_types = ['School','College','Educational Institute'];
+var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
+fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container_compnay'));
+fetch_cards_new_latest(params={'rating':[1,2,3,4,5],'sort':1,'limit':2},template=$('#latest_reviews_card_new'));
+fetch_cards_top_user(params={'rating':[5,4],'limit':2},template=$('#top_user_reviews_card_new'));
+fetch_cards_new_most(params={'rating':[5,4],'limit':2,'most_reviewed':1},template=$('#most_reviews_card_new'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

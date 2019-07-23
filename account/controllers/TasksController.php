@@ -116,7 +116,8 @@ class TasksController extends Controller
     }
 
 
-    public function actionTaskComplete() {
+    public function actionTaskComplete()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
 
@@ -146,7 +147,8 @@ class TasksController extends Controller
         }
     }
 
-    public function actionTaskIncomplete() {
+    public function actionTaskIncomplete()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $id = Yii::$app->request->post('id');
 
@@ -176,7 +178,8 @@ class TasksController extends Controller
         }
     }
 
-    public function actionUpdate(){
+    public function actionUpdate()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 

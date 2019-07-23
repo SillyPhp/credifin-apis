@@ -13,7 +13,7 @@ use yii\helpers\Url;
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
                             <input type="text" placeholder="Search" name="keyword">
-                            <button type="submit"><i class="fa fa-search"></i></button>
+                            <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
                 </div>
@@ -178,8 +178,8 @@ use yii\helpers\Url;
                         <?php } ?>
                 </div>
                 <div class="MS-controls">
-                    <button class="MS-left"><i class="fa fa-angle-left" aria-hidden="true"></i></button>
-                    <button class="MS-right"><i class="fa fa-angle-right" aria-hidden="true"></i></button>
+                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>
+                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>
                 </div>
             </div>
         </div>

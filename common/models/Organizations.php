@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%organizations}}".
  *
@@ -32,6 +34,7 @@ namespace common\models;
  * @property string $twitter Twitter URL
  * @property string $instagram Instagram URL
  * @property string $linkedin Linkedin URL
+ * @property int $number_of_employees Number of Employees in the Organization
  * @property int $is_sponsored Is Organization Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Organization Featured (0 as False, 1 as True)
  * @property string $created_on On which date Organization information was added to database
@@ -44,16 +47,27 @@ namespace common\models;
  * @property string $status Organization Status (Active, Inactive, Pending)
  * @property int $is_deleted Is Organization Deleted (0 as False, 1 as True)
  *
+ * @property AssignedTags[] $assignedTags
+ * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates
+ * @property HiringProcessTemplates[] $hiringProcessEncs
+ * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
+ * @property QuestionnaireTemplates[] $questionnnaireEncs
+ * @property ConversationParticipants[] $conversationParticipants
  * @property Designations[] $designations
  * @property EducationalRequirements[] $educationalRequirements
  * @property EmployeeBenefits[] $employeeBenefits
  * @property EmployerApplications[] $employerApplications
+ * @property FollowedOrganizations[] $followedOrganizations
+ * @property Users[] $userEncs
  * @property JobDescription[] $jobDescriptions
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
+ * @property OrganizationBlogInformation[] $organizationBlogInformations
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
+ * @property OrganizationEmployees[] $organizationEmployees
  * @property OrganizationImages[] $organizationImages
  * @property OrganizationInterviewProcess[] $organizationInterviewProcesses
  * @property OrganizationLocations[] $organizationLocations
+ * @property OrganizationProducts[] $organizationProducts
  * @property OrganizationQuestionnaire[] $organizationQuestionnaires
  * @property OrganizationReviews[] $organizationReviews
  * @property OrganizationVideos[] $organizationVideos
@@ -62,6 +76,11 @@ namespace common\models;
  * @property BusinessActivities $businessActivityEnc
  * @property Industries $industryEnc
  * @property OrganizationTypes $organizationTypeEnc
+ * @property Referral[] $referrals
+ * @property Users[] $userEncs0
+ * @property ReferralSignUpTracking[] $referralSignUpTrackings
+ * @property Reviews[] $reviews
+ * @property Roles[] $roles
  * @property SelectedServices[] $selectedServices
  * @property ShortlistedOrganizations[] $shortlistedOrganizations
  * @property Skills[] $skills
@@ -88,7 +107,7 @@ class Organizations extends \yii\db\ActiveRecord
             [['organization_enc_id', 'business_activity_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
-            [['is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_deleted'], 'integer'],
+            [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_deleted'], 'integer'],
             [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'industry_enc_id', 'name', 'slug', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'tag_line', 'website', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin'], 'string', 'max' => 50],
             [['initials_color'], 'string', 'max' => 7],
@@ -103,6 +122,54 @@ class Organizations extends \yii\db\ActiveRecord
             [['industry_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['industry_enc_id' => 'industry_enc_id']],
             [['organization_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationTypes::className(), 'targetAttribute' => ['organization_type_enc_id' => 'organization_type_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedTags()
+    {
+        return $this->hasMany(AssignedTags::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBookmarkedHiringTemplates()
+    {
+        return $this->hasMany(BookmarkedHiringTemplates::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHiringProcessEncs()
+    {
+        return $this->hasMany(HiringProcessTemplates::className(), ['hiring_process_enc_id' => 'hiring_process_enc_id'])->viaTable('{{%bookmarked_hiring_templates}}', ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBookmarkedQuestionnaireTemplates()
+    {
+        return $this->hasMany(BookmarkedQuestionnaireTemplates::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuestionnnaireEncs()
+    {
+        return $this->hasMany(QuestionnaireTemplates::className(), ['questionnaire_enc_id' => 'questionnnaire_enc_id'])->viaTable('{{%bookmarked_questionnaire_templates}}', ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConversationParticipants()
+    {
+        return $this->hasMany(ConversationParticipants::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -140,6 +207,22 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getFollowedOrganizations()
+    {
+        return $this->hasMany(FollowedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEncs()
+    {
+        return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%followed_organizations}}', ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getJobDescriptions()
     {
         return $this->hasMany(JobDescription::className(), ['organization_enc_id' => 'organization_enc_id']);
@@ -156,9 +239,25 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationBlogInformations()
+    {
+        return $this->hasMany(OrganizationBlogInformation::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getOrganizationEmployeeBenefits()
     {
         return $this->hasMany(OrganizationEmployeeBenefits::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEmployees()
+    {
+        return $this->hasMany(OrganizationEmployees::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -183,6 +282,14 @@ class Organizations extends \yii\db\ActiveRecord
     public function getOrganizationLocations()
     {
         return $this->hasMany(OrganizationLocations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationProducts()
+    {
+        return $this->hasMany(OrganizationProducts::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
@@ -247,6 +354,46 @@ class Organizations extends \yii\db\ActiveRecord
     public function getOrganizationTypeEnc()
     {
         return $this->hasOne(OrganizationTypes::className(), ['organization_type_enc_id' => 'organization_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferrals()
+    {
+        return $this->hasMany(Referral::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEncs0()
+    {
+        return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%referral}}', ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferralSignUpTrackings()
+    {
+        return $this->hasMany(ReferralSignUpTracking::className(), ['sign_up_org_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews()
+    {
+        return $this->hasMany(Reviews::className(), ['claimed_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoles()
+    {
+        return $this->hasMany(Roles::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

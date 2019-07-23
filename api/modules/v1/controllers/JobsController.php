@@ -6,8 +6,12 @@ use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Cards;
 use api\modules\v1\models\JobApply;
 use api\modules\v1\models\JobDetail;
+use common\models\Organizations;
+use common\models\Posts;
+use common\models\ReviewedApplications;
 use common\models\ShortlistedApplications;
 use common\models\ApplicationTypes;
+use common\models\UnclaimedOrganizations;
 use common\models\UserAccessTokens;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
@@ -27,7 +31,15 @@ class JobsController extends ApiBaseController
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'except' => ['list', 'detail'],
+            'except' => [
+                'list',
+                'detail',
+                'application-detail',
+                'get-jobs-by-organization',
+                'search',
+                'jobs-near-me',
+                'test'
+            ],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
@@ -70,7 +82,7 @@ class JobsController extends ApiBaseController
             $options['company'] = $parameters['company'];
         }
 
-        if ($parameters['careers'] && !empty($parameters['careers'])){
+        if ($parameters['careers'] && !empty($parameters['careers'])) {
             $options['for_careers'] = (int)$parameters['careers'];
         }
 
@@ -117,9 +129,9 @@ class JobsController extends ApiBaseController
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
                 $token_holder_id = UserAccessTokens::find()
-                                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
-                                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
-                                    ->one();
+                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                    ->one();
 
                 $user = Candidates::findOne([
                     'user_enc_id' => $token_holder_id->user_enc_id
@@ -137,14 +149,14 @@ class JobsController extends ApiBaseController
                         ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => $user->user_enc_id])
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
-                }else{
+                } else {
                     return $this->response(401);
                 }
             }
 
             $organization_details = $application_details
                 ->getOrganizationEnc()
-                ->select(['organization_enc_id','name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
+                ->select(['organization_enc_id', 'name', 'initials_color color', 'email', 'website', 'CASE WHEN logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",logo_location, "/", logo) END logo', 'CASE WHEN cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",cover_image_location, "/", cover_image) END cover_image'])
                 ->asArray()
                 ->one();
 
@@ -166,9 +178,9 @@ class JobsController extends ApiBaseController
 
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
-                if(!empty($d["icon"])) {
+                if (!empty($d["icon"])) {
                     $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
-                } else{
+                } else {
                     $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
                 $i++;
@@ -219,20 +231,20 @@ class JobsController extends ApiBaseController
                     $data["vacancies"] += $apl['positions'];
                 }
             }
-            
-            if(empty($data['applicationInterviewLocations'])){
+
+            if (empty($data['applicationInterviewLocations'])) {
                 $data['applicationInterviewLocations'][] = [
-                       "location_enc_id" => "kdmvkdkv",
-                       "application_enc_id" => "kdmklvadkv",
-                       "city_enc_id" => "",
-                       "name" => "Online"
+                    "location_enc_id" => "kdmvkdkv",
+                    "application_enc_id" => "kdmklvadkv",
+                    "city_enc_id" => "",
+                    "name" => "Online"
                 ];
             }
 
-            if(!$data["vacancies"]){
+            if (!$data["vacancies"]) {
                 $data["vacancies"] = 0;
             }
-            
+
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
             unset($data['icon_png']);
             $data['preferred_gender'] = $this->prefferedGender($data['preferred_gender']);
@@ -294,9 +306,9 @@ class JobsController extends ApiBaseController
 
         if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && isset($reqParams['city_id'])) {
 
-            if($reqParams['city_id'] != ''){
+            if ($reqParams['city_id'] != '') {
                 $city_enc_ids = explode(",", $reqParams['city_id']);
-            }else{
+            } else {
                 $city_enc_ids = [];
             }
 
@@ -365,4 +377,729 @@ class JobsController extends ApiBaseController
             return $this->response(422);
         }
     }
+
+    public function actionGetJobsByOrganization()
+    {
+        $parameters = \Yii::$app->request->post();
+        $options = [];
+
+        if (!empty($parameters['org_enc_id']) && isset($parameters['org_enc_id'])) {
+            $options['org_enc_id'] = $parameters['org_enc_id'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
+            $options['type'] = $parameters['type'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['keyword']) && isset($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        } else {
+            return $this->response(422);
+        }
+
+        $organization_applications = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.slug', 'h.name'])
+            ->joinWith(['designationEnc l'], false)
+            ->joinWith(['applicationOptions as f'], false)
+            ->joinWith(['title g' => function ($z) {
+                $z->joinWith(['categoryEnc as h'], false);
+                $z->joinWith(['parentEnc p'], false);
+            }], false)
+            ->joinWith(['preferredIndustry o'], false)
+            ->joinWith(['applicationTypeEnc as j'], false)
+            ->innerJoinWith(['organizationEnc b' => function ($a) {
+                $a->onCondition(['b.status' => 'Active', 'b.is_deleted' => 0]);
+            }], false)
+            ->where(['a.organization_enc_id' => $options['org_enc_id'], 'a.is_deleted' => 0, 'a.status' => 'Active', 'j.name' => $options['type']]);
+
+        if (!empty($options['keyword'])) {
+
+            $organization_applications->andWhere([
+                'or',
+                ['like', 'a.slug', $options['keyword']],
+                ['like', 'l.designation', $options['keyword']],
+                ['like', 'h.name', $options['keyword']],
+                ['like', 'o.industry', $options['keyword']],
+                ['like', 'p.name', $options['keyword']],
+            ]);
+        }
+        $data = $organization_applications->asArray()->all();
+
+        if ($data == null || empty($data) || $data == '') {
+            return $this->response(404);
+        } else {
+            return $this->response(200, $data);
+        }
+    }
+
+    private function findUnclaimed($s)
+    {
+        return UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b' => function ($y) {
+                $y->select(['b.business_activity_enc_id', 'b.business_activity']);
+            }])
+            ->joinWith(['newOrganizationReviews c' => function ($x) {
+                $x->select(['c.organization_enc_id', 'ROUND(AVG(c.average_rating)) average_rating', 'COUNT(c.review_enc_id) reviews_cnt'])
+                    ->groupBy(['c.organization_enc_id']);
+            }])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 1
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.name', $s],
+                ['like', 'a.slug', $s],
+                ['like', 'a.website', $s],
+                ['like', 'b.business_activity', $s],
+            ])
+            ->groupBy(['a.organization_enc_id'])
+            ->asArray()
+            ->all();
+    }
+
+    public function actionSearch()
+    {
+        $parameters = \Yii::$app->request->post();
+        if (isset($parameters['keyword']) && !empty($parameters['keyword'])) {
+            $s = $parameters['keyword'];
+        } else {
+            return $this->response(422);
+        }
+        $result = [];
+
+        $organizations = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->joinWith(['organizationTypeEnc b'], false)
+            ->joinWith(['businessActivityEnc c'], false)
+            ->joinWith(['industryEnc d'], false)
+            ->joinWith(['employerApplications e' => function ($x) {
+                $x->select(['e.organization_enc_id', 'COUNT(e.application_enc_id) applications_cnt'])
+                    ->onCondition([
+                        'e.status' => 'Active',
+                        'e.is_deleted' => 0
+                    ])
+                    ->groupBy(['e.organization_enc_id']);
+            }])
+            ->joinWith(['organizationReviews f' => function ($y) {
+                $y->select(['f.organization_enc_id', 'ROUND(AVG(f.average_rating)) average_rating', 'COUNT(f.review_enc_id) reviews_cnt'])
+                    ->groupBy(['f.organization_enc_id']);
+            }])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 'Active'
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.name', $s],
+                ['like', 'a.slug', $s],
+                ['like', 'a.website', $s],
+                ['like', 'b.organization_type', $s],
+                ['like', 'c.business_activity', $s],
+                ['like', 'd.industry', $s]
+            ])
+            ->groupBy(['a.organization_enc_id'])
+            ->limit(8);
+
+        $result['organizations'] = $organizations->asArray()->all();
+
+        $unclaimed = $this->findUnclaimed($s);
+
+
+        $result['School'] = [];
+        $result['College'] = [];
+        $result['Educational Institute'] = [];
+        $result['Recruiter'] = [];
+        $result['Business'] = [];
+        $result['Scholarship Fund'] = [];
+        $result['Banking & Finance Company'] = [];
+        $result['Others'] = [];
+        foreach ($unclaimed as $uc) {
+            $ba = $uc['organizationTypeEnc']['business_activity'];
+            if ($ba) {
+                if (count($result[$ba]) < 8) {
+                    array_push($result[$ba], $uc);
+                }
+            }
+        }
+
+        $jobs = EmployerApplications::find()
+            ->alias('a')
+            ->select([
+                'a.application_enc_id',
+                'a.last_date',
+                'a.type',
+                '(CASE
+                    WHEN a.experience = "0" THEN "No Experience"
+                    WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+                    WHEN a.experience = "2" THEN "1 Year Experience"
+                    WHEN a.experience = "3" THEN "2-3 Years Experience"
+                    WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+                    WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+                    WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+                    WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+                    ELSE "No Experience"
+                    END) as experience',
+                'c.initials_color color',
+                'c.name as organization_name',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                'h.name category',
+                'g.name as title',
+                'e.designation',
+                'l.fixed_wage as fixed_salary',
+                'l.wage_type salary_type',
+                'i.location_enc_id location_id',
+                "k.name as city",
+            ])
+            ->joinWith(['applicationTypeEnc b'], false)
+            ->joinWith(['organizationEnc c'], false)
+            ->joinWith(['title d' => function ($x) {
+                $x->joinWith(['categoryEnc g'], false);
+                $x->joinWith(['parentEnc h'], false);
+            }], false)
+            ->joinWith(['designationEnc e'], false)
+            ->joinWith(['preferredIndustry f'], false)
+            ->joinWith(['applicationPlacementLocations i' => function ($x) {
+                $x->joinWith(['locationEnc j' => function ($x) {
+                    $x->joinWith(['cityEnc k'], false);
+                }], false);
+            }], false)
+            ->joinWith(['applicationOptions l'], false)
+            ->where([
+                'b.name' => 'Jobs',
+                'a.for_careers' => 0,
+                'a.is_deleted' => 0,
+                'a.status' => 'Active'
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.slug', $s],
+                ['like', 'a.description', $s],
+                ['like', 'b.name', $s],
+                ['like', 'a.type', $s],
+                ['like', 'c.name', $s],
+                ['like', 'c.slug', $s],
+                ['like', 'c.website', $s],
+                ['like', 'g.name', $s],
+                ['like', 'h.name', $s],
+                ['like', 'g.slug', $s],
+                ['like', 'e.designation', $s],
+                ['like', 'e.slug', $s],
+                ['like', 'f.industry', $s],
+                ['like', 'f.slug', $s],
+                ['like', 'l.wage_type', $s],
+                ['like', 'l.wage_duration', $s],
+                ['like', 'j.location_name', $s],
+                ['like', 'j.address', $s],
+                ['like', 'k.name', $s],
+            ])
+            ->groupBy(['a.application_enc_id']);
+
+        $final_jobs = $jobs->asArray()->all();
+
+        $i = 0;
+        foreach ($final_jobs as $val) {
+            $final_jobs[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+            if ($val['salary_type'] == "Fixed") {
+                if ($val['salary_duration'] == "Monthly") {
+                    $final_jobs[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                } elseif ($val['salary_duration'] == "Hourly") {
+                    $final_jobs[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                } elseif ($val['salary_duration'] == "Weekly") {
+                    $final_jobs[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                } else {
+                    $final_jobs[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                }
+            } elseif ($val['salary_type'] == "Negotiable") {
+                if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                    } else {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                    }
+                } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_jobs[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                    } else {
+                        $final_jobs[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                    }
+                } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_jobs[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_jobs[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                    } else {
+                        $final_jobs[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                    }
+                }
+            }
+            $i++;
+        }
+
+
+        $result['jobs'] = $final_jobs;
+
+
+        $internships = EmployerApplications::find()
+            ->alias('a')
+            ->select([
+                'a.application_enc_id',
+                'a.last_date',
+                'a.type',
+                'c.initials_color color',
+                'c.name as organization_name',
+                'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
+                'h.name category',
+                'g.name as title',
+                'l.fixed_wage as fixed_salary',
+                'l.wage_type salary_type',
+                'i.location_enc_id location_id',
+                "k.name as city",
+            ])
+            ->joinWith(['applicationTypeEnc b'], false)
+            ->joinWith(['organizationEnc c'], false)
+            ->joinWith(['title d' => function ($x) {
+                $x->joinWith(['categoryEnc g'], false);
+                $x->joinWith(['parentEnc h'], false);
+            }], false)
+            ->joinWith(['applicationPlacementLocations i' => function ($x) {
+                $x->joinWith(['locationEnc j' => function ($x) {
+                    $x->joinWith(['cityEnc k'], false);
+                }], false);
+            }], false)
+            ->joinWith(['applicationOptions l'], false)
+            ->where([
+                'b.name' => 'Internships',
+                'a.for_careers' => 0,
+                'a.is_deleted' => 0,
+                'a.status' => 'Active'
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'a.slug', $s],
+                ['like', 'a.description', $s],
+                ['like', 'b.name', $s],
+                ['like', 'a.type', $s],
+                ['like', 'c.name', $s],
+                ['like', 'c.slug', $s],
+                ['like', 'c.website', $s],
+                ['like', 'g.name', $s],
+                ['like', 'h.name', $s],
+                ['like', 'g.slug', $s],
+                ['like', 'l.wage_type', $s],
+                ['like', 'l.wage_duration', $s],
+                ['like', 'j.location_name', $s],
+                ['like', 'j.address', $s],
+                ['like', 'k.name', $s],
+            ])
+            ->groupBy(['a.application_enc_id']);
+
+        $final_internships = $internships->asArray()->all();
+
+        $i = 0;
+        foreach ($final_internships as $val) {
+            $final_internships[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+            if ($val['salary_type'] == "Fixed") {
+                if ($val['salary_duration'] == "Monthly") {
+                    $final_internships[$i]['salary'] = $val['fixed_salary'] . ' p.m.';
+                } elseif ($val['salary_duration'] == "Hourly") {
+                    $final_internships[$i]['salary'] = $val['fixed_salary'] * 730 . ' p.m.';
+                } elseif ($val['salary_duration'] == "Weekly") {
+                    $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 7 * 30 . ' p.m.';
+                } else {
+                    $final_internships[$i]['salary'] = (int)$val['fixed_salary'] / 12 . ' p.m.';
+                }
+            } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
+                if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_internships[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . " - ₹" . (string)($val['max_salary'] * 730) . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . " - ₹" . (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                    } else {
+                        $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . " - ₹" . (int)($val['max_salary']) / 12 . ' p.m.';
+                    }
+                } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_internships[$i]['salary'] = (string)$val['min_salary'] . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_internships[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_internships[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . ' p.m.';
+                    } else {
+                        $final_internships[$i]['salary'] = (int)($val['min_salary']) / 12 . ' p.m.';
+                    }
+                } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $final_internships[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $final_internships[$i]['salary'] = (string)($val['max_salary'] * 730) . ' p.m.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $final_internships[$i]['salary'] = (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                    } else {
+                        $final_internships[$i]['salary'] = (int)($val['max_salary']) / 12 . ' p.m.';
+                    }
+                }
+            }
+            $i++;
+        }
+
+
+        $result['internships'] = $final_internships;
+
+
+        $posts = Posts::find()
+            ->select([
+                'title',
+                'CONCAT("' . Url::to('/blog/', 'https') . '", slug) link',
+                'excerpt',
+                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
+            ])
+            ->where([
+                'status' => 'Active',
+                'is_deleted' => 0
+            ])
+            ->andFilterWhere([
+                'or',
+                ['like', 'title', $s],
+                ['like', 'slug', $s],
+                ['like', 'meta_keywords', $s],
+            ]);
+
+        $posts_filter = $posts->asArray()->all();
+
+
+        $result['posts'] = $posts_filter;
+
+
+        if(empty($result['organizations'])
+        && empty($result['School'])
+        && empty($result['College'])
+        && empty($result['Educational Institute'])
+        && empty($result['Recruiter'])
+        && empty($result['Business'])
+        && empty($result['Scholarship Fund'])
+        && empty($result['Banking & Finance Company'])
+        && empty($result['Others'])
+        && empty($result['jobs'])
+        && empty($result['internships'])
+        && empty($result['posts'])){
+            return $this->response(404);
+        }else{
+            return $this->response(200, $result);
+        }
+    }
+
+    public function actionApplicationDetail()
+    {
+        $req = Yii::$app->request->post();
+        if (!empty($req['id'])) {
+            $data = $this->getApplication($req['id']);
+
+            if (empty($data)) {
+                return $this->response(404);
+            }
+
+            if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
+
+                $token_holder_id = UserAccessTokens::find()
+                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                    ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                    ->one();
+
+                $user = Candidates::findOne([
+                    'user_enc_id' => $token_holder_id->user_enc_id
+                ]);
+
+                if ($user) {
+                    $hasApplied = AppliedApplications::find()
+                        ->where(['application_enc_id' => $req['id']])
+                        ->andWhere(['created_by' => $user->user_enc_id])
+                        ->exists();
+                    $data['hasApplied'] = $hasApplied;
+
+                    $shortlist = ShortlistedApplications::find()
+                        ->select('shortlisted')
+                        ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
+                        ->exists();
+                    $data["hasShortlisted"] = $shortlist;
+
+                    $reviewlist = ReviewedApplications::find()
+                        ->select(['review'])
+                        ->where(['review' =>1,'application_enc_id'=>$req['id'], 'created_by'=>$user->user_enc_id])
+                        ->exists();
+                    $data["hasReviewed"] = $reviewlist;
+                } else {
+                    return $this->response(401);
+                }
+            }
+
+            if ($data['wage_type'] == 'Fixed') {
+                if ($data['wage_duration'] == 'Monthly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 12;
+                } elseif ($data['wage_duration'] == 'Hourly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 40 * 52;
+                } elseif ($data['wage_duration'] == 'Weekly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 52;
+                }
+                setlocale(LC_MONETARY, 'en_IN');
+                $data['amount'] = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.a.';
+            } else if ($data['wage_type'] == 'Negotiable') {
+                if ($data['wage_duration'] == 'Monthly') {
+                    $data['min_wage'] = $data['min_wage'] * 12;
+                    $data['max_wage'] = $data['max_wage'] * 12;
+                } elseif ($data['wage_duration'] == 'Hourly') {
+                    $data['min_wage'] = $data['min_wage'] * 40 * 52;
+                    $data['max_wage'] = $data['max_wage'] * 40 * 52;
+                } elseif ($data['wage_duration'] == 'Weekly') {
+                    $data['min_wage'] = $data['min_wage'] * 52;
+                    $data['max_wage'] = $data['max_wage'] * 52;
+                }
+                setlocale(LC_MONETARY, 'en_IN');
+                if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
+                    $data['amount'] = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+                } elseif (!empty($data['min_wage'])) {
+                    $data['amount'] = 'From ₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . 'p.a.';
+                } elseif (!empty($data['max_wage'])) {
+                    $data['amount'] = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+                } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
+                    $data['amount'] = 'Negotiable';
+                }
+            }
+
+            $data['hasQuestionnaire'] = ApplicationInterviewQuestionnaire::find()
+                ->alias('a')
+                ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
+                ->where(['a.application_enc_id' => $req['id']])
+                ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
+                ->andWhere(['b.field_name' => 'Get Applications'])
+                ->exists();
+
+            $i = 0;
+            foreach ($data["applicationEmployeeBenefits"] as $d) {
+                if (!empty($d["icon"])) {
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
+                } else {
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
+                }
+                $i++;
+            }
+
+            $data["vacancies"] = 0;
+            if (!empty($data['applicationPlacementLocations'])) {
+                foreach ($data['applicationPlacementLocations'] as $apl) {
+                    $data["vacancies"] += $apl['positions'];
+                }
+            }
+
+            if (empty($data['applicationInterviewLocations'])) {
+                $data['applicationInterviewLocations'][] = [
+                    "location_enc_id" => "kdmvkdkv",
+                    "application_enc_id" => "kdmklvadkv",
+                    "city_enc_id" => "",
+                    "name" => "Online"
+                ];
+            }
+
+            $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
+            unset($data['icon_png']);
+
+            unset($data['min_wage']);
+            unset($data['max_wage']);
+            unset($data['fixed_wage']);
+
+            return $this->response(200, $data);
+        } else {
+            return $this->response(422);
+        }
+    }
+
+    private function getApplication($id)
+    {
+        return EmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->select([
+                'a.id',
+                'a.application_enc_id',
+                'x.industry',
+                'a.title',
+                '(CASE
+                    WHEN a.preferred_gender = "0" THEN "No preferred gender"
+                    WHEN a.preferred_gender = "1" THEN "Male"
+                    WHEN a.preferred_gender = "2" THEN "Female"
+                    WHEN a.preferred_gender = "3" THEN "Transgender"
+                    END) as preferred_gender',
+                'TRIM(REPLACE(a.description, "\n", " ")) as description',
+                'a.designation_enc_id',
+                'n.designation',
+                'l.category_enc_id',
+                'm.category_enc_id as cat_id',
+                'm.name',
+                'l.name as cat_name',
+                'l.icon_png',
+                'a.type',
+                'a.slug',
+                'a.preferred_industry',
+                'a.interview_process_enc_id',
+                'a.timings_from',
+                'a.timings_to',
+                'a.joining_date',
+                'a.last_date',
+                '(CASE
+                    WHEN a.experience = "0" THEN "No Experience"
+                    WHEN a.experience = "1" THEN "Less Than 1 Year"
+                    WHEN a.experience = "2" THEN "1 Year"
+                    WHEN a.experience = "3" THEN "2 - 3 Years"
+                    WHEN a.experience = "3 - 5" THEN "3 - 5 Years"
+                    WHEN a.experience = "5 - 10" THEN "5 - 10 Years"
+                    WHEN a.experience = "10 - 20" THEN "10 - 20 Years"
+                    WHEN a.experience = "20 + " THEN "More Than 20 Years"
+                    ELSE "No Experience"
+                    END) as experience',
+                'b.wage_type',
+                'b.wage_duration',
+                'b.fixed_wage',
+                'b.min_wage',
+                'b.max_wage',
+                'b.fixed_wage',
+                'b.working_days',
+                'b.interview_start_date',
+                'b.interview_end_date',
+                'w.organization_enc_id',
+                'w.name organization_name',
+                'w.initials_color color',
+                'w.email',
+                'w.website',
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
+                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
+            ])
+            ->where([
+                'a.application_enc_id' => $id,
+                'a.is_deleted' => 0,
+            ])
+            ->joinWith(['applicationTypeEnc r' => function ($x) {
+                $x->andWhere(['r.name' => 'Jobs']);
+            }], false)
+            ->joinWith(['applicationOptions b'], false)
+            ->joinWith(['applicationEmployeeBenefits c' => function ($x) {
+                $x->onCondition(['c.is_deleted' => 0]);
+                $x->joinWith(['benefitEnc d'], false);
+                $x->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
+            }])
+            ->joinWith(['applicationEducationalRequirements e' => function ($x) {
+                $x->joinWith(['educationalRequirementEnc f'], false);
+                $x->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
+            }])
+            ->joinWith(['applicationSkills g' => function ($x) {
+                $x->joinWith(['skillEnc h'], false);
+                $x->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
+            }])
+            ->joinWith(['applicationJobDescriptions i' => function ($x) {
+                $x->onCondition(['i.is_deleted' => 0]);
+                $x->joinWith(['jobDescriptionEnc j'], false);
+                $x->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
+            }])
+            ->joinWith(['title k' => function ($x) {
+                $x->joinWith(['parentEnc l'], false);
+                $x->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->joinWith(['designationEnc n'], false)
+            ->joinWith(['applicationPlacementLocations o' => function ($x) {
+                $x->onCondition(['o.is_deleted' => 0]);
+                $x->joinWith(['locationEnc s' => function ($x) {
+                    $x->joinWith(['cityEnc t'], false);
+                }], false);
+                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
+            }])
+            ->joinWith(['applicationInterviewLocations p' => function ($x) {
+                $x->onCondition(['p.is_deleted' => 0]);
+                $x->joinWith(['locationEnc u' => function ($x) {
+                    $x->joinWith(['cityEnc v'], false);
+                }], false);
+                $x->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
+            }])
+            ->joinWith(['organizationEnc w' => function ($s) {
+                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['preferredIndustry x'], false)
+            ->asArray()
+            ->one();
+    }
+
+    public function actionJobsNearMe()
+    {
+
+        $parameters = \Yii::$app->request->post();
+        $options = [];
+        if (!empty($parameters['latitude']) && isset($parameters['latitude'])) {
+            $options['latitude'] = $parameters['latitude'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['longitude']) && isset($parameters['longitude'])) {
+            $options['longitude'] = $parameters['longitude'];
+        } else {
+            return $this->response(422);
+        }
+
+        if (!empty($parameters['radius']) && isset($parameters['radius'])) {
+            $options['radius'] = $parameters['radius'];
+        } else {
+            $options['radius'] = 25;
+        }
+
+        if (!empty($parameters['type']) && isset($parameters['type'])) {
+            $options['type'] = $parameters['type'];
+        } else {
+            return $this->response(422);
+        }
+
+        if ($parameters['page'] && (int)$parameters['page'] >= 1) {
+            $options['page'] = $parameters['page'];
+        } else {
+            $options['page'] = 1;
+        }
+
+        if (!empty($parameters['walkin']) && (int)$parameters['walkin'] == 1) {
+            $options['walkin'] = $parameters['walkin'];
+        } else {
+            $options['walkin'] = 0;
+        }
+
+        if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        }
+
+        $data = Cards::jobsNearMe($options);
+
+        if (!empty($data)) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404);
+        }
+
+
+    }
+
 }

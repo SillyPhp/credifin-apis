@@ -6,17 +6,17 @@ echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
 
-$is_email_verified = true;
-if (Yii::$app->user->identity->organization->organization_enc_id):
-    if (!Yii::$app->user->identity->organization->is_email_verified):
-        $is_email_verified = false;
-    endif;
-elseif (!Yii::$app->user->identity->is_email_verified) :
-    $is_email_verified = false;
-endif;
-if (!$is_email_verified):
-    echo $this->render('/widgets/verification/resend-email');
-endif;
+//$is_email_verified = true;
+//if (Yii::$app->user->identity->organization->organization_enc_id):
+//    if (!Yii::$app->user->identity->organization->is_email_verified):
+//        $is_email_verified = false;
+//    endif;
+//elseif (!Yii::$app->user->identity->is_email_verified) :
+//    $is_email_verified = false;
+//endif;
+//if (!$is_email_verified):
+//    echo $this->render('/widgets/verification/resend-email');
+//endif;
 ?>
 
     <div class="row">

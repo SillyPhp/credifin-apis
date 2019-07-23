@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use yii\helpers\Html;
@@ -9,6 +10,7 @@ use yii\helpers\Url;
 
 AppAssets::register($this);
 $this->beginPage();
+$referral = Yii::$app->referral->getReferralCode();
 ?>
     <!DOCTYPE html>
     <!--[if IE 8]>
@@ -36,7 +38,8 @@ $this->beginPage();
                     <div class="clearfix navbar-fixed-top">
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
-                                <a style="position:relative;float: left;margin-top: 10px;" href="<?= Url::to('/'); ?>">
+                                <a style="position:relative;float: left;margin-top: 10px;"
+                                   href="<?= '/' . $referral; ?>">
                                     <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
                                          src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
                                     <span class="logo_beta">Beta</span>
@@ -78,14 +81,19 @@ $this->beginPage();
 
                                 <?=
                                 $this->render('/widgets/common/header/top-header', [
-                                    'menu_class' => 'menuzord-menu'
+                                    'menu_class' => 'menuzord-menu',
+                                    'referral' => $referral,
                                 ]);
                                 ?>
                             </div>
                         </div>
                     </div>
                     <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
-                        <?= $this->render('/widgets/header/top-header'); ?>
+                        <?=
+                        $this->render('/widgets/header/top-header', [
+                            'referral' => $referral,
+                        ]);
+                        ?>
                     </div>
                 </div>
             </nav>
@@ -101,7 +109,9 @@ $this->beginPage();
             </p>
         </div>
         <?php
-        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right');
+        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right', [
+            'referral' => $referral,
+        ]);
         ?>
     </div>
     <?php

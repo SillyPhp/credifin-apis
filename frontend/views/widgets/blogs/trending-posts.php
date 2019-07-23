@@ -13,7 +13,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-7 no-padd">
                         <div class="tp-heading">{{title}}</div>
-<!--                        <div class="tp-date">{{name}}</div>-->
+                        <!--                        <div class="tp-date">{{name}}</div>-->
                     </div>
                 </a>
             </div>
@@ -83,9 +83,14 @@ $this->registerCss('
   -ms-transform: translate(-50%, -50%);
   text-align: center;
 }
+@media screen and (max-width: 768px){
+    #trending-post .tp-box div a .no-padd{
+        padding:0px 15px !important;
+    }
+}
 ');
 if($is_ajax){
-$script = <<<JS
+    $script = <<<JS
 $.ajax({
     method: "POST",
     url : '/blog',

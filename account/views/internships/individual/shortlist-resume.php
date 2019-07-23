@@ -18,7 +18,7 @@ use yii\widgets\Pjax;
                     <div class="portlet-title tabbable-line">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase">Shortlisted Jobs</span>
+                            <span class="caption-subject font-dark bold uppercase">Shortlisted Internships</span>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -47,7 +47,7 @@ use yii\widgets\Pjax;
                                                             <a class="over-bttn ob2 hover_short" disabled="disabled">
                                                                 <i class="fa fa-check"></i>Applied</a>
                                                         <?php }else{?>
-                                                            <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                            <a href="/internship/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
                                                         <?php } ?>
                                                     </div>
                                                 </div>
@@ -60,7 +60,7 @@ use yii\widgets\Pjax;
                                                             <!--                                                                    </button>-->
                                                             <!--                                                                </div> -->
                                                             <div class=" j-grid">
-                                                                <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                                <a  href="/internship/<?= $shortlist['slug']; ?>" title="">VIEW INTERNSHIP</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -79,8 +79,8 @@ use yii\widgets\Pjax;
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
                                         </div>
                                         <div class="tab-empty-text">
-                                            <div class="">There are no Jobs to show.</div>
-                                            <div class="">You haven't Select any jobs for review.</div>
+                                            <div class="">There are no Internships to show.</div>
+                                            <div class="">You haven't Select any internships for review.</div>
                                         </div>
                                     </div>
                                 </div>

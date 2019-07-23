@@ -9,11 +9,17 @@
     z-index: 9;
 }
 .h-heading{
-    font-weight: bold;
+    font-weight: 500;
+    font-family:Roboto;
     color: #000;
     padding-top: 15px;
     font-size: 16px;
 }
+.h-text{
+    font-family:Roboto;
+    font-weight:300;
+}
+
 .icon img{
     height:100px;
     width:100px;
@@ -267,7 +273,7 @@
 .job-search > span {
     float: left;
     width: 100%;
-    font-family: Open Sans;
+    font-family:Roboto;
     font-size: 15px;
     font-weight: 400;
     color: #d5d8f3;
@@ -361,7 +367,7 @@
     font-weight: bold;
     background: #ff7803;
     padding: 20px 0px;
-    width: 100%;
+    width: 102%;
     border:0px;
     color:#fff;
     height:61px;

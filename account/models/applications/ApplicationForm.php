@@ -98,7 +98,7 @@ class ApplicationForm extends Model
     public $question_process;
     public $designations;
     public $emp_benefit;
-    public $clone_desc =[];
+    public $clone_desc = [];
     public $clone_edu = [];
     public $clone_skills = [];
     public $positions = [];
@@ -175,12 +175,10 @@ class ApplicationForm extends Model
 
     public function saveValues($type)
     {
-        if (in_array('online001',$this->interviewcity))
-        {
+        if (in_array('online001', $this->interviewcity)) {
             $has_online_int = 1;
             array_shift($this->interviewcity);
-        }
-        else{
+        } else {
             $has_online_int = 0;
         }
         switch ($this->wage_type) {
@@ -199,19 +197,20 @@ class ApplicationForm extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-        if ($type=='Jobs'||$type=='Clone_Jobs') {
+
+        if ($type == 'Jobs' || $type == 'Clone_Jobs') {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
             $type = 'Jobs';
-        }
-        else if (($type=='Internships'||$type=='Clone_Internships')){
+        } else if (($type == 'Internships' || $type == 'Clone_Internships')) {
             $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Internships']);
             $type = 'Internships';
         }
+
         $employerApplicationsModel = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $employerApplicationsModel->application_enc_id = $utilitiesModel->encrypt();
-        $employerApplicationsModel->application_number = rand(1000,10000).time();
+        $employerApplicationsModel->application_number = rand(1000, 10000) . time();
         $employerApplicationsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
@@ -223,6 +222,7 @@ class ApplicationForm extends Model
             ->alias('a')
             ->where(['name' => $this->title]);
         $chk_cat = $category_execute->asArray()->one();
+
         if (empty($chk_cat)) {
             $categoriesModel = new Categories;
             $utilitiesModel = new Utilities();
@@ -237,7 +237,7 @@ class ApplicationForm extends Model
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-                $this->addNewAssignedCategory($categoriesModel->category_enc_id,$employerApplicationsModel);
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplicationsModel,$type);
             } else {
                 return false;
             }
@@ -245,16 +245,14 @@ class ApplicationForm extends Model
             $cat_id = $chk_cat['category_enc_id'];
             $chk_assigned = $category_execute
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id','b.parent_enc_id','b.assigned_to'])
-                ->andWhere(['not',['b.parent_enc_id'=>null]])
-                ->andWhere(['b.assigned_to'=>$type,'b.parent_enc_id'=>$this->primaryfield])
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                ->andWhere(['not', ['b.parent_enc_id' => null]])
+                ->andWhere(['b.assigned_to' => $type, 'b.parent_enc_id' => $this->primaryfield])
                 ->asArray()
                 ->one();
-            if (empty($chk_assigned))
-            {
-                $this->addNewAssignedCategory($chk_cat['category_enc_id'],$employerApplicationsModel,$type);
-            }
-            else{
+            if (empty($chk_assigned)) {
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplicationsModel, $type);
+            } else {
                 $employerApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
                 $utilitiesModel->variables['name'] = $chk_assigned['name'] . '-' . $this->designations . '-' . $employerApplicationsModel->application_number;
                 $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
@@ -263,13 +261,16 @@ class ApplicationForm extends Model
             }
         }
 
-//        $image_information = $this->_createSharingImage($employerApplicationsModel->title);
+//        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
 //        if (!$image_information) {
 //            return false;
 //        } else {
 //            $employerApplicationsModel->image_location = $image_information['image_location'];
 //            $employerApplicationsModel->image = $image_information['image'];
 //        }
+
+//        $employerApplicationsModel->image_location = 1;
+//        $employerApplicationsModel->image = 1;
 
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
@@ -300,6 +301,7 @@ class ApplicationForm extends Model
                 $employerApplicationsModel->designation_enc_id = $chk_d['designation_enc_id'];
             }
         }
+
         $employerApplicationsModel->description = $this->othrdetail;
         $employerApplicationsModel->type = $this->type;
         $employerApplicationsModel->timings_from = date("H:i:s", strtotime($this->from));
@@ -351,19 +353,16 @@ class ApplicationForm extends Model
             }
             if (in_array("6", $this->weekdays)) {
                 $weekoptionsat = $this->weekoptsat;
-            }
-            else
-            {
+            } else {
                 $weekoptionsat = NULL;
             }
             if (in_array("7", $this->weekdays)) {
                 $weekoptionsund = $this->weekoptsund;
-            }
-            else{
+            } else {
                 $weekoptionsund = NULL;
             }
             if ($this->interradio == 1) {
-                $interview_strt_date =  date('Y-m-d H:i:s', strtotime($this->startdate . ' ' . $this->interviewstarttime));
+                $interview_strt_date = date('Y-m-d H:i:s', strtotime($this->startdate . ' ' . $this->interviewstarttime));
                 $interview_end_date = date('Y-m-d H:i:s', strtotime($this->enddate . ' ' . $this->interviewendtime));
             } else {
                 $interview_strt_date = null;
@@ -394,14 +393,12 @@ class ApplicationForm extends Model
             $applicationoptionsModel->interview_end_date = $interview_end_date;
             $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
             $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$applicationoptionsModel->save())
-            {
+            if (!$applicationoptionsModel->save()) {
                 return false;
             }
-            if ($this->type == "Work From Home"){
+            if ($this->type == "Work From Home") {
                 $locations = [];
-            }
-            else{
+            } else {
                 $locations = json_decode($this->placement_loc);
             }
             if (!empty($locations)) {
@@ -606,7 +603,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function  assignedEdu($e_id, $cat_id)
+    private function assignedEdu($e_id, $cat_id)
     {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
@@ -636,7 +633,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function addNewAssignedCategory($category_id,$employerApplicationsModel,$type)
+    private function addNewAssignedCategory($category_id, $employerApplicationsModel, $type)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
@@ -654,20 +651,57 @@ class ApplicationForm extends Model
             $utilitiesModel->variables['table_name'] = EmployerApplications::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $employerApplicationsModel->slug = $utilitiesModel->create_slug();
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
-    private function _createSharingImage($category)
+
+    private function _createSharingImage($category, $type)
     {
-        $client = new \yii\httpclient\Client(['baseUrl' => Url::base(true)]);
-        $response = $client->createRequest()
-            ->setUrl('jobs/job-card/' . $category)
-            ->addHeaders(['content-type' => 'application/json'])
-            ->send();
-        print_r($response);
+        $profile = AssignedCategories::find()
+            ->alias('a')
+            ->select(['b.name', 'CONCAT("' . Url::to('@commonAssetsDirectory/categories/png/') . '", b.icon_png) icon'])
+            ->innerJoinWith(['parentEnc b' => function ($b) {
+                $b->onCondition([
+                    'or',
+                    ['!=', 'b.icon', NULL],
+                    ['!=', 'b.icon', ''],
+                ])
+                    ->groupBy(['b.category_enc_id']);
+            }], false)
+            ->where([
+                'a.assigned_to' => ucfirst($type),
+                'a.assigned_category_enc_id' => $category,
+            ])
+            ->asArray()
+            ->one();
+
+        if (!$profile) {
+            return false;
+        }
+
+        if (isset(Yii::$app->user->identity->organization->logo) && !empty(Yii::$app->user->identity->organization->logo)) {
+            $organizationLogo = Yii::$app->params->upload_directories->organizations->logo_path . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+        } else {
+            $organizationLogo = "https://ui-avatars.com/api/?name=" . Yii::$app->user->identity->organization->name . "&size=200&rounded=true&background=" . str_replace("#", "", Yii::$app->user->identity->organization->initials_color) . "&color=ffffff";
+        }
+
+        $pyscript = Url::to('@consoleDirectory/commands/applicationSharingImage/main.py');
+        $backgroudImage = Url::to('@consoleDirectory/commands/applicationSharingImage/hiring.png');
+
+        $sharingImagePath = Yii::$app->getSecurity()->generateRandomString();
+        $sharingImage = Yii::$app->getSecurity()->generateRandomString() . '.png';
+        $imagePath = Yii::$app->params->upload_directories->applications->image_path . $sharingImagePath . DIRECTORY_SEPARATOR . $sharingImage;
+
+        $cmd = 'sudo python3 "' . $pyscript . '" "' . $backgroudImage . '" "' . $organizationLogo . '" "' . $imagePath . '" "' . $profile["name"] . '" "' . $profile["icon"] . '" "' . $fontPath . '" "' . $isUrl . '"';
+        if (exec($cmd)) {
+            return [
+                'image_location' => $sharingImagePath,
+                'image' => $sharingImage,
+            ];
+        }
+
+        return false;
     }
 
     public function getQuestionnnaireList($type = 1)
@@ -675,7 +709,7 @@ class ApplicationForm extends Model
         $questions_list = OrganizationQuestionnaire::find()
             ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
             ->andWhere(['like', 'questionnaire_for', '"' . $type . '"'])
-            ->andWhere(['is_deleted'=>0])
+            ->andWhere(['is_deleted' => 0])
             ->orderBy(['id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -689,7 +723,7 @@ class ApplicationForm extends Model
             ->alias('a')
             ->distinct()
             ->select(['a.location_enc_id', 'a.organization_enc_id', 'a.location_name', 'a.address', 'b.name AS city_name', 'c.name AS state_name'])
-            ->where(['like', 'location_for', '"'.$type.'"'])
+            ->where(['like', 'location_for', '"' . $type . '"'])
             ->andWhere(['a.is_deleted' => 0])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
             ->joinWith(['cityEnc b' => function ($b) {
@@ -698,15 +732,13 @@ class ApplicationForm extends Model
             ->orderBy(['a.id' => SORT_DESC]);
 
         $l_list = $loc_list->asArray()->all();
-        if ($type == 2){
+        if ($type == 2) {
             $random_id = 'online001';
-            $online_random_val = ['location_enc_id'=>$random_id,'organization_enc_id'=>'online001','location_name'=>'Online Interview','address'=>'online','city_name'=>'skype','state_name'=>'phone'];
+            $online_random_val = ['location_enc_id' => $random_id, 'organization_enc_id' => 'online001', 'location_name' => 'Online Interview', 'address' => 'online', 'city_name' => 'skype', 'state_name' => 'phone'];
             array_unshift($l_list, $online_random_val);
             $total = $loc_list->count();
-            $l_list[($total)]['total'] = $total+1;
-        }
-        else
-        {
+            $l_list[($total)]['total'] = $total + 1;
+        } else {
             $total = $loc_list->count();
             $l_list[($total - 1)]['total'] = $total;
         }
@@ -722,7 +754,7 @@ class ApplicationForm extends Model
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->orderBy([new \yii\db\Expression('FIELD (a.name, "Others") ASC, a.name ASC')])
             ->where(['b.assigned_to' => $type, 'b.parent_enc_id' => NULL])
-            ->andWhere(['b.status'=>'Approved'])
+            ->andWhere(['b.status' => 'Approved'])
             ->asArray()
             ->all();
         $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
@@ -775,24 +807,23 @@ class ApplicationForm extends Model
     {
         $cities = Cities::find()
             ->alias('a')
-            ->select(['city_enc_id','name'])
-            ->where(['city_enc_id'=>'Qk41NU9BbkJHbVZZZEV2YmM5U2J5dz09'])
+            ->select(['city_enc_id', 'name'])
+            ->where(['city_enc_id' => 'Qk41NU9BbkJHbVZZZEV2YmM5U2J5dz09'])
             ->asArray()
             ->all();
-        $getWorkFromCity = ArrayHelper::map($cities,'city_enc_id','name');
+        $getWorkFromCity = ArrayHelper::map($cities, 'city_enc_id', 'name');
         return $getWorkFromCity;
     }
 
-    public function getCloneData($aidk,$application_type)
+    public function getCloneData($aidk, $application_type)
     {
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->joinWith(['applicationTypeEnc y'=>function($b) use ($application_type)
-            {
-                $b->andWhere(['y.name'=>$application_type]);
-            }],false,'INNER JOIN')
+            ->joinWith(['applicationTypeEnc y' => function ($b) use ($application_type) {
+                $b->andWhere(['y.name' => $application_type]);
+            }], false, 'INNER JOIN')
             ->joinWith(['preferredIndustry x'], false)
             ->select(['a.id', 'a.application_number', 'a.application_enc_id', 'x.industry', 'a.title', 'a.preferred_gender', 'a.description', 'a.designation_enc_id', 'n.designation', 'l.category_enc_id', 'm.category_enc_id as cat_id', 'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.joining_date', 'a.last_date',
                 '(CASE
@@ -805,8 +836,8 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience','b.*'])
-            ->joinWith(['applicationOptions b'],false)
+                END) as experience', 'b.*'])
+            ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
@@ -837,14 +868,14 @@ class ApplicationForm extends Model
                 $b->joinWith(['locationEnc s' => function ($b) {
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
-                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
+                $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->onCondition(['p.is_deleted' => 0]);
                 $b->joinWith(['locationEnc u' => function ($b) {
                     $b->joinWith(['cityEnc v'], false);
                 }], false);
-                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude', 'u.longitude']);
+                $b->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name', 'u.latitude as interview_lat', 'u.longitude as interview_long']);
             }])
             ->joinWith(['applicationInterviewQuestionnaires q' => function ($b) {
                 $b->onCondition(['q.is_deleted' => 0]);
@@ -854,5 +885,37 @@ class ApplicationForm extends Model
             ->one();
 
         return $application;
+    }
+
+    public function getCloneUnclaimed($aidk,$application_type)
+    {
+        $application = EmployerApplications::find()
+            ->alias('a')
+            ->distinct()
+            ->where(['a.application_enc_id' => $aidk])
+            ->select(['a.application_enc_id','a.preferred_gender','a.description',
+                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*'])
+            ->joinwith(['title k' => function ($b) {
+                $b->joinWith(['parentEnc l'], false);
+                $b->joinWith(['categoryEnc m'], false);
+            }], false)
+            ->joinWith(['applicationUnclaimOptions o'],false)
+            ->joinWith(['applicationPlacementCities p'=>function($b)
+            {
+                $b->select(['p.application_enc_id','q.city_enc_id','name']);
+                $b->joinWith(['cityEnc q'],false);
+            }])
+            ->joinWith(['applicationTypeEnc y' => function ($b) use ($application_type) {
+                $b->andWhere(['y.name' => $application_type]);
+            }], false, 'INNER JOIN')
+            ->joinWith(['applicationSkills z'=>function($b)
+            {
+                $b->select(['z.application_enc_id','n.skill_enc_id','skill']);
+                $b->joinWith(['skillEnc n'],false);
+            }])
+            ->asArray()
+            ->one();
+        return $application;
+
     }
 }

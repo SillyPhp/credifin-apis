@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\EmployerApplications;
+use common\models\Quiz;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -117,12 +118,13 @@ class SiteController extends Controller
             ->all();
         $cities = EmployerApplications::find()
             ->alias('a')
-            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id'])
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
             ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
                 $x->joinWith(['locationEnc c' => function ($x) {
                     $x->joinWith(['cityEnc d']);
                 }], false);
             }], false)
+            ->joinWith(['applicationTypeEnc e'], false)
             ->where([
                 'a.is_deleted' => 0
             ])
@@ -209,14 +211,25 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionEmployers()
+    public function actionAllQuiz()
     {
-        $feedbackFormModel = new FeedbackForm();
-        $partnerWithUsModel = new PartnerWithUsForm();
-
-        return $this->render('employers', [
-            'feedbackFormModel' => $feedbackFormModel,
-            'partnerWithUsModel' => $partnerWithUsModel,
+        $quizes = Quiz::find()
+            ->alias('a')
+            ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
+            ->joinWith(['quizQuestions b' => function ($x) {
+                $x->onCondition([
+                    'b.is_deleted' => 0
+                ]);
+                $x->groupBy(['b.quiz_enc_id']);
+            }], false)
+            ->where([
+                'a.display' => 1,
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->all();
+        return $this->render('all-quizzes', [
+            'data' => $quizes
         ]);
     }
 
@@ -435,6 +448,53 @@ class SiteController extends Controller
             }
             return $response;
         }
+    }
+
+    public function actionWorkingProfiles()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            // $jobCategories = \frontend\models\profiles\ProfileCards::getProfiles();
+            $jobCategories = AssignedCategories::find()
+                ->select(['b.name', 'b.slug', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Jobs'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            $internshipCategories = AssignedCategories::find()
+                ->select(['b.name', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "" ELSE CONCAT("' . Url::to("@commonAssets/categories/svg/") . '", "/", b.icon) END icon'])
+                ->alias('a')
+                ->joinWith(['parentEnc b'], false)
+                ->joinWith(['categoryEnc c'], false)
+                ->where(['a.assigned_to' => 'Internships'])
+                ->andWhere(['!=', 'a.parent_enc_id', ''])
+                ->groupBy(['a.parent_enc_id'])
+                ->orderBy(['b.name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            //$internshipCategories = \frontend\models\profiles\ProfileCards::getProfiles('Internships');
+            if ($jobCategories || $internshipCategories) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'categories' => [
+                        'jobs' => $jobCategories,
+                        'internships' => $internshipCategories,
+                    ],
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('working-profiles');
     }
 
     public function actionQuestionnaire($qidk)

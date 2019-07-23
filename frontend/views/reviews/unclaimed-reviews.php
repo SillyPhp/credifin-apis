@@ -9,8 +9,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
 <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
 
-        <div class="modal-conten<!-- Modal content-->t half-bg-color">
-            <!--            <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>-->
+        <div class="modal-content half-bg-color">
             <div class="row margin-0">
                 <div class="col-md-6 col-sm-6">
                     <div class=" half-bg half-bg-color">
@@ -83,6 +82,9 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                             </div>
                         </div>
                     </div>
+                    <div class="back_links">
+                        <a href="/reviews" id="color_blue">Back To Reviews</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,7 +104,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                 <div class="com-name"><?= ucwords($name); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
-                        <i class="fa fa-star"></i>
+                        <i class="fas fa-star"></i>
                     <?php } ?>
                 </div>
                 <div class="com-rate">0/5 - based on 0 reviews</div>
@@ -113,11 +115,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         <?php if (!Yii::$app->user->isGuest){
                             if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
                                 <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Back To Review</button>
                                 </div>
                             <?php } } else { ?>
                             <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -142,7 +144,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="rating-large">0/5</div>
                                 <div class="com-rating-1">
                                     <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fa fa-star"></i>
+                                        <i class="fas fa-star"></i>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -156,7 +158,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -169,7 +171,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -182,7 +184,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -195,7 +197,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -208,7 +210,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="threestar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -221,7 +223,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -234,7 +236,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star"></i>
+                                            <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -441,6 +443,16 @@ border: 2px solid #cadfe8 !important;
     border:none;
     font-size:14px;
     padding:0px
+}
+.back_links
+{
+text-align:center;
+margin-bottom:12px;
+}
+#color_blue
+{
+color: #3062d4 !important;
+text-decoration: underline !important;
 }
 .view-detail-btn button:hover, .re-btns button:hover{
     color:#00a0e3;
@@ -1194,11 +1206,11 @@ $(document).on('click','.load_reviews',function(e){
         url:'/organizations/load-reviews',                         
         method: 'post',
         beforeSend:function(){
-         $('.load_reviews').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.load_reviews').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(res){
             if(res==true){
-                $('.load_reviews').html('<i class="fa fa-heart-o hvr-icon"></i> Load More');
+                $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
                 }
          }
     });        
@@ -1467,7 +1479,7 @@ var popup2 = new ideaboxPopupCollege({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1491,7 +1503,7 @@ var popup2 = new ideaboxPopupCollege({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1647,7 +1659,7 @@ var popup3 = new ideaboxPopupSchool({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1671,7 +1683,7 @@ var popup3 = new ideaboxPopupSchool({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1827,7 +1839,7 @@ var popup4 = new ideaboxPopupInstitute({
 						errorMsg	: '<b style="color:#900;">Please select one</b>'
 					},
 				{
-					question 	: 'Acedemic Year:',
+					question 	: 'Academic Year:',
 					answerType	: 'selectbox',
 					formName	: 'tenure',
 					choices : [
@@ -1851,7 +1863,7 @@ var popup4 = new ideaboxPopupInstitute({
 					description	: '',
 					nextLabel	: 'Next',
 					required	: true,
-					errorMsg	: 'Please select Your Acedemic Year Correctly.'
+					errorMsg	: 'Please select Your Academic Year Correctly.'
 				},
 				{
 					question 	: 'Educational Stream',
@@ -1952,7 +1964,7 @@ $('#company_review_btn1').hide();
 $('#company_review_btn2').hide();
 $(document).on('change','#bussiness_activity',function(e)
 {
-    if($('#bussiness_activity :selected').text()=='Colege/Universities')
+    if($('#bussiness_activity :selected').text()=='College/Universities')
         {
             $('#company_review_btn1').show();
             $('#company_review_btn2').show();
@@ -1983,7 +1995,7 @@ $('#company_review_btn2').hide();
 });
 if($("#wr").length>0){
 document.getElementById("wr").addEventListener("click", function(e){
-            popup.open();
+            window.location.replace('/reviews');
         });
 }
 JS;

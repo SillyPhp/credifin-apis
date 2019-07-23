@@ -11,7 +11,8 @@ if($type == 'jobs'){
 }
 
 ?>
-<div class="row">
+
+<div class="row m-0">
     <div class="col-md-10 col-md-offset-2">
         <div class="near-me-search row">
             <div class="col-md-3">
@@ -31,7 +32,7 @@ if($type == 'jobs'){
                     <p class="error" style="color: red"></p>
                 </div>
             </div>
-            <div class="col-md-4 pt-20">
+            <div class="col-md-4 pt-10">
                 <input type="text" autocomplete="off" id="range_3">
             </div>
             <div class="col-md-2">
@@ -40,8 +41,8 @@ if($type == 'jobs'){
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-6 near-me-map" data-spy="affix" data-offset-top="138">
+<div class="row m-0">
+    <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
     </div>
     <div class="col-md-2 near-me-filters pl-0">
@@ -64,7 +65,7 @@ if($type == 'jobs'){
         </div>
 
         <div id="loading">
-            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                 <span class="load-more-text">Load More</span>
                 <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                      stroke="currentColor">
@@ -96,7 +97,6 @@ if($type == 'jobs'){
                 </svg>
             </a>
         </div>
-
     </div>
 </div>
 
@@ -109,13 +109,13 @@ if($type == 'jobs'){
             {{#city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;{{city_name}}
+                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city_name}}
                 </span>
             {{/city_name}}
             {{^city_name}}
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fa fa-map-marker"></i>&nbsp;All India
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
                 </span>
             {{/city_name}}
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
@@ -135,7 +135,7 @@ if($type == 'jobs'){
                             {{job_title}}</h4>
                     </a>
                     {{#salary}}
-                    <h5 id="salary"><i class="fa fa-inr"></i>&nbsp;{{salary}}</h5>
+                    <h5 id="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                     {{/salary}}
                     {{^salary}}
                     <h5 id="salary">Negotiable</h5>
@@ -144,28 +144,18 @@ if($type == 'jobs'){
                     <h5 class="type">{{type}}</h5>
                     {{/type}}
                     {{#experience}}
-                    <h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;{{experience}}</h5>
+                    <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                     {{/experience}}
                 </div>
             </div>
-            {{#last_date}}
-            <h6 class="col-md-5 pl-20 custom_set2 text-center last-date" id="{{last_date}}">
-                Last Date to Apply
-                <br>
-                {{last_date}}
-            </h6>
-            <h4 class="col-md-7 org_name text-right pr-10 company-name">
-                {{name}}
-            </h4>
-            {{/last_date}}
-            {{^last_date}}
+
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{name}}</h4>
+                <h4 class="org_name text-right company-name">{{name}}</h4>
             </div>
-            {{/last_date}}
+
             <div class="application-card-wrapper">
                 <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
             </div>
         </div>
     </div>
@@ -193,9 +183,8 @@ $this->registerCss('
     top: 52px;
     left: 0;
     height: calc(100vh - 52px);
-    overflow-y: scroll;
-    overflow-x: hidden;
-    box-shadow: 0px 0px 10px 1px #e6e6e6;
+    z-index:999;
+    overflow: visible !important;
 }
 .near-me-map{
     height: calc(100vh - 52px);
@@ -221,6 +210,9 @@ $this->registerCss('
 }
 .in-map{
     margin-bottom:0px;
+}
+.modal-backdrop{
+    z-index:99;
 }
 .gm-style .gm-style-iw-c{
     padding:0px;
@@ -258,6 +250,9 @@ $this->registerCss('
     padding: 15px !Important;
     background-color: #00a0e3;
     color: #fff;
+}
+.near-me-search div .form-group{
+    margin-bottom:15px;
 }
 .loader-main{
     padding: 0px 15px;
@@ -375,12 +370,22 @@ $this->registerCss('
   }
 }
 /*Load Suggestions loader css ends */
+body {
+  scroll-behavior: smooth;
+}
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
 $(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 2000);
 
 //variables declaration
+var empty = true;
+var loading = false;
 var loadmore = true;
 var vals = {
     lat: null,
@@ -418,10 +423,12 @@ function showError(error) {
           success: function (res) {
             var response = JSON.parse(res);
             if(response == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
             }else if(response.name == null){
+                $('#city_location').val('');
                 $('#city_location').focus();
                 $('.error').text('Please enter city');
                 return false;
@@ -452,6 +459,8 @@ function geocodeLatLng(lat,long) {
       }
     });
 }
+
+
 
 //initiates maps and cards
 function showCards(){
@@ -485,7 +494,7 @@ function showCards(){
     });
               
     map.setCenter({lat: lat, lng: long});
-    map.setZoom(11);
+    map.setZoom(9);
     myCity.setMap(map);
     
     //cards setup
@@ -499,15 +508,25 @@ function card(){
             type: 'post',
             data: vals,
             success: function (res) {
+                $('#loadMore').addClass("loading_more");
                 $('.loader-main').hide();
                 $('.load-more-text').css('visibility', 'visible');
                 $('.load-more-spinner').css('visibility', 'hidden');
                 
                 var response = JSON.parse(res);
-                if(response.length == 0){
+                if(response.length == 0 && empty){
                     $('#loadMore').hide();
-                    $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/$type/not_found.png" class="not-found" alt="Not Found"/>');
+                    $('.near-me-map').css('display','none');
+                    $('.near-me-content').removeClass('col-md-4');
+                    $('.near-me-content').addClass('col-md-10');
+                    $('.near-me-content').addClass('text-center');
+                    if("$action" == 'near-me'){
+                        $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/oops_404.png" class="not-found" alt="Not Found"/><h2>Currently there are no $type in selected Keyword or Location.</h2>');
+                    } else{
+                        $('#near-me-cards').html('<img src="/assets/themes/ey/images/pages/jobs/oops_404.png" class="not-found" alt="Not Found"/><h2>Currently there are no Walk In Interviews for today.</h2>');
+                    }
                 }else{
+                    empty = false;
                     for(i=0;i<response.length;i++){
                             marker = new google.maps.Marker({
                             position: {lat: Number(response[i].latitude), lng: Number(response[i].longitude)},
@@ -535,10 +554,14 @@ function card(){
                     drag: function() { 
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
+                        $('#header-main').css('z-index','1002');
+                        $('.near-me-content').css('z-index','1001');
                      },
                      stop: function() { 
                         $('#sticky').removeClass('drag-on');
                         $('#review-internships').removeClass('drop-on');
+                        $('#header-main').css('z-index','1000');
+                        $('.near-me-content').css('z-index','0');
                      },
                 });
             });
@@ -553,7 +576,7 @@ function card(){
     });
 }
 
-//load more click
+// load more click
 // $(document).on('click','#loadMore',function(e) {
 //     e.preventDefault();
 //     $('.load-more-text').css('visibility', 'hidden');
@@ -564,7 +587,6 @@ function card(){
 
 //card click
 $(document).on("click","#card-hover",function() {
-    
      if (infowindow) {
         infowindow.close();
      }
@@ -586,11 +608,11 @@ $(document).on("click","#card-hover",function() {
      var application_key = $(this).attr('data-key');
      var job_type = '$job_type';
      if(!logo){
-        logo = '<canvas class="user-icon image-partners" name="'+company+'" color="'+logo_color+'" width="40" height="40" font="18px"></canvas>';
+        logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fa fa-map-marker"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fa fa-inr"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="fa fa-clock-o"></i>&nbsp;'+exp+'</h5></div></div><h6 class="col-md-5 pl-20 custom_set2 text-center last-date">Last Date to Apply<br>'+last_date+'</h6><h4 class="col-md-7 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
@@ -600,7 +622,11 @@ $(document).on("click","#card-hover",function() {
         draggable: false
      });
      infowindow.open(map, marker);
-     utilities.initials();
+     // utilities.initials();
+     setTimeout(
+                        function(){
+				            utilities.initials();
+				    }, 100);
 });
 
 //search for,
@@ -625,10 +651,14 @@ function searching() {
      }
        
      $('#near-me-cards').html('');
+     $('.near-me-map').css('display','block');
+     $('.near-me-content').removeClass('col-md-10');
+     $('.near-me-content').addClass('col-md-4');
      $('.loader-main').show();
      $('#loadMore').hide();
      $('#loadMore').show();
      loadmore = true;
+     empty = true;
      
      geocodeAddress(city);
 }
@@ -655,6 +685,8 @@ function geocodeAddress(city) {
         vals.long = results[0].geometry.location.lng();
         
         showCards();
+      }else if(results.length == 0){
+          toastr.error('please enter correct city', 'error');
       } 
     });
 }
@@ -685,16 +717,35 @@ function getReviewList(sidebarpage){
     });
 }
 
+setTimeout(
+    function(){
+        loading = true;
+    }, 900);
 
 $(window).scroll(function() { //detact scroll
 			if($(window).scrollTop() + $(window).height() >= $(document).height()){ //scrolled to bottom of the page
-				$('.load-more-text').css('visibility', 'hidden');
-                $('.load-more-spinner').css('visibility', 'visible');
-                if(loadmore){
+				
+                if(loadmore && loading){
+                    loading = false;
+                    $('#loadMore').removeClass("loading_more");
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
 				    card();
+				    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 500);
                 }
 			}
 		});
+
+$(document).on('click','.loading_more',function(e) {
+    e.preventDefault();
+    $('#loadMore').removeClass("loading_more");
+    $('.load-more-text').css('visibility', 'hidden');
+    $('.load-more-spinner').css('visibility', 'visible');
+    card();
+});
 
 var global = [];
 var city = new Bloodhound({
@@ -725,9 +776,15 @@ $('#city_location').typeahead(null, {
   });
 
 
+
 var sidebarpage = 1;
 getReviewList(sidebarpage);
-
+$(document).on('click','li.draggable-item .opens', function(){
+    $('.near-me-filters').css('z-index','1000');
+});
+$(document).on('click','.jd-close', function(){
+    $('.near-me-filters').css('z-index','999');
+});
 var ps = new PerfectScrollbar('.near-me-filters');
 JS;
 $this->registerJs($script);
@@ -740,4 +797,4 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [JqueryAsset::className()]]);
 ?>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c"></script>

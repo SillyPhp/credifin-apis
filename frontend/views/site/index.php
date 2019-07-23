@@ -1,9 +1,12 @@
 <?php
 
 use yii\helpers\Url;
+
+$referral = Yii::$app->referral->getReferralCode("&");
+
 $this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
-$keywords = 'Jobs,Jobs in Chandigarh,Jobs in India,MBA Jobs,IT Jobs,Digital Marketing Jobs,Summer Internships 2019,Fresher Jobs,Paid Internships';
+$keywords = 'Empower youth,Jobs,Jobs near me,Job Search,Govt Jobs,Free Job alert,Naukri,Jobs in Delhi,Jobs in Mumbai';
 $description = "India's no. 1 free Job Portal her's you can get, Pharma Jobs, Finance Jobs, IT Jobs, Engernering Jobs, Digital Marketing Jobs, Manufacturing Jobs, and many Jobs & Internships.";
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
@@ -63,7 +66,7 @@ $this->params['seo_tags'] = [
                                                 </div>
                                             </div>
                                             <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit">Search <i class="fa fa-search"></i></button>
+                                                <button type="submit">Search <i class="fas fa-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -83,8 +86,9 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in one">
                         <a href="/employers">
-                            <div class="icon"><img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
-                                                   alt="Employers"></div>
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
+                                     alt="Employers" title="Employers"></div>
                             <div class="h-heading">Employers</div>
                             <div class="h-text">I want to recruit talent</div>
                         </a>
@@ -92,19 +96,22 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in two">
-                        <div class="icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>" alt="Candidates">
-                        </div>
-                        <div class="h-heading">Candidates</div>
-                        <div class="h-text">I'm the talent</div>
+                        <a href="/candidates/features">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>"
+                                     alt="Candidates" title="Candidates">
+                            </div>
+                            <div class="h-heading">Candidates</div>
+                            <div class="h-text">I'm the talent</div>
+                        </a>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
-                            <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
-                                        alt="Universities & Colleges">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
+                                     alt="Universities & Colleges" title="Universities and Colleges">
                             </div>
                             <div class="h-heading">Universities & Colleges</div>
                             <div class="h-text">I want to enroll talent</div>
@@ -117,8 +124,9 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3 col-sm-6 col-xs-6">
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
-                            <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>"
+                                     title="Recruiters" alt="Recruiters">
                             </div>
                             <div class="h-heading">Recruiters</div>
                             <div class="h-text">I want to find the best match for talent</div>
@@ -143,7 +151,7 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs"/>
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -153,8 +161,8 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>"
-                                 alt="Internships">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships"
+                                 title="Internships"/>
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -164,8 +172,8 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
-                                 alt="Reviews">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews"
+                                 title="Reviews"/>
                         </div>
                         <div class="ser-heading">Reviews</div>
                     </div>
@@ -173,309 +181,361 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </div>
-
 </section>
 <!---->
 
 <!---->
 <section class="fixed-bttn">
     <div class="pos-ab">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="fx-heading">
-                    Its Free To Get Hired On Empower Youth
-                </h1>
-                <div class="post-job-bttn">
-                    <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                        Get Hired
-                    </a>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="fx-heading">
+                        Its Free To Get Hired On Empower Youth
+                    </h1>
+                    <div class="post-job-bttn">
+                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
+                            Get Hired
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </section>
 <!---->
 <section>
     <div class="block">
         <div class="container">
-<!--            <div class="row">-->
-                <div class="col-lg-12 col-md-12 col-sm-12">
-                    <div class="tab-sec">
-                        <ul class="nav nav-tabs">
-                            <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
-                            <li><a data-tab="rjobs">Recent Opportunities</a></li>
-                        </ul>
-                        <div id="fjobs" class="tab-content current">
-                            <div class="job-listings-tabs">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="job-listing wtabs">
-                                            <a href="<?= Url::to('/job/audit-and-risk-management-manager-65391554294078')?>">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/midland">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
-                                                                 alt="Midland Microfin"/>
-                                                        </a>
-                                                    </div>
-
-                                                    <h3><a href="/job/audit-and-risk-management-manager-65391554294078"
-                                                           title="">Audit And Risk Management</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/midland"> Midland Microfin Ltd.</a></div>
-
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jodhpur,
-                                                        <a href="/job/audit-and-risk-management-manager-65391554294078"> 4 more</a></div>
-                                                    </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
+            <!--            <div class="row">-->
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="tab-sec">
+                    <ul class="nav nav-tabs">
+                        <li><a class="current" data-tab="fjobs">Featured Opportunities</a></li>
+                        <li><a data-tab="rjobs">Recent Opportunities</a></li>
+                    </ul>
+                    <div id="fjobs" class="tab-content current">
+                        <div class="job-listings-tabs">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="job-listing wtabs">
+                                        <a href="<?= Url::to('/job/audit-and-risk-management-manager-65391554294078') ?>">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/midland">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/midland.png') ?>"
+                                                             alt="Midland Microfin" title="Midland Microfin"/>
+                                                    </a>
                                                 </div>
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/job/business-development-executive-1901271548600570">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/dsbedutech">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>"
-                                                                 alt="DSB EduTech"/>
-                                                        </a>
-                                                    </div>
-
-                                                    <h3><a href="/job/business-development-executive-1901271548600570"
-                                                           title="">Business Development Executive</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/dsbedutech"> DSB EduTech</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
+                                                <h3>
+                                                    <a href="/job/audit-and-risk-management-manager-65391554294078"
+                                                       title="Audit And Risk Management">
+                                                        Audit And Risk Management
+                                                    </a>
+                                                </h3>
+                                                <div class="wtabs-com-name">
+                                                    <a href="/midland" title="Midland Microfin Ltd">
+                                                        Midland Microfin Ltd.
+                                                    </a>
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/job/credit-officer-credit-development-officer-28891553595039">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/capitalbank">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>"
-                                                                 alt="capital-small-bank"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/job/credit-officer-credit-development-officer-28891553595039" title="">Credit Officer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/capitalbank"> Capital Small Finance Bank</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar,
-                                                        <a href="/job/credit-officer-credit-development-officer-28891553595039">10 More</a>
-                                                    </div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                            </a>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jodhpur,
+                                                    <a href="/job/audit-and-risk-management-manager-65391554294078"> 4
+                                                        more</a></div>
                                             </div>
-                                        <!-- Job -->
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/job/business-development-executive-1901271548600570">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/dsbedutech">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>"
+                                                             alt="DSB EduTech" title="DSB EduTech"/>
+                                                    </a>
+                                                </div>
+
+                                                <h3>
+                                                    <a href="/job/business-development-executive-1901271548600570"
+                                                       title="Business Development Executive">
+                                                        Business Development Executive
+                                                    </a>
+                                                </h3>
+                                                <div class="wtabs-com-name"><a href="/dsbedutech" title="DSB EduTech">
+                                                        DSB EduTech</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/job/credit-officer-credit-development-officer-28891553595039">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/capitalbank">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-bank.jpg') ?>"
+                                                             alt="capital-small-bank" title="capital-small-bank"/>
+                                                    </a>
+                                                </div>
+                                                <h3>
+                                                    <a href="/job/credit-officer-credit-development-officer-28891553595039"
+                                                       title="Credit Officer">Credit Officer</a></h3>
+                                                <div class="wtabs-com-name"><a href="/capitalbank"
+                                                                               title="Capital Small Finance Bank">
+                                                        Capital Small Finance Bank</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar,
+                                                    <a href="/job/credit-officer-credit-development-officer-28891553595039">10
+                                                        More</a>
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="job-listing wtabs">
-                                            <a href="/job/business-development-business-develpment-executive-20931553506890">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/hamco">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                                 alt="Hamco"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/job/business-development-business-develpment-executive-20931553506890" title="">
-                                                            Business Development</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar
-                                                    </div>
+                                    <!-- Job -->
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="job-listing wtabs">
+                                        <a href="/job/business-development-business-develpment-executive-20931553506890">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/hamco">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
+                                                             alt="Hamco" title="Hamco"/>
+                                                    </a>
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
+                                                <h3>
+                                                    <a href="/job/business-development-business-develpment-executive-20931553506890"
+                                                       title="Business Development">
+                                                        Business Development</a></h3>
+                                                <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a>
                                                 </div>
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/sales-officer-29591553927078">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/citizensbank">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>"
-                                                                 alt="Citizen Bank"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/sales-officer-29591553927078"
-                                                           title="">Sales Officer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/citizensbank"> Citizens Bank</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Mohali, <a href="/internship/sales-officer-29591553927078">8 More</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/sales-officer-29591553927078">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/citizensbank">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/citizen-bank.png') ?>"
+                                                             alt="Citizen Bank" title="Citizen Bank"/>
+                                                    </a>
                                                 </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div>
-                                        <!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/assistant-director-98591554009460">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/manojoshempo">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/fame-finders.png') ?>"
-                                                                 alt="Up Money Limited"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/assistant-director-98591554009460" title="">Assistant Director</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/manojoshempo"> Fame Finders Media </a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>New Delhi</div>
+                                                <h3>
+                                                    <a href="/internship/sales-officer-29591553927078"
+                                                       title="Sales Officer">
+                                                        Sales Officer
+                                                    </a>
+                                                </h3>
+                                                <div class="wtabs-com-name"><a href="/citizensbank"
+                                                                               title="Citizens Bank"> Citizens Bank</a>
                                                 </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Mohali, <a
+                                                            href="/internship/sales-officer-29591553927078">8 More</a>
                                                 </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div><!-- Job -->
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
                                     </div>
+                                    <!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/assistant-director-98591554009460">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/manojoshempo">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/fame-finders.png') ?>"
+                                                             alt="Up Money Limited" title="Up Money Limited"/>
+                                                    </a>
+                                                </div>
+                                                <h3><a href="/internship/assistant-director-98591554009460"
+                                                       title="Assistant Director">Assistant Director</a></h3>
+                                                <div class="wtabs-com-name"><a href="/manojoshempo"
+                                                                               title="Fame Finders Media"> Fame Finders
+                                                        Media </a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>New Delhi
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
+                                    </div><!-- Job -->
                                 </div>
                             </div>
-                        </div>
-                        <div id="rjobs" class="tab-content">
-                            <div class="job-listings-tabs">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="job-listing wtabs">
-                                            <a href="/job/web-developer-front-backend-developer-72621553337524">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/webriderz">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/webRiderz.png') ?>"
-                                                                 alt="Up Money Limited"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/job/web-developer-front-backend-developer-72621553337524" title="">Web Developer</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/webriderz"> Web Riderz</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana</div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/business-development-associate-62841553668575">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/thesmarttree">
-                                                            <canvas class="user-icon" name="The SmartTree" color="#ea3fa8" width="80" height="60" font="30px"></canvas>
-                                                        </a>
-                                                    </div>
-                                                    <h3>
-                                                        <a href="/internship/business-development-associate-62841553668575"
-                                                           title="">Business Development Associate</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/thesmarttree"> The SmartTree</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Work From Home</div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/market-research-analyst-11301553596170">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/hamco">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                                 alt="hamco"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/market-research-analyst-11301553596170"
-                                                           title="">Market Research Analyst</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/hamco"> Hamco</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Jalandhar</div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div><!-- Job -->
-                                    </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/teaching-electronics-65721553323006">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/becre8v">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>"
-                                                                 alt="Be Creative"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/teaching-electronics-65721553323006"
-                                                           title="">Teaching (Electronics)</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/becre8v"> Be Cre8v</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana, <a href="">3 More</a>
-                                                    </div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="/internship/digital-marketing-22371553238862">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/insta">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
-                                                                 alt="Insta Apphanced"/>
-                                                        </a>
-                                                    </div>
-                                                    <h3>
-                                                        <a href="/internship/digital-marketing-22371553238862"
-                                                           title="">Digital Marketing</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/insta"> Insta Apphanced</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Ludhiana
-                                                    </div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                                <div class="intern-tag">Internship</div>
-                                            </a>
-                                        </div><!-- Job -->
-                                        <div class="job-listing wtabs">
-                                            <a href="">
-                                                <div class="job-title-sec">
-                                                    <div class="c-logo">
-                                                        <a href="/akrolixinnovations">
-                                                            <canvas class="user-icon" name="Akrolix Innovations" color="#ea3fa8" width="80" height="60" font="30px"></canvas>
-                                                        </a>
-                                                    </div>
-                                                    <h3><a href="/internship/website-designing-internship-in-gurgaon-26131551884452" title="">
-                                                            Website Designing</a></h3>
-                                                    <div class="wtabs-com-name"><a href="/akrolixinnovations"> Akrolix Innovations</a></div>
-                                                    <div class="job-lctn"><i class="fa fa-map-marker"></i>Gurgaon</div>
-                                                </div>
-                                                <div class="job-style-bx">
-                                                    <span class="job-is ft fill">Full time</span>
-                                                </div>
-                                            </a>
-                                        </div><!-- Job -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="browse-all-cat">
-                            <a href="jobs/list" title="" class="style2">Show all listings</a>
                         </div>
                     </div>
+                    <div id="rjobs" class="tab-content">
+                        <div class="job-listings-tabs">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="job-listing wtabs">
+                                        <a href="/job/web-developer-front-backend-developer-72621553337524">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/webriderz">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/webRiderz.png') ?>"
+                                                             alt="Up Money Limited" title="Up Money Limited"/>
+                                                    </a>
+                                                </div>
+                                                <h3><a href="/job/web-developer-front-backend-developer-72621553337524"
+                                                       title="Web Developer">Web Developer</a></h3>
+                                                <div class="wtabs-com-name"><a href="/webriderz" title="Web Riderz"> Web
+                                                        Riderz</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/business-development-associate-62841553668575">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/thesmarttree">
+                                                        <canvas class="user-icon" name="The SmartTree" color="#ea3fa8"
+                                                                width="80" height="60" font="30px"></canvas>
+                                                    </a>
+                                                </div>
+                                                <h3>
+                                                    <a href="/internship/business-development-associate-62841553668575"
+                                                       title="Business Development Associate">
+                                                        Business Development Associate
+                                                    </a>
+                                                </h3>
+                                                <div class="wtabs-com-name"><a href="/thesmarttree"
+                                                                               title="The SmartTree"> The SmartTree</a>
+                                                </div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Work From
+                                                    Home
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/market-research-analyst-11301553596170">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/hamco">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
+                                                             alt="hamco" title="Hamco"/>
+                                                    </a>
+                                                </div>
+                                                <h3><a href="/internship/market-research-analyst-11301553596170"
+                                                       title="Market Research Analyst">Market Research Analyst</a></h3>
+                                                <div class="wtabs-com-name"><a href="/hamco" title="Hamco"> Hamco</a>
+                                                </div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Jalandhar
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
+                                    </div><!-- Job -->
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/teaching-electronics-65721553323006">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/becre8v">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/be-creative.png') ?>"
+                                                             alt="Be Creative" title="Be Creative"/>
+                                                    </a>
+                                                </div>
+                                                <h3><a href="/internship/teaching-electronics-65721553323006"
+                                                       title="Teaching (Electronics)">Teaching (Electronics)</a></h3>
+                                                <div class="wtabs-com-name"><a href="/becre8v" title="Be Cre8v"> Be
+                                                        Cre8v</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana, <a
+                                                            href="">3 More</a>
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="/internship/digital-marketing-22371553238862">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/insta">
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/instaApphanced.png') ?>"
+                                                             alt="Insta Apphanced" title="Insta Apphanced"/>
+                                                    </a>
+                                                </div>
+                                                <h3>
+                                                    <a href="/internship/digital-marketing-22371553238862"
+                                                       title="Digital Marketing">Digital Marketing</a></h3>
+                                                <div class="wtabs-com-name"><a href="/insta" title="Insta Apphanced">
+                                                        Insta Apphanced</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Ludhiana
+                                                </div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                            <div class="intern-tag">Internship</div>
+                                        </a>
+                                    </div><!-- Job -->
+                                    <div class="job-listing wtabs">
+                                        <a href="">
+                                            <div class="job-title-sec">
+                                                <div class="c-logo">
+                                                    <a href="/akrolixinnovations">
+                                                        <canvas class="user-icon" name="Akrolix Innovations"
+                                                                color="#ea3fa8" width="80" height="60"
+                                                                font="30px"></canvas>
+                                                    </a>
+                                                </div>
+                                                <h3>
+                                                    <a href="/internship/website-designing-internship-in-gurgaon-26131551884452"
+                                                       title="Website Designing">Website Designing</a></h3>
+                                                <div class="wtabs-com-name"><a href="/akrolixinnovations"
+                                                                               title="Akrolix Innovations"> Akrolix
+                                                        Innovations</a></div>
+                                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Gurgaon</div>
+                                            </div>
+                                            <div class="job-style-bx">
+                                                <span class="job-is ft fill">Full time</span>
+                                            </div>
+                                        </a>
+                                    </div><!-- Job -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="browse-all-cat">
+                        <a href="jobs/list" title="" class="style2">Show all listings</a>
+                    </div>
                 </div>
-<!--            </div>-->
+            </div>
         </div>
     </div>
 </section>
@@ -489,27 +549,30 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in one">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
+                             title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
                     </div>
                     <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile </div>
+                        <div class="how-heading">Create your Exclusive Profile</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="fade-in two">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
+                             title="Get discovered by top employers" alt="Get discovered by top employers"/>
                     </div>
                     <div class="how-text-box">
-                        <div class="how-heading"> Get discovered by top employers </div>
+                        <div class="how-heading"> Get discovered by top employers</div>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="fade-in three">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>" title="Evaluate Offer"
+                             alt="Evaluate Offer"/>
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading">Evaluate Offer</div>
@@ -519,7 +582,8 @@ $this->params['seo_tags'] = [
             <div class="col-md-3">
                 <div class="fade-in four">
                     <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
+                             title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
                     </div>
                     <div class="how-text-box">
                         <div class="how-heading">Receive Custom Job Notifications</div>
@@ -528,16 +592,16 @@ $this->params['seo_tags'] = [
             </div>
         </div>
         <?php
-            if(Yii::$app->user->isGuest) {
-                ?>
-                <div class="row">
-                    <div class="signupbttns">
-                        <a href="/login" class="login-bttn">Login</a>
-                        <a href="/signup/individual" class="sign-up">Sign Up</a>
-                    </div>
+        if (Yii::$app->user->isGuest) {
+            ?>
+            <div class="row">
+                <div class="signupbttns">
+                    <a href="/login" class="login-bttn" title="Login">Login</a>
+                    <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
                 </div>
-                <?php
-            }
+            </div>
+            <?php
+        }
         ?>
     </div>
     </div>
@@ -546,46 +610,96 @@ $this->params['seo_tags'] = [
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
-<?= $this->render('/widgets/partner-with-us-and-feedback-form',[
-        'feedbackFormModel' => $feedbackFormModel,
-        'partnerWithUsModel' => $partnerWithUsModel,
-]);?>
-
+<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
+    'feedbackFormModel' => $feedbackFormModel,
+    'partnerWithUsModel' => $partnerWithUsModel,
+]); ?>
+<section class="moble-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <div class="pos-rel">
+                    <div class="pos-middle">
+                        <div class="mob-heading"> Download our App today</div>
+                        <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using Empower Youth
+                            app
+                        </div>
+                        <div class="app-btn">
+                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
+                               title='Get it on Google Play'>
+                                <img alt='Get it on Google Play'
+                                     src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
+                                     title='Download Empower Youth App on Google Play'/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="pos-rel">
+                    <div class="mob-pos">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phone.png') ?>"
+                             title="Empower Youth Mobile" alt="Empower Youth Mobile">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <section class="search-lists">
     <div class="container">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
-                    <?php foreach($search_words as $sw){ ?>
-                        <li class="hide"><a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>"><?= $sw['name'] ?></a></li>
+                    <?php foreach ($search_words as $sw) { ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                               title="<?= $sw['name'] ?>">
+                                <?= $sw['name'] ?>
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Jobs</div>
                 <ul class="quick-links" id="jobs">
-                    <?php foreach($job_profiles as $jp){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] , true) ?>"><?= $jp['name']; ?> Jobs</a></li>
+                    <?php foreach ($job_profiles as $jp) { ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                               title="<?= $jp['name']; ?> Jobs">
+                                <?= $jp['name']; ?> Jobs
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="cities">
-                    <?php foreach($cities as $c){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>">Jobs in <?= $c['name']; ?></a></li>
+                    <?php foreach ($cities as $c) { ?>
+                        <li class="hide">
+                            <a href="<?= Url::to($c['link'], "https"); ?>" title="Jobs in <?= $c['name']; ?>">
+                                Jobs in <?= $c['name']; ?>
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Internships</div>
                 <ul class="quick-links" id="internships">
-                    <?php foreach($internship_profiles as $ip){ ?>
-                        <li class="hide"><a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>"><?= $ip['name']; ?> Internships</a></li>
+                    <?php foreach ($internship_profiles as $ip) { ?>
+                        <li class="hide">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                               title="<?= $ip['name']; ?> Internships">
+                                <?= $ip['name']; ?> Internships
+                            </a>
+                        </li>
                     <?php } ?>
                 </ul>
                 <button type="button" class="showHideBtn">More</button>
@@ -597,7 +711,55 @@ $this->params['seo_tags'] = [
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
-
+.pos-rel{
+    position:relative;
+    min-height:300px;
+    width:100%;
+    text-align:center;
+} 
+.pos-middle{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%
+}
+.mob-pos{
+    position:absolute;
+    bottom:0;
+    left:30px;
+}
+.mob-pos img{
+    max-height:300px;
+}
+.moble-bg{
+    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
+    background-repeat:no-repeat;
+    background-size:cover;
+}
+.mob-heading{
+    font-size:33px;
+    color:#000;
+    font-family:Roboto;
+        font-weight:500;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-sub-heading{
+    font-size:18px;
+    color:#000;
+    font-family:Roboto;
+    font-weight:300;
+    text-transform:capitalize;
+    width:100%;
+}
+.mob-imgs img{
+    max-height: 300px;
+}
+.app-btn{
+    max-width:200px;
+    margin:0 auto;
+}
 .intern-tag{
     position:absolute;
     top:0;
@@ -703,7 +865,8 @@ $this->registerCss('
    text-align:center;
    margin:0 auto;
    max-width:300px;
-   font-weight:600;
+   font-weight:400;
+   font-family:Roboto;
 }
 .post-job-bttn a:hover{
    box-shadow:none;
@@ -927,13 +1090,12 @@ $this->registerCss('
 .how-it-works{
     padding: 20px 0 45px 0;
     background:#ecf5fe;
+    text-align:center;
 }
 .how-heading{
-//    color:#f07706;
     font-size: 15px;
-//    font-family: lobster;
-//    font-weight: bold;
-//    text-transform: uppercase;
+    font-weight:300;
+    font-family:Roboto;
 }
 .steps-row{
     padding: 30px 0;
@@ -1070,7 +1232,7 @@ how-icon{
     border-radius: 23px !important;
 }
 .search-job2{
-        border-radius: 25px;
+        border-radius: 8px;
         background:none;
     }
 @media screen and (max-width: 495px){   
@@ -1115,8 +1277,9 @@ how-icon{
 }
 .nav.nav-tabs > li a {
     float: left;
-    font-size: 18px;
-    font-weight: bold;
+    font-size:18px;
+    font-weight:400;
+    font-family:Roboto;
     letter-spacing: 0px;
     padding: 15px 30px;
     
@@ -1131,17 +1294,17 @@ how-icon{
 .nav.nav-tabs > li a.current {
     color: #ffffff;
     background-color: #00a0e3;
+    font-family:Roboto;
+    font-weight:400;
 }
 .job-listing.wtabs {
     border: 1px solid #ebefef;
     margin-top: 30px;
-    
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border-radius: 8px;
-
     display: inherit;
     text-align: left;
     position: relative;
@@ -1151,10 +1314,8 @@ how-icon{
     width: 80%;
 }
 .wtabs-com-name{
-    
     display: table;
     float: none;
-  
 }
 .wtabs-com-name a{
     color: #1e83f0 !important;
@@ -1204,23 +1365,19 @@ how-icon{
 }
 .tab-sec .browse-all-cat .style2 {
     border: 1px solid #ebefef;
-    
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     -ms-box-shadow: none;
     -o-box-shadow: none;
     box-shadow: none;
-
     padding: 15px 44px;
     font-size: 15px;
     color: #111111;   
-    
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     -ms-border-radius: 8px;
     -o-border-radius: 8px;
     border-radius: 8px;
-
 }
 
 .how-to-sec.style2.no-lines .how-to::before {
@@ -1315,13 +1472,11 @@ how-icon{
     border: 1px solid;
     float: right;
     padding: 7px 0;
-    
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     -ms-border-radius: 20px;
     -o-border-radius: 20px;
     border-radius: 20px;
-
     width: 108px;
     margin: 9px 0;
     text-align: center;
@@ -1344,7 +1499,6 @@ how-icon{
     -ms-box-shadow: 0px 0px 30px rgba(0,0,0,0.1);
     -o-box-shadow: 0px 0px 30px rgba(0,0,0,0.1);
     box-shadow: 0px 0px 30px rgba(0,0,0,0.1);
-
     z-index: 1;
     position: relative;
 }
@@ -1367,7 +1521,7 @@ how-icon{
     float: left;
     width: 100%;
     margin: 0;
-        margin-bottom: 0px;
+    margin-bottom: 0px;
     text-align: left;
     padding-left: 0px;
     margin-bottom: 6px;
@@ -1388,45 +1542,51 @@ how-icon{
     font-size: 13px;
     color: #fb236a;
     border: 1px solid #fb236a;
-    
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
     -ms-border-radius: 20px;
     -o-border-radius: 20px;
     border-radius: 20px;
-
     padding: 6px 14px;
     letter-spacing: 0px;
     margin: 16px 0;
     display: inline-block;
 }
+
 .browse-all-cat {
     float: left;
     width: 100%;
     text-align: center;
     margin-top: 60px;
 }
+
 .search-job2 form{
-    -webkit-border-radius: 23px;
-    -moz-border-radius: 23px;
-    -ms-border-radius: 23px;
-    -o-border-radius: 23px;
-    border-radius: 23px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
 }
+
 .search-job2 form button{
-    -webkit-border-radius: 0px 23px 23px 0px !important;
-    -moz-border-radius: 0px 23px 23px 0px !important;
-    -ms-border-radius: 0px 23px 23px 0px !important;
-    -o-border-radius: 0px 23px 23px 0px !important;
-    border-radius: 0px 23px 23px 0px !important;
+    -webkit-border-radius: 0px 8px 8px 0px !important;
+    -moz-border-radius: 0px 8px 8px 0px !important;
+    -ms-border-radius: 0px 8px 8px 0px !important;
+    -o-border-radius: 0px 8px 8px 0px !important;
+    border-radius: 0px 8px 8px 0px !important;
 }
+
 .list-heading{
     font-size:16px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:Roboto;
 }
+
 .quick-links li a{
     line-height:23px;
     font-size:13px;
+    font-weight:300;
+    font-family:Roboto;
 }
 .quick-links li a:hover{
     color:#00a0e3;
@@ -1446,7 +1606,33 @@ how-icon{
     font-size:14px;
 }
 
+@media only screen and (max-width: 992px){
+    .mob-pos{
+        left: 30px;
+    }    
+     .how-icon{
+        text-align:center;
+        padding:0 0 20px 0;
+    }
+    .how-heading{
+        font-family:lora;
+        font-size:20px
+    }
+}
+@media only screen and (max-width: 768px){
+    .mob-pos{
+        left: 50%;
+        transform:translateX(-50%);
+    }    
+}
 @media only screen and (max-width:500px){
+    .pos-rel{
+        min-height: 225px;        
+    }
+    .mob-heading{
+        font-size: 26px;
+        padding: 20px 0 0 0;
+    }
     .c-logo{
         width:100% !important ;
         text-align:center;
@@ -1506,29 +1692,28 @@ function scrollFunction() {
 
 JS;
 $this->registerJs($script);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+//$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-
 ?>
 <script>
-
     expandFirst('searches');
     expandFirst('cities');
     expandFirst('jobs');
     expandFirst('internships');
 
-
-    function expandFirst(elem){
+    function expandFirst(elem) {
         var i = 0;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k =0;
-        while(k < listElementsLength){
-            if(k < i + 4){
-                if(document.getElementById(elem)) {
+        var k = 0;
+        while (k < listElementsLength) {
+            if (k < i + 4) {
+                if (document.getElementById(elem)) {
                     document.getElementById(elem).children[k].classList.remove('hide');
                 }
-            }else{
+            } else {
                 break;
             }
             k += 1;
@@ -1539,20 +1724,20 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
         showMoreEvent();
     });
 
-    function showMoreEvent(){
+    function showMoreEvent() {
         hideMore('searches');
         hideMore('cities');
         hideMore('jobs');
         hideMore('internships');
     }
 
-    function hideMore(elem){
+    function hideMore(elem) {
         var i = 0;
         i += 5;
         var k = 4;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.remove('hide');
             }
             k += 1;
@@ -1565,25 +1750,25 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
         showLessEvent();
     });
 
-    function showLessEvent(){
+    function showLessEvent() {
         hideLess('searches');
         hideLess('cities');
         hideLess('jobs');
         hideLess('internships');
     }
 
-    function hideLess(elem){
+    function hideLess(elem) {
         shrinkFirst(elem);
         document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
         document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
         expandFirst(elem);
     }
 
-    function shrinkFirst(elem){
+    function shrinkFirst(elem) {
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 5;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.add('hide');
             }
             k += 1;
@@ -1591,4 +1776,3 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
     }
 
 </script>
-

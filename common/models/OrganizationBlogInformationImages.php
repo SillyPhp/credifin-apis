@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%organization_blog_information_images}}".
  *
@@ -32,7 +34,7 @@ class OrganizationBlogInformationImages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['image_enc_id', 'blog_information_enc_id', 'image', 'image_location', 'created_by'], 'required'],
+            [['image_enc_id', 'blog_information_enc_id', 'image', 'image_location'], 'required'],
             [['created_on'], 'safe'],
             [['image_enc_id', 'blog_information_enc_id', 'image', 'image_location', 'created_by'], 'string', 'max' => 100],
             [['image_enc_id'], 'unique'],
@@ -40,6 +42,10 @@ class OrganizationBlogInformationImages extends \yii\db\ActiveRecord
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery

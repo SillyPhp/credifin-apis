@@ -1,31 +1,37 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
-    <script id="review-card" type="text/template">
+    <script id="review-card_main" type="text/template">
         {{#.}}
         <div class="col-md-4">
-            <div class="com-review-box fivestar-box">
+            <div class="com-review-box uncliamed_height fivestar-box">
                 <div class="com-logo">
                     {{#logo}}
-                    <a href="/{{slug}}/reviews">
+                    <a href="/{{profile_link}}">
                         <img src="{{logo}}">
                     </a>
                     {{/logo}}
                     {{^logo}}
-                    <a href="/{{slug}}/reviews">
+                    <a href="/{{review_link}}">
                         <canvas class="user-icon" name="{{name}}" width="100" height="100"
                                 color="{{color}}" font="35px"></canvas>
                     </a>
                     {{/logo}}
                 </div>
-                <div class="com-name"><a href="/{{slug}}/reviews">{{name}}</a></div>
+                <div class="pos-rel">
+                    <div class="com-name"><a href="/{{review_link}}">{{name}}</a></div>
+                </div>
+                <div class="com-loc"></div>
+                <div class="com-dep"></div>
                 {{#rating}}
                 <div class="com-rating">
                     <div class="average-star" data-score="{{rating}}"></div>
                 </div>
                 <div class="rating">
                     <div class="stars">{{rating}}</div>
-                    <div class="reviews-rate"> of {{#newOrganizationReviews}}{{total_reviews}}{{/newOrganizationReviews}} reviews</div>
+                    <div class="reviews-rate"> of {{total_reviews}} reviews</div>
                 </div>
                 {{/rating}}
                 {{^rating}}
@@ -35,19 +41,19 @@ use yii\helpers\Url;
 
                 </div>
                 <div class="rating">
-                    <div class="reviews-rate"> Currenlty No Review</div>
+                    <div class="reviews-rate"> Currently No Review</div>
                 </div>
                 {{/rating}}
                 <div class="row">
                     <div class="cm-btns padd-0">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <div class="color-blue">
-                                <a href="/{{slug}}/reviews">View Profile</a>
+                                <a href="/{{profile_link}}">View Profile</a>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <div class="color-orange">
-                                <a href="/{{slug}}/reviews">Read Reviews</a>
+                                <a href="/{{review_link}}">Read Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -58,13 +64,28 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registerCss("
-.com-review-box
-{
-height:304px;
+.uncliamed_height{
+height:295px !important;
+}
+.pos-rel{
+    position:relative;
+    min-height:80px;
+}
+.com-name{
+    text-align:center;
+    padding: 0 10px;
+    color: #bcbaba;
+    font-size: 18px;
+    text-transform: capitalize;
+    position:absolute;
+    width:100%;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
 }
 ");
 $script = <<< JS
-function fetch_cards_top(params,template)
+function fetch_cards_top(params,template,is_clear=false)
 {
     $.ajax({
         url : '/organizations/fetch-unclaimed-review-cards',
@@ -72,7 +93,12 @@ function fetch_cards_top(params,template)
         data: {params:params},
         success: function(response) {
             if (response.status==200){
-            template.append(Mustache.render($('#review-card').html(),response.cards));
+                if (is_clear)
+                {
+                    $('#review_container').html('');
+                    template.html('');
+                }
+            template.append(Mustache.render($('#review-card_main').html(),response.cards));
             utilities.initials();
             $.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
                 $('.average-star').raty({
@@ -83,6 +109,13 @@ function fetch_cards_top(params,template)
                   }
                 });
             }
+            else
+                {
+              $('#loading_img').removeClass('show');
+            $('#load_review_card_btn').hide();
+            $('.fader').css('display','none');
+            empty_div();
+                }
         }
     });
 }

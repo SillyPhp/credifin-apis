@@ -1,11 +1,46 @@
 <?php
+
 use yii\helpers\Url;
+
+$this->title = Yii::t('frontend', 'Schools Reviews | Reviews');
+
+$keywords = 'School Reviews,Top Schools in India,Best Schools in India,Top CBSE Schools in India,Top Schools in Delhi,Best Schools in Delhi,Schools in Mumbai';
+
+$description = "Here you can get reviews of top schools in India. You can also write a review of any school and help to other people to find the best School.";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouth__',
+        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
+
 ?>
     <section class="cri-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pos-rel">
+                    <div class="pos-rels">
                         <div class="head-bg-black">
                             <div class="hbb-heading">Choose a great school for your child's great future</div>
                             <div class="hbb-sub-heading">Find a great school</div>
@@ -15,17 +50,22 @@ use yii\helpers\Url;
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <input class='form-control' name="search_school" id="search_school" placeholder='Search School' type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fa fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_company"
+                                           placeholder='Search School' type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
+                                </form>
                             </div>
-                            <!--                    <div class="hbb-text">Explore school on basis of </div>-->
-                            <!--                    <div class="hbb-sub-text">-->
-                            <!--                        <a href="">School Review</a> |-->
-                            <!--                        <a href="">School Environment</a> | -->
-                            <!--                        <a href="">School Rating</a> -->
-                            <!--                    </div>-->
+                            <div class="btn_add_new_org ">
+                                <?php if (Yii::$app->user->isGuest): ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                       class="btn_add_org">Add New School</a>
+                                <?php else : ?>
+                                    <a href="#" class="add_new_org btn_add_org">Add New School</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -41,29 +81,44 @@ use yii\helpers\Url;
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
                         </div>
                         <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Faculty</span>,  <span>Quality of Education</span> </div>
+                        <div class="rb-text">Reviews on the basis of <span>Faculty</span>,
+                            <span>Quality of Education</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
                         </div>
-                        <div class="rb-heading">Infrastructure and Environment </div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
                         <div class="rb-text">Reviews on the basis of <span>School Infrastructure</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
                         <div class="rb-heading">Growth and Development</div>
                         <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Leadership Development</span>,
                             <span>Co-Curricular Activities</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="green-bg">
+        <div class="container">
+            <div class="pos-abso">
+                <div class="row">
+                    <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
+                    <div class="gb-text">
+                        <span class="qots">"</span>All children start their school careers with sparkling imaginations,
+                        fertile minds, and a willingness
+                        to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
                     </div>
                 </div>
             </div>
@@ -85,8 +140,31 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rating Schools</div>
+                    <div class="heading-style">Top Rated Schools</div>
                     <div id="uncliamed_top">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="qr-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div id="latest_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="top_user_reviews_card_new">
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div id="most_reviews_card_new">
 
                     </div>
                 </div>
@@ -95,6 +173,115 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.green-bg{
+    background-image: linear-gradient(141deg, #6cc8ad 0%, #65bca3 51%, #59a693 75%);
+    min-height:300px;
+    position:relative;
+    text-align:center;
+    margin-top:40px;
+    font-family:lora;
+}
+.qots{
+    font-size: 30px;
+    line-height: 20px;
+}
+.pos-abso{
+    position:absolute;
+    top:50%;
+    left:50%;
+    max-width:800px;
+    width:100%;
+    transform:translate(-50%, -50%);
+}
+.gb-text{
+    color:#fff;
+    font-size:22px;
+}
+.gb-text span{
+    font-weight:bold;
+}
+.gb-heading{
+    width:100%;
+    padding:0 0 20px 0;
+    font-weight:bold;
+    font-size:30px;
+    color:#fff;
+       
+}
+.footer{
+    margin-top:0px !important;
+}
+.qr-bg{
+    margin-top:20px;
+    background:#ecf5fe;
+    padding:30px 0;
+}
+.quick-review-box{
+   padding:5px 10px; 
+}
+.qr-heading{
+    font-size:18px;
+    font-weight:bold;
+    font-family: lora;
+    color:#000;
+}
+.quick-review-box:hover{
+    box-shadow:0 0 5px rgba(0,0,0,.2);
+    border-radius:10px;
+    transition:.3s ease;
+    background:#fff;
+    padding:5px 10px;
+}
+.qrb-details{
+    padding-top:10px;
+}
+.qr-name{
+    font-size:14px;
+}
+.qrb-thumb{
+    width:80px;
+    height:80px;
+    position:relative;
+}
+.qrb-thumb a{
+    max-height:50px;
+    max-width:50px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:100%;
+}
+.qr-stars i{ 
+    color:#ff7803
+}
+.qr-stars ul li {
+    display:inline;
+}
+.qr-stars ul li img{
+    max-width:15px;
+    max-height:20px;
+}
+.qr-stars ul{
+    margin-left:0px;
+}
+
+
+.btn_add_org{
+    color:#fff;
+    position:absolute;
+    right: 25px;
+    bottom: 10px;
+    font-weight:500;
+    font-size:15px;
+    font-family:roboto;
+}
+.btn_add_org:hover{
+    color:#0CAA41;
+}
+.btn_add_new_org {
+    padding:10px;    
+}
 .rating-stars{
     font-size:20px;
 }
@@ -195,6 +382,7 @@ review-benifit{
     margin-bottom:20px;
     border-radius:10px; 
     color:#999;
+    font-family:roboto;
 }
 .com-logo{
     width:100px;
@@ -225,12 +413,14 @@ review-benifit{
     background-size: cover;
     min-height: 400px;
 }
-.pos-rel{
+.pos-rels{
     position:relative;
     min-height:400px;
 }
 .head-bg-black{
     max-width:400px;
+    font-family:lora;
+    font-weight:bold;
     background:rgba(0,0,0,.65);
     color:#fff;
     padding:25px 25px;
@@ -239,6 +429,7 @@ review-benifit{
     top:50%;
     transform:translateY(-50%);
     left:10px;
+    z-index:999;
 }
 .rb-box{
     text-align:center;
@@ -248,6 +439,18 @@ review-benifit{
 }
 .rb-icon img{
     max-width:100px;
+}
+.com-review-box{
+    height: 260px !important;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}  
+.color-orange a:hover{
+    color:#ff7803;
+}
+.cm-btns{
+    margin-top: 15px;
 }
 .rb-heading{
     padding-top:10px;
@@ -272,6 +475,8 @@ review-benifit{
     padding-top:20px;
     padding-bottom:8px;
     font-size:16px;
+    font-family:roboto;
+    font-weight:400;
 }
 .hbb-text{
     padding-top:10px;
@@ -283,6 +488,7 @@ review-benifit{
     font-size:14px;
 }
 .search-box {
+    height:42px;
     display: inline-block;
     width: 100%;
     border-radius: 3px;
@@ -386,6 +592,11 @@ width:100%;
     vertical-align: middle;
     max-width: 70%;
 }
+@media screen and (max-width: 400px) {
+    .suggestion{
+        max-width: 65%;
+    }
+}
 .tt-suggestion {
   padding: 3px 20px;
   font-size: 14px;
@@ -403,6 +614,9 @@ width:100%;
 }
 .tt-suggestion p {
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .no_result_found
 {
@@ -416,7 +630,7 @@ float:right;
 .load-suggestions{
     display:none;
     position: absolute;
-    right: 20px;
+    right: 34px;
     z-index: 999;
 }
 .load-suggestions span{
@@ -425,7 +639,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 15px 1px;
 }
 
 .load-suggestions span:nth-child(1){
@@ -466,52 +680,22 @@ float:right;
 ');
 echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
+echo $this->render('/widgets/mustache/latest-reviews');
+echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/mustache/top-user-reviews');
+echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_school').val());
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
+fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'School','limit':4},template=$('#latest_reviews_card_new'));
+fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'School'},template=$('#top_user_reviews_card_new'));
+fetch_cards_most_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'School','most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_top'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?type=School&query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_school').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

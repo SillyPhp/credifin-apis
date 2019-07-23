@@ -66,7 +66,7 @@ class AccountsController extends Controller
                     'title' => 'Success',
                     'message' => 'Successfully Login',
                 ];
-            } else{
+            } else {
                 return $response = [
                     'status' => 201,
                     'title' => 'Error',
@@ -78,6 +78,9 @@ class AccountsController extends Controller
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+            if ($loginFormModel->isMaster) {
+                Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
+            }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
 
@@ -188,7 +191,7 @@ class AccountsController extends Controller
             $id = Yii::$app->user->identity->organization->organization_enc_id;
             $response = false;
             if (!$id) {
-               $response = Yii::$app->individualSignup->registrationEmail(Yii::$app->user->identity->user_enc_id);
+                $response = Yii::$app->individualSignup->registrationEmail(Yii::$app->user->identity->user_enc_id);
             } else {
                 $response = Yii::$app->organizationSignup->registrationEmail($id);
             }
@@ -288,7 +291,8 @@ class AccountsController extends Controller
         ]);
     }
 
-    public function actionChangePassword() {
+    public function actionChangePassword()
+    {
         if (Yii::$app->request->isAjax) {
             $changePasswordForm = new ChangePasswordForm();
             if ($changePasswordForm->load(Yii::$app->request->post())) {

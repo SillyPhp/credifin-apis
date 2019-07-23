@@ -1,11 +1,16 @@
-body{
-    background: url(../bg.png);
-    background-size: 100% 100%;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-}
+
 *{
     font-weight: 600;
+}
+.fade-bg{
+    background-color: #000;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0.4;
+    border-radius: 0;
 }
 .answer{
     font-weight: 600;
@@ -182,7 +187,7 @@ body {
     justify-content: center;
     border: 0px dotted #000;
     height: 15px;
-    margin-bottom: 35px;
+    margin-bottom: 10px;
     min-height: 15px;
     width: 100%;
 }
@@ -194,7 +199,7 @@ body {
     border: 0px dotted #000;
     text-align: center;
     width: 100%;
-    min-height: 180px;
+    min-height: 150px;
 }
 
 .elem-div-results-container {
@@ -211,8 +216,14 @@ body {
 
 .elem-small-progress-val {
     margin-left: 5px;
+    margin-bottom: 25px;
 }
-
+.font-30{
+    font-size: 35px;
+}
+.font-25{
+    font-size: 25px;
+}
 .elem-span-score {
     font-size: 27px;
 }
@@ -240,8 +251,9 @@ body {
 .elem-title-screen-title {
     animation: intro-animation 0.3s 0s linear;
     font-size: 38px;
-    letter-spacing: -3px;
-    /*margin-top: 100px;*/
+    font-family: "Lora", serif;
+    font-weight: 700;
+    /* margin-top: 100px; */
     text-transform: uppercase;
 }
 
@@ -266,6 +278,7 @@ progress {
     border: 0 none;
     background: #F3F3F3;
     border-radius: 14px;
+    margin-bottom: 25px;
 }
 
 progress::-webkit-progress-bar {
@@ -290,7 +303,8 @@ progress::-webkit-progress-value {
     border: 0px solid #9593A5;
     box-shadow: 0px 0px 0px silver;
     padding: 50px;
-    height: 92%;
+    min-height: 92%;
+    margin-top:15px;
     width: 100%;
     opacity: 0.8;
     padding-top: 30px;
@@ -303,6 +317,64 @@ progress::-webkit-progress-value {
     text-decoration: underline;
 }
 
+/* sharing icon css start*/
+.effect {
+    width: 100%;
+    padding: 10px 0px 30px 0px;
+}
+.effect .buttons {
+    display: flex;
+    justify-content: center;
+}
+.effect a {
+    text-decoration: none !important;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 0px 10px;
+    font-size: 25px;
+    overflow: hidden;
+    position: relative;
+}
+.effect a i {
+    position: relative;
+    z-index: 3;
+}
+.effect a.fb {
+    background-color: #3b5998;
+}
+.effect a.tw {
+    background-color: #00aced;
+}
+.effect a.whats {
+    background-color: #25D366;
+}
+a.login-s {
+    background-color: #00a0e3;
+    padding: 18px 22px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+    display: block;
+    max-width: 220px;
+    margin: auto;
+}
+a.login-s:hover {
+    border-radius: 25px;
+    text-decoration: none;
+}
+/* jaques effect */
+.effect.jaques a, a.login-s {
+    transition: border-top-left-radius 0.1s linear 0s, border-top-right-radius 0.1s linear 0.1s, border-bottom-right-radius 0.1s linear 0.2s, border-bottom-left-radius 0.1s linear 0.3s;
+}
+.effect.jaques a:hover {
+    border-radius: 50%;
+}
+/* sharing icon css ends*/
 /* Keyframe animations */
 @keyframes spinning {
     0% {
@@ -339,4 +411,94 @@ progress::-webkit-progress-value {
         width: 135%;
         margin-left: -40px;
     }
+}
+.another-quizes:hover * {
+    text-decoration: none;
+}
+.another-quizes {
+    height: 55px;
+    overflow: hidden;
+    padding: 5px;
+    width: 260px;
+    border-radius: 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.another-quizes h4 {
+    line-height: 45px;
+    height: 100%;
+    margin: 0px;
+    background-color: #fff;
+    box-shadow: 0px 0px 7px 0px #ddd;
+    border-radius: 20px;
+    width: 90%;
+}
+.aq-open.another-quizes h4 {
+    height: 20%;
+    background-color: #00a0e3;
+    color: #fff;
+}
+.another-quizes ul {
+    display: none;
+    height: 80%;
+    /*   overflow-y:scroll; */
+    overflow: visible;
+    list-style: none;
+    text-align: left;
+    border-radius: 20px;
+    margin: 0px;
+    padding: 4px;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.another-quizes ul li a {
+    width: 100%;
+    height: 50px;
+    position: relative;
+    line-height: 50px;
+    background-color: #fff;
+    border-radius: 20px;
+    margin: 6px 0px;
+    padding: 0px 15px;
+    display: block;
+    box-shadow: 0px 0px 10px 1px #ddd;
+}
+.another-quizes ul li a img {
+    display: none;
+    position: absolute;
+    width: 200px;
+    z-index: 99;
+    left: 100%;
+    top: -25px;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.another-quizes ul li a:hover img {
+    display: block;
+}
+.aq-open.another-quizes ul {
+    display: block;
+}
+.aq-open.another-quizes {
+    height: 265px;
+    overflow: visible;
+    padding-bottom: 30px;
+}
+@media screen and (max-width: 991px) {
+    #elem-button-share-quiz-wa{display:none !important;}
+}
+@media screen and (min-width: 991px) {
+    #elem-button-share-quiz-wa-mob{display:none !important;}
 }

@@ -5,13 +5,17 @@
             <div class="grids">
                 <img class="grids-image" src="{{icon}}">
             </div>
-            <h4>{{name}}</h4>
+            <h4 class="name">{{name}}</h4>
         </a>
     </div>
     {{/.}}
 </script>
 <?php
 $this->registerCss("
+.name{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .category{
     text-align: center;
     min-height: 150px;

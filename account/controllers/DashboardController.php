@@ -18,6 +18,16 @@ use common\models\AppliedApplicationProcess;
 
 class DashboardController extends Controller
 {
+
+    public function actions()
+    {
+        return [
+            'error' => [
+                'class' => 'yii\web\ErrorAction',
+            ],
+        ];
+    }
+
     private $_condition;
 
     private function hasViewed()
@@ -38,9 +48,12 @@ class DashboardController extends Controller
     {
         $model = new \account\models\services\ServiceSelectionForm();
 
-
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            return $this->redirect('/account/dashboard');
+            if (Yii::$app->user->identity->organization) {
+                return $this->redirect('/' . Yii::$app->user->identity->organization->slug);
+            } else{
+                return $this->redirect('/' . Yii::$app->user->identity->username . '/edit');
+            }
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
@@ -135,6 +148,9 @@ class DashboardController extends Controller
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
             ],
+            'having' => [
+                '>', 'a.last_date', date('Y-m-d')
+            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -186,7 +202,6 @@ class DashboardController extends Controller
             'model' => $model,
             'services' => $services,
             'business_activities' => $business_activities,
-
         ]);
     }
 

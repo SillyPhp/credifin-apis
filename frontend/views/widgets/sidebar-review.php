@@ -26,7 +26,7 @@ if ($type == "internships"){
             </div>
             <div id="review-internships" style="background-color: #fff;" class="font-georgia">
                 <span class="review-list-hint">Drop here to add to review list</span>
-                <a href="#" class="review-list-toggler"><i class="fa fa-chevron-up"></i></a>
+                <a href="#" class="review-list-toggler"><i class="fas fa-chevron-up"></i></a>
                 <ul id="ilist" class="drop-options connected-sortable droppable-area">
                     <div class="loader-inner-main shadow pt-0">
                         <div class="col-md-3 col-xs-3 pt-10 p-0">
@@ -44,7 +44,7 @@ if ($type == "internships"){
                     </div>
 
                 </ul>
-                <i class="side-loader fa fa-circle-o-notch fa-spin fa-fw" style="display: none;"></i>
+                <i class="side-loader fas fa-circle-notch fa-spin fa-fw" style="display: none;"></i>
             </div>
         </div>
     </div>
@@ -63,6 +63,7 @@ if ($type == "internships"){
 //echo $this->render('/widgets/popup');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+#header > div{width:100% !important;}
 .highlight{
     background-color: #CCC !important;
 }
@@ -158,7 +159,7 @@ li.draggable-item.ui-sortable-placeholder {
    box-shadow:         inset 0 0 10px #000000;
 }
 .draggable-item{
-    height:58px;
+    height:61px;
 }
 #hidder{
     padding:0px 10px;
@@ -397,21 +398,6 @@ function Ajax_call(itemid) {
         }
     });
 }
-$(document).on('click','li.draggable-item .opens', function(){
-    var data_main = $(this).children('span');
-    $('#pop_up_modal').modal('toggle');
-    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
-    // $('#openModal').addClass('j-open');
-    // $('.com-name').text(data_main.attr('company'));
-    // $('.j-title').text(data_main.attr('title'));
-    // if(data_main.attr('logo') == ""){
-    //    $('.company-logo').html('<canvas class="user-icon" name="'+data_main.attr('company')+'" color="'+data_main.attr('color')+'" width="100" height="100" font="55px"></canvas>');
-    //    utilities.initials();
-    // } else{
-    //     $('.company-logo').html('<img class="img-responsive" src="' + data_main.attr('logo') + '">');
-    // }
-    // console.log(data_main);
-});
 
 $(document).on('click', '.application-card-add', function(event) {
     var c_user = "$c_user"
@@ -475,6 +461,15 @@ $(document).on('click', '.review-list-toggler', function() {
    //});
 
 JS;
+if(!$hide_detail) {
+$this->registerJs("
+$(document).on('click','li.draggable-item .opens', function(){
+    var data_main = $(this).children('span');
+    $('#pop_up_modal').modal('toggle');
+    $('#pop_up_modal').load('/jobs/job-detail?eaidk='+ data_main.attr('slug') + '&type=$a_type');
+});
+");
+}
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
