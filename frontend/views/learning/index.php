@@ -844,6 +844,7 @@ text-align: left;
     -ms-flex-align: start;
     align-items: flex-start;
     overflow: hidden;
+    margin-bottom:20px;
 }
 .collaborators-main .c-detail {
     display: -webkit-box;
@@ -856,7 +857,7 @@ text-align: left;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
-    height: 220px;
+    height: 200px;
 }
 .collaborators-main .c-detail .title {
     font-size: 20px;
