@@ -11,19 +11,10 @@ class TrainingProgram extends Model
 {
     public $title;
     public $fees;
-    public $city;
     public $profile;
     public $skills;
-    public $job_type;
-    public $type;
-    public $url;
     public $description;
-    public $company_name;
-    public $email;
     public $fees_type;
-    public $fixed_wage;
-    public $min_salary;
-    public $max_salary;
 
     public function rules()
     {
