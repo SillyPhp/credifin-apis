@@ -6,130 +6,8 @@ use kartik\select2\Select2;
 use yii\web\JsExpression;
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
 ?>
-<div class="container">
-    <div class="portlet light" id="form_wizard_1">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Training Program
-                </span>
-            </div>
-        </div>
-    <div class="portlet-body form">
-        <?php $form = ActiveForm::begin([
-            'id' => 'training_form',
-            'fieldConfig' => [
-                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
-            ]
-        ]);
-        ?>
-        <div class="row">
-            <div class="col-md-3">
-                <?= $form->field($model,'profile')->dropDownList($primary_cat,['prompt'=>'Course Profile'])->label(false); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'title')->textInput(['id'=>'title'])->label('Course Title'); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees')->textInput(['id'=>'fees'])->label('Fees'); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees_type')->dropDownList([1=>'Monthly',2=>'Weekly',3=>'Annually',4=>'One Time'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                    Course Description
-                </div>
-            </div>
-            <div class="col-md-12">
-                <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                   Skills Required
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="pf-field no-margin">
-                    <ul class="tags_input skill_tag_list">
-                        <li class="tagAdd taglist">
-                            <div class="skill_wrapper">
-                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                <input type="text" id="search-skill" class="skill-input" placeholder="Search For Skill">
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="contenu">
-                <h1>Business Hours Widget</h1>
-                <div id="type_hours">
-                    <i class="fa fa-calendar"></i>
-                </div>
-                <div class="choice_pattern">
-                    <div class="results"></div>
-                    <div class="selection">
-                        <label for="">From </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
-                        <label for="">to </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
-
-                        <input id="toallday" type="checkbox" name="toallday" value="toallday" />
-                        <label for="toallday">Apply to all day</label>
-                    </div>
-                    <div class="jours">
-                        <div id="custom-checkboxes"></div>
-                        <div class="check-selection">
-                            <a href="#" class="btn cancel">Cancel</a>
-                            <a href="#" class="btn add">Add</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <?= Html::submitButton('Submit',['class'=>'btn btn-primary']) ?>
-            </div>
-        </div>
-        <?php ActiveForm::end() ?>
-    </div>
-    </div>
-</div>
-<script>
+<script type="text/javascript">
     $(document).ready(function(){
-        var arrType=new Array("No available time","always open","permanently closed","Open to selected time");
-        for(var x=0; x<arrType.length; x++)
-            $('#type_hours').append(
-                '<label for="' + arrType[x] + '">' +
-                '<input type="radio" '+(x==3?"checked value='show'":"")+' name="choice" id="' + arrType[x] + '"/>' + arrType[x] +
-                '</label>'
-            );
-
-        var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-        for(var y=0; y<arrJour.length; y++)
-            $('#custom-checkboxes').append(
-                '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
-            );
-
-        $("input[type='radio']").on("change", function(){
-            if($(this).val()=='show') {
-                $(".choice_pattern").show(200);
-            }
-            else {
-                $(".choice_pattern").hide(200);
-            }
-        });
-
-        $("#custom-checkboxes input").businessHoursWidget();
-
     });
 
     ;(function ( $, window, document, undefined ) {
@@ -191,9 +69,6 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     $(plugin.inputs).each(function () {
                         this.checked = false;
                     });
-
-
-
                     return false;
                 });
 
@@ -316,6 +191,103 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
 
     })( jQuery, window, document );
 </script>
+<div class="container">
+    <div class="portlet light" id="form_wizard_1">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class=" icon-layers font-red"></i>
+                <span class="caption-subject font-red bold uppercase">Training Program
+                </span>
+            </div>
+        </div>
+    <div class="portlet-body form">
+        <?php $form = ActiveForm::begin([
+            'id' => 'training_form',
+            'fieldConfig' => [
+                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+            ]
+        ]);
+        ?>
+        <div class="row">
+            <div class="col-md-3">
+                <?= $form->field($model,'profile')->dropDownList($primary_cat,['prompt'=>'Course Profile'])->label(false); ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model,'title')->textInput(['id'=>'title'])->label('Course Title'); ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model,'fees')->textInput(['id'=>'fees'])->label('Fees'); ?>
+            </div>
+            <div class="col-md-3">
+                <?= $form->field($model,'fees_type')->dropDownList([1=>'Monthly',2=>'Weekly',3=>'Annually',4=>'One Time'])->label(false); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="module2-heading">
+                    Course Description
+                </div>
+            </div>
+            <div class="col-md-12">
+                <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="module2-heading">
+                   Skills Required
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="pf-field no-margin">
+                    <ul class="tags_input skill_tag_list">
+                        <li class="tagAdd taglist">
+                            <div class="skill_wrapper">
+                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                <input type="text" id="search-skill" class="skill-input" placeholder="Search For Skill">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="contenu">
+                <h1>Business Hours Widget</h1>
+                <div id="type_hours">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <div class="choice_pattern">
+                    <div class="results"></div>
+                    <div class="selection">
+                        <label for="">From </label>
+                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
+                        <label for="">to </label>
+                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
+
+                        <input id="toallday" type="checkbox" name="toallday" value="toallday" />
+                        <label for="toallday">Apply to all day</label>
+                    </div>
+                    <div class="jours">
+                        <div id="custom-checkboxes"></div>
+                        <div class="check-selection">
+                            <a href="#" class="btn cancel">Cancel</a>
+                            <a href="#" class="btn add">Add</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <?= Html::submitButton('Submit',['class'=>'btn btn-primary']) ?>
+            </div>
+        </div>
+        <?php ActiveForm::end() ?>
+    </div>
+    </div>
+</div>
+
 <?php
 $this->registerCss('
 @font-face {
@@ -706,6 +678,30 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
+var arrType=new Array("No available time","always open","permanently closed","Open to selected time");
+        for(var x=0; x<arrType.length; x++)
+            $('#type_hours').append(
+                '<label for="' + arrType[x] + '">' +
+                '<input type="radio" '+(x==3?"checked value='show'":"")+' name="choice" id="' + arrType[x] + '"/>' + arrType[x] +
+                '</label>'
+            );
+
+        var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+        for(var y=0; y<arrJour.length; y++)
+            $('#custom-checkboxes').append(
+                '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
+                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+            );
+
+        $("input[type='radio']").on("change", function(){
+            if($(this).val()=='show') {
+                $(".choice_pattern").show(200);
+            }
+            else {
+                $(".choice_pattern").hide(200);
+            }
+        });
+$("#custom-checkboxes input").businessHoursWidget();
 $('#fees').mask("#,#0,#00", {reverse: true});
 $(document).on('keypress','input',function(e)
 {
