@@ -60,6 +60,8 @@ if (!empty($placement_locations)) {
                         echo 'N/A';
                 }
                 ?></span></li>
+        <li><i class="far fa-clock"></i>
+            <h3>Experience</h3><span><?= $experience; ?></span></li>
         <li><i class="fas fa-map-marker-alt"></i>
             <h3>Locations</h3>
             <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
