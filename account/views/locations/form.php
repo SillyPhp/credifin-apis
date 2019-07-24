@@ -81,7 +81,7 @@ $form = ActiveForm::begin([
                     ], [
                 'item' => function($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-checkbox">';
-                    $return .= '<input type="checkbox" id="location_for' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
+                    $return .= '<input type="checkbox" id="location_for' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="location_for' . $value . $index . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
