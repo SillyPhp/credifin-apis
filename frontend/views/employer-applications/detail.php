@@ -163,6 +163,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'max_wage'=>$data1['max_wage'],
                                     'min_wage'=>$data1['min_wage'],
                                     'fixed_wage'=>$data1['fixed_wage'],
+                                    'experience'=>$data1['experience'],
                                     'placement_locations'=>$data1['applicationPlacementCities'],
                                 ]);
                             endif;
