@@ -10,6 +10,7 @@ class QuizAssets5 extends AssetBundle {
     public $baseUrl = '@root/assets/themes/quiz4';
     public $css = [
         'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css',
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
 //        'css/style.css',
     ];
     public $js = [
