@@ -17,6 +17,7 @@ class LocationsController extends Controller
     {
         $statesModel = new States();
         $locationFormModel = new LocationForm();
+        $locationFormModel->location_for  = [1,2];
         if ($locationFormModel->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             if ($locationFormModel->add()) {
