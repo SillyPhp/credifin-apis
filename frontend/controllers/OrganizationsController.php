@@ -1529,6 +1529,10 @@ class OrganizationsController extends Controller
         return $this->generateblog();
     }
 
+    public function actionExplore(){
+        return $this->render('explore');
+    }
+
     private function generateblog()
     {
         $this->layout = 'main-secondary';
