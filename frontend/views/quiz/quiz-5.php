@@ -1,3 +1,13 @@
+<?php
+use yii\helpers\Url;
+$background_image = null;
+
+if ($quiz['background_image']) {
+    $background_image = Url::to(Yii::$app->params->upload_directories->quiz->background->image . $quiz['background_image_location'] . DIRECTORY_SEPARATOR . $quiz['background_image']);
+} else {
+    $background_image = Url::to('/assets/themes/quiz/cric.png');
+}
+?>
 <a href="/" class="logo">
     <img src="/assets/common/logos/logo.svg"/>
 </a>
@@ -355,7 +365,7 @@
                 React.createElement(Figure, null,
                     React.createElement(Image, {
                         alt: "Time lapse photography of dashing lights",
-                        src: "https://images.pexels.com/photos/842654/pexels-photo-842654.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+                        src: "<?= $background_image ?>"
                     }),
                     React.createElement(Icon, null,
                         React.createElement(SVGIcon, {icon: "?"}))),
