@@ -894,7 +894,17 @@ class ApplicationForm extends Model
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
             ->select(['a.application_enc_id','a.preferred_gender','a.description',
-                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*'])
+                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*','(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                ELSE "No Experience"
+                END) as experience'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
