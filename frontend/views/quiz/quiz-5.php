@@ -292,16 +292,19 @@ if ($quiz['background_image']) {
           */
     const ShareLink = styled.a`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.1rem;
-  margin: 2rem 0 1rem;
+  margin: 2px 10px;
+  font-size: 30px;
   text-decoration: none;
   color: inherit;
 
   svg {
     margin-left: 6px;
   }
+`;
+
+    const share_div = styled.div`
+      display: flex;
+    justify-content: center;
 `;
 
 
@@ -348,6 +351,14 @@ if ($quiz['background_image']) {
                 icon === 'share' &&
                 React.createElement("path", {
                     d: "m50.008 10a40.008 40.004 0 0 0-40.008 40.004 40.008 40.004 0 0 0 40.008 39.996 40.008 40.004 0 0 0 39.992-39.996 40.008 40.004 0 0 0-39.992-40.004zm-22.075 19.216c4.1013 10.024 20.896 12.836 20.896 12.836 4.09-18.868 18.635-8.4211 19.335-7.0679 1.1718 1.5988 7.2274-1.406 7.2274-1.406 0.19278 2.2073-5.2731 4.6112-5.2731 4.6112l5.859 0.2041c0.19656 1.1981-5.4659 2.8045-5.4659 2.8045-0.39312 25.864-22.264 29.118-22.264 29.118-11.525 2.007-23.047-3.2051-23.047-3.2051 7.6167 1.406 16.602-8.0204 16.602-8.0204-6.3126 1.4967-10.97-2.6155-12.395-4.082a0.94122 0.94113 0 0 1-0.49896-0.52915s0.2079 0.22678 0.49896 0.52915c1.9429 0.96759 8.2895-1.7349 8.2895-1.7349-12.304-1.6026-13.668-11.025-13.668-11.025 5.2693 5.2159 11.325 4.6112 11.325 4.6112-8.2026 0.20032-7.4201-17.643-7.4201-17.643z",
+                    fill: "currentColor",
+                    "stroke-width": "3.7798"
+                }),
+
+
+                icon === 'fb_share' &&
+                React.createElement("path", {
+                    d: "M40,0H10C4.486,0,0,4.486,0,10v30c0,5.514,4.486,10,10,10h30c5.514,0,10-4.486,10-10V10C50,4.486,45.514,0,40,0z M39,17h-3 c-2.145,0-3,0.504-3,2v3h6l-1,6h-5v20h-7V28h-3v-6h3v-3c0-4.677,1.581-8,7-8c2.902,0,6,1,6,1V17z",
                     fill: "currentColor",
                     "stroke-width": "3.7798"
                 })));
@@ -449,7 +460,9 @@ if ($quiz['background_image']) {
     const ScorePage = ({score, max}) => {
         // built the tweet using the score value
         const text = `${score} out of ${max}... Brief, but impressive`;
-        const href = `https://twitter.com/intent/tweet?text=${text}`;
+        // const href = `https://twitter.com/intent/tweet?text=${text}`;
+        const href = `https://twitter.com/intent/tweet?text=` + window.location.href + `/` + `${score}` + `/` + `${max}`;
+        const fb_href = `https://www.facebook.com/share.php?u=` + window.location.href + `/` + `${score}` + `/` + `${max}`;
         // render the score in a separated, strong tag and include the link in a paragraph, through an SVG icon making up a tweety bird
         return (
             React.createElement(React.Fragment, null,
@@ -460,11 +473,17 @@ if ($quiz['background_image']) {
 
 
                     max),
+                React.createElement(Score, null,
+                "Share this Quiz on"),
+                React.createElement(share_div, null,
 
+                React.createElement(ShareLink, {href: href, target: "_blank"},
 
-                React.createElement(ShareLink, {href: href, target: "_blank"}, "Share your score",
+                    React.createElement("i", {class: "fa fa-twitter"})),
 
-                    React.createElement(SVGIcon, {icon: "share", size: "52px"}))));
+                React.createElement(ShareLink, {href: fb_href, target: "_blank"},
+
+                    React.createElement("i", {class: "fa fa-facebook"})))));
 
 
     };
