@@ -15,11 +15,12 @@ class TrainingProgram extends Model
     public $skills;
     public $description;
     public $fees_type;
+    public $business_hours;
 
     public function rules()
     {
         return [
-            [['title','skills','fees','city','type','profile','fees_type','job_type','url','description','company_name'],'required'],
+            [['title','skills','business_hours','fees','city','type','profile','fees_type','job_type','url','description','company_name'],'required'],
             [['email','fixed_wage','min_salary','max_salary'],'safe'],
             [['url'], 'url', 'defaultScheme' => 'http'],
             [['title','company_name'],'string','max'=>50],

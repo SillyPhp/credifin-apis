@@ -6,191 +6,6 @@ use kartik\select2\Select2;
 use yii\web\JsExpression;
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
 ?>
-<script type="text/javascript">
-    $(document).ready(function(){
-    });
-
-    ;(function ( $, window, document, undefined ) {
-
-        "use strict";
-
-        // Create the defaults once
-        var pluginName = "businessHoursWidget",
-            defaults = {
-                container : ".results",
-                addButton: ".btn.add",
-                cancelButton: ".btn.cancel",
-                // The DOM structure must stay the same
-                // span + strong + strong + .cancelCurrent
-                resultTemplate: '<p><span></span> : from <strong></strong> to <strong></strong> <i class="fa fa-times cancelCurrent"></i></p>',
-                timeInputs : ".selection input[type='time']",
-                checkAllDays: '#toallday',
-                debug : true
-            };
-
-        // The actual plugin constructor
-        function Plugin ( elements, options ) {
-            this.inputs = elements;
-
-            this.settings = $.extend( {}, defaults, options );
-            this.log=function(l){if(typeof console != 'undefined' && this.settings.debug){console.log(l);}};
-            this._defaults = defaults;
-            this._name = pluginName;
-
-            this.$resultTemplate = $(this.settings.resultTemplate);
-
-            this.$inputsChecked = null;
-            this.$inputsRange = null;
-
-            this.$results = null;
-
-            this.init();
-        }
-
-        // Avoid Plugin.prototype conflicts
-        $.extend(Plugin.prototype, {
-            init: function () {
-                var plugin = this;
-
-                $(plugin.settings.addButton).on("click", function(){
-                    // Business hours lines init
-                    plugin.$results = [];
-
-                    var errors = plugin.startParsing();
-                    if(errors) {
-                        alert(errors);
-                        return false;
-                    }
-                    plugin.appendResults();
-
-                    for(var k=0;k<plugin.$results.length;k++)
-                        plugin.log(plugin.$results[k].html());
-
-                    $(plugin.inputs).each(function () {
-                        this.checked = false;
-                    });
-                    return false;
-                });
-
-                $(plugin.settings.cancelButton).on("click", function(){
-                    $(plugin.settings.container+" p").remove();
-                    plugin.log('removing all lines');
-                    return false;
-                });
-
-                $(plugin.settings.container+" i").on("click", function(){
-                    $(this).parent().remove();
-                    plugin.log('removing a line');
-                    return false;
-                });
-
-                $(plugin.settings.checkAllDays).on("change", function(){
-                    $(plugin.inputs).each(function () {
-                        this.checked = $(plugin.settings.checkAllDays)[0].checked;
-                    });
-                });
-            },
-            appendResults : function () {
-                for(var i in this.$results) {
-                    this.$results[i].appendTo(this.settings.container);
-                    $('<input type="hidden" name"business_hours[]" value="'+(this.$results[i].text())+'" />').appendTo(this.settings.container);
-                }
-            },
-            removeInputsFromRanges : function ($inputsToRemoveFromRange) {
-                $.each($inputsToRemoveFromRange,function (i,$input) {
-                    $input[0].checked = false;
-                });
-            },
-            startParsing: function () {
-                // This set contains only checked elements
-                this.$inputsChecked = $(this.inputs).filter(':checked');
-
-                // Index of the first checked element in the inputs list
-                var startIndex = $(this.inputs).index(this.$inputsChecked.eq('0'))-1;
-                this.log('start index : '+startIndex);
-
-                // We need a range containing all inputs starting from startIndex so we can compare inputs lists
-                // Filter only if startIndex is not -1 ( otherwise gt() doesn't work)
-                this.$inputsRange = $(this.inputs);
-                if(startIndex != -1)
-                    this.$inputsRange = this.$inputsRange.filter( ':gt('+startIndex+')');
-
-                this.log('Input Range total size : ' + this.$inputsRange.length);
-
-                var last = this.$results.length;
-                // We start from the first checked input. Then we'll look for the nexts
-                var $currentDay = this.$inputsChecked.eq(0);
-                var $inputsToRemoveFromRange = [];
-
-                if($currentDay.length) {
-                    // New Business Hours line initialization
-                    this.$results[last] = this.$resultTemplate.clone();
-
-                    this.log('New line');
-
-                    var from = $currentDay.val();
-                    // We'll need to reduce the input range so we can recursively call the function without index
-                    $inputsToRemoveFromRange.push($currentDay);
-                    this.log('From : '+from);
-
-                    var to = '';
-                    var j = 1;
-                    // Search through all the next checked input and stop at first non-checked input
-                    // If we stop its either a gap between selected days, or there's no more checked inputs
-                    while(this.$inputsRange[j] && this.$inputsRange[j].checked) {
-                        to  = this.$inputsRange.eq(j).val();
-                        $inputsToRemoveFromRange.push(this.$inputsRange.eq(j));
-
-                        this.log('current input index : '+j);
-                        this.log('Next checked input found :'+to);
-                        j++;
-                    }
-
-                    this.log('To : '+to);
-                    if(to)
-                        to = ' - '+to;
-
-                    // Now we can fill the line and insert it in the DOM
-                    this.$results[last].find('span').text(from + to);
-                    for(var i=0;i<2;i++) {
-                        var v = $(this.settings.timeInputs).eq(i).val();
-                        // Returning something is considered error and will be displayed
-                        if(!v)
-                            return 'You must enter a well formatted time';
-                        this.$results[last].find('strong:eq('+i+')').text(v);
-                    }
-
-
-                    // Remove all parsed inputs from range
-                    this.removeInputsFromRanges($inputsToRemoveFromRange);
-                    this.log('Remaining checked inputs to parse : '+this.$inputsChecked.length);
-
-                    // After parsed inputs removal, we start again if there's still checked inputs to parse.
-                    if($(this.inputs).filter(':checked').length)
-                        return this.startParsing();
-
-                    // Empty string returned means no error
-                    return '';
-                }
-                else {
-                    return 'Please select your business hours';
-                }
-            }
-        });
-
-        // A really lightweight plugin wrapper around the constructor,
-        // preventing against multiple instantiations
-        $.fn[ pluginName ] = function ( options ) {
-            if ( !$.data( this, "plugin_" + pluginName ) ) {
-                return $.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
-            }
-            else {
-                return $.data( this, "plugin_" + pluginName);
-            }
-        };
-
-    })( jQuery, window, document );
-</script>
 <div class="container">
     <div class="portlet light" id="form_wizard_1">
         <div class="portlet-title">
@@ -213,7 +28,7 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                 <?= $form->field($model,'profile')->dropDownList($primary_cat,['prompt'=>'Course Profile'])->label(false); ?>
             </div>
             <div class="col-md-3">
-                <?= $form->field($model,'title')->textInput(['id'=>'title'])->label('Course Title'); ?>
+                <?= $form->field($model,'title')->textInput(['id'=>'title','placeholder'=>'Course Title'])->label(false); ?>
             </div>
             <div class="col-md-3">
                 <?= $form->field($model,'fees')->textInput(['id'=>'fees'])->label('Fees'); ?>
@@ -252,18 +67,21 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
             </div>
         </div>
         <div class="row">
-            <div class="contenu">
-                <h1>Business Hours Widget</h1>
-                <div id="type_hours">
-                    <i class="fa fa-calendar"></i>
+            <div class="col-md-12">
+                <div class="module2-heading">
+                    Batch Details
                 </div>
+            </div>
+            <br>
+            <div class="col-md-12">
+            <div class="contenu">
                 <div class="choice_pattern">
                     <div class="results"></div>
                     <div class="selection">
                         <label for="">From </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
+                            <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"  value="09:00"  />
                         <label for="">to </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
+                            <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   value="05:00" />
 
                         <input id="toallday" type="checkbox" name="toallday" value="toallday" />
                         <label for="toallday">Apply to all day</label>
@@ -277,6 +95,7 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         <div class="row">
             <div class="col-md-12">
@@ -341,7 +160,7 @@ $this->registerCss('
   border-radius: 0px;
   position: relative;
   top: -0.5em;
-  border: 0.5em solid #e4e4e3;
+  border: 0.5em solid #c4c4c4;
 }
 .contenu .choice_pattern .results {
   margin-bottom: 1em;
@@ -368,6 +187,10 @@ $this->registerCss('
   top: 8px;
   right: 10px;
 }
+.pf-field,.contenu
+{
+margin-top:12px;
+}
 .contenu .choice_pattern .results p i:hover {
   color: red;
   cursor: pointer;
@@ -380,7 +203,6 @@ $this->registerCss('
   font-size: 14px;
   font-weight: 300;
   color: #7f7f7f;
-  width: 80px;
   height: 30px;
   background-color: transparent;
   border: 2px solid #c6c5c4;
@@ -435,7 +257,7 @@ $this->registerCss('
 }
 .contenu .jours #custom-checkboxes label {
   width: 56px;
-  margin: 0 30px;
+  margin: 0 3px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked),
 .contenu .jours #custom-checkboxes input[type="checkbox"]:checked {
@@ -615,7 +437,7 @@ $this->registerCss('
 {
     float: left;
     width: 100%;
-    border: 2px solid #e8ecec;
+    border: 1px solid #c4c4c4;
     border-radius: 8px;
     padding: 8px;
     list-style: outside none none;
@@ -678,14 +500,6 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-var arrType=new Array("No available time","always open","permanently closed","Open to selected time");
-        for(var x=0; x<arrType.length; x++)
-            $('#type_hours').append(
-                '<label for="' + arrType[x] + '">' +
-                '<input type="radio" '+(x==3?"checked value='show'":"")+' name="choice" id="' + arrType[x] + '"/>' + arrType[x] +
-                '</label>'
-            );
-
         var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
@@ -772,8 +586,55 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
+var prime_id = null;
+var titles_url = '/account/categories-list/load-titles?type=Jobs&id=';
+$('#profile').on('change',function()
+    {
+      prime_id = $(this).val();
+      $('#title').val('');
+      $('#title').typeahead('destroy');
+      load_job_titles(prime_id);
+      
+   });
+function load_job_titles(prime_id)
+{
+var categories = new Bloodhound({
+  datumTokenizer: function(d) {
+        var tokens = Bloodhound.tokenizers.whitespace(d.value);
+            $.each(tokens,function(k,v){
+                i = 0;
+                while( (i+1) < v.length ){
+                    tokens.push(v.substr(i,v.length));
+                    i++;
+                }
+            })
+            return tokens;
+        },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  {
+      url:titles_url+prime_id,
+      cache:false,
+      filter:function(res) {
+        job_titles = [];
+        job_titles = res;
+        return res;
+      }
+      }
+  
+});
+
+$('#title').typeahead(null, {
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  limit: 20,
+})
+}
+
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@eyAssets/js/hours-widget.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
