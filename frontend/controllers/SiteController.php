@@ -267,7 +267,7 @@ class SiteController extends Controller
         }
     }
 
-    public function actionCareers()
+    public function actionSalarySubmitter()
     {
         $this->layout = 'main-secondary';
         $careerFormModel = new CareerForm();
