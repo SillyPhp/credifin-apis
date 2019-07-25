@@ -34,7 +34,15 @@ $this->params['seo_tags'] = [
 ?>
     <section class="quiz-header">
         <div class="container">
-
+            <div class="header-main-icon ani-img">
+                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quizh.png');?>"/>
+            </div>
+            <div class="ani-img left-top"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q1.png');?>"/></div>
+            <div class="ani-img left-middle"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q2.png');?>"/></div>
+            <div class="ani-img left-bottom"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q3.png');?>"/></div>
+            <div class="ani-img right-top"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q4.png');?>"/></div>
+            <div class="ani-img right-middle"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q5.png');?>"/></div>
+            <div class="ani-img right-bottom"><img src="<?= Url::to('@eyAssets/images/pages/quiz/q6.png');?>"/></div>
         </div>
     </section>
     <section>
@@ -84,6 +92,111 @@ $this->params['seo_tags'] = [
     </section>
 <?php
 $this->registerCss('
+.header-main-icon{
+    left:50%;
+    transform:translate(-50%, -50%);
+    width: 75%;
+    max-width: 600px;
+}
+.header-main-icon.active{
+    top:50%;
+    animation:main_icon 2s forwards;
+    -webkit-animation:main_icon 2s forwards;
+}
+.ani-img {
+    position:absolute;
+    opacity:0;
+}
+.left-top.active{
+    top: 12%;
+    right: 87vw;
+    animation:left_top 2s forwards;
+    -webkit-animation:left_top 2s forwards;
+}
+.left-middle.active{
+    top: 40%;
+    right: 87vw;
+    animation:left_middle 3s forwards;
+    -webkit-animation:left_middle 3s forwards;
+}
+.left-bottom.active{
+    top: 70%;
+    right: 87vw;
+    animation:left_bottom 4s forwards;
+    -webkit-animation:left_bottom 4s forwards;
+}
+.right-top.active{
+    left: 85vw;
+    top: 12%;
+    animation:right_top 2s forwards;
+    -webkit-animation:right_top 2s forwards;
+}
+.right-middle.active{
+    left: 85vw;
+    top: 41%;
+    animation:right_middle 3s forwards;
+    -webkit-animation:right_middle 3s forwards;
+}
+.right-bottom.active{
+    left: 85vw;
+    top: 73%;
+    animation:right_bottom 4s forwards;
+    -webkit-animation:right_bottom 4s forwards;
+}
+@keyframes main_icon{
+    from{opacity:0;top:100%}
+    to{opacity:1;top:50%;}
+}@-webkit-keyframes main_icon{
+    from{opacity:0;top:100%}
+    to{opacity:1;top:50%;}   
+}
+@keyframes left_top{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}
+}@-webkit-keyframes left_top{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}   
+}
+
+@keyframes left_middle{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}
+}@-webkit-keyframes middle{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}   
+}
+
+@keyframes left_bottom{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}
+}@-webkit-keyframes left_bottom{
+    from{opacity:0;right:100%}
+    to{opacity:1;right:87vw;}   
+}
+
+@keyframes right_top{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}
+}@-webkit-keyframes right_top{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}   
+}
+
+@keyframes right_middle{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}
+}@-webkit-keyframes right_middle{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}   
+}
+
+@keyframes right_bottom{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}
+}@-webkit-keyframes bottom{
+    from{opacity:0;left:100%}
+    to{opacity:1;left:85vw;}   
+}
 @media screen and (max-width: 991px) {
     #elem-button-share-quiz-wa{display:none !important;}
 }
@@ -213,11 +326,9 @@ $this->registerCss('
 }
 
 .quiz-header{
-     background:url(' . Url::to('@eyAssets/images/pages/quiz/quiz-header1.png') . ');
-     min-height:450px;
-     background-repeat:no-repeat;
-     background-size:cover;
-     background-position:bottom;
+     background-color: red; /* For browsers that do not support gradients */
+    background-image: linear-gradient(to bottom right, #0DCBC8, #6774FF);
+     min-height:550px;
 }
 .quiz-box{
     text-align: center;
@@ -298,7 +409,11 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-
+setTimeout(function(){
+    $('.ani-img').each(function(){
+        $(this).addClass('active');
+    });
+  },1000);
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
