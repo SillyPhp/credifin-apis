@@ -46,7 +46,7 @@ use yii\helpers\Url;
                                     <div class="links">
                                         <div class="icon-set">
                                             <a href="http://www.capitalbank.co.in/" target="_blank"> <i
-                                                        class="fa fa-link"></i> </a></div>
+                                                        class="fas fa-link"></i> </a></div>
                                     </div>
                                     <a href="/capitalbank" class="blog-slider__button">view Profile</a>
                                 </div>
@@ -91,7 +91,7 @@ use yii\helpers\Url;
                                     <div class="links">
                                         <div class="icon-set">
                                             <a href="http://midlandmicrofin.com/" target="_blank"> <i
-                                                        class="fa fa-link"></i> </a></div>
+                                                        class="fas fa-link"></i> </a></div>
                                     </div>
                                     <a href="/midland" class="blog-slider__button">view Profile</a>
                                 </div>
@@ -134,7 +134,7 @@ use yii\helpers\Url;
                                     <div class="links">
                                         <div class="icon-set">
                                             <a href="http://citizensbank.in/" target="_blank"> <i
-                                                        class="fa fa-link"></i> </a></div>
+                                                        class="fas fa-link"></i> </a></div>
                                     </div>
                                     <a href="/citizensbank" class="blog-slider__button">View Profile</a>
                                 </div>
@@ -177,15 +177,15 @@ use yii\helpers\Url;
                                     <div class="links">
                                         <div class="icon-set">
                                             <a href="https://www.facebook.com/xceltec/" target="_blank"> <i
-                                                        class="fa fa-facebook"></i> </a></div>
+                                                        class="fab fa-facebook"></i> </a></div>
                                         <div class="icon-set">
                                             <a href="https://www.xceltec.com/" target="_blank"> <i
-                                                        class="fa fa-link"></i> </a></div>
+                                                        class="fas fa-link"></i> </a></div>
                                         <div class="icon-set">
                                             <a href="https://www.linkedin.com/company/xceltec/" target="_blank"> <i
-                                                        class="fa fa-linkedin"></i> </a></div>
+                                                        class="fab fa-linkedin-in"></i> </a></div>
                                         <div class="icon-set">
-                                            <a href="https://twitter.com/XcelTec"> <i class="fa fa-twitter"></i> </a>
+                                            <a href="https://twitter.com/XcelTec"> <i class="fab fa-twitter"></i> </a>
                                         </div>
                                     </div>
                                     <a href="/xceltec" class="blog-slider__button">View Profile</a>
@@ -197,8 +197,6 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-
-
         <div class="normal-head heading-style"> Other Companies</div>
         <div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -234,10 +232,11 @@ use yii\helpers\Url;
                             <hr/>
 
                             <div class="logo-contain">
-                                <div class="logo-1"><a href="#"> <img
-                                                src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png') ?>"
-                                                alt="Vincit Software"/>
-                                    </a></div>
+                                <div class="logo-1">
+                                    <a href="/vincittech">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png') ?>" alt="Vincit Software"/>
+                                    </a>
+                                </div>
                             </div>
                             <div class="intro_1"><a href="/vincittech">We Understand, Build & Develop Optimized Web
                                     Solutions</a></div>
@@ -331,10 +330,11 @@ use yii\helpers\Url;
                             <h3><a href="/hamco">Hamco</a></h3>
                             <hr/>
                             <div class="logo-contain">
-                                <div class="logo-1"><a href="#"> <img
-                                                src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
-                                                alt="Hamco"/>
-                                    </a></div>
+                                <div class="logo-1">
+                                    <a href="/hamco">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco"/>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-info_1">
@@ -356,10 +356,11 @@ use yii\helpers\Url;
                             <h3><a href="/manojoshempo">Fame Finders Media company</a></h3>
                             <hr/>
                             <div class="logo-contain">
-                                <div class="logo-1"><a href="/manojoshempo">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png') ?>"
-                                             alt="Fame Finders Media "/>
-                                    </a></div>
+                                <div class="logo-1">
+                                    <a href="/manojoshempo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png') ?>" alt="Fame Finders Media "/>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-info_1">
@@ -380,10 +381,11 @@ use yii\helpers\Url;
                             <h3><a href="/agile">Agile Finserv Pvt. Ltd.</a></h3>
                             <hr/>
                             <div class="logo-contain">
-                                <div class="logo-1"><a href="/manojoshempo">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>"
-                                             alt="Agile Finserv Pvt. Ltd. "/>
-                                    </a></div>
+                                <div class="logo-1">
+                                    <a href="/agile">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv Pvt. Ltd. "/>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                         <div class="card-info_1">
@@ -396,7 +398,6 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-
     </div>
 <?php
 $this->registerCss("
@@ -1096,7 +1097,7 @@ hr{
     cursor: pointer;
 }
 
-i.fa-facebook, i.fa-link,i.fa-youtube,i.fa-linkedin,i.fa-twitter{
+.icon-set a i.fab, .icon-set a i.fas{
     color: #00AFEF;
     font-size: 17px;
     padding:5px 7px;
@@ -1117,7 +1118,7 @@ i.fa-facebook, i.fa-link,i.fa-youtube,i.fa-linkedin,i.fa-twitter{
     color: #fff;
     background-color: #ff0000; 
 }
-.icon-set:hover i.fa-linkedin{
+.icon-set:hover i.fa-linkedin-in{
     opacity: 1;
     color: #fff;
     background-color: #0077b5;
@@ -1477,7 +1478,7 @@ body {
     color: #000000;
     text-decoration: none;
 }
-.info span .fa {
+.info span i {
     color: #e74c3c;
 }
 

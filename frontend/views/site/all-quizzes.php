@@ -47,7 +47,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <?php foreach ($data as $d) { ?>
                     <div class="col-md-3 col-sm-6">
-                        <a href="<?= $d['slug']; ?>" class="quiz-box">
+                        <div class="quiz-box">
                             <div class="quiz-icon">
                                 <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?>">
                             </div>
@@ -57,10 +57,26 @@ $this->params['seo_tags'] = [
                             <div class="quiz-ques">
                                 Total Questions : <?= $d['cnt']; ?>
                             </div>
+
                             <div class="take-quiz">
-                                <span>Take Quiz</span>
+                                <a href="<?= $d['slug']; ?>">Take Quiz</a>
                             </div>
-                        </a>
+                            <div class="quiz-social-links">
+                                <ul class="menu-sl bottomRight">
+                                    <li class="share-sl top">
+                                        <i class="fa fa-share-alt"></i>
+                                        <ul class="submenu">
+                                            <li><a href="<?= Url::to('http://www.facebook.com/sharer.php?u=' . $d['slug']);?>" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $d['slug']);?>" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="<?= Url::to('mailto:?&body=' . $d['slug']);?>" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>
+                                            <li id="elem-button-share-quiz-wa"><a href="<?= Url::to('https://wa.me/?text=' . $d['slug']);?>" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
+                                            <li id="elem-button-share-quiz-wa-mob"><a href="<?= Url::to('whatsapp://send?text=' . $d['slug']);?>" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                            </div>
+                        </div>
                     </div>
                 <?php } ?>
             </div>
@@ -68,6 +84,134 @@ $this->params['seo_tags'] = [
     </section>
 <?php
 $this->registerCss('
+@media screen and (max-width: 991px) {
+    #elem-button-share-quiz-wa{display:none !important;}
+}
+@media screen and (min-width: 991px) {
+    #elem-button-share-quiz-wa-mob{display:none !important;}
+}
+
+.menu-sl {
+  z-index: 999;
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+.menu-sl .share-sl i.fa {
+  height: 0px;
+  width: 0px;
+  text-align: center;
+  line-height: 50px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+.quiz-box:hover .quiz-social-links .menu-sl .share-sl.top .submenu li:nth-child(1) {
+  opacity: 1;
+  top: -20px;
+  left: 0px;
+  background:#fff;
+  border-radius:50%;
+  padding:5px 10px;
+  box-shadow:0 0 5px rgba(0,0,0,.1);
+  transition-delay: 0.08s;
+  transform: rotateY(0deg);
+  background-color: #236dce;
+//  border-bottom: 1px dashed #d9d9d9;
+}
+.quiz-box:hover .quiz-social-links .menu-sl .share-sl.top .submenu li:nth-child(2) {
+  opacity: 1;
+  top: -56px;
+  left:0px;
+   background:#fff;
+  border-radius:50%;
+  padding:5px 10px;
+   box-shadow:0 0 5px rgba(0,0,0,.1);
+  transition-delay: 0.16s;
+  transform: rotateY(0deg);
+  background-color: #1c99e9;
+//  border-bottom: 1px dashed #d9d9d9;
+}
+.quiz-box:hover .quiz-social-links .menu-sl .share-sl.top .submenu li:nth-child(3) {
+  opacity: 1;
+  top: -92px;
+  left:0px;
+   background:#fff;
+  border-radius:50%;
+  padding:5px 10px;
+   box-shadow:0 0 5px rgba(0,0,0,.1);
+  transition-delay: 0.24s;
+  transform: rotateY(0deg);
+  background-color: #D3252B;
+//  border-bottom: 1px dashed #d9d9d9;
+}
+.quiz-box:hover .quiz-social-links .menu-sl .share-sl.top .submenu li:nth-child(4) {
+  opacity: 1;
+  top: -128px;
+  left:0px;
+   background:#fff;
+  border-radius:50%;
+   box-shadow:0 0 5px rgba(0,0,0,.1);
+  padding:5px 10px;
+  transition-delay: 0.32s;
+  transform: rotateY(0deg);
+  background-color: #25D366;
+//  border-bottom: 1px dashed #d9d9d9;
+}
+.quiz-box:hover .quiz-social-links .menu-sl .share-sl.top .submenu li:nth-child(5) {
+  opacity: 1;
+  top: -128px;
+  left:0px;
+  background:#fff;
+  border-radius:50%;
+  box-shadow:0 0 5px rgba(0,0,0,.1);
+  padding:5px 10px;
+  transition-delay: 0.32s;
+  transform: rotateY(0deg);
+  background-color: #25D366;
+}
+.menu-sl.bottomRight {
+  bottom: 5px;
+  right: 35px;
+}
+.menu-sl .submenu {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.menu-sl .submenu li {
+  transition: all ease-in-out 0.5s;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 34px;
+  height: 34px;
+  opacity: 0;
+}
+.share-sl.top{
+    height: 40px;
+    margin-left: 10px;
+}
+.menu-sl .submenu li a {
+  color: #fff;
+}
+.menu-sl .submenu li:nth-child(1) {
+  transform: rotateX(45deg);
+}
+.menu-sl .submenu li:nth-child(2) {
+  transform: rotateX(90deg);
+}
+.menu-sl .submenu li:nth-child(3) {
+  transform: rotateX(135deg);
+}
+.menu-sl .submenu li:nth-child(4) {
+  transform: rotateX(180deg);
+}
+.menu-sl .submenu li:nth-child(5) {
+  transform: rotateX(180deg);
+}
+
 .quiz-header{
      background:url(' . Url::to('@eyAssets/images/pages/quiz/quiz-header1.png') . ');
      min-height:450px;
@@ -76,16 +220,20 @@ $this->registerCss('
      background-position:bottom;
 }
 .quiz-box{
-    border:1px solid #eee;
     text-align: center;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
     border-radius: 10px;
     margin-bottom: 20px;
     display:block;
+    color:#000;
+    position:relative;
 }
 .quiz-box:hover{
-    box-shadow:0 0 8px rgba(0,0,0,.3);
+    box-shadow:0 0 10px rgba(0,0,0,.2);
+    transform: translate3d(-3px, -3px, -3px);
+    transition: .3s ease;
 }
-.quiz-box:hover .take-quiz span{
+.quiz-box:hover .take-quiz a{
     color:#fff;
     background:#00a0e3;
     border-color:#00a0e3;
@@ -133,17 +281,16 @@ $this->registerCss('
     padding-top: 5px;   
 }
 .take-quiz{
-    margin-bottom: 0px;
     overflow: hidden;
-    padding: 20px 0 6px 0;
+    padding: 20px 0 20px 0;
 }
-.take-quiz span{
+.take-quiz a{
     border:1px solid #eee;
     padding: 8px 13px;
-    border-radius:5px 5px 0 0;
+    border-radius:5px;
     font-size:13px;    
 }
-.take-quiz span:hover{
+.take-quiz a:hover{
     color:#fff;
     background:#00a0e3;
     border-color:#00a0e3;

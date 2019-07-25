@@ -17,7 +17,7 @@ class VolunteersController extends Controller
     public function actionApply()
     {
         $this->layout = 'main-secondary';
-
+        $type = 'Volunteer';
         $qualificationsModel = Qualifications::find()
             ->select(['qualification_enc_id qualification_id', 'name'])
             ->orderBy(['name' => SORT_ASC])
@@ -44,7 +44,7 @@ class VolunteersController extends Controller
         if(Yii::$app->user->identity->user_enc_id){
             $applicationFormModel = new CaApplicationForm();
             if ($applicationFormModel->load(Yii::$app->request->post())) {
-                if ($applicationFormModel->save()) {
+                if ($applicationFormModel->save($type)) {
                     $applicationFormModel = new CaApplicationForm();
                     Yii::$app->session->setFlash('success', 'We will connect with you shortly.');
                 } else {
@@ -63,7 +63,7 @@ class VolunteersController extends Controller
             if (Yii::$app->request->isAjax) {
                 if ($applicationFormModel->load(Yii::$app->request->post())) {
                     Yii::$app->response->format = Response::FORMAT_JSON;
-                    if ($applicationFormModel->save()) {
+                    if ($applicationFormModel->save($type)) {
                         return $response = [
                             'status' => 200,
                             'title' => 'Thanks for Applying',
