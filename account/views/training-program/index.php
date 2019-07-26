@@ -1,111 +1,148 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-$url = \yii\helpers\Url::to(['/cities/career-city-list']);
-?>
-<div class="container">
-    <div class="portlet light" id="form_wizard_1">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Training Program
-                </span>
-            </div>
-        </div>
-    <div class="portlet-body form">
-        <?php $form = ActiveForm::begin([
-            'id' => 'training_form',
-            'fieldConfig' => [
-                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
-            ]
-        ]);
-        ?>
-        <div class="row">
-            <div class="col-md-3">
-                <?= $form->field($model,'profile')->dropDownList($primary_cat,['prompt'=>'Course Profile'])->label(false); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'title')->textInput(['id'=>'title','placeholder'=>'Course Title'])->label(false); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees')->textInput(['id'=>'fees'])->label('Fees'); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees_type')->dropDownList([1=>'Monthly',2=>'Weekly',3=>'Annually',4=>'One Time'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                    Course Description
-                </div>
-            </div>
-            <div class="col-md-12">
-                <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                   Skills Required
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="pf-field no-margin">
-                    <ul class="tags_input skill_tag_list">
-                        <li class="tagAdd taglist">
-                            <div class="skill_wrapper">
-                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                <input type="text" id="search-skill" class="skill-input" placeholder="Search For Skill">
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                    Batch Details
-                </div>
-            </div>
-            <br>
-            <div class="col-md-12">
-            <div class="contenu">
-                <div class="choice_pattern">
-                    <div class="results"></div>
-                    <div class="selection">
-                        <label for="">From </label>
-                            <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"  value="09:00"  />
-                        <label for="">to </label>
-                            <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   value="05:00" />
 
-                        <input id="toallday" type="checkbox" name="toallday" value="toallday" />
-                        <label for="toallday">Apply to all day</label>
+?>
+    <div class="container">
+        <div class="portlet light" id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-layers font-red"></i>
+                    <span class="caption-subject font-red bold uppercase">Training Program
+                </span>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <?php $form = ActiveForm::begin([
+                    'id' => 'training_form',
+                    'fieldConfig' => [
+                        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                    ]
+                ]);
+                ?>
+                <div class="row">
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Course Profile'])->label(false); ?>
                     </div>
-                    <div class="jours">
-                        <div id="custom-checkboxes"></div>
-                        <div class="check-selection">
-                            <a href="#" class="btn cancel">Cancel</a>
-                            <a href="#" class="btn add">Add</a>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Course Title'])->label(false); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'fees')->textInput(['id' => 'fees'])->label('Fees'); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'fees_type')->dropDownList([1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually', 4 => 'One Time'])->label(false); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration'])->label('Training Duration'); ?>
+                    </div>
+                    <div class="col-md-2">
+                        <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Location
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'cities')->widget(Select2::classname(), [
+                            'options' => ['placeholder' => 'Select City...', 'multiple' => true],
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                                'minimumInputLength' => 1,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                ],
+                                'ajax' => [
+                                    'url' => '/cities/career-city-list',
+                                    'dataType' => 'json',
+                                    'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                                ],
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                            ],
+                        ])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Course Description
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Skills Required
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pf-field no-margin">
+                            <ul class="tags_input skill_tag_list">
+                                <li class="tagAdd taglist">
+                                    <div class="skill_wrapper">
+                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                        <input type="text" id="search-skill" class="skill-input"
+                                               placeholder="Search For Skill">
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Batch Details
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-md-12">
+                        <div class="contenu">
+                            <div class="choice_pattern">
+                                <div class="results"></div>
+                                <div class="selection">
+                                    <label for="">From </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="09:00"/>
+                                    <label for="">to </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="05:00"/>
+
+                                    <input id="toallday" type="checkbox" name="toallday" value="toallday"/>
+                                    <label for="toallday">Apply to all day</label>
+                                </div>
+                                <div class="jours">
+                                    <div id="custom-checkboxes"></div>
+                                    <div class="check-selection">
+                                        <a href="#" class="btn cancel">Cancel</a>
+                                        <a href="#" class="btn add">Add</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+                    </div>
+                </div>
+                <?php ActiveForm::end() ?>
             </div>
         </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <?= Html::submitButton('Submit',['class'=>'btn btn-primary']) ?>
-            </div>
-        </div>
-        <?php ActiveForm::end() ?>
     </div>
-    </div>
-</div>
 
 <?php
 $this->registerCss('
@@ -498,6 +535,11 @@ margin-top:12px;
     margin-bottom: 5px;
     font-weight:bold;
 }
+.has-error .form-group .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+}
 ');
 $script = <<< JS
         var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
@@ -639,4 +681,3 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-

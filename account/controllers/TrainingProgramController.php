@@ -15,6 +15,9 @@ class TrainingProgramController extends Controller
         $model = new TrainingProgram();
         $object = new ApplicationForm();
         $primary_cat = $object->getPrimaryFields();
+        if ($model->load(Yii::$app->request->post())) {
+            print_r($model);
+        }
         return $this->render('index',['model'=>$model,'primary_cat'=>$primary_cat]);
     }
 
