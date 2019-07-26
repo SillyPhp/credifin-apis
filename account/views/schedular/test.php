@@ -4,6 +4,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 //use yii\widgets\Pjax;
+
 ?>
 
 <div class="image-container set-full-height" style="">

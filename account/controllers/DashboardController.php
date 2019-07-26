@@ -266,6 +266,24 @@ class DashboardController extends Controller
             ->asArray()
             ->all();
 
+        $all = InterviewCandidates::find()
+            ->select(['status', 'process_field_enc_id'])
+            ->where(['status' => 2])
+            ->andWhere(['<>', 'process_field_enc_id', 'null'])
+            ->asArray()
+            ->all();
+
+        $num = count($fixed_interview);
+        $num2 = count($all);
+
+        for ($i = 0; $i < $num; $i++) {
+            for ($j = 0; $j < $num2; $j++) {
+                if ($fixed_interview[$i]['process_field_enc_id'] == $all[$j]['process_field_enc_id']) {
+                    $fixed_interview[$i]['status'] = 2;
+                }
+            }
+        }
+
         return $fixed_interview;
 
     }
@@ -289,8 +307,8 @@ class DashboardController extends Controller
                 'p.interview_date_timing_enc_id',
                 'q.name interview_type',
                 'a.applied_application_enc_id',
-                'a.interview_candidate_enc_id'
-
+                'a.interview_candidate_enc_id',
+                'a.status'
             ])
             ->joinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
@@ -310,12 +328,11 @@ class DashboardController extends Controller
                     }]);
                 }]);
             }], false)
-            ->where(['a.status' => 0])
+            ->where(['process_field_enc_id' => null])
             ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
             ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
             ->asArray()
             ->all();
-
 
         return $flexible_interview;
     }
@@ -346,6 +363,7 @@ class DashboardController extends Controller
                 $data['applied_application_enc_id'] = $f['applied_application_enc_id'];
                 $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
                 $data['process_field_enc_id'] = $f['process_field_enc_id'];
+                $data['status'] = $f['status'];
                 array_push($result, $data);
             }
 
@@ -446,7 +464,7 @@ class DashboardController extends Controller
                 } else {
                     return [
                         'status' => 201,
-                        'message' => 'this slot is full.try next time'
+                        'message' => 'This slot is full.try next time'
                     ];
                 }
             } else {

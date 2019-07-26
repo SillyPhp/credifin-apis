@@ -1,3 +1,4 @@
+
 <h2>Scheduled Interview Selection</h2>
 <div id="calendar"></div>
 
@@ -19,60 +20,6 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="myModalSave" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Save Event</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <input type="hidden" id="hdEventID" value="0"/>
-                    <div class="form-group">
-                        <label>Subject</label>
-                        <input type="text" id="txtSubject" class="form-control"/>
-                    </div>
-                    <div class="form-group">
-                        <label>Start</label>
-                        <div class="input-group date" id="dtp1">
-                            <input type="text" id="txtStart" class="form-control"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group" id="divEndDate" style="display:none">
-                        <label>End</label>
-                        <div class="input-group date" id="dtp2">
-                            <input type="text" id="txtEnd" class="form-control"/>
-                            <span class="input-group-addon">
-                                <span class="glyphicon glyphicon-calendar"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="txtDescription" rows="3" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Theme Color</label>
-                        <select id="ddThemeColor" class="form-control">
-                            <option value="">Default</option>
-                            <option value="red">Red</option>
-                            <option value="blue">Blue</option>
-                            <option value="black">Black</option>
-                            <option value="green">Green</option>
-                        </select>
-                    </div>
-                    <button type="button" id="btnSave" class="btn btn-success">Save</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </form>
             </div>
         </div>
     </div>
@@ -116,6 +63,7 @@ function FetchEventAndRenderCalendar(){
                     applied_application_enc_id:v.applied_application_enc_id,
                     interview_candidate_enc_id:v.interview_c_enc_id,
                     process_field_id:v.process_field_enc_id,
+                    status:v.status,
                 })
             });
             GenerateCalendar(events);
@@ -139,6 +87,13 @@ function GenerateCalendar(events){
         events: events,
         eventClick: function (calEvent, jsEvent, view) {
             selectedEvent = calEvent;
+            if(calEvent.status == 2){
+                $('#btnAccept').text('Already Applied');
+                $('#btnAccept').attr("disabled", true);
+            }else {
+                $('#btnAccept').attr("disabled", false);
+                $('#btnAccept').text('Accept');
+            }
             $('#myModal #eventTitle').text(calEvent.title);
             var d = $('<div/>');
             d.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
@@ -181,14 +136,13 @@ $('#btnAccept').click(function() {
 
 function acceptInterview(){
     if(selectedEvent != null){
-        console.log(selectedEvent);
         $.ajax({
         type: 'POST',
         url: 'candidate-accepted',
         data:{
             date_enc_id:selectedEvent.date_time_enc_id, 
             scheduled_interview_enc_id:selectedEvent.eventID, 
-            candidate_interview_id: selectedEvent.interview_c_enc_id,
+            candidate_interview_id: selectedEvent.interview_candidate_enc_id,
             applied_app_id:selectedEvent.applied_application_enc_id,
             process_id:selectedEvent.process_field_id,
             type:selectedEvent.type,
@@ -198,6 +152,7 @@ function acceptInterview(){
            $('#myModal').modal('hide');
            if(data.status == 200){
                toastr.success(data.message,'success');
+               FetchEventAndRenderCalendar();
            }else{
                toastr.error(data.message,'error');
            }

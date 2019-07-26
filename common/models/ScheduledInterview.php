@@ -20,6 +20,7 @@ use Yii;
  * @property int $status 0 as Inactive, 1 as Active
  *
  * @property InterviewCandidates[] $interviewCandidates
+ * @property InterviewDates[] $interviewDates
  * @property InterviewOptions[] $interviewOptions
  * @property Interviewers[] $interviewers
  * @property EmployerApplications $applicationEnc
@@ -64,6 +65,14 @@ class ScheduledInterview extends \yii\db\ActiveRecord
     public function getInterviewCandidates()
     {
         return $this->hasMany(InterviewCandidates::className(), ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewDates()
+    {
+        return $this->hasMany(InterviewDates::className(), ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']);
     }
 
     /**

@@ -24,9 +24,13 @@ use yii\helpers\Url;
 
 class SchedularController extends Controller
 {
-    public function actionTest()
+    public function actionInterview()
     {
-        return $this->render('test');
+        if (Yii::$app->user->identity->organization->organization_enc_id) {
+            return $this->render('test');
+        } else {
+            return false;
+        }
     }
 
     public function actionFindApplications()
@@ -202,7 +206,7 @@ class SchedularController extends Controller
             }
 
             $save = $this->saveData($res);
-            if($save){
+            if ($save) {
                 return [
                     'status' => 200,
                     'response' => $res
@@ -260,7 +264,7 @@ class SchedularController extends Controller
                     $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
                     $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
                     $interview_candidate->applied_application_enc_id = $application_enc_id;
-                    if(!$interview_candidate->save()){
+                    if (!$interview_candidate->save()) {
                         return false;
                     }
                 }
@@ -268,7 +272,7 @@ class SchedularController extends Controller
 
             foreach ($data['interviewers'] as $i) {
 
-                if(!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
+                if (!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
 
                     $interviewer = new Interviewers();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -294,7 +298,7 @@ class SchedularController extends Controller
 
             foreach ($data['timings'] as $date => $time) {
 
-               $date = date('Y-m-d', strtotime($date));
+                $date = date('Y-m-d', strtotime($date));
 
                 $interview_dates = new InterviewDates();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -316,14 +320,14 @@ class SchedularController extends Controller
                         }
                     }
 
-                }else{
+                } else {
                     return false;
                 }
             }
 
             return true;
 
-        }else{
+        } else {
             return false;
         }
 
@@ -339,4 +343,96 @@ class SchedularController extends Controller
 
         return $type->interview_type_enc_id;
     }
+
+    public function actionUpdateInterview()
+    {
+        return $this->render('update');
+    }
+
+    public function actionGetInterviewData()
+    {
+
+        if (Yii::$app->request->isAjax) {
+
+            $company_scheduled_interview = ScheduledInterview::find()
+                ->alias('a')
+                ->select(['a.scheduled_interview_enc_id', 'b.application_enc_id', 'e.name profile', 'd.name job_title', 'f.name interview_type', '(CASE
+                    WHEN a.interview_mode = 1 THEN "online"
+                    WHEN a.interview_mode = 2 THEN m.name
+                    END) as interview_at',
+                    'o.interview_date_enc_id',
+                    'o.interview_date',
+                    'p.from',
+                    'p.to',
+                    'p.interview_date_timing_enc_id',])
+                ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['title c' => function ($c) {
+                        $c->joinWith(['categoryEnc d']);
+                        $c->joinWith(['parentEnc e'], false);
+                    }], false);
+                    $b->onCondition(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+                }], false)
+                ->joinWith(['interviewLocationEnc k' => function ($k) {
+                    $k->joinWith(['locationEnc l' => function ($l) {
+                        $l->joinWith(['cityEnc m']);
+                    }]);
+                }], false)
+                ->joinWith(['scheduledInterviewTypeEnc f'], false)
+                ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
+                ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
+                ->where(['a.status' => 1])
+                ->asArray()
+                ->all();
+
+            return json_encode($company_scheduled_interview);
+        }
+    }
+
+    public function actionGetDataToUpdate()
+    {
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
+            $scheduled_interview_enc_id = Yii::$app->request->post('scheduled_interview_enc_id');
+            $id = Yii::$app->request->post('application_enc_id');
+            $type = Yii::$app->request->post('type');
+
+            $all_data = [];
+            $data = $this->getData($scheduled_interview_enc_id);
+            $application_locations = $this->findOrganizationInterviewLocations($id);
+
+
+            $application_process = $this->findApplicationFields($id);
+            $all_data['application_process'] = $application_process;
+            $applied_candidates = $this->findAppliedCandidates($id);
+            $all_data['applied_candidates'] = $applied_candidates;
+
+            $all_data['application_location'] = $application_locations;
+            $all_data['data_to_update'] = $data;
+
+            return json_encode($all_data);
+        }
+    }
+
+    private function getData($s_id)
+    {
+        $data = ScheduledInterview::find()
+            ->alias('a')
+            ->select(['a.scheduled_interview_enc_id', 'a.interview_mode', 'a.interview_location_enc_id', 'b.name interview_type', 'c.number_of_candidates', 'c.process_field_enc_id'])
+            ->joinWith(['scheduledInterviewTypeEnc b'], false)
+            ->joinWith(['interviewOptions c'], false)
+            ->joinWith(['interviewCandidates d' => function ($d) {
+                $d->select(['d.scheduled_interview_enc_id', 'd.applied_application_enc_id']);
+            }])
+            ->joinWith(['interviewDates f' => function ($f) {
+                $f->joinWith(['interviewDateTimings']);
+            }])
+            ->where(['a.scheduled_interview_enc_id' => $s_id])
+            ->groupBy('a.scheduled_interview_enc_id')
+            ->asArray()
+            ->all();
+
+        return $data;
+    }
+
 }

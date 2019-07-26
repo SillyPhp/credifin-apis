@@ -19,6 +19,12 @@ if (!empty(Yii::$app->user->identity->organization)) {
         'url' => Url::toRoute('/templates'),
     ];
     array_push($result, $template);
+
+    $schedular = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Interview Schedular'),
+        'url' => Url::toRoute('/schedular/update-interview'),
+    ];
+    array_push($result, $schedular);
 }
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
