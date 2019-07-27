@@ -5,16 +5,19 @@ namespace account\controllers;
 use account\models\applications\Applied;
 use common\models\ApplicationTypes;
 use common\models\UserCoachingTutorials;
+use common\models\Users;
 use common\models\WidgetTutorials;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
+use yii\web\HttpException;
 use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Organizations;
 use common\models\AppliedApplications;
 use common\models\AppliedApplicationProcess;
+use account\models\organization\CompanyLogoForm;
 
 class DashboardController extends Controller
 {
@@ -203,6 +206,32 @@ class DashboardController extends Controller
             'services' => $services,
             'business_activities' => $business_activities,
         ]);
+    }
+
+    public function actionUpdateProfile()
+    {
+        if (Yii::$app->user->identity->organization) {
+            $organization = Organizations::find()
+                ->select(['logo', 'logo_location', 'initials_color'])
+                ->where(['slug' => Yii::$app->user->identity->organization->slug, 'status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->one();
+            $companyLogoFormModel = new CompanyLogoForm();
+            return $this->render('logo-modal', [
+                'companyLogoFormModel' => $companyLogoFormModel,
+                'organization' => $organization,
+            ]);
+        } else{
+            $user = Users::find()
+                ->select(['logo', 'logo_location', 'initials_color'])
+                ->where(['username' => Yii::$app->user->identity->username, 'status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            return $this->render('user-image-modal', [
+                'user' => $user,
+            ]);
+        }
     }
 
 }
