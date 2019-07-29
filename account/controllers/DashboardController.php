@@ -2,11 +2,6 @@
 
 namespace account\controllers;
 
-use account\models\applications\Applied;
-use common\models\ApplicationTypes;
-use common\models\UserCoachingTutorials;
-use common\models\Users;
-use common\models\WidgetTutorials;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -19,6 +14,11 @@ use common\models\AppliedApplications;
 use common\models\AppliedApplicationProcess;
 use account\models\organization\CompanyLogoForm;
 use account\models\user\UserProfilePictureEdit;
+use account\models\applications\Applied;
+use common\models\ApplicationTypes;
+use common\models\UserCoachingTutorials;
+use common\models\Users;
+use common\models\WidgetTutorials;
 
 class DashboardController extends Controller
 {
@@ -50,40 +50,30 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
-        $model = new \account\models\services\ServiceSelectionForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            if (Yii::$app->user->identity->organization) {
-                return $this->redirect('/' . Yii::$app->user->identity->organization->slug);
-            } else{
-                return $this->redirect('/' . Yii::$app->user->identity->username . '/edit');
-            }
+        if (!Yii::$app->user->identity->organization->business_activity_enc_id) {
+            return $this->_businessActivity();
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
-            $services = \common\models\Services::find()
-                ->select(['service_enc_id', 'name'])
-                ->where(['is_always_visible' => 0])
-                ->orderBy(['sequence' => SORT_ASC])
-                ->asArray()
-                ->all();
+            return $this->_services();
+        }
 
-            return $this->render('services', [
-                'model' => $model,
-                'services' => $services,
-            ]);
+        if(Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->logo) {
+            return $this->_uploadLogo();
+        }
+
+        if(!Yii::$app->user->identity->image) {
+            return $this->_uploadImage();
         }
 
         if (Yii::$app->user->identity->organization) {
-
             $viewed = $this->hasViewed();
-
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
             $applications = [
                 'jobs' => $this->_applications(3),
                 'internships' => $this->_applications(3, 'Internships'),
             ];
-
         } else {
             $viewed = $this->hasViewed();
             $this->_condition = ['b.created_by' => Yii::$app->user->identity->user_enc_id];
@@ -134,10 +124,12 @@ class DashboardController extends Controller
             ->asArray()
             ->all();
 
+        $servicesModel = new \account\models\services\ServiceSelectionForm();
+
         return $this->render('index', [
             'applied' => $applied_app,
             'services' => $services,
-            'model' => $model,
+            'model' => $servicesModel,
             'applications' => $applications,
             'question_list' => $question,
             'viewed' => $viewed,
@@ -187,7 +179,7 @@ class DashboardController extends Controller
 
     public function actionBusinessActivity()
     {
-        $model = new \account\models\services\ServiceSelectionForm();
+        $model = new \account\models\services\BusinessActivitySelectionForm();
         $services = \common\models\Services::find()
             ->select(['service_enc_id', 'name'])
             ->where(['is_always_visible' => 0])
@@ -222,7 +214,7 @@ class DashboardController extends Controller
                 'companyLogoFormModel' => $companyLogoFormModel,
                 'organization' => $organization,
             ]);
-        } else{
+        } else {
             $userProfilePicture = new UserProfilePictureEdit();
             $user = Users::find()
                 ->select(['image', 'image_location', 'initials_color'])
@@ -235,6 +227,63 @@ class DashboardController extends Controller
                 'user' => $user,
             ]);
         }
+    }
+
+    private function _businessActivity()
+    {
+
+        $model = new \account\models\businessActivities\BusinessActivitySelectionForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->add()) {
+            return $this->redirect("/account/dashboard");
+        } else {
+            return false;
+        }
+
+        $business_activities = \common\models\extended\BusinessActivities::find()
+            ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
+            ->where(['!=', 'business_activity', 'Business'])
+            ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
+            ->asArray()
+            ->all();
+        return $this->render('organizations/business-activity', [
+            'business_activities' => $business_activities,
+        ]);
+    }
+
+    private function _services()
+    {
+        $model = new \account\models\services\ServiceSelectionForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->add()) {
+            if (Yii::$app->user->identity->organization) {
+                return true;
+            } else{
+                return false;
+            }
+        }
+
+        if (!Yii::$app->user->identity->services['selected_services']) {
+            $services = \common\models\Services::find()
+                ->select(['service_enc_id', 'name'])
+                ->where(['is_always_visible' => 0])
+                ->orderBy(['sequence' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            return $this->render('services', [
+                'model' => $model,
+                'services' => $services,
+            ]);
+        }
+    }
+
+    private function _uploadImage() {
+        return $this->render("user-image-modal");
+    }
+
+    private function _uploadLogo() {
+        return $this->render("logo-modal");
     }
 
 }
