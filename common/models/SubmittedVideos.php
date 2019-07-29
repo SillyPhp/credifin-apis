@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%submitted_videos}}".
  *
@@ -17,11 +19,12 @@ namespace common\models;
  * @property string $cover_image Video Cover Image
  * @property string $description Video Description
  * @property string $tags Video Tags
- * @property string $status Video Status (Pending or Approved)
+ * @property int $status Video Status (1 as Active, 2 as Inactive, 3 as Pending, 4 as Rejected)
  * @property string $created_on On which date Video information was added to database
  * @property string $created_by By which User Video information was added
  * @property string $last_updated_on On which date Video information was updated
  * @property string $last_updated_by By which User Video information was updated
+ * @property int $is_deleted 0 as true, 1 as false
  *
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
  * @property Users $createdBy
@@ -43,10 +46,11 @@ class SubmittedVideos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['video_enc_id', 'type', 'name', 'slug', 'link', 'video_duration', 'cover_image', 'description', 'created_by'], 'required'],
+            [['video_enc_id', 'name', 'slug', 'link', 'video_duration', 'cover_image', 'description', 'created_by'], 'required'],
             [['video_duration', 'created_on', 'last_updated_on'], 'safe'],
-            [['description', 'status'], 'string'],
-            [['video_enc_id', 'name', 'link', 'cover_image', 'tags', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['description', 'tags'], 'string'],
+            [['status', 'is_deleted'], 'integer'],
+            [['video_enc_id', 'name', 'link', 'cover_image', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['type', 'category', 'sub_category'], 'string', 'max' => 30],
             [['slug'], 'string', 'max' => 200],
             [['video_enc_id'], 'unique'],
@@ -55,6 +59,7 @@ class SubmittedVideos extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

@@ -609,7 +609,7 @@ $this->registerCss("
         float: left;
         width: 100%;
 //        padding-top: 20px;
-    }
+    }str
     .job-details h3 {
         float: left;
         width: 100%;
