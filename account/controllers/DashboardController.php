@@ -18,6 +18,7 @@ use common\models\Organizations;
 use common\models\AppliedApplications;
 use common\models\AppliedApplicationProcess;
 use account\models\organization\CompanyLogoForm;
+use account\models\user\UserProfilePictureEdit;
 
 class DashboardController extends Controller
 {
@@ -222,13 +223,15 @@ class DashboardController extends Controller
                 'organization' => $organization,
             ]);
         } else{
+            $userProfilePicture = new UserProfilePictureEdit();
             $user = Users::find()
-                ->select(['logo', 'logo_location', 'initials_color'])
+                ->select(['image', 'image_location', 'initials_color'])
                 ->where(['username' => Yii::$app->user->identity->username, 'status' => 'Active', 'is_deleted' => 0])
                 ->asArray()
                 ->one();
 
             return $this->render('user-image-modal', [
+                'userProfilePicture' => $userProfilePicture,
                 'user' => $user,
             ]);
         }
