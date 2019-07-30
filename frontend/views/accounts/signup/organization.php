@@ -51,16 +51,6 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <?=
-            $form->field($model, 'organization_business_activity')->dropDownList(
-                $business_activities, [
-                'prompt' => Yii::t('frontend', 'Select Business Activity'),
-            ])->label(false);
-            ?>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-6 col-sm-6">
             <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
         </div>
