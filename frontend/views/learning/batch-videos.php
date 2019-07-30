@@ -49,16 +49,15 @@ $script = <<< JS
                     
                     if(all_results.length > 50){
                         var n = Math.floor(all_results.length/50);
-                        var more = all_results%50;
+                        var more = all_results.length % 50;
+                        
                         var k = 0;
                         for(var t = 0; t < n; t++){
-                            console.log(all_results.slice(k,k+50));
-                            // saveVideos(all_results.slice(k,k+50));
+                            saveVideos(all_results.slice(k,k+50));
                             k+=50;
                         }
                         if(more > 0){
-                            console.log(all_results.slice(k,k+more));
-                            // saveVideos(all_results.slice(k,k+more));
+                            saveVideos(all_results.slice(k,k+more));
                         }
                     }else{
                         saveVideos(all_results);
