@@ -896,6 +896,12 @@ class ApplicationForm extends Model
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
             }])
+            ->joinWith(['applicationPlacementCities r'=>function($b)
+            {
+                $b->onCondition(['r.is_deleted' => 0]);
+                $b->select(['r.application_enc_id','cn.city_enc_id','cn.name']);
+                $b->joinWith(['cityEnc cn'], false);
+            }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->onCondition(['p.is_deleted' => 0]);
                 $b->joinWith(['locationEnc u' => function ($b) {
@@ -920,7 +926,7 @@ class ApplicationForm extends Model
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
             ->select(['a.application_enc_id','a.preferred_gender','a.description',
-                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*','(CASE
+                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
                 WHEN a.experience = "2" THEN "1 Year"

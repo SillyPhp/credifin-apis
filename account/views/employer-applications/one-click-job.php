@@ -13,7 +13,7 @@ use yii\web\JsExpression;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>
-                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create Job Or Internship'); ?></span>
+                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create Job In Minutes'); ?></span>
                     </div>
                 </div>
                 <?php
@@ -85,16 +85,25 @@ use yii\web\JsExpression;
                             <?= $form->field($model, 'job_type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'type')->dropDownList($job_type)->label(false); ?>
+                            <?= $form->field($model, 'positions')->textInput(['placeholder'=>'No Of Openings'])->label(false); ?>
                         </div>
                         <div class="col-md-12">
-                            <?=  $form->field($model, 'location')->widget(Select2::classname(), [
-                                'data' => $placement_locations,
-                                'options' => ['placeholder' => 'Select Placement Location ...', 'multiple' => true],
+                            <?= $form->field($model, 'location')->widget(Select2::classname(), [
+                                'options' => ['placeholder' => 'Locations','multiple'=>true],
                                 'pluginOptions' => [
-                                    'tags' => true,
-                                    'tokenSeparators' => [',', ' '],
-                                    'maximumInputLength' => 10
+                                    'allowClear' => true,
+                                    'minimumInputLength' => 1,
+                                    'language' => [
+                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                    ],
+                                    'ajax' => [
+                                        'url' => '/cities/career-city-list',
+                                        'dataType' => 'json',
+                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                                    ],
+                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
                                 ],
                             ])->label(false); ?>
                         </div>
@@ -125,7 +134,6 @@ use yii\web\JsExpression;
             </div>
         </div>
     </div>
-
 <?php
 $this->registerCss("
 .typeahead,
@@ -448,13 +456,13 @@ $('input[name= "wage_type"]').on('change',function(){
         }
      
    }) 
+var job_titles;   
 $('#job_profile').on('change',function()
     { 
       prime_id = $(this).val(); 
       $('#job_title').val('');
       $('#job_title').typeahead('destroy');
       load_job_titles(prime_id);
-      //load_skills(prime_id);
    });
 var titles_url = '/account/categories-list/load-titles?id=';
 
@@ -507,9 +515,39 @@ $('#job_title').typeahead(null, {
   source: categories,
   minLength: 1,
   limit: 20,
-});
+}).blur(validateSelection);
 return true;
 }
+
+function validateSelection() {
+   var theIndex = -1;
+  for (var i = 0; i < job_titles.length; i++) {
+  if (job_titles[i].value == $(this).val()) {
+   var data =  job_titles[i].id;
+   skils_update(data);
+ break;
+   }
+ }
+}
+function skils_update(data) 
+        {
+      $.ajax({
+      url:"/account/categories-list/job-skills",
+      data:{data:data},
+      method:"post",
+      success:function(response)
+        {
+           var obj = JSON.parse(response);
+           var html = [];
+     $.each(obj,function()
+     { 
+      html.push ('<li class="addedTag">'+this.skill+'<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="'+this.skill+'" name="skills[]"></li>');  
+         });
+                                                
+        $(".skill_tag_list").prepend(html);
+        }
+      });    
+        }
 let appEditor;
  ClassicEditor
     .create(document.querySelector('#description'), {
@@ -523,7 +561,6 @@ let appEditor;
         console.error( error );
     } );
 //appEditor.updateSourceElement();
-
 JS;
 $this->registerJs($script);
 $this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");

@@ -1,8 +1,10 @@
 <?php
 namespace account\models\applications;
 use common\models\ApplicationOptions;
+use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
 use common\models\AssignedSkills;
 use common\models\Categories;
@@ -19,8 +21,8 @@ class ShortJobs extends Model
     public $location;
     public $job_profile;
     public $job_type;
-    public $type;
     public $description;
+    public $positions;
     public $email;
     public $wage_type = 1;
     public $fixed_wage;
@@ -33,10 +35,11 @@ class ShortJobs extends Model
     public function rules()
     {
         return [
-            [['job_title','skills','exp','location','gender','type','job_profile','wage_type','job_type'],'required'],
+            [['job_title','skills','positions','exp','location','gender','job_profile','wage_type','job_type'],'required'],
             [['email','description','fixed_wage','min_salary','max_salary'],'safe'],
             [['job_title'],'string','max'=>50],
-            [['job_title','fixed_wage','min_salary','max_salary','email'],'trim'],
+            [['job_title','fixed_wage','min_salary','max_salary','positions','email'],'trim'],
+            [['positions'],'integer','max'=>100000],
             [['fixed_wage'],'string','min'=>4,'max'=>15],
             ['email','email'],
         ];
@@ -65,12 +68,13 @@ class ShortJobs extends Model
             default:
                 $wage_type = 'Unpaid';
         }
+       $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
        $employerApplication = new EmployerApplications();
        $utilitiesModel = new Utilities();
        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
        $employerApplication->application_enc_id = $utilitiesModel->encrypt();
        $employerApplication->application_number = rand(1000,10000).time();
-       $employerApplication->application_type_enc_id = $this->type;
+       $employerApplication->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
        $employerApplication->experience = $this->exp;
        $employerApplication->published_on = date('Y-m-d H:i:s');
        $employerApplication->image = '1';
@@ -124,7 +128,7 @@ class ShortJobs extends Model
         $employerApplication->timings_from = date("H:i:s", strtotime("9:00"));
         $employerApplication->timings_to = date("H:i:s", strtotime("5:00"));
         $employerApplication->joining_date = date('Y-m-d H:i:s');
-        $employerApplication->last_date = date('Y-m-d H:i:s');
+        $employerApplication->last_date = date('Y-m-d', strtotime(' + 56 days'));
         $employerApplication->created_on = date('Y-m-d H:i:s');
         $employerApplication->created_by = Yii::$app->user->identity->user_enc_id;
         $employerApplication->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
@@ -142,6 +146,7 @@ class ShortJobs extends Model
             $applicationoptionsModel->wage_duration = 'Annually';
             $applicationoptionsModel->has_online_interview = 0;
             $applicationoptionsModel->has_questionnaire = 0;
+            $applicationoptionsModel->positions = $this->positions;
             $applicationoptionsModel->pre_placement_offer = null;
             $applicationoptionsModel->has_placement_offer = null;
             $applicationoptionsModel->has_benefits = 0;
@@ -159,17 +164,16 @@ class ShortJobs extends Model
             }
 
             if (!empty($this->location)){
-                foreach ($this->location as $val) {
-                    $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
+                foreach ($this->location as $city) {
+                    $placementCity = new ApplicationPlacementCities();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $applicationPlacementLocationsModel->placement_location_enc_id = $utilitiesModel->encrypt();
-                    $applicationPlacementLocationsModel->positions = 0;
-                    $applicationPlacementLocationsModel->location_enc_id = $val;
-                    $applicationPlacementLocationsModel->application_enc_id = $employerApplication->application_enc_id;
-                    $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
-                    $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$applicationPlacementLocationsModel->save()) {
+                    $placementCity->placement_cities_enc_id = $utilitiesModel->encrypt();
+                    $placementCity->application_enc_id = $employerApplication->application_enc_id;
+                    $placementCity->city_enc_id = $city;
+                    $placementCity->created_on = date('Y-m-d H:i:s');
+                    $placementCity->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$placementCity->save()) {
                         return false;
                     }
                 }
