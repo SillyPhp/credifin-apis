@@ -65,5 +65,10 @@ if (!empty($placement_locations)) {
         <li><i class="fas fa-map-marker-alt"></i>
             <h3>Locations</h3>
             <span> <?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span></li>
+        <?php if (!empty($positions)): ?>
+        <li><i class="fas fa-chart-line"></i>
+            <h3>Total Vacancies</h3>
+            <span> <?= $positions ?></span></li>
+        <?php endif; ?>
     </ul>
 </div>
