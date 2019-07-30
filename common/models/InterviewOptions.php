@@ -12,6 +12,7 @@ use Yii;
  * @property string $scheduled_interview_enc_id
  * @property string $process_field_enc_id
  * @property int $number_of_candidates
+ * @property int $is_deleted 0 as Deleted, 1 as Active
  *
  * @property ScheduledInterview $scheduledInterviewEnc
  * @property InterviewProcessFields $processFieldEnc
@@ -33,7 +34,7 @@ class InterviewOptions extends \yii\db\ActiveRecord
     {
         return [
             [['interview_options_enc_id', 'scheduled_interview_enc_id'], 'required'],
-            [['number_of_candidates'], 'integer'],
+            [['number_of_candidates', 'is_deleted'], 'integer'],
             [['interview_options_enc_id', 'scheduled_interview_enc_id', 'process_field_enc_id'], 'string', 'max' => 100],
             [['interview_options_enc_id'], 'unique'],
             [['scheduled_interview_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScheduledInterview::className(), 'targetAttribute' => ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']],

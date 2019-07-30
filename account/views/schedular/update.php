@@ -39,8 +39,8 @@ echo $this->render('/widgets/header/secondary-header', [
                     <h4 class="modal-title">Update Scheduled Interview</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" id="form">
-                        <input type="hidden" id="eventId" value="0"/>
+                    <form class="form-horizontal" id="form-data">
+                        <input type="hidden" id="eventId" value="0" name="schedule_interview_id"/>
                         <div class="form-group">
                             <label>Application Title</label>
                             <input type="text" id="txtSubject" class="form-control" disabled/>
@@ -49,62 +49,59 @@ echo $this->render('/widgets/header/secondary-header', [
                             <label for="datepicker" class="form-label">Select Interview Date</label>
                             <input class="date-picker setDate" placeholder="Select Dates" size="16" type="text"
                                    id="datepicker" value="" name="date"/>
+                            <input type="hidden" name="date_enc_id" value="" id="date_enc_id">
                         </div>
                         <div class="form-group">
                             <div class="col-sm-6 secondary-time-from">
-                                <label>From</label>
-                                <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
+                                <label>Time From</label>
+                                <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from" name="time_from">
+                                <input type="hidden" name="date_time_enc_id" value="" id="time_enc_id">
                             </div>
                             <div class="col-sm-6 secondary-time-to">
-                                <label>to</label>
-                                <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
+                                <label>Time To</label>
+                                <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to" name="time_to">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Select Type</label>
                             <div class="form-control">
-                                <input type="radio" name="i_type" id="radio3" class="radio3_4"/>
+                                <input type="radio" name="i_type" id="radio3" value="fixed" class="radio3_4"/>
                                 <label for="radio3">Fixed</label>
-                                <input type="radio" name="i_type" id="radio4" class="radio3_4"/>
+                                <input type="radio" name="i_type" id="radio4" value="flexible" class="radio3_4"/>
                                 <label for="radio4">Flexible</label>
                             </div>
                         </div>
                         <div class="form-group flexible">
                             <label>Select Candidates</label>
                             <div class="ui fluid multiple search selection dropdown test-multi">
-                                <input type="hidden" name="country">
+                                <input type="hidden" name="candidates">
                                 <i class="dropdown icon"></i>
                                 <div class="default text">Select Candidate</div>
-                                <div class="menu multi_drop_down">
-                                    <!--                                    <div class="item name_and_id" data-value="{{applied_application_enc_id}}">-->
-                                    <!--                                        <img src="" class="af flag">-->
-                                    <!--                                        Ravinder-->
-                                    <!--                                    </div>-->
-                                </div>
+                                <div class="menu multi_drop_down"></div>
                             </div>
                         </div>
                         <div class="form-group fixed">
                             <label>Number of Candidates</label>
-                            <input type="number" id="candidate_number" class="form-control"></input>
+                            <input type="number" id="candidate_number" class="form-control" name="candidate_numbers"></input>
                         </div>
                         <div class="form-group fixed">
                             <label>Application Process</label>
-                            <select id="app-process" class="form-control">
+                            <select id="app-process" class="form-control" name="application_process">
                                 <option value="">Select</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>Select Mode</label>
                             <div class="form-control">
-                                <input type="radio" name="i_mode" id="radio1" class="radio1_2"/>
+                                <input type="radio" name="i_mode" id="radio1" value="1" class="radio1_2"/>
                                 <label for="radio1">Online</label>
-                                <input type="radio" name="i_mode" id="radio2" class="radio1_2"/>
+                                <input type="radio" name="i_mode" id="radio2" value="2" class="radio1_2"/>
                                 <label for="radio2">Inplace</label>
                             </div>
                         </div>
                         <div class="form-group loc">
                             <label>Location</label>
-                            <select id="location" class="form-control">
+                            <select id="location" class="form-control" name="location">
                                 <option value="">Select</option>
                             </select>
                         </div>
@@ -276,7 +273,6 @@ function getDataToUpdate(){
         success: function(data) {
            $('#myModal').modal('hide');
            data = JSON.parse(data);
-           console.log(data);
            $('#candidate_number').val(data.data_to_update[0]['number_of_candidates']);
             
                 //Clear the HTML Select DropdownList
@@ -328,8 +324,8 @@ function getDataToUpdate(){
                 }
                 
                 var ids = [];
-                $.each(data.data_to_update['interviewCandidates'],function(index) {
-                  ids.push(data.data_to_update['interviewCandidates'][index].applied_application_enc_id);
+                $.each(data.data_to_update[0]['interviewCandidates'],function(index) {
+                  ids.push(data.data_to_update[0]['interviewCandidates'][index].applied_application_enc_id);
                 });
                 
                 $.each(data.applied_candidates,function (index){
@@ -394,8 +390,8 @@ function openEditForm(){
         $('#txtSubject').val(selectedEvent.title +' - '+ selectedEvent.profile);
         $('#txtStart').val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
         $('.setDate').val(selectedEvent.start.format('DD-MM-YYYY'));
-        $('.setDate').attr('data-value',selectedEvent.date_enc_id);
-        $('#time_from').attr('data-value',selectedEvent.date_timing_enc_id);
+        $('#date_enc_id').val(selectedEvent.date_enc_id);
+        $('#time_enc_id').val(selectedEvent.date_timing_enc_id);
         $('#time_from').val(selectedEvent.from);
         $('#time_to').val(selectedEvent.to);
         
@@ -405,58 +401,29 @@ function openEditForm(){
 }
 
 $('#btnSave').click(function() {
-    
-    if($('#radio3').is(':checked')){
-        var interview_type = 'fixed';
-    }else if($('#radio4').is(':checked')){
-        var interview_type = 'flexible';
-    }
-    
-    if($('#radio1').is(':checked')){
-        var mode = 1;
-    }else if($('#radio2').is(':checked')){
-        var mode = 2;
-    }
-    
-    var schedular_interview_enc_id = $('#eventId').val();
-    var candidate_number = $('#candidate_number').val();
-    var application_process = $('#app-process').val();
-    var location = $('#location').val();
-    var selected_candidates = results;
-    var date = $('#txtStart').val();
-    var date_enc_id = $('.setDate').attr('data-value');
-    var date_timing_enc_id = $('#time_from').attr('data-value');
-    
-    var elements = document.getElementById('#form').elements;
-           var obj = {};
-           for (var i = 0; i < elements.length; i++) {
-               var item = elements.item(i);
-               obj[item.name] = item.value;
-           }
-           
-           console.log(obj);
+    var data = $('#form-data').serialize();
+    SaveEvent(data);
 });
 
 function SaveEvent(data){
-    console.log(data);
     $('#myModalSave').modal('hide');
-    // $.ajax({
-    //     type: 'POST',
-    //     url: '/account/home/save-event',
-    //     data: data,
-    //     success: function(data) {
-    //         if(data.status){
-    //             FetchEventAndRenderCalendar();
-    //             $('#myModalSave').modal('hide');
-    //         }
-    //     },
-    //     error: function() {
-    //         alert('failed');
-    //     }
-    // })
+    $.ajax({
+        type: 'POST',
+        url: 'update-data',
+        data: data,
+        success: function(data) {
+            console.log(data);
+            if(data){
+                toastr.success('Updated','success');
+            }else{
+                toastr.error('an error occurred','error');
+            }
+        },
+    })
 }
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerCssFile('@backendAssets/plugins/schedular/css/semantic.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css');
@@ -468,3 +435,4 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-timepicker/js/boo
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/fullcalendar/fullcalendar.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/plugins/schedular/js/semantic.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

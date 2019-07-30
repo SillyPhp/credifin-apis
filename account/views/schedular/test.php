@@ -7,6 +7,14 @@ use yii\helpers\Url;
 
 ?>
 
+    <div id="schedular-loader" class="a" style="--n: 5;">
+        <div class="dot" style="--i: 0;"></div>
+        <div class="dot" style="--i: 1;"></div>
+        <div class="dot" style="--i: 2;"></div>
+        <div class="dot" style="--i: 3;"></div>
+        <div class="dot" style="--i: 4;"></div>
+    </div>
+
 <div class="image-container set-full-height" style="">
     <!--   Big container   -->
     <div class="container">
@@ -69,10 +77,12 @@ use yii\helpers\Url;
     <div class="col-sm-6">
         <label class="headings">Select Interview Timing for {{date}}</label>
         <div class="col-sm-6 secondary-time-from">
-            <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
+            <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
+            <div class="date_error"></div>
         </div>
         <div class="col-sm-6 secondary-time-to">
-            <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
+            <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
+            <div class="date_error"></div>
         </div>
 
         <div id="times-container" class="times-cont"></div>
@@ -86,10 +96,12 @@ use yii\helpers\Url;
     <div id="added-date" class='col-sm-12'>
         <div class="row" style="margin-top: 10px;">
             <div class="col-sm-6 added-time-from">
-                <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
+                <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
+                <div class="date_error"></div>
             </div>
             <div class="col-sm-6 added-time-to">
-                <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
+                <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
+                <div class="date_error"></div>
             </div>
         </div>
         <a class='remove-add'>
@@ -173,11 +185,13 @@ use yii\helpers\Url;
 <script id="main-timings" type="text/template">
     <div class="col-sm-6" id="main_time_from">
         <label for="time_from" class="form-label">Select Interview Timing</label>
-        <input type="text" class="timepicker timepicker-24" id="time_from" placeholder="from">
+        <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
+        <div class="date_error"></div>
     </div>
     <div class="col-sm-6" id="main_time_to">
         <label for="time_to" class="form-label">Select Interview Timing</label>
-        <input type="text" class="timepicker timepicker-24" id="time_to" placeholder="to">
+        <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
+        <div class="date_error"></div>
     </div>
 </script>
 <script id="interview-locations-temp" type="text/template">
@@ -287,6 +301,43 @@ input.float_to_left{margin-top: 8.7px !important;}
     margin: 0;
     height: 20px;
 }
+/* loader css starts */
+.a{
+  display:none;
+  position:fixed;
+  color:#ccc;
+  background-color:currentcolor;
+  padding-top:calc(50vh - 50px);
+  text-align:center;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index: 9999;
+  opacity: 0.8;
+}
+.dot {
+  background: tomato;
+}
+.dot, .dot:after {
+  display: inline-block;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  animation: a 1.5s calc(((var(--i) + var(--o, 0))/var(--n) - 1)*1.5s) infinite;
+}
+.dot:after {
+  --o: 1;
+  background: currentcolor;
+  content: "";
+}
+
+@keyframes a {
+  0%, 50% {
+    transform: scale(0);
+  }
+}
+/* loader css ends */
 ');
 $script = <<< JS
 

@@ -14,6 +14,7 @@ use Yii;
  * @property string $interview_date_timing_enc_id
  * @property string $process_field_enc_id
  * @property int $status 0 as Not Sent, 1 as Pending, 2 as Accepted
+ * @property int $is_deleted 0 as Deleted, 1 as Active
  *
  * @property ScheduledInterview $scheduledInterviewEnc
  * @property AppliedApplications $appliedApplicationEnc
@@ -36,7 +37,7 @@ class InterviewCandidates extends \yii\db\ActiveRecord
     {
         return [
             [['interview_candidate_enc_id', 'scheduled_interview_enc_id', 'applied_application_enc_id'], 'required'],
-            [['status'], 'integer'],
+            [['status', 'is_deleted'], 'integer'],
             [['interview_candidate_enc_id', 'scheduled_interview_enc_id', 'applied_application_enc_id', 'interview_date_timing_enc_id', 'process_field_enc_id'], 'string', 'max' => 100],
             [['interview_candidate_enc_id'], 'unique'],
             [['scheduled_interview_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ScheduledInterview::className(), 'targetAttribute' => ['scheduled_interview_enc_id' => 'scheduled_interview_enc_id']],

@@ -10,7 +10,11 @@
             type: "POST",
             async: false,
             data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+            beforeSend: function(){
+                $('#schedular-loader').fadeIn(1000);
+            },
             success: function (data) {
+                $('#schedular-loader').fadeOut(1000);
                 results.applications = data.response;
                 var html = $('#select-application').html();
                 var output = Mustache.render(html, results);
@@ -150,7 +154,11 @@
                     data: {
                         application_id
                     },
+                    beforeSend: function(){
+                        $('#schedular-loader').fadeIn(1000);
+                    },
                     success: function (data) {
+                        $('#schedular-loader').fadeOut(1000);
                         results.interviewrounds = data.results;
                         var html = $('#select-round').html();
                         var output = Mustache.render(html, results);
@@ -166,7 +174,11 @@
                     data: {
                         application_id
                     },
+                    beforeSend: function(){
+                        $('#schedular-loader').fadeIn(1000);
+                    },
                     success: function (data) {
+                        $('#schedular-loader').fadeOut(1000);
                         results.appliedcandidates = data.results;
                         var html = $('#select-candidate').html();
                         var output = Mustache.render(html, results);
@@ -234,7 +246,7 @@
     });
 
     //checkbox event for all selected date
-    $(document).on('change', '#all-dates', function(){
+    $(document).on('change', '#all-dates, #datepicker', function(){
         check_all_dates();
     });
 
@@ -253,7 +265,7 @@
                 return false;
             }
         } else{
-            $('#same-timings-cont').append(Mustache.render($('#main-timings').html()));
+            $('#same-timings-cont').html(Mustache.render($('#main-timings').html()));
             $('#selected-dates').html("");
         }
     }
@@ -284,7 +296,7 @@
     var dates_count;
     function addTimes() {
         dates = [];
-
+        $('#selected-dates').html('');
         var the_date = $('.date-picker').datepicker('getDates');
         for (var j = 0; j < the_date.length; j++) {
             var s_date = convert(the_date[j].toString());
@@ -292,6 +304,7 @@
                 date: s_date
             });
         }
+        console.log(dates);
 
         dates_count = dates.length;
         var time_slots = $('#dates').html();
@@ -344,7 +357,11 @@
                 data : {
                     application_id : results.application_id
                 },
+                beforeSend: function(){
+                    $('#schedular-loader').fadeIn(1000);
+                },
                 success: function (data) {
+                    $('#schedular-loader').fadeOut(1000);
                     var html = $('#interview-locations-temp').html();
                     results.interviewlocation = data.response;
                     var output = Mustache.render(html, results);
@@ -442,7 +459,11 @@
                 url: '/account/schedular/fix-interview',
                 type: 'POST',
                 data: results,
+                beforeSend: function(){
+                    $('#schedular-loader').fadeIn(1000);
+                },
                 success: function (data) {
+                    $('#schedular-loader').fadeOut(1000);
                     if (data.status == 200) {
                         console.log(data);
                         toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
@@ -454,5 +475,22 @@
             })
         }
     })
+
+    $(document).on('blur', '.time_to, .time_from', function () {
+        var element = $(this);
+        validate_time(element);
+    })
+
+    function validate_time(element){
+        var to_val = element.val();
+        var from_val = element.parent().closest('.col-sm-6').children('input').val();
+
+        if(to_val <= from_val){
+            console.log('error');
+            element.closest('.date_error').text('Invalid Time');
+        } else {
+            element.closest('.date_error').text('');
+        }
+    }
 
 })(jQuery);

@@ -378,8 +378,12 @@ class SchedularController extends Controller
                     }]);
                 }], false)
                 ->joinWith(['scheduledInterviewTypeEnc f'], false)
-                ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
-                ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
+                ->joinWith(['interviewDates o' => function ($o) {
+                    $o->andWhere(['o.is_deleted' => 1]);
+                    $o->joinWith(['interviewDateTimings p' => function ($p) {
+                        $p->andWhere(['p.is_deleted' => 1]);
+                    }]);
+                }])
                 ->where(['a.status' => 1])
                 ->asArray()
                 ->all();
@@ -420,11 +424,15 @@ class SchedularController extends Controller
             ->alias('a')
             ->select(['a.scheduled_interview_enc_id', 'a.interview_mode', 'a.interview_location_enc_id', 'b.name interview_type', 'c.number_of_candidates', 'c.process_field_enc_id'])
             ->joinWith(['scheduledInterviewTypeEnc b'], false)
-            ->joinWith(['interviewOptions c'], false)
+            ->joinWith(['interviewOptions c' => function ($c) {
+                $c->onCondition(['c.is_deleted' => 1]);
+            }], false)
             ->joinWith(['interviewCandidates d' => function ($d) {
                 $d->select(['d.scheduled_interview_enc_id', 'd.applied_application_enc_id']);
+                $d->onCondition(['d.is_deleted' => 1]);
             }])
             ->joinWith(['interviewDates f' => function ($f) {
+                $f->onCondition(['f.is_deleted' => 1]);
                 $f->joinWith(['interviewDateTimings']);
             }])
             ->where(['a.scheduled_interview_enc_id' => $s_id])
@@ -433,6 +441,189 @@ class SchedularController extends Controller
             ->all();
 
         return $data;
+    }
+
+    public function actionUpdateData()
+    {
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
+            //getting data from ajax to update
+            $data = Yii::$app->request->post();
+
+            //creating array of applied_application_enc_id
+            $candidate_applications = explode(',', $data['candidates']);
+
+            $utilitiesModel = new \common\models\Utilities();
+
+            //check interview scheduled or not
+            $sechduled = ScheduledInterview::find()
+                ->where(['scheduled_interview_enc_id' => $data['schedule_interview_id']])
+                ->one();
+
+            //check interview options data
+            $interview_option = InterviewOptions::find()
+                ->where(['scheduled_interview_enc_id' => $data['schedule_interview_id'], 'is_deleted' => 1])
+                ->one();
+
+            //check interview candidate data
+            $interview_candidates = InterviewCandidates::find()
+                ->where(['scheduled_interview_enc_id' => $data['schedule_interview_id'], 'is_deleted' => 1])
+                ->asArray()
+                ->all();
+
+            //extracting applied_application_enc_id
+            $candidates_application_enc_id = [];
+            foreach ($interview_candidates as $i) {
+                array_push($candidates_application_enc_id, $i['applied_application_enc_id']);
+            }
+
+
+            $to_be_added = array_diff($candidate_applications, $candidates_application_enc_id);
+            $to_be_deleted = array_diff($candidates_application_enc_id, $candidate_applications);
+
+
+            //checking interview dates
+            $interview_dates = InterviewDates::find()
+                ->where(['interview_date_enc_id' => $data['date_enc_id'], 'is_deleted' => 1])
+                ->one();
+
+            //check intervie date timings
+            $interview_time = InterviewDateTimings::find()
+                ->where(['interview_date_timing_enc_id' => $data['date_time_enc_id'], 'is_deleted' => 1])
+                ->one();
+
+            //if scheduled go to update
+            if ($sechduled) {
+
+                if ($data['i_mode'] == 2) {
+                    $sechduled->interview_location_enc_id = $data['location'];
+                }
+                $sechduled->interview_mode = $data['i_mode'];
+                $sechduled->scheduled_interview_type_enc_id = $this->interviewType($data['i_type']);
+
+                if ($sechduled->update()) {
+
+                    //if type fixed then deleted from interview candidates if it has data
+                    if ($data['i_type'] == 'fixed') {
+
+                        if ($interview_candidates) {
+                            foreach ($candidates_application_enc_id as $id) {
+                                $to_delete = InterviewCandidates::find()
+                                    ->where(['applied_application_enc_id' => $id, 'is_deleted' => 1])
+                                    ->one();
+
+                                $to_delete->is_deleted = 0;
+                                if (!$to_delete->update()) {
+                                    return false;
+                                }
+                            }
+                        }
+
+                        //update interview options if it has data else add new data
+                        if ($interview_option) {
+                            $interview_option->process_field_enc_id = $data['application_process'];
+                            $interview_option->number_of_candidates = $data['candidate_numbers'];
+                            if (!$interview_option->update()) {
+                                return false;
+                            }
+                        } else {
+                            $interview_options = new InterviewOptions();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
+                            $interview_options->scheduled_interview_enc_id = $data['schedule_interview_id'];
+                            $interview_options->process_field_enc_id = $data['application_process'];
+                            $interview_options->number_of_candidates = $data['candidate_numbers'];
+                            if (!$interview_options->save()) {
+                                return false;
+                            }
+                        }
+                    } //if type flexible then delete data from interview option if his has already
+                    elseif ($data['i_type'] == 'flexible') {
+
+                        if ($interview_option) {
+                            $interview_option->is_deleted = 0;
+                            if (!$interview_option->update()) {
+                                return false;
+                            }
+                        }
+
+                        //update data if interview candidates has data
+                        if ($interview_candidates) {
+                            if (!empty($to_be_added)) {
+                                $this->addCandidates($to_be_added, $data);
+                            }
+                            if (!empty($to_be_deleted)) {
+                                foreach ($to_be_deleted as $t) {
+                                    $to_delete = InterviewCandidates::find()
+                                        ->where(['applied_application_enc_id' => $t])
+                                        ->one();
+
+                                    $to_delete->is_deleted = 0;
+                                    if (!$to_delete->update()) {
+                                        return false;
+                                    }
+                                }
+                            }
+                        } else {
+                            //saving selected candidates to Interview candidates table
+                            $this->addCandidates($candidate_applications, $data);
+                        }
+
+                    }
+
+
+                    if ($interview_dates) {
+
+                        //delete previous data and time from previous data
+                        $interview_dates->is_deleted = 0;
+                        if ($interview_dates->update()) {
+                            $interview_time->is_deleted = 0;
+                            if (!$interview_time->update()) {
+                                return false;
+                            }
+                        }
+
+                        //add new row in date_time table
+                        $date = date('Y-m-d', strtotime($data['date']));
+
+                        $interview_date = new InterviewDates();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interview_date->interview_date_enc_id = $utilitiesModel->encrypt();
+                        $interview_date->scheduled_interview_enc_id = $data['schedule_interview_id'];
+                        $interview_date->interview_date = $date;
+                        if ($interview_date->save()) {
+                            $interview_date_timing = new InterviewDateTimings();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                            $interview_date_timing->interview_date_enc_id = $interview_date['interview_date_enc_id'];
+                            $interview_date_timing->from = date("H:i", strtotime($data['time_from']));
+                            $interview_date_timing->to = date("H:i", strtotime($data['time_to']));
+                            if (!$interview_date_timing->save()) {
+                                return false;
+                            }
+                        }
+
+                    }
+                    return true;
+                }
+            }
+        }
+    }
+
+    private function addCandidates($candidate_applications, $data)
+    {
+        $utilitiesModel = new \common\models\Utilities();
+        foreach ($candidate_applications as $application_enc_id) {
+            $interview_candidate = new InterviewCandidates();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
+            $interview_candidate->scheduled_interview_enc_id = $data['schedule_interview_id'];
+            $interview_candidate->applied_application_enc_id = $application_enc_id;
+            if (!$interview_candidate->save()) {
+                return false;
+            }
+        }
     }
 
 }
