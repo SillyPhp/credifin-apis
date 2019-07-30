@@ -826,6 +826,9 @@ class LearningController extends Controller
         }
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
+        $submittedVideosModel->type = 'Others';
+        $submittedVideosModel->category = 'others';
+        $submittedVideosModel->sub_category = 'others';
         $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
         $submittedVideosModel->created_on = date('Y-m-d H:i:s');
         $utilitiesModel->variables['name'] = $data['title'];
