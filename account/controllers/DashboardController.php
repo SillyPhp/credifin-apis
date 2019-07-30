@@ -59,11 +59,11 @@ class DashboardController extends Controller
             return $this->_services();
         }
 
-        if(Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->logo) {
+        if (Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->logo) {
             return $this->_uploadLogo();
         }
 
-        if(!Yii::$app->user->identity->image) {
+        if (!Yii::$app->user->identity->image) {
             return $this->_uploadImage();
         }
 
@@ -177,30 +177,6 @@ class DashboardController extends Controller
         }
     }
 
-    public function actionBusinessActivity()
-    {
-        $model = new \account\models\services\BusinessActivitySelectionForm();
-        $services = \common\models\Services::find()
-            ->select(['service_enc_id', 'name'])
-            ->where(['is_always_visible' => 0])
-            ->orderBy(['sequence' => SORT_ASC])
-            ->asArray()
-            ->all();
-
-        $business_activities = \common\models\extended\BusinessActivities::find()
-            ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
-            ->where(['!=', 'business_activity', 'Business'])
-            ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
-            ->asArray()
-            ->all();
-
-        return $this->render('organizations/business-activity', [
-            'model' => $model,
-            'services' => $services,
-            'business_activities' => $business_activities,
-        ]);
-    }
-
     public function actionUpdateProfile()
     {
         if (Yii::$app->user->identity->organization) {
@@ -236,8 +212,6 @@ class DashboardController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
             return $this->redirect("/account/dashboard");
-        } else {
-            return false;
         }
 
         $business_activities = \common\models\extended\BusinessActivities::find()
@@ -247,7 +221,8 @@ class DashboardController extends Controller
             ->asArray()
             ->all();
         return $this->render('organizations/business-activity', [
-            'business_activities' => $business_activities,
+            "model" => $model,
+            "business_activities" => $business_activities,
         ]);
     }
 
@@ -256,11 +231,7 @@ class DashboardController extends Controller
         $model = new \account\models\services\ServiceSelectionForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            if (Yii::$app->user->identity->organization) {
-                return true;
-            } else{
-                return false;
-            }
+            return true;
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
@@ -278,11 +249,13 @@ class DashboardController extends Controller
         }
     }
 
-    private function _uploadImage() {
+    private function _uploadImage()
+    {
         return $this->render("user-image-modal");
     }
 
-    private function _uploadLogo() {
+    private function _uploadLogo()
+    {
         return $this->render("logo-modal");
     }
 
