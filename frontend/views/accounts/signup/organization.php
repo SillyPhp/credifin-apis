@@ -8,7 +8,6 @@ use borales\extensions\phoneInput\PhoneInput;
 
 $this->title = Yii::t('frontend', 'Organization Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
-$business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">
