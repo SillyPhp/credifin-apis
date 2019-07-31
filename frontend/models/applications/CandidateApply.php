@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models\applications;
 
+use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
@@ -37,6 +38,17 @@ class CandidateApply extends Widget
             }],false)
             ->asArray()
             ->all();
+        if (empty($locations))
+        {
+            $locations = ApplicationPlacementCities::find()
+                 ->alias('a')
+                ->distinct()
+                ->select(['b.city_enc_id','name'])
+                ->where(['a.application_enc_id'=>$this->application_enc_id])
+                ->joinWith(['cityEnc b'],false)
+                ->asArray()
+                ->all();
+        }
         if (!Yii::$app->user->isGuest) {
 
             $app_que = ApplicationInterviewQuestionnaire::find()

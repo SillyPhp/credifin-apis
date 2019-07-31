@@ -13,6 +13,7 @@ use Yii;
  * @property string $category Category
  * @property string $sub_category Sub Category
  * @property string $name Video Name
+ * @property string $channel_name Channel Name
  * @property string $slug Video Slug
  * @property string $link Video Link
  * @property string $video_duration Video Duration
@@ -50,7 +51,7 @@ class SubmittedVideos extends \yii\db\ActiveRecord
             [['video_duration', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'tags'], 'string'],
             [['status', 'is_deleted'], 'integer'],
-            [['video_enc_id', 'name', 'link', 'cover_image', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['video_enc_id', 'name', 'channel_name', 'link', 'cover_image', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['type', 'category', 'sub_category'], 'string', 'max' => 30],
             [['slug'], 'string', 'max' => 200],
             [['video_enc_id'], 'unique'],
@@ -59,7 +60,6 @@ class SubmittedVideos extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery
