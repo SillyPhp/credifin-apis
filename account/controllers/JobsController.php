@@ -1036,8 +1036,9 @@ class JobsController extends Controller
         return $primaryfields;
     }
 
-    public function actionOneClickJob()
+    public function actionQuickJob()
     {
+        if (Yii::$app->user->identity->organization->organization_enc_id):
         $model = new ShortJobs();
         $data = new ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
@@ -1056,6 +1057,9 @@ class JobsController extends Controller
             return $this->refresh();
         }
         return $this->render('/employer-applications/one-click-job',['placement_locations'=>$placement_locations,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
     }
     private function __organizationJobs()
     {

@@ -155,6 +155,7 @@ class JobApplied extends Model
             ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.interview_process_enc_id = a.interview_process_enc_id')
             ->asArray()
             ->all();
+        if (!empty($process_list)):
         foreach ($process_list as $process) {
             $processModel = new AppliedApplicationProcess;
             $utilitiesModel = new Utilities();
@@ -168,5 +169,6 @@ class JobApplied extends Model
                 return false;
             }
         }
+        endif;
     }
 }
