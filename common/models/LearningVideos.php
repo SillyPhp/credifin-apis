@@ -12,6 +12,7 @@ use Yii;
  * @property string $assigned_category_enc_id Foreign Key to Assigned Categories Table
  * @property string $type Type of Video
  * @property string $title Video Titile
+ * @property string $channel_name Channel Name
  * @property string $cover_image Cover Image of Video
  * @property string $description Video Description
  * @property string $slug Video Slug
@@ -55,7 +56,7 @@ class LearningVideos extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['duration', 'created_on', 'last_updated_on'], 'safe'],
             [['view_count', 'is_sponsored', 'is_featured', 'status', 'is_deleted'], 'integer'],
-            [['video_enc_id', 'assigned_category_enc_id', 'title', 'cover_image', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['video_enc_id', 'assigned_category_enc_id', 'title', 'channel_name', 'cover_image', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['type'], 'string', 'max' => 30],
             [['youtube_video_id'], 'string', 'max' => 50],
             [['video_enc_id'], 'unique'],
@@ -66,6 +67,7 @@ class LearningVideos extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery

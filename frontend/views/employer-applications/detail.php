@@ -139,7 +139,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         }
                         else if ($type=='Job')
                         {
-                            if (!empty($data2)):
+                            if (!empty($data2['interview_process_enc_id'])):
                             echo $this->render('/widgets/employer_applications/job-overview', [
                                 'profile_name'=>$data2['name'],
                                 'industry'=>$data2['industry'],
@@ -154,23 +154,24 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'experience'=>$data2['experience'],
                                 'placement_locations'=>$data2['applicationPlacementLocations'],
                             ]);
-                            else :
+                            else:
                                 echo $this->render('/widgets/employer_applications/overview',[
-                                    'profile_name'=>$data1['name'],
-                                    'job_type'=>$data1['type'],
-                                    'gender'=>$data1['preferred_gender'],
-                                    'wage_type'=>$data1['wage_type'],
-                                    'max_wage'=>$data1['max_wage'],
-                                    'min_wage'=>$data1['min_wage'],
-                                    'fixed_wage'=>$data1['fixed_wage'],
-                                    'experience'=>$data1['experience'],
-                                    'placement_locations'=>$data1['applicationPlacementCities'],
+                                    'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
+                                    'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
+                                    'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
+                                    'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
+                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
+                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
+                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
+                                    'experience'=>(($data1['experience']) ? $data1['experience'] : $data2['experience'] ),
+                                    'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
+                                    'positions'=>(($data1['positions']) ? $data1['positions'] : $data2['positions']),
                                 ]);
                             endif;
                         } ?>
                     </div>
                     <div class="job-details">
-                        <?php if(!empty($data2)) { ?>
+                        <?php if(!empty($data2['interview_process_enc_id'])) { ?>
                             <?=
                             $this->render('/widgets/employer_applications/working-days', [
                                 'working_days' => $data2['working_days']
@@ -206,9 +207,9 @@ $this->render('/widgets/employer_applications/top-banner', [
                         }
                             ?>
                         <?php
-                        if (!empty($data1['applicationSkills'])):
+                        if (!empty($data1['applicationSkills'])||!empty($data2['applicationSkills'])):
                          echo $this->render('/widgets/employer_applications/skills', [
-                             'skills' => $data1['applicationSkills']
+                             'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills'] )
                          ]);
                         endif;
                         ?>
