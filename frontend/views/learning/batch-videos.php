@@ -22,6 +22,9 @@ $script = <<< JS
                 type:'GET',
                 url:'https://www.googleapis.com/youtube/v3/search?channelId='+ channel_id +'&order=date&part=snippet&type=video&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk&maxResults=50',
                 async:false,
+                beforeSend: function(){
+                  $('#btnSubmit').prop('disabled',true);  
+                },
                 success: function(response) {
                     var items = response.items;
                     for(var i=0; i<items.length; i++){
@@ -32,6 +35,7 @@ $script = <<< JS
                             async:false,
                             url:'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+id+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
                             success: function(response) {
+                              video_info['channel_name'] = response['items'][0]['snippet']['channelTitle']; 
                               video_info['title'] = response['items'][0]['snippet']['title'];
                               video_info['description'] = response['items'][0]['snippet']['description'];
                               video_info['cover_image'] = response['items'][0]['snippet']['thumbnails']['high']['url'];
@@ -77,6 +81,7 @@ $script = <<< JS
            success:function(res) {
              if(res.status == 200){
                  toastr.success('success',res.message);
+                 $('#btnSubmit').prop('disabled',false); 
              }else {
                  toastr.error('error','There is and error');
              }

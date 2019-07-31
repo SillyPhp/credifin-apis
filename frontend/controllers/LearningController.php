@@ -23,6 +23,23 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['batch-videos'],
+                'rules' => [
+                    [
+                        'actions' => ['batch-videos'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -816,6 +833,7 @@ class LearningController extends Controller
     private function saveData($data){
         $submittedVideosModel = new SubmittedVideos();
         $utilitiesModel = new Utilities();
+        $submittedVideosModel->channel_name = $data['channel_name'];
         $submittedVideosModel->name = $data['title'];
         $submittedVideosModel->link = $data['link'];
         $submittedVideosModel->cover_image = $data['cover_image'];
