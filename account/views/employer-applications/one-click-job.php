@@ -89,7 +89,7 @@ use yii\web\JsExpression;
                         </div>
                         <div class="col-md-12">
                             <?= $form->field($model, 'location')->widget(Select2::classname(), [
-                                'options' => ['placeholder' => 'Locations','multiple'=>true],
+                                'options' => ['placeholder' => 'Select Cities','multiple'=>true],
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                     'minimumInputLength' => 1,
