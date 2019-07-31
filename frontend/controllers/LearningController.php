@@ -833,6 +833,7 @@ class LearningController extends Controller
     private function saveData($data){
         $submittedVideosModel = new SubmittedVideos();
         $utilitiesModel = new Utilities();
+        $submittedVideosModel->channel_id = $data['channel_id'];
         $submittedVideosModel->channel_name = $data['channel_name'];
         $submittedVideosModel->name = $data['title'];
         $submittedVideosModel->link = $data['link'];
