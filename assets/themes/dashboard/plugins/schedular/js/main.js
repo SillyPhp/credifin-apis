@@ -476,14 +476,23 @@
         }
     })
 
-    $(document).on('blur', '.time_to, .time_from', function () {
+    $(document).on('change', '.time_to', function () {
         var element = $(this);
         validate_time(element);
-    })
+    });
+    $(document).on('change', '.time_from', function () {
+        var element = $(this).parent().next().children('input');
+        // var element = $(this).parent().closest().find('.time-to-main').children('input');
+        // console.log(element);
+        validate_time(element);
+    });
 
     function validate_time(element){
         var to_val = element.val();
-        var from_val = element.parent().closest('.col-sm-6').children('input').val();
+        var from_val = element.parent().prev().children('input').val();
+
+        console.log(from_val);
+        console.log(to_val);
 
         if(to_val <= from_val){
             console.log('error');

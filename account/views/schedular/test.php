@@ -76,11 +76,11 @@ use yii\helpers\Url;
     {{#.}}
     <div class="col-sm-6">
         <label class="headings">Select Interview Timing for {{date}}</label>
-        <div class="col-sm-6 secondary-time-from">
+        <div class="col-sm-6 time-from-main secondary-time-from">
             <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
             <div class="date_error"></div>
         </div>
-        <div class="col-sm-6 secondary-time-to">
+        <div class="col-sm-6 time-to-main secondary-time-to">
             <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
             <div class="date_error"></div>
         </div>
@@ -95,11 +95,11 @@ use yii\helpers\Url;
 <script id="add-more-d" type="text/template">
     <div id="added-date" class='col-sm-12'>
         <div class="row" style="margin-top: 10px;">
-            <div class="col-sm-6 added-time-from">
+            <div class="col-sm-6 time-from-main added-time-from">
                 <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
                 <div class="date_error"></div>
             </div>
-            <div class="col-sm-6 added-time-to">
+            <div class="col-sm-6 time-to-main added-time-to">
                 <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
                 <div class="date_error"></div>
             </div>
@@ -183,12 +183,12 @@ use yii\helpers\Url;
     </div>
 </script>
 <script id="main-timings" type="text/template">
-    <div class="col-sm-6" id="main_time_from">
+    <div class="col-sm-6 time-from-main" id="main_time_from">
         <label for="time_from" class="form-label">Select Interview Timing</label>
         <input type="text" class="timepicker time_from timepicker-24" id="time_from" placeholder="from">
         <div class="date_error"></div>
     </div>
-    <div class="col-sm-6" id="main_time_to">
+    <div class="col-sm-6 time-to-main" id="main_time_to">
         <label for="time_to" class="form-label">Select Interview Timing</label>
         <input type="text" class="timepicker time_to timepicker-24" id="time_to" placeholder="to">
         <div class="date_error"></div>
