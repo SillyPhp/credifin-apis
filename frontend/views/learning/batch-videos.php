@@ -36,6 +36,7 @@ $script = <<< JS
                             url:'https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id='+id+'&key=AIzaSyCdo0IpmiavCbEIY_BGb8O0XCqKpbxPVIk',
                             success: function(response) {
                               video_info['channel_name'] = response['items'][0]['snippet']['channelTitle']; 
+                              video_info['channel_id'] = response['items'][0]['snippet']['channelId']; 
                               video_info['title'] = response['items'][0]['snippet']['title'];
                               video_info['description'] = response['items'][0]['snippet']['description'];
                               video_info['cover_image'] = response['items'][0]['snippet']['thumbnails']['high']['url'];
