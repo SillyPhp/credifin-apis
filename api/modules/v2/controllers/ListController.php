@@ -23,7 +23,7 @@ class ListController extends ApiBaseController
                 $x
                     ->select(['b.organization_enc_id', 'COUNT(b.application_enc_id) application_type', 'c.name'])
                     ->joinWith(['applicationTypeEnc c'], false)
-                    ->OnCondition([
+                    ->onCondition([
                         'b.status' => 'Active',
                         'b.is_deleted' => 0,
                         'b.application_for' => 0
