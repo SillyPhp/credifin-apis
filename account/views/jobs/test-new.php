@@ -12,7 +12,7 @@ use yii\helpers\Url;
     <div class="tab-content">
         <div id="home" class="tab-pane fade in active">
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -95,7 +95,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -178,7 +178,7 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -263,7 +263,7 @@ use yii\helpers\Url;
         </div>
         <div id="menu1" class="tab-pane fade">
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -348,7 +348,7 @@ use yii\helpers\Url;
         </div>
         <div id="tab4" class="tab-pane fade">
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -433,7 +433,7 @@ use yii\helpers\Url;
         </div>
         <div id="menu4" class="tab-pane fade">
             <div class="row pr-user-main">
-                <div class="col-md-12 pr-user-inner-main">
+                <div class="col-md-12 col-sm-12 pr-user-inner-main">
                     <div class="col-md-4">
                         <div class="pr-user-detail">
                             <a class="pr-user-icon" href="#"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQSlL7khGH-Z3o48IDosMRnocgQAMv7Dxg7qLwzb5vrWf8WR7vRA"/></a>
@@ -728,5 +728,48 @@ $this->registerCss('
 }
 
 /* Tabs css ends*/
-
+@media screen and (max-width: 600px){
+    .pr-user-inner-main{
+        width:100%;
+    }
+    .pr-top-actions a{border-radius:4px;}
+    .pr-top-actions, .pr-user-actions ul{text-align:center;}
+    .pr-user-action-main{
+        width:100%;
+        border-top: 1px solid #ddd;
+        height: 75px;
+    }
+    .pr-half-height{
+        padding-top: 15px;
+        width: 49%;
+        display: inline-block;
+        height: 100%;
+    }
+    .pr-half-height:first-child{
+        border-right: 1px solid #ddd;
+        border-bottom: none;
+    }
+    .nav.nav-tabs li {
+        width: 100%;
+        margin-bottom: 0px;
+        border-bottom: 0px;
+        border-right: 1px solid #ddd;
+    }
+    .pr-process-tab li:first-child{border-radius:0px;}
+    .pr-process-tab li:before{
+        top: 34px;
+        right: 2%;
+        transform: rotateZ(90deg);
+    }
+    .pr-process-tab li:after{
+        top: 34px;
+        right: 2%;
+        margin-right: 0px;
+        transform: rotateZ(90deg);
+    }
+    .pr-process-tab li:last-child {
+        border-bottom: 1px solid #ccc !important;
+        border-radius: 0px;
+    }
+}
 ');
