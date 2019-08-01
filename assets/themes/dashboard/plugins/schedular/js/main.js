@@ -2,6 +2,8 @@
 
     var results = {};
 
+    var time = false;
+
     results.mode = "online";
 
     $(document).ready(function(){
@@ -65,6 +67,12 @@
         }
         if(this.childNodes[1].getAttribute('id') == "headingThree") {
             var result = {};
+
+            if(!time){
+                alert('Please enter correct time');
+                return false;
+            }
+
             if ($('#main_time_from').find('input').val() && $('#main_time_to').find('input').val()) {
                 var the_date = $('.date-picker').datepicker('getDates');
                 for (var j = 0; j < the_date.length; j++) {
@@ -304,7 +312,7 @@
                 date: s_date
             });
         }
-        console.log(dates);
+        // console.log(dates);
 
         dates_count = dates.length;
         var time_slots = $('#dates').html();
@@ -331,20 +339,6 @@
         $(this).closest('#added-date').remove();
     });
 
-    //add more interviewers
-    $(document).on('click', '#add-more-interviewers', function(e){
-        e.preventDefault();
-        if(document.querySelectorAll('.interviewers')[0].querySelector('.int_name').value) {
-            $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
-        }else{
-            alert('Please fill the values');
-        }
-    });
-
-    //remove added interviewers
-    $(document).on('click', '.remove-added-interviewers', function(){
-        $(this).closest('.added-interviewers').remove();
-    });
 
     //interview mode selections
     $('input[name= "mode"]').on('change',function(){
@@ -419,7 +413,7 @@
         validateDetails();
     });
 
-    var validate_detail = false;
+    var validate_detail = true;
     function validateDetails(){
         $('.interviewer_details').each(function(){
             if($(this).val() === "" || $(this).val() == null){
@@ -433,6 +427,21 @@
             }
         });
     }
+    //add more interviewers
+    $(document).on('click', '#add-more-interviewers', function(e){
+        e.preventDefault();
+        // if(document.querySelectorAll('.interviewers')[0].querySelector('.int_name').value) {
+            $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
+        // }else{
+        //     alert('Please fill the values');
+        // }
+        validate_detail = false;
+    });
+    //remove added interviewers
+    $(document).on('click', '.remove-added-interviewers', function(){
+        $(this).closest('.added-interviewers').remove();
+        validate_detail = true;
+    });
     $(document).on('click', '#finish', function(){
         validateDetails();
         if(validate_detail) {
@@ -482,8 +491,6 @@
     });
     $(document).on('change', '.time_from', function () {
         var element = $(this).parent().next().children('input');
-        // var element = $(this).parent().closest().find('.time-to-main').children('input');
-        // console.log(element);
         validate_time(element);
     });
 
@@ -491,14 +498,18 @@
         var to_val = element.val();
         var from_val = element.parent().prev().children('input').val();
 
-        console.log(from_val);
-        console.log(to_val);
+        var stt = new Date("November 13, 2013 " + from_val);
+        stt = stt.getTime();
 
-        if(to_val <= from_val){
-            console.log('error');
-            element.closest('.date_error').text('Invalid Time');
+        var endt = new Date("November 13, 2013 " + to_val);
+        endt = endt.getTime();
+
+        if(endt <= stt){
+            element.next('.date_error').text('Invalid Time');
+            time = false;
         } else {
-            element.closest('.date_error').text('');
+            element.next('.date_error').text('');
+            time = true;
         }
     }
 

@@ -173,12 +173,14 @@ class SchedularController extends Controller
                 $res['mode'] = $req['mode'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
-                foreach ($req['interviewers'] as $r) {
-                    $res['interviewers'][] = [
-                        'name' => $r['name'],
-                        'email' => $r['email'],
-                        'phone' => $r['phone'],
-                    ];
+                if($req['interviewers']) {
+                    foreach ($req['interviewers'] as $r) {
+                        $res['interviewers'][] = [
+                            'name' => $r['name'],
+                            'email' => $r['email'],
+                            'phone' => $r['phone'],
+                        ];
+                    }
                 }
                 foreach ($req['timings'] as $key => $value) {
                     $res['timings'][$key] = $value;
@@ -193,12 +195,14 @@ class SchedularController extends Controller
                 $res['selected_candidate'] = $req['selected_candidate'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
-                foreach ($req['interviewers'] as $r) {
-                    $res['interviewers'][] = [
-                        'name' => $r['name'],
-                        'email' => $r['email'],
-                        'phone' => $r['phone'],
-                    ];
+                if($req['interviewers']) {
+                    foreach ($req['interviewers'] as $r) {
+                        $res['interviewers'][] = [
+                            'name' => $r['name'],
+                            'email' => $r['email'],
+                            'phone' => $r['phone'],
+                        ];
+                    }
                 }
                 foreach ($req['timings'] as $key => $value) {
                     $res['timings'][$key] = $value;
@@ -270,28 +274,32 @@ class SchedularController extends Controller
                 }
             }
 
-            foreach ($data['interviewers'] as $i) {
+            if($data['interviewers']) {
 
-                if (!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
+                foreach ($data['interviewers'] as $i) {
 
-                    $interviewer = new Interviewers();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $interviewer->interviewer_enc_id = $utilitiesModel->encrypt();
-                    $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    if (!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
 
-                    if ($interviewer->save()) {
-
-                        $interviewer_detail = new InterviewerDetail();
+                        $interviewer = new Interviewers();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
-                        $interviewer_detail->interviewer_enc_id = $interviewer['interviewer_enc_id'];
-                        $interviewer_detail->name = $i['name'];
-                        $interviewer_detail->email = $i['email'];
-                        $interviewer_detail->phone = $i['phone'];
-                        if (!$interviewer_detail->save()) {
-                            return false;
+                        $interviewer->interviewer_enc_id = $utilitiesModel->encrypt();
+                        $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+
+                        if ($interviewer->save()) {
+
+                            $interviewer_detail = new InterviewerDetail();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
+                            $interviewer_detail->interviewer_enc_id = $interviewer['interviewer_enc_id'];
+                            $interviewer_detail->name = $i['name'];
+                            $interviewer_detail->email = $i['email'];
+                            $interviewer_detail->phone = $i['phone'];
+                            if (!$interviewer_detail->save()) {
+                                return false;
+                            }
                         }
                     }
+
                 }
 
             }

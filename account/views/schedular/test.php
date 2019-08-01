@@ -301,6 +301,9 @@ input.float_to_left{margin-top: 8.7px !important;}
     margin: 0;
     height: 20px;
 }
+.date_error{
+    color: red;
+}
 /* loader css starts */
 .a{
   display:none;
