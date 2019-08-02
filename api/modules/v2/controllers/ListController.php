@@ -42,6 +42,7 @@ class ListController extends ApiBaseController
                 'a.status' => 'Active',
                 'a.is_erexx_registered' => 1
             ])
+            ->limit(6)
             ->asArray()
             ->all();
 
@@ -66,6 +67,7 @@ class ListController extends ApiBaseController
             ->where([
                 'a.is_deleted' => 0,
             ])
+            ->limit(6)
             ->asArray()
             ->all();
 
