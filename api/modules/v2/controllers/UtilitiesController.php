@@ -37,7 +37,7 @@ class UtilitiesController extends ApiBaseController{
                 '(CASE
                 WHEN logo IS NULL OR logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) END
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END
                 ) organization_logo'
             ])
             ->where([

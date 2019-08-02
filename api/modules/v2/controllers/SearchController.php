@@ -4,6 +4,7 @@ namespace api\modules\v2\controllers;
 
 use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
+use common\models\Organizations;
 use Yii;
 use yii\helpers\Url;
 
@@ -27,6 +28,53 @@ class SearchController extends ApiBaseController{
         }else{
             return $this->response(200, $this->findJobs($options));
         }
+    }
+
+    public function actionCompanies($name = null, $page = null){
+        $org = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name', 'CONCAT("'. Url::to('/', true). '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
+            ->distinct()
+            ->joinWith(['employerApplications b' => function ($x) {
+                $x
+                    ->select(['b.organization_enc_id', 'COUNT(b.application_enc_id) application_type', 'c.name'])
+                    ->joinWith(['applicationTypeEnc c'], false)
+                    ->onCondition([
+                        'b.status' => 'Active',
+                        'b.is_deleted' => 0,
+                        'b.application_for' => 0
+                    ])
+                    ->orOnCondition([
+                        'b.status' => 'Active',
+                        'b.is_deleted' => 0,
+                        'b.application_for' => 2
+                    ])
+                    ->groupBy(['b.application_type_enc_id']);
+            }])
+            ->joinWith(['businessActivityEnc d'])
+            ->groupBy(['a.organization_enc_id'])
+            ->where([
+                'a.is_deleted' => 0,
+                'a.status' => 'Active',
+                'a.is_erexx_registered' => 1
+            ]);
+
+        if(isset($name)){
+            $org->andWhere([
+                'or',
+                ['like', 'a.name', $name],
+                ['like', 'a.slug', $name],
+            ]);
+        }
+
+        if (isset($page)) {
+            $org->limit = 9;
+            $org->offset = ($page - 1) * 9;
+        }
+
+        $result = $org->asArray()->all();
+        return $this->response(200, $result);
+
     }
 
     public function actionInternships(){
