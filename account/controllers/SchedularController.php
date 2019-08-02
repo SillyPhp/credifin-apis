@@ -5,6 +5,7 @@ namespace account\controllers;
 use account\models\scheduler\InterviewForm;
 use common\models\ApplicationInterviewLocations;
 use common\models\ApplicationInterviewQuestionnaire;
+use common\models\AppliedApplicationProcess;
 use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\extended\OrganizationInterviewProcess;
@@ -103,28 +104,51 @@ class SchedularController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
-            $res = $this->findAppliedCandidates($req['application_id']);
+            $res = $this->findAppliedCandidates($req['application_id'], $req['process_id']);
+
             return [
                 'results' => $res
             ];
         }
     }
 
-    public function findAppliedCandidates($id)
+    public function findAppliedCandidates($app_id, $process_id)
     {
-        return AppliedApplications::find()
+//        return AppliedApplications::find()
+//            ->alias('a')
+//            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image'])
+//            ->joinWith(['resumeEnc b' => function ($x) {
+//                $x->joinWith(['userEnc c']);
+////                    $x->groupBy(['b.user_enc_id']);
+//            }], false)
+//            ->where([
+//                'application_enc_id' => $app_id
+//            ])
+//            ->groupBy(['b.user_enc_id'])
+//            ->asArray()
+//            ->all();
+
+        $applied_candidates = AppliedApplicationProcess::find()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image'])
-            ->joinWith(['resumeEnc b' => function ($x) {
-                $x->joinWith(['userEnc c']);
-//                    $x->groupBy(['b.user_enc_id']);
-            }], false)
-            ->where([
-                'application_enc_id' => $id
+            ->select([
+                'b.applied_application_enc_id',
+                'c.sequence',
+                'b.current_round',
+                'd.process_field_enc_id'
             ])
-            ->groupBy(['b.user_enc_id'])
+            ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
+                $b->joinWith(['resumeEnc b' => function ($x) {
+                    $x->joinWith(['userEnc c']);
+                    $x->groupBy(['b.user_enc_id']);
+                }], false);
+            }], false)
+            ->innerJoinWith(['fieldEnc c'], false)
+            ->where(['a.application_enc_id' => $app_id,'c.'=>$process_id])
+            ->where(new \yii\db\Expression('`b`.`current_round` = `c`.`sequence`'))
             ->asArray()
             ->all();
+
+
     }
 
     public function actionFindLocations()
@@ -173,7 +197,7 @@ class SchedularController extends Controller
                 $res['mode'] = $req['mode'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
-                if($req['interviewers']) {
+                if ($req['interviewers']) {
                     foreach ($req['interviewers'] as $r) {
                         $res['interviewers'][] = [
                             'name' => $r['name'],
@@ -195,7 +219,7 @@ class SchedularController extends Controller
                 $res['selected_candidate'] = $req['selected_candidate'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
-                if($req['interviewers']) {
+                if ($req['interviewers']) {
                     foreach ($req['interviewers'] as $r) {
                         $res['interviewers'][] = [
                             'name' => $r['name'],
@@ -274,7 +298,7 @@ class SchedularController extends Controller
                 }
             }
 
-            if($data['interviewers']) {
+            if ($data['interviewers']) {
 
                 foreach ($data['interviewers'] as $i) {
 

@@ -154,57 +154,25 @@
             if($('#select-application-sch').find('.error-msg').length > 0){
                 $('#select-application-sch').find('.error-msg').remove();
             }
-            if(results.type == "fixed"){
-                $.ajax({
-                    url: '/account/schedular/find-rounds',
-                    type: 'POST',
-                    // async: false,
-                    data: {
-                        application_id
-                    },
-                    beforeSend: function(){
-                        $('#schedular-loader').fadeIn(1000);
-                    },
-                    success: function (data) {
-                        $('#schedular-loader').fadeOut(1000);
-                        results.interviewrounds = data.results;
-                        var html = $('#select-round').html();
-                        var output = Mustache.render(html, results);
-                        $('#select-app-round').html(output);
-                        load_script_again();
-                    }
-                });
-            }else{
-                $.ajax({
-                    url: '/account/schedular/find-candidates',
-                    type: 'POST',
-                    // async: false,
-                    data: {
-                        application_id
-                    },
-                    beforeSend: function(){
-                        $('#schedular-loader').fadeIn(1000);
-                    },
-                    success: function (data) {
-                        $('#schedular-loader').fadeOut(1000);
-                        results.appliedcandidates = data.results;
-                        var html = $('#select-candidate').html();
-                        var output = Mustache.render(html, results);
-                        $('#select-app-round').html(output);
-                        //country selections of max 3 in dropdown
-                        $('.test-multi').dropdown({
-                            // maxSelections: 3,
-                            placeholder: 'any',
-                            onChange: function (value, text, selectedItem) {
-                                results.selected_candidate = value;
-                                if($('#select-app-round').find('.error-msg').length > 0){
-                                    $('#select-app-round').find('.error-msg').remove();
-                                }
-                            }
-                        });
-                    }
-                });
-            }
+            $.ajax({
+                url: '/account/schedular/find-rounds',
+                type: 'POST',
+                // async: false,
+                data: {
+                    application_id
+                },
+                beforeSend: function(){
+                    $('#schedular-loader').fadeIn(1000);
+                },
+                success: function (data) {
+                    $('#schedular-loader').fadeOut(1000);
+                    results.interviewrounds = data.results;
+                    var html = $('#select-round').html();
+                    var output = Mustache.render(html, results);
+                    $('#select-app-round').html(output);
+                    load_script_again();
+                }
+            });
             allOptions.removeClass('selected');
             $(this).addClass('selected');
             $("#rounds").children('.init').html($(this).html());
@@ -241,6 +209,36 @@
             if($('#select-app-round').find('.error-msg').length > 0){
                 $('#select-app-round').find('.error-msg').remove();
             }
+            $.ajax({
+                url: '/account/schedular/find-candidates',
+                type: 'POST',
+                // async: false,
+                data: {
+                    application_id:results.application_id,
+                    process_id: results.selected_round
+                },
+                beforeSend: function(){
+                    $('#schedular-loader').fadeIn(1000);
+                },
+                success: function (data) {
+                    $('#schedular-loader').fadeOut(1000);
+                    results.appliedcandidates = data.results;
+                    var html = $('#select-candidate').html();
+                    var output = Mustache.render(html, results);
+                    $('#select-application-process').html(output);
+                    //country selections of max 3 in dropdown
+                    $('.test-multi').dropdown({
+                        // maxSelections: 3,
+                        placeholder: 'any',
+                        onChange: function (value, text, selectedItem) {
+                            results.selected_candidate = value;
+                            if($('#select-application-process').find('.error-msg').length > 0){
+                                $('#select-application-process').find('.error-msg').remove();
+                            }
+                        }
+                    });
+                }
+            });
             allOptions2.removeClass('selected');
             $(this).addClass('selected');
             $("#location").children('.init').html($(this).html());
