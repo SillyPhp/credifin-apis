@@ -7,6 +7,53 @@ use yii\helpers\Html;
 ?>
     <div class="container sec2">
         <div class="row col-md-12">
+            <div class="heading-style col-md-6 col-sm-6">Topics</div>
+        </div>
+    </div>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="popular-cate">
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container sec2">
+        <div class="row col-md-12">
             <div class="heading-style col-md-6 col-sm-6">Videos</div>
         </div>
     </div>
@@ -27,6 +74,39 @@ use yii\helpers\Html;
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
+.popular-cate{
+    text-align:center;
+    }
+.newset{
+    text-align:center;
+    max-width: 160px;
+    min-height: 245px;  
+    line-height: 210px;
+    position: relative;
+    width:100%;
+    margin-bottom:20px;
+    }
+.pc-main:nth-child(1) a .newset {
+  background-color:#ffc0cb36;
+}
+.pc-main:nth-child(2) a .newset {
+  background-color:#4e3cd52b;
+}
+.pc-main:nth-child(3) a .newset {
+  background-color:#3cc2d52b;
+}
+.imag{
+    text-align: right;
+    }
+.txt{
+    position: absolute;
+    line-height: 30px;
+    bottom: 10px;
+    left: 10px;
+    font-weight: 400;
+    font-family:roboto;
+    text-transform:uppercase;
+     }
 .heading-style{
     font-family: lobster;
     font-size: 28pt;
