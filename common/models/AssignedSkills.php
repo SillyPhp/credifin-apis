@@ -2,13 +2,16 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%assigned_skills}}".
  *
  * @property int $id Primary Key
  * @property string $assigned_skill_enc_id Assigned Skill Encrypted ID
  * @property string $skill_enc_id Foreign Key to Skills Table
- * @property string $category_enc_id Foreign Key to Categories List Table
+ * @property string $category_enc_id Foreign Key to Categories Table
+ * @property string $assigned_to Assigned To
  * @property string $created_on On which date Assigned Skill information was added to database
  * @property string $created_by By which User Assigned Skill information was added
  * @property string $last_updated_on On which date Assigned Skill information was updated
@@ -21,23 +24,25 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class AssignedSkills extends \yii\db\ActiveRecord {
-
+class AssignedSkills extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%assigned_skills}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_on', 'created_by'], 'required'],
+            [['assigned_to', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['status'], 'string'],
             [['is_deleted'], 'integer'],
             [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['assigned_skill_enc_id'], 'unique'],
@@ -49,31 +54,38 @@ class AssignedSkills extends \yii\db\ActiveRecord {
     }
 
     /**
+     * @inheritdoc
+     */
+
+    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSkillEnc() {
+    public function getSkillEnc()
+    {
         return $this->hasOne(Skills::className(), ['skill_enc_id' => 'skill_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategoryEnc() {
+    public function getCategoryEnc()
+    {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'category_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
-
 }
