@@ -126,14 +126,15 @@ $this->render('/widgets/employer_applications/top-banner', [
                             ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview',[
-                                    'profile_name'=>$data1['name'],
-                                    'job_type'=>$data1['type'],
-                                    'gender'=>$data1['preferred_gender'],
-                                    'wage_type'=>$data1['wage_type'],
-                                    'max_wage'=>$data1['max_wage'],
-                                    'min_wage'=>$data1['min_wage'],
-                                    'fixed_wage'=>$data1['fixed_wage'],
-                                    'placement_locations'=>$data1['applicationPlacementCities'],
+                                    'type'=>$type,
+                                    'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
+                                    'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
+                                    'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
+                                    'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
+                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
+                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
+                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
+                                    'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
                                 ]);
                                 endif;
                         }
@@ -156,6 +157,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                             ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview',[
+                                    'type'=>$type,
                                     'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
                                     'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
                                     'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
