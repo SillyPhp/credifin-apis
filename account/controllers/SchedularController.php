@@ -131,23 +131,26 @@ class SchedularController extends Controller
         $applied_candidates = AppliedApplicationProcess::find()
             ->alias('a')
             ->select([
+                'CONCAT(e.first_name, " ", e.last_name) full_name',
                 'b.applied_application_enc_id',
                 'c.sequence',
                 'b.current_round',
                 'd.process_field_enc_id'
             ])
             ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
-                $b->joinWith(['resumeEnc b' => function ($x) {
-                    $x->joinWith(['userEnc c']);
-                    $x->groupBy(['b.user_enc_id']);
+                $b->joinWith(['resumeEnc d' => function ($x) {
+                    $x->joinWith(['userEnc e']);
+                    $x->groupBy(['d.user_enc_id']);
                 }], false);
             }], false)
             ->innerJoinWith(['fieldEnc c'], false)
-            ->where(['a.application_enc_id' => $app_id,'c.'=>$process_id])
+            ->where(['a.application_enc_id' => $app_id,'a.process_enc_id'=>$process_id])
             ->where(new \yii\db\Expression('`b`.`current_round` = `c`.`sequence`'))
             ->asArray()
             ->all();
 
+        print_r($applied_candidates);
+        die();
 
     }
 
