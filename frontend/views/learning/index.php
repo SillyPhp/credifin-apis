@@ -17,10 +17,10 @@ use yii\helpers\Url;
                         </form>
                     </div>
                 </div>
-                <div class="col-md-6 sm-hidden">
-                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right"
-                         class="responsive"/>
-                </div>
+<!--                <div class="col-md-6 sm-hidden">-->
+<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?><!--" align="right"-->
+<!--                         class="responsive"/>-->
+<!--                </div>-->
             </div>
         </div>
     </section>
@@ -403,8 +403,8 @@ $this->registerCss('
 }
 .backgrounds{
     background-size: 100% 595px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
-    background-position: left top;
+   background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learninghdr1.png") . '");
+    background-position: right;
     background-repeat: no-repeat;
     min-height: 600px;
     padding-top: 70px;
@@ -419,12 +419,14 @@ $this->registerCss('
     font-size: 45px;
     font-weight:bold;
     font-family: lobster;
-    text-transform: uppercase; 
+    text-transform: uppercase;
+    color:wheat; 
 }
 .jumbo-subheading{
     font-size: 25px;
     padding-top: 0px;
-    font-family: lobster
+    font-family: lobster;
+    color:white;
 }
 .jumbo-subheading span{
     text-transform: uppercase;
@@ -573,22 +575,22 @@ a .b-text{
      margin: 60px 0 0px 0; 
 }
 .box1{
-    background: #fa811a; 
+    background: #2d4080; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box2{
-    background: #ff902f; 
+    background: #2d4080eb; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box3{
-    background: #ff9e4a; 
+    background:#2d4080d1; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box4{
-    background: #ffac64; 
+    background: #2d40808f; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }

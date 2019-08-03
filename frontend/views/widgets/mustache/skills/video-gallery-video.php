@@ -1,6 +1,6 @@
 <script id="video-gallery-video" type="text/template">
     {{#.}}
-    <div class="col-md-3 col-sm-4">
+    <div class="col-md-4 col-sm-4">
         <div class="video-container2">
             <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">

@@ -1,13 +1,14 @@
 <?php
-$this->params['header_dark'] = true;
+$this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
 
 ?>
-    <div class="container sec2">
+    <div class="background"></div>
+    <div class="container">
         <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">Topics</div>
+            <div class="heading-style col-md-6 col-sm-6">Top Topics</div>
         </div>
     </div>
 
@@ -52,28 +53,400 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <div class="container sec2">
-        <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">Videos</div>
-        </div>
-    </div>
-
-    <!--Other Videos-->
-    <div class="videorows">
-        <div class="videorow container">
-            <div class="col-md-12 row1 v-padding">
-
-                <div id="gallery-video"></div>
-
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Top Collaborators</div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Makayla Linger</h4>
+                            <span class="post">operator</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Makayla Linger</h4>
+                            <span class="post">operator</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="collaborators-main">
+                        <div class="c-detail">
+                            <h4 class="title">Makayla Linger</h4>
+                            <span class="post">operator</span>
+                            <ul class="social-icon">
+                                <li><a href="#">
+                                        <i class="fab fa-facebook"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-twitter"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-instagram"></i></a>
+                                </li>
+                                <li><a href="#">
+                                        <i class="fab fa-google-plus-g"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="thumb">
+                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="heading-style col-md-6 col-sm-6">Top Videos</div>
+            </div>
+        </div>
+
+        <!--Other Videos-->
+        <div class="videorows">
+            <div class="videorow container">
+                <div class="col-md-12 row1 v-padding">
+
+                    <div id="gallery-video"></div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="heading-style col-md-6 col-sm-6">Related Courses</div>
+            </div>
+            <div class="inst-box">
+                <div class="col-md-3 col-sm-6">
+                    <div class="inst-container">
+                        <a href="#">
+                            <div class="inst-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            </div>
+                            <div class="inst-member">
+                                <div class="inst-name">Web Developing</div>
+                                <div class="t-post">6weeks</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="heading-style col-md-6 col-sm-6">Related Jobs</div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+                <div class="application-card-main">
+                        <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;
+                      </span>
+
+                    <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="" title="">
+                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="" title=""><h4 class="application-title">web design</h4></a>
+                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <h4 class="org_name text-right">dsb law group</h4>
+                    </div>
+                    <div class="application-card-wrapper">
+                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="heading-style col-md-6 col-sm-6">Related Internships</div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+                <div class="application-card-main">
+                        <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;
+                      </span>
+
+                    <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="" title="">
+                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="" title=""><h4 class="application-title">web design</h4></a>
+                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
+                            <h5>negotiable</h5>
+                            <h5>Full Time</h5>
+                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <h4 class="org_name text-right">tech adaptive</h4>
+                    </div>
+                    <div class="application-card-wrapper">
+                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <Section>
+        <div class="container pos-rel">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">new design</div>
+                    <div class="parent">
+                        <div class="logo _1">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _3">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _4">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _5">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _6">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _7">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _8">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _9">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _10">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                        <div class="logo _11">
+                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            <div class="overlay">
+                                <div class="text">Hello World</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Section>
+
 
 <?php
 
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
+.background{
+    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learning.png") . '");
+    min-height:550px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: .9s ease;
+  background-color: #6F7375A1;
+  border-radius:50%;
+}
+
+.logo:hover .overlay {
+  opacity: 1;
+}
+
+.text {
+  color: white;
+  font-size: 15 px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width:100%;
+}
+.pos-rel{position:relative;}
+.parent{height:400px;}
+._1{
+    position: absolute;
+    left: 44%;
+    top: 45%;
+    }
+._2{
+    position: absolute;
+    top: 95px;
+    left: 30%;
+    }
+._3{
+    position: absolute;
+    left: 30%;
+    top: 342px;
+    }
+._4{
+    position: absolute;
+    left: 58%;
+    top: 95px;
+    }
+._5{
+    position:absolute;
+    left: 58%;
+    top: 342px;
+    }
+._6{
+    position:absolute;
+    left: 15%;
+    top: 45%;
+    }
+._7{
+    position:absolute;
+    left: 72%;
+    top: 45%;
+    }
+._8{
+    position:absolute;
+    position: absolute;
+    left: 0%;
+    top: 95px;
+    }
+._9{
+    position:absolute;
+    left: 88%;
+    top: 95px;
+    }
+._10{
+    position:absolute;
+    left: 0%;
+    top: 342px;
+    }
+._11{
+    position:absolute;
+    left: 88%;
+    top: 342px;
+    }
+.logo img{
+    border-radius: 50%;
+    height: 140px;
+    width: 140px;
+    }
 .popular-cate{
     text-align:center;
     }
@@ -158,13 +531,154 @@ $this->registerCss('
     text-decoration: none; 
     color: #337ab7;
 }
-.sec2{
-    padding-top: 15px;
-}
 @media screen and (max-width: 992px) {
     .v-text{
         padding-bottom:20px 
     }
+}
+/*collaborators css starts*/
+.collaborators-main {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    overflow: hidden;
+}
+.collaborators-main .c-detail {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 220px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 20px;
+    line-height: 30px;
+    color: #07c3ff;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 18px;
+    color: #2a384c;
+}
+.collaborators-main .c-detail .post {
+    font-size: 16px;
+    line-height: 26px;
+    color: #616161;
+}
+.collaborators-main .c-detail .post {
+    font-size: 14px;
+    color: #197BEB;
+}
+.collaborators-main .c-detail .social-icon {
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    position: relative;
+    padding-top: 20px;
+}
+.collaborators-main .c-detail .social-icon li {
+    list-style: none;
+    display: inline-block;
+    margin: 0px;
+    text-align: center;
+}
+.collaborators-main .c-detail .social-icon li a {
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #dfdfdf;
+    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    color: #4f78ee;
+    font-size: 14px;
+    -webkit-transition: .3s ease-in;
+    -o-transition: .3s ease-in;
+    transition: .3s ease-in;
+}
+.collaborators-main .c-detail .social-icon li a {
+    background-color: #f2f2f2;
+    color: #515151;
+    font-size: 16px;
+}
+.collaborators-main .thumb {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+.collaborators-main .thumb img {
+    -webkit-transition: 1s ease-in-out;
+    -o-transition: 1s ease-in-out;
+    transition: 1s ease-in-out;
+  width:100%;
+}
+.collaborators-main .c-detail .social-icon:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120%;
+    background-color: #07c3ff;
+    content: "";
+    height: 1px;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    -webkit-transition: 1s ease-in;
+    -o-transition: 1s ease-in;
+    transition: 1s ease-in;
+    z-index: 1;
+}
+.collaborators-main .c-detail .social-icon:after {
+    background-color: #197BEB;
+}
+.collaborators-main:hover .thumb img {
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+}
+.collaborators-main:hover .c-detail .social-icon:after {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+}
+/*collaborators css ends*/
+.inst-name{
+    font-size:16px;
+    font-weight:bold;
+}
+.inst-member{
+    padding:5px 10px 10px 10px;
+    text-align:center;
+}
+.inst-icon{
+    width:100%;
+    overflow:hidden;
+    object-fit:cover;
+    position:relative;
+}
+.inst-icon img{
+    border-radius:10px 10px 0 0; 
+    width:100%;
+    height:100%;
+}
+.inst-container{
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    border-radius:10px;
+    height:100%;
+    position:relative;
+    margin: 0 0 20px 0;
 }
 ');
 
