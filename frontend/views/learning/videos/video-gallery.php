@@ -264,84 +264,199 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <Section>
-        <div class="container pos-rel">
+    <section>
+        <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading-style">new design</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="pos-rel">
                     <div class="parent">
                         <div class="logo _1">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _2">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _3">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _4">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _5">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _6">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _7">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _8">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _9">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _10">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                         <div class="logo _11">
                             <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
                             <div class="overlay">
-                                <div class="text">Hello World</div>
+                                <div class="text">
+                                    <span class="setloc">Hello World</span>
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </span>
+                                    <span class="revie">(4 Reviews)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </Section>
-
+    </section>
 
 <?php
 
@@ -354,6 +469,9 @@ $this->registerCss('
     background-size: cover;
     background-repeat: no-repeat;
 }
+.setloc{display:block; font-weight:bold;}
+.stars{display:block; color:orange; background-color:white;}
+.revie{display:block;}
 .overlay {
   position: absolute;
   top: 0;
@@ -386,62 +504,135 @@ $this->registerCss('
 }
 .pos-rel{position:relative;}
 .parent{height:400px;}
+._1, ._2, ._3, ._4, ._5, ._6, ._7, ._8, ._9, ._10, ._11{
+    position: absolute;
+}
 ._1{
     position: absolute;
-    left: 44%;
-    top: 45%;
+    left: 45%;
+    top: 25%;
     }
 ._2{
     position: absolute;
-    top: 95px;
-    left: 30%;
+    top: 2%;
+    left: 31%;
     }
 ._3{
     position: absolute;
-    left: 30%;
-    top: 342px;
+    left: 31%;
+    top: 57%;
     }
 ._4{
     position: absolute;
-    left: 58%;
-    top: 95px;
+    left: 59%;
+    top: 2%;
     }
 ._5{
     position:absolute;
-    left: 58%;
-    top: 342px;
+    left: 59%;
+    top: 57%;
     }
 ._6{
     position:absolute;
-    left: 15%;
-    top: 45%;
+    left: 16%;
+    top: 25%;
     }
 ._7{
     position:absolute;
-    left: 72%;
-    top: 45%;
+    left: 73%;
+    top: 25%;
     }
 ._8{
-    position:absolute;
     position: absolute;
-    left: 0%;
-    top: 95px;
+    left: 3%;
+    top: 2%;
     }
 ._9{
     position:absolute;
     left: 88%;
-    top: 95px;
+    top: 2%;
     }
 ._10{
     position:absolute;
-    left: 0%;
-    top: 342px;
+    left: 3%;
+    top: 57%;
     }
 ._11{
     position:absolute;
     left: 88%;
-    top: 342px;
+    top: 57%;
+}
+@media only screen and (max-width: 992px){
+    ._1{
+        left: 41%;
+        top: 36%;
     }
+    ._2{
+        top: 4%;
+        left: 27%;
+    }
+    ._3{
+        left: 27%;
+        top: 68%;
+    }
+    ._4{
+        left: 55%;
+        top: 4%;
+    }
+    ._5{
+        left: 55%;
+        top: 68%;
+    }
+    ._6{
+        left: 14%;
+        top: 36%;
+    }
+    ._7{
+        left: 68%;
+        top: 36%;
+    }
+    ._8{
+        left: 1%;
+        top: 4%;
+    }
+    ._9{
+        left: 81%;
+        top: 4%;
+    }
+    ._10{
+        left: 1%;
+        top: 68%;
+    }
+    ._11{
+        left: 81%;
+        top: 68%;
+    }
+}
+@media only screen and (max-width: 768px){
+    ._8, ._6, ._10, ._9, ._7, ._11{
+        display: none;
+    }
+    ._2 {
+        top: 2%;
+        left:5%
+    }
+    ._3 {
+        left: 5%;
+        top: 69%;
+    }
+    ._5{
+        left: 56%;
+        top: 69%;
+    }
+    ._4{
+        left: 56%;
+        top: 2%;
+    }
+    ._1{
+       left: 30%;
+       top: 35%;
+    }
+}
 .logo img{
     border-radius: 50%;
     height: 140px;
