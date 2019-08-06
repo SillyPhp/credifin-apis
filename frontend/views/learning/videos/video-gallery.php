@@ -5,10 +5,13 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 ?>
-    <div class="background"></div>
+    <section class="background"></section>
+
     <div class="container">
-        <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">Top Topics</div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Top Topics</div>
+            </div>
         </div>
     </div>
 
@@ -47,228 +50,155 @@ use yii\helpers\Html;
                                 </div>
                             </a>
                         </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                            <a href="">
+                                <div class="newset">
+                                    <div class="imag">
+                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                    </div>
+                                    <div class="txt">study</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!--    <section>-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <div class="heading-style">Top Collaborators</div>-->
+    <!--                </div>-->
+    <!--                <div class="col-lg-4 col-md-6">-->
+    <!--                    <div class="collaborators-main">-->
+    <!--                        <div class="c-detail">-->
+    <!--                            <h4 class="title">Makayla Linger</h4>-->
+    <!--                            <span class="post">operator</span>-->
+    <!--                            <ul class="social-icon">-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-facebook"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-twitter"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-instagram"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
+    <!--                                </li>-->
+    <!--                            </ul>-->
+    <!--                        </div>-->
+    <!--                        <div class="thumb">-->
+    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
+    <!--                                 alt="">-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-lg-4 col-md-6">-->
+    <!--                    <div class="collaborators-main">-->
+    <!--                        <div class="c-detail">-->
+    <!--                            <h4 class="title">Makayla Linger</h4>-->
+    <!--                            <span class="post">operator</span>-->
+    <!--                            <ul class="social-icon">-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-facebook"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-twitter"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-instagram"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
+    <!--                                </li>-->
+    <!--                            </ul>-->
+    <!--                        </div>-->
+    <!--                        <div class="thumb">-->
+    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
+    <!--                                 alt="">-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-lg-4 col-md-6">-->
+    <!--                    <div class="collaborators-main">-->
+    <!--                        <div class="c-detail">-->
+    <!--                            <h4 class="title">Makayla Linger</h4>-->
+    <!--                            <span class="post">operator</span>-->
+    <!--                            <ul class="social-icon">-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-facebook"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-twitter"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-instagram"></i></a>-->
+    <!--                                </li>-->
+    <!--                                <li><a href="#">-->
+    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
+    <!--                                </li>-->
+    <!--                            </ul>-->
+    <!--                        </div>-->
+    <!--                        <div class="thumb">-->
+    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
+    <!--                                 alt="">-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
 
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading-style">Top Collaborators</div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Makayla Linger</h4>
-                            <span class="post">operator</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Makayla Linger</h4>
-                            <span class="post">operator</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Makayla Linger</h4>
-                            <span class="post">operator</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row col-md-12">
-                <div class="heading-style col-md-6 col-sm-6">Top Videos</div>
-            </div>
-        </div>
-
-        <!--Other Videos-->
-        <div class="videorows">
-            <div class="videorow container">
-                <div class="col-md-12 row1 v-padding">
-
-                    <div id="gallery-video"></div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row col-md-12">
-                <div class="heading-style col-md-6 col-sm-6">Related Courses</div>
-            </div>
-            <div class="inst-box">
-                <div class="col-md-3 col-sm-6">
-                    <div class="inst-container">
-                        <a href="#">
-                            <div class="inst-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            </div>
-                            <div class="inst-member">
-                                <div class="inst-name">Web Developing</div>
-                                <div class="t-post">6weeks</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row col-md-12">
-                <div class="heading-style col-md-6 col-sm-6">Related Jobs</div>
-            </div>
-            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-                <div class="application-card-main">
-                        <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;
-                      </span>
-
-                    <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="" title="">
-                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="" title=""><h4 class="application-title">web design</h4></a>
-                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <h4 class="org_name text-right">dsb law group</h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
-                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                    class="fas fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row col-md-12">
-                <div class="heading-style col-md-6 col-sm-6">Related Internships</div>
-            </div>
-            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-                <div class="application-card-main">
-                        <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;
-                      </span>
-
-                    <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="" title="">
-                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="" title=""><h4 class="application-title">web design</h4></a>
-                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
-                            <h5>negotiable</h5>
-                            <h5>Full Time</h5>
-                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <h4 class="org_name text-right">tech adaptive</h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
-                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                    class="fas fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">new design</div>
                 </div>
             </div>
         </div>
@@ -458,20 +388,164 @@ use yii\helpers\Html;
         </div>
     </section>
 
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class=" col-md-12">
+                    <div class="heading-style">Top Videos</div>
+                </div>
+            </div>
+        </div>
+
+        <!--Other Videos-->
+        <div class="videorows">
+            <div class="videorow container">
+                <div class="col-md-12 row1 v-padding">
+
+                    <div id="gallery-video"></div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class=" col-md-12">
+                    <div class="heading-style">Related Courses</div>
+                </div>
+            </div>
+            <div class="inst-box">
+                <div class="col-md-3 col-sm-6">
+                    <div class="inst-container">
+                        <a href="#">
+                            <div class="inst-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
+                            </div>
+                            <div class="inst-member">
+                                <div class="inst-name">Web Developing</div>
+                                <div class="t-post">6weeks</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class=" col-md-12">
+                    <div class="heading-style">Related Jobs</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+                <div class="application-card-main">
+                        <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;
+                      </span>
+
+                    <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="" title="">
+                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="" title=""><h4 class="application-title">web design</h4></a>
+                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>
+                            <h5>Full Time</h5>
+                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <h4 class="org_name text-right">dsb law group</h4>
+                    </div>
+                    <div class="application-card-wrapper">
+                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class=" col-md-12">
+                    <div class="heading-style">Related Internships</div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+                <div class="application-card-main">
+                        <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;
+                      </span>
+
+                    <span class="application-card-type location">
+                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                        <div class="application-card-img">
+                            <a href="" title="">
+                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
+                            </a>
+                        </div>
+                        <div class="application-card-description">
+                            <a href="" title=""><h4 class="application-title">web design</h4></a>
+                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
+                            <h5>negotiable</h5>
+                            <h5>Full Time</h5>
+                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <h4 class="org_name text-right">tech adaptive</h4>
+                    </div>
+                    <div class="application-card-wrapper">
+                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                    class="fas fa-plus"></i>&nbsp;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 <?php
 
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
 .background{
-    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learning.png") . '");
+    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learn.png") . '");
     min-height:550px;
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: 70%;
 }
-.setloc{display:block; font-weight:bold;}
-.stars{display:block; color:orange; background-color:white;}
-.revie{display:block;}
+.logo{
+    width: 140px;
+    height: 140px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 8px 13px 30px 5px rgba(162, 153, 153, 0.3);
+}
+.logo img{
+    border-radius: 50%;
+    height: 140px;
+    width: 140px;
+    }
+.logo:hover .overlay {
+  opacity: 1;
+}
 .overlay {
   position: absolute;
   top: 0;
@@ -485,19 +559,15 @@ $this->registerCss('
   background-color: #6F7375A1;
   border-radius:50%;
 }
-
-.logo:hover .overlay {
-  opacity: 1;
-}
-
+.setloc{display:block; font-weight:bold;}
+.stars{display:block; color:orange; background-color:white;}
+.revie{display:block;}
 .text {
   color: white;
   font-size: 15 px;
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
   width:100%;
@@ -534,7 +604,7 @@ $this->registerCss('
     }
 ._6{
     position:absolute;
-    left: 16%;
+    left: 17%;
     top: 25%;
     }
 ._7{
@@ -633,11 +703,7 @@ $this->registerCss('
        top: 35%;
     }
 }
-.logo img{
-    border-radius: 50%;
-    height: 140px;
-    width: 140px;
-    }
+
 .popular-cate{
     text-align:center;
     }
@@ -658,6 +724,21 @@ $this->registerCss('
 }
 .pc-main:nth-child(3) a .newset {
   background-color:#3cc2d52b;
+}
+.pc-main:nth-child(4) a .newset {
+  background-color:#13060836;
+}
+.pc-main:nth-child(5) a .newset {
+  background-color:#ff009b2b;
+}
+.pc-main:nth-child(6) a .newset {
+  background-color:#1bc11a2b;
+}
+.pc-main:nth-child(7) a .newset {
+  background-color:#7102022b;
+}
+.pc-main:nth-child(8) a .newset {
+  background-color:#0ccc772b;
 }
 .imag{
     text-align: right;

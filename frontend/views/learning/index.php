@@ -1,13 +1,14 @@
 <?php
+$this->params['header_dark'] = true;
 $this->title = Yii::t('frontend', 'Learning Corner');
 
 use yii\helpers\Url;
 
 ?>
-    <section class="backgrounds">
+    <section>
         <div class="container headsec">
             <div class="row">
-                <div class="col-md-6 col-sm-12 mt-50">
+                <div class="col-md-6 col-sm-12 mt-50 topp-pad">
                     <div class="jumbo-heading">BOOST YOUR SKILLS</div>
                     <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
                     <div class="search-box1">
@@ -17,10 +18,10 @@ use yii\helpers\Url;
                         </form>
                     </div>
                 </div>
-<!--                <div class="col-md-6 sm-hidden">-->
-<!--                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?><!--" align="right"-->
-<!--                         class="responsive"/>-->
-<!--                </div>-->
+                <div class="col-md-6">
+                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>" align="right"
+                         class="responsive"/>
+                </div>
             </div>
         </div>
     </section>
@@ -34,20 +35,12 @@ use yii\helpers\Url;
         <div class="cat-padding">
             <div class="row col-md-12">
                 <div class="heading-style col-md-6 col-sm-6">All Category</div>
-                <!--                <div class="search-box">-->
-                <!--                    <form action="">-->
-                <!--                        <input type="text" placeholder="Search Category" name="search">-->
-                <!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
-                <!--                    </form>-->
-                <!--                </div>-->
             </div>
             <div class="categories">
                 <div class="row category b-padding">
-
-                    <?php foreach ($categories as $c) { ?>
                         <div class="f-box col-md-3 col-sm-6">
                             <div class="flipbox ">
-                                <a href="/learning/videos/category/<?= $c['slug'] ?>" class="lc-link">
+                                <a href="#" class="lc-link">
                                     <div class="back">
                                         <div class="b-icon">
                                             <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"
@@ -56,19 +49,14 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="front">
                                         <div class="b-icon">
-                                            <?php if ($c['child_icon']) { ?>
-                                                <img src="" alt=""/>
-                                            <?php } else { ?>
                                                 <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>"
                                                      alt=""/>
-                                            <?php } ?>
                                         </div>
                                     </div>
-                                    <div class="b-text"><?= $c['parent_name']; ?></div>
+                                    <div class="b-text">parent_name</div>
                                 </a>
                             </div>
                         </div>
-                    <?php } ?>
 
                 </div>
             </div>
@@ -361,6 +349,7 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.topp-pad{padding-top:40px;}
 .search-box1{
     max-width:350px;
     float:left;
@@ -368,6 +357,7 @@ $this->registerCss('
     border-radius: 10px;
     padding: 3px;
     margin: 21px 0 0 0;
+    box-shadow: 0px 0px 10px 1px #eee;
 }
 .search-box1 form{
     margin-bottom:0px;
@@ -377,6 +367,7 @@ $this->registerCss('
     font-size: 15px;
     border:none ;
     border-radius:10px 0 0 10px;
+    width: 300px;
 }
 .search-box1 input:focus{
     outline: none;
@@ -402,12 +393,11 @@ $this->registerCss('
     color:#333;
 }
 .backgrounds{
-    background-size: 100% 595px;
-   background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learninghdr1.png") . '");
+   background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learningc.png") . '");
     background-position: right;
     background-repeat: no-repeat;
-    min-height: 600px;
-    padding-top: 70px;
+    min-height: 530px;
+    padding-top: 80px;
 }
 .head-pic{
     text-align: center;
@@ -420,13 +410,13 @@ $this->registerCss('
     font-weight:bold;
     font-family: lobster;
     text-transform: uppercase;
-    color:wheat; 
+    color:#3b394a; 
 }
 .jumbo-subheading{
     font-size: 25px;
     padding-top: 0px;
     font-family: lobster;
-    color:white;
+    color:#7ba9da;
 }
 .jumbo-subheading span{
     text-transform: uppercase;
