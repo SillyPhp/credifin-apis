@@ -119,7 +119,7 @@ $form = ActiveForm::begin([
             $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
-                    'onlyCountries' => ['in'],
+                    'preferredCountries' => ['in'],
                     'nationalMode' => false,
                 ]
             ]);
