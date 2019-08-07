@@ -7,7 +7,7 @@
     results.mode = "online";
 
     $(document).ready(function(){
-        $('.btn-previous').remove();
+        // $('.btn-previous').remove();
         $.ajax({
             url : "/account/schedular/find-applications",
             type: "POST",
@@ -87,6 +87,7 @@
 
             if ($('#main_time_from').find('input').val() && $('#main_time_to').find('input').val()) {
                 var the_date = $('.date-picker').datepicker('getDates');
+                console.log(the_date);
                 for (var j = 0; j < the_date.length; j++) {
                     var r = {};
                     var s_date = convert(the_date[j].toString());
@@ -322,7 +323,12 @@
         $('#selected-dates').html('');
         var the_date = $('.date-picker').datepicker('getDates');
         for (var j = 0; j < the_date.length; j++) {
-            var s_date = convert(the_date[j].toString());
+            // var s_date = convert(the_date[j].toString());
+            var yr      = the_date[j].getFullYear(),
+                month   = the_date[j].getMonth() < 10 ? '0' + the_date[j].getMonth() : the_date[j].getMonth(),
+                month   = the_date[j].toLocaleString('default', { month: 'long' });
+                day     = the_date[j].getDate()  < 10 ? '0' + the_date[j].getDate()  : the_date[j].getDate(),
+                s_date = day + '-' + month + '-' + yr;
             dates.push({
                 date: s_date
             });
@@ -504,10 +510,12 @@
 
     $(document).on('change', '.time_to', function () {
         var element = $(this);
+        $(this).parent().children('.error-msg').remove();
         validate_time(element);
     });
     $(document).on('change', '.time_from', function () {
         var element = $(this).parent().next().children('input');
+        $(this).parent().children('.error-msg').remove();
         validate_time(element);
     });
 

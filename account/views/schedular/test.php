@@ -212,7 +212,7 @@ use yii\helpers\Url;
 </script>
 <?php
 $this->registerCss('
-.btn-previous{display:none !important;}
+//.btn-previous{display:none !important;}
 .error-msg{
     padding-left:5px;
     color:#bb2124;

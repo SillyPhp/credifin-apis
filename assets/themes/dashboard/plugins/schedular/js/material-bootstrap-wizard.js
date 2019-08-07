@@ -67,18 +67,16 @@ $(document).ready(function(){
                     }
                     return false;
                 }
-                if($('#select-app-round').find('#location').length > 0) {
-                    if (!$('#selected_round_id').val()) {
-                        if ($('#select-app-round').find('.error-msg').length == 0) {
-                            var html = $('#error-msg').html();
-                            var data = {
-                                msg: "This field can't be empty"
-                            };
-                            var output = Mustache.render(html, data);
-                            $('#select-app-round').append(output);
-                        }
-                        return false;
+                if (!$('#selected_round_id').val()) {
+                    if ($('#select-app-round').find('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#select-app-round').append(output);
                     }
+                    return false;
                 }
                 if ($('.test-multi input[type=hidden]').val() == '') {
                     if($('#select-application-process').find('.error-msg').length == 0) {
@@ -92,7 +90,7 @@ $(document).ready(function(){
                     return false;
                 }
                 if ($('#datepicker').val() == "") {
-                    if ($('#datepicker').find('.error-msg').length == 0) {
+                    if ($('#datepicker').parent().children('.error-msg').length == 0) {
                         var html = $('#error-msg').html();
                         var data = {
                             msg: "This field can't be empty"
@@ -100,6 +98,61 @@ $(document).ready(function(){
                         var output = Mustache.render(html, data);
                         $('#datepicker').parent().append(output);
                     }
+                    return false;
+                }
+                if ($('#main_time_from input').val() == "") {
+                    if ($('#main_time_from').children('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#main_time_from').append(output);
+                    }
+                    return false;
+                }
+                if ($('#main_time_to input').val() == "") {
+                    if ($('#main_time_to').children('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#main_time_to').append(output);
+                    }
+                    return false;
+                }
+                var time_from_m = true;
+                var time_to_m = true;
+                $('.secondary-time-from input').each(function () {
+                    if ($(this).val() == "") {
+                        if ($(this).parent().children('.error-msg').length == 0) {
+                            var html = $('#error-msg').html();
+                            var data = {
+                                msg: "This field can't be empty"
+                            };
+                            var output = Mustache.render(html, data);
+                            $(this).parent().append(output);
+                        }
+                        time_from_m = false;
+                        return false;
+                    }
+                });
+                $('.secondary-time-to input').each(function () {
+                    if ($(this).val() == "") {
+                        if ($(this).parent().children('.error-msg').length == 0) {
+                            var html = $('#error-msg').html();
+                            var data = {
+                                msg: "This field can't be empty"
+                            };
+                            var output = Mustache.render(html, data);
+                            $(this).parent().append(output);
+                        }
+                        time_to_m = false;
+                        return false;
+                    }
+                });
+                if(time_from_m == false || time_to_m == false){
                     return false;
                 }
                 if($('#specialities-subdata').find('#interview_locations').length > 0) {
