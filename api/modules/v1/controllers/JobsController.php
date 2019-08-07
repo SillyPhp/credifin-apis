@@ -927,9 +927,6 @@ class JobsController extends ApiBaseController
             unset($data['max_wage']);
             unset($data['fixed_wage']);
 
-            print_r($data['logo']);
-            die();
-
             return $this->response(200, $data);
         } else {
             return $this->response(422);
