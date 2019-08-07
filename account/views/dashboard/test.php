@@ -1,4 +1,3 @@
-
 <h2>Scheduled Interview Selection</h2>
 <div id="calendar"></div>
 
@@ -10,9 +9,9 @@
                 <h4 class="modal-title"><span id="eventTitle"></span></h4>
             </div>
             <div class="modal-body">
-                <!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
-                <!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
-                <!--                </button>-->
+                <button id="btnDelete" class="btn btn-default btn-sm pull-right">
+                    <span class="glyphicon glyphicon-remove"></span> Reject
+                </button>
                 <button id="btnAccept" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
                     <span class="glyphicon glyphicon-pencil"></span> Accept
                 </button>
@@ -87,11 +86,14 @@ function GenerateCalendar(events){
         events: events,
         eventClick: function (calEvent, jsEvent, view) {
             selectedEvent = calEvent;
+            // console.log(calEvent.status);
             if(calEvent.status == 2){
                 $('#btnAccept').text('Already Applied');
                 $('#btnAccept').attr("disabled", true);
-            }else {
+                $('#btnDelete').hide();
+            }else{
                 $('#btnAccept').attr("disabled", false);
+                $('#btnDelete').show();
                 $('#btnAccept').text('Accept');
             }
             $('#myModal #eventTitle').text(calEvent.title);
@@ -138,7 +140,7 @@ function acceptInterview(){
     if(selectedEvent != null){
         $.ajax({
         type: 'POST',
-        url: 'candidate-accepted',
+        url: 'change-status',
         data:{
             date_enc_id:selectedEvent.date_time_enc_id, 
             scheduled_interview_enc_id:selectedEvent.eventID, 
@@ -146,6 +148,7 @@ function acceptInterview(){
             applied_app_id:selectedEvent.applied_application_enc_id,
             process_id:selectedEvent.process_field_id,
             type:selectedEvent.type,
+            status:2,
             },
         async: false,
         success: function(data) {
@@ -164,26 +167,30 @@ function acceptInterview(){
 
 $('#btnDelete').click(function() {
   if(selectedEvent != null && confirm('Are you sure?')){
-      console.log('Delete Clicked');
       $('#myModal').modal('hide');
-      // $.ajax({
-      //   type: 'POST',
-      //   url: '/account/dashboard/delete-event',
-      //   data: {
-      //       'eventID' : selectedEvent.eventID
-      //   },
-      //   success: function(data) {
-      //       if(data.status){
-      //          FetchEventAndRenderCalendar(); 
-      //          $('#myModal').modal('hide');
-      //       }
-      //   },
-      //   error: function() {
-      //       alert('failed');
-      //   }
-      // })
+      $.ajax({
+        type: 'POST',
+        url: 'change-status',
+        data: {
+            date_enc_id:selectedEvent.date_time_enc_id, 
+            scheduled_interview_enc_id:selectedEvent.eventID, 
+            candidate_interview_id: selectedEvent.interview_candidate_enc_id,
+            applied_app_id:selectedEvent.applied_application_enc_id,
+            process_id:selectedEvent.process_field_id,
+            type:selectedEvent.type,
+            status:3,
+        },
+        success: function(data) {
+             if(data.status == 200){
+               toastr.success(data.message,'success');
+               FetchEventAndRenderCalendar();
+           }else{
+               toastr.error(data.message,'error');
+           }
+        }
+      })
   }
-})
+});
 
 $('#dtp1, #dtp2').datetimepicker({
     format: 'DD/MM/YYYY HH:mm A'

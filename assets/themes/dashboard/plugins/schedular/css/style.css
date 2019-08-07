@@ -400,7 +400,7 @@ ul#national, ul#rounds, ul#location {
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 99;
+    z-index: 9;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

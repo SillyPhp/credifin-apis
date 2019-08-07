@@ -80,6 +80,28 @@ $(document).ready(function(){
                         return false;
                     }
                 }
+                if ($('.test-multi input[type=hidden]').val() == '') {
+                    if($('#select-application-process').find('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#select-application-process').append(output);
+                    }
+                    return false;
+                }
+                if ($('#datepicker').val() == "") {
+                    if ($('#datepicker').find('.error-msg').length == 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#datepicker').parent().append(output);
+                    }
+                    return false;
+                }
                 if($('#specialities-subdata').find('#interview_locations').length > 0) {
                     if (!$('select#interview-location').children("option:selected").val()) {
                         if ($('#interview_locations').find('.error-msg').length == 0) {

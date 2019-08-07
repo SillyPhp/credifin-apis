@@ -51,8 +51,7 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="datepicker" class="form-label">Select Interview Dates</label>
-                                    <input class="date-picker" placeholder="Select Dates" size="16" type="text"
-                                           id="datepicker" value=""/>
+                                    <input class="date-picker" placeholder="Select Dates" size="16" type="text" name="interview_dates" id="datepicker" value=""/>
                                 </div>
                                 <div class="form-group">
                                     <div id="same-timings-cont">

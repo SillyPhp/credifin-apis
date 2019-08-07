@@ -141,7 +141,7 @@ use yii\helpers\Url;
 </script>
 <script id="select-candidate" type="text/template">
     <label class="form-label">Select Candidates</label>
-    <div class="select-group">
+    <div class="select-group multi-select-candidate">
         <div class="ui fluid multiple search selection dropdown test-multi">
             <input type="hidden" name="country">
             <i class="dropdown icon"></i>
@@ -212,6 +212,7 @@ use yii\helpers\Url;
 </script>
 <?php
 $this->registerCss('
+.btn-previous{display:none !important;}
 .error-msg{
     padding-left:5px;
     color:#bb2124;
@@ -341,6 +342,10 @@ input.float_to_left{margin-top: 8.7px !important;}
   }
 }
 /* loader css ends */
+.multi-select-candidate{
+    height:auto;
+    margin-top:20px;
+}
 ');
 $script = <<< JS
 

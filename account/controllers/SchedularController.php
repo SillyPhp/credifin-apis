@@ -114,43 +114,26 @@ class SchedularController extends Controller
 
     public function findAppliedCandidates($app_id, $process_id)
     {
-//        return AppliedApplications::find()
-//            ->alias('a')
-//            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image'])
-//            ->joinWith(['resumeEnc b' => function ($x) {
-//                $x->joinWith(['userEnc c']);
-////                    $x->groupBy(['b.user_enc_id']);
-//            }], false)
-//            ->where([
-//                'application_enc_id' => $app_id
-//            ])
-//            ->groupBy(['b.user_enc_id'])
-//            ->asArray()
-//            ->all();
-
-        $applied_candidates = AppliedApplicationProcess::find()
+        $applied_candidates = AppliedApplications::find()
             ->alias('a')
-            ->select([
-                'CONCAT(e.first_name, " ", e.last_name) full_name',
-                'b.applied_application_enc_id',
-                'c.sequence',
-                'b.current_round',
-                'd.process_field_enc_id'
-            ])
-            ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
-                $b->joinWith(['resumeEnc d' => function ($x) {
-                    $x->joinWith(['userEnc e']);
-                    $x->groupBy(['d.user_enc_id']);
-                }], false);
+            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) full_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, true) . '", c.image_location, "/", c.image) ELSE  CONCAT("https://ui-avatars.com/api/?name=", c.first_name, " ", c.last_name, "&size=200&rounded=false&background=", REPLACE(c.initials_color, "#", ""), "&color=ffffff") END image', 'a.current_round', 'e.sequence'])
+            ->joinWith(['resumeEnc b' => function ($x) {
+                $x->joinWith(['userEnc c']);
+//                    $x->groupBy(['b.user_enc_id']);
             }], false)
-            ->innerJoinWith(['fieldEnc c'], false)
-            ->where(['a.application_enc_id' => $app_id,'a.process_enc_id'=>$process_id])
-            ->where(new \yii\db\Expression('`b`.`current_round` = `c`.`sequence`'))
+            ->joinWith(['appliedApplicationProcesses d' => function ($d) use ($process_id) {
+                $d->joinWith(['fieldEnc e']);
+                $d->where(['d.field_enc_id' => $process_id]);
+            }], false)
+            ->where([
+                'application_enc_id' => $app_id
+            ])
+            ->andWhere(new \yii\db\Expression('`a`.`current_round` = `e`.`sequence`'))
+            ->groupBy(['b.user_enc_id'])
             ->asArray()
             ->all();
 
-        print_r($applied_candidates);
-        die();
+        return $applied_candidates;
 
     }
 
@@ -219,7 +202,13 @@ class SchedularController extends Controller
                 }
                 $res['type'] = $req['type'];
                 $res['mode'] = $req['mode'];
+                $res['selected_round'] = $req['selected_round'];
                 $res['selected_candidate'] = $req['selected_candidate'];
+                if (empty($res)) {
+                    return [
+                        'status' => 201,
+                    ];
+                }
                 $res['interviewers'] = [];
                 $res['timings'] = [];
                 if ($req['interviewers']) {
@@ -242,6 +231,10 @@ class SchedularController extends Controller
                     'status' => 200,
                     'response' => $res
                 ];
+            } else {
+                return [
+                    'status' => 201,
+                ];
             }
 //            $res = $this->findOrganizationInterviewLocations($req['application_id']);
 
@@ -251,6 +244,8 @@ class SchedularController extends Controller
     private function saveData($data)
     {
 
+        $_flag = null;
+
         if ($data['mode'] == 'online') {
             $mode = 1;
         } elseif ($data['mode'] == 'at_location') {
@@ -259,113 +254,126 @@ class SchedularController extends Controller
 
         $candidate_applications = explode(',', $data['selected_candidate']);
 
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $interview = new ScheduledInterview();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $interview->scheduled_interview_enc_id = $utilitiesModel->encrypt();
+            $interview->scheduled_interview_type_enc_id = $this->interviewType($data['type']);
+            $interview->application_enc_id = $data['application'];
+            $interview->interview_mode = $mode;
+            if ($mode == 2) {
+                $interview->interview_location_enc_id = $data['selected_location'];
+            }
+            $interview->created_by = Yii::$app->user->identity->user_enc_id;
+            $interview->created_on = date('Y-m-d H:i:s');
 
-        $interview = new ScheduledInterview();
-        $utilitiesModel = new \common\models\Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $interview->scheduled_interview_enc_id = $utilitiesModel->encrypt();
-        $interview->scheduled_interview_type_enc_id = $this->interviewType($data['type']);
-        $interview->application_enc_id = $data['application'];
-        $interview->interview_mode = $mode;
-        if ($mode == 2) {
-            $interview->interview_location_enc_id = $data['selected_location'];
-        }
-        $interview->created_by = Yii::$app->user->identity->user_enc_id;
-        $interview->created_on = date('Y-m-d H:i:s');
+            if ($interview->save()) {
 
-        if ($interview->save()) {
+                if ($data['type'] == 'fixed') {
 
-            if ($data['type'] == 'fixed') {
-
-                $interview_options = new InterviewOptions();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
-                $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-                $interview_options->process_field_enc_id = $data['selected_round'];
-                $interview_options->number_of_candidates = $data['number_of_candidates'];
-                if (!$interview_options->save()) {
-                    return false;
-                }
-
-            } elseif ($data['type'] == 'flexible') {
-
-                foreach ($candidate_applications as $application_enc_id) {
-                    $interview_candidate = new InterviewCandidates();
+                    $interview_options = new InterviewOptions();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
-                    $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-                    $interview_candidate->applied_application_enc_id = $application_enc_id;
-                    if (!$interview_candidate->save()) {
+                    $interview_options->interview_options_enc_id = $utilitiesModel->encrypt();
+                    $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_options->process_field_enc_id = $data['selected_round'];
+                    $interview_options->number_of_candidates = $data['number_of_candidates'];
+                    if (!$interview_options->save()) {
+                        $transaction->rollback();
                         return false;
                     }
-                }
-            }
 
-            if ($data['interviewers']) {
+                } elseif ($data['type'] == 'flexible') {
 
-                foreach ($data['interviewers'] as $i) {
-
-                    if (!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
-
-                        $interviewer = new Interviewers();
+                    foreach ($candidate_applications as $application_enc_id) {
+                        $interview_candidate = new InterviewCandidates();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $interviewer->interviewer_enc_id = $utilitiesModel->encrypt();
-                        $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-
-                        if ($interviewer->save()) {
-
-                            $interviewer_detail = new InterviewerDetail();
-                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
-                            $interviewer_detail->interviewer_enc_id = $interviewer['interviewer_enc_id'];
-                            $interviewer_detail->name = $i['name'];
-                            $interviewer_detail->email = $i['email'];
-                            $interviewer_detail->phone = $i['phone'];
-                            if (!$interviewer_detail->save()) {
-                                return false;
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            foreach ($data['timings'] as $date => $time) {
-
-                $date = date('Y-m-d', strtotime($date));
-
-                $interview_dates = new InterviewDates();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
-                $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-                $interview_dates->interview_date = $date;
-                if ($interview_dates->save()) {
-
-                    foreach ($time as $t) {
-
-                        $interview_date_timing = new InterviewDateTimings();
-                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                        $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
-                        $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
-                        $interview_date_timing->from = date("H:i", strtotime($t['from']));
-                        $interview_date_timing->to = date("H:i", strtotime($t['to']));
-                        if (!$interview_date_timing->save()) {
+                        $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
+                        $interview_candidate->process_field_enc_id = $data['selected_round'];
+                        $interview_candidate->type = $data['type'];
+                        $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                        $interview_candidate->applied_application_enc_id = $application_enc_id;
+                        if (!$interview_candidate->save()) {
+                            $transaction->rollback();
                             return false;
                         }
                     }
-
-                } else {
-                    return false;
                 }
+
+                if ($data['interviewers']) {
+
+                    foreach ($data['interviewers'] as $i) {
+
+                        if (!empty($i['name']) && !empty($i['email']) && !empty($i['phone'])) {
+
+                            $interviewer = new Interviewers();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $interviewer->interviewer_enc_id = $utilitiesModel->encrypt();
+                            $interviewer->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+
+                            if ($interviewer->save()) {
+
+                                $interviewer_detail = new InterviewerDetail();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
+                                $interviewer_detail->interviewer_enc_id = $interviewer['interviewer_enc_id'];
+                                $interviewer_detail->name = $i['name'];
+                                $interviewer_detail->email = $i['email'];
+                                $interviewer_detail->phone = $i['phone'];
+                                if (!$interviewer_detail->save()) {
+                                    $transaction->rollback();
+                                    return false;
+                                }
+                            }else{
+                                $transaction->rollback();
+                                return false;
+                            }
+                        }
+
+                    }
+
+                }
+
+                foreach ($data['timings'] as $date => $time) {
+
+                    $date = date('Y-m-d', strtotime($date));
+
+                    $interview_dates = new InterviewDates();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
+                    $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                    $interview_dates->interview_date = $date;
+                    if ($interview_dates->save()) {
+
+                        foreach ($time as $t) {
+
+                            $interview_date_timing = new InterviewDateTimings();
+                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                            $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                            $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
+                            $interview_date_timing->from = date("H:i", strtotime($t['from']));
+                            $interview_date_timing->to = date("H:i", strtotime($t['to']));
+                            if (!$interview_date_timing->save()) {
+                                $transaction->rollback();
+                                return false;
+                            }
+                        }
+
+                    } else {
+                        $transaction->rollback();
+                        return false;
+                    }
+                }
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollback();
+                return false;
             }
-
-            return true;
-
-        } else {
+        } catch (Exception $e) {
             return false;
         }
-
     }
 
     private function interviewType($type)
