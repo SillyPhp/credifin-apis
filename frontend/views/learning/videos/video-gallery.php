@@ -491,6 +491,84 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+}
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.txt {
+    font-size: 14px;
+    line-height: 1.45;
+}
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+/*<!---- view-all button css ends --->*/
 .q-box{
     text-align:center;
     position:relative;   
@@ -555,10 +633,10 @@ $this->registerCss('
 }
 .background{
     background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learn.png") . '");
-    min-height:340px;
+    min-height:400px;
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: 70%;
+    background-position: 80%;
 }
 .logo{
     width: 140px;
