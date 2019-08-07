@@ -772,7 +772,7 @@ class JobsController extends ApiBaseController
                 'title',
                 'CONCAT("' . Url::to('/blog/', 'https') . '", slug) link',
                 'excerpt',
-                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
+                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, "/", featured_image) ELSE NULL END image'
             ])
             ->where([
                 'status' => 'Active',
@@ -927,6 +927,9 @@ class JobsController extends ApiBaseController
             unset($data['max_wage']);
             unset($data['fixed_wage']);
 
+            print_r($data['logo']);
+            die();
+
             return $this->response(200, $data);
         } else {
             return $this->response(422);
@@ -990,8 +993,8 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
-                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
             ])
             ->where([
                 'a.application_enc_id' => $id,
