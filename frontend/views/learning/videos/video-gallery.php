@@ -10,7 +10,7 @@ use yii\helpers\Html;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="heading-style">Top Topics</div>
+                <div class="heading-style">Topics</div>
             </div>
         </div>
     </div>
@@ -80,119 +80,11 @@ use yii\helpers\Html;
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <!--    <section>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="heading-style">Top Collaborators</div>-->
-    <!--                </div>-->
-    <!--                <div class="col-lg-4 col-md-6">-->
-    <!--                    <div class="collaborators-main">-->
-    <!--                        <div class="c-detail">-->
-    <!--                            <h4 class="title">Makayla Linger</h4>-->
-    <!--                            <span class="post">operator</span>-->
-    <!--                            <ul class="social-icon">-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-facebook"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-twitter"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-instagram"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
-    <!--                                </li>-->
-    <!--                            </ul>-->
-    <!--                        </div>-->
-    <!--                        <div class="thumb">-->
-    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
-    <!--                                 alt="">-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                <div class="col-lg-4 col-md-6">-->
-    <!--                    <div class="collaborators-main">-->
-    <!--                        <div class="c-detail">-->
-    <!--                            <h4 class="title">Makayla Linger</h4>-->
-    <!--                            <span class="post">operator</span>-->
-    <!--                            <ul class="social-icon">-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-facebook"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-twitter"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-instagram"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
-    <!--                                </li>-->
-    <!--                            </ul>-->
-    <!--                        </div>-->
-    <!--                        <div class="thumb">-->
-    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
-    <!--                                 alt="">-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                <div class="col-lg-4 col-md-6">-->
-    <!--                    <div class="collaborators-main">-->
-    <!--                        <div class="c-detail">-->
-    <!--                            <h4 class="title">Makayla Linger</h4>-->
-    <!--                            <span class="post">operator</span>-->
-    <!--                            <ul class="social-icon">-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-facebook"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-twitter"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-instagram"></i></a>-->
-    <!--                                </li>-->
-    <!--                                <li><a href="#">-->
-    <!--                                        <i class="fab fa-google-plus-g"></i></a>-->
-    <!--                                </li>-->
-    <!--                            </ul>-->
-    <!--                        </div>-->
-    <!--                        <div class="thumb">-->
-    <!--                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"-->
-    <!--                                 alt="">-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
 
     <section>
         <div class="container">
@@ -519,14 +411,151 @@ use yii\helpers\Html;
         </div>
     </section>
 
-<?php
+    <section class="bg-black">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
+                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
+                                <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
+                                 class="q-box-img">
+                            <div class="q-box-hover">
+                                <div class="text2">Take Quiz</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
+                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
+                            <div class="q-box-hover">
+                                <div class="text2">Take Quiz</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="q-box">
+                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
+                                 alt="Yuvraj Singh Quiz" class="q-box-img">
+                            <div class="q-box-hover">
+                                <div class="text2">Take Quiz</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="heading-style">Blogs</div>
+                        </div>
+                    </div>
+                    <div id="whats-new" class="row">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<?php
+echo $this->render('/widgets/blogs/whats-new', [
+    'size' => 'col-md-3 col-sm-6',
+    'is_ajax' => true,
+]);
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
+.q-box{
+    text-align:center;
+    position:relative;   
+    border-radius:10px;
+    padding-bottom:35px;
+    margin-bottom: 20px;
+    overflow:hidden;
+}
+.bg-black{
+    background:#2b2d32;
+    padding-bottom:40px;
+}
+.q-box-img{
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: 200px;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    backface-visibility: hidden;
+    border-radius:10px;
+}
+.q-box:hover a .q-box-img{
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+.q-box-hover{
+   transition: .5s ease;
+   opacity: 0;
+   position: absolute;
+   bottom: 0px;
+   left: 50%;
+   transform: translateX(-50%);
+   -ms-transform: translateX(-50%);
+   text-align: center;
+}
+.q-box a .q-box-img.coming-soon {
+  opacity: 0.3;
+}
+.q-box a .q-box-hover {
+  opacity: 1;
+  width:100%
+}
+.text2{
+  background-color: #00a0e3;
+  color: white;
+  font-size: 16px;
+  font-family:lora;
+  padding: 8px 0px;
+  border-radius: 0 0 10px 10px;
+}
+.bttn-left, .bttn-right{
+    background:transparent;
+    color:#00a0e3;
+}
+ /*blog-section-0-css*/
+.blog-section-0{
+    padding:10px 0 30px 0;
+    overflow:hidden;
+}
 .background{
     background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learn.png") . '");
-    min-height:550px;
+    min-height:340px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 70%;
