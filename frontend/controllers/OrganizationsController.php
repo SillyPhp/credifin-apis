@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\BusinessActivities;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -1552,6 +1553,23 @@ class OrganizationsController extends Controller
             return $this->refresh();
         }
         return $this->render('genrate-blog', ['model' => $model, 'data' => $data]);
+    }
+
+    public function actionSearchOrg($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $params1 = (new \yii\db\Query())
+            ->select(['organization_enc_id as id','name', 'slug', 'initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+                WHEN business_activity IS NULL THEN ""
+                ELSE business_activity
+                END) as business_activity'])
+            ->from(UnclaimedOrganizations::tableName() . 'as a')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->where("replace(name, '.', '') LIKE '%$q%'")
+            ->andWhere(['is_deleted' => 0]);
+        return $params1->limit(20)->all();
+
+
     }
 
 }

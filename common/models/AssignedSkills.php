@@ -40,7 +40,7 @@ class AssignedSkills extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_on', 'created_by'], 'required'],
+            [['assigned_skill_enc_id', 'skill_enc_id', 'category_enc_id', 'created_on'], 'required'],
             [['assigned_to', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
