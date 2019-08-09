@@ -17,16 +17,16 @@ use yii\helpers\Url;
                     <div class="row">
                         <div class="r-btns">
                             <div class="btn1 _1">
-                                <a href="#" class="show-ss">companies</a>
+                                <a href="javascript:;" class="show-ss" data-placeholder="Search Companies" data-key="Others,Recruiter,Business,Scholarship Fund,Banking & Finance Company">companies</a>
                             </div>
                             <div class="btn1 _2">
-                                <a href="#" class="show-ss">colleges</a>
+                                <a href="javascript:;" class="show-ss" data-placeholder="Search College,Universities" data-key="College">colleges</a>
                             </div>
                             <div class="btn1 _3">
-                                <a href="#" class="show-ss">schools</a>
+                                <a href="javascript:;" class="show-ss" data-placeholder="Search Schools" data-key="School">schools</a>
                             </div>
                             <div class="btn1 _4">
-                                <a href="#" class="show-ss">educational institutes</a>
+                                <a href="javascript:;" class="show-ss" data-placeholder="Search educational institute" data-key="Educational Institute">educational institutes</a>
                             </div>
                         </div>
 
@@ -99,14 +99,35 @@ $this->registerCss('
 	font-family: "Roboto", sans-serif;
 	padding: 4px 0;
 	display: inline-block;
-	margin: 7px 15px;
+	margin: 5px;
 }
 ._1 a{background: #51bce9;}
 ._2 a{background: #9983d0e0;}
 ._3 a{background: #57a84bc4;}
 ._4 a{background: #e47f87d4;}
-.r-btns{display: none; transition: .3s ease-in-out;}
-.r-btns.actives{display: block;}
+.r-btns{
+    opacity:0;
+    height:0px;
+//    display: none;
+//    transition: .3s ease-in-out;
+}
+.r-btns.actives{
+    opacity:1;
+    height:55px;
+    -webkit-animation-name: s_button; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+    animation-name: s_button;
+    animation-duration: 2s;
+//    display: block;
+}
+@-webkit-keyframes s_button {
+  from {margin-left: -1500px;}
+  to {margin-left: 0px;}
+}
+@keyframes s_button {
+  from {margin-left: -1500px;}
+  to {margin-left: 0px;}
+}
 
 .close-search{
   position:fixed;
@@ -143,7 +164,15 @@ $this->registerCss('
   transition:  all .4s linear;
   z-index: 999999;
 }
-
+.search.College{
+    background:#7453c6e3;
+}
+.search.School{
+    background:#0caa41d9;
+}
+.search.Educational.Institute{
+    background:#da4453db;
+}
 .search button{
   color:#03a9f4;
   font-size:1.7em;
@@ -217,7 +246,7 @@ $this->registerCss('
 }
 #form-search-q .twitter-typeahead
 {
-width:80%;
+width:85%;
 }
 .typeahead {
   background-color: #fff;
@@ -338,7 +367,7 @@ float:right;
 }
 #search_company
 {
-    width: 75%;
+    width: 100%;
 }
 .no_result_found
 {
@@ -376,7 +405,13 @@ $(document).on('click','#review_btn',function(e) {
     var search_button = $('.show-ss'),
         close_button  = $('.close-search'),
         input = $('.search-box2');
-    search_button.on('click',function(){
+        var dataKey;
+    search_button.on('click',function(e){
+        e.preventDefault();
+        dataKey = $(this).attr('data-key');
+        var placeHolder = $(this).attr('data-placeholder');
+        $('#search_company-q').attr('placeholder', placeHolder);
+        $('.search').addClass(dataKey);
         $('.search').addClass('open');
         close_button.fadeIn(500);
         input.fadeIn(500);
@@ -385,14 +420,17 @@ $(document).on('click','#review_btn',function(e) {
     });
     
     close_button.on('click',function(){
-        $('.search').removeClass('open');
         close_button.fadeOut(500);
-        input.fadeOut(500);
+        input.fadeOut(200);
+        $('.search').removeClass('open');
         $('body').css('overflow-y','visible');
+        setTimeout(function(){
+            $('.search').delay(1000).removeClass(dataKey);
+        }, 1000);
     });
     })(jQuery);
-$(document).on('click','.add_new_org',function(e) {
+$(document).on('click','.add_new_org_q',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company-q').val());
 })
 ");
