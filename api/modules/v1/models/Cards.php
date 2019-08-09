@@ -59,8 +59,8 @@ class Cards
                     $x->innerJoinWith(['cityEnc g'], false);
                 }], false);
             }], false)
-            ->joinWith(['preferredIndustry h'], false)
-            ->joinWith(['designationEnc l'], false)
+            ->innerJoinWith(['preferredIndustry h'], false)
+            ->innerJoinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoinWith(['applicationOptions m'], false)
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0]);
