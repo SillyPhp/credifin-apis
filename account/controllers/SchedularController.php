@@ -372,6 +372,7 @@ class SchedularController extends Controller
                 return false;
             }
         } catch (Exception $e) {
+            $transaction->rollback();
             return false;
         }
     }

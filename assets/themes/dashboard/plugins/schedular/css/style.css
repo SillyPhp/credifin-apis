@@ -183,6 +183,7 @@ body {
 .panel-heading h3 a {
     color: #999999;
     text-decoration: none;
+    display: block;
 }
 
 .panel-heading h3 a:hover {
@@ -460,8 +461,8 @@ li.init:after {
     -ms-transform: translateY(-50%);
     font-size: 18px;
     color: #999;
-    font-family: 'Material-Design-Iconic-Font';
-    content: '\f2f9';
+    font-family: FontAwesome;
+    content: '\f107';
 }
 
 .au-btn {
@@ -625,3 +626,12 @@ li.init:after {
 }
 
 /*# sourceMappingURL=style.css.map */
+.ui.label.transition.visible i.fa-times{
+    margin-left: 20px;
+}
+i.icon.fa{
+    font-family: FontAwesome;
+}
+i.icon.fa.fa-times:before {
+    content: "\f00d" !important;
+}

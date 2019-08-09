@@ -1,4 +1,4 @@
-(function($) {
+(function ($) {
 
     var results = {};
 
@@ -6,14 +6,19 @@
 
     results.mode = "online";
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         // $('.btn-previous').remove();
+
+
+    });
+
+    function getApplications() {
         $.ajax({
-            url : "/account/schedular/find-applications",
+            url: "/account/schedular/find-applications",
             type: "POST",
             async: false,
-            data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
-            beforeSend: function(){
+            data: {'_csrf-common': $('meta[name="csrf-token"]').attr("content")},
+            beforeSend: function () {
                 $('#schedular-loader').fadeIn(1000);
             },
             success: function (data) {
@@ -24,70 +29,70 @@
                 $('#applications-lisitng').html(output);
             }
         });
-    })
+    }
 
     //under tabs panel collapse show
     $('.panel').on('show.bs.collapse', function (e) {
-        if(this.childNodes[1].getAttribute('id') == "headingTwo") {
-                if(!results.application_id || results.application_id == "select"){
-                    if($('#select-application-sch').find('.error-msg').length == 0 && $('#select-application-sch').find('#rounds')) {
+        if (this.childNodes[1].getAttribute('id') == "headingTwo") {
+            if (!results.application_id || results.application_id == "select") {
+                if ($('#select-application-sch').find('.error-msg').length == 0 && $('#select-application-sch').find('#rounds')) {
+                    var html = $('#error-msg').html();
+                    var data = {
+                        msg: "This field can't be empty"
+                    };
+                    var output = Mustache.render(html, data);
+                    $('#select-application-sch').append(output);
+                }
+                return false;
+            }
+            if (results.type == "fixed") {
+                if (!results.selected_round || results.selected_round == "select") {
+                    if ($('#select-app-round').find('.error-msg').length == 0 && $('#select-app-round').find('label').length > 0) {
                         var html = $('#error-msg').html();
                         var data = {
                             msg: "This field can't be empty"
                         };
                         var output = Mustache.render(html, data);
-                        $('#select-application-sch').append(output);
+                        $('#select-app-round').append(output);
                     }
                     return false;
                 }
-                if(results.type == "fixed") {
-                    if (!results.selected_round || results.selected_round == "select") {
-                        if($('#select-app-round').find('.error-msg').length == 0 && $('#select-app-round').find('label').length > 0) {
-                            var html = $('#error-msg').html();
-                            var data = {
-                                msg: "This field can't be empty"
-                            };
-                            var output = Mustache.render(html, data);
-                            $('#select-app-round').append(output);
-                        }
-                        return false;
+            } else {
+                if (!results.selected_round || results.selected_round == "select") {
+                    if ($('#select-app-round').find('.error-msg').length == 0 && $('#select-app-round').find('label').length > 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#select-app-round').append(output);
                     }
-                }else{
-                    if (!results.selected_round || results.selected_round == "select") {
-                        if($('#select-app-round').find('.error-msg').length == 0 && $('#select-app-round').find('label').length > 0) {
-                            var html = $('#error-msg').html();
-                            var data = {
-                                msg: "This field can't be empty"
-                            };
-                            var output = Mustache.render(html, data);
-                            $('#select-app-round').append(output);
-                        }
-                        return false;
-                    }
-                    if (!results.selected_candidate) {
-                        if($('#select-application-process').find('.error-msg').length == 0 && $('#select-application-process').find('label').length > 0) {
-                            var html = $('#error-msg').html();
-                            var data = {
-                                msg: "This field can't be empty"
-                            };
-                            var output = Mustache.render(html, data);
-                            $('#select-application-process').append(output);
-                        }
-                        return false;
-                    }
+                    return false;
                 }
+                if (!results.selected_candidate) {
+                    if ($('#select-application-process').find('.error-msg').length == 0 && $('#select-application-process').find('label').length > 0) {
+                        var html = $('#error-msg').html();
+                        var data = {
+                            msg: "This field can't be empty"
+                        };
+                        var output = Mustache.render(html, data);
+                        $('#select-application-process').append(output);
+                    }
+                    return false;
+                }
+            }
         }
-        if(this.childNodes[1].getAttribute('id') == "headingThree") {
+        if (this.childNodes[1].getAttribute('id') == "headingThree") {
             var result = {};
 
-            if(!time){
+            if (!time) {
                 alert('Please enter correct time');
                 return false;
             }
 
             if ($('#main_time_from').find('input').val() && $('#main_time_to').find('input').val()) {
                 var the_date = $('.date-picker').datepicker('getDates');
-                console.log(the_date);
+                // console.log(the_date);
                 for (var j = 0; j < the_date.length; j++) {
                     var r = {};
                     var s_date = convert(the_date[j].toString());
@@ -136,7 +141,7 @@
                 return false;
             }
             results.timings = result;
-            $('.btn-next').css('display','block');
+            $('.btn-next').css('display', 'block');
         }
         $(this).addClass('active');
     });
@@ -146,27 +151,27 @@
         $(this).removeClass('active');
     });
 
-    function load_script(){
+    function load_script() {
 
         //rounds dropdown
         $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
-        $('#rounds option').each(function(){
+        $('#rounds option').each(function () {
             var background = $(this).data('url');
-            $('#newrounds').append('<li value="' + $(this).val() + '"><img src="'+ background +'" alt="">'+$(this).text()+'</li>');
+            $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
         });
         $('#rounds').remove();
         $('#newrounds').attr('id', 'rounds');
         $('#rounds li').first().addClass('init');
-        $("#rounds").on("click", ".init", function() {
+        $("#rounds").on("click", ".init", function () {
             $(this).closest("#rounds").children('li:not(.init)').toggle();
         });
         var allOptions = $("#rounds").children('li:not(.init)');
-        $("#rounds").on("click", "li:not(.init)", function() {
+        $("#rounds").on("click", "li:not(.init)", function () {
             $('#select-application-process').html('');
             var application_id = $(this).attr('value');
             results.application_id = $(this).attr('value');
             $('#selected_application_id').val(application_id);
-            if($('#select-application-sch').find('.error-msg').length > 0){
+            if ($('#select-application-sch').find('.error-msg').length > 0) {
                 $('#select-application-sch').find('.error-msg').remove();
             }
             $.ajax({
@@ -176,7 +181,7 @@
                 data: {
                     application_id
                 },
-                beforeSend: function(){
+                beforeSend: function () {
                     $('#schedular-loader').fadeIn(1000);
                 },
                 success: function (data) {
@@ -203,28 +208,28 @@
         });
     }
 
-    function load_script_again(){
+    function load_script_again() {
         //location dropdown
         $('#location').parent().append('<ul id="newlocation" class="select-list" name="location"></ul>');
-        $('#location option').each(function(){
+        $('#location option').each(function () {
             var background = $(this).data('url');
-            $('#newlocation').append('<li value="' + $(this).val() + '"><img src="'+ background +'" alt="">'+$(this).text()+'</li>');
+            $('#newlocation').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
         });
         $('#location').remove();
         $('#newlocation').attr('id', 'location');
         $('#location li').first().addClass('init');
-        $("#location").on("click", ".init", function() {
+        $("#location").on("click", ".init", function () {
             $(this).closest("#location").children('li:not(.init)').toggle();
         });
         var allOptions2 = $("#location").children('li:not(.init)');
-        $("#location").on("click", "li:not(.init)", function() {
+        $("#location").on("click", "li:not(.init)", function () {
             var selected_round = $(this).attr('value');
             results.selected_round = selected_round;
             $('#selected_round_id').val(selected_round);
-            if($('#select-app-round').find('.error-msg').length > 0){
+            if ($('#select-app-round').find('.error-msg').length > 0) {
                 $('#select-app-round').find('.error-msg').remove();
             }
-            if(results.type == 'flexible') {
+            if (results.type == 'flexible') {
                 $.ajax({
                     url: '/account/schedular/find-candidates',
                     type: 'POST',
@@ -264,31 +269,30 @@
     }
 
     //timepicker call for click on timepicker
-    $(document).on('focus', '.timepicker-24', function(){
+    $(document).on('focus', '.timepicker-24', function () {
         $(this).timepicker();
     });
 
     //checkbox event for all selected date
-    $(document).on('change', '#all-dates, #datepicker', function(){
+    $(document).on('change', '#all-dates, #datepicker', function () {
         check_all_dates();
         $(this).next('.error-msg').remove();
     });
 
     //helper function
-    function check_all_dates(){
+    function check_all_dates() {
         var check = $('#all-dates');
-        if(check.is(":not(:checked)")){
+        if (check.is(":not(:checked)")) {
             var date_picker_value = $('#datepicker').val();
-            if(date_picker_value != ''){
+            if (date_picker_value != '') {
                 addTimes();
                 $('#same-timings-cont').html('');
-            }
-            else{
+            } else {
                 alert('Interview dates is empty');
                 check.prop('checked', true);
                 return false;
             }
-        } else{
+        } else {
             $('#same-timings-cont').html(Mustache.render($('#main-timings').html()));
             $('#selected-dates').html("");
         }
@@ -318,16 +322,17 @@
     //helper function
     var dates = [];
     var dates_count;
+
     function addTimes() {
         dates = [];
         $('#selected-dates').html('');
         var the_date = $('.date-picker').datepicker('getDates');
         for (var j = 0; j < the_date.length; j++) {
             // var s_date = convert(the_date[j].toString());
-            var yr      = the_date[j].getFullYear(),
-                month   = the_date[j].getMonth() < 10 ? '0' + the_date[j].getMonth() : the_date[j].getMonth(),
-                month   = the_date[j].toLocaleString('default', { month: 'long' });
-                day     = the_date[j].getDate()  < 10 ? '0' + the_date[j].getDate()  : the_date[j].getDate(),
+            var yr = the_date[j].getFullYear(),
+                month = the_date[j].getMonth() < 10 ? '0' + the_date[j].getMonth() : the_date[j].getMonth(),
+                month = the_date[j].toLocaleString('default', {month: 'long'});
+            day = the_date[j].getDate() < 10 ? '0' + the_date[j].getDate() : the_date[j].getDate(),
                 s_date = day + '-' + month + '-' + yr;
             dates.push({
                 date: s_date
@@ -341,38 +346,38 @@
         var noRows = Math.ceil(dates_count / 2);
 
         var j = 0;
-        for(var i = 0; i < noRows; i++){
-            $('#selected-dates').append('<div class="row">' + Mustache.render(time_slots, dates.slice(j, j+2))+ '</div>');
-            j+=2;
+        for (var i = 0; i < noRows; i++) {
+            $('#selected-dates').append('<div class="row">' + Mustache.render(time_slots, dates.slice(j, j + 2)) + '</div>');
+            j += 2;
         }
 
         results.dates = dates;
     }
 
     //add more date
-    $(document).on('click', '#add-more', function(e){
+    $(document).on('click', '#add-more', function (e) {
         e.preventDefault();
-       $(this).closest('div').prev('#times-container').append(Mustache.render($('#add-more-d').html()));
+        $(this).closest('div').prev('#times-container').append(Mustache.render($('#add-more-d').html()));
     });
 
     //remove added date
-    $(document).on('click', '.remove-add', function(){
+    $(document).on('click', '.remove-add', function () {
         $(this).closest('#added-date').remove();
     });
 
 
     //interview mode selections
-    $('input[name= "mode"]').on('change',function(){
+    $('input[name= "mode"]').on('change', function () {
         var sl_type = $(this).attr("value");
-        if(sl_type=='1'){
+        if (sl_type == '1') {
             results.mode = 'at_location';
             $.ajax({
-                url : '/account/schedular/find-locations',
-                type : 'POST',
-                data : {
-                    application_id : results.application_id
+                url: '/account/schedular/find-locations',
+                type: 'POST',
+                data: {
+                    application_id: results.application_id
                 },
-                beforeSend: function(){
+                beforeSend: function () {
                     $('#schedular-loader').fadeIn(1000);
                 },
                 success: function (data) {
@@ -384,7 +389,7 @@
                 }
             })
             // $('#interview_locations').show();
-        } else if(sl_type=='2'){
+        } else if (sl_type == '2') {
             results.mode = 'online';
             $('#interview_locations').remove();
         }
@@ -392,7 +397,7 @@
 
     $(document).on('keyup', '#candidates', function () {
         results.number_of_candidates = $(this).val();
-        if ($('#no_cand_cont').find('.error-msg').length > 0){
+        if ($('#no_cand_cont').find('.error-msg').length > 0) {
             $('#no_cand_cont').find('.error-msg').remove();
         }
     });
@@ -400,7 +405,7 @@
     $(document).on('change', 'select#interview-location', function () {
         var selected_location = $(this).children("option:selected").val();
         results.selected_location = selected_location;
-        if(selected_location) {
+        if (selected_location) {
             if ($('#interview_locations').find('.error-msg').length > 0) {
                 $('#interview_locations').find('.error-msg').remove();
             }
@@ -408,7 +413,8 @@
     });
 
     //interview type selections
-    $(document).on('change', 'input[name= "interview_type"]',function(){
+    $(document).on('change', 'input[name= "interview_type"]', function () {
+        $('#schedular-loader').show();
         $('.choice').removeClass('active');
         $(this).parent('.choice').addClass('active');
 
@@ -417,57 +423,62 @@
         results.type = $(this).attr('value');
         var interview_type = $(this).attr("value");
 
-        if(interview_type=='fixed'){
+        if (interview_type == 'fixed') {
             var html_no_candidates = $('#number-of-candidates').html();
             var output_cand = Mustache.render(html_no_candidates);
             $('#specialities-data').append(output_cand);
-        }else{
-            $('.btn-next').css('display','none');
-            if($('#number_candidate_cont')){
+        } else {
+            $('.btn-next').css('display', 'none');
+            if ($('#number_candidate_cont')) {
                 $('#number_candidate_cont').remove();
             }
         }
+        setTimeout(function () {
+            getApplications();
+            load_script();
+        }, 100);
 
-        load_script();
     });
 
-    $(document).on('blur','.interviewer_details', function(){
+    $(document).on('blur', '.interviewer_details', function () {
         validateDetails();
     });
 
     var validate_detail = true;
-    function validateDetails(){
-        $('.interviewer_details').each(function(){
-            if($(this).val() === "" || $(this).val() == null){
+
+    function validateDetails() {
+        $('.interviewer_details').each(function () {
+            if ($(this).val() === "" || $(this).val() == null) {
                 // console.log('error');
                 $(this).next('.i-error').text('This field is required.');
                 validate_detail = false;
-            } else{
+            } else {
                 $(this).next('.i-error').text('');
                 // console.log('completed');
                 validate_detail = true;
             }
         });
     }
+
     //add more interviewers
-    $(document).on('click', '#add-more-interviewers', function(e){
+    $(document).on('click', '#add-more-interviewers', function (e) {
         e.preventDefault();
         // if(document.querySelectorAll('.interviewers')[0].querySelector('.int_name').value) {
-            $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
+        $('#more-interviewers').append(Mustache.render($('#add-more-interviewers-detail').html()));
         // }else{
         //     alert('Please fill the values');
         // }
         validate_detail = false;
     });
     //remove added interviewers
-    $(document).on('click', '.remove-added-interviewers', function(){
+    $(document).on('click', '.remove-added-interviewers', function () {
         $(this).closest('.added-interviewers').remove();
         validate_detail = true;
     });
-    $(document).on('click', '#finish', function(){
+    $(document).on('click', '#finish', function () {
         validateDetails();
-        if(validate_detail) {
-            $(this).prop('disabled',true);
+        if (validate_detail) {
+            $(this).prop('disabled', true);
             var result = [];
             var elems = document.querySelectorAll('.interviewers');
             for (var i = 0; i < elems.length; i++) {
@@ -490,7 +501,7 @@
                 url: '/account/schedular/fix-interview',
                 type: 'POST',
                 data: results,
-                beforeSend: function(){
+                beforeSend: function () {
                     $('#schedular-loader').fadeIn(1000);
                 },
                 success: function (data) {
@@ -519,7 +530,7 @@
         validate_time(element);
     });
 
-    function validate_time(element){
+    function validate_time(element) {
         var to_val = element.val();
         var from_val = element.parent().prev().children('input').val();
 
@@ -529,7 +540,7 @@
         var endt = new Date("November 13, 2013 " + to_val);
         endt = endt.getTime();
 
-        if(endt <= stt){
+        if (endt <= stt) {
             element.next('.date_error').text('Invalid Time');
             time = false;
         } else {

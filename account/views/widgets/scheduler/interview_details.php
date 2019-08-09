@@ -3,8 +3,9 @@
         <div class="panel panel-default">
             <div class="panel-heading" id="headingOne">
                 <h3>
-                    <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">Basic
-                        infomation</a>
+                    <a href="#collapseOne" data-toggle="collapse" data-parent="#accordion" aria-expanded="true">
+                        Basic infomation <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
+                    </a>
                 </h3>
             </div>
             <input type="hidden" id="selected_application_id" value="">
@@ -41,7 +42,9 @@
         <div class="panel panel-default">
             <div class="panel-heading" id="headingTwo">
                 <h3>
-                    <a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion">Additional infomation</a>
+                    <a href="#collapseTwo" data-toggle="collapse" data-parent="#accordion" class="collapsed">
+                        Additional infomation <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
+                    </a>
                 </h3>
             </div>
             <div id="collapseTwo" class="panel-collapse collapse">
@@ -76,7 +79,9 @@
         <div class="panel panel-default">
             <div class="panel-heading" id="headingThree">
                 <h3>
-                    <a href="#collapseThree" data-toggle="collapse" data-parent="#accordion">Specialities</a>
+                    <a href="#collapseThree" data-toggle="collapse" data-parent="#accordion" class="collapsed">
+                        Specialities <span class="acc-arrow"><i class="fa fa-arrow-circle-down"></i> </span>
+                    </a>
                 </h3>
             </div>
             <div id="collapseThree" class="panel-collapse collapse">

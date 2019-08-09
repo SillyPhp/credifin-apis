@@ -92,6 +92,7 @@ use yii\helpers\Url;
     </div>
     {{/.}}
 </script>
+
 <script id="add-more-d" type="text/template">
     <div id="added-date" class='col-sm-12'>
         <div class="row" style="margin-top: 10px;">
@@ -109,6 +110,7 @@ use yii\helpers\Url;
         </a>
     </div>
 </script>
+
 <script id="add-more-interviewers-detail" type="text/template">
     <div class="col-md-12 col-sm-12 added-interviewers interviewers">
         <div class="col-md-4 col-sm-4">
@@ -131,6 +133,7 @@ use yii\helpers\Url;
         </a>
     </div>
 </script>
+
 <script id="select-application" type="text/template">
     <select name="rounds" id="rounds">
         <option value="select" data-url='images/icon-vietnam.png'><img src="images/icon-vietnam.png" alt=""> Select</option>
@@ -139,6 +142,7 @@ use yii\helpers\Url;
         {{/applications}}
     </select>
 </script>
+
 <script id="select-candidate" type="text/template">
     <label class="form-label">Select Candidates</label>
     <div class="select-group multi-select-candidate">
@@ -157,6 +161,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </script>
+
 <script id="select-round" type="text/template">
     <label for="location" class="form-label">Select Interview Round</label>
     <div class="select-group">
@@ -174,14 +179,16 @@ use yii\helpers\Url;
 
     </div>
 </script>
+
 <script id="number-of-candidates" type="text/templates">
     <div class="form-row" id="number_candidate_cont">
         <div class="form-group" id="no_cand_cont">
-            <label for="candidates" class="form-label">Enter Number of Candidates</label>
+            <label for="candidates" class="form-label">Enter Number of Candidates Per Slot</label>
             <input type="number" name="candidates" id="candidates">
         </div>
     </div>
 </script>
+
 <script id="main-timings" type="text/template">
     <div class="col-sm-6 time-from-main" id="main_time_from">
         <label for="time_from" class="form-label">Select Interview Timing</label>
@@ -194,6 +201,7 @@ use yii\helpers\Url;
         <div class="date_error"></div>
     </div>
 </script>
+
 <script id="interview-locations-temp" type="text/template">
     <div id="interview_locations" class="form-group">
         <label for="location" class="form-label">Select Interview Location</label>
@@ -207,12 +215,22 @@ use yii\helpers\Url;
         </div>
     </div>
 </script>
+
 <script id="error-msg" type="text/template">
     <div class="error-msg">{{msg}}</div>
 </script>
 <?php
 $this->registerCss('
 //.btn-previous{display:none !important;}
+.acc-arrow{
+    float: right;
+    font-size: 30px;
+    margin-right: 20px;
+    transform: rotate(180deg);
+}
+.collapsed .acc-arrow{
+    transform: rotate(0deg);
+}
 .error-msg{
     padding-left:5px;
     color:#bb2124;
@@ -345,6 +363,13 @@ input.float_to_left{margin-top: 8.7px !important;}
 .multi-select-candidate{
     height:auto;
     margin-top:20px;
+}
+.interviewer{
+    display:inline-block;
+    width:auto;
+}
+label.interviewer{
+    margin-right:20px;
 }
 ');
 $script = <<< JS
