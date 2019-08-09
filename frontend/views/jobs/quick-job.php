@@ -159,7 +159,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-lg-4">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Post a Job', ['class' => 'btn btn-primary']) ?>
                         </div>
                     </div>
                 </div>
