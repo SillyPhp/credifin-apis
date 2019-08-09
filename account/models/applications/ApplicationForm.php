@@ -745,7 +745,24 @@ class ApplicationForm extends Model
         $int_list = ArrayHelper::index($l_list, 'location_enc_id');
         return $int_list;
     }
+    public function PlacementLocations($type=1)
+    {
+        $loc_list = OrganizationLocations::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['a.location_enc_id','CONCAT(a.location_name,", ",b.name,", ",c.name) location'])
+            ->where(['like', 'location_for', '"' . $type . '"'])
+            ->andWhere(['a.is_deleted' => 0])
+            ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->joinWith(['cityEnc b' => function ($b) {
+                $b->joinWith(['stateEnc c'], false);
+            }], false)
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()->all();
 
+        $int_list = ArrayHelper::map($loc_list, 'location_enc_id','location');
+        return $int_list;
+    }
     public function getPrimaryFields($type = 'Jobs')
     {
         $primaryfields = Categories::find()
@@ -759,6 +776,15 @@ class ApplicationForm extends Model
             ->all();
         $primary_cat = ArrayHelper::map($primaryfields, 'category_enc_id', 'name');
         return $primary_cat;
+    }
+    public function getApplicationTypes()
+    {
+        $d = ApplicationTypes::find()
+            ->select(['application_type_enc_id','name'])
+            ->where(['in','name',['Jobs','Internships']])
+            ->asArray()->all();
+        $d = ArrayHelper::map($d, 'application_type_enc_id', 'name');
+        return $d;
     }
 
     public function getndustry()
@@ -844,17 +870,17 @@ class ApplicationForm extends Model
                 $b->select(['c.application_enc_id', 'c.benefit_enc_id', 'c.is_deleted', 'd.benefit', 'd.icon', 'd.icon_location']);
             }])
             ->joinWith(['applicationEducationalRequirements e' => function ($b) {
-                $b->andWhere(['e.is_deleted' => 0]);
+                $b->onCondition(['e.is_deleted' => 0]);
                 $b->joinWith(['educationalRequirementEnc f'], false);
                 $b->select(['e.application_enc_id', 'f.educational_requirement_enc_id', 'f.educational_requirement']);
             }])
             ->joinWith(['applicationSkills g' => function ($b) {
-                $b->andWhere(['g.is_deleted' => 0]);
+                $b->onCondition(['g.is_deleted' => 0]);
                 $b->joinWith(['skillEnc h'], false);
                 $b->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
             }])
             ->joinWith(['applicationJobDescriptions i' => function ($b) {
-                $b->andWhere(['i.is_deleted' => 0]);
+                $b->onCondition(['i.is_deleted' => 0]);
                 $b->joinWith(['jobDescriptionEnc j'], false);
                 $b->select(['i.application_enc_id', 'j.job_description_enc_id', 'j.job_description']);
             }])
@@ -869,6 +895,12 @@ class ApplicationForm extends Model
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+            }])
+            ->joinWith(['applicationPlacementCities r'=>function($b)
+            {
+                $b->onCondition(['r.is_deleted' => 0]);
+                $b->select(['r.application_enc_id','cn.city_enc_id','cn.name']);
+                $b->joinWith(['cityEnc cn'], false);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($b) {
                 $b->onCondition(['p.is_deleted' => 0]);
@@ -894,7 +926,17 @@ class ApplicationForm extends Model
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
             ->select(['a.application_enc_id','a.preferred_gender','a.description',
-                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type', 'a.slug','o.*'])
+                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
+                WHEN a.experience = "0" THEN "No Experience"
+                WHEN a.experience = "1" THEN "Less Than 1 Year"
+                WHEN a.experience = "2" THEN "1 Year"
+                WHEN a.experience = "3" THEN "2-3 Years"
+                WHEN a.experience = "3-5" THEN "3-5 Years"
+                WHEN a.experience = "5-10" THEN "5-10 Years"
+                WHEN a.experience = "10-20" THEN "10-20 Years"
+                WHEN a.experience = "20+" THEN "More Than 20 Years"
+                ELSE "No Experience"
+                END) as experience'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -908,6 +950,11 @@ class ApplicationForm extends Model
             ->joinWith(['applicationTypeEnc y' => function ($b) use ($application_type) {
                 $b->andWhere(['y.name' => $application_type]);
             }], false, 'INNER JOIN')
+            ->joinWith(['applicationSkills z'=>function($b)
+            {
+                $b->select(['z.application_enc_id','n.skill_enc_id','skill']);
+                $b->joinWith(['skillEnc n'],false);
+            }])
             ->asArray()
             ->one();
         return $application;

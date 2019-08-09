@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 
-$this->title = 'Careers';
+$this->title = 'Salary Submitter';
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 $keywords = 'Career, Future, Scope, Growth, Opportunities, Sales, Business Development, Marketing, Information Technology, Human Resource, Operation, Government Jobs, Accounts, Finance, Legal, Company Secretary';
 $description = 'Empower Youth brings a visionary tool to help future generations to look ahead and create a road map for ultimate success in their careers.';

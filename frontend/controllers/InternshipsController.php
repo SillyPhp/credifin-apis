@@ -243,7 +243,6 @@ class InternshipsController extends Controller
             }
             return $response;
         }
-
         return $this->render('list');
     }
 
@@ -297,7 +296,6 @@ class InternshipsController extends Controller
                 ->asArray()
                 ->one();
         }
-
         if (!empty($application_details)) {
             $model = new \frontend\models\applications\JobApplied();
             return $this->render('/employer-applications/detail', [

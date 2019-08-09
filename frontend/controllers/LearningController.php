@@ -10,6 +10,7 @@ use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
 use common\models\LearningVideoTags;
 use common\models\Roles;
+use common\models\SubmittedVideos;
 use common\models\Tags;
 use common\models\UserPrivileges;
 use Yii;
@@ -22,6 +23,23 @@ use common\models\Utilities;
 
 class LearningController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['batch-videos'],
+                'rules' => [
+                    [
+                        'actions' => ['batch-videos'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -784,6 +802,69 @@ class LearningController extends Controller
         } else {
             return false;
         }
+    }
+
+    public function actionBatchVideos(){
+        $this->layout = 'main-secondary';
+        return $this->render('batch-videos');
+    }
+
+    public function actionSaveVideoData()
+    {
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $data = Yii::$app->request->post();
+            foreach ($data['data'] as $d){
+                if(!$this->saveData($d)){
+                    return false;
+                }
+            }
+            return $response = [
+                    'status'=>200,
+                    'message'=>'saved successfully'
+                ];
+        }
+
+    }
+
+    private function saveData($data){
+        $submittedVideosModel = new SubmittedVideos();
+        $utilitiesModel = new Utilities();
+        $submittedVideosModel->channel_id = $data['channel_id'];
+        $submittedVideosModel->channel_name = $data['channel_name'];
+        $submittedVideosModel->name = $data['title'];
+        $submittedVideosModel->link = $data['link'];
+        $submittedVideosModel->cover_image = $data['cover_image'];
+        $submittedVideosModel->description = $data['description'];
+        $submittedVideosModel->video_duration = $this->video_length($data['duration']);
+        if (!empty($data['tags'])) {
+            $submittedVideosModel->tags = implode(',',$data['tags']);
+        }
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
+        $submittedVideosModel->type = 'Others';
+        $submittedVideosModel->category = 'others';
+        $submittedVideosModel->sub_category = 'others';
+        $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
+        $submittedVideosModel->created_on = date('Y-m-d H:i:s');
+        $utilitiesModel->variables['name'] = $data['title'];
+        $utilitiesModel->variables['table_name'] = SubmittedVideos::tableName();
+        $utilitiesModel->variables['field_name'] = 'slug';
+        $submittedVideosModel->slug = $utilitiesModel->create_slug();
+        if ($submittedVideosModel->save()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function video_length($youtube_time)
+    {
+        $duration = new \DateInterval($youtube_time);
+        return $duration->h . ':' . $duration->i . ':' . $duration->s;
     }
 
 }

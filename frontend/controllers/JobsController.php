@@ -2,7 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationPlacementLocations;
 use common\models\AssignedCategories;
+use common\models\Cities;
+use common\models\OrganizationLocations;
 use frontend\models\workingProfiles\WorkingProfile;
 use Yii;
 use yii\filters\AccessControl;
@@ -239,8 +242,6 @@ class JobsController extends Controller
             }
             return $response;
         }
-        $options = [];
-        $cards = ApplicationCards::jobs($options);
         return $this->render('list');
     }
 

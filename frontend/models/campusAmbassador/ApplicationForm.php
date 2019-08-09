@@ -2,6 +2,7 @@
 
 namespace frontend\models\campusAmbassador;
 
+use common\models\ApplicationTypes;
 use common\models\Usernames;
 use common\models\UserTypes;
 use Yii;
@@ -88,7 +89,7 @@ class ApplicationForm extends Model
         ];
     }
 
-    public function save()
+    public function save($type)
     {
         if (!$this->validate()) {
             return $this->getErrors();
@@ -104,6 +105,8 @@ class ApplicationForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $app_type_id = ApplicationTypes::findOne(['name' => $type])['application_type_enc_id'];
+
             $usernamesModel = new Usernames();
             $usernamesModel->username = $this->username;
             $usernamesModel->assigned_to = 1;
@@ -139,6 +142,7 @@ class ApplicationForm extends Model
             $applicationsModel->application_id = time();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $applicationsModel->application_enc_id = $utilitiesModel->encrypt();
+            $applicationsModel->application_type_enc_id = $app_type_id;
             $applicationsModel->user_enc_id = $usersModel->user_enc_id;
             $applicationsModel->qualification_enc_id = $this->qualification_id;
             $applicationsModel->college = $this->college;
