@@ -54,9 +54,9 @@ class Cards
             ->innerJoinWith(['organizationEnc d'=>function($d){
                 $d->onCondition(['d.is_deleted'=>0]);
             }], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'], false);
+            ->innerJoinWith(['applicationPlacementLocations e' => function ($x) {
+                $x->innerJoinWith(['locationEnc f' => function ($x) {
+                    $x->innerJoinWith(['cityEnc g'], false);
                 }], false);
             }], false)
             ->joinWith(['preferredIndustry h'], false)
@@ -197,9 +197,9 @@ class Cards
             ->innerJoinWith(['organizationEnc d'=>function($d){
                 $d->onCondition(['d.is_deleted'=>0]);
             }], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g'], false);
+            ->innerJoinWith(['applicationPlacementLocations e' => function ($x) {
+                $x->innerJoinWith(['locationEnc f' => function ($x) {
+                    $x->innerJoinWith(['cityEnc g'], false);
                 }], false);
             }], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
