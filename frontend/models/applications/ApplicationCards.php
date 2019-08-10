@@ -290,7 +290,7 @@ class ApplicationCards
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
+                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
                 'CONCAT("/", d.slug, "' . $referral . '") organization_link',
                 'd.initials_color color',
                 'c.name as title',
@@ -334,8 +334,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-                'CONCAT("/job/", a.slug, "' . $referral . '") organization_link',
+                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
+                'CONCAT("/internship/", a.slug, "' . $referral . '") organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
