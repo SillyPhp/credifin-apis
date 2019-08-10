@@ -6,7 +6,7 @@ use yii\helpers\Url;
         <div class="quick-review">
             <div class="row quick-review-inner">
                 <div class="col-md-3 quick-review-img"><img src="<?= Url::to('@eyAssets/images/pages/review/quick-review.png');?>"></div>
-                <div class="col-md-7">
+                <div class="col-md-7 overflow-hidden">
                     <h2>Help The Community</h2>
                     <div class="quick-review-t">find empoweryouth reviews Helpful?start helping others by sharing your
                         personal experience.
@@ -61,6 +61,9 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/review/quick-review-search-bar');
 $this->registerCss('
+.overflow-hidden{
+    overflow:hidden;
+}
 .quick-review{
 	border:2px solid #eee;
 	margin: 20px;
@@ -115,13 +118,13 @@ $this->registerCss('
     opacity:1;
     height:55px;
     -webkit-animation-name: s_button; /* Safari 4.0 - 8.0 */
-    -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
     animation-name: s_button;
-    animation-duration: 2s;
+    animation-duration: 1s;
 //    display: block;
 }
 @-webkit-keyframes s_button {
-  from {margin-left: -1500px;}
+  from {margin-left: -1000px;}
   to {margin-left: 0px;}
 }
 @keyframes s_button {
@@ -132,9 +135,9 @@ $this->registerCss('
 .close-search{
   position:fixed;
   color:#fff;
-  top:20px;
-  right:50px;
-  font-size:1.7em;
+  top:50px;
+  right:100px;
+  font-size:2em;
   cursor:pointer;
   display:none;
   z-index: 9999999;
@@ -145,6 +148,7 @@ $this->registerCss('
 }
 
 .close-search:hover{
+    top:46px;
   font-size:2.4em;
   -webkit-transform:rotate(360deg);
   transform:rotate(360deg);
@@ -181,13 +185,12 @@ $this->registerCss('
 
 .search .search-box2{
   position:absolute;
-  top:50%;
+  top:47%;
   left:50%;
   -webkit-transform:translate(-50%, -50%);
   transform:translate(-50%, -50%);
   width:500px;
-//  height:40px;
-//  background:transparent;
+  height:55px;
   border:none;
   outline:none;
   border-bottom:3px solid #eee;
@@ -220,6 +223,7 @@ $this->registerCss('
     border: none;
     box-shadow: none;
     display: inline-block;
+    height: 55px;
     padding: 0;
     background: transparent;
 }
@@ -229,7 +233,7 @@ $this->registerCss('
 .search-box2 .search-btn {
    position: absolute !Important;
     right: 4px;
-    top: 4px;
+    top: 11px;
     color: #eee;
     font-size: 20px;
     padding: 5px 10px 5px;
@@ -351,7 +355,7 @@ float:right;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 20px 1px !important;
+  margin: 25px 1px !important;
 }
 
 .load-suggestions span:nth-child(1){
@@ -393,6 +397,37 @@ float:right;
   }
 }
 /*Load Suggestions loader css ends */
+@media screen and (max-width: 767px){
+    .search-box2{
+        width: 350px !important;
+    }
+    .close-search{
+        top:10px;
+        right:30px;
+    }
+}
+@media screen and (max-width: 616px){
+    .search-box2{
+        width: 320px !important;
+    }
+    .close-search{
+        top:10px;
+    }
+    .r-btns.actives{
+        height:105px !Important;
+    }
+}
+@media screen and (max-width: 400px){
+    .search-box2{
+        width: 300px !important;
+    }
+    .close-search{
+        top:5px;
+    }
+    .r-btns.actives{
+        height:165px !Important;
+    }
+}
 ');
 $this->registerJs("
 $(document).on('click','#review_btn',function(e) {
@@ -426,7 +461,20 @@ $(document).on('click','#review_btn',function(e) {
         $('body').css('overflow-y','visible');
         setTimeout(function(){
             $('.search').delay(1000).removeClass(dataKey);
+            $('#search_company-q').val('');
         }, 1000);
+    });
+    $(document).keydown(function(e) {
+        if (e.keyCode == 27) {
+            close_button.fadeOut(500);
+            input.fadeOut(200);
+            $('.search').removeClass('open');
+            $('body').css('overflow-y','visible');
+            setTimeout(function(){
+                $('.search').delay(1000).removeClass(dataKey);
+                $('#search_company-q').val('');
+            }, 1000);
+        }
     });
     })(jQuery);
 $(document).on('click','.add_new_org_q',function(e) {
