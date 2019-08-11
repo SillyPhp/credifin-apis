@@ -49,6 +49,7 @@ class ReviewsController extends Controller
     {
         $referral = Yii::$app->referral->getReferralCode();
         Yii::$app->response->format = Response::FORMAT_JSON;
+        $type = explode(",",$type);
         $params1 = (new \yii\db\Query())
             ->select(['name', 'CONCAT(slug, "/reviews", "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
@@ -57,8 +58,11 @@ class ReviewsController extends Controller
             ->from(UnclaimedOrganizations::tableName() . 'as a')
             ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");
-        if ($type != null) {
-            $query1 = $params1->andWhere(['business_activity' => $type])
+        if ($type[0] != null) {
+            $query1 = $params1->andWhere([
+                'or',
+                ['in', 'business_activity', $type]
+            ])
                 ->andWhere(['is_deleted' => 0]);
         } else {
             $query1 = $params1->andWhere(['is_deleted' => 0]);
@@ -69,8 +73,11 @@ class ReviewsController extends Controller
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");
-        if ($type != null) {
-            $query2 = $params2->andWhere(['business_activity' => $type])
+        if ($type[0] != null) {
+            $query2 = $params2->andWhere([
+                'or',
+                ['in', 'business_activity', $type]
+            ])
                 ->andWhere(['is_deleted' => 0]);
         } else {
             $query2 = $params2->andWhere(['is_deleted' => 0]);

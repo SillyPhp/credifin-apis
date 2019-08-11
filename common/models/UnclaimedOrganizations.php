@@ -18,6 +18,7 @@ use Yii;
  * @property string $slug Organization Slug
  * @property string $email Organization Email
  * @property string $phone organization phone no
+ * @property string $description organization description
  * @property string $website Organization Website
  * @property string $initials_color Intials Color
  * @property int $status Organization Status (1 Active, 0 Inactive, 2 Pending)
@@ -49,7 +50,8 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['organization_enc_id', 'name', 'slug', 'initials_color', 'created_by'], 'required'],
+            [['organization_enc_id', 'name', 'slug', 'initials_color'], 'required'],
+            [['description'], 'string'],
             [['status', 'is_deleted'], 'integer'],
             [['created_on'], 'safe'],
             [['organization_enc_id', 'organization_type_enc_id', 'name', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],

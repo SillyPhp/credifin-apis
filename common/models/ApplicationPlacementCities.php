@@ -38,7 +38,7 @@ class ApplicationPlacementCities extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id', 'created_by'], 'required'],
+            [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
             [['placement_cities_enc_id', 'application_enc_id', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],

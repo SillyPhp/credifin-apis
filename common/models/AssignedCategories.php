@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%assigned_categories}}".
  *
@@ -46,7 +48,7 @@ class AssignedCategories extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['assigned_category_enc_id', 'category_enc_id', 'assigned_to', 'created_by'], 'required'],
+            [['assigned_category_enc_id', 'category_enc_id', 'assigned_to'], 'required'],
             [['assigned_to', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
@@ -58,6 +60,10 @@ class AssignedCategories extends \yii\db\ActiveRecord
             [['parent_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['parent_enc_id' => 'category_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
