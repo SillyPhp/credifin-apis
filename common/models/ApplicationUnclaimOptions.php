@@ -42,7 +42,7 @@ class ApplicationUnclaimOptions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['unclaim_options_enc_id', 'application_enc_id', 'job_url', 'wage_type', 'created_by'], 'required'],
+            [['unclaim_options_enc_id', 'application_enc_id', 'job_url', 'wage_type'], 'required'],
             [['positions'], 'integer'],
             [['wage_type'], 'string'],
             [['fixed_wage', 'min_wage', 'max_wage'], 'number'],

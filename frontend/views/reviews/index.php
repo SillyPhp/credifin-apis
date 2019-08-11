@@ -128,6 +128,9 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <?= $this->render('/widgets/review/quick-review');?>
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Organizations</h1>
@@ -183,6 +186,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
     <section class="qr-bg">
         <div class="container">
             <div class="row">
@@ -1232,7 +1236,7 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards-company');
 echo $this->render('/widgets/mustache/review-cards-unclaimed');
 echo $this->render('/widgets/review/review-search-bar');
-echo $this->render('/widgets/review/review-search-bar');
+//echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
