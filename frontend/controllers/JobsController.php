@@ -2,16 +2,22 @@
 
 namespace frontend\controllers;
 
+use account\models\applications\ApplicationForm;
 use common\models\ApplicationPlacementLocations;
 use common\models\AssignedCategories;
+use common\models\BusinessActivities;
 use common\models\Cities;
 use common\models\OrganizationLocations;
+use common\models\Skills;
+use frontend\models\applications\CreateCompany;
+use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use common\models\EmployerApplications;
 use common\models\Organizations;
@@ -292,7 +298,76 @@ class JobsController extends Controller
             'shortlist' => $shortlist,
         ]);
     }
-
+    public function actionFetchSkills($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $list = Skills::find()
+            ->select(['skill text', 'skill id'])
+            ->where(['like', 'skill', $q])
+            ->andWhere(['is_deleted' => 0])
+            ->limit(20)
+            ->asArray()
+            ->all();
+        $out['results'] = array_values($list);
+        return $out;
+    }
+    public function actionCreateCompany()
+    {
+        $createCompany = new CreateCompany();
+        $business = BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->asArray()->all();
+        $b = ArrayHelper::map($business, 'business_activity_enc_id', 'business_activity');
+        $createCompany->type = $business[4]['business_activity_enc_id'];
+        return $this->renderAjax('/jobs/create-company', [
+            'createCompany' => $createCompany,
+            'b' => $b,
+        ]);
+    }
+    public function actionCreateOrg()
+    {
+        $createCompany = new CreateCompany();
+        if ($createCompany->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
+            if ($createCompany->save())
+            {
+                return [
+                    'status'=>'success',
+                    'message'=> 'Company Has Been Added',
+                    'title'=>'Success',
+                ];
+            }
+            else
+            {
+                return [
+                    'status'=>'error',
+                    'message'=> 'Something Went Wrong',
+                    'title'=>'Error',
+                ];
+            }
+        }
+    }
+    public function actionQuickJob()
+    {
+        $this->layout = 'main-secondary';
+        $model = new QuickJob();
+        $typ = 'Jobs';
+        $data = new ApplicationForm();
+        $primary_cat = $data->getPrimaryFields();
+        $job_type = $data->getApplicationTypes();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->save($typ))
+            {
+                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            }
+            return $this->refresh();
+        }
+        return $this->render('quick-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+    }
     public function actionJobPreview($eipdk)
     {
         if (!empty($eipdk)) {

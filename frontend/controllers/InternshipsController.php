@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use account\models\applications\ApplicationForm;
 use common\models\AssignedCategories;
 use common\models\Organizations;
 use common\models\Users;
+use frontend\models\applications\QuickJob;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -314,7 +316,28 @@ class InternshipsController extends Controller
             return 'Not Found';
         }
     }
-
+    public function actionQuickInternship()
+    {
+        $this->layout = 'main-secondary';
+        $model = new QuickJob();
+        $typ = 'Internships';
+        $data = new ApplicationForm();
+        $primary_cat = $data->getPrimaryFields();
+        $job_type = $data->getApplicationTypes();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->save($typ))
+            {
+                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+            }
+            else
+            {
+                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            }
+            return $this->refresh();
+        }
+        return $this->render('quick-internship',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+    }
     public function actionSimilarApplication($slug)
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {

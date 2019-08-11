@@ -84,7 +84,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location', 'created_by'], 'required'],
+            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
             [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'is_deleted'], 'integer'],
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
@@ -103,6 +103,10 @@ class EmployerApplications extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -219,7 +223,7 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTitle()
+    public function getTitle0()
     {
         return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
     }
