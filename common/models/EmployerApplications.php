@@ -54,6 +54,7 @@ use Yii;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
+ * @property AssignedCategories $title
  * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
@@ -218,6 +219,14 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function getApplicationTypeEnc()
     {
         return $this->hasOne(ApplicationTypes::className(), ['application_type_enc_id' => 'application_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTitle()
+    {
+        return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
     }
 
     /**
