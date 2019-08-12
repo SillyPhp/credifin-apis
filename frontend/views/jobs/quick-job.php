@@ -84,9 +84,19 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                         <div class="col-md-6">
+                            <?php $model->wage_type = [1, 2]; ?>
                                 <?= $form->field($model,'wage_type')->inline()->radioList([
                                     1 => 'Fixed',
                                     2 => 'Negotiable',
+                                ], [
+                                    'item' => function($index, $label, $name, $checked, $value) {
+                                        $return = '<label for="wage-' . $index . '" class="wage-radios">';
+                                        $return .= '<input type="radio" name="wage_type" value="' . $value . '" id="wage-' . $index . '" />';
+                                        $return .= '<svg width="20px" height="20px" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9"></circle><path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path><path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path></svg>';
+                                        $return .= '<span>' . $label . '</span>';
+                                        $return .= '</label>';
+                                        return $return;
+                                    }
                                 ])->label(false); ?>
                         </div>
                         <div class="col-md-6">
@@ -159,7 +169,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-lg-4">
-                            <?= Html::submitButton('Post a Job', ['class' => 'btn btn-primary']) ?>
+                            <?= Html::submitButton('Post Job', ['class' => 'btn btn-primary']) ?>
                         </div>
                     </div>
                 </div>
@@ -387,12 +397,19 @@ z-index:0;
 {
     float: left;
     width: 100%;
-    border: 2px solid #e8ecec;
-    border-radius: 8px;
-    padding: 8px;
+    border: 2px solid #dedede;
+    padding: 4px 8px;
     list-style: outside none none;
 }
-
+.select2-container--krajee .select2-selection{
+    border-radius:0px !important;
+}
+.select2-container--krajee .select2-selection--multiple{
+    min-height: 40px !important;
+}
+.select2-container--krajee .select2-selection--multiple .select2-selection__choice{
+    margin: 8px 0 0 6px !important;
+}
 .addedTag {
     float: left;
     background: #f4f5fa;
@@ -556,11 +573,11 @@ width:100%;
 .tt-suggestion:hover {
   cursor: pointer;
   color: #fff;
-  background-color: #0097cf;
+  background-color: #0097cf !important;
 }
 .tt-suggestion.tt-cursor {
   color: #fff;
-  background-color: #0097cf;
+  background-color: #0097cf !important;
 }
 .tt-suggestion p {
   margin: 0;
@@ -632,6 +649,65 @@ float:right;
     font-size: 18px;
     background: #dde6dd;
     color: #1117d8;
+}
+.wage-radios {
+  cursor: pointer;
+  display: inline-block;
+  float: left;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.wage-radios:not(:first-child) {
+  margin-left: 20px;
+}
+@media screen and (max-width: 480px) {
+  .wage-radios {
+    display: block;
+    float: none;
+  }
+  .wage-radios:not(:first-child) {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+}
+.wage-radios svg {
+  fill: none;
+  vertical-align: middle;
+}
+.wage-radios svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.wage-radios svg path {
+  stroke: #008FFF;
+}
+.wage-radios svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.wage-radios svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.wage-radios input {
+  display: none;
+}
+.wage-radios input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.wage-radios input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.wage-radios input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.wage-radios span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left:5px;
 }
 ");
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
