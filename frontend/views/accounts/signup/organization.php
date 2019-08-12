@@ -86,7 +86,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
+            <?= $form->field($model, 'username', ['template' => '<div class="input-group"><span class="input-group-addon">https://empoweryouth.com/</span>{input}</div>{error}', 'enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
         </div>
     </div>
     <div class="row">
@@ -142,6 +142,11 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-    .intl-tel-input {
-        width: 100%;
-}');
+.intl-tel-input {
+    width: 100%;
+}
+.input-group-addon{
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
+');
