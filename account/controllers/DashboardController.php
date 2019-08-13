@@ -2,19 +2,24 @@
 
 namespace account\controllers;
 
-use account\models\applications\Applied;
-use common\models\ApplicationTypes;
-use common\models\UserCoachingTutorials;
-use common\models\WidgetTutorials;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
+use yii\web\HttpException;
+use yii\web\Response;
 use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Organizations;
 use common\models\AppliedApplications;
 use common\models\AppliedApplicationProcess;
+use account\models\organization\CompanyLogoForm;
+use account\models\user\UserProfilePictureEdit;
+use account\models\applications\Applied;
+use common\models\ApplicationTypes;
+use common\models\UserCoachingTutorials;
+use common\models\Users;
+use common\models\WidgetTutorials;
 
 class DashboardController extends Controller
 {
@@ -46,40 +51,21 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
-        $model = new \account\models\services\ServiceSelectionForm();
-
-        if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            if (Yii::$app->user->identity->organization) {
-                return $this->redirect('/' . Yii::$app->user->identity->organization->slug);
-            } else{
-                return $this->redirect('/' . Yii::$app->user->identity->username . '/edit');
-            }
+        if (Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->business_activity_enc_id) {
+            return $this->_businessActivity();
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
-            $services = \common\models\Services::find()
-                ->select(['service_enc_id', 'name'])
-                ->where(['is_always_visible' => 0])
-                ->orderBy(['sequence' => SORT_ASC])
-                ->asArray()
-                ->all();
-
-            return $this->render('services', [
-                'model' => $model,
-                'services' => $services,
-            ]);
+            return $this->_services();
         }
 
         if (Yii::$app->user->identity->organization) {
-
             $viewed = $this->hasViewed();
-
             $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
             $applications = [
                 'jobs' => $this->_applications(3),
                 'internships' => $this->_applications(3, 'Internships'),
             ];
-
         } else {
             $viewed = $this->hasViewed();
             $this->_condition = ['b.created_by' => Yii::$app->user->identity->user_enc_id];
@@ -130,10 +116,12 @@ class DashboardController extends Controller
             ->asArray()
             ->all();
 
+        $servicesModel = new \account\models\services\ServiceSelectionForm();
+
         return $this->render('index', [
             'applied' => $applied_app,
             'services' => $services,
-            'model' => $model,
+            'model' => $servicesModel,
             'applications' => $applications,
             'question_list' => $question,
             'viewed' => $viewed,
@@ -181,28 +169,140 @@ class DashboardController extends Controller
         }
     }
 
-    public function actionBusinessActivity()
+    public function actionUpdateProfile()
     {
-        $model = new \account\models\services\ServiceSelectionForm();
-        $services = \common\models\Services::find()
-            ->select(['service_enc_id', 'name'])
-            ->where(['is_always_visible' => 0])
-            ->orderBy(['sequence' => SORT_ASC])
-            ->asArray()
-            ->all();
+        if (Yii::$app->user->identity->organization) {
+            $organization = Organizations::find()
+                ->select(['logo', 'logo_location', 'initials_color'])
+                ->where(['slug' => Yii::$app->user->identity->organization->slug, 'status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->one();
+            $companyLogoFormModel = new CompanyLogoForm();
+            return $this->render('logo-modal', [
+                'companyLogoFormModel' => $companyLogoFormModel,
+                'organization' => $organization,
+            ]);
+        } else {
+            $userProfilePicture = new UserProfilePictureEdit();
+            $user = Users::find()
+                ->select(['image', 'image_location', 'initials_color'])
+                ->where(['username' => Yii::$app->user->identity->username, 'status' => 'Active', 'is_deleted' => 0])
+                ->asArray()
+                ->one();
+
+            return $this->render('user-image-modal', [
+                'userProfilePicture' => $userProfilePicture,
+                'user' => $user,
+            ]);
+        }
+    }
+
+    private function _businessActivity()
+    {
+
+        $model = new \account\models\businessActivities\BusinessActivitySelectionForm();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $model->businessActivity = $model->businessActivity[0];
+            if ($model->add()) {
+                return $this->redirect("/account/dashboard");
+            }
+        }
 
         $business_activities = \common\models\extended\BusinessActivities::find()
             ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
-            ->where(['!=', 'business_activity', 'Business'])
-            ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
+            ->orderBy('business_activity ASC')
             ->asArray()
             ->all();
-
         return $this->render('organizations/business-activity', [
-            'model' => $model,
-            'services' => $services,
-            'business_activities' => $business_activities,
+            "model" => $model,
+            "business_activities" => $business_activities,
         ]);
     }
 
+    private function _services()
+    {
+        $model = new \account\models\services\ServiceSelectionForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->add()) {
+            return $this->redirect("/account/dashboard");
+        }
+
+        if (!Yii::$app->user->identity->services['selected_services']) {
+            $services = \common\models\Services::find()
+                ->select(['service_enc_id', 'name'])
+                ->where(['is_always_visible' => 0])
+                ->orderBy(['sequence' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            return $this->render('services', [
+                'model' => $model,
+                'services' => $services,
+            ]);
+        }
+    }
+
+    private function _uploadImage()
+    {
+        return $this->render("user-image-modal");
+    }
+
+    private function _uploadLogo()
+    {
+        return $this->render("logo-modal");
+    }
+
+    public function actionSkipBusinessActivity()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost && Yii::$app->user->identity->organization->organization_enc_id) {
+            $business_activities = \common\models\extended\BusinessActivities::find()
+                ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
+                ->where(["business_activity" => "Others"])
+                ->orderBy('business_activity ASC')
+                ->one();
+
+            if (!$business_activities) {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+
+            $organization = Organizations::findOne([
+                "organization_enc_id" => Yii::$app->user->identity->organization->organization_enc_id,
+                "status" => "Active",
+                "is_deleted" => 0,
+            ]);
+
+            if (!$organization) {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+
+            $organization->business_activity_enc_id = $business_activities->business_activity_enc_id;
+            if ($organization->validate() && $organization->update()) {
+                return [
+                    "status" => 200,
+                ];
+            } else {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+        } else {
+            return [
+                "status" => 202,
+                "title" => "Error",
+                "message" => Yii::t('frontend', 'Invalid request')
+            ];
+        }
+    }
 }
