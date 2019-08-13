@@ -51,7 +51,7 @@ $business_activities = ArrayHelper::index($business_activities, NULL, 'business_
                     <div style="min-height: 21px;">
                         <div class="error"></div>
                     </div>
-                    <div class="pull-right" style="margin-right: 10px;">
+                    <div class="pull-right" style="margin-right: 10px;margin-bottom: 15px;">
                         <a class="services-submit" id="skip-it"
                            url="<?= Url::to("/account/dashboard/skip-business-activity"); ?>">
                             <span>Skip</span>
@@ -243,7 +243,7 @@ $this->registerCss("
     background-color: #fff;
     border-radius: 10px;
     position:relative;
-    padding:8px 20px 20px;
+    padding:8px 20px 0px;
 }
 .main-outer{
     width:60%;
@@ -374,12 +374,13 @@ $script = <<<JS
     $(document).on('click', '#skip-it', function (a) {
         a.preventDefault();
         url = $(this).attr('url');
-        $(this).attr('disabled', true);
+        var d_template = $(this).html();
+        $(this).css('pointer-events', 'none');
+        $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
         $.ajax({
             url: url,
             method: "POST",
             success: function (response) {
-                $('#skip-it').removeAttr('disabled');
                 if (response.status === 200) {
                     location.reload();
                 } else {
@@ -388,6 +389,21 @@ $script = <<<JS
             }
         });
     });
+    $(document).on('click', '#sbt', function(){
+        var chk1 = $('.ba-box input[type=radio]:checked').length;
+        
+        if(chk1 === 1){
+            $(this).css('pointer-events', 'none');
+            $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            return true;
+        }else{
+            $('.error').html('Select at least one to continue');
+            $('.error').fadeIn(1000);
+        }
+    });
+      $('.checkbox-input').click(function(){
+        $('.error').fadeOut(1000);
+      });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
