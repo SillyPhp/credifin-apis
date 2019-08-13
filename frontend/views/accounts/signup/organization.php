@@ -8,7 +8,6 @@ use borales\extensions\phoneInput\PhoneInput;
 
 $this->title = Yii::t('frontend', 'Organization Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
-$business_activities = ArrayHelper::map($business_activities, 'business_activity_enc_id', 'business_activity');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
     <div class="row">
@@ -51,16 +50,6 @@ $form = ActiveForm::begin([
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12 col-sm-12">
-            <?=
-            $form->field($model, 'organization_business_activity')->dropDownList(
-                $business_activities, [
-                'prompt' => Yii::t('frontend', 'Select Business Activity'),
-            ])->label(false);
-            ?>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-md-6 col-sm-6">
             <?= $form->field($model, 'organization_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('organization_name')]); ?>
         </div>
@@ -86,7 +75,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
+            <?= $form->field($model, 'username', ['template' => '<div class="input-group"><span class="input-group-addon">https://empoweryouth.com/</span>{input}</div>{error}', 'enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
         </div>
     </div>
     <div class="row">
@@ -142,6 +131,11 @@ $form = ActiveForm::begin([
 
 <?php
 $this->registerCss('
-    .intl-tel-input {
-        width: 100%;
-}');
+.intl-tel-input {
+    width: 100%;
+}
+.input-group-addon{
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
+');

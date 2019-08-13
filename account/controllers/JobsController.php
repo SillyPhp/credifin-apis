@@ -1230,4 +1230,8 @@ class JobsController extends Controller
         return false;
     }
 
+    public function actionTestProcess(){
+        return $this->render('test-new');
+    }
+
 }
