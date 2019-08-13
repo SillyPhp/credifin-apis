@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\HttpException;
+use yii\web\Response;
 use common\models\EmployerApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -50,21 +51,12 @@ class DashboardController extends Controller
 
     public function actionIndex()
     {
-
-        if (!Yii::$app->user->identity->organization->business_activity_enc_id) {
+        if (Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->business_activity_enc_id) {
             return $this->_businessActivity();
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
             return $this->_services();
-        }
-
-        if (Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->identity->organization->logo) {
-            return $this->_uploadLogo();
-        }
-
-        if (!Yii::$app->user->identity->image) {
-            return $this->_uploadImage();
         }
 
         if (Yii::$app->user->identity->organization) {
@@ -210,14 +202,16 @@ class DashboardController extends Controller
 
         $model = new \account\models\businessActivities\BusinessActivitySelectionForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            return $this->redirect("/account/dashboard");
+        if ($model->load(Yii::$app->request->post())) {
+            $model->businessActivity = $model->businessActivity[0];
+            if ($model->add()) {
+                return $this->redirect("/account/dashboard");
+            }
         }
 
         $business_activities = \common\models\extended\BusinessActivities::find()
             ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
-            ->where(['!=', 'business_activity', 'Business'])
-            ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
+            ->orderBy('business_activity ASC')
             ->asArray()
             ->all();
         return $this->render('organizations/business-activity', [
@@ -231,7 +225,7 @@ class DashboardController extends Controller
         $model = new \account\models\services\ServiceSelectionForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->add()) {
-            return true;
+            return $this->redirect("/account/dashboard");
         }
 
         if (!Yii::$app->user->identity->services['selected_services']) {
@@ -259,4 +253,56 @@ class DashboardController extends Controller
         return $this->render("logo-modal");
     }
 
+    public function actionSkipBusinessActivity()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost && Yii::$app->user->identity->organization->organization_enc_id) {
+            $business_activities = \common\models\extended\BusinessActivities::find()
+                ->select(['business_activity_enc_id', 'business_activity', 'CONCAT("' . Url::to('@commonAssets/business_activities/') . '", icon_png) icon'])
+                ->where(["business_activity" => "Others"])
+                ->orderBy('business_activity ASC')
+                ->one();
+
+            if (!$business_activities) {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+
+            $organization = Organizations::findOne([
+                "organization_enc_id" => Yii::$app->user->identity->organization->organization_enc_id,
+                "status" => "Active",
+                "is_deleted" => 0,
+            ]);
+
+            if (!$organization) {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+
+            $organization->business_activity_enc_id = $business_activities->business_activity_enc_id;
+            if ($organization->validate() && $organization->update()) {
+                return [
+                    "status" => 200,
+                ];
+            } else {
+                return [
+                    "status" => 201,
+                    "title" => "Error",
+                    "message" => Yii::t('frontend', 'An error has occurred. Please try again.')
+                ];
+            }
+        } else {
+            return [
+                "status" => 202,
+                "title" => "Error",
+                "message" => Yii::t('frontend', 'Invalid request')
+            ];
+        }
+    }
 }

@@ -31,16 +31,18 @@ $business_activities = ArrayHelper::index($business_activities, NULL, 'business_
                     ?>
                     <div class="row">
                         <ul class="ba-list">
-                            <?php
-                            echo $form->field($model, 'businessActivity')->inline()->checkBoxList($business_activities, [
+                            <?=
+                            $form->field($model, 'businessActivity')->inline()->checkBoxList($business_activities, [
                                 'id' => 'services',
                                 'item' => function ($index, $label, $name, $checked, $value) {
-                                    $return = '<li><div class="ba-box"><input type="radio" name="' . $name . '" value="' . $value . '" id="services-' . $index . '" class="checkbox-input services" />';
-                                    $return .= '<label for="services-' . $index . '" class="checkbox-label">';
-                                    $return .= '<a class="box"><div class="content"><img src="' . $label[0]['icon'] . '"/>';
-                                    $return .= '<h3>' . $label[0]['business_activity'] . '</h3>';
-                                    $return .= '</div></a></label></div></li>';
-                                    return $return;
+                                    if ($label[0]['business_activity'] !== "Others") {
+                                        $return = '<li><div class="ba-box"><input type="radio" name="' . $name . '" value="' . $value . '" id="services-' . $index . '" class="checkbox-input services" />';
+                                        $return .= '<label for="services-' . $index . '" class="checkbox-label">';
+                                        $return .= '<a class="box"><div class="content"><img src="' . $label[0]['icon'] . '"/>';
+                                        $return .= '<h3>' . $label[0]['business_activity'] . '</h3>';
+                                        $return .= '</div></a></label></div></li>';
+                                        return $return;
+                                    }
                                 }
                             ])->label(false);
                             ?>
@@ -50,7 +52,8 @@ $business_activities = ArrayHelper::index($business_activities, NULL, 'business_
                         <div class="error"></div>
                     </div>
                     <div class="pull-right" style="margin-right: 10px;">
-                        <a class="services-submit">
+                        <a class="services-submit" id="skip-it"
+                           url="<?= Url::to("/account/dashboard/skip-business-activity"); ?>">
                             <span>Skip</span>
                             <span>
                           <svg width="50px" height="14px" viewBox="0 0 66 43" version="1.1"
@@ -367,7 +370,24 @@ $script = <<<JS
         $('.main-outer').fadeIn(1000);
     });
     var ps = new PerfectScrollbar('.main-inner');
-
+    
+    $(document).on('click', '#skip-it', function (a) {
+        a.preventDefault();
+        url = $(this).attr('url');
+        $(this).attr('disabled', true);
+        $.ajax({
+            url: url,
+            method: "POST",
+            success: function (response) {
+                $('#skip-it').removeAttr('disabled');
+                if (response.status === 200) {
+                    location.reload();
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+            }
+        });
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
