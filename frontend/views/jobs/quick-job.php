@@ -193,6 +193,20 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
             </div>
         </div>
     </div>
+    <button class='zoom-btn hidden'>Zoom In</button>
+    <div class='m-cover hidden'></div>
+    <div class='m-modal hidden'>
+        <div class='m-content'>
+            <h2>Success</h2>
+            <p>Your Application has successfully submitted.</p>
+            <div class="m-actions">
+                <a href="#">Post Another Job</a>
+                <a href="#">Post Internship</a>
+                <a href="#">Signup or Login</a>
+            </div>
+        </div>
+    </div>
+
 <?php
 $script = <<< JS
 $('#max_salary, #min_salary').mask("#,#0,#00", {reverse: true});
@@ -375,6 +389,16 @@ $('#job_title').typeahead(null, {
 });
 return true;
 }
+$("button.zoom-btn").on ("click", function() {
+  $('.m-modal, .m-cover').removeClass("hidden");
+  $('.m-modal').addClass("zoom");
+});
+
+//hide modal
+$(".m-cover, .close").on ("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
 $this->registerCss("
@@ -708,6 +732,71 @@ float:right;
   display: inline-block;
   vertical-align: middle;
   margin-left:5px;
+}
+.m-cover {
+  z-index: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  opacity: .9;
+}
+
+.m-modal {
+  z-index: 2;
+  height: 250px;
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  border-top: solid 3px #ababab;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.m-modal .m-content p {
+  font-size: 1.2em;
+  color: #444;
+}
+
+.zoom {
+  display: block;
+  animation: zoom 0.7s;
+  animation-fill-mode: forwards;
+  box-shadow:0px 2px 10px 2px #dcdcdcc7;
+}
+.m-actions a {
+  display: inline-block;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    box-shadow: 0px 2px 10px 1px #eee;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #00a0e3;
+}
+
+@keyframes zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0, 0);
+  }
+  30% {
+    opacity: 0;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+.hidden {
+  display: none;
+}
+.reverse {
+  animation-direction: reverse;
 }
 ");
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
