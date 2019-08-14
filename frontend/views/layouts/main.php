@@ -64,6 +64,8 @@ $referral = Yii::$app->referral->getReferralCode();
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
                         <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/internships/quick-internship"><i class="far fa-check-circle"></i> Post Internship</a>
+                        <a href="/jobs/quick-job"><i class="far fa-check-circle"></i> Post Job</a>
                     </div>
                     <div class="secondary-top-header-right">
                         <a href="/signup/organization">Signup as Company</a>
@@ -325,6 +327,7 @@ $this->registerCss('
 }
 .secondary-top-header-left{padding-left:80px;float:left;}
 .secondary-top-header-left a i{font-size:16px;}
+.secondary-top-header-left a{margin:15px;}
 .secondary-top-header-right{padding-right:50px;float:right;}
 .secondary-top-header a{
     color:#fff;

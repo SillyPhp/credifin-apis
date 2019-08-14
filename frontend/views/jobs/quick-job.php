@@ -193,7 +193,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
             </div>
         </div>
     </div>
-    <button class='zoom-btn hidden'>Zoom In</button>
+    <button class='zoom-btn'>Zoom In</button>
     <div class='m-cover hidden'></div>
     <div class='m-modal hidden'>
         <div class='m-content'>
@@ -395,10 +395,10 @@ $("button.zoom-btn").on ("click", function() {
 });
 
 //hide modal
-$(".m-cover, .close").on ("click", function() {
-  $('.m-modal').attr('class', 'm-modal');
-  $('.m-modal, .m-cover').addClass("hidden");
-});
+// $(".m-cover, .close").on ("click", function() {
+//   $('.m-modal').attr('class', 'm-modal');
+//   $('.m-modal, .m-cover').addClass("hidden");
+// });
 JS;
 $this->registerJs($script);
 $this->registerCss("
@@ -752,7 +752,7 @@ float:right;
   border-radius: 5px;
   text-align: center;
   border-top: solid 3px #ababab;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
