@@ -15,7 +15,7 @@ $business_activities = ArrayHelper::index($business_activities, NULL, 'business_
                 <div class="col-md-12">
                     <?php
                     $form = ActiveForm::begin([
-                        'id' => 'submit_form',
+                        'id' => 'ba_submit_form',
                         'enableClientValidation' => true,
                         'validateOnBlur' => false,
                         'options' => [
@@ -389,21 +389,24 @@ $script = <<<JS
             }
         });
     });
+    
     $(document).on('click', '#sbt', function(){
         var chk1 = $('.ba-box input[type=radio]:checked').length;
         
         if(chk1 === 1){
             $(this).css('pointer-events', 'none');
             $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-            return true;
-        }else{
+            $("#ba_submit_form").submit();
+        } else {
             $('.error').html('Select at least one to continue');
             $('.error').fadeIn(1000);
+            return false;
         }
     });
-      $('.checkbox-input').click(function(){
+    
+    $('.checkbox-input').click(function(){
         $('.error').fadeOut(1000);
-      });
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
