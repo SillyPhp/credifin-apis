@@ -114,28 +114,33 @@ margin-top:20px
     height:100%;
     border-radius:50%;
     border:1px solid #ddd;
+    margin-top: 3px;
 }
 .tweet-org-description *{
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    font-family: Roboto;
 }
 .tweet-org-description h4{
-    font-size:13px;
-    font-weight:500;
-    color:#555;
-    margin:0px;
+    font-size: 12.5px;
+    font-weight: 400;
+    color: #222;
+    margin: 0px;
+    line-height: 14px;
 }
 .tweet-org-description h2{
-    font-size:16px;
-    font-weight:700;
-    color:#222;
-    margin:3px 0px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #222;
+    margin: 0px 0px;
 }
 .tweet-org-description p{
-    color:#888;
+    color: #777;
     font-size: 13px;
     margin: 0px;
+    line-height: 16px;
+    font-weight: 400;
 }
 #load_me
 {
