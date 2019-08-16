@@ -15,7 +15,19 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
     <div class="row">
         <?php
         if (Yii::$app->session->hasFlash('success')):
-            echo '<label class="orange">'.Yii::$app->session->getFlash('success').'</label>';
+            echo "<div class='m-cover hidden'></div>
+                <div class='m-modal hidden'>
+                    <div class='m-content'>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <p>Your Application has successfully submitted.</p>
+                        <div class='m-actions'>
+                            <a href='javascript:;' class='close-m-mo'>Post Another Internship</a>
+                            <a href='/jobs/quick-job'>Post Job</a>
+                            <a href='/signup/individual'>Signup or Login</a>
+                        </div>
+                    </div>
+                </div>";
+//            echo '<label class="orange">'.Yii::$app->session->getFlash('success').'</label>';
         else:
             Yii::$app->session->hasFlash('error');
             echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
@@ -37,7 +49,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                     <div class="col-md-3">
                         <?= Html::a('Add New Company','#',[
-                            'class'=>'btn btn-primary add_new_org',
+                            'class'=>'btn btn-primary add_new_org logo-dark-color',
                             'url'=>'/jobs/create-company',
                             'data-toggle'=>'modal',
                             'data-target'=>'#modal'
@@ -70,6 +82,20 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                                 <?= $form->field($model,'wage_type')->inline()->radioList([
                                     1 => 'Fixed',
                                     2 => 'Negotiable',
+                                ], [
+                                    'item' => function($index, $label, $name, $checked, $value) {
+                                        if($checked){
+                                            $checked = "checked";
+                                        } else{
+                                            $checked = "";
+                                        }
+                                        $return = '<label for="wage-' . $index . '" class="wage-radios">';
+                                        $return .= '<input type="radio" name="wage_type" value="' . $value . '" id="wage-' . $index . '" ' . $checked . '/>';
+                                        $return .= '<svg width="20px" height="20px" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9"></circle><path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path><path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path></svg>';
+                                        $return .= '<span>' . $label . '</span>';
+                                        $return .= '</label>';
+                                        return $return;
+                                    }
                                 ])->label(false); ?>
                         </div>
                         <div class="col-md-6">
@@ -140,10 +166,8 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-lg-4">
-                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-                        </div>
+                    <div class="col-md-12 text-right">
+                        <?= Html::submitButton('Post Internship', ['class' => 'btn btn-primary logo-dark-color']) ?>
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>
@@ -348,9 +372,23 @@ $('#job_title').typeahead(null, {
 });
 return true;
 }
+setTimeout(function() {
+  $('.m-modal, .m-cover').removeClass("hidden");
+  $('.m-modal').addClass("zoom");
+}, 1000);
+
+//hide modal
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.logo-dark-color{
+    background-color: #00a0e3;
+    border-color: #00a0e3;
+}
 .layer-overlay::before{background-color:transparent !important;}
 .suggestion_wrap
  {
@@ -539,11 +577,11 @@ width:100%;
 .tt-suggestion:hover {
   cursor: pointer;
   color: #fff;
-  background-color: #0097cf;
+  background-color: #0097cf !important;
 }
 .tt-suggestion.tt-cursor {
   color: #fff;
-  background-color: #0097cf;
+  background-color: #0097cf !important;
 }
 .tt-suggestion p {
   margin: 0;
@@ -561,7 +599,7 @@ width:100%;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 20px 1px;
 }
 
 .load-suggestions span:nth-child(1){
@@ -615,6 +653,143 @@ float:right;
     font-size: 18px;
     background: #dde6dd;
     color: #1117d8;
+}
+.wage-radios {
+  cursor: pointer;
+  display: inline-block;
+  float: left;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.wage-radios:not(:first-child) {
+  margin-left: 20px;
+}
+@media screen and (max-width: 480px) {
+  .wage-radios {
+    display: block;
+    float: none;
+  }
+  .wage-radios:not(:first-child) {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+}
+.wage-radios svg {
+  fill: none;
+  vertical-align: middle;
+}
+.wage-radios svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.wage-radios svg path {
+  stroke: #008FFF;
+}
+.wage-radios svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.wage-radios svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.wage-radios input {
+  display: none;
+}
+.wage-radios input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.wage-radios input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.wage-radios input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.wage-radios span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left:5px;
+}
+.m-cover {
+  z-index: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  opacity: .9;
+}
+
+.m-modal {
+  z-index: 2;
+  height: 370px;
+  width: 600px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  border-top: solid 3px #ababab;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.m-modal .m-content p {
+  font-size: 1.2em;
+  color: #444;
+}
+.m-content img{
+    max-width: 310px;
+    display: block;
+    margin: 20px auto;
+}
+.zoom {
+  display: block;
+  animation: zoom 0.7s;
+  animation-fill-mode: forwards;
+  box-shadow:0px 2px 10px 2px #dcdcdcc7;
+}
+.m-actions a {
+  display: inline-block;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    box-shadow: 0px 2px 10px 1px #eee;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #00a0e3;
+}
+.m-actions a:hover {
+    text-decoration:none;
+}
+@keyframes zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0, 0);
+  }
+  30% {
+    opacity: 0;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+.hidden {
+  display: none;
+}
+.reverse {
+  animation-direction: reverse;
+}
+@media screen and (max-width: 600px) {
+    .m-content img{max-width: 290px;}
+    .m-modal{
+        height: 430px;
+        width: 300px;
+    }
 }
 ");
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
