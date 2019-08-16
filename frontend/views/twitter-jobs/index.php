@@ -3,62 +3,63 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
 $this->params['header_dark'] = true;
 //$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 ?>
 <div id="loading_img">
 </div>
-<div class="container">
-    <div id="main_cnt">
+<section class="head-bg">
+    <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <section class="head-bg">
-                    <div class="overlay-bg"></div>
-                    <div class="pos-relative">
-                        <div class="header-bg">
-                            <div class="search-box">
-                                <form id="form-search" action="<?= Url::to(['search']) ?>">
-                                    <div class="input-group search-bar">
-                                        <input type="text" id="search_company" class="form-control"
-                                               placeholder="Search #tweets"
-                                               name="keywords">
-                                        <div class="input-group-btn">
-                                            <button class="loader_btn_search"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
+            <div class="col-md-12">
+                <div class="search-box">
+                    <form id="form-search" action="<?= Url::to(['search']) ?>">
+                        <div class="input-group search-bar">
+                            <input type="text" id="search_company" class="form-control"
+                                   placeholder="Search #tweets"
+                                   name="keywords">
+                            <div class="input-group-btn">
+                                <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </form>
+                </div>
             </div>
         </div>
+    </div>
+</section>
+<section>
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div id="twitter_jobs_cards">
 
                 </div>
                 <?php
-                foreach ($tweets as $tweet){
+                foreach ($tweets as $tweet) {
                     ?>
-                    <div class="col-md-3">
-                        <div class="tweet-org-deatail">
-                            <div class="tweet-org-logo">
-                                <?php if (!empty($tweet['logo'])): ?>
-                                    <img src="<?= $tweet['logo'] ?>"/>
-                                <?php else: ?>
-                                    <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150" height="150"
-                                            color="<?= $tweet['color'] ?>" font="55px"></canvas>
-                                <?php endif; ?>
+                    <div class="col-md-3 tweet-main">
+                        <div class="tweet-inner-main">
+                            <div class="tweet-org-deatail">
+                                <div class="tweet-org-logo">
+                                    <?php if (!empty($tweet['logo'])): ?>
+                                        <img src="<?= $tweet['logo'] ?>"/>
+                                    <?php else: ?>
+                                        <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
+                                                height="150"
+                                                color="<?= $tweet['color'] ?>" font="55px"></canvas>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="tweet-org-description">
+                                    <h4><?= ucwords($tweet['org_name']) ?></h4>
+                                    <h2><?= ucwords($tweet['job_title']) . ',' . $tweet['profile'] ?></h2>
+                                    <p><?= $tweet['job_type'] ?></p>
+                                </div>
                             </div>
-                            <div class="tweet-org-description">
-                                <h4><?= ucwords($tweet['org_name']) ?></h4>
-                                <h2><?= ucwords($tweet['job_title']).','.$tweet['profile'] ?></h2>
-                                <p><?= $tweet['job_type'] ?></p>
+                            <div class="posted-tweet">
+                                <?= $tweet['html_code']; ?>
                             </div>
-                        </div>
-                        <div class="posted-tweet">
-                            <?= $tweet['html_code']; ?>
                         </div>
                     </div>
                     <?php
@@ -67,13 +68,32 @@ $this->params['header_dark'] = true;
             </div>
         </div>
     </div>
-</div>
+</section>
 <?php
 //echo $this->render('/widgets/twitter-jobs');
-$this->registerCss(" 
-#form-search
-{
-margin-bottom:55px;
+$this->registerCss("
+.posted-tweet iframe{width:100% !important;}
+.head-bg{
+    background-color:#00a0e3;
+    padding:50px 0px;
+}
+.search-box{
+    width: 100%;
+    max-width: 650px;
+    margin: auto;
+}
+#form-search .search-bar{
+    border-radius: 18px;
+    overflow: hidden;
+}
+#form-search .search-bar input{
+    border: 0px;
+}
+.tweet-main{
+    
+}
+#form-search{
+    margin-bottom:55px;
 }
 .main-content
 {
@@ -98,6 +118,7 @@ margin-top:20px
 .tweet-org-deatail{
     width:100%;
     position:relative;
+    float:left;
 }
 .tweet-org-logo{
     display:inline-block;
@@ -174,5 +195,5 @@ $script = <<< JS
 //$('#loading_img').addClass('show');
 JS;
 $this->registerJs($script);
-$this->registerJsFile("https://platform.twitter.com/widgets.js",['position'=>\yii\web\View::POS_HEAD]);
+$this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
 ?>
