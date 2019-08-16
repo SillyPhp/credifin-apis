@@ -89,6 +89,9 @@ $(document).ready(function(){
                     }
                     return false;
                 }
+                if(!validate_data()){
+                    return false;
+                }
                 if ($('#datepicker').val() == "") {
                     if ($('#datepicker').parent().children('.error-msg').length == 0) {
                         var html = $('#error-msg').html();
@@ -368,6 +371,25 @@ materialDesign = {
                 }
         }, 17)
 
+}
+
+function validate_data() {
+    if($('#min').val() == ''){
+        $('.min-error').text('This field is required.');
+        return false;
+    }
+
+    if($('#candidates').val() == ''){
+        $('.candidate-error').text('This field is required.');
+        return false;
+    }
+
+    if($('#room').val() == ''){
+        $('.room-error').text('This field is required.');
+        return false;
+    }
+
+    return true;
 }
 
 function debounce(func, wait, immediate) {

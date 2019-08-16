@@ -26,7 +26,6 @@
                                 </div>
 
 
-
                             </div>
                             <div class="form-row">
                                 <div class="form-select" id="select-application-process">
@@ -53,8 +52,28 @@
                         <fieldset>
                             <div class="form-row">
                                 <div class="form-group">
+                                    <div id="time_duration">
+
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div id="canddidate">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group" id="number_of_interview_rooms">
+
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
                                     <label for="datepicker" class="form-label">Select Interview Dates</label>
-                                    <input class="date-picker" placeholder="Select Dates" size="16" type="text" name="interview_dates" id="datepicker" value=""/>
+                                    <input class="date-picker" placeholder="Select Dates" size="16" type="text"
+                                           name="interview_dates" id="datepicker" value=""/>
                                 </div>
                                 <div class="form-group">
                                     <div id="same-timings-cont">
@@ -65,7 +84,6 @@
                                         <label for="all-dates" class="float_to_left">For all Interview Dates</label>
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="form-row">
@@ -92,7 +110,8 @@
                                 <div class="form-group">
                                     <label>Select Mode</label>
                                     <div class="col-sm-6">
-                                        <input type="radio" id="online" class="float_to_left" value="2" name="mode" checked="checked">
+                                        <input type="radio" id="online" class="float_to_left" value="2" name="mode"
+                                               checked="checked">
                                         <label for="online" class="float_to_left">Online</label>
                                     </div>
                                     <div class="col-sm-6">

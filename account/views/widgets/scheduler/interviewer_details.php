@@ -5,27 +5,28 @@
             <div class="col-md-12 col-sm-12 interviewers">
                 <div class="col-md-4 col-sm-4">
                     <label for="int_name" class="form-label">Name of Interviewer</label>
-                    <input type="text" name="int_name" class="int_name interviewer_details">
+                    <input type="text" name="int_name" class="int_name interviewer_details abc-name abc">
                     <p class="i-error"></p>
                 </div>
                 <div class="col-md-4 col-sm-4">
                     <label for="int_email" class="form-label">Email of Interviewer</label>
-                    <input type="email" name="int_email" class="int_email interviewer_details">
+                    <input type="email" name="int_email" class="int_email interviewer_details abc-email abc">
                     <p class="i-error"></p>
                 </div>
                 <div class="col-md-4 col-sm-4">
                     <label for="int_phone" class="form-label">Phone Number of Interviewer</label>
-                    <input type="number" name="int_phone" class="int_phone interviewer_details">
+                    <input type="number" name="int_phone" class="int_phone interviewer_details abc-number abc">
                     <p class="i-error"></p>
                 </div>
             </div>
             <div id="more-interviewers"></div>
-            <div class="col-md-12">
-                <input type="radio" id="notify" name="radio1" class="interviewer">
+            <div class="col-md-12 pl-35">
+                <input type="radio" id="notify" name="radio1" class="interviewer interviewer_option" value="0">
                 <label for="notify" class="interviewer">Just Notify Interviewer</label>
 
-                <input type="radio" id="acceptance" name="radio1" class="interviewer">
+                <input type="radio" id="acceptance" name="radio1" class="interviewer interviewer_option" value="1">
                 <label for="acceptance" class="interviewer">Request for Acceptance</label>
+                <p class="i-error interviewer-option-error"></p>
             </div>
         </div>
         <div class="col-md-12 col-sm-12">

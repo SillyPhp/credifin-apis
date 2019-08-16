@@ -180,6 +180,11 @@ class SchedularController extends Controller
                 }
                 $res['type'] = $req['type'];
                 $res['selected_round'] = $req['selected_round'];
+                $res['time_duration'] = $req['time_duration'];
+                $res['interview_rooms'] = $req['interview_rooms'];
+                if ($req['interviewer_options']) {
+                    $res['interviewer_options'] = $req['interviewer_options'];
+                }
                 $res['mode'] = $req['mode'];
                 $res['interviewers'] = [];
                 $res['timings'] = [];
@@ -279,6 +284,11 @@ class SchedularController extends Controller
                     $interview_options->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
                     $interview_options->process_field_enc_id = $data['selected_round'];
                     $interview_options->number_of_candidates = $data['number_of_candidates'];
+                    $interview_options->interview_duration = $data['time_duration'];
+                    $interview_options->interview_rooms = $data['interview_rooms'];
+                    if ($data['interviewer_options']) {
+                        $interview_options->interviewer_required = $data['interviewer_options'];
+                    }
                     if (!$interview_options->save()) {
                         $transaction->rollback();
                         return false;
@@ -325,7 +335,7 @@ class SchedularController extends Controller
                                     $transaction->rollback();
                                     return false;
                                 }
-                            }else{
+                            } else {
                                 $transaction->rollback();
                                 return false;
                             }
