@@ -91,8 +91,18 @@ $this->params['seo_tags'] = [
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="<?= Url::to('/internships/profiles'); ?>" class="btn btn-3">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-12">
