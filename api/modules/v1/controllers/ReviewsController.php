@@ -125,6 +125,10 @@ class ReviewsController extends ApiBaseController
             return $this->response(422);
         }
 
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
+        }
+
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
             ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
@@ -179,8 +183,11 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
                 ->joinWith(['designationEnc e'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
 
@@ -210,7 +217,7 @@ class ReviewsController extends ApiBaseController
                 ->one();
 
             $data['org_detail'] = $org;
-            $data['reviews'] = $reviews;
+            $data['reviews'] = $result;
             $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
 
@@ -564,6 +571,10 @@ class ReviewsController extends ApiBaseController
             return $this->response(422);
         }
 
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
+        }
+
         $org = Organizations::find()
             ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
             ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
@@ -599,11 +610,14 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
-            $data['reviews'] = $reviews;
+            $data['reviews'] = $result;
 
             if (!empty($data)) {
                 return $this->response(200, $data);
