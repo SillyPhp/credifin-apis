@@ -15,7 +15,19 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
     <div class="row">
         <?php
         if (Yii::$app->session->hasFlash('success')):
-            echo '<label class="orange">'.Yii::$app->session->getFlash('success').'</label>';
+            echo "<div class='m-cover hidden'></div>
+                <div class='m-modal hidden'>
+                    <div class='m-content'>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <p>Your Application has successfully submitted.</p>
+                        <div class='m-actions'>
+                            <a href='javascript:;' class='close-m-mo'>Post Another Job</a>
+                            <a href='/internships/quick-internship'>Post Internship</a>
+                            <a href='/signup/individual'>Signup or Login</a>
+                        </div>
+                    </div>
+                </div>";
+//            echo '<label class="orange">'.Yii::$app->session->getFlash('success').'</label>';
         else:
             Yii::$app->session->hasFlash('error');
             echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
@@ -37,7 +49,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                     <div class="col-md-3">
                         <?= Html::a('Add New Company','#',[
-                            'class'=>'btn btn-primary add_new_org',
+                            'class'=>'btn btn-primary add_new_org logo-dark-color',
                             'url'=>'/jobs/create-company',
                             'data-toggle'=>'modal',
                             'data-target'=>'#modal'
@@ -57,7 +69,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                         <?= $form->field($model, 'job_type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
                     </div>
                     <div class="col-md-6">
-                        <?= $form->field($model, 'positions')->textInput(['placeholder'=>'No. Of Openings'])->label(false); ?>
+                        <?= $form->field($model, 'positions')->textInput(['type' => 'number', 'placeholder'=>'No. Of Openings'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -84,14 +96,18 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                         <div class="col-md-6">
-                            <?php $model->wage_type = [1, 2]; ?>
                                 <?= $form->field($model,'wage_type')->inline()->radioList([
                                     1 => 'Fixed',
                                     2 => 'Negotiable',
                                 ], [
                                     'item' => function($index, $label, $name, $checked, $value) {
+                                        if($checked){
+                                            $checked = "checked";
+                                        } else{
+                                            $checked = "";
+                                        }
                                         $return = '<label for="wage-' . $index . '" class="wage-radios">';
-                                        $return .= '<input type="radio" name="wage_type" value="' . $value . '" id="wage-' . $index . '" />';
+                                        $return .= '<input type="radio" name="wage_type" value="' . $value . '" id="wage-' . $index . '" ' . $checked . ' />';
                                         $return .= '<svg width="20px" height="20px" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9"></circle><path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path><path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path></svg>';
                                         $return .= '<span>' . $label . '</span>';
                                         $return .= '</label>';
@@ -167,10 +183,8 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-lg-4">
-                            <?= Html::submitButton('Post Job', ['class' => 'btn btn-primary']) ?>
-                        </div>
+                    <div class="col-md-12 text-right">
+                        <?= Html::submitButton('Post Job', ['class' => 'btn btn-primary logo-dark-color']) ?>
                     </div>
                 </div>
                 <?php ActiveForm::end(); ?>
@@ -193,20 +207,6 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
             </div>
         </div>
     </div>
-    <button class='zoom-btn'>Zoom In</button>
-    <div class='m-cover hidden'></div>
-    <div class='m-modal hidden'>
-        <div class='m-content'>
-            <h2>Success</h2>
-            <p>Your Application has successfully submitted.</p>
-            <div class="m-actions">
-                <a href="#">Post Another Job</a>
-                <a href="#">Post Internship</a>
-                <a href="#">Signup or Login</a>
-            </div>
-        </div>
-    </div>
-
 <?php
 $script = <<< JS
 $('#max_salary, #min_salary').mask("#,#0,#00", {reverse: true});
@@ -389,19 +389,23 @@ $('#job_title').typeahead(null, {
 });
 return true;
 }
-$("button.zoom-btn").on ("click", function() {
+setTimeout(function() {
   $('.m-modal, .m-cover').removeClass("hidden");
   $('.m-modal').addClass("zoom");
-});
+}, 1000);
 
 //hide modal
-// $(".m-cover, .close").on ("click", function() {
-//   $('.m-modal').attr('class', 'm-modal');
-//   $('.m-modal, .m-cover').addClass("hidden");
-// });
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.logo-dark-color{
+    background-color: #00a0e3;
+    border-color: #00a0e3;
+}
 .layer-overlay::before{background-color:transparent !important;}
 .suggestion_wrap
  {
@@ -619,7 +623,7 @@ width:100%;
   height: 10px;
   border-radius: 100%;
   background-color: #3498db;
-  margin: 35px 1px;
+  margin: 20px 1px;
 }
 
 .load-suggestions span:nth-child(1){
@@ -746,8 +750,8 @@ float:right;
 
 .m-modal {
   z-index: 2;
-  height: 250px;
-  width: 500px;
+  height: 370px;
+  width: 600px;
   background-color: #ffffff;
   border-radius: 5px;
   text-align: center;
@@ -763,7 +767,11 @@ float:right;
   font-size: 1.2em;
   color: #444;
 }
-
+.m-content img{
+    max-width: 310px;
+    display: block;
+    margin: 20px auto;
+}
 .zoom {
   display: block;
   animation: zoom 0.7s;
@@ -779,7 +787,9 @@ float:right;
     color: #fff;
     background-color: #00a0e3;
 }
-
+.m-actions a:hover {
+    text-decoration:none;
+}
 @keyframes zoom {
   0% {
     opacity: 0;
@@ -797,6 +807,13 @@ float:right;
 }
 .reverse {
   animation-direction: reverse;
+}
+@media screen and (max-width: 600px) {
+    .m-content img{max-width: 290px;}
+    .m-modal{
+        height: 430px;
+        width: 300px;
+    }
 }
 ");
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
