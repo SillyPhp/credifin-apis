@@ -99,7 +99,7 @@ class ApplicationCards
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
-                new Expression('NULL as salary_duration'),
+                'v.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
@@ -295,17 +295,7 @@ class ApplicationCards
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon','(CASE
-                WHEN a.experience = "0" THEN "No Experience"
-                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN a.experience = "2" THEN "1 Year Experience"
-                WHEN a.experience = "3" THEN "2-3 Years Experience"
-                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                'i.icon','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
@@ -339,22 +329,12 @@ class ApplicationCards
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon','(CASE
-                WHEN a.experience = "0" THEN "No Experience"
-                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN a.experience = "2" THEN "1 Year Experience"
-                WHEN a.experience = "3" THEN "2-3 Years Experience"
-                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                'i.icon','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
-                new Expression('NULL as salary_duration'),
+                'v.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
