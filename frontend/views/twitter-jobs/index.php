@@ -16,9 +16,13 @@ $this->params['header_dark'] = true;
                 <div class="search-box">
                     <form id="form-search" action="<?= Url::to(['search']) ?>">
                         <div class="input-group search-bar">
-                            <input type="text" id="search_company" class="form-control"
-                                   placeholder="Search #tweets"
-                                   name="keywords">
+                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search #tweets" name="keywords">
+                            <input type="text" id="cities" class="col-md-12 header-search-tw" placeholder="Enter Location" name="location">
+                            <div class="load-suggestions Typeahead-spinner">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                             <div class="input-group-btn">
                                 <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                             </div>
@@ -75,6 +79,27 @@ $this->registerCss("
 body{
     background:url('" . Url::to('@eyAssets/images/backgrounds/p6.png') . "');
 }
+.header-search-tw{
+    height:45px;
+}
+.header-search-tw:nth-child(2){
+    border-left: 1px solid #f3f3f3 !important;
+}
+.header-search-tw::placeholder {
+  color: #6c757d;
+  font-size:14px;
+  opacity: 1; /* Firefox */
+}
+
+.header-search-tw:-ms-input-placeholder { /* Internet Explorer 10-11 */
+ color: #6c757d;
+ font-size:14px;
+}
+
+.header-search-tw::-ms-input-placeholder { /* Microsoft Edge */
+ color: #6c757d;
+ font-size:14px;
+}
 .posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
     background-color:#00a0e3;
@@ -87,10 +112,14 @@ body{
 }
 #form-search .search-bar{
     border-radius: 18px;
-    overflow: hidden;
 }
 #form-search .search-bar input{
     border: 0px;
+    border-radius: 18px;
+}
+.input-group-btn{
+    border-radius: 18px;
+    overflow: hidden;
 }
 .tweet-main{
     padding: 0px 8px;
@@ -170,10 +199,6 @@ margin-top:20px
     overflow: hidden;
     box-shadow: 0px 2px 10px 2px #eaeaea;
 }
-//.posted-tweet iframe .EmbeddedTweet{
-//    border: none !important;
-//    border-radius: 0 !important;
-//}
 #load_me
 {
 //display:none;
@@ -200,13 +225,150 @@ bottom : 0;
 right : 0;
 top : 20%;
 }
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 100%;
+  margin: 0px 0;
+  text-align:left;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 0px 0px 6px 6px;
+     -moz-border-radius: 0px 0px 6px 6px;
+          border-radius: 0px 0px 6px 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+    padding: 4px 15px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #222;
+    border-bottom: 1px solid #dddddda3;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.Typeahead-spinner{
+    position: absolute;
+    color: #222;
+    z-index: 999;
+    right: 0;
+    top: 10px;
+    font-size: 25px;
+    display: none;
+}
+.twitter-typeahead{
+    float:left;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 34px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 15px 1px;
+}
 
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+.no_result_found
+{
+display:inline-block;
+}
+.add_org
+{
+float:right;
+}
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 ");
 $script = <<< JS
 //$('#loading_img').addClass('show');
+var city = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: '',
+  remote: {
+    url:'/cities/city-list?q=%QUERY',  
+    wildcard: '%QUERY',
+    filter: function(list) {
+             return list;
+        }
+  }
+});
+            
+$('#cities').typeahead(null, {
+  name: 'cities',
+  highlight: true,       
+  display: 'text',
+  source: city,
+   limit: 15,
+   hint:false,
+}).on('typeahead:asyncrequest', function() {
+    $('.Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+    
+    $('.Typeahead-spinner').hide();
+  });
+
 $(window).on('load', function() {
     var head = $(".posted-tweet iframe").contents().find("head");
-    console.log(head);
     var css = '<style type="text/css">' +
               '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
               '</style>';
@@ -214,15 +376,6 @@ $(window).on('load', function() {
 });
 JS;
 $this->registerJs($script);
-//$this->registerJs("
-//$(document).ready(function(){
-//    var head = $('.posted-tweet iframe').contents().find('head');
-//    console.log(head);
-//    var css = '<style type=\"text/css\">' +
-//              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
-//              '</style>';
-//    jQuery(head).append(css);
-//});
-//",[]);
 $this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
