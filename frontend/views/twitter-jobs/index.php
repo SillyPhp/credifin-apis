@@ -48,7 +48,7 @@ $this->params['header_dark'] = true;
                                     <?php else: ?>
                                         <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
                                                 height="150"
-                                                color="<?= $tweet['color'] ?>" font="55px"></canvas>
+                                                color="<?= $tweet['color'] ?>" font="70px"></canvas>
                                     <?php endif; ?>
                                 </div>
                                 <div class="tweet-org-description">
@@ -72,7 +72,10 @@ $this->params['header_dark'] = true;
 <?php
 //echo $this->render('/widgets/twitter-jobs');
 $this->registerCss("
-.posted-tweet iframe{width:100% !important;}
+body{
+    background:url('" . Url::to('@eyAssets/images/backgrounds/p6.png') . "');
+}
+.posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
     background-color:#00a0e3;
     padding:50px 0px;
@@ -90,14 +93,10 @@ $this->registerCss("
     border: 0px;
 }
 .tweet-main{
-    
+    padding: 0px 8px;
 }
 #form-search{
     margin-bottom:55px;
-}
-.main-content
-{
-    background-color: #f0f0f1;
 }
 .search-bar button {
     padding: 13px 19px 12px 16px;
@@ -119,6 +118,9 @@ margin-top:20px
     width:100%;
     position:relative;
     float:left;
+    background-color: #fff;
+    padding: 10px 10px 0px;
+    border-bottom: 1px solid #e8e8e8;
 }
 .tweet-org-logo{
     display:inline-block;
@@ -163,6 +165,15 @@ margin-top:20px
     line-height: 16px;
     font-weight: 400;
 }
+.tweet-inner-main{
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 10px 2px #eaeaea;
+}
+//.posted-tweet iframe .EmbeddedTweet{
+//    border: none !important;
+//    border-radius: 0 !important;
+//}
 #load_me
 {
 //display:none;
@@ -193,7 +204,25 @@ top : 20%;
 ");
 $script = <<< JS
 //$('#loading_img').addClass('show');
+$(window).on('load', function() {
+    var head = $(".posted-tweet iframe").contents().find("head");
+    console.log(head);
+    var css = '<style type="text/css">' +
+              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+              '</style>';
+    jQuery(head).append(css);
+});
 JS;
 $this->registerJs($script);
+//$this->registerJs("
+//$(document).ready(function(){
+//    var head = $('.posted-tweet iframe').contents().find('head');
+//    console.log(head);
+//    var css = '<style type=\"text/css\">' +
+//              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+//              '</style>';
+//    jQuery(head).append(css);
+//});
+//",[]);
 $this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
 ?>
