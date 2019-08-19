@@ -14,10 +14,10 @@ $this->params['header_dark'] = true;
         <div class="row">
             <div class="col-md-12">
                 <div class="search-box">
-                    <form id="form-search" action="<?= Url::to(['search']) ?>">
+                    <form id="form-search" action="">
                         <div class="input-group search-bar">
-                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search #tweets" name="keywords">
-                            <input type="text" id="cities" class="col-md-12 header-search-tw" placeholder="Enter Location" name="location">
+                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search Skills,Job title,Companies" name="keywords" value="<?= $keywords ?>">
+                            <input type="text" id="cities" class="col-md-12 header-search-tw" placeholder="Enter Location" name="location" value="<?= $location ?>">
                             <div class="load-suggestions Typeahead-spinner">
                                 <span></span>
                                 <span></span>
@@ -41,6 +41,7 @@ $this->params['header_dark'] = true;
 
                 </div>
                 <?php
+                if (!empty($tweets)):
                 foreach ($tweets as $tweet) {
                     ?>
                     <div class="col-md-3 tweet-main">
@@ -56,8 +57,8 @@ $this->params['header_dark'] = true;
                                     <?php endif; ?>
                                 </div>
                                 <div class="tweet-org-description">
+                                    <h2><?= ucwords($tweet['job_title']) ?></h2>
                                     <h4><?= ucwords($tweet['org_name']) ?></h4>
-                                    <h2><?= ucwords($tweet['job_title']) . ',' . $tweet['profile'] ?></h2>
                                     <p><?= $tweet['job_type'] ?></p>
                                 </div>
                             </div>
@@ -68,6 +69,14 @@ $this->params['header_dark'] = true;
                     </div>
                     <?php
                 }
+                else:
+                    ?>
+                <div class="no_tweets_found">
+                    <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
+                </div>
+
+                <?php
+                endif;
                 ?>
             </div>
         </div>
@@ -76,6 +85,11 @@ $this->params['header_dark'] = true;
 <?php
 //echo $this->render('/widgets/twitter-jobs');
 $this->registerCss("
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
 body{
     background:url('" . Url::to('@eyAssets/images/backgrounds/p6.png') . "');
 }

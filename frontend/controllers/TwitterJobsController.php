@@ -9,13 +9,27 @@ use yii\web\Response;
 
 class TwitterJobsController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex($keywords=null,$location=null)
     {
         //$this->layout = 'main-secondary';
         $tweets = TwitterJobs::find()
             ->alias('a')
             ->distinct()
             ->select(['a.job_type','c.name org_name','a.html_code','f.name profile','e.name job_title','c.initials_color color','CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->FilterWhere([
+                'or',
+                ['like','a.job_type',$keywords],
+                ['like','c.name',$keywords],
+                ['like','f.name',$keywords],
+                ['like','e.name',$keywords],
+                ['like','a.html_code',$keywords],
+                ['like','h.name',$keywords],
+            ])
+            ->andFilterWhere(['like','h.name',$location])
+            ->joinWith(['twitterPlacementCities g'=>function($b)
+            {
+                $b->joinWith(['cityEnc h'],false);
+            }],false)
             ->joinWith(['twitterJobSkills b'],false)
             ->joinWith(['unclaimOrganizationEnc c'],false)
             ->joinWith(['jobTitle d'=>function($b)
@@ -25,7 +39,7 @@ class TwitterJobsController extends Controller
             }],false)
             ->asArray()
             ->all();
-        return $this->render('index',['tweets'=>$tweets]);
+        return $this->render('index',['tweets'=>$tweets,'keywords'=>$keywords,'location'=>$location]);
     }
 
     public function actionFetchTweetsCards()
