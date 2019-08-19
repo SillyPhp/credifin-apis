@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-    <div class="portlet applied_app light portlet-fit">
+    <div class="portlet applied_app light portlet-fit nd-shadow">
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
@@ -73,7 +73,7 @@ use yii\helpers\Url;
         </div>
     </div>
 
-    <div class="portlet light view_applications">
+    <div class="portlet light view_applications nd-shadow">
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
@@ -106,7 +106,7 @@ use yii\helpers\Url;
         </div>
     </div>
     </div>
-    <div class="portlet light portlet-fit">
+    <div class="portlet light portlet-fit nd-shadow">
         <div class="portlet-title" style="border-bottom:none;">
             <div class="check-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">

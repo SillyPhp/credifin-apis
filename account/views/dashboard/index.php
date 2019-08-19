@@ -37,7 +37,7 @@ endif;
                     'question_list' => $question_list
                 ]); ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
-                <div class="portlet light portlet-fit">
+                <div class="portlet light portlet-fit nd-shadow">
                     <div class="portlet-title" style="border-bottom:none;">
                         <div class="check-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
@@ -99,7 +99,7 @@ endif;
                         </div>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
@@ -131,7 +131,7 @@ endif;
                         ?>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>

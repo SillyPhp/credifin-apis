@@ -38,7 +38,7 @@ $referral = Yii::$app->referral->getReferralCode();
                     <div class="clearfix navbar-fixed-top">
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
-                                <a style="position:relative;float: left;margin-top: 10px;"
+                                <a style="position:relative;float: left;margin-top: 6px;"
                                    href="<?= '/' . $referral; ?>">
                                     <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
                                          src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
@@ -88,13 +88,13 @@ $referral = Yii::$app->referral->getReferralCode();
                             </div>
                         </div>
                     </div>
-                    <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
-                        <?=
-                        $this->render('/widgets/header/top-header', [
-                            'referral' => $referral,
-                        ]);
-                        ?>
-                    </div>
+<!--                    <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">-->
+<!--                        --><?//=
+//                        $this->render('/widgets/header/top-header', [
+//                            'referral' => $referral,
+//                        ]);
+//                        ?>
+<!--                    </div>-->
                 </div>
             </nav>
         </header>
@@ -199,7 +199,22 @@ $referral = Yii::$app->referral->getReferralCode();
             .page-sidebar .page-sidebar-menu .sub-menu>li:hover>a>i,.page-sidebar .page-sidebar-menu>li.open>a>.arrow.open:before, .page-sidebar .page-sidebar-menu>li.open>a>.arrow:before, .page-sidebar .page-sidebar-menu>li.open>a>i, .page-sidebar .page-sidebar-menu>li:hover>a>.arrow.open:before, .page-sidebar .page-sidebar-menu>li:hover>a>.arrow:before, .page-sidebar .page-sidebar-menu>li:hover>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.open>a>.arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.open>a>.arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.open>a>i, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li:hover>a>.arrow.open:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li:hover>a>.arrow:before, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li:hover>a>i {
                 color: #ffffff !important;
             }
+            .navbar {
+                min-height: 65px !important;
+            }
+            body {
+                background: #fff;
+            }
+            .nd-shadow{
+                box-shadow: 0px 1px 10px 2px #eee !important;
+            }
             @media (min-width: 992px){
+                .wrapper{margin:0px;}
+                .page-header .navbar-fixed-top{
+                    padding: 2px 25px !important;
+                    background: #fff;
+                    border-bottom: 1px solid #ddd;
+                }
                 .page-sidebar-menu-hover-submenu li:hover a>.arrow {
                     border-right: 8px solid #1d2737 !important;
                 }
@@ -246,7 +261,7 @@ $referral = Yii::$app->referral->getReferralCode();
                 margin: 16px 14px 12px 6px !important;
             }
             .page-container-bg-solid .page-content {
-                background: #eef1f5;
+                background: #fff;
             }
             #header-logo{
                 max-height:42px;

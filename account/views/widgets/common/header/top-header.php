@@ -5,10 +5,10 @@
 use yii\helpers\Url;
 ?>
     <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('account', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('account', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('account', 'Reviews'); ?></a></li>
-        <li><a href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('account', 'Blog'); ?></a></li>
+        <li><a href="<?= Url::to('/account/jobs/dashboard'); ?>"><?= Yii::t('account', 'Jobs'); ?></a></li>
+        <li><a href="<?= Url::to('/account/internships/dashboard'); ?>"><?= Yii::t('account', 'Internships'); ?></a></li>
+<!--        <li><a href="--><?//= Url::to('/reviews' . $referral); ?><!--">--><?//= Yii::t('account', 'Reviews'); ?><!--</a></li>-->
+        <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('account', 'Dashboard'); ?></a></li>
     </ul>
 <?php
 $this->registerCss('
