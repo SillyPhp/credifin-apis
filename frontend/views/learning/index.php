@@ -1,13 +1,20 @@
 <?php
+$this->params['header_dark'] = true;
 $this->title = Yii::t('frontend', 'Learning Corner');
 
 use yii\helpers\Url;
 
 ?>
-    <section class="backgrounds">
+    <section>
         <div class="container headsec">
             <div class="row">
-                <div class="col-md-6 col-sm-12 mt-50">
+                <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
+                    <div class="newlogoset">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>" align="right"
+                             class="responsive"/>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
                     <div class="jumbo-heading">BOOST YOUR SKILLS</div>
                     <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
                     <div class="search-box1">
@@ -17,10 +24,7 @@ use yii\helpers\Url;
                         </form>
                     </div>
                 </div>
-                <div class="col-md-6 sm-hidden">
-                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right"
-                         class="responsive"/>
-                </div>
+
             </div>
         </div>
     </section>
@@ -34,42 +38,73 @@ use yii\helpers\Url;
         <div class="cat-padding">
             <div class="row col-md-12">
                 <div class="heading-style col-md-6 col-sm-6">All Category</div>
-                <!--                <div class="search-box">-->
-                <!--                    <form action="">-->
-                <!--                        <input type="text" placeholder="Search Category" name="search">-->
-                <!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
-                <!--                    </form>-->
-                <!--                </div>-->
             </div>
-            <div class="categories">
-                <div class="row category b-padding">
-
-                    <?php foreach ($categories as $c) { ?>
-                        <div class="f-box col-md-3 col-sm-6">
-                            <div class="flipbox ">
-                                <a href="/learning/videos/category/<?= $c['slug'] ?>" class="lc-link">
-                                    <div class="back">
-                                        <div class="b-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"
-                                                 alt=""/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="popular-cate">
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
                                         </div>
+                                        <div class="txt">study</div>
                                     </div>
-                                    <div class="front">
-                                        <div class="b-icon">
-                                            <?php if ($c['child_icon']) { ?>
-                                                <img src="" alt=""/>
-                                            <?php } else { ?>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>"
-                                                     alt=""/>
-                                            <?php } ?>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
                                         </div>
+                                        <div class="txt">study</div>
                                     </div>
-                                    <div class="b-text"><?= $c['parent_name']; ?></div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                        </div>
+                                        <div class="txt">study</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                        </div>
+                                        <div class="txt">study</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                        </div>
+                                        <div class="txt">study</div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                                        </div>
+                                        <div class="txt">study</div>
+                                    </div>
                                 </a>
                             </div>
                         </div>
-                    <?php } ?>
-
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,28 +157,22 @@ use yii\helpers\Url;
                 <div class="container">
                     <div class="heading-style">Most Popular Topics</div>
                     <div class="mt-actions " style="">
-                        <?php foreach ($topics as $t) { ?>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="topic-con">
-                                    <a href="/learning/videos/topic/<?= $t['slug'] ?>">
-                                        <div class="hr-company-box">
-                                            <div class="hr-company-box-center">
-                                                <div class="hr-com-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
-                                                         class="img-responsive ">
-                                                </div>
-                                                <div class="hr-com-name">
-                                                    <?= $t['name']; ?>
-                                                </div>
-                                                <div class="hr-com-field">
-                                                    <?= $t['cnt']; ?> Videos
-                                                </div>
+                        <div class="col-md-3 col-sm-4">
+                            <div class="topic-con">
+                                <a href="#">
+                                    <div class="hr-company-box">
+                                        <div class="hr-company-box-center">
+                                            <div class="hr-com-icon">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
+                                                     class="img-responsive ">
                                             </div>
+                                            <div class="hr-com-name">name</div>
+                                            <div class="hr-com-field">cnt Videos</div>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                             </div>
-                        <?php } ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -361,13 +390,22 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.newlogoset{
+    max-width:500px;
+    margin: 0 auto;
+}
+.newlogoset img{
+    width:100%;
+    height:100%;
+}
 .search-box1{
-    max-width:350px;
+    max-width:500px;
     float:left;
 //  border: 1px solid #ccc;
     border-radius: 10px;
     padding: 3px;
     margin: 21px 0 0 0;
+    box-shadow: 0px 0px 10px 1px #eee;
 }
 .search-box1 form{
     margin-bottom:0px;
@@ -377,7 +415,9 @@ $this->registerCss('
     font-size: 15px;
     border:none ;
     border-radius:10px 0 0 10px;
+    width: 440px;
 }
+
 .search-box1 input:focus{
     outline: none;
     border:0px;
@@ -398,17 +438,19 @@ $this->registerCss('
 .sm-hidden img{
     width:80%;
 }
-.flipbox a.lc-link{ 
-    color:#333;
-}
-.backgrounds{
-    background-size: 100% 595px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
-    background-position: left top;
-    background-repeat: no-repeat;
-    min-height: 600px;
-    padding-top: 70px;
-}
+//.backgrounds{
+//   background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learningc.png") . '");
+//    background-position: right;
+//    background-repeat: no-repeat;
+//    min-height: 530px;
+//    padding-top: 80px;
+//}
+    //@media only screen and (max-width:991px) {
+    // .newlogoset img
+    //    { 
+    //    padding-top:30px;
+    //    }
+//    }
 .head-pic{
     text-align: center;
 }
@@ -416,15 +458,38 @@ $this->registerCss('
     color:#333;
 }
 .jumbo-heading{
-    font-size: 45px;
+    font-size: 40px;
     font-weight:bold;
-    font-family: lobster;
-    text-transform: uppercase; 
+    font-family: lora;
+    text-transform: uppercase;
+    color:#3b394a; 
+}
+@media only screen and (max-width:1200px) {
+ .search-box1 input[type=text]
+    {
+    width:300px;
+    }
+  .jumbo-heading{
+    font-size: 35px !important;}
+}
+@media only screen and (max-width:992px) {
+  .jumbo-heading{
+    font-size: 25px !important; margin-top: -30px !important;}
+    //    .topp-pad{padding-top:40px;}
+}
+@media only screen and (max-width:767px) {
+    .topp-pad{text-align:center; margin-top:50px !important;}
+    .search-box1{max-width: 360px; float: none; margin: auto;}
 }
 .jumbo-subheading{
     font-size: 25px;
     padding-top: 0px;
-    font-family: lobster
+    font-family: lobster;
+    color:#7ba9da;
+}
+@media only screen and (max-width:992px) {
+  .jumbo-subheading{
+    font-size: 20px !important;}
 }
 .jumbo-subheading span{
     text-transform: uppercase;
@@ -460,10 +525,53 @@ $this->registerCss('
 .search-box button:hover {
     color: #ff7803; 
 }
-.f-box{
-    text-align: center;
-    align-content: center;
-    margin: 0 auto;
+.popular-cate{
+    text-align:center;
+    }
+.newset{
+    text-align:center;
+    max-width: 160px;
+    min-height: 245px;  
+    line-height: 210px;
+    position: relative;
+    width:100%;
+    margin-bottom:20px;
+    }
+.imag{
+    text-align: right;
+    }
+.txt{
+    position: absolute;
+    line-height: 30px;
+    bottom: 10px;
+    left: 10px;
+    font-weight: 400;
+    font-family:roboto;
+    text-transform:uppercase;
+     }
+.pc-main:nth-child(1) a .newset {
+  background-color:#ffc0cb36;
+}
+.pc-main:nth-child(2) a .newset {
+  background-color:#4e3cd52b;
+}
+.pc-main:nth-child(3) a .newset {
+  background-color:#3cc2d52b;
+}
+.pc-main:nth-child(4) a .newset {
+  background-color:#13060836;
+}
+.pc-main:nth-child(5) a .newset {
+  background-color:#ff009b2b;
+}
+.pc-main:nth-child(6) a .newset {
+  background-color:#1bc11a2b;
+}
+.pc-main:nth-child(7) a .newset {
+  background-color:#7102022b;
+}
+.pc-main:nth-child(8) a .newset {
+  background-color:#0ccc772b;
 }
 .b-padding{
     padding-top: 125px;
@@ -471,64 +579,6 @@ $this->registerCss('
 .c-padding{
     padding-top: 125px;
 }
-.flipbox{
-    position:relative;
-    width:160px;
-    margin-left:50px;
-}
-.flipbox a > .front{
-    position:relative;
-    text-align: center; 
-    transform: perspective(600px) rotateY(0deg );
-    height: 160px;
-    line-height:160px; 
-    width: 160px;
-    background:transparent; 
-    backface-visibility:hidden;
-    transition: transform .5s linear 0s;
-}
-.flipbox a > .back{         
-    text-align: center;
-    position: absolute;
-    justify-content: center;
-    transform: perspective(600px) rotateY(180deg );
-    height: 160px;
-    width: 160px;
-    background: #ff7803;
-    border-radius:50%; 
-    backface-visibility:hidden;
-    transition: transform .5s linear 0s;	
-}
-.flipbox > a .back > .b-icon{
-    height: 160px;
-    line-height: 160px;  
-}
-.flipbox a:hover > .front{
-    transform: perspective(600px) rotateY(-180deg );
-}
-.flipbox a:hover > .back{
-    transform: perspective(600px) rotateY(0deg );
-}
-/*.flipbox a{
-    color: #333;
-}*/
-.flipbox a:hover{
-    color: #ff7803 !important; 
-    transition: .3s ease-in-out; 
-    text-decoration: none;
-}
-a .b-text{
-    text-align: center; 
-    padding: 10px 0 0 0; 
-    font-weight: bold; 
-    font-size: 20px; 
-    text-decoration: none; 
-    text-transform: capitalize; 
-}
-/*a .b-text:hover{
-    color:#ff7803 !important; 
-    text-decoration: none; 
-}*/
 .seemore{
     padding: 125px 0 0 0; 
     text-align: center;
@@ -568,27 +618,26 @@ a .b-text{
     box-shadow: 0px 0px 15px rgb(0, 0, 0, .5); 
     transition: .3s ease-in-out;
 }
-.working-box{ 
-    padding: 30px 0 !important;
-     margin: 60px 0 0px 0; 
-}
+//.working-box{ 
+//    padding: 30px 0 !important;
+//}
 .box1{
-    background: #fa811a; 
+    background: #2d4080; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box2{
-    background: #ff902f; 
+    background: #2d4080eb; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box3{
-    background: #ff9e4a; 
+    background:#2d4080d1; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box4{
-    background: #ffac64; 
+    background: #2d40808f; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
@@ -763,9 +812,6 @@ text-align: left;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     white-space: nowrap;
-}
-.back .b-icon img{
-    width:55%;
 }
 .hr-company-box{
     text-align:center;
@@ -958,9 +1004,6 @@ text-align: left;
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
-    }
-    .f-box{
-        padding-bottom: 100px;
     }
     .c-padding{
         padding: 0px;
