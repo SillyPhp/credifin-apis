@@ -1,7 +1,6 @@
-<?php
-?>
-<script id="application-card" type="text/template">
-<div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+<script id="usa-jobs-card" type="text/template">
+    {{#.}}
+ <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
     <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
          class="application-card-main">
         {{#city}}
@@ -29,7 +28,7 @@
                 </a>
             </div>
             <div class="application-card-description">
-                <a href="{{link}}" title="{{title}}"><h4 class="application-title">{{title}}</h4></a>
+                <a href="{{link}}" title="{{title}}"><h4 class="application-title">{{MatchedObjectDescriptor.PositionTitle}}</h4></a>
                 {{#salary}}
                 <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
                 {{/salary}}
@@ -53,14 +52,13 @@
         </div>
     </div>
 </div>
+ {{/.}}
 </script>
 <?php
 $script = <<< JS
-var host = 'data.usajobs.gov';  
-var userAgent = 'snehkant93@gmail.com';  
-var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
-
-$.ajax({
+function fetch_usa_cards(host,userAgent,authKey,template)
+{
+  $.ajax({
   url:'https://data.usajobs.gov/api/search',
   method:'GET',
   data:{
@@ -72,12 +70,11 @@ $.ajax({
         "Authorization-Key": authKey      
     },
   success:function(body) {
-    $.each(body.SearchResult.SearchResultItems,function(e) {
-      console.log(this);
-    })
-  }
-})
+      template.append(Mustache.render($('#usa-jobs-card').html(),body.SearchResult.SearchResultItems));
+  }   
+  })
+}
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-
