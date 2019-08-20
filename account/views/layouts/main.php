@@ -99,10 +99,18 @@ $referral = Yii::$app->referral->getReferralCode();
             </nav>
         </header>
         <div class="container-fluid">
-            <div class="page-content" style="padding-top:20px;">
+            <div class="page-content" style="padding-top:35px;">
                 <div id="page-loading" class="page-loading">
                     <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
                 </div>
+                <?php
+                if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+                    echo $this->render('@frontend/views/widgets/sub-header', [
+                        'data' => $this->params['sub_header'],
+                        'referral' => $referral,
+                    ]);
+                }
+                ?>
                 <?= $content; ?>
             </div>
             <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
@@ -208,6 +216,7 @@ $referral = Yii::$app->referral->getReferralCode();
             .nd-shadow{
                 box-shadow: 0px 1px 10px 2px #eee !important;
             }
+            .secondary-headers{top:58px;}
             @media (min-width: 992px){
                 .wrapper{margin:0px;}
                 .page-header .navbar-fixed-top{
@@ -262,6 +271,7 @@ $referral = Yii::$app->referral->getReferralCode();
             }
             .page-container-bg-solid .page-content {
                 background: #fff;
+                margin-top:0px;
             }
             #header-logo{
                 max-height:42px;

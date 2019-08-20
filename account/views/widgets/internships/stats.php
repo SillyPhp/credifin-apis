@@ -14,7 +14,7 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
                     <div class="widget-thumb-body">
                     <span class="widget-thumb-body-stat" data-counter="counterup"
                           data-value="<?= $applications['total']; ?>"><?= $applications['total']; ?></span>
-                    </div>x
+                    </div>
                 </div>
             </div>
         </a>
