@@ -43,66 +43,72 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-md-12">
                         <div class="popular-cate">
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                            <?php
+                            foreach ($categories as $cat) {
+                                ?>
+                                <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                    <a href="/learning/<?= $cat['slug'];?>">
+                                        <div class="newset">
+                                            <div class="imag">
+                                                <img src="http://ajay.eygb.me/assets/themes/ey/images/pages/learning-corner/cybersecurity.png">
+                                            </div>
+                                            <div class="txt"><?= $cat['parent_name'];?></div>
                                         </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                        </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                        </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                        </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                        </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                <a href="">
-                                    <div class="newset">
-                                        <div class="imag">
-                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                        </div>
-                                        <div class="txt">study</div>
-                                    </div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                                <?php
+                            }
+                                ?>
+<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                                <a href="">-->
+<!--                                    <div class="newset">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">study</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                                <a href="">-->
+<!--                                    <div class="newset">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">study</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                                <a href="">-->
+<!--                                    <div class="newset">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">study</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                                <a href="">-->
+<!--                                    <div class="newset">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">study</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                                <a href="">-->
+<!--                                    <div class="newset">-->
+<!--                                        <div class="imag">-->
+<!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                        </div>-->
+<!--                                        <div class="txt">study</div>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -191,9 +197,9 @@ use yii\helpers\Url;
     <div class="v-slider">
         <div class="container">
             <div id="mixedSlider">
-                <div class="MS-content">
+                <div class="MS-content lc-items-grids">
                     <?php foreach ($popular_videos as $p) { ?>
-                        <div class="item">
+                        <div class="item lc-single-item-main">
                             <div class="imgTitle">
                                 <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
                                     <img src="<?= Url::to($p['cover_image']); ?>" alt=""/>
@@ -546,6 +552,7 @@ $this->registerCss('
     bottom: 10px;
     left: 10px;
     font-weight: 400;
+    color:#222;
     font-family:roboto;
     text-transform:uppercase;
      }

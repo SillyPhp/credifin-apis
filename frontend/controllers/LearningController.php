@@ -320,20 +320,24 @@ class LearningController extends Controller
         $categories = AssignedCategories::find()
             ->alias('a')
             ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name'])
-            ->joinWith(['learningVideos b'])
+            ->joinWith(['learningVideos b' => function($b){
+//                $b->andOnCondition(['b.status' => 1]);
+//                $b->andOnCondition(['b.is_deleted' => 0]);
+            }])
             ->joinWith(['categoryEnc c'], false)
             ->joinWith(['parentEnc d'], false)
             ->where(['a.assigned_to' => 'Videos'])
             ->andWhere(['a.status' => 'Approved'])
-            ->andWhere(['!=', 'a.parent_enc_id', 'NULL'])
+            ->andWhere(['!=', 'a.parent_enc_id', ""])
             ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['b.status' => 1])
-            ->andWhere(['b.is_deleted' => 0])
+//            ->andWhere(['b.status' => 1])
+//            ->andWhere(['b.is_deleted' => 0])
             ->groupBy(['a.assigned_category_enc_id'])
-            ->groupBy(['a.parent_enc_id'])
-            ->limit(8)
+//            ->groupBy(['a.parent_enc_id'])
+//            ->limit(8)
             ->asArray()
             ->all();
+
         $popular_videos = LearningVideos::find()
 //            ->orderBy(['view_count' => SORT_DESC])
             ->where([
