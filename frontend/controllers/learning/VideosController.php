@@ -76,6 +76,8 @@ class VideosController extends Controller
                     ->andWhere(['a.is_deleted' => 0])
                     ->asArray()
                     ->all();
+//                print_r($result);
+//                exit();
             } elseif ($type == "topic") {
                 $result = LearningVideos::find()
                     ->alias('a')

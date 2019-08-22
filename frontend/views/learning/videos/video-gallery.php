@@ -7,16 +7,13 @@ use yii\helpers\Html;
 ?>
     <section class="background"></section>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Topics</div>
-            </div>
-        </div>
-    </div>
-
     <section>
         <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Topics</div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="popular-cate">
@@ -632,11 +629,11 @@ $this->registerCss('
     overflow:hidden;
 }
 .background{
-    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learn.png") . '");
-    min-height:400px;
-    background-size: cover;
+    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/entrepreneurship.png") . '");
+    min-height:475px;
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    background-position: 80%;
+    background-position: right bottom;
 }
 .logo{
     width: 140px;

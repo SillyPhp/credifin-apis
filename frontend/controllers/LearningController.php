@@ -321,8 +321,8 @@ class LearningController extends Controller
             ->alias('a')
             ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name'])
             ->joinWith(['learningVideos b' => function($b){
-//                $b->andOnCondition(['b.status' => 1]);
-//                $b->andOnCondition(['b.is_deleted' => 0]);
+                $b->andOnCondition(['b.status' => 1]);
+                $b->andOnCondition(['b.is_deleted' => 0]);
             }])
             ->joinWith(['categoryEnc c'], false)
             ->joinWith(['parentEnc d'], false)
