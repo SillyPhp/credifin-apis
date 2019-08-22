@@ -117,6 +117,65 @@ endif;
                     'shortlist_org' => $shortlist_org
                 ]); ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
+                <div class="row marg">
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/jobs'); ?>">
+                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Jobs'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
+                                    <div class="widget-thumb-body">
+                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                              data-value="">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/hiring-processes'); ?>">
+                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Interview Processes'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
+                                    <div class="widget-thumb-body">
+                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                              data-value="">10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/questionnaire'); ?>">
+                            <div class="questionnaire_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Questionnaire'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-purple fa fa-question"></i>
+                                    <div class="widget-thumb-body">
+                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                              data-value="">15</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/jobs'); ?>">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-subtitle"></span>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                                              data-value="">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
                 <div class="portlet light portlet-fit nd-shadow">
                     <div class="portlet-title" style="border-bottom:none;">
                         <div class="check-icon">
@@ -248,6 +307,11 @@ endif;
     </div>
 <?php
 $this->registerCss("
+@media only screen and (max-width: 950px) {
+.marg{
+    margin-top:20px !important;
+    }
+}
 .posRel{
     position:relative;
 }
