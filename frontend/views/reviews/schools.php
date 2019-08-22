@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Schools Reviews | Reviews');
@@ -49,19 +50,21 @@ $this->params['seo_tags'] = [
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <input class='form-control' name="keywords" id="search_school" placeholder='Search School' type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fas fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_company"
+                                           placeholder='Search School' type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
                                 </form>
                             </div>
                             <div class="btn_add_new_org ">
                                 <?php if (Yii::$app->user->isGuest): ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New School</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                       class="btn_add_org">Add New School</a>
                                 <?php else : ?>
                                     <a href="#" class="add_new_org btn_add_org">Add New School</a>
-                                <?php  endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -78,25 +81,26 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
                         </div>
                         <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Faculty</span>,  <span>Quality of Education</span> </div>
+                        <div class="rb-text">Reviews on the basis of <span>Faculty</span>,
+                            <span>Quality of Education</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
                         </div>
-                        <div class="rb-heading">Infrastructure and Environment </div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
                         <div class="rb-text">Reviews on the basis of <span>School Infrastructure</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
                         <div class="rb-heading">Growth and Development</div>
                         <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Leadership Development</span>,
@@ -109,13 +113,14 @@ $this->params['seo_tags'] = [
     <section class="green-bg">
         <div class="container">
             <div class="pos-abso">
-            <div class="row">
-                <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
-                <div class="gb-text">
-                    <span class="qots">"</span>All children start their school careers with sparkling imaginations, fertile minds, and a willingness
-                    to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
+                <div class="row">
+                    <div class="gb-heading">Empower Your Peers To Join With Confidence.</div>
+                    <div class="gb-text">
+                        <span class="qots">"</span>All children start their school careers with sparkling imaginations,
+                        fertile minds, and a willingness
+                        to take risks with what they think.<span class="qots">"</span> – <span>Ken Robinson</span>
+                    </div>
                 </div>
-            </div>
             </div>
         </div>
     </section>
@@ -678,10 +683,11 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 echo $this->render('/widgets/mustache/latest-reviews');
 echo $this->render('/widgets/mustache/most-reviewed');
 echo $this->render('/widgets/mustache/top-user-reviews');
+echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_school').val());
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
 fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'School','limit':4},template=$('#latest_reviews_card_new'));
@@ -689,45 +695,7 @@ fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:
 fetch_cards_most_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'School','most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#uncliamed_top'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?type=School&query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_school').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

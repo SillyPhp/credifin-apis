@@ -1,17 +1,19 @@
 <?php
 
-use yii\helpers\Url;
+/* @var $referral string */
 
+use yii\helpers\Url;
 ?>
     <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews'); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
-        <li><a href="<?= Url::to('/blog'); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
+        <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
+        <li><a href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <li><a href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+        <li><a href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
         <?php if (!Yii::$app->user->isGuest): ?>
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
         <?php else: ?>
-            <li><a href="javascript:;" data-toggle="modal" data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
+            <li><a href="javascript:;" data-toggle="modal"
+                   data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
         <?php endif; ?>
     </ul>
 <?php

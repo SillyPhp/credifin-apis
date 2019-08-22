@@ -67,10 +67,10 @@ class Reviews extends Model
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'like', 'dislike'], 'required', 'on' => 'edit_school'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'edu_institute'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'school_infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'like', 'dislike'], 'required', 'on' => 'edit_edu_institute'],
-            [['job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'integer', 'min' => 1, 'max' => 5],
-            [['reviewer_type'], 'integer', 'min' => 0, 'max' => 7],
-            [['user_detail'], 'integer', 'min' => 0, 'max' => 1],
-            [['current_employee'], 'integer', 'min' => 0, 'max' => 1],
+            [['job_security', 'career_growth', 'company_culture', 'salary_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development', 'academics', 'faculty_teaching_quality', 'infrastructure', 'accomodation_food', 'placements_internships', 'social_life_extracurriculars', 'culture_diversity', 'student_engagement', 'school_infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'string', 'min' => 1, 'max' => 5],
+            [['reviewer_type'], 'string', 'min' => 0, 'max' => 7],
+            [['user_detail'], 'string', 'min' => 0, 'max' => 1],
+            [['current_employee'], 'string', 'min' => 0, 'max' => 1],
             [['to'], 'safe']
         ];
     }
@@ -166,6 +166,8 @@ class Reviews extends Model
         $data->last_updated_by = $options['user_enc_id'];
         $data->last_updated_on = date('Y-m-d H:i:s');
         if ($this->reviewer_type == 0 || $this->reviewer_type == 1) {
+            $rating = [$this->skill_development, $this->work_life_balance, $this->salary_benefits, $this->company_culture, $this->job_security, $this->career_growth, $this->work_satisfaction];
+            $data->average_rating = $this->findAvg($rating);
             $data->job_security = $this->job_security;
             $data->growth = $this->career_growth;
             $data->organization_culture = $this->company_culture;
@@ -174,6 +176,8 @@ class Reviews extends Model
             $data->work_life = $this->work_life_balance;
             $data->skill_development = $this->skill_development;
         } elseif ($this->reviewer_type == 2 || $this->reviewer_type == 3) {
+            $rating = [$this->academics, $this->faculty_teaching_quality, $this->infrastructure, $this->accomodation_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_diversity];
+            $data->average_rating = $this->findAvg($rating);
             $data->academics = $this->academics;
             $data->faculty_teaching_quality = $this->faculty_teaching_quality;
             $data->infrastructure = $this->infrastructure;
@@ -182,6 +186,8 @@ class Reviews extends Model
             $data->social_life_extracurriculars = $this->social_life_extracurriculars;
             $data->culture_diversity = $this->culture_diversity;
         } elseif ($this->reviewer_type == 4 || $this->reviewer_type == 5) {
+            $rating = [$this->student_engagement, $this->school_infrastructure, $this->faculty, $this->accessibility_of_faculty, $this->co_curricular_activities, $this->leadership_development, $this->sports];
+            $data->average_rating = $this->findAvg($rating);
             $data->student_engagement = $this->student_engagement;
             $data->school_infrastructure = $this->school_infrastructure;
             $data->faculty = $this->faculty;
@@ -190,6 +196,8 @@ class Reviews extends Model
             $data->leadership_development = $this->leadership_development;
             $data->sports = $this->sports;
         } elseif ($this->reviewer_type == 6 || $this->reviewer_type == 7) {
+            $rating = [$this->student_engagement, $this->school_infrastructure, $this->faculty, $this->value_for_money, $this->teaching_style, $this->coverage_of_subject_matter, $this->accessibility_of_faculty];
+            $data->average_rating = $this->findAvg($rating);
             $data->student_engagement = $this->student_engagement;
             $data->school_infrastructure = $this->school_infrastructure;
             $data->faculty = $this->faculty;

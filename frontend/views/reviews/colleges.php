@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Colleges Reviews | Universities Reviews | Reviews');
@@ -49,20 +50,22 @@ $this->params['seo_tags'] = [
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                    <input class='form-control' name="keywords" id="search_college" placeholder='Search College,Universities' type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fas fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_college"
+                                           placeholder='Search College,Universities' type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
                                 </form>
                             </div>
                             <div class="btn_add_new_org">
                                 <div class="btn_add_new_org">
                                     <?php if (Yii::$app->user->isGuest): ?>
-                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New College/Universities</a>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                           class="btn_add_org">Add New College/Universities</a>
                                     <?php else : ?>
                                         <a href="#" class="add_new_org btn_add_org">Add New College/Universities</a>
-                                    <?php  endif; ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -80,28 +83,31 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
                         </div>
                         <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculity & Teaching Quality</span></div>
+                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculty & Teaching Quality</span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
                         </div>
-                        <div class="rb-heading">Infrastructure and Environment </div>
-                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accomodation & Food</span></div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
+                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accommodation & Food</span>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
-                        <div class="rb-heading">Growth and Development </div>
-                        <div class="rb-text">Reviews on the basis of <span>Placements/Internships</span>, <span>Social Life/Extracurriculars</span>, <span>Culture & Diversity</span></div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Placements/Internships</span>, <span>Social Life/Extracurriculars</span>,
+                            <span>Culture & Diversity</span></div>
                     </div>
                 </div>
             </div>
@@ -635,7 +641,7 @@ $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
   window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_college').val());
-})
+});
 var template;
 fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'College','limit':4},template=$('#latest_reviews_card_new'));
 fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'College'},template=$('#top_user_reviews_card_new'));
@@ -661,7 +667,7 @@ $('#search_college').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
+var result =  '<div class="suggestion_wrap"><a href="/'+data.review_link+'">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
@@ -677,7 +683,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
+    window.location.replace('/'+datum.review_link);
   });
 JS;
 $this->registerJs($script);

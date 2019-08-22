@@ -122,7 +122,7 @@ if($type == 'jobs'){
                 <div class="application-card-img">
                     <a href="/{{organization_slug}}" id="organization-slug" class="{{organization_slug}}">
                         {{#logo}}
-                        <img src="{{logo}}" id="{{logo}}" class="company-logo">
+                        <img src="{{logo}}" id="{{logo}}" class="company-logo" alt="{{name}}">
                         {{/logo}}
                         {{^logo}}
                         <canvas class="user-icon company-logo" name="{{name}}" width="80" height="80"

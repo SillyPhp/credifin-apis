@@ -21,6 +21,11 @@ use yii\helpers\Url;
                         <?= Yii::t('account', 'Schedule Interview'); ?>
                     </a>
                 </div>
+                <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/quick-job'); ?>">
+                        <?= Yii::t('account', 'Create Quick Job'); ?>
+                    </a>
+                </div>
             <?php elseif ($for == 'Jobs'): ?>
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/questionnaire/create'); ?>">
@@ -30,6 +35,11 @@ use yii\helpers\Url;
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/create'); ?>">
                         <?= Yii::t('account', 'Create Job'); ?>
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/jobs/quick-job'); ?>">
+                        <?= Yii::t('account', 'Create Quick Job'); ?>
                     </a>
                 </div>
             <?php elseif ($for == 'Internships'): ?>

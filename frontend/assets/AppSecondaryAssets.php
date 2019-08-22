@@ -24,6 +24,7 @@ class AppSecondaryAssets extends AssetBundle {
     public $js = [
 //        'js/jquery-plugin-collection.js',
 //        'js/custom.js',
+        'js/functions.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

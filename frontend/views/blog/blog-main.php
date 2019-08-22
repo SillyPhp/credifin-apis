@@ -222,8 +222,8 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
+                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?>" alt="World Cup 2019 Quiz"
                                  class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -233,8 +233,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
+                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?>"
                                  alt="World Cup 2019 Quiz vol-2" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -244,8 +244,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
+                        <a title="History Quiz" href="/quiz/history-quiz">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?>"
                                  alt="Yuvraj Singh Quiz" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -386,6 +386,7 @@ $this->registerCss('
     position:relative;   
     border-radius:10px;
     padding-bottom:35px;
+    margin-bottom: 20px;
     overflow:hidden;
 }
 .bg-black{

@@ -2,6 +2,7 @@
 
 use yii\helpers\Url;
 
+$referral = Yii::$app->referral->getReferralCode("&");
 $this->title = Yii::t('frontend', 'Internships');
 $keywords = 'Internships, INTERNSHIP, Internshala,Internships in Mumbai,Internship in India,Summer Internships,Internships in Kolkata,Internship in Chennai';
 $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
@@ -35,7 +36,6 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-3 col-sm-3 text-center">
-
             </div>
             <div class="col-md-9 col-sm-12 text-center">
                 <h2 class="intern-banner-heading mt-0 heading-text">
@@ -91,8 +91,18 @@ $this->params['seo_tags'] = [
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="<?= Url::to('/internships/profiles'); ?>" class="btn btn-3">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-12">
@@ -141,12 +151,10 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
                 <div id="whats-new" class="row">
-
                 </div>
             </div>
         </div>
     </div>
-
 </section>
 <section class="search-lists">
     <div class="container">
@@ -154,9 +162,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
-                    <?php foreach($search_words as $sw){ ?>
+                    <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'], true) ?>" title="<?= $sw['name'] ?>">
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                               title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
                         </li>
@@ -167,9 +176,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4">
                 <div class="list-heading">Browse by City</div>
                 <ul class="quick-links" id="b-cities">
-                    <?php foreach($cities as $c){ ?>
+                    <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] , true) ?>" title="Jobs in <?= $c['name']; ?>">
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                               title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
                         </li>
@@ -180,9 +190,10 @@ $this->params['seo_tags'] = [
             <div class="col-md-4">
                 <div class="list-heading">Internships</div>
                 <ul class="quick-links" id="internships">
-                    <?php foreach($internship_profiles as $ip){ ?>
+                    <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] , true) ?>" title="<?= $ip['name']; ?> Internships">
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                               title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
                         </li>
@@ -194,16 +205,8 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <?php
-echo $this->render('/widgets/blogs/whats-new',[
-    'size' => 'col-md-3',
-    'is_ajax' => true
-]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-//echo $this->render('/widgets/employers-landing-page-floating-widget');
-//echo $this->render('/widgets/blog-slider', [
-//    'posts' => $posts,
-//]);
 $this->registerCss('
 .center-text{
     font-family:lora;
@@ -718,6 +721,10 @@ $this->registerCss('
     }
 }
 ');
+echo $this->render('/widgets/blogs/whats-new', [
+    'size' => 'col-md-3',
+    'is_ajax' => true
+]);
 $script = <<<JS
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
@@ -765,16 +772,16 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     expandFirst('internships');
 
 
-    function expandFirst(elem){
+    function expandFirst(elem) {
         var i = 0;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k =0;
-        while(k < listElementsLength){
-            if(k < i + 4){
-                if(document.getElementById(elem)) {
+        var k = 0;
+        while (k < listElementsLength) {
+            if (k < i + 4) {
+                if (document.getElementById(elem)) {
                     document.getElementById(elem).children[k].classList.remove('hide');
                 }
-            }else{
+            } else {
                 break;
             }
             k += 1;
@@ -785,19 +792,19 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         showMoreEvent();
     });
 
-    function showMoreEvent(){
+    function showMoreEvent() {
         hideMore('searches');
         hideMore('b-cities');
         hideMore('internships');
     }
 
-    function hideMore(elem){
+    function hideMore(elem) {
         var i = 0;
         i += 5;
         var k = 4;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.remove('hide');
             }
             k += 1;
@@ -810,24 +817,24 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         showLessEvent();
     });
 
-    function showLessEvent(){
+    function showLessEvent() {
         hideLess('searches');
         hideLess('b-cities');
         hideLess('internships');
     }
 
-    function hideLess(elem){
+    function hideLess(elem) {
         shrinkFirst(elem);
         document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
         document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
         expandFirst(elem);
     }
 
-    function shrinkFirst(elem){
+    function shrinkFirst(elem) {
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 5;
-        while(k < listElementsLength){
-            if(document.getElementById(elem)) {
+        while (k < listElementsLength) {
+            if (document.getElementById(elem)) {
                 document.getElementById(elem).children[k].classList.add('hide');
             }
             k += 1;

@@ -223,6 +223,7 @@ class SiteController extends Controller
                 $x->groupBy(['b.quiz_enc_id']);
             }], false)
             ->where([
+                'a.display' => 1,
                 'a.is_deleted' => 0
             ])
             ->asArray()
@@ -266,7 +267,7 @@ class SiteController extends Controller
         }
     }
 
-    public function actionCareers()
+    public function actionSalarySubmitter()
     {
         $this->layout = 'main-secondary';
         $careerFormModel = new CareerForm();

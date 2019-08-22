@@ -11,7 +11,6 @@ use common\models\UserTypes;
 use common\models\Users;
 use common\models\Usernames;
 use common\models\Organizations;
-use common\models\BusinessActivities;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -26,7 +25,6 @@ class OrganizationSignUpForm extends Model
     public $last_name;
     public $phone;
     public $countryCode;
-    public $organization_business_activity;
     public $organization_name;
     public $organization_email;
     public $organization_website;
@@ -52,9 +50,9 @@ class OrganizationSignUpForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
             [['username'], 'string', 'length' => [3, 20]],
             [['email', 'organization_email'], 'string', 'max' => 50],
@@ -71,7 +69,6 @@ class OrganizationSignUpForm extends Model
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
-            [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
         ];
     }
@@ -90,7 +87,6 @@ class OrganizationSignUpForm extends Model
             'organization_email' => Yii::t('frontend', 'Organization Email'),
             'organization_website' => Yii::t('frontend', 'Website'),
             'organization_phone' => Yii::t('frontend', 'Phone'),
-            'organization_business_activity' => Yii::t('frontend', 'Business Activity'),
         ];
     }
 
@@ -114,8 +110,9 @@ class OrganizationSignUpForm extends Model
             $usernamesModel->username = $this->username;
             $usernamesModel->assigned_to = 2;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
-                $transaction->rollBack();
                 $this->_flag = false;
+                $transaction->rollback();
+                return false;
             } else {
                 $this->_flag = true;
             }
@@ -137,25 +134,28 @@ class OrganizationSignUpForm extends Model
             $usersModel->status = 'Active';
 
             if (!$usersModel->validate() || !$usersModel->save()) {
-                $transaction->rollBack();
                 $this->_flag = false;
+                $transaction->rollback();
+                return false;
             }
 
-            $referralModel = new \common\models\crud\Referral();
-            $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+            if($this->_flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
 
-            if (!$referralModel->create()) {
-                $transaction->rollBack();
-                $this->_flag = false;
-            } else {
-                $this->_flag = true;
+                if (!$referralModel->create()) {
+                    $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {
                 $organizationsModel = new Organizations();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
-                $organizationsModel->business_activity_enc_id = $this->organization_business_activity;
                 $organizationsModel->name = $this->organization_name;
                 $organizationsModel->email = $this->organization_email;
                 $organizationsModel->initials_color = RandomColors::one();
@@ -169,24 +169,29 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel->slug = $utilitiesModel->create_slug();
                 $organizationsModel->status = 'Active';
                 if (!$organizationsModel->validate() || !$organizationsModel->save()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 }
 
                 $usersModel->organization_enc_id = $organizationsModel->organization_enc_id;
                 if (!$usersModel->validate() || !$usersModel->update()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 }
+            }
 
+            if($this->_flag) {
                 $referralModel = new \common\models\crud\Referral();
                 $referralModel->created_by = $usersModel->user_enc_id;
                 $referralModel->is_organization = true;
                 $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
 
                 if (!$referralModel->create()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
@@ -196,16 +201,13 @@ class OrganizationSignUpForm extends Model
                 Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
                 Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+                return false;
             }
         } catch (Exception $e) {
             $transaction->rollBack();
-            return false;
-        }
-
-        if ($this->_flag) {
-            Yii::$app->sitemap->generate();
-            return true;
-        } else {
             return false;
         }
     }

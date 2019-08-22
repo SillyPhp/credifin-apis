@@ -1,9 +1,9 @@
 <div class="secondary-headers on-top">
     <div class="secondary-headers-right">
         <?php
-        foreach ($data as $d){
+        foreach ($data as $d) {
             ?>
-        <a href="/<?= $d['route']; ?>"><?= $d['name']; ?></a>
+            <a href="/<?= $d['route'] . $referral; ?>"><?= $d['name']; ?></a>
             <?php
         }
         ?>
@@ -47,6 +47,14 @@ $this->registerCss('
 }
 .secondary-headers.on-top a{
     color:#fff;
+}
+@media only screen and (max-width: 900px) {
+    .secondary-headers{
+        top: 56px;
+    }
+    .menuzord-responsive .menuzord-brand {
+        margin: 8px 30px 7px 20px;
+    }
 }
 @media screen and (max-width: 571px) and (min-width: 0px) {
     .secondary-headers-right{padding-right:15px;}

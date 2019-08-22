@@ -157,7 +157,8 @@ function displayStats(stats) {
         document.querySelector('#btn-share').href = "https://www.facebook.com/share.php?u=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
         document.querySelector('#tw-share').href = "https://twitter.com/intent/tweet?text=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
         document.querySelector('#link-share').href = "https://www.linkedin.com/sharing/share-offsite?url=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
-        document.querySelector('#wa-share').href = "https://wa.me/?text=" + window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#wa-share').href = "https://wa.me/?text=" + window.location.href + "/" + stats.correct + "/" + stats.questionsAsked;
+        document.querySelector('#wa-share-mob').href = "whatsapp://send?text=" + window.location.href + "/" + stats.correct + "/" + stats.questionsAsked;
         document.querySelector("#streak-span").innerHTML = stats.correctStreak;
         document.querySelector("#response-time-span").innerHTML = stats.averageResponseTime;
         document.querySelectorAll("#quiz-stats>div>span").forEach(el => {

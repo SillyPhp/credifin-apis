@@ -44,23 +44,37 @@ class QuizController extends Controller
             ])
             ->asArray()
             ->one();
-        if($temp['template'] == 1) {
+        if ($temp['template'] == 1) {
             $this->layout = 'quiz-main';
             return $this->render('cricket-quiz', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp
             ]);
-        }elseif ($temp['template'] == 2){
+        } elseif ($temp['template'] == 2) {
             $this->layout = 'quiz2-main';
             return $this->render('cricket-quiz-2', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp
             ]);
-        }elseif($temp['template'] == 3){
+        } elseif ($temp['template'] == 3) {
             $this->layout = 'quiz3-main';
             return $this->render('quiz-3', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 4) {
+            $this->layout = 'quiz4-main';
+            return $this->render('quiz-4', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 5) {
+            $this->layout = 'quiz5-main';
+            return $this->render('quiz-5', [
                 'score' => $s,
                 'total' => $t,
                 'quiz' => $temp

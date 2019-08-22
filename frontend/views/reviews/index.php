@@ -1,7 +1,10 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
+$referral = Yii::$app->referral->getReferralCode();
 
 $this->title = Yii::t('frontend', 'Reviews | Latest Reviews');
 
@@ -41,9 +44,6 @@ $this->params['seo_tags'] = [
 
     <section class="head-bg">
         <div class="overlay-bg"></div>
-<!--        <div class="bg-img">-->
-<!--            <img src="--><?//= Url::to('@eyAssets/images/pages/review/review-bg2.png')?><!--">
-<!--        </div>-->
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -53,14 +53,16 @@ $this->params['seo_tags'] = [
                                 <div class="head-text">
                                     <p>earn credibility, attract talent</p>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
                                     <div class="input-group search-bar">
                                         <div class="load-suggestions Typeahead-spinner">
                                             <span></span>
                                             <span></span>
                                             <span></span>
                                         </div>
-                                        <input type="text" id="search_comp" class="form-control" placeholder="Search Companies, Colleges, Schools, Educational Institutes" name="keywords">
+                                        <input type="text" id="search_company" class="form-control"
+                                               placeholder="Search Companies, Colleges, Schools, Educational Institutes"
+                                               name="keywords">
                                         <div class="input-group-btn">
                                             <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                                         </div>
@@ -83,7 +85,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="tc">
                     <div class="col-md-3">
-                        <a href="/reviews/companies">
+                        <a href="<?= Url::to("/reviews/companies" . $referral); ?>">
                             <div class="review-cat-box com-hover">
                                 <div class="rcb-icon" id="company-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
@@ -93,7 +95,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="/reviews/colleges ">
+                        <a href="<?= Url::to("/reviews/colleges" . $referral); ?>">
                             <div class="review-cat-box college-hover">
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
@@ -103,7 +105,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="/reviews/schools">
+                        <a href="<?= Url::to("/reviews/schools" . $referral); ?>">
                             <div class="review-cat-box sch-hover">
                                 <div class="rcb-icon" id="school-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
@@ -113,7 +115,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="/reviews/institutes">
+                        <a href="<?= Url::to("/reviews/institutes" . $referral); ?>">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
@@ -126,6 +128,9 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <?= $this->render('/widgets/review/quick-review');?>
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Organizations</h1>
@@ -142,8 +147,10 @@ $this->params['seo_tags'] = [
                     <div class="pos-rel-help">
                         <div class="pos-abso">
                             <div class="tc-heading">Let us Help You</div>
-                            <div class="tc-text">Empower Youth is a platform open to everyone. Share your experiences to help
-                                others make better choices, and help Organizations up their game.</div>
+                            <div class="tc-text">Empower Youth is a platform open to everyone. Share your experiences to
+                                help
+                                others make better choices, and help Organizations up their game.
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,8 +177,6 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-
-
     <section>
         <div class="container">
             <h1 class="heading-style">Top Educational Institutes</h1>
@@ -181,24 +186,20 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
     <section class="qr-bg">
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
                     <div id="latest_reviews_card_new">
-
                     </div>
                 </div>
-
                 <div class="col-md-4">
                     <div id="top_user_reviews_card_new">
-
                     </div>
                 </div>
-
                 <div class="col-md-4">
                     <div id="most_reviews_card_new">
-
                     </div>
                 </div>
             </div>
@@ -304,7 +305,6 @@ $this->registerCss('
     top:0;
     right:0;
     background:url("' . Url::to('@eyAssets/images/pages/review/review-bg2.png') . '");
-//    background:url("' . Url::to('@eyAssets/images/pages/review/rl.png') . '");
     background-position: right top;
     background-repeat: no-repeat;
     background-size: auto 450px;
@@ -530,20 +530,15 @@ color: initial;
 }
     
 .head-bg{
-//  background: url(../assets/themes/ey/images/pages/review/fgb.png);
-     background: url(../assets/themes/ey/images/pages/review/review2.png);
-    
+    background: url(../assets/themes/ey/images/pages/review/review2.png);
     background-size: cover;
     width: 100%;
     background-repeat: no-repeat; 
     text-align:center;
-//     background-size: contain;
-//   background-position:bottom;
 }  
 .overlay-bg{
     position:absolute;
-    
-   background-image: linear-gradient(155deg, rgba(255,255,255,.8)0%, rgba(255,255,255,.7)40%, rgba(255,255,255,.0)65%, rgba(255,255,255,.0)100%);
+    background-image: linear-gradient(155deg, rgba(255,255,255,.8)0%, rgba(255,255,255,.7)40%, rgba(255,255,255,.0)65%, rgba(255,255,255,.0)100%);
     width:100%;
     height:100%;
 }
@@ -558,9 +553,6 @@ color: initial;
     top:50%;
     transform:translateY(-50%);
     z-index:9;
-}  
-.search-box{
-
 }
 .search-bar{
     border:1px solid #ddd;
@@ -573,7 +565,7 @@ color: initial;
     border:none;
 }
 .search-bar button{
-     padding:13px 19px 12px 16px;
+    padding:13px 19px 12px 16px;
     border:none;
     background:#fff;
     color:#999;
@@ -618,7 +610,6 @@ color: initial;
     border-radius: 0 0 13px 13px;
     border-top: 1px solid #eee;
     margin: 18px 0px 0 0px;
-    
     transition: .1s all;
     -webkit-transition: .1s all;
     -moz-transition: .1s all;
@@ -653,7 +644,7 @@ color: initial;
     left: 0;
     width: 148px;
     height: 148px;
-    border: 2px solid #afafaf;/* #DEDEDE*/
+    border: 2px solid #afafaf;
     border-radius: 50%;
     content: "";
     -webkit-transition: all .1s ease-out;
@@ -1237,65 +1228,32 @@ body.modal-open{
         transform: translateY(-0%);
         margin:auto;
     }
+    .head-text {
+        margin-top: 80px;
+    }
 }
 ');
 echo $this->render('/widgets/mustache/review-cards-company');
 echo $this->render('/widgets/mustache/review-cards-unclaimed');
+echo $this->render('/widgets/review/review-search-bar');
+//echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#review_institutes'));
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_comp').val());
-})
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
+});
 var array_types = ['School','College','Educational Institute'];
 var get_random_cat = array_types[Math.floor(Math.random()*array_types.length)];
 fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container_compnay'));
 fetch_cards_new_latest(params={'rating':[1,2,3,4,5],'sort':1,'limit':2},template=$('#latest_reviews_card_new'));
 fetch_cards_top_user(params={'rating':[5,4],'limit':2},template=$('#top_user_reviews_card_new'));
 fetch_cards_new_most(params={'rating':[5,4],'limit':2,'most_reviewed':1},template=$('#most_reviews_card_new'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_comp').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

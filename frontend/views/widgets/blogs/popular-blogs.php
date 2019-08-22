@@ -5,7 +5,7 @@ use yii\helpers\Url;
         {{#.}}
         <div class="what-popular-box">
             <div class="wp-box-icon">
-                <a href="/blog/{{slug}}"><img src="{{image}}"></a>
+                <a href="/blog/{{slug}}"><img src="{{image}}" alt="{{title}}"></a>
 <!--                <div class="middle">-->
 <!--                    <a href="" class="">-->
 <!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/blog/play-button.png') ?><!--">-->

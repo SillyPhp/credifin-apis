@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%skills}}".
  *
@@ -17,27 +19,31 @@ namespace common\models;
  * @property int $is_deleted Is Skill Deleted (0 As False, 1 As True)
  *
  * @property ApplicationSkills[] $applicationSkills
+ * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates
  * @property AssignedSkills[] $assignedSkills
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property Organizations $organizationEnc
  * @property UserPreferredSkills[] $userPreferredSkills
+ * @property UserSkills[] $userSkills
  */
-class Skills extends \yii\db\ActiveRecord {
-
+class Skills extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%skills}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['skill_enc_id', 'skill', 'created_on', 'created_by'], 'required'],
+            [['skill_enc_id', 'skill', 'created_on'], 'required'],
             [['skill', 'status'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['is_deleted'], 'integer'],
@@ -50,45 +56,70 @@ class Skills extends \yii\db\ActiveRecord {
     }
 
     /**
+     * @inheritdoc
+     */
+
+    /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationSkills() {
+    public function getApplicationSkills()
+    {
         return $this->hasMany(ApplicationSkills::className(), ['skill_enc_id' => 'skill_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAssignedSkills() {
+    public function getApplicationSkillsTemplates()
+    {
+        return $this->hasMany(ApplicationSkillsTemplate::className(), ['skill_enc_id' => 'skill_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedSkills()
+    {
         return $this->hasMany(AssignedSkills::className(), ['skill_enc_id' => 'skill_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
+    public function getCreatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
+    public function getLastUpdatedBy()
+    {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationEnc() {
+    public function getOrganizationEnc()
+    {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserPreferredSkills() {
+    public function getUserPreferredSkills()
+    {
         return $this->hasMany(UserPreferredSkills::className(), ['skill_enc_id' => 'skill_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserSkills()
+    {
+        return $this->hasMany(UserSkills::className(), ['skill_enc_id' => 'skill_enc_id']);
+    }
 }

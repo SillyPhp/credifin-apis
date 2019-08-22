@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', 'Companies Reviews | Reviews');
@@ -49,19 +50,21 @@ $this->params['seo_tags'] = [
                                     <span></span>
                                     <span></span>
                                 </div>
-                                <form id="form-search" action="<?=Url::to(['search']) ?>">
-                                <input class='form-control' name="keywords" id="search_company" name="search_company" placeholder='Search Companies' type='text'>
-                                <button class='btn btn-link search-btn'>
-                                    <i class='fas fa-search'></i>
-                                </button>
+                                <form id="form-search" action="<?= Url::to(['search']) ?>">
+                                    <input class='form-control' name="keywords" id="search_company"
+                                           name="search_company" placeholder='Search Companies' type='text'>
+                                    <button class='btn btn-link search-btn'>
+                                        <i class='fas fa-search'></i>
+                                    </button>
                                 </form>
                             </div>
                             <div class="btn_add_new_org">
                                 <?php if (Yii::$app->user->isGuest): ?>
-                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_add_org">Add New Company</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                                       class="btn_add_org">Add New Company</a>
                                 <?php else : ?>
-                                <a href="#" class="add_new_org btn_add_org">Add New Company</a>
-                                <?php  endif; ?>
+                                    <a href="#" class="add_new_org btn_add_org">Add New Company</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -78,28 +81,31 @@ $this->params['seo_tags'] = [
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
                         </div>
-                        <div class="rb-heading">Growth and Development </div>
-                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>, <span>Skill Development</span></div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>,
+                            <span>Skill Development</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png') ?>">
                         </div>
-                        <div class="rb-heading">Human Resources </div>
-                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>, <span>Work - Life Balance</span> </div>
+                        <div class="rb-heading">Human Resources</div>
+                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>,
+                            <span>Work - Life Balance</span></div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="rb-box">
                         <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png') ?>">
                         </div>
                         <div class="rb-heading">Financial Sustainability</div>
-                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>, <span>Job Security</span> </div>
+                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>,
+                            <span>Job Security</span></div>
                     </div>
                 </div>
             </div>
@@ -121,27 +127,32 @@ $this->params['seo_tags'] = [
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="wu-m-heading"><img src="<?= Url::to('@commonAssets/logos/eyfooter.png')?>"> Helps Employers</div>
+                    <div class="wu-m-heading"><img src="<?= Url::to('@commonAssets/logos/eyfooter.png') ?>"> Helps
+                        Employers
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/attract.png') ?>">
+                        </div>
                         <div class="wu-heading">Attract</div>
                         <div class="wu-text">Increase your company's visibility and enhance your employer brand</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/convert.png') ?>">
+                        </div>
                         <div class="wu-heading">Convert</div>
                         <div class="wu-text">Drive more qualified people to apply for your key open positions</div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="with-us-block">
-                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png')?>"></div>
+                        <div class="wu-icon"><img src="<?= Url::to('@eyAssets/images/pages/review/retain.png') ?>">
+                        </div>
                         <div class="wu-heading">Retain</div>
                         <div class="wu-text">Engage your existing workforce and leverage their endorsements</div>
                     </div>
@@ -683,6 +694,7 @@ float:right;
 ');
 echo $this->render('/widgets/mustache/latest-reviews');
 echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/review/review-search-bar');
 echo $this->render('/widgets/mustache/top-user-reviews');
 echo $this->render('/widgets/mustache/review-cards-company', [
 ]);
@@ -697,46 +709,7 @@ fetch_cards_new_top_user(params={'rating':[5,4],'limit':4},template=$('#top_user
 fetch_cards_new_most_comp(params={'rating':[5,4],'limit':4,'most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
 fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_company').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.slug+'/reviews">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'/reviews');
-  });
 JS;
-$this->registerJs($script);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

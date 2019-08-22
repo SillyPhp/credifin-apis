@@ -125,6 +125,10 @@ class ReviewsController extends ApiBaseController
             return $this->response(422);
         }
 
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
+        }
+
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
             ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
@@ -179,8 +183,11 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
                 ->joinWith(['designationEnc e'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
 
@@ -188,7 +195,6 @@ class ReviewsController extends ApiBaseController
                 $follow = FollowedOrganizations::find()
                     ->select('followed')
                     ->where(['created_by' => $candidate->user_enc_id, 'organization_enc_id' => $org['organization_enc_id']])
-                    ->asArray()
                     ->one();
 
                 $hasReviewed = OrganizationReviews::find()
@@ -211,12 +217,10 @@ class ReviewsController extends ApiBaseController
                 ->one();
 
             $data['org_detail'] = $org;
-            $data['reviews'] = $reviews;
-            $data['follow'] = $follow;
+            $data['reviews'] = $result;
+            $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
-            if ($data['follow'] == null) {
-                $data['follow'] = $follow = [];
-            }
+
             $data['overall_rating'] = $stats;
 
             if (!empty($data)) {
@@ -501,7 +505,6 @@ class ReviewsController extends ApiBaseController
                 $follow = UnclaimedFollowedOrganizations::find()
                     ->select('followed')
                     ->where(['created_by' => $candidate->user_enc_id, 'organization_enc_id' => $unclaimed_org['organization_enc_id']])
-                    ->asArray()
                     ->one();
 
                 $hasReviewed = NewOrganizationReviews::find()
@@ -534,12 +537,10 @@ class ReviewsController extends ApiBaseController
 
             $data['org_detail'] = $org;
             $data['reviews'] = $emp_reviews;
-            $data['follow'] = $follow;
+            $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
-            if ($data['follow'] == null) {
-                $data['follow'] = $follow = [];
-            }
+
             $data['overall_rating'] = $emp_stats;
             $data['student_overall_rating'] = $stats_students;
             $data['student_reviews'] = $reviews_students;
@@ -568,6 +569,10 @@ class ReviewsController extends ApiBaseController
             $org_enc_id = $parameters['org_enc_id'];
         } else {
             return $this->response(422);
+        }
+
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
         }
 
         $org = Organizations::find()
@@ -605,11 +610,14 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
-            $data['reviews'] = $reviews;
+            $data['reviews'] = $result;
 
             if (!empty($data)) {
                 return $this->response(200, $data);
@@ -952,6 +960,7 @@ class ReviewsController extends ApiBaseController
 
                 //check if review already exists else save new record
                 if (!empty($chk)) {
+                    $chk->average_rating = $avg_rating;
                     $chk->skill_development = $model->skill_development;
                     $chk->work_life = $model->work_life_balance;
                     $chk->compensation = $model->salary_benefits;
@@ -1185,23 +1194,44 @@ class ReviewsController extends ApiBaseController
 
         if ($org) {
             $claimed_org_review = OrganizationReviews::find()
-                ->select(['review_enc_id',
-                    'organization_enc_id',
-                    'show_user_details',
-                    'skill_development Skill_Development',
-                    'work_life Work_Life_Balance',
-                    'compensation Salary_And_Benefits',
-                    'organization_culture Company_Culture',
-                    'job_security Job_Security',
-                    'growth Career_Growth',
-                    'work Work_Satisfaction',
-                    'likes',
-                    'dislikes'])
-                ->where(['organization_enc_id' => $org_enc_id, 'created_by' => $candidate->user_enc_id])
+                ->alias('a')
+                ->select([
+                    'a.review_enc_id',
+                    'a.organization_enc_id',
+                    'a.show_user_details',
+                    'a.skill_development Skill_Development',
+                    'a.work_life Work_Life_Balance',
+                    'a.compensation Salary_And_Benefits',
+                    'a.organization_culture Company_Culture',
+                    'a.job_security Job_Security',
+                    'a.growth Career_Growth',
+                    'a.work Work_Satisfaction',
+                    'a.likes',
+                    'a.dislikes',
+                    'b.first_name',
+                    'b.last_name'
+                ])
+                ->where(['a.organization_enc_id' => $org_enc_id, 'a.created_by' => $candidate->user_enc_id])
+                ->joinWith(['createdBy b'],false)
                 ->asArray()
                 ->one();
-            if (!empty($claimed_org_review)) {
-                return $this->response(200, $claimed_org_review);
+
+            $sub_array = [];
+            $data = [];
+            if(!empty($claimed_org_review)) {
+                foreach ($claimed_org_review as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }
+
+            $sub_array['data'][] = $data;
+
+            if (!empty($sub_array)) {
+                return $this->response(200, $sub_array);
             }
 
         } elseif ($unclaimed_org) {
@@ -1221,10 +1251,16 @@ class ReviewsController extends ApiBaseController
                     'a.likes',
                     'a.dislikes',
                     'a.show_user_details',
+                    'b.first_name',
+                    'b.last_name'
                 ]
             ];
 
-            $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+            $options['joins']['created_by'] = [
+                'alias' => 'b'
+            ];
+
+            $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
             $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
 
             $options['quant'] = 'one';
@@ -1250,11 +1286,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
                 $options['quant'] = 'one';
 
@@ -1280,10 +1321,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
                 $options['quant'] = 'one';
 
@@ -1309,10 +1356,16 @@ class ReviewsController extends ApiBaseController
                         'a.dislikes',
                         'a.show_user_details',
                         'a.reviewer_type',
+                        'b.first_name',
+                        'b.last_name'
                     ]
                 ];
 
-                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1];
+                $options['joins']['created_by'] = [
+                    'alias' => 'b'
+                ];
+
+                $options['condition'][] = ['a.organization_enc_id' => $org_enc_id, 'a.status' => 1, 'a.created_by' => $candidate->user_enc_id];
                 $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
                 $options['quant'] = 'one';
 
@@ -1320,8 +1373,24 @@ class ReviewsController extends ApiBaseController
 
             }
 
-            if (!empty($reviews)) {
-                return $this->response(200, $reviews);
+            $sub_array = [];
+            $data = [];
+            if(!empty($reviews)) {
+                foreach ($reviews as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }else{
+                return $this->response(404);
+            }
+
+            $sub_array['data'][] = $data;
+
+            if (!empty($sub_array)) {
+                return $this->response(200, $sub_array);
             } else {
                 return $this->response(404);
             }

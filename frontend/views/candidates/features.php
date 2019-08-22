@@ -41,24 +41,21 @@ $this->params['seo_tags'] = [
                     <div class="animation-relative">
                         <div class="element1" id="el1">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/2girls.png') ?>"
-                                     id="text-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/2girls.png') ?>" id="text-img" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c1.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c1.png') ?>" alt="Candidates Features"/>
                         </div>
                         <div class="element2">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/asst-boss.png') ?>"
-                                     id="text-img3">
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/asst-boss.png') ?>" id="text-img3" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c2.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c2.png') ?>" alt="Candidates Features"/>
                         </div>
                         <div class="element3">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/boy.png') ?>"
-                                     id="text-img2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/boy.png') ?>" id="text-img2" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c3.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c3.png') ?>" alt="Candidates Features"/>
                         </div>
                     </div>
                 </div>
@@ -94,7 +91,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/job-info.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/job-info.png')?>" alt="Jobs Site">
                         </div>
                     </div>
                 </div>
@@ -110,7 +107,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/build-career.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/build-career.png') ?>" alt="Build Career">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -147,7 +144,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/reviews-icon.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/reviews-icon.png')?>" alt="Give Review"/>
                         </div>
                     </div>
                 </div>
@@ -162,7 +159,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv.png')?>" alt="Build Resume"/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -201,7 +198,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/socialmedia.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/socialmedia.png')?>" alt="Connect with Us"/>
                         </div>
                     </div>
                 </div>
@@ -216,7 +213,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv1.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv1.png')?>" alt="Drop Resume"/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -254,7 +251,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/comparejob.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/comparejob.png')?>" alt="Compare Jobs and Internships">
                         </div>
                     </div>
                 </div>
@@ -269,7 +266,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/confidential-info.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/confidential-info.png')?>" alt="Confidentiality of personal information"/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -307,7 +304,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/phone.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/phone.png')?>" alt="Operate through your phone"/>
                         </div>
                     </div>
                 </div>
@@ -322,7 +319,7 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>" alt="Track your application's status"/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -343,7 +340,7 @@ $this->params['seo_tags'] = [
             <div class="container">
                 <div class="cf-box">
                     <div class="col-md-12">
-                        <divdata-aos="fade-right" class="heading">Easy steps to apply</div>
+                        <div data-aos="fade-right" class="heading">Easy steps to apply</div>
                 </div>
                 <div class="col-md-6">
                     <div data-aos="fade-right" class="sub-heading">Make your career development journey fun!</div>
@@ -357,7 +354,7 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-6">
                     <div data-aos="fade-left" class="cf-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/stepstoapply1.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/stepstoapply1.png')?>" alt="Easy to apply"/>
                     </div>
                 </div>
             </div>

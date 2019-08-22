@@ -45,17 +45,17 @@ use yii\helpers\Url;
 
                 </div>
                 <div class="rating">
-                    <div class="reviews-rate"> Currenlty No Review</div>
+                    <div class="reviews-rate"> Currently No Review</div>
                 </div>
                 {{/rating}}
                 <div class="row">
                     <div class="cm-btns padd-0">
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <div class="color-blue">
                                 <a href="/{{profile_link}}">View Profile</a>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
                             <div class="color-orange">
                                 <a href="/{{review_link}}">Read Reviews</a>
                             </div>
