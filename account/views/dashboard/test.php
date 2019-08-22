@@ -16,6 +16,10 @@
                     <span class="glyphicon glyphicon-pencil"></span> Accept
                 </button>
                 <p id="pDetails"></p>
+                <label><b>Select Time: &nbsp;</b></label>
+                <select id="time_slots">
+
+                </select>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -63,8 +67,11 @@ function FetchEventAndRenderCalendar(){
                     interview_candidate_enc_id:v.interview_c_enc_id,
                     process_field_id:v.process_field_enc_id,
                     status:v.status,
+                    time:v.time,
+                    designation:v.designation,
                 })
             });
+            console.log(events);
             GenerateCalendar(events);
         }
     })
@@ -86,7 +93,7 @@ function GenerateCalendar(events){
         events: events,
         eventClick: function (calEvent, jsEvent, view) {
             selectedEvent = calEvent;
-            // console.log(calEvent.status);
+            console.log(calEvent);
             if(calEvent.status == 2){
                 $('#btnAccept').text('Already Applied');
                 $('#btnAccept').attr("disabled", true);
@@ -96,12 +103,12 @@ function GenerateCalendar(events){
                 $('#btnDelete').show();
                 $('#btnAccept').text('Accept');
             }
-            $('#myModal #eventTitle').text(calEvent.title);
-            var d = $('<div/>');
-            d.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-            d.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-            d.append($('<p/>').html('<b>Profile:</b>' + calEvent.profile));
-            $('#myModal #pDetails').empty().html(d);
+            $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
+            $('#pDetails').html('<b>Profile: </b>' + calEvent.profile);
+            $('#time_slots').empty();
+            $.each(calEvent.time , function (index) {
+                    $("#time_slots").append(GetOption(calEvent.time[index]['from'],calEvent.time[index]['to'], calEvent.time[index]['interview_date_timing_enc_id']));
+                });
             $('#myModal').modal();
         },
         selectable: true,
@@ -132,17 +139,24 @@ function GenerateCalendar(events){
     })
 }
 
+function GetOption(from,to, value) {
+    return "<option value = '" + value + "'>" + from + " - " + to + "</option>"
+}
+
 $('#btnAccept').click(function() {
     acceptInterview();
 });
 
 function acceptInterview(){
+    
+    var date_time_enc_id = $('#time_slots').val();
+    
     if(selectedEvent != null){
         $.ajax({
         type: 'POST',
         url: 'change-status',
         data:{
-            date_enc_id:selectedEvent.date_time_enc_id, 
+            date_enc_id:date_time_enc_id, 
             scheduled_interview_enc_id:selectedEvent.eventID, 
             candidate_interview_id: selectedEvent.interview_candidate_enc_id,
             applied_app_id:selectedEvent.applied_application_enc_id,
@@ -168,11 +182,12 @@ function acceptInterview(){
 $('#btnDelete').click(function() {
   if(selectedEvent != null && confirm('Are you sure?')){
       $('#myModal').modal('hide');
+      var date_time_enc_id = $('#time_slots').val();
       $.ajax({
         type: 'POST',
         url: 'change-status',
         data: {
-            date_enc_id:selectedEvent.date_time_enc_id, 
+            date_enc_id:date_time_enc_id, 
             scheduled_interview_enc_id:selectedEvent.eventID, 
             candidate_interview_id: selectedEvent.interview_candidate_enc_id,
             applied_app_id:selectedEvent.applied_application_enc_id,

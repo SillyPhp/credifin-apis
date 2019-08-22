@@ -197,8 +197,10 @@ class SchedularController extends Controller
                         ];
                     }
                 }
-                foreach ($req['timings'] as $key => $value) {
-                    $res['timings'][$key] = $value;
+                if($req['timings']) {
+                    foreach ($req['timings'] as $key => $value) {
+                        $res['timings'][$key] = $value;
+                    }
                 }
             } else {
                 $res['application'] = $req['application_id'];
@@ -246,8 +248,37 @@ class SchedularController extends Controller
         }
     }
 
+    private function divideTime($StartTime, $EndTime, $Duration)
+    {
+        $ReturnArray = [];
+        $StartTime = strtotime($StartTime);
+        $EndTime = strtotime($EndTime);
+
+        $AddMins = $Duration * 60;
+
+        while ($StartTime <= $EndTime) {
+            $ReturnArray[] = date("G:i", $StartTime);
+            $StartTime += $AddMins;
+        }
+        return $ReturnArray;
+    }
+
     private function saveData($data)
     {
+
+        if ($data['fixed']) {
+            $duration = $data['time_duration'];
+            $result = [];
+
+            foreach ($data['timings'] as $date => $value) {
+                $result[$date] = [];
+                $a = [];
+                foreach ($value as $t) {
+                    $a = array_merge($a, $this->divideTime($t['from'], $t['to'], $duration));
+                }
+                array_push($result[$date], $a);
+            }
+        }
 
         $_flag = null;
 
@@ -294,6 +325,39 @@ class SchedularController extends Controller
                         return false;
                     }
 
+                    foreach ($result as $date => $time) {
+
+                        $date = date('Y-m-d', strtotime($date));
+
+                        $interview_dates = new InterviewDates();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
+                        $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                        $interview_dates->interview_date = $date;
+                        if ($interview_dates->save()) {
+
+                            $count = count($time[0]);
+                            $j = 0;
+                            for ($i = 0; $i <= $count - 2; $i++) {
+
+                                $interview_date_timing = new InterviewDateTimings();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                                $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
+                                $interview_date_timing->from = date("H:i", strtotime($time[0][$j]));
+                                $interview_date_timing->to = date("H:i", strtotime($time[0][++$j]));
+                                if (!$interview_date_timing->save()) {
+                                    $transaction->rollback();
+                                    return false;
+                                }
+                            }
+
+                        } else {
+                            $transaction->rollback();
+                            return false;
+                        }
+                    }
+
                 } elseif ($data['type'] == 'flexible') {
 
                     foreach ($candidate_applications as $application_enc_id) {
@@ -309,6 +373,38 @@ class SchedularController extends Controller
                             return false;
                         }
                     }
+
+                    foreach ($data['timings'] as $date => $time) {
+
+                        $date = date('Y-m-d', strtotime($date));
+
+                        $interview_dates = new InterviewDates();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
+                        $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
+                        $interview_dates->interview_date = $date;
+                        if ($interview_dates->save()) {
+
+                            foreach ($time as $t) {
+
+                                $interview_date_timing = new InterviewDateTimings();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
+                                $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
+                                $interview_date_timing->from = date("H:i", strtotime($t['from']));
+                                $interview_date_timing->to = date("H:i", strtotime($t['to']));
+                                if (!$interview_date_timing->save()) {
+                                    $transaction->rollback();
+                                    return false;
+                                }
+                            }
+
+                        } else {
+                            $transaction->rollback();
+                            return false;
+                        }
+                    }
+
                 }
 
                 if ($data['interviewers']) {
@@ -345,36 +441,6 @@ class SchedularController extends Controller
 
                 }
 
-                foreach ($data['timings'] as $date => $time) {
-
-                    $date = date('Y-m-d', strtotime($date));
-
-                    $interview_dates = new InterviewDates();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $interview_dates->interview_date_enc_id = $utilitiesModel->encrypt();
-                    $interview_dates->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
-                    $interview_dates->interview_date = $date;
-                    if ($interview_dates->save()) {
-
-                        foreach ($time as $t) {
-
-                            $interview_date_timing = new InterviewDateTimings();
-                            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                            $interview_date_timing->interview_date_timing_enc_id = $utilitiesModel->encrypt();
-                            $interview_date_timing->interview_date_enc_id = $interview_dates['interview_date_enc_id'];
-                            $interview_date_timing->from = date("H:i", strtotime($t['from']));
-                            $interview_date_timing->to = date("H:i", strtotime($t['to']));
-                            if (!$interview_date_timing->save()) {
-                                $transaction->rollback();
-                                return false;
-                            }
-                        }
-
-                    } else {
-                        $transaction->rollback();
-                        return false;
-                    }
-                }
                 $transaction->commit();
                 return true;
             } else {
@@ -410,16 +476,20 @@ class SchedularController extends Controller
 
             $company_scheduled_interview = ScheduledInterview::find()
                 ->alias('a')
+                ->distinct()
                 ->select(['a.scheduled_interview_enc_id', 'b.application_enc_id', 'e.name profile', 'd.name job_title', 'f.name interview_type', '(CASE
                     WHEN a.interview_mode = 1 THEN "online"
                     WHEN a.interview_mode = 2 THEN m.name
                     END) as interview_at',
                     'o.interview_date_enc_id',
                     'o.interview_date',
-                    'p.from',
-                    'p.to',
-                    'p.interview_date_timing_enc_id',])
+                    'z.designation',
+//                    'p.from',
+//                    'p.to',
+//                    'p.interview_date_timing_enc_id',
+                ])
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['designationEnc z']);
                     $b->joinWith(['title c' => function ($c) {
                         $c->joinWith(['categoryEnc d']);
                         $c->joinWith(['parentEnc e'], false);
@@ -442,7 +512,57 @@ class SchedularController extends Controller
                 ->asArray()
                 ->all();
 
-            return json_encode($company_scheduled_interview);
+            $data = [];
+            $i = 0;
+            $old_id = null;
+            $time_from_to = [];
+            $time = [];
+            $fixed_result = [];
+            $fixed_data = [];
+            foreach ($company_scheduled_interview as $f) {
+                $fixed_data['EventId'] = $f['scheduled_interview_enc_id'];
+                $fixed_data['Subject'] = $f['job_title'];
+                $fixed_data['Profile'] = $f['profile'];
+                $fixed_data['designation'] = $f['designation'];
+                $fixed_data['ThemeColor'] = 'green';
+                $fixed_data['interview_type'] = $f['interview_type'];
+                $fixed_data['interview_at'] = $f['interview_at'];
+                $fixed_data['interview_date_enc_id'] = $f['interview_date_enc_id'];
+                $interview_date = $f['interview_date'];
+                $fixed_data['Start'] = $interview_date;
+                $fixed_data['End'] = $interview_date;
+                $fixed_data['application_enc_id'] = $f['application_enc_id'];
+                $ti = $f['interviewDates'][$i]['interviewDateTimings'];
+                if ($f['interview_type'] == 'fixed') {
+                    if ($f['scheduled_interview_enc_id'] == $old_id) {
+                        $old_id = $f['scheduled_interview_enc_id'];
+                        $i++;
+                    } else {
+                        $old_id = $f['scheduled_interview_enc_id'];
+                        $i = 0;
+                    }
+                    $ti = $f['interviewDates'][$i]['interviewDateTimings'];
+                    foreach ($ti as $t) {
+                        $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
+                        $time_from_to['from'] = date("g:i a", strtotime($t['from']));
+                        $time_from_to['to'] = date("g:i a", strtotime($t['to']));
+                        array_push($time, $time_from_to);
+                    }
+                    $fixed_data['time'] = $time;
+                    $time = [];
+                } else {
+                    $time_from_to['interview_date_timing_enc_id'] = $ti[0]['interview_date_timing_enc_id'];
+                    $time_from_to['from'] = date("g:i a", strtotime($ti[0]['from']));
+                    $time_from_to['to'] = date("g:i a", strtotime($ti[0]['to']));
+                    array_push($time, $time_from_to);
+                    $fixed_data['time'] = $time;
+                    $time = [];
+                }
+
+                array_push($fixed_result, $fixed_data);
+            }
+
+            return json_encode($fixed_result);
         }
     }
 

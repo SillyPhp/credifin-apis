@@ -219,27 +219,31 @@ class DashboardController extends Controller
     {
         $fixed_interview = AppliedApplicationProcess::find()
             ->alias('a')
+            ->distinct()
             ->select([
-                'j.scheduled_interview_enc_id',
+                'a.field_enc_id',
+//                'j.scheduled_interview_enc_id',
                 'f.name company_name',
                 'h.name job_title',
                 'i.name profile',
-                '(CASE
-                    WHEN j.interview_mode = 1 THEN "online"
-                    WHEN j.interview_mode = 2 THEN m.name
-                    END) as interview_at',
+//                '(CASE
+//                    WHEN j.interview_mode = 1 THEN "online"
+//                    WHEN j.interview_mode = 2 THEN m.name
+//                    END) as interview_at',
                 'o.interview_date',
-                'p.from',
-                'p.to',
-                'p.interview_date_timing_enc_id',
-                'q.name interview_type',
+//                'p.from',
+//                'p.to',
+//                'p.interview_date_timing_enc_id',
+//                'q.name interview_type',
                 'b.applied_application_enc_id',
-                'c.sequence',
+//                'c.sequence',
                 'b.current_round',
-                'd.process_field_enc_id'
+                'z.designation',
+//                'd.process_field_enc_id'
             ])
             ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->joinWith(['applicationEnc e' => function ($e) {
+                    $e->joinWith(['designationEnc z']);
                     $e->joinWith(['organizationEnc f']);
                     $e->joinWith(['title g' => function ($g) {
                         $g->joinWith(['categoryEnc h']);
@@ -249,27 +253,33 @@ class DashboardController extends Controller
                 $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
             }], false)
             ->innerJoinWith(['fieldEnc c' => function ($c) {
-                $c->innerJoinWith(['interviewOptions d' => function ($d) {
-                    $d->joinWith(['scheduledInterviewEnc j' => function ($j) {
-                        $j->joinWith(['scheduledInterviewTypeEnc q']);
+                $c->innerJoinWith(['interviewOptions d' => function ($d) use ($c) {
+                    $d->joinWith(['scheduledInterviewEnc j' => function ($j) use ($c, $d) {
+                        $j->joinWith(['interviewDates o' => function ($o) use ($c, $d, $j) {
+                            $c->select(['c.field_enc_id', 'd.process_field_enc_id', 'j.scheduled_interview_enc_id', 'o.interview_date_enc_id',
+                                'p.interview_date_timing_enc_id', '(CASE
+                    WHEN j.interview_mode = 1 THEN "online"
+                    WHEN j.interview_mode = 2 THEN m.name
+                    END) as interview_at', 'q.name interview_type', 'd.process_field_enc_id']);
+                            $o->joinWith(['interviewDateTimings p']);
+                        }]);
+                        $j->joinWith(['scheduledInterviewTypeEnc q'], false);
                         $j->joinWith(['interviewLocationEnc k' => function ($k) {
                             $k->joinWith(['locationEnc l' => function ($l) {
-                                $l->joinWith(['cityEnc m']);
-                            }]);
-                        }]);
+                                $l->joinWith(['cityEnc m'], false);
+                            }], false);
+                        }], false);
                     }]);
                 }]);
-            }], false)
-            ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = j.scheduled_interview_enc_id')
-            ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
+            }])
             ->where(new \yii\db\Expression('`b`.`current_round` = `c`.`sequence`'))
             ->asArray()
             ->all();
 
+
         $all = InterviewCandidates::find()
-            ->select(['status', 'process_field_enc_id','applied_application_enc_id'])
+            ->select(['status', 'process_field_enc_id', 'applied_application_enc_id'])
             ->where(['type' => 'fixed'])
-//            ->andWhere(['<>', 'process_field_enc_id', 'null'])
             ->asArray()
             ->all();
 
@@ -278,7 +288,7 @@ class DashboardController extends Controller
 
         for ($i = 0; $i < $num; $i++) {
             for ($j = 0; $j < $num2; $j++) {
-                if ($fixed_interview[$i]['process_field_enc_id'] == $all[$j]['process_field_enc_id'] && $fixed_interview[$i]['applied_application_enc_id'] == $all[$j]['applied_application_enc_id']) {
+                if ($fixed_interview[$i]['fieldEnc']['process_field_enc_id'] == $all[$j]['process_field_enc_id'] && $fixed_interview[$i]['applied_application_enc_id'] == $all[$j]['applied_application_enc_id']) {
                     $fixed_interview[$i]['status'] = $all[$j]['status'];
                 }
             }
@@ -308,11 +318,13 @@ class DashboardController extends Controller
                 'q.name interview_type',
                 'a.applied_application_enc_id',
                 'a.interview_candidate_enc_id',
-                'a.status'
+                'a.status',
+                'z.designation'
             ])
             ->joinWith(['appliedApplicationEnc b' => function ($b) {
                 $b->andWhere(['b.created_by' => Yii::$app->user->identity->user_enc_id]);
                 $b->joinWith(['applicationEnc c' => function ($c) {
+                    $c->joinWith(['designationEnc z']);
                     $c->joinWith(['organizationEnc f']);
                     $c->joinWith(['title d' => function ($d) {
                         $d->joinWith(['categoryEnc e']);
@@ -328,7 +340,7 @@ class DashboardController extends Controller
                     }]);
                 }]);
             }], false)
-            ->where(['q.name'=>'flexible'])
+            ->where(['q.name' => 'flexible'])
             ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
             ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
             ->asArray()
@@ -344,32 +356,93 @@ class DashboardController extends Controller
             $fixed_interview = $this->FixedInterview();
             $flexible_interview = $this->FlexibleInterview();
 
-            $interviews = array_merge($fixed_interview, $flexible_interview);
+            $all = InterviewCandidates::find()
+                ->select(['interview_date_timing_enc_id'])
+                ->where(['type' => 'fixed'])
+                ->asArray()
+                ->all();
 
+            $select_time = [];
+            foreach ($all as $a){
+                array_push($select_time,$a['interview_date_timing_enc_id']);
+            }
+
+            $data = [];
+            $i = 0;
+            $old_id = null;
+            $time_from_to = [];
+            $time = [];
+            $fixed_result = [];
+            $fixed_data = [];
+            foreach ($fixed_interview as $f) {
+                if ($f['status'] != 3) {
+                    $fixed_data['EventId'] = $f['fieldEnc']['scheduled_interview_enc_id'];
+                    $fixed_data['Subject'] = $f['job_title'];
+                    $fixed_data['Profile'] = $f['profile'];
+                    $fixed_data['designation'] = $f['designation'];
+                    $fixed_data['ThemeColor'] = 'blue';
+                    $fixed_data['type'] = $f['fieldEnc']['interview_type'];
+                    $interview_date = $f['interview_date'];
+                    $fixed_data['Start'] = $interview_date;
+                    $fixed_data['End'] = $interview_date;
+                    $fixed_data['applied_application_enc_id'] = $f['applied_application_enc_id'];
+                    $fixed_data['process_field_enc_id'] = $f['fieldEnc']['process_field_enc_id'];
+                    $fixed_data['status'] = $f['status'];
+                    if ($f['fieldEnc']['scheduled_interview_enc_id'] == $old_id) {
+                        $old_id = $f['fieldEnc']['scheduled_interview_enc_id'];
+                        $i++;
+                    } else {
+                        $old_id = $f['fieldEnc']['scheduled_interview_enc_id'];
+                        $i = 0;
+                    }
+                    $ti = $f['fieldEnc']['interviewOptions'][0]['scheduledInterviewEnc']['interviewDates'][$i]['interviewDateTimings'];
+                    foreach ($ti as $t) {
+                            if(!in_array($t['interview_date_timing_enc_id'],$select_time)) {
+                                $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
+                                $time_from_to['from'] = date("g:i a", strtotime($t['from']));
+                                $time_from_to['to'] = date("g:i a", strtotime($t['to']));
+                                array_push($time, $time_from_to);
+                            }
+                    }
+                    $fixed_data['time'] = $time;
+                    $time = [];
+
+                    array_push($fixed_result, $fixed_data);
+                }
+            }
+
+            $time_from_to = [];
+            $time = [];
             $result = [];
             $data = [];
-            foreach ($interviews as $f) {
-                if($f['status'] != 3) {
+            foreach ($flexible_interview as $f) {
+                if ($f['status'] != 3) {
                     $data['EventId'] = $f['scheduled_interview_enc_id'];
                     $data['Subject'] = $f['job_title'];
                     $data['Profile'] = $f['profile'];
+                    $data['designation'] = $f['designation'];
                     $data['ThemeColor'] = 'blue';
                     $interview_date = $f['interview_date'];
-                    $from = $f['from'];
-                    $to = $f['to'];
-                    $data['Start'] = $interview_date . 'T' . $from;
-                    $data['End'] = $interview_date . 'T' . $to;
+                    $data['Start'] = $interview_date;
+                    $data['End'] = $interview_date;
                     $data['type'] = $f['interview_type'];
-                    $data['date_time'] = $f['interview_date_timing_enc_id'];
                     $data['applied_application_enc_id'] = $f['applied_application_enc_id'];
                     $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
                     $data['process_field_enc_id'] = $f['process_field_enc_id'];
                     $data['status'] = $f['status'];
+                    $time_from_to['interview_date_timing_enc_id'] = $f['interview_date_timing_enc_id'];
+                    $time_from_to['from'] = date("g:i a", strtotime($f['from']));
+                    $time_from_to['to'] = date("g:i a", strtotime($f['to']));
+                    array_push($time, $time_from_to);
+                    $data['time'] = $time;
+                    $time = [];
                     array_push($result, $data);
                 }
             }
 
-            return json_encode($result);
+            $data = array_merge($fixed_result,$result);
+
+            return json_encode($data);
         }
 
     }
@@ -406,19 +479,19 @@ class DashboardController extends Controller
                 } else {
 
                     $interview_candidates = InterviewCandidates::find()
-                        ->where(['interview_candidate_enc_id' => $interview_candidate_id,'type'=>'flexible'])
+                        ->where(['interview_candidate_enc_id' => $interview_candidate_id, 'type' => 'flexible'])
                         ->one();
 
                     $interview_candidates->status = $status;
                     $interview_candidates->interview_date_timing_enc_id = $date_enc_id;
 
                     if ($interview_candidates->update()) {
-                        if($status == 2) {
+                        if ($status == 2) {
                             return [
                                 'status' => 200,
                                 'message' => 'accepted'
                             ];
-                        }elseif ($status == 3){
+                        } elseif ($status == 3) {
                             return [
                                 'status' => 200,
                                 'message' => 'Rejected'
@@ -439,7 +512,7 @@ class DashboardController extends Controller
                         'scheduled_interview_enc_id' => $scheduled_interview_enc_id,
                         'applied_application_enc_id' => $applied_app_enc_id,
                         'process_field_enc_id' => $process_id,
-                        'type'=>'fixed',
+                        'type' => 'fixed',
                     ])
                     ->asArray()
                     ->one();
@@ -466,12 +539,12 @@ class DashboardController extends Controller
                         $save_fixed_user_acceptance->applied_application_enc_id = $applied_app_enc_id;
                         $save_fixed_user_acceptance->status = $status;
                         if ($save_fixed_user_acceptance->save()) {
-                            if($status == 2) {
+                            if ($status == 2) {
                                 return [
                                     'status' => 200,
                                     'message' => 'accepted'
                                 ];
-                            }elseif ($status == 3){
+                            } elseif ($status == 3) {
                                 return [
                                     'status' => 200,
                                     'message' => 'Rejected'

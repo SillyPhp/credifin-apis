@@ -645,8 +645,8 @@
                         window.location.href = "/account/schedular/update-interview";
                     } else {
                         toastr.error('Some error occured. Please try again', 'Error');
-                        window.location.href = "/account/schedular/update-interview";
-                    }i
+                        // window.location.href = "/account/schedular/update-interview";
+                    }
                 }
             })
         }

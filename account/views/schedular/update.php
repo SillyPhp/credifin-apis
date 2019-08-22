@@ -19,10 +19,12 @@ echo $this->render('/widgets/header/secondary-header', [
                     <!--                <button id="btnDelete" class="btn btn-default btn-sm pull-right">-->
                     <!--                    <span class="glyphicon glyphicon-remove"></span> Remove-->
                     <!--                </button>-->
-                    <button id="btnUpdate" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">
-                        <span class="glyphicon glyphicon-pencil"></span> Update
-                    </button>
-                    <p id="pDetails"></p>
+<!--                    <button id="btnUpdate" class="btn btn-default btn-sm pull-right" style="margin-right:5px;">-->
+<!--                        <span class="glyphicon glyphicon-pencil"></span> Update-->
+<!--                    </button>-->
+                    <p id="profile"></p>
+                    <p id="interview_type"></p>
+                    <p id="interview_at"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -180,18 +182,17 @@ function FetchEventAndRenderCalendar(){
             $.each(data, function(i,v) {
                 events.push({
                     eventID: v.scheduled_interview_enc_id,
-                    title: v.job_title,
-                    profile: v.profile,
-                    start: moment(v.interview_date+'T'+v.from),
-                    end: moment(v.interview_date+'T'+v.to),
+                    title: v.Subject,
+                    profile: v.Profile,
+                    start: moment(v.Start),
+                    end: moment(v.End),
                     color: v.ThemeColor,
                     type:v.interview_type,
                     interview_at:v.interview_at,
                     application_enc_id:v.application_enc_id,
-                    from:v.from,
-                    to:v.to,
+                    designation:v.designation,
                     date_enc_id:v.interview_date_enc_id,
-                    date_timing_enc_id:v.interview_date_timing_enc_id,
+                    time:v.time,
                 })
             });
             GenerateCalendar(events);
@@ -216,14 +217,10 @@ function GenerateCalendar(events){
         eventClick: function (calEvent, jsEvent, view) {
             selectedEvent = calEvent;
             
-            $('#myModal #eventTitle').text(calEvent.title);
-            var d = $('<div/>');
-            d.append($('<p/>').html('<b>Start:</b>' + calEvent.start.format("DD-MMM-YYYY HH:mm a")));
-            d.append($('<p/>').html('<b>End:</b>' + calEvent.end.format("DD-MMM-YYYY HH:mm a")));
-            d.append($('<p/>').html('<b>Profile:</b>' + calEvent.profile));
-            d.append($('<p/>').html('<b>Type:</b>' + calEvent.type));
-            d.append($('<p/>').html('<b>Interview At:</b>' + calEvent.interview_at));
-            $('#myModal #pDetails').empty().html(d);
+            $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
+            $('#profile').html('<b>Profile: </b>' + calEvent.profile);
+            $('#interview_type').html('<b>Type: </b>' + calEvent.type);
+            $('#interview_at').html('<b>Interview At: </b>' + calEvent.interview_at);
             $('#myModal').modal();
         },
         selectable: true,
