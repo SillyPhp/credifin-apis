@@ -573,6 +573,18 @@ a.wn-overlay-text {
 #not-found{
     display:none;
 }
+.company-name{
+    min-height:80px;
+    font-size:16px;
+    position: relative;
+}
+
+.company-name-span{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 ');
 
 $script = <<< JS
@@ -827,13 +839,17 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <img src="{{logo}}">
+                <a href="/{{slug}}/reviews"> <img src="{{logo}}"> </a>
                 {{/logo}}
                 {{^logo}}
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="55px"></canvas>
+                <a href="/{{slug}}/reviews"> <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        color="{{color}}" font="55px"></canvas></a>
                 {{/logo}}
             </div>
+
+            {{#name}}
+            <a href="/{{slug}}/reviews"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            {{/name}}
 
             {{#employerApplications}}
             {{#applications_cnt}}
@@ -886,7 +902,9 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                                             color="{{color}}" font="55px"></canvas></a>
                 {{/logo}}
             </div>
-
+            {{#name}}
+            <a href="/{{slug}}"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            {{/name}}
             {{#employerApplications}}
             {{#applications_cnt}}
             <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>
