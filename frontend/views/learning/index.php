@@ -47,7 +47,7 @@ use yii\helpers\Url;
                             foreach ($categories as $cat) {
                                 ?>
                                 <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                    <a href="/learning/<?= $cat['slug']; ?>">
+                                    <a href="/learning/videos/category/<?= $cat['slug']; ?>">
                                         <div class="newset">
                                             <div class="imag">
                                                 <img src="http://ajay.eygb.me/assets/themes/ey/images/pages/learning-corner/cybersecurity.png">

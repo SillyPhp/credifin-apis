@@ -14,6 +14,20 @@
     </div>
     {{/.}}
 </script>
+<script id="video-categories" type="text/template">
+    {{#.}}
+    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+        <a href="/learning/video/{{slug}}">
+            <div class="newset">
+                <div class="imag">
+                    <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
+                </div>
+                <div class="txt">{{name}}</div>
+            </div>
+        </a>
+    </div>
+    {{/.}}
+</script>
 
 <?php
 $this->registerCss('
@@ -63,6 +77,8 @@ $script = <<<JS
         success: function(response) {
             if(response.status === 200) {
                 var videos = $('#video-gallery-video').html();
+                var cats = $('#video-categories').html();
+                $(".popular-cate").html(Mustache.render(cats, response.categories));
                 $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
             }
         }

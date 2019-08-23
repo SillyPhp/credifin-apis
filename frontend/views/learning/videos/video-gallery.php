@@ -17,66 +17,66 @@ use yii\helpers\Html;
             <div class="row">
                 <div class="col-md-12">
                     <div class="popular-cate">
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                            <a href="">
-                                <div class="newset">
-                                    <div class="imag">
-                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">
-                                    </div>
-                                    <div class="txt">study</div>
-                                </div>
-                            </a>
-                        </div>
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--                            <a href="">-->
+<!--                                <div class="newset">-->
+<!--                                    <div class="imag">-->
+<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                                    </div>-->
+<!--                                    <div class="txt">study</div>-->
+<!--                                </div>-->
+<!--                            </a>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>
@@ -330,38 +330,39 @@ use yii\helpers\Html;
                     <div class="heading-style">Related Jobs</div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-                <div class="application-card-main">
-                        <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;
-                      </span>
-
-                    <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="" title="">
-                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="" title=""><h4 class="application-title">web design</h4></a>
-                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>
-                            <h5>Full Time</h5>
-                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <h4 class="org_name text-right">dsb law group</h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
-                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                    class="fas fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
+            <div class="jobs-list"></div>
+<!--            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">-->
+<!--                <div class="application-card-main">-->
+<!--                        <span class="application-card-type location">-->
+<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;-->
+<!--                      </span>-->
+<!---->
+<!--                    <span class="application-card-type location">-->
+<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India-->
+<!--                        </span>-->
+<!--                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">-->
+<!--                        <div class="application-card-img">-->
+<!--                            <a href="" title="">-->
+<!--                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="application-card-description">-->
+<!--                            <a href="" title=""><h4 class="application-title">web design</h4></a>-->
+<!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
+<!--                            <h5>Full Time</h5>-->
+<!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-12 col-sm-12 col-xs-12">-->
+<!--                        <h4 class="org_name text-right">dsb law group</h4>-->
+<!--                    </div>-->
+<!--                    <div class="application-card-wrapper">-->
+<!--                        <a href="" class="application-card-open" title="View Detail">View Detail</a>-->
+<!--                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i-->
+<!--                                    class="fas fa-plus"></i>&nbsp;</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </section>
 
@@ -372,39 +373,40 @@ use yii\helpers\Html;
                     <div class="heading-style">Related Internships</div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
-                <div class="application-card-main">
-                        <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;
-                      </span>
-
-                    <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="" title="">
-                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="" title=""><h4 class="application-title">web design</h4></a>
-                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
-                            <h5>negotiable</h5>
-                            <h5>Full Time</h5>
-                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <h4 class="org_name text-right">tech adaptive</h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
-                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                    class="fas fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
+            <div class="internships-list"></div>
+<!--            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">-->
+<!--                <div class="application-card-main">-->
+<!--                        <span class="application-card-type location">-->
+<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;-->
+<!--                      </span>-->
+<!---->
+<!--                    <span class="application-card-type location">-->
+<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India-->
+<!--                        </span>-->
+<!--                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">-->
+<!--                        <div class="application-card-img">-->
+<!--                            <a href="" title="">-->
+<!--                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                        <div class="application-card-description">-->
+<!--                            <a href="" title=""><h4 class="application-title">web design</h4></a>-->
+<!--                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->-->
+<!--                            <h5>negotiable</h5>-->
+<!--                            <h5>Full Time</h5>-->
+<!--                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="col-md-12 col-sm-12 col-xs-12">-->
+<!--                        <h4 class="org_name text-right">tech adaptive</h4>-->
+<!--                    </div>-->
+<!--                    <div class="application-card-wrapper">-->
+<!--                        <a href="" class="application-card-open" title="View Detail">View Detail</a>-->
+<!--                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i-->
+<!--                                    class="fas fa-plus"></i>&nbsp;</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </section>
 
@@ -1059,6 +1061,96 @@ $this->registerCss('
 ');
 
 $script = <<< JS
-
+function fillData(){
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '/learning/videos/get-category-job',
+        data: {
+            'keyword' : search_keyword
+        },
+        success: function(result){
+                var application_card = $('#application-card').html();
+                var jobs_render = Mustache.render(application_card, result.jobs);
+                $('.jobs-list').html(jobs_render);
+            
+                var application_card = $('#application-card').html();
+                var internships_render = Mustache.render(application_card, result.internships);
+                $('.internships-list').html(internships_render);
+            
+            utilities.initials();
+        }
+    })
+}
+fillData();
 JS;
 $this->registerJs($script);
+?>
+<script id="application-card" type="text/template">
+    {{#.}}
+    <div class="col-md-4 col-sm-12 col-xs-12 pt-5">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+             class="application-card-main">
+            {{#city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                </span>
+            {{/city}}
+            {{^city}}
+            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
+                  data-locations="">
+                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                </span>
+            {{/city}}
+            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
+                <div class="application-card-img">
+                    <a href="{{organization_link}}">
+                        {{#logo}}
+                        <img src="{{logo}}">
+                        {{/logo}}
+                        {{^logo}}
+                        <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                color="{{color}}" font="35px"></canvas>
+                        {{/logo}}
+                    </a>
+                </div>
+                <div class="application-card-description">
+                    <a href="{{link}}"><h4 class="application-title">{{title}}</h4></a>
+                    {{#salary}}
+                    <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                    {{/salary}}
+                    {{^salary}}
+                    <h5>Negotiable</h5>
+                    {{/salary}}
+                    {{#type}}
+                    <h5>{{type}}</h5>
+                    {{/type}}
+                    {{#experience}}
+                    <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                    {{/experience}}
+                </div>
+            </div>
+            {{#last_date}}
+            <h6 class="col-md-5 pl-20 custom_set2 text-center">
+                Last Date to Apply
+                <br>
+                {{last_date}}
+            </h6>
+            <h4 class="col-md-7 org_name text-right pr-10">
+                {{organization_name}}
+            </h4>
+            {{/last_date}}
+            {{^last_date}}
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h4 class="org_name text-right">{{organization_name}}</h4>
+            </div>
+            {{/last_date}}
+            <div class="application-card-wrapper">
+                <a href="{{link}}" class="application-card-open">View Detail</a>
+                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
