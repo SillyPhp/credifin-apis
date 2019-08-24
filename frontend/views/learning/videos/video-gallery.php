@@ -1067,7 +1067,7 @@ function fillData(){
         async: false,
         url: '/learning/videos/get-category-job',
         data: {
-            'keyword' : search_keyword
+            'keyword' : 'it'
         },
         success: function(result){
                 var application_card = $('#application-card').html();

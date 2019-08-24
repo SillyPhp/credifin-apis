@@ -173,20 +173,20 @@ class VideosController extends Controller
                     'i.location_enc_id location_id',
                     "k.name as city",
                 ])
-                ->joinWith(['applicationTypeEnc b'], false)
-                ->joinWith(['organizationEnc c'], false)
-                ->joinWith(['title d' => function ($x) {
-                    $x->joinWith(['categoryEnc g'], false);
-                    $x->joinWith(['parentEnc h'], false);
+                ->innerJoinWith(['applicationTypeEnc b'], false)
+                ->innerJoinWith(['organizationEnc c'], false)
+                ->innerJoinWith(['title d' => function ($x) {
+                    $x->innerJoinWith(['categoryEnc g'], false);
+                    $x->innerJoinWith(['parentEnc h'], false);
                 }], false)
-                ->joinWith(['designationEnc e'], false)
-                ->joinWith(['preferredIndustry f'], false)
-                ->joinWith(['applicationPlacementLocations i' => function ($x) {
-                    $x->joinWith(['locationEnc j' => function ($x) {
-                        $x->joinWith(['cityEnc k'], false);
+                ->innerJoinWith(['designationEnc e'], false)
+                ->innerJoinWith(['preferredIndustry f'], false)
+                ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
+                    $x->innerJoinWith(['locationEnc j' => function ($x) {
+                        $x->innerJoinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false)
+                ->innerJoinWith(['applicationOptions l'], false)
                 ->where([
                     'b.name' => 'Jobs',
                     'a.for_careers' => 0,
@@ -290,18 +290,18 @@ class VideosController extends Controller
                     'i.location_enc_id location_id',
                     "k.name as city",
                 ])
-                ->joinWith(['applicationTypeEnc b'], false)
-                ->joinWith(['organizationEnc c'], false)
-                ->joinWith(['title d' => function ($x) {
-                    $x->joinWith(['categoryEnc g'], false);
-                    $x->joinWith(['parentEnc h'], false);
+                ->innerJoinWith(['applicationTypeEnc b'], false)
+                ->innerJoinWith(['organizationEnc c'], false)
+                ->innerJoinWith(['title d' => function ($x) {
+                    $x->innerJoinWith(['categoryEnc g'], false);
+                    $x->innerJoinWith(['parentEnc h'], false);
                 }], false)
-                ->joinWith(['applicationPlacementLocations i' => function ($x) {
-                    $x->joinWith(['locationEnc j' => function ($x) {
-                        $x->joinWith(['cityEnc k'], false);
+                ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
+                    $x->innerJoinWith(['locationEnc j' => function ($x) {
+                        $x->innerJoinWith(['cityEnc k'], false);
                     }], false);
                 }], false)
-                ->joinWith(['applicationOptions l'], false)
+                ->innerJoinWith(['applicationOptions l'], false)
                 ->where([
                     'b.name' => 'Internships',
                     'a.for_careers' => 0,
