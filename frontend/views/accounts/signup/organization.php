@@ -6,7 +6,6 @@ use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
-$this->title = Yii::t('frontend', 'Organization Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
