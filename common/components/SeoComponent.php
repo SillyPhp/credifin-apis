@@ -35,8 +35,8 @@ class SeoComponent extends Component
                         'description' => $seoDetails->description,
                         'twitter:card' => $seoDetails->twitter_card,
                         'twitter:title' => $seoDetails->twitter_title,
-                        'twitter:site' => '@' . Yii::$app->params->social->facebook->username,
-                        'twitter:creator' => '@' . Yii::$app->params->social->facebook->username,
+                        'twitter:site' => '@' . Yii::$app->params->social->twitter->username,
+                        'twitter:creator' => '@' . Yii::$app->params->social->twitter->username,
                         'twitter:image' => $image,
                     ],
                     'property' => [
