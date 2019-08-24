@@ -4,7 +4,6 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
 ?>
     <div class="job-single-head style2 overlay-top">
     <div class="job-thumb">
-        <a href="/<?= $slug; ?>">
             <?php
             if (!empty($org_logo)) {
                 ?>
@@ -17,10 +16,9 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                 <?php
             }
             ?>
-        </a>
     </div>
     <div class="job-head-info">
-        <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
+        <h4><?= $org_name; ?></h4>
         <div class="organization-details">
             <!--            <h4>Company Detail</h4>-->
             <?php if ($website): ?>

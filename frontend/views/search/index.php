@@ -589,8 +589,20 @@ a.wn-overlay-text {
 
 $script = <<< JS
 
+if(!window.location.search){
+    if(window.location.search.replace("?","").split("=")[0] != "keyword"){
+        window.location.replace('/');
+    return false;
+    }
+}
+
 var url_params = (new URL(document.location)).searchParams;
 var search_keyword = url_params.get("keyword");
+
+if(search_keyword == ''){
+    window.location.replace('/');
+    return false;
+}
 
 $('.s-input').val(search_keyword);
 $(document).on('click', '.s-btn', function(e){
@@ -615,6 +627,7 @@ function fillData(){
         },
         success: function(result){
             result = JSON.parse(result);
+            
             if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0 && result["School"].length ==0 && result["College"].length ==0 && result["Educational Institute"].length ==0 && result["Business"].length ==0 && result["Recruiter"].length ==0 && result["Scholarship Fund"].length ==0 && result["Banking & Finance Company"].length ==0 && result["Others"].length ==0){
                 $('#not-found').fadeIn(1000);
             }
