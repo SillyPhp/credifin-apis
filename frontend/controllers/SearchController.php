@@ -1,17 +1,16 @@
 <?php
+
 namespace frontend\controllers;
-use common\models\Categories;
-use common\models\Designations;
-use common\models\EmployerApplications;
-use common\models\Industries;
-use common\models\Organizations;
-use common\models\Posts;
-use common\models\UnclaimedOrganizations;
-use frontend\models\applications\ApplicationCards;
+
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use common\models\Organizations;
+use common\models\Posts;
+use common\models\UnclaimedOrganizations;
+use frontend\models\applications\ApplicationCards;
+
 class SearchController extends Controller
 {
     private function findUnclaimed($s)
