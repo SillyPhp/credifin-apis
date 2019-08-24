@@ -2,21 +2,23 @@
 
 namespace frontend\controllers;
 
-use common\models\BusinessActivities;
-use common\models\Organizations;
-use common\models\UnclaimedOrganizations;
-use frontend\models\reviews\RegistrationForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use common\models\BusinessActivities;
+use common\models\Organizations;
+use common\models\UnclaimedOrganizations;
+use frontend\models\reviews\RegistrationForm;
 
 class ReviewsController extends Controller
 {
+
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
         return parent::beforeAction($action);
     }
 
@@ -49,7 +51,7 @@ class ReviewsController extends Controller
     {
         $referral = Yii::$app->referral->getReferralCode();
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $type = explode(",",$type);
+        $type = explode(",", $type);
         $params1 = (new \yii\db\Query())
             ->select(['name', 'CONCAT(slug, "/reviews", "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""

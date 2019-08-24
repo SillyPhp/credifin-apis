@@ -2,39 +2,6 @@
 
 use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', 'Companies Reviews | Reviews');
-
-$keywords = 'Company Reviews,Reviews,Top Companies Reviews,Best Companies Reviews,Companies Rating,Top Rating Companies,Real Company reviews & rating,Top rated workplaces,Quora Rating Companies,Top 10 Companies';
-
-$description = "Search companies and get the genuine reviews and rating and find the top rated work place, where you can do your dream job
-With full passion and dedication.";
-
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
     <section class="cri-bg">
         <div class="container">

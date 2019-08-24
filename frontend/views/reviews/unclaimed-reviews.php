@@ -1,9 +1,11 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-$this->title = $name.' '.Yii::$app->params->seo_settings->title_separator.' Reviews';
-Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
+
+$this->title = $name . ' ' . Yii::$app->params->seo_settings->title_separator . ' Reviews';
+Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEAD);
 ?>
 <!--registration model-->
 <div id="org_sign_up_Modal" class="modal fade-scale loginModal" role="dialog">
@@ -55,7 +57,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                         'autocomplete' => 'off',
                                         'class' => 'uname-in',
                                         'placeholder' => 'Organization Name',
-                                        'value'=>$name
+                                        'value' => $name
                                     ]);
                                     ?>
                                 </div>
@@ -75,8 +77,8 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                     ])->label(false); ?>
                                 </div>
                                 <div class="login-btn">
-                                    <?= Html::submitButton('Employee Review', ['class' => 'lg-form', 'id'=>'company_review_btn1','formaction'=>'p1','name' => 'login-button']); ?>
-                                    <?= Html::submitButton('Student Review', ['class' => 'lg-form','id'=>'company_review_btn2','formaction'=>'p2','name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Employee Review', ['class' => 'lg-form', 'id' => 'company_review_btn1', 'formaction' => 'p1', 'name' => 'login-button']); ?>
+                                    <?= Html::submitButton('Student Review', ['class' => 'lg-form', 'id' => 'company_review_btn2', 'formaction' => 'p2', 'name' => 'login-button']); ?>
                                 </div>
                                 <?php ActiveForm::end(); ?>
                             </div>
@@ -103,7 +105,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
             <div class="col-md-6 col-sm-6">
                 <div class="com-name"><?= ucwords($name); ?></div>
                 <div class="com-rating-1">
-                    <?php for ($i=1;$i<=5;$i++){ ?>
+                    <?php for ($i = 1; $i <= 5; $i++) { ?>
                         <i class="fas fa-star"></i>
                     <?php } ?>
                 </div>
@@ -112,14 +114,18 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
                     <div class="header-bttns-flex">
-                        <?php if (!Yii::$app->user->isGuest){
-                            if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
+                        <?php if (!Yii::$app->user->isGuest) {
+                            if (empty(Yii::$app->user->identity->organization_enc_id)) { ?>
                                 <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Back To Review</button>
+                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Back To
+                                        Review
+                                    </button>
                                 </div>
-                            <?php } } else { ?>
+                            <?php }
+                        } else { ?>
                             <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i
+                                            class="far fa-comments hvr-icon"></i> Write Review</a>
                             </div>
                         <?php } ?>
                     </div>
@@ -133,7 +139,8 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
         <div class="row">
             <div class="col-md-8">
                 <h1 class="heading-style">Reviews </h1>
-                <div id="org-reviews"><p class="font_no_review">Currently No Reviews For This Company Be The First To Review This Company</p></div>
+                <div id="org-reviews"><p class="font_no_review">Currently No Reviews For This Company Be The First To
+                        Review This Company</p></div>
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
@@ -143,7 +150,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                             <div class="rs-main fade_background">
                                 <div class="rating-large">0/5</div>
                                 <div class="com-rating-1">
-                                    <?php for ($i=1;$i<=5;$i++){ ?>
+                                    <?php for ($i = 1; $i <= 5; $i++) { ?>
                                         <i class="fas fa-star"></i>
                                     <?php } ?>
                                 </div>
@@ -157,7 +164,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -166,11 +173,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Career growth </div>
+                                <div class="re-heading">Career growth</div>
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -179,11 +186,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Company culture </div>
+                                <div class="re-heading">Company culture</div>
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -196,7 +203,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -209,7 +216,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="threestar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -222,7 +229,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -231,11 +238,11 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
                         </div>
                         <div class="col-md-12 col-sm-4">
                             <div class="rs1">
-                                <div class="re-heading">Skill development </div>
+                                <div class="re-heading">Skill development</div>
                                 <div class="summary-box">
                                     <div class="sr-rating fade_background">0</div>
                                     <div class="fourstar-box com-rating-2 fade_border">
-                                        <?php for ($i=1;$i<=5;$i++){ ?>
+                                        <?php for ($i = 1; $i <= 5; $i++) { ?>
                                             <i class="fas fa-star"></i>
                                         <?php } ?>
                                     </div>
@@ -2067,7 +2074,7 @@ function ajax_institute(data) {
 }
 JS;
 $this->registerJs($script);
-$this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerJs($headScript, yii\web\View::POS_HEAD);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');

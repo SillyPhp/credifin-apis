@@ -2,24 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\BusinessActivities;
-use frontend\models\referral\ReferralReviewsTracking;
-use common\models\AssignedCategories;
-use common\models\Categories;
-use common\models\Designations;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationReviewFeedback;
-use common\models\OrganizationReviewLikeDislike;
-use common\models\UnclaimedFollowedOrganizations;
-use common\models\UnclaimedOrganizations;
-use frontend\models\OrganizationProductsForm;
-use frontend\models\organizations\OrgAutoGenrateBlog;
-use frontend\models\OrgAutoBlogForm;
-use frontend\models\reviews\EditUnclaimedCollegeOrg;
-use frontend\models\reviews\EditUnclaimedInstituteOrg;
-use frontend\models\reviews\EditUnclaimedSchoolOrg;
-use frontend\models\reviews\RegistrationForm;
-use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -44,6 +26,24 @@ use common\models\Countries;
 use common\models\EmployeeBenefits;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
+use common\models\BusinessActivities;
+use frontend\models\referral\ReferralReviewsTracking;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
+use common\models\NewOrganizationReviews;
+use common\models\OrganizationReviewFeedback;
+use common\models\OrganizationReviewLikeDislike;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
+use frontend\models\OrganizationProductsForm;
+use frontend\models\organizations\OrgAutoGenrateBlog;
+use frontend\models\OrgAutoBlogForm;
+use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
+use frontend\models\reviews\EditUnclaimedSchoolOrg;
+use frontend\models\reviews\RegistrationForm;
+use frontend\models\reviews\ReviewCards;
 
 class OrganizationsController extends Controller
 {
@@ -58,6 +58,12 @@ class OrganizationsController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        return parent::beforeAction($action);
     }
 
     public function actionIndex()
@@ -1530,7 +1536,8 @@ class OrganizationsController extends Controller
         return $this->generateblog();
     }
 
-    public function actionExplore(){
+    public function actionExplore()
+    {
         return $this->render('explore');
     }
 
@@ -1559,7 +1566,7 @@ class OrganizationsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $params1 = (new \yii\db\Query())
-            ->select(['organization_enc_id as id','name', 'slug', 'initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['organization_enc_id as id', 'name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])

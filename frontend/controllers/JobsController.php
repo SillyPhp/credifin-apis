@@ -2,16 +2,6 @@
 
 namespace frontend\controllers;
 
-use account\models\applications\ApplicationForm;
-use common\models\ApplicationPlacementLocations;
-use common\models\AssignedCategories;
-use common\models\BusinessActivities;
-use common\models\Cities;
-use common\models\OrganizationLocations;
-use common\models\Skills;
-use frontend\models\applications\CreateCompany;
-use frontend\models\applications\QuickJob;
-use frontend\models\workingProfiles\WorkingProfile;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -29,6 +19,12 @@ use common\models\AppliedApplications;
 use common\models\ReviewedApplications;
 use common\models\Industries;
 use frontend\models\applications\ApplicationCards;
+use common\models\AssignedCategories;
+use common\models\BusinessActivities;
+use common\models\Skills;
+use frontend\models\applications\CreateCompany;
+use frontend\models\applications\QuickJob;
+use frontend\models\workingProfiles\WorkingProfile;
 
 class JobsController extends Controller
 {
@@ -56,6 +52,7 @@ class JobsController extends Controller
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
         return parent::beforeAction($action);
     }
 
@@ -265,11 +262,10 @@ class JobsController extends Controller
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
-        if (!empty($application_details->unclaimed_organization_enc_id)){
+        if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id,$application_type = 'Jobs');
-        }
-        else {
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
+        } else {
             $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
         }
@@ -298,6 +294,7 @@ class JobsController extends Controller
             'shortlist' => $shortlist,
         ]);
     }
+
     public function actionFetchSkills($q)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
@@ -311,10 +308,11 @@ class JobsController extends Controller
         $out['results'] = array_values($list);
         return $out;
     }
+
     public function actionCreateCompany()
     {
         $createCompany = new CreateCompany();
-        $business = BusinessActivities::find()->select(['business_activity_enc_id','business_activity'])->asArray()->all();
+        $business = BusinessActivities::find()->select(['business_activity_enc_id', 'business_activity'])->asArray()->all();
         $b = ArrayHelper::map($business, 'business_activity_enc_id', 'business_activity');
         $createCompany->type = $business[4]['business_activity_enc_id'];
         return $this->renderAjax('/jobs/create-company', [
@@ -322,52 +320,48 @@ class JobsController extends Controller
             'b' => $b,
         ]);
     }
+
     public function actionCreateOrg()
     {
         $createCompany = new CreateCompany();
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
-            if ($createCompany->save())
-            {
+            if ($createCompany->save()) {
                 return [
-                    'status'=>'success',
-                    'message'=> 'Company Has Been Added',
-                    'title'=>'Success',
+                    'status' => 'success',
+                    'message' => 'Company Has Been Added',
+                    'title' => 'Success',
                 ];
-            }
-            else
-            {
+            } else {
                 return [
-                    'status'=>'error',
-                    'message'=> 'Something Went Wrong',
-                    'title'=>'Error',
+                    'status' => 'error',
+                    'message' => 'Something Went Wrong',
+                    'title' => 'Error',
                 ];
             }
         }
     }
+
     public function actionQuickJob()
     {
         $this->layout = 'main-secondary';
         $model = new QuickJob();
         $typ = 'Jobs';
-        $data = new ApplicationForm();
+        $data = new \account\models\applications\ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
-        if ($model->load(Yii::$app->request->post()))
-        {
-            if ($model->save($typ))
-            {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save($typ)) {
                 Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
-            }
-            else
-            {
+            } else {
                 Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
             }
             return $this->refresh();
         }
-        return $this->render('quick-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+        return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
     }
+
     public function actionJobPreview($eipdk)
     {
         if (!empty($eipdk)) {
@@ -893,55 +887,56 @@ class JobsController extends Controller
         }
     }
 
-    public function actionProfiles(){
+    public function actionProfiles()
+    {
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             Yii::$app->response->format = Response::FORMAT_JSON;
-                $activeProfiles = AssignedCategories::find()
-                    ->select(['b.name', 'b.slug','CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
-                    ->alias('a')
-                    ->distinct()
-                    ->innerJoinWith(['parentEnc b' => function ($b) {
-                        $b->onCondition([
-                            'or',
-                            ['!=', 'b.icon', NULL],
-                            ['!=', 'b.icon', ''],
-                        ])
-                            ->groupBy(['b.category_enc_id']);
-                    }], false)
-                    ->joinWith(['employerApplications d' => function ($d) {
-                        $d->andOnCondition([
-                            'd.status' => 'Active',
-                            'd.is_deleted' => 0,
-                        ])
-                            ->joinWith(['applicationTypeEnc e' => function ($e) {
-                                $e->andOnCondition(['e.name' => ucfirst('Jobs')]);
-                            }], false);
-                    }], false)
-                    ->where(['a.assigned_to' => ucfirst('Jobs')])
-                    ->orderBy([
-                        'total' => SORT_DESC,
-                        'b.name' => SORT_ASC,
+            $activeProfiles = AssignedCategories::find()
+                ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+                ->alias('a')
+                ->distinct()
+                ->innerJoinWith(['parentEnc b' => function ($b) {
+                    $b->onCondition([
+                        'or',
+                        ['!=', 'b.icon', NULL],
+                        ['!=', 'b.icon', ''],
                     ])
-                    ->asArray()
-                    ->all();
+                        ->groupBy(['b.category_enc_id']);
+                }], false)
+                ->joinWith(['employerApplications d' => function ($d) {
+                    $d->andOnCondition([
+                        'd.status' => 'Active',
+                        'd.is_deleted' => 0,
+                    ])
+                        ->joinWith(['applicationTypeEnc e' => function ($e) {
+                            $e->andOnCondition(['e.name' => ucfirst('Jobs')]);
+                        }], false);
+                }], false)
+                ->where(['a.assigned_to' => ucfirst('Jobs')])
+                ->orderBy([
+                    'total' => SORT_DESC,
+                    'b.name' => SORT_ASC,
+                ])
+                ->asArray()
+                ->all();
 
-                if($activeProfiles){
-                    $response = [
-                        'status' => 200,
-                        'message' => 'Success',
-                        'categories' => [
-                            'jobs' => $activeProfiles,
-                        ],
-                    ];
-                }else {
-                    $response = [
-                        'status' => 201,
-                    ];
-                }
+            if ($activeProfiles) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'categories' => [
+                        'jobs' => $activeProfiles,
+                    ],
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
 
-                return $response;
+            return $response;
         }
         return $this->render('working-profile');
     }
