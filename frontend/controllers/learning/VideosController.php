@@ -62,17 +62,18 @@ class VideosController extends Controller
     }
 
     public function actionSearch($type, $slug){
+        if ($type === "category") {
+            $parentId = Categories::find()
+//                ->select(['category_enc_id'])
+                ->where(['slug' => $slug])
+                ->asArray()
+                ->one();
+        }
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $result = null;
             if ($type === "category") {
-                $parentId = Categories::find()
-                    ->select(['category_enc_id'])
-                    ->where(['slug'=> $slug])
-                    ->asArray()
-                    ->one();
-
                 $result = LearningVideos::find()
                     ->alias('a')
                     ->joinWith(['assignedCategoryEnc b' => function ($x) use($slug) {
@@ -131,7 +132,9 @@ class VideosController extends Controller
             return $response;
 
         }
-        return $this->render('video-gallery');
+        return $this->render('video-gallery',[
+            'parentId' => $parentId,
+        ]);
     }
 
     public function actionGetCategoryJob()
