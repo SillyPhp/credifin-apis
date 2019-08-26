@@ -83,199 +83,199 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Collaborators</div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="pos-rel">
-                    <div class="parent">
-                        <div class="logo _1">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _3">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _5">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _6">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _7">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _8">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _9">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _10">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logo _11">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            <div class="overlay">
-                                <div class="text">
-                                    <span class="setloc">Hello World</span>
-                                    <span class="stars">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star-half-alt"></i>
-                                    </span>
-                                    <span class="revie">(4 Reviews)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="heading-style">Top Collaborators</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="pos-rel">-->
+<!--                    <div class="parent">-->
+<!--                        <div class="logo _1">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _2">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _3">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _4">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _5">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _6">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _7">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _8">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _9">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _10">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="logo _11">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <div class="overlay">-->
+<!--                                <div class="text">-->
+<!--                                    <span class="setloc">Hello World</span>-->
+<!--                                    <span class="stars">-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star"></i>-->
+<!--                                        <i class="fas fa-star-half-alt"></i>-->
+<!--                                    </span>-->
+<!--                                    <span class="revie">(4 Reviews)</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
     <section>
         <div class="container">
@@ -298,115 +298,50 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class=" col-md-12">
-                    <div class="heading-style">Related Courses</div>
-                </div>
-            </div>
-            <div class="inst-box">
-                <div class="col-md-3 col-sm-6">
-                    <div class="inst-container">
-                        <a href="#">
-                            <div class="inst-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            </div>
-                            <div class="inst-member">
-                                <div class="inst-name">Web Developing</div>
-                                <div class="t-post">6weeks</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class=" col-md-12">-->
+<!--                    <div class="heading-style">Related Courses</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="inst-box">-->
+<!--                <div class="col-md-3 col-sm-6">-->
+<!--                    <div class="inst-container">-->
+<!--                        <a href="#">-->
+<!--                            <div class="inst-icon">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            </div>-->
+<!--                            <div class="inst-member">-->
+<!--                                <div class="inst-name">Web Developing</div>-->
+<!--                                <div class="t-post">6weeks</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
     <section>
         <div class="container">
             <div class="row">
-                <div class=" col-md-12">
+                <div class="col-md-12">
                     <div class="heading-style">Related Jobs</div>
                 </div>
             </div>
             <div class="jobs-list"></div>
-<!--            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">-->
-<!--                <div class="application-card-main">-->
-<!--                        <span class="application-card-type location">-->
-<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;-->
-<!--                      </span>-->
-<!---->
-<!--                    <span class="application-card-type location">-->
-<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India-->
-<!--                        </span>-->
-<!--                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">-->
-<!--                        <div class="application-card-img">-->
-<!--                            <a href="" title="">-->
-<!--                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="application-card-description">-->
-<!--                            <a href="" title=""><h4 class="application-title">web design</h4></a>-->
-<!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
-<!--                            <h5>Full Time</h5>-->
-<!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-12 col-sm-12 col-xs-12">-->
-<!--                        <h4 class="org_name text-right">dsb law group</h4>-->
-<!--                    </div>-->
-<!--                    <div class="application-card-wrapper">-->
-<!--                        <a href="" class="application-card-open" title="View Detail">View Detail</a>-->
-<!--                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i-->
-<!--                                    class="fas fa-plus"></i>&nbsp;</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
     </section>
 
     <section>
         <div class="container">
             <div class="row">
-                <div class=" col-md-12">
+                <div class="col-md-12">
                     <div class="heading-style">Related Internships</div>
                 </div>
             </div>
             <div class="internships-list"></div>
-<!--            <div class="col-md-4 col-sm-12 col-xs-12 pt-5">-->
-<!--                <div class="application-card-main">-->
-<!--                        <span class="application-card-type location">-->
-<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;-->
-<!--                      </span>-->
-<!---->
-<!--                    <span class="application-card-type location">-->
-<!--                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India-->
-<!--                        </span>-->
-<!--                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">-->
-<!--                        <div class="application-card-img">-->
-<!--                            <a href="" title="">-->
-<!--                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="application-card-description">-->
-<!--                            <a href="" title=""><h4 class="application-title">web design</h4></a>-->
-<!--                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->-->
-<!--                            <h5>negotiable</h5>-->
-<!--                            <h5>Full Time</h5>-->
-<!--                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-12 col-sm-12 col-xs-12">-->
-<!--                        <h4 class="org_name text-right">tech adaptive</h4>-->
-<!--                    </div>-->
-<!--                    <div class="application-card-wrapper">-->
-<!--                        <a href="" class="application-card-open" title="View Detail">View Detail</a>-->
-<!--                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i-->
-<!--                                    class="fas fa-plus"></i>&nbsp;</a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
         </div>
     </section>
 
