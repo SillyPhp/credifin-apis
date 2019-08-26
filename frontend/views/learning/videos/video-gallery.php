@@ -3,11 +3,20 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-
+//print_r($parentId);
+//exit();
 ?>
-    <section class="background"></section>
+    <section class="background" style="background: url('<?= $parentId['banner']?>');">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="heading-style h-spacing"><?= $parentId['name'];?></h2>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <section>
+    <section class="topics-main">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -17,66 +26,7 @@ use yii\helpers\Html;
             <div class="row">
                 <div class="col-md-12">
                     <div class="popular-cate">
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                            <a href="">-->
-<!--                                <div class="newset">-->
-<!--                                    <div class="imag">-->
-<!--                                        <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-<!--                                    </div>-->
-<!--                                    <div class="txt">study</div>-->
-<!--                                </div>-->
-<!--                            </a>-->
-<!--                        </div>-->
+
                     </div>
                 </div>
             </div>
@@ -277,7 +227,7 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section>
+    <section class="videos-main">
         <div class="container">
             <div class="row">
                 <div class=" col-md-12">
@@ -425,6 +375,11 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 
 $this->registerCss('
+.h-spacing{
+    letter-spacing: 4px;
+    word-spacing: 10px;
+    text-transform: uppercase;
+}
 /*    <!-- view-all button css start -->*/
 .btn-3 {
     background-color: #424242;
@@ -566,11 +521,12 @@ $this->registerCss('
     overflow:hidden;
 }
 .background{
-    background:url("' . Url::to("@eyAssets/images/pages/learning-corner/entrepreneurship.png") . '");
     min-height:475px;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    background-position: right bottom;
+    padding-top: 120px;
+    padding-left: 50px;
+    background-size: 100% 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right bottom !Important;
 }
 .logo{
     width: 140px;

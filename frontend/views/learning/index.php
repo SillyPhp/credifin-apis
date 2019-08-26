@@ -50,9 +50,9 @@ use yii\helpers\Url;
                                     <a href="/learning/videos/category/<?= $cat['slug']; ?>">
                                         <div class="newset">
                                             <div class="imag">
-                                                <img src="http://ajay.eygb.me/assets/themes/ey/images/pages/learning-corner/cybersecurity.png">
+                                                <img src="<?= $cat['icon'];?>">
                                             </div>
-                                            <div class="txt"><?= $cat['parent_name']; ?></div>
+                                            <div class="txt"><?= $cat['name']; ?></div>
                                         </div>
                                     </a>
                                 </div>

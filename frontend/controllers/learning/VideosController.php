@@ -9,6 +9,7 @@ use common\models\LearningVideos;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\filters\AccessControl;
@@ -64,8 +65,10 @@ class VideosController extends Controller
     public function actionSearch($type, $slug){
         if ($type === "category") {
             $parentId = Categories::find()
-//                ->select(['category_enc_id'])
-                ->where(['slug' => $slug])
+                ->alias('a')
+                ->select(['a.category_enc_id', 'a.name', 'CASE WHEN b.banner IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->background->image, 'https') . '", b.banner_location, "/", b.banner) ELSE NULL END banner'])
+                ->joinWith(['assignedCategories b'], false)
+                ->where(['a.slug' => $slug])
                 ->asArray()
                 ->one();
         }
@@ -392,6 +395,26 @@ class VideosController extends Controller
                 'internships' => $final_internships,
             ];
 //        $result['jobs'] = ;
+        }
+    }
+
+    public function actionVideos($slug){
+        $result = LearningVideos::find()
+            ->alias('a')
+            ->select(['a.video_enc_id', 'a.title', 'a.cover_image', 'a.slug'])
+            ->innerJoinWith(['tagEncs b'])
+            ->where(['b.slug' => $slug])
+            ->andWhere(['a.status' => 1])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        if($result) {
+            return $this->render('tags-gallery', [
+                'result' => $result,
+            ]);
+        } else{
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }
 

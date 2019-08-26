@@ -319,16 +319,20 @@ class LearningController extends Controller
     {
         $categories = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name'])
+            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE NULL END icon', 'c.slug', 'c.name'])
             ->joinWith(['learningVideos b' => function($b){
                 $b->andOnCondition(['b.status' => 1]);
                 $b->andOnCondition(['b.is_deleted' => 0]);
-            }])
+            }], false)
             ->joinWith(['categoryEnc c'], false)
-            ->joinWith(['parentEnc d'], false)
+//            ->joinWith(['parentEnc d'], false)
             ->where(['a.assigned_to' => 'Videos'])
             ->andWhere(['a.status' => 'Approved'])
-            ->andWhere(['!=', 'a.parent_enc_id', ""])
+            ->andWhere([
+                'or',
+                ['a.parent_enc_id' => ""],
+                ['a.parent_enc_id' => NULL]
+            ])
             ->andWhere(['a.is_deleted' => 0])
 //            ->andWhere(['b.status' => 1])
 //            ->andWhere(['b.is_deleted' => 0])

@@ -78,8 +78,16 @@ $script = <<<JS
             if(response.status === 200) {
                 var videos = $('#video-gallery-video').html();
                 var cats = $('#video-categories').html();
-                $(".popular-cate").html(Mustache.render(cats, response.categories));
-                $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
+                if(response.categories.length == 0){
+                    $(".topics-main").remove();
+                } else {
+                    $(".popular-cate").html(Mustache.render(cats, response.categories));
+                }
+                if(response.video_gallery.length == 0){
+                    $("#videos-main").remove();
+                } else {
+                    $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
+                }
             }
         }
     });
