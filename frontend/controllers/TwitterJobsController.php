@@ -37,6 +37,7 @@ class TwitterJobsController extends Controller
                 $b->joinWith(['categoryEnc e'],false);
                 $b->joinWith(['parentEnc f'],false);
             }],false)
+            ->orderBy(['a.created_on'=>SORT_DESC])
             ->asArray()
             ->all();
         return $this->render('index',['tweets'=>$tweets,'keywords'=>$keywords,'location'=>$location]);
