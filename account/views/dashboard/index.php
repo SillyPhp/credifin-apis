@@ -40,7 +40,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="1349"><?= $total_reviews; ?></span>
+                                <span data-counter="counterup" data-value="1349">3</span>
                             </div>
                             <div class="desc">Applications Reviewed </div>
                         </div>
@@ -53,7 +53,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="12,5"><?= $total_shortlist; ?></span>
+                                <span data-counter="counterup" data-value="12,5">6</span>
                             </div>
                             <div class="desc">Applications Shortlisted </div>
                         </div>
@@ -66,7 +66,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="549"><?= $total_applied; ?></span>
+                                <span data-counter="counterup" data-value="549">1</span>
                             </div>
                             <div class="desc"> Applications Applied </div>
                         </div>
@@ -79,7 +79,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="89"><?= $total_accepted ?></span> </div>
+                                <span data-counter="counterup" data-value="89">3</span> </div>
                             <div class="desc"> Applications Accepted</div>
                         </div>
                     </a>
@@ -91,7 +91,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span> </div>
+                                <span data-counter="counterup" data-value="89">2</span> </div>
                             <div class="desc">Applications Pending</div>
                         </div>
                     </a>
@@ -103,7 +103,7 @@ endif;
                         </div>
                         <div class="details">
                             <div class="number">
-                                <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
+                                <span data-counter="counterup" data-value="89">2</span> </div>
                             <div class="desc">Followed Companies</div>
                         </div>
                     </a>
@@ -121,7 +121,7 @@ endif;
                     <div class="col-md-4 col-sm-6">
                         <a href="<?= Url::toRoute('/jobs'); ?>">
                             <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
-                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Jobs'); ?></h4>
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Jobs'); ?></h4>
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
                                     <div class="widget-thumb-body">
@@ -135,26 +135,12 @@ endif;
                     <div class="col-md-4 col-sm-6">
                         <a href="<?= Url::toRoute('/hiring-processes'); ?>">
                             <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
-                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Interview Processes'); ?></h4>
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-red fa fa-users"></i>
                                     <div class="widget-thumb-body">
                         <span class="widget-thumb-body-stat" data-counter="counterup"
                               data-value="">10</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-4 col-sm-6">
-                        <a href="<?= Url::toRoute('/questionnaire'); ?>">
-                            <div class="questionnaire_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
-                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Questionnaire'); ?></h4>
-                                <div class="widget-thumb-wrap">
-                                    <i class="widget-thumb-icon bg-purple fa fa-question"></i>
-                                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="">15</span>
                                     </div>
                                 </div>
                             </div>
