@@ -22,6 +22,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\web\HttpException;
 
 class SchedularController extends Controller
 {
@@ -30,7 +31,7 @@ class SchedularController extends Controller
         if (Yii::$app->user->identity->organization->organization_enc_id) {
             return $this->render('test');
         } else {
-            return false;
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -466,7 +467,11 @@ class SchedularController extends Controller
 
     public function actionUpdateInterview()
     {
-        return $this->render('update');
+        if (Yii::$app->user->identity->organization->organization_enc_id) {
+            return $this->render('update');
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
     }
 
     public function actionGetInterviewData()

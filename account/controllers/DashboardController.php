@@ -25,11 +25,6 @@ use common\models\AppliedApplications;
 use common\models\AppliedApplicationProcess;
 use account\models\organization\CompanyLogoForm;
 use account\models\user\UserProfilePictureEdit;
-use account\models\applications\Applied;
-use common\models\ApplicationTypes;
-use common\models\UserCoachingTutorials;
-use common\models\Users;
-use common\models\WidgetTutorials;
 
 class DashboardController extends Controller
 {
@@ -318,7 +313,12 @@ class DashboardController extends Controller
 
     public function actionCalendar()
     {
-        return $this->render('test');
+        if (!Yii::$app->user->identity->organization->organization_enc_id) {
+            return $this->render('test');
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+
     }
 
     private function FixedInterview()
