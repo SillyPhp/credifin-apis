@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\PostComments;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -296,6 +297,52 @@ class BlogController extends Controller
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionGetParentComments()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $q = Yii::$app->request->post('param');
+
+            $post = Posts::find()
+                ->where(['slug' => $q])
+                ->andWhere(['status' => "Active"])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
+
+            $result = PostComments::find()
+                ->alias('a')
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->joinWith(['userEnc b'], false)
+                ->where(['a.reply_to' => NULL])
+                ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['a.is_deleted' => 0])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($result as $r) {
+                $a = PostComments::find()
+                    ->where(['reply_to' => $r['comment_enc_id']])
+                    ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if ($a) {
+                    $result[$i]['hasChild'] = true;
+                } else {
+                    $result[$i]['hasChild'] = false;
+                }
+                $i++;
+            }
+
+            return [
+                'status' => 200,
+                'result' => $result
+            ];
         }
     }
 
