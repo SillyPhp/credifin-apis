@@ -3,6 +3,7 @@
 $this->title = Yii::t('frontend', 'Education Loans');
 
 use yii\helpers\Url;
+
 ?>
     <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">-->
     <!--<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet"/>-->
@@ -12,7 +13,9 @@ use yii\helpers\Url;
 
             </div>
             <div class="col-md-6">
-                <img src="<?= Url::to('@eyAssets/images/pages/educational-loans/eltop.png')?>"/>
+                <div class="logo">
+                    <img src="<?= Url::to('@eyAssets/images/pages/education-loans/loan-logo.png') ?>"/>
+                </div>
             </div>
         </div>
     </section>
@@ -24,27 +27,34 @@ use yii\helpers\Url;
             <div class="col-md-4 hw-block1">
                 <div class="edu-hw-block">
                     <div class="edu-hw-title">Online Pre Approval</div>
-                    <div class="edu-hw-icon"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/1L.png')?>" alt=""/></div>
+                    <div class="edu-hw-icon"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/1L.png') ?>" alt=""/></div>
                     <div class="edu-hw-text">Our online eligibility tool helps find the best possible
-                        loan option for your requirements.</div>
+                        loan option for your requirements.
+                    </div>
 
                 </div>
             </div>
             <div class="col-md-4 hw-block2">
                 <div class="edu-hw-block">
                     <div class="edu-hw-title">Select Your Loan</div>
-                    <div class="edu-hw-icon"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/2L.png')?>" alt=""/></div>
+                    <div class="edu-hw-icon"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/2L.png') ?>" alt=""/></div>
                     <div class="edu-hw-text">Our online eligibility tool helps find the best possible
-                        loan option for your requirements.</div>
+                        loan option for your requirements.
+                    </div>
 
                 </div>
             </div>
             <div class="col-md-4 hw-block3">
                 <div class="edu-hw-block">
                     <div class="edu-hw-title">Lifetime Service</div>
-                    <div class="edu-hw-icon"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/3L.png')?>" alt=""/></div>
-                    <div class="edu-hw-text">Empower Youth team ensures that you do not have to worry about financing during your study.
-                        Any conflicts with the banks during disbursal are promptly resolved.</div>
+                    <div class="edu-hw-icon"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/3L.png') ?>" alt=""/></div>
+                    <div class="edu-hw-text">Empower Youth team ensures that you do not have to worry about financing
+                        during your study.
+                        Any conflicts with the banks during disbursal are promptly resolved.
+                    </div>
 
                 </div>
             </div>
@@ -62,25 +72,29 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-3 categories">
                     <figure class="grids">
-                        <img class="grids-image" src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi1.png'); ?>"/>
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi1.png'); ?>"/>
                     </figure>
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Customized Loans'); ?></h4>
                 </div>
                 <div class="col-md-3 categories">
                     <figure class="grids">
-                        <img class="grids-image" src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi4.png'); ?>">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi4.png'); ?>">
                     </figure>
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Quick approval'); ?></h4>
                 </div>
                 <div class="col-md-3 categories">
                     <figure class="grids">
-                        <img class="grids-image" src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi2.png'); ?>">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi2.png'); ?>">
                     </figure>
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Minimal documentation'); ?></h4>
                 </div>
                 <div class="col-md-3 categories">
                     <figure class="grids">
-                        <img class="grids-image" src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
+                        <img class="grids-image"
+                             src="<?= Url::to('@eyAssets/images/pages/educational-loans/hi3.png'); ?>">
                     </figure>
                     <h4 class="font-georgia"><?= Yii::t('frontend', 'Get loan to study abroad'); ?></h4>
                 </div>
@@ -108,7 +122,15 @@ use yii\helpers\Url;
         <div class="container">
             <div class="heading-style ">EMI Calculator</div>
         </div>
-        <div id="ecww-widget-iframeinner"></div>
+        <div class="row sett">
+            <div class="col-md-12 marg">
+                <div id="ecww-widgetwrapper" style="min-width:250px;width:100%;">
+                    <div id="ecww-widget"
+                         style="position:relative;padding-top:0;padding-bottom:280px;height:0;overflow:hidden;">
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <div class="clearfix"></div>
@@ -124,7 +146,10 @@ use yii\helpers\Url;
             <div class="heading-style ">Need More Help</div>
             <div class="col-md-4">
                 <div class="l-help-block1">
-                    <div class="l-help-title"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png')?>" alt=""/> Live Help</div>
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans//charity.png') ?>" alt=""/>
+                        Live Help
+                    </div>
 
                     <div class="l-help-txt">Get an answer on the spot. We're online 8am - 7pm Mon to Fri and
                         9am - 3pm on Sat and Sun.
@@ -133,7 +158,10 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4">
                 <div class="l-help-block1">
-                    <div class="l-help-title"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png')?>" alt=""/> Contact Us</div>
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/phone-receiver.png') ?>"
+                                alt=""/> Contact Us
+                    </div>
 
                     <div class="l-help-txt-btn"><a href="">Contact Us</a>
                     </div>
@@ -141,8 +169,11 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4">
                 <div class="l-help-block1">
-                    <div class="l-help-title"><img src="<?= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?>" alt=""/> See our FAQs</div>
-                    <div class="l-help-txt">See answers to questions on how to use our services </div>
+                    <div class="l-help-title"><img
+                                src="<?= Url::to('@eyAssets/images/pages/educational-loans/question.png') ?>" alt=""/>
+                        See our FAQs
+                    </div>
+                    <div class="l-help-txt">See answers to questions on how to use our services</div>
                 </div>
             </div>
         </div>
@@ -159,41 +190,54 @@ use yii\helpers\Url;
                                 <!---->
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/dsbedutech.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/dsbedutech.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                                 <!---->
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                                 <!---->
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/dsblaw.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/dsblaw.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                                 <!---->
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/ey.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/ey.jpg'); ?>" align="left">
                                     </a>
                                 </div>
                                 <!---->
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/dsblaw.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/dsblaw.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                                 <div class="item partners-flex-box">
                                     <a class="logo-box" href="">
-                                        <img alt="..." class="image-partners" target="_blank" src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>" align="left">
+                                        <img alt="..." class="image-partners" target="_blank"
+                                             src="<?= Url::to('@eyAssets/images/pages/home/agile.jpg'); ?>"
+                                             align="left">
                                     </a>
                                 </div>
                             </div>
@@ -239,13 +283,32 @@ JS;
 $this->registerJs($script);
 
 $this->registerCss('
+.logo{text-align:center;}
+.logo img{max-height:350px;}
+.sett {
+	margin-left: 120px !important;
+	margin-right: 100px !important;
+}
+@media only screen and (max-width: 600px) {
+.sett {
+	margin-left: 10px !important;
+	margin-right: 10px !important;
+}
+}
+.marg{
+    margin-bottom: 50px;
+    border: 1px solid #eee;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    box-shadow: 3px 3px 8px 0px #cecdcd;
+}
 .backgrounds{
-    background-size: 100% 600px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/el-bg.png') . ');
+    background-size: 100% 550px;
+    background-image: url(' . Url::to('@eyAssets/images/pages/education-loans/main-bg.png') . ');
     background-position: right top;
     background-repeat: no-repeat;
-    min-height: 600px;
-    padding-top: 150px;
+    min-height: 550px;
+    padding-top: 110px;
 }
 .bg2{
     background-size: 95% 450px;
@@ -478,13 +541,14 @@ $this->registerCss('
 /* owl Slider css ends */
 /*custom css */
 
-.hw-block1{background: linear-gradient( to bottom, #1cbcb2,#29c9db,#24c5cb);}
-.hw-block2{background: linear-gradient( to top, #1dbeb7,#27c7d4,#24c5cb);}
-.hw-block3{background: linear-gradient( to bottom, #1dbeb7,#27c7d4,#24c5cb);}
-.edu-hw-block{text-align: center; min-height: 400px; max-height: 400px; padding: 40px 0;}
-.edu-hw-title{font-size: 25px; color:#fff; font-family: open sans; text-transform: uppercase; font-weight: bold; }
+.hw-block1{background: linear-gradient(#1cbcb2,#3c8891);}
+.hw-block2{background: linear-gradient(#1cbcb2de,#3c8891);}
+.hw-block3{background: linear-gradient(#1cbcb299,#3c8891e8);}
+.edu-hw-block{text-align: center; min-height: 360px; max-height: 360px; padding: 25px 0;}
+.edu-hw-title{font-size: 25px; color:#fff; font-family: roboto; text-transform: capitalize; }
 .edu-hw-icon{ padding: 20px; }
-.edu-hw-text{font-size: 16px; line-height: 20px; color:#fff; padding: 10px 30px; font-family: open sans }
+.edu-hw-icon img{max-height:120px;}
+.edu-hw-text{font-size: 16px; line-height: 20px; color:#fff; padding: 10px 30px; font-family: roboto; font-weight:300; }
 .heading-style{
    font-family: lobster;
    font-size: 28pt;
@@ -501,8 +565,8 @@ $this->registerCss('
    border-color: #f07706;
 }
 .edu-with-sec{padding:10px 0px 20px 0;}
-.edu-loan{ background: url(' . Url::to('@eyAssets/images/pages/educational-loans/bg2.png') . '); background-repeat:no-repeat; padding: 50px 0 30px 0;  text-align: center; background-size: cover;}
-.edu-loan-txt{ color: #fff; font-size: 40px; padding: 10px; font-family: open sans;}
+.edu-loan{ background: url(' . Url::to('@eyAssets/images/pages/education-loans/bg2.png') . '); background-position: left; background-repeat:no-repeat; padding:30px 0 30px 0;  text-align: center; background-size: cover;}
+.edu-loan-txt{ color: #fff; font-size: 40px; padding: 0px 0 10px 0; font-family:lora;}
 .edu-loan-btn{ text-align: center; padding: 0px;}
 //.edu-loan-btn a{background: #fccb34; padding:21px 40px; color:#fff; font-size: 25px; 
 //            font-family: open sans; border-radius: 5px; }
@@ -510,18 +574,19 @@ $this->registerCss('
 .hvr-sweep-to-bottom {
   display: inline-block;
   vertical-align: middle;
-  margin-bottom: 40px;
   -webkit-transform: perspective(1px) translateZ(0);
   transform: perspective(1px) translateZ(0);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   position: relative;
   background: #fccb34;
-  padding:18px 40px;
+  padding:5px 25px;
   color:#fff; font-size: 25px; font-family: open sans;
   -webkit-transition-property: color;
   transition-property: color;
   -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
+  font-familt:roboto;
+  
 }
 .hvr-sweep-to-bottom:before {
   content: "";
@@ -551,9 +616,10 @@ $this->registerCss('
   -webkit-transform: scaleY(1);
   transform: scaleY(1);
 }
-.l-help{padding:15px 0px 30px; text-align: center; background:#eee;}
-.l-help-block1{box-shadow: 0 0 10px rgb(0,0,0,.2); padding: 25px 20px; margin-bottom:20px; 
-                background:#fff; min-height: 180px; }
+.l-help-block1:hover{box-shadow: 0 0 10px rgb(0,0,0,.2); transition: .4s ease-in-out }
+.l-help{padding:15px 0px 30px; text-align: center;}
+.l-help-block1{border:2px solid #eee; border-radius:5px; padding: 25px 20px; margin-bottom:20px; 
+                background:#fff; min-height: 190px; }
 .l-help-title{font-size: 20px !important; padding: px;}
 .l-help-txt-btn{ margin-top: 40px;}
 .l-help-txt-btn a{border: 1px solid #1cbcb2; padding: 10px 20px; color: #fff; background: #1cbcb2;}
@@ -587,8 +653,8 @@ text-align:center;border-bottom:1px dotted #DBDAD7;}
 #ecww-summary p{font-size:18px; line-height:27px; font-weight:700; margin:0 auto; padding:0;}
 #ecww-monthlypayment p{font-size:24px; line-height:36px; font-weight:700;}
 .glyphicon{width:1.28571429em;text-align:center;}
-.emicalcmain{margin-bottom:0px !important; background: #eee;} 
+.emicalcmain{margin-bottom:0px !important;
+} 
 ');
 $this->registerCssFile('@eyAssets/css/blog.css');
-$this->registerJsFile('@eyAssets/js/emi-calculator/emicalc-lib.js',['depends'=>[\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@eyAssets/js/emi-calculator/emicals.js',['depends'=>[\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://emicalculator.net/widget/2.0/js/emicalc-loader.min.js');
