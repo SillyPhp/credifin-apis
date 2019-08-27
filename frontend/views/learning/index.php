@@ -1,13 +1,20 @@
 <?php
+$this->params['header_dark'] = true;
 $this->title = Yii::t('frontend', 'Learning Corner');
 
 use yii\helpers\Url;
 
 ?>
-    <section class="backgrounds">
+    <section>
         <div class="container headsec">
             <div class="row">
-                <div class="col-md-6 col-sm-12 mt-50">
+                <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
+                    <div class="newlogoset">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>" align="right"
+                             class="responsive"/>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
                     <div class="jumbo-heading">BOOST YOUR SKILLS</div>
                     <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
                     <div class="search-box1">
@@ -17,10 +24,7 @@ use yii\helpers\Url;
                         </form>
                     </div>
                 </div>
-                <div class="col-md-6 sm-hidden">
-                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bgtop.svg'); ?>" align="right"
-                         class="responsive"/>
-                </div>
+
             </div>
         </div>
     </section>
@@ -34,40 +38,29 @@ use yii\helpers\Url;
         <div class="cat-padding">
             <div class="row col-md-12">
                 <div class="heading-style col-md-6 col-sm-6">All Category</div>
-<!--                <div class="search-box">-->
-<!--                    <form action="">-->
-<!--                        <input type="text" placeholder="Search Category" name="search">-->
-<!--                        <button type="submit"><i class="fa fa-search"></i></button>-->
-<!--                    </form>-->
-<!--                </div>-->
             </div>
-            <div class="categories">
-                <div class="row category b-padding">
-
-                    <?php foreach($categories as $c) { ?>
-                        <div class="f-box col-md-3 col-sm-6">
-                            <div class="flipbox ">
-                                <a href="/learning/videos/category/<?= $c['slug'] ?>" class="lc-link">
-                                    <div class="back">
-                                        <div class="b-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories_flip.png'); ?>"  alt=""/>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="popular-cate">
+                            <?php
+                            foreach ($categories as $cat) {
+                                ?>
+                                <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                    <a href="/learning/videos/category/<?= $cat['slug']; ?>">
+                                        <div class="newset">
+                                            <div class="imag">
+                                                <img src="<?= $cat['icon']; ?>">
+                                            </div>
+                                            <div class="txt"><?= $cat['name']; ?></div>
                                         </div>
-                                    </div>
-                                    <div class="front">
-                                        <div class="b-icon">
-                                            <?php if($c['child_icon']){ ?>
-                                                <img src="" alt=""/>
-                                            <?php } else{ ?>
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_categories.png'); ?>" alt=""/>
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                    <div class="b-text"><?= $c['parent_name']; ?></div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                                <?php
+                            }
+                            ?>
                         </div>
-                    <?php } ?>
-
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,28 +113,28 @@ use yii\helpers\Url;
                 <div class="container">
                     <div class="heading-style">Most Popular Topics</div>
                     <div class="mt-actions " style="">
-                        <?php foreach($topics as $t) { ?>
+                        <?php
+                        foreach ($topics as $topic) {
+                            ?>
                             <div class="col-md-3 col-sm-4">
                                 <div class="topic-con">
-                                    <a href="/learning/videos/topic/<?= $t['slug']?>">
+                                    <a href="<?= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?>">
                                         <div class="hr-company-box">
                                             <div class="hr-company-box-center">
                                                 <div class="hr-com-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
                                                          class="img-responsive ">
                                                 </div>
-                                                <div class="hr-com-name">
-                                                    <?= $t['name']; ?>
-                                                </div>
-                                                <div class="hr-com-field">
-                                                    <?= $t['cnt']; ?> Videos
-                                                </div>
+                                                <div class="hr-com-name"><?= $topic['name'] ?></div>
+                                                <div class="hr-com-field"><?= $topic['cnt'] ?> Videos</div>
                                             </div>
                                         </div>
                                     </a>
                                 </div>
                             </div>
-                        <?php } ?>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -160,22 +153,79 @@ use yii\helpers\Url;
     <div class="v-slider">
         <div class="container">
             <div id="mixedSlider">
-                <div class="MS-content">
+                <div class="MS-content lc-items-grids">
                     <?php foreach ($popular_videos as $p) { ?>
-                        <div class="item">
-                            <div class="imgTitle">
-                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
-                                    <img src="<?= Url::to($p['cover_image']); ?>" alt=""/>
+                        <div class="item lc-single-item-main">
+                            <div class="lc-item-img">
+                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
                                 </a>
+                                <div class="lc-item-video-img"
+                                     style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
                             </div>
-                            <div class="clearfix"></div>
-                            <div class="blogTitle">
-                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
-                                    <?= Yii::t('frontend', $p['title']); ?>
+                            <div class="lc-item-desciption">
+                                <a class="lc-item-user-icon" href="#">
+                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""
+                                         width="40" height="40">
                                 </a>
+                                <div class="lc-item-user-detail">
+                                    <h3 class="lc-item-video-title">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
+                                            <?= Yii::t('frontend', $p['title']); ?>
+                                        </a>
+                                    </h3>
+                                    <div class="lc-item-user-sub-main">
+                                        <a class="lc-item-user-sub-detail" href="#">
+                                            <span>casper392945</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="lc-item-video-actions">
+                                    <button class="lc-item-video-menu" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="lc-item-video-stats">
+                                <a class="lc-item-video-stat" href="#">
+                            <span>
+                                <i class="fas fa-heart"></i> 5
+                            </span>
+                                </a>
+                                <a class="lc-item-video-stat" href="#">
+                            <span>
+                                <i class="far fa-comments"></i> 0
+                            </span>
+                                </a>
+                                <a class="lc-item-video-stat" href="#">
+                            <span>
+                                <i class="fas fa-eye"></i> 0
+                            </span>
+                                </a>
+                                <span class="lc-item-video-stat marg">
+                        <a href="https://www.facebook.com/" target="blank">
+                            <span>
+                                <img src="facebook.png">
+                            </span>
+                        </a>
+                        <a href="https://twitter.com/EmpowerYouth__" target="blank">
+                            <span>
+                            	<img src="twitter.png">
+                            </span>
+                        </a>
+                        <a href="https://www.instagram.com/empoweryouth.in" target="blank">
+                            <span>
+                            	<img src="instagram.png">
+                            </span>
+                        </a>
+                        <a href="https://www.linkedin.com/company/empoweryouth" target="blank">
+                            <span>
+                            	<img src="linkedin.png">
+                            </span>
+                        </a>
+                        </span>
                             </div>
                         </div>
-                        <?php } ?>
+                    <?php } ?>
                 </div>
                 <div class="MS-controls">
                     <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>
@@ -184,16 +234,84 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php
+if (!empty($contributors)) {
+    ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Our Collaborators</h2>
+                </div>
+            </div>
+            <div class="row">
+                <?php
+                foreach ($contributors as $contributor) {
+                    ?>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="collaborators-main">
+                            <div class="c-detail">
+                                <h4 class="title"><?= $contributor['name']; ?></h4>
+                                <span class="post">Contributor</span>
+                                <ul class="social-icon">
+
+                                    <?php if (!empty($contributor['facebook'])) { ?>
+                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>" target="_blank">
+                                                <i class="fab fa-facebook"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['twitter'])) { ?>
+                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>" target="_blank">
+                                                <i class="fab fa-twitter"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['linkedin'])) { ?>
+                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>" target="_blank">
+                                                <i class="fab fa-linkedin"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['instagram'])) { ?>
+                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>" target="_blank">
+                                                <i class="fab fa-instagram"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                            <div class="thumb">
+                                <img src="<?= $contributor['image']; ?>"
+                                     alt="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+    </section>
+    <?php
+}
+?>
 
 <?php
 $this->registerCss('
+.newlogoset{
+    max-width:500px;
+    margin: 0 auto;
+}
+.newlogoset img{
+    width:100%;
+    height:100%;
+}
 .search-box1{
-    max-width:350px;
+    max-width:500px;
     float:left;
 //  border: 1px solid #ccc;
     border-radius: 10px;
     padding: 3px;
     margin: 21px 0 0 0;
+    box-shadow: 0px 0px 10px 1px #eee;
 }
 .search-box1 form{
     margin-bottom:0px;
@@ -203,7 +321,9 @@ $this->registerCss('
     font-size: 15px;
     border:none ;
     border-radius:10px 0 0 10px;
+    width: 440px;
 }
+
 .search-box1 input:focus{
     outline: none;
     border:0px;
@@ -224,17 +344,6 @@ $this->registerCss('
 .sm-hidden img{
     width:80%;
 }
-.flipbox a.lc-link{ 
-    color:#333;
-}
-.backgrounds{
-    background-size: 100% 595px;
-    background-image: url(' . Url::to('@eyAssets/images/backgrounds/learning-corner.png') . ');
-    background-position: left top;
-    background-repeat: no-repeat;
-    min-height: 600px;
-    padding-top: 70px;
-}
 .head-pic{
     text-align: center;
 }
@@ -242,15 +351,38 @@ $this->registerCss('
     color:#333;
 }
 .jumbo-heading{
-    font-size: 45px;
+    font-size: 40px;
     font-weight:bold;
-    font-family: lobster;
-    text-transform: uppercase; 
+    font-family: lora;
+    text-transform: uppercase;
+    color:#3b394a; 
+}
+@media only screen and (max-width:1200px) {
+ .search-box1 input[type=text]
+    {
+    width:300px;
+    }
+  .jumbo-heading{
+    font-size: 35px !important;}
+}
+@media only screen and (max-width:992px) {
+  .jumbo-heading{
+    font-size: 25px !important; margin-top: -30px !important;}
+    //    .topp-pad{padding-top:40px;}
+}
+@media only screen and (max-width:767px) {
+    .topp-pad{text-align:center; margin-top:50px !important;}
+    .search-box1{max-width: 360px; float: none; margin: auto;}
 }
 .jumbo-subheading{
     font-size: 25px;
     padding-top: 0px;
-    font-family: lobster
+    font-family: lobster;
+    color:#7ba9da;
+}
+@media only screen and (max-width:992px) {
+  .jumbo-subheading{
+    font-size: 20px !important;}
 }
 .jumbo-subheading span{
     text-transform: uppercase;
@@ -286,10 +418,54 @@ $this->registerCss('
 .search-box button:hover {
     color: #ff7803; 
 }
-.f-box{
-    text-align: center;
-    align-content: center;
-    margin: 0 auto;
+.popular-cate{
+    text-align:center;
+    }
+.newset{
+    text-align:center;
+    max-width: 160px;
+    min-height: 245px;  
+    line-height: 210px;
+    position: relative;
+    width:100%;
+    margin-bottom:20px;
+    }
+.imag{
+    text-align: right;
+    }
+.txt{
+    position: absolute;
+    line-height: 30px;
+    bottom: 10px;
+    left: 10px;
+    font-weight: 400;
+    color:#222;
+    font-family:roboto;
+    text-transform:uppercase;
+     }
+.pc-main:nth-child(1) a .newset {
+  background-color:#ffc0cb36;
+}
+.pc-main:nth-child(2) a .newset {
+  background-color:#4e3cd52b;
+}
+.pc-main:nth-child(3) a .newset {
+  background-color:#3cc2d52b;
+}
+.pc-main:nth-child(4) a .newset {
+  background-color:#13060836;
+}
+.pc-main:nth-child(5) a .newset {
+  background-color:#ff009b2b;
+}
+.pc-main:nth-child(6) a .newset {
+  background-color:#1bc11a2b;
+}
+.pc-main:nth-child(7) a .newset {
+  background-color:#7102022b;
+}
+.pc-main:nth-child(8) a .newset {
+  background-color:#0ccc772b;
 }
 .b-padding{
     padding-top: 125px;
@@ -297,64 +473,6 @@ $this->registerCss('
 .c-padding{
     padding-top: 125px;
 }
-.flipbox{
-    position:relative;
-    width:160px;
-    margin-left:50px;
-}
-.flipbox a > .front{
-    position:relative;
-    text-align: center; 
-    transform: perspective(600px) rotateY(0deg );
-    height: 160px;
-    line-height:160px; 
-    width: 160px;
-    background:transparent; 
-    backface-visibility:hidden;
-    transition: transform .5s linear 0s;
-}
-.flipbox a > .back{         
-    text-align: center;
-    position: absolute;
-    justify-content: center;
-    transform: perspective(600px) rotateY(180deg );
-    height: 160px;
-    width: 160px;
-    background: #ff7803;
-    border-radius:50%; 
-    backface-visibility:hidden;
-    transition: transform .5s linear 0s;	
-}
-.flipbox > a .back > .b-icon{
-    height: 160px;
-    line-height: 160px;  
-}
-.flipbox a:hover > .front{
-    transform: perspective(600px) rotateY(-180deg );
-}
-.flipbox a:hover > .back{
-    transform: perspective(600px) rotateY(0deg );
-}
-/*.flipbox a{
-    color: #333;
-}*/
-.flipbox a:hover{
-    color: #ff7803 !important; 
-    transition: .3s ease-in-out; 
-    text-decoration: none;
-}
-a .b-text{
-    text-align: center; 
-    padding: 10px 0 0 0; 
-    font-weight: bold; 
-    font-size: 20px; 
-    text-decoration: none; 
-    text-transform: capitalize; 
-}
-/*a .b-text:hover{
-    color:#ff7803 !important; 
-    text-decoration: none; 
-}*/
 .seemore{
     padding: 125px 0 0 0; 
     text-align: center;
@@ -394,27 +512,26 @@ a .b-text{
     box-shadow: 0px 0px 15px rgb(0, 0, 0, .5); 
     transition: .3s ease-in-out;
 }
-.working-box{ 
-    padding: 30px 0 !important;
-     margin: 60px 0 0px 0; 
-}
+//.working-box{ 
+//    padding: 30px 0 !important;
+//}
 .box1{
-    background: #fa811a; 
+    background: #2d4080; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box2{
-    background: #ff902f; 
+    background: #2d4080eb; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box3{
-    background: #ff9e4a; 
+    background:#2d4080d1; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
 .box4{
-    background: #ffac64; 
+    background: #2d40808f; 
     padding: 40px 50px 0px 50px; 
     min-height: 280px;
 }
@@ -459,10 +576,11 @@ a .b-text{
   width: 33.3333%;
   position: relative;
   vertical-align: top;
-  overflow: hidden;
   height: 100%;
   white-space: normal;
-  padding: 0 10px;
+  padding: 5px 10px;
+  margin: 15px 20px;
+  margin-bottom:30px;
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {
@@ -499,15 +617,16 @@ text-align: left;
   padding-top: 0px !important;
 }
 #mixedSlider .MS-content .item a {
-  margin: 0 0 0 0;
-  font-size: 16px;
-  font-style: italic;
-  color: rgba(173, 0, 0, 0.82);
-  font-weight: bold;
-  transition: linear 0.1s;
+//  margin: 0 0 0 0;
+//  font-size: 16px;
+//  font-style: italic;
+//  color: rgba(173, 0, 0, 0.82);
+//  font-weight: bold;
+//  transition: linear 0.1s;
 }
 #mixedSlider .MS-content .item a:hover {
-  text-shadow: 0 0 1px grey; text-decoration: none;
+//  text-shadow: 0 0 1px grey;
+  text-decoration: none;
 }
 #mixedSlider .MS-controls button {
   position: absolute;
@@ -590,9 +709,6 @@ text-align: left;
     transform: translate(-50%, -50%);
     white-space: nowrap;
 }
-.back .b-icon img{
-    width:55%;
-}
 .hr-company-box{
     text-align:center;
     border:2px solid #eef1f5;
@@ -661,12 +777,360 @@ text-align: left;
     padding-left:0px !important; 
     padding-right:0px !important;
 }
+/*collaborators css starts*/
+.collaborators-main {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    overflow: hidden;
+    margin-bottom:20px;
+}
+.collaborators-main .c-detail {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    height: 200px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 20px;
+    line-height: 30px;
+    color: #07c3ff;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.collaborators-main .c-detail .title {
+    font-size: 18px;
+    color: #2a384c;
+}
+.collaborators-main .c-detail .post {
+    font-size: 16px;
+    line-height: 26px;
+    color: #616161;
+}
+.collaborators-main .c-detail .post {
+    font-size: 14px;
+    color: #197BEB;
+}
+.collaborators-main .c-detail .social-icon {
+    margin: 0;
+    padding: 0;
+    margin-top: 20px;
+    position: relative;
+    padding-top: 20px;
+}
+.collaborators-main .c-detail .social-icon li {
+    list-style: none;
+    display: inline-block;
+    margin: 0px;
+    text-align: center;
+}
+.collaborators-main .c-detail .social-icon li a {
+    display: block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background-color: #dfdfdf;
+    -webkit-box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.53);
+    color: #4f78ee;
+    font-size: 14px;
+    -webkit-transition: .3s ease-in;
+    -o-transition: .3s ease-in;
+    transition: .3s ease-in;
+}
+.collaborators-main .c-detail .social-icon li a {
+    background-color: #f2f2f2;
+    color: #515151;
+    font-size: 16px;
+}
+.collaborators-main .thumb {
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    margin-left: 10px;
+}
+
+.collaborators-main .thumb img {
+    -webkit-transition: 1s ease-in-out;
+    -o-transition: 1s ease-in-out;
+    transition: 1s ease-in-out;
+  width:100%;
+}
+.collaborators-main .c-detail .social-icon:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 120%;
+    background-color: #07c3ff;
+    content: "";
+    height: 1px;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    -webkit-transition: 1s ease-in;
+    -o-transition: 1s ease-in;
+    transition: 1s ease-in;
+    z-index: 1;
+}
+.collaborators-main .c-detail .social-icon:after {
+    background-color: #197BEB;
+}
+.collaborators-main:hover .thumb img {
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+}
+.collaborators-main:hover .c-detail .social-icon:after {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+}
+/*collaborators css ends*/
+
+
+/*video slider css starts*/
+//.lc-items-grids {
+//    display: grid;
+//    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+//    -webkit-box-align: start;
+//    -webkit-align-items: start;
+//    -ms-flex-align: start;
+//    align-items: start;
+//    justify-items: center;
+//    grid-gap: 4rem 3rem;
+//    margin-top: 20px;
+//}
+.lc-single-item-main {
+//    display: -webkit-box;
+//    display: -webkit-flex;
+//    display: -ms-flexbox;
+//    display: flex;
+//    -webkit-box-orient: vertical;
+//    -webkit-box-direction: normal;
+//    -webkit-flex-direction: column;
+//    -ms-flex-direction: column;
+//    flex-direction: column;
+//    color: #9ca0b1;
+//    position: relative;
+//    width: 100%;
+//    height: 100%;
+    z-index: 1;
+}
+.lc-item-img{
+    position: relative;
+    height: 0;
+    border-radius: 6px;
+    padding-top: 56.25%;
+    overflow: hidden;
+    background: #444857;
+}
+.lc-single-item-main .lc-item-video-link {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    border: 0 !important;
+    z-index: 1;
+}
+.lc-item-img .lc-item-video-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center center;
+    background-size: cover;
+}
+.lc-single-item-main .lc-item-desciption {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-top: 1rem;
+    -webkit-box-ordinal-group: 4;
+    -webkit-order: 3;
+    -ms-flex-order: 3;
+    order: 3;
+}
+.lc-single-item-main .lc-item-user-icon {
+    display: block;
+    margin-right: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+.lc-single-item-main .lc-item-user-icon>img {
+    display: block;
+    width: 40px;
+    height: 40px;
+    background: #444857;
+    overflow: hidden;
+    font: 10px/1 monospace;
+    border-radius: 4px;
+}
+.lc-single-item-main .lc-item-user-detail {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    margin: 0 1rem 0 0;
+}
+.lc-single-item-main .lc-item-user-detail, .lc-single-item-main .lc-item-user-detail .lc-item-video-title {
+    width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.lc-single-item-main .lc-item-video-title {
+    font-weight: 900;
+    font-size: 17px;
+    margin: 0 0 0.25rem;
+    display: block;
+}
+.lc-single-item-main .lc-item-video-title a {
+    color: white;
+}
+.lc-single-item-main .lc-item-user-sub-main {
+    color: #c0c3d0;
+    font: inherit;
+    font-size: 14px;
+    line-height: 1.2;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.lc-single-item-main .lc-item-user-sub-detail {
+    color: inherit;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    -webkit-transition: 0.2s ease all;
+    transition: 0.2s ease all;
+}
+.lc-single-item-main .lc-item-video-actions {
+    position: relative;
+}
+.lc-item-video-stats {
+    position: absolute;
+    bottom: -35px;
+    left: -7px;
+    padding: 0 0 0 7px;
+    height: 45px;
+    z-index: 1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    font-size: 12px;
+    overflow: hidden;
+}
+button.lc-item-video-menu {
+    border: 0;
+    background: none;
+}
+.lc-item-video-stats .lc-item-video-stat {
+    font: inherit;
+    margin-right: 5px;
+    background: rgba(0,0,0,0.9);
+    border-radius: 4px;
+    padding: 2px 5px;
+    color: white;
+    cursor: pointer;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat {
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    opacity: 0;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+    -webkit-transition-property: opacity, -webkit-transform;
+    transition-property: opacity, -webkit-transform;
+    transition-property: transform, opacity;
+    transition-property: transform, opacity, -webkit-transform;
+    -webkit-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
+    transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat:nth-child(2) {
+    -webkit-transition-delay: 0.05s;
+    transition-delay: 0.05s;
+}
+.lc-single-item-main:not(.hide-owner) .lc-item-video-stat:nth-child(3) {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+.lc-single-item-main::after {
+    position: absolute;
+    content: \'\';
+    right: 0px;
+    bottom: 0px;
+    left: 1rem;
+    top: 1rem;
+    background: #202229;
+    border-radius: 10px;
+    z-index: -1;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+}
+.lc-single-item-main:hover::after, .lc-single-item-main:focus::after, .lc-single-item-main:active::after {
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: -30px;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+    -webkit-transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
+    transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
+    -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat:nth-child(2), .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat:nth-child(2), .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat:nth-child(2) {
+    -webkit-transition-delay: 0.15s;
+    transition-delay: 0.15s;
+}
+.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat:nth-child(3), .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat:nth-child(3), .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat:nth-child(3) {
+    -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
+}
+.marg{
+	margin-left: 125px;
+	margin-bottom: 2px;
+	background: none !important;
+}
+.marg img{
+	width: 22px;
+}
+/*Video slider css ends*/
+
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
-    }
-    .f-box{
-        padding-bottom: 100px;
     }
     .c-padding{
         padding: 0px;
