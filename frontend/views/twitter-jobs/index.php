@@ -12,7 +12,7 @@ $this->params['header_dark'] = true;
 <section class="head-bg">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-12 z-index-9">
                 <div class="search-box">
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
@@ -31,12 +31,16 @@ $this->params['header_dark'] = true;
                 </div>
             </div>
         </div>
+<!--        <div class="overlay-image i-1"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet1.png');?><!--"/></div>-->
+        <div class="overlay-image i-2"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet2.png');?>"/></div>
+        <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet3.png');?>"/></div>
+        <div class="overlay-image i-4"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?>"/></div>
     </div>
 </section>
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="masonry">
                 <div id="twitter_jobs_cards">
 
                 </div>
@@ -44,7 +48,7 @@ $this->params['header_dark'] = true;
                 if (!empty($tweets)):
                 foreach ($tweets as $tweet) {
                     ?>
-                    <div class="col-md-3 tweet-main">
+                    <div class="tweet-main">
                         <div class="tweet-inner-main">
                             <div class="tweet-org-deatail">
                                 <div class="tweet-org-logo">
@@ -85,6 +89,7 @@ $this->params['header_dark'] = true;
 <?php
 //echo $this->render('/widgets/twitter-jobs');
 $this->registerCss("
+.z-index-9{z-index:9;}
 .not-found{
     max-width: 400px;
     margin: auto;
@@ -116,13 +121,15 @@ body{
 }
 .posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
-    background-color:#00a0e3;
-    padding:50px 0px;
+    background-color:#C1E8F1;
+    padding: 85px 0px;
+    height: 300px;
 }
 .search-box{
     width: 100%;
     max-width: 650px;
     margin: auto;
+    margin-top: -30px;
 }
 #form-search .search-bar{
     border-radius: 18px;
@@ -135,8 +142,30 @@ body{
     border-radius: 18px;
     overflow: hidden;
 }
+
+.masonry { 
+    -webkit-column-count: 4;
+  -moz-column-count:4;
+  column-count: 4;
+  -webkit-column-gap: 1em;
+  -moz-column-gap: 1em;
+  column-gap: 1em;
+   margin: 1.5em;
+    padding: 0;
+    -moz-column-gap: 1.5em;
+    -webkit-column-gap: 1.5em;
+    column-gap: 1.5em;
+    font-size: .85em;
+}
 .tweet-main{
-    padding: 0px 8px;
+     display: inline-block;
+    background: #fff;
+    width: 100%;
+	-webkit-transition:1s ease all;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin-bottom: 20px;
 }
 #form-search{
     margin-bottom:55px;
@@ -351,6 +380,24 @@ float:right;
   }
 }
 /*Load Suggestions loader css ends */
+.overlay-image {
+    position: absolute;
+    width: 100%;
+    max-width: 220px;
+    z-index: 0;
+}
+.overlay-image.i-2 {
+    left: 0;
+    top: 0px;
+}
+.overlay-image.i-3 {
+    right: 0%;
+    bottom: 0%;
+}
+.overlay-image.i-4 {
+    bottom: 0px;
+    left: 20%;
+}
 ");
 $script = <<< JS
 //$('#loading_img').addClass('show');
