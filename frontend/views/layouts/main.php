@@ -49,6 +49,19 @@ $referral = Yii::$app->referral->getReferralCode();
     }
     ?>
     <?php $this->head(); ?>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name" : "<?= Yii::$app->params->site_name; ?>",
+            "url": "<?= Url::base("https"); ?>",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "<?= Url::to("/search?keyword={search_term_string}", "https"); ?>",
+                "query-input": "required name=search_term_string"
+            }
+        }
+    </script>
 </head>
 <body class="fullwidth-page">
 <?php $this->beginBody(); ?>
@@ -64,7 +77,8 @@ $referral = Yii::$app->referral->getReferralCode();
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
                         <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
-                        <a href="/internships/quick-internship"><i class="far fa-check-circle"></i> Post an Internship</a>
+                        <a href="/internships/quick-internship"><i class="far fa-check-circle"></i> Post an
+                            Internship</a>
                         <a href="/jobs/quick-job"><i class="far fa-check-circle"></i> Post a Job</a>
                     </div>
                     <div class="secondary-top-header-right">
