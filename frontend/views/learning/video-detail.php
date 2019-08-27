@@ -34,7 +34,6 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-
 ?>
 <section class="bg-blue">
     <div class="container-fluid">
@@ -127,7 +126,10 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <div class="views"><i class="far fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
+                                <div class="views"><i class="far fa-eye"></i>
+                                    <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span>
+                                    Views
+                                </div>
                                 <div class="likes"><i class="fas fa-thumbs-up"></i>
                                     <span><?= $like_count ? $like_count : 'No' ?></span> Likes
                                 </div>
@@ -184,11 +186,53 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <div class="rate-video">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="chan-heading">Rate this Video</h1>
+                        </div>
+                    </div>
+                    <div class="cntr">
+                        <label for="rdo-1" class="btn-radio">
+                            <input type="radio" id="rdo-1" name="radio-grp">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                <circle cx="10" cy="10" r="9"></circle>
+                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
+                                      class="inner"></path>
+                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
+                                      class="outer"></path>
+                            </svg>
+                            <span>Beginner</span>
+                        </label>
+                        <label for="rdo-2" class="btn-radio">
+                            <input type="radio" id="rdo-2" name="radio-grp">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                <circle cx="10" cy="10" r="9"></circle>
+                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
+                                      class="inner"></path>
+                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
+                                      class="outer"></path>
+                            </svg>
+                            <span>Intermediate</span>
+                        </label>
+                        <label for="rdo-3" class="btn-radio">
+                            <input type="radio" id="rdo-3" name="radio-grp">
+                            <svg width="20px" height="20px" viewBox="0 0 20 20">
+                                <circle cx="10" cy="10" r="9"></circle>
+                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
+                                      class="inner"></path>
+                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
+                                      class="outer"></path>
+                            </svg>
+                            <span>Pro</span>
+                        </label>
+                    </div>
+                </div>
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({
                         google_ad_client: "ca-pub-9111969809145171",
-                    enable_page_level_ads: true
+                        enable_page_level_ads: true
                     });
                 </script>
                 <div class="top-video">
@@ -912,6 +956,66 @@ left:10px;
 .showReply{
     text-align:center;
 }
+/*---Rate this video css starts---*/
+.cntr {
+  margin: auto;
+}
+.btn-radio {
+  cursor: pointer;
+  display: block;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-bottom:10px;
+}
+.btn-radio svg {
+  fill: none;
+  vertical-align: middle;
+}
+.btn-radio svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.btn-radio svg path {
+  stroke: #008FFF;
+}
+.btn-radio svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.btn-radio svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.btn-radio input {
+  display: none;
+}
+.btn-radio input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.btn-radio input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.btn-radio input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.btn-radio span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left:5px;
+  color:#222;
+}
+.rate-video{
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
+    padding-top: 0px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 9px 0px #b1b1b1c9;
+}
+/*---Rate this video css ends---*/
 ');
 
 $script = <<<JS
@@ -1069,9 +1173,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
 
     var dvar;
-    function startTimer(){
+
+    function startTimer() {
         dvar = setTimeout(
-            function(){
+            function () {
                 $.ajax({
                     type: 'POST',
                     url: '/learning/increment-views',
@@ -1084,7 +1189,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         )
     }
 
-    function stopTimer(){
+    function stopTimer() {
         clearTimeout(dvar);
     }
 
@@ -1094,7 +1199,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             width: '640',
             videoId: video_id,
             events: {
-                'onStateChange': function(event) {
+                'onStateChange': function (event) {
                     if (event.data == YT.PlayerState.PLAYING) {
                         startTimer();
                     }
