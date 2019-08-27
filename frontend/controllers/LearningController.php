@@ -12,6 +12,7 @@ use common\models\LearningVideoTags;
 use common\models\Roles;
 use common\models\Tags;
 use common\models\UserPrivileges;
+use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
@@ -319,13 +320,12 @@ class LearningController extends Controller
     {
         $categories = AssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE NULL END icon', 'c.slug', 'c.name'])
+            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
             ->joinWith(['learningVideos b' => function($b){
                 $b->andOnCondition(['b.status' => 1]);
                 $b->andOnCondition(['b.is_deleted' => 0]);
             }], false)
             ->joinWith(['categoryEnc c'], false)
-//            ->joinWith(['parentEnc d'], false)
             ->where(['a.assigned_to' => 'Videos'])
             ->andWhere(['a.status' => 'Approved'])
             ->andWhere([
@@ -334,11 +334,7 @@ class LearningController extends Controller
                 ['a.parent_enc_id' => NULL]
             ])
             ->andWhere(['a.is_deleted' => 0])
-//            ->andWhere(['b.status' => 1])
-//            ->andWhere(['b.is_deleted' => 0])
             ->groupBy(['a.assigned_category_enc_id'])
-//            ->groupBy(['a.parent_enc_id'])
-//            ->limit(8)
             ->asArray()
             ->all();
 
@@ -356,10 +352,11 @@ class LearningController extends Controller
             ->joinWith(['learningVideoTags c' => function ($x) {
                 $x->joinWith(['videoEnc d'], false);
             }], false)
-            ->joinWith(['assignedTags b'], false)
-            ->where(['b.assigned_to' => 2])
-            ->andWhere(['b.status' => 'Approved'])
-            ->andWhere(['b.is_deleted' => 0])
+            ->joinWith(['assignedTags b' => function($b) {
+                $b->andOnCondition(['b.assigned_to' => 2]);
+                $b->andOnCondition(['b.status' => 'Approved']);
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }], false)
             ->andWhere(['d.is_deleted' => 0])
             ->andWhere(['d.status' => 1])
             ->orderBy(['COUNT(c.tag_enc_id)' => SORT_DESC])
@@ -368,10 +365,26 @@ class LearningController extends Controller
             ->asArray()
             ->all();
 
+        $contributors = Users::find()
+            ->alias('a')
+            ->select(['a.user_type_enc_id','CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
+            ->innerJoinWith(['userTypeEnc b' => function($b){
+                $b->andOnCondition(['b.user_type' => 'Contributor']);
+            }], false)
+            ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere([
+                'or',
+                ['a.organization_enc_id' => ""],
+                ['a.organization_enc_id' => NULL]
+            ])
+            ->asArray()
+            ->all();
+
         return $this->render('index', [
             'categories' => $categories,
             'popular_videos' => $popular_videos,
             'topics' => $topics,
+            'contributors' => $contributors,
         ]);
     }
 

@@ -50,7 +50,7 @@ use yii\helpers\Url;
                                     <a href="/learning/videos/category/<?= $cat['slug']; ?>">
                                         <div class="newset">
                                             <div class="imag">
-                                                <img src="<?= $cat['icon'];?>">
+                                                <img src="<?= $cat['icon']; ?>">
                                             </div>
                                             <div class="txt"><?= $cat['name']; ?></div>
                                         </div>
@@ -59,56 +59,6 @@ use yii\helpers\Url;
                                 <?php
                             }
                             ?>
-                            <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-                            <!--                                <a href="">-->
-                            <!--                                    <div class="newset">-->
-                            <!--                                        <div class="imag">-->
-                            <!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-                            <!--                                        </div>-->
-                            <!--                                        <div class="txt">study</div>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-                            <!--                                <a href="">-->
-                            <!--                                    <div class="newset">-->
-                            <!--                                        <div class="imag">-->
-                            <!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-                            <!--                                        </div>-->
-                            <!--                                        <div class="txt">study</div>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-                            <!--                                <a href="">-->
-                            <!--                                    <div class="newset">-->
-                            <!--                                        <div class="imag">-->
-                            <!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-                            <!--                                        </div>-->
-                            <!--                                        <div class="txt">study</div>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-                            <!--                                <a href="">-->
-                            <!--                                    <div class="newset">-->
-                            <!--                                        <div class="imag">-->
-                            <!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-                            <!--                                        </div>-->
-                            <!--                                        <div class="txt">study</div>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-                            <!--                                <a href="">-->
-                            <!--                                    <div class="newset">-->
-                            <!--                                        <div class="imag">-->
-                            <!--                                            <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
-                            <!--                                        </div>-->
-                            <!--                                        <div class="txt">study</div>-->
-                            <!--                                    </div>-->
-                            <!--                                </a>-->
-                            <!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -163,22 +113,28 @@ use yii\helpers\Url;
                 <div class="container">
                     <div class="heading-style">Most Popular Topics</div>
                     <div class="mt-actions " style="">
-                        <div class="col-md-3 col-sm-4">
-                            <div class="topic-con">
-                                <a href="#">
-                                    <div class="hr-company-box">
-                                        <div class="hr-company-box-center">
-                                            <div class="hr-com-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
-                                                     class="img-responsive ">
+                        <?php
+                        foreach ($topics as $topic) {
+                            ?>
+                            <div class="col-md-3 col-sm-4">
+                                <div class="topic-con">
+                                    <a href="<?= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?>">
+                                        <div class="hr-company-box">
+                                            <div class="hr-company-box-center">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name"><?= $topic['name'] ?></div>
+                                                <div class="hr-com-field"><?= $topic['cnt'] ?> Videos</div>
                                             </div>
-                                            <div class="hr-com-name">name</div>
-                                            <div class="hr-com-field">cnt Videos</div>
                                         </div>
-                                    </div>
-                                </a>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                            <?php
+                        }
+                        ?>
                     </div>
                 </div>
             </div>
@@ -202,8 +158,6 @@ use yii\helpers\Url;
                         <div class="item lc-single-item-main">
                             <div class="lc-item-img">
                                 <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
-                                    <!--                                    <img src="-->
-                                    <? //= Url::to($p['cover_image']); ?><!--" alt=""/>-->
                                 </a>
                                 <div class="lc-item-video-img"
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
@@ -270,13 +224,6 @@ use yii\helpers\Url;
                         </a>
                         </span>
                             </div>
-                            <!--                            <div class="clearfix"></div>-->
-                            <!--                            <div class="blogTitle">-->
-                            <!--                                <a href="-->
-<!--                            --><?//= Url::to('learning/video/' . $p['slug']); ?><!--">-->
-<!--                                                                --><?//= Yii::t('frontend', $p['title']); ?>
-                            <!--                                </a>-->
-                            <!--                            </div>-->
                         </div>
                     <?php } ?>
                 </div>
@@ -287,6 +234,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php
+if (!empty($contributors)) {
+    ?>
     <section>
         <div class="container">
             <div class="row">
@@ -295,170 +245,54 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Makayla Linger</h4>
-                            <span class="post">operator</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/08-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
+                <?php
+                foreach ($contributors as $contributor) {
+                    ?>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="collaborators-main">
+                            <div class="c-detail">
+                                <h4 class="title"><?= $contributor['name']; ?></h4>
+                                <span class="post">Contributor</span>
+                                <ul class="social-icon">
 
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Emily Graves</h4>
-                            <span class="post">officer</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook-f"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/04-280x280.jpg"
-                                 alt="">
+                                    <?php if (!empty($contributor['facebook'])) { ?>
+                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>" target="_blank">
+                                                <i class="fab fa-facebook"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['twitter'])) { ?>
+                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>" target="_blank">
+                                                <i class="fab fa-twitter"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['linkedin'])) { ?>
+                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>" target="_blank">
+                                                <i class="fab fa-linkedin"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                    <?php if (!empty($contributor['instagram'])) { ?>
+                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>" target="_blank">
+                                                <i class="fab fa-instagram"></i></a>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                            <div class="thumb">
+                                <img src="<?= $contributor['image']; ?>"
+                                     alt="">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Madel Kavel</h4>
-                            <span class="post">Actor</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/03-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Lucy Adey</h4>
-                            <span class="post">Captive agent</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/02-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Lily Buggy</h4>
-                            <span class="post">Caster</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/05-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">Paige Luxton</h4>
-                            <span class="post">Demographic</span>
-                            <ul class="social-icon">
-                                <li><a href="#">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                                <li><a href="#">
-                                        <i class="fab fa-google-plus-g"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="https://plugins.xgenious.com/tbuilder/wp-content/uploads/2018/12/06-280x280.jpg"
-                                 alt="">
-                        </div>
-                    </div>
-                </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </section>
+    <?php
+}
+?>
 
 <?php
 $this->registerCss('
@@ -510,19 +344,6 @@ $this->registerCss('
 .sm-hidden img{
     width:80%;
 }
-//.backgrounds{
-//   background:url("' . Url::to("@eyAssets/images/pages/learning-corner/learningc.png") . '");
-//    background-position: right;
-//    background-repeat: no-repeat;
-//    min-height: 530px;
-//    padding-top: 80px;
-//}
-    //@media only screen and (max-width:991px) {
-    // .newlogoset img
-    //    { 
-    //    padding-top:30px;
-    //    }
-//    }
 .head-pic{
     text-align: center;
 }
