@@ -70,7 +70,15 @@ if (!empty($total_applications)) {
                                 <?= $applications[$next]['name']; ?>
                             </div>
                             <div class="hr-com-field">
-                                <?= $applications[$next]['placementLocations'][0]['total']; ?> Openings
+                                <?php
+                                if (!empty($applications[$next]['placementLocations'][0]['total'])):
+                                    echo $applications[$next]['placementLocations'][0]['total'].' '.'Openings';
+                                elseif (!empty($applications[$next]['positions'])):
+                                    echo $applications[$next]['positions'].' '.'Openings';
+                                else:
+                                    echo 'Work From Home';
+                                endif;
+                                ?>
                             </div>
                         </a>
                         <div class="hr-com-jobs">

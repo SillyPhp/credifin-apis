@@ -1033,7 +1033,7 @@ $('#search_comp').typeahead(null, {
   source: companies,
   templates: {
 suggestion: function(data) {
-return '<div class="suggestion_wrap"><a href="/'+data.slug+'">'
+return '<div class="suggestion_wrap"><a href="/'+data.profile_link+'">'
  +'<div class="logo_wrap">'
  +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
  +'</div>'
@@ -1048,7 +1048,7 @@ empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No r
     utilities.initials();
     $('.load-suggestions').hide();
   }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug+'');
+    window.location.replace('/'+datum.profile_link);
   });
 
 var locations = new Bloodhound({

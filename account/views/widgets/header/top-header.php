@@ -22,6 +22,15 @@ if (!empty(Yii::$app->user->identity->organization)) {
     ];
     array_push($result, $template);
 }
+
+if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+    $institute = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Manage Candidates'),
+        'url' => Url::toRoute('/institutes/manage-candidates'),
+    ];
+    array_push($result, $institute);
+}
+
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
     'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username) . $referral,

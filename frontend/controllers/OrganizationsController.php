@@ -1,24 +1,7 @@
 <?php
 
 namespace frontend\controllers;
-use frontend\models\referral\ReferralReviewsTracking;
-use common\models\AssignedCategories;
-use common\models\Categories;
-use common\models\Designations;
-use common\models\EmployerApplications;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationReviewFeedback;
-use common\models\OrganizationReviewLikeDislike;
-use common\models\UnclaimedFollowedOrganizations;
-use common\models\UnclaimedOrganizations;
-use frontend\models\OrganizationProductsForm;
-use frontend\models\organizations\OrgAutoGenrateBlog;
-use frontend\models\OrgAutoBlogForm;
-use frontend\models\reviews\EditUnclaimedCollegeOrg;
-use frontend\models\reviews\EditUnclaimedInstituteOrg;
-use frontend\models\reviews\EditUnclaimedSchoolOrg;
-use frontend\models\reviews\RegistrationForm;
-use frontend\models\reviews\ReviewCards;
+
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -41,9 +24,26 @@ use common\models\States;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
-use common\models\BusinessActivities;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
+use common\models\BusinessActivities;
+use frontend\models\referral\ReferralReviewsTracking;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
+use common\models\NewOrganizationReviews;
+use common\models\OrganizationReviewFeedback;
+use common\models\OrganizationReviewLikeDislike;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
+use frontend\models\OrganizationProductsForm;
+use frontend\models\organizations\OrgAutoGenrateBlog;
+use frontend\models\OrgAutoBlogForm;
+use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
+use frontend\models\reviews\EditUnclaimedSchoolOrg;
+use frontend\models\reviews\RegistrationForm;
+use frontend\models\reviews\ReviewCards;
 
 class OrganizationsController extends Controller
 {
@@ -58,6 +58,12 @@ class OrganizationsController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        return parent::beforeAction($action);
     }
 
     public function actionIndex()
@@ -859,7 +865,7 @@ class OrganizationsController extends Controller
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
@@ -1051,9 +1057,7 @@ class OrganizationsController extends Controller
             } else {
                 if ($request_type == 1) {
                     ReferralReviewsTracking::widget(['claim_review_id' => $companyReview->review_enc_id]);
-                }
-                else
-                {
+                } else {
                     ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
                 }
                 return true;
@@ -1532,6 +1536,11 @@ class OrganizationsController extends Controller
         return $this->generateblog();
     }
 
+    public function actionExplore()
+    {
+        return $this->render('explore');
+    }
+
     private function generateblog()
     {
         $this->layout = 'main-secondary';
@@ -1551,6 +1560,23 @@ class OrganizationsController extends Controller
             return $this->refresh();
         }
         return $this->render('genrate-blog', ['model' => $model, 'data' => $data]);
+    }
+
+    public function actionSearchOrg($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $params1 = (new \yii\db\Query())
+            ->select(['organization_enc_id as id', 'name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+                WHEN business_activity IS NULL THEN ""
+                ELSE business_activity
+                END) as business_activity'])
+            ->from(UnclaimedOrganizations::tableName() . 'as a')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->where("replace(name, '.', '') LIKE '%$q%'")
+            ->andWhere(['is_deleted' => 0]);
+        return $params1->limit(20)->all();
+
+
     }
 
 }

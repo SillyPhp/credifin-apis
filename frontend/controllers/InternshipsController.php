@@ -2,16 +2,11 @@
 
 namespace frontend\controllers;
 
-use common\models\AssignedCategories;
-use common\models\Organizations;
-use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
-use common\models\OrganizationLocations;
-use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\Categories;
 use common\models\Industries;
@@ -21,6 +16,11 @@ use common\models\UserResume;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
 use frontend\models\applications\ApplicationCards;
+use account\models\applications\ApplicationForm;
+use common\models\AssignedCategories;
+use common\models\Organizations;
+use common\models\Users;
+use frontend\models\applications\QuickJob;
 
 class InternshipsController extends Controller
 {
@@ -48,6 +48,7 @@ class InternshipsController extends Controller
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
         return parent::beforeAction($action);
     }
 
@@ -170,14 +171,14 @@ class InternshipsController extends Controller
                 ->asArray()
                 ->one();
             $primary_cat = Categories::find()
-                ->select(['name','icon_png'])
+                ->select(['name', 'icon_png'])
                 ->where(['category_enc_id' => $object->primaryfield])
                 ->asArray()
                 ->one();
             if ($object->benefit_selection == 1) {
                 foreach ($object->emp_benefit as $benefit) {
                     $benefits[] = EmployeeBenefits::find()
-                        ->select(['benefit','icon','icon_location'])
+                        ->select(['benefit', 'icon', 'icon_location'])
                         ->where(['benefit_enc_id' => $benefit])
                         ->asArray()
                         ->one();
@@ -243,7 +244,6 @@ class InternshipsController extends Controller
             }
             return $response;
         }
-
         return $this->render('list');
     }
 
@@ -263,11 +263,10 @@ class InternshipsController extends Controller
             return 'Application Not found';
         }
         $object = new \account\models\applications\ApplicationForm();
-        if (!empty($application_details->unclaimed_organization_enc_id)){
+        if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id,$application_type = 'Internships');
-        }
-        else {
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Internships');
+        } else {
             $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Internships');
         }
@@ -297,7 +296,6 @@ class InternshipsController extends Controller
                 ->asArray()
                 ->one();
         }
-
         if (!empty($application_details)) {
             $model = new \frontend\models\applications\JobApplied();
             return $this->render('/employer-applications/detail', [
@@ -315,6 +313,25 @@ class InternshipsController extends Controller
         } else {
             return 'Not Found';
         }
+    }
+
+    public function actionQuickInternship()
+    {
+        $this->layout = 'main-secondary';
+        $model = new QuickJob();
+        $typ = 'Internships';
+        $data = new ApplicationForm();
+        $primary_cat = $data->getPrimaryFields();
+        $job_type = $data->getApplicationTypes();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save($typ)) {
+                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            }
+            return $this->refresh();
+        }
+        return $this->render('quick-internship', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
     }
 
     public function actionSimilarApplication($slug)
@@ -351,9 +368,10 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionNearMe(){
+    public function actionNearMe()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
             $radius = Yii::$app->request->post('inprange');
@@ -364,16 +382,17 @@ class InternshipsController extends Controller
 
             $radius = $radius / 1000;
 
-            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat, $long, $radius, $num, $keyword, $type, $walkin);
 
             return $cards;
         }
         return $this->render('near-me-beta');
     }
 
-    public function actionWalkInInterviews(){
+    public function actionWalkInInterviews()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $lat = Yii::$app->request->post('lat');
             $long = Yii::$app->request->post('long');
             $radius = Yii::$app->request->post('inprange');
@@ -384,24 +403,25 @@ class InternshipsController extends Controller
 
             $radius = $radius / 1000;
 
-            $cards = \frontend\models\nearme\ApplicationCards::cards($lat,$long,$radius,$num,$keyword,$type,$walkin);
+            $cards = \frontend\models\nearme\ApplicationCards::cards($lat, $long, $radius, $num, $keyword, $type, $walkin);
 
             return $cards;
         }
         return $this->render('walkin-near-me-beta');
     }
 
-    public function actionUserLocation(){
+    public function actionUserLocation()
+    {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
 
             $location = Users::find()
                 ->alias('a')
-                ->select(['b.name','c.name as state_name'])
-                ->where(['a.user_enc_id'=>Yii::$app->user->identity->user_enc_id])
-                ->joinWith(['cityEnc as b'=>function($x){
+                ->select(['b.name', 'c.name as state_name'])
+                ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->joinWith(['cityEnc as b' => function ($x) {
                     $x->joinWith(['stateEnc as c']);
-                }],false)
+                }], false)
                 ->asArray()
                 ->one();
 
@@ -424,7 +444,8 @@ class InternshipsController extends Controller
         return $this->render('compare-internships');
     }
 
-    public function actionFindApplication(){
+    public function actionFindApplication()
+    {
         if (Yii::$app->request->isPost && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
@@ -443,19 +464,20 @@ class InternshipsController extends Controller
         }
     }
 
-    public function actionGetCompanies($query){
+    public function actionGetCompanies($query)
+    {
         $companies = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id id','a.name'])
-            ->innerJoinWith(['employerApplications b' => function($x){
+            ->select(['a.organization_enc_id id', 'a.name'])
+            ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x->onCondition([
 //                    'b.status' => 'Active',
                     'b.is_deleted' => 0
                 ]);
-                $x->innerJoinWith(['applicationTypeEnc c' => function($y){
+                $x->innerJoinWith(['applicationTypeEnc c' => function ($y) {
                     $y->andWhere(['c.name' => 'Internships']);
                 }]);
-            }],false)
+            }], false)
             ->where([
 //                'a.status' => 'Active',
                 'a.is_deleted' => 0
@@ -467,19 +489,20 @@ class InternshipsController extends Controller
         return json_encode($companies);
     }
 
-    public function actionGetJobs(){
+    public function actionGetJobs()
+    {
         $req = Yii::$app->request->post();
         $query = $req['q'];
         $id = $req['id'];
         $applications = $req['applications'];
-        if(!$applications){
+        if (!$applications) {
             $applications = [];
         }
         $jobs = Organizations::find()
             ->alias('a')
             ->select(['a.organization_enc_id'])
             ->distinct()
-            ->innerJoinWith(['employerApplications b' => function($x) use($query, $applications){
+            ->innerJoinWith(['employerApplications b' => function ($x) use ($query, $applications) {
                 $x->select(['b.application_enc_id', 'b.organization_enc_id', 'c.assigned_category_enc_id', 'c.category_enc_id', 'c.parent_enc_id', 'CONCAT(d.name, " - ",e.name) name']);
                 $x->onCondition([
 //                    'b.status' => 'Active',
@@ -488,7 +511,7 @@ class InternshipsController extends Controller
 
                 $x->andOnCondition(['not in', 'b.application_enc_id', $applications]);
 
-                $x->joinWith(['title c' => function($y) use($query){
+                $x->joinWith(['title c' => function ($y) use ($query) {
 
 //                    $y->andWhere([
 //                        'c.status' => 'Approved',
@@ -505,7 +528,7 @@ class InternshipsController extends Controller
                     $y->joinWith(['parentEnc e']);
                 }], false);
 
-                $x->innerJoinWith(['applicationTypeEnc z' => function($zz){
+                $x->innerJoinWith(['applicationTypeEnc z' => function ($zz) {
                     $zz->andWhere(['z.name' => 'Internships']);
                 }]);
 
@@ -630,7 +653,7 @@ class InternshipsController extends Controller
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
                 END) as experience', 'b.*, SUBSTRING(r.name, 1, CHAR_LENGTH(r.name) - 1) application_type'])
-            ->joinWith(['applicationOptions b'],false)
+            ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
                 $b->joinWith(['benefitEnc d'], false);
@@ -687,9 +710,10 @@ class InternshipsController extends Controller
         return $application;
     }
 
-    public function actionProfiles(){
+    public function actionProfiles()
+    {
         $activeProfiles = AssignedCategories::find()
-            ->select(['b.name', 'b.slug','CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
             ->alias('a')
             ->distinct()
             ->innerJoinWith(['parentEnc b' => function ($b) {
@@ -716,7 +740,7 @@ class InternshipsController extends Controller
             ])
             ->asArray()
             ->all();
-        return $this->render('internship-profiles',['profiles'=>$activeProfiles]);
+        return $this->render('internship-profiles', ['profiles' => $activeProfiles]);
     }
 
 }
