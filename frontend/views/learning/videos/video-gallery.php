@@ -741,10 +741,6 @@ $this->registerCss('
     text-align: right;
     }
 .txt{
-    position: absolute;
-    line-height: 30px;
-    bottom: 10px;
-    left: 10px;
     font-weight: 400;
     font-family:roboto;
     text-transform:uppercase;
@@ -827,6 +823,7 @@ $this->registerCss('
     -ms-flex-pack: center;
     justify-content: center;
     height: 220px;
+    width: calc(100% - 200px);
 }
 .collaborators-main .c-detail .title {
     font-size: 20px;
