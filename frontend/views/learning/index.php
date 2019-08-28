@@ -163,67 +163,67 @@ use yii\helpers\Url;
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
                             </div>
                             <div class="lc-item-desciption">
-                                <a class="lc-item-user-icon" href="#">
-                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""
-                                         width="40" height="40">
-                                </a>
+                                <!--                                <a class="lc-item-user-icon" href="#">-->
+                                <!--                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""-->
+                                <!--                                         width="40" height="40">-->
+                                <!--                                </a>-->
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
-                                    <div class="lc-item-user-sub-main">
-                                        <a class="lc-item-user-sub-detail" href="#">
-                                            <span>casper392945</span>
-                                        </a>
-                                    </div>
+                                    <!--                                    <div class="lc-item-user-sub-main">-->
+                                    <!--                                        <a class="lc-item-user-sub-detail" href="#">-->
+                                    <!--                                            <span>casper392945</span>-->
+                                    <!--                                        </a>-->
+                                    <!--                                    </div>-->
                                 </div>
-                                <div class="lc-item-video-actions">
-                                    <button class="lc-item-video-menu" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                </div>
+                                <!--                                <div class="lc-item-video-actions">-->
+                                <!--                                    <button class="lc-item-video-menu" aria-expanded="false">-->
+                                <!--                                        <i class="fas fa-ellipsis-v"></i>-->
+                                <!--                                    </button>-->
+                                <!--                                </div>-->
                             </div>
-                            <div class="lc-item-video-stats">
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="fas fa-heart"></i> 5
-                            </span>
-                                </a>
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="far fa-comments"></i> 0
-                            </span>
-                                </a>
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="fas fa-eye"></i> 0
-                            </span>
-                                </a>
-                                <span class="lc-item-video-stat marg">
-                        <a href="https://www.facebook.com/" target="blank">
-                            <span>
-                                <img src="facebook.png">
-                            </span>
-                        </a>
-                        <a href="https://twitter.com/EmpowerYouth__" target="blank">
-                            <span>
-                            	<img src="twitter.png">
-                            </span>
-                        </a>
-                        <a href="https://www.instagram.com/empoweryouth.in" target="blank">
-                            <span>
-                            	<img src="instagram.png">
-                            </span>
-                        </a>
-                        <a href="https://www.linkedin.com/company/empoweryouth" target="blank">
-                            <span>
-                            	<img src="linkedin.png">
-                            </span>
-                        </a>
-                        </span>
-                            </div>
+<!--                            <div class="lc-item-video-stats">-->
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="fas fa-heart"></i> 5-->
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="far fa-comments"></i> 0-->
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="fas fa-eye"></i> 0-->
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                                <span class="lc-item-video-stat marg">-->
+<!--                                        <a href="https://www.facebook.com/" target="blank">-->
+<!--                                            <span>-->
+<!--                                                <img src="facebook.png">-->
+<!--                                            </span>-->
+<!--                                        </a>-->
+<!--                                        <a href="https://twitter.com/EmpowerYouth__" target="blank">-->
+<!--                                            <span>-->
+<!--                                                <img src="twitter.png">-->
+<!--                                            </span>-->
+<!--                                        </a>-->
+<!--                                        <a href="https://www.instagram.com/empoweryouth.in" target="blank">-->
+<!--                                            <span>-->
+<!--                                                <img src="instagram.png">-->
+<!--                                            </span>-->
+<!--                                        </a>-->
+<!--                                        <a href="https://www.linkedin.com/company/empoweryouth" target="blank">-->
+<!--                                            <span>-->
+<!--                                                <img src="linkedin.png">-->
+<!--                                            </span>-->
+<!--                                        </a>-->
+<!--                                </span>-->
+<!--                            </div>-->
                         </div>
                     <?php } ?>
                 </div>
@@ -256,22 +256,26 @@ if (!empty($contributors)) {
                                 <ul class="social-icon">
 
                                     <?php if (!empty($contributor['facebook'])) { ?>
-                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>" target="_blank">
+                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-facebook"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['twitter'])) { ?>
-                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>" target="_blank">
+                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-twitter"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['linkedin'])) { ?>
-                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>" target="_blank">
+                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-linkedin"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['instagram'])) { ?>
-                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>" target="_blank">
+                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-instagram"></i></a>
                                         </li>
                                     <?php } ?>
