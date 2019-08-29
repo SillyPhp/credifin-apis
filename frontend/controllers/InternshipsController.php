@@ -735,7 +735,7 @@ class InternshipsController extends Controller
             }], false)
             ->where(['a.assigned_to' => ucfirst('Internships')])
             ->orderBy([
-                'total' => SORT_DESC,
+//                'total' => SORT_DESC,
                 'b.name' => SORT_ASC,
             ])
             ->asArray()
