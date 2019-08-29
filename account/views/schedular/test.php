@@ -16,6 +16,7 @@ use yii\helpers\Url;
         <div class="dot" style="--i: 4;"></div>
     </div>
 
+    <input type="hidden" value="<?= $application_id?>" id="pre-selected">
     <div class="image-container set-full-height" style="">
         <!--   Big container   -->
         <div class="container">

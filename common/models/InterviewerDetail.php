@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\models\Interviewers;
 use Yii;
 
 /**
@@ -13,8 +14,7 @@ use Yii;
  * @property string $name
  * @property string $email
  * @property string $phone
- *
- * @property Interviewers $interviewerEnc
+ * @property int $status 0 Pending, 1 Accepted,2 Rejected
  */
 class InterviewerDetail extends \yii\db\ActiveRecord
 {
@@ -33,14 +33,13 @@ class InterviewerDetail extends \yii\db\ActiveRecord
     {
         return [
             [['interviewer_detail_enc_id', 'interviewer_enc_id', 'name', 'email', 'phone'], 'required'],
+            [['status'], 'integer'],
             [['interviewer_detail_enc_id', 'interviewer_enc_id', 'name'], 'string', 'max' => 100],
             [['email'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['interviewer_detail_enc_id'], 'unique'],
-            [['interviewer_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Interviewers::className(), 'targetAttribute' => ['interviewer_enc_id' => 'interviewer_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

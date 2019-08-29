@@ -71,7 +71,7 @@ use yii\helpers\Url;
                 </div>
             <?php elseif ($for == 'ScheduleInterview'): ?>
                 <div class="col-md-2 pull-right">
-                    <a class="btn btn-primary custom-buttons" id="schedule-interview" href="<?= Url::to('/account/schedular/interview'); ?>">
+                    <a class="btn btn-primary custom-buttons" id="schedule-interview" href="<?= Url::to('/account/schedular/interview?id='.$id); ?>">
                         <?= Yii::t('account', 'Schedule Interview'); ?>
                     </a>
                 </div>

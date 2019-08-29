@@ -1,5 +1,7 @@
 (function ($) {
 
+    var pre_selected = $('#pre-selected').val();
+
     var results = {};
 
     var interviewer_op = false;
@@ -16,12 +18,12 @@
 
     });
 
-    function getApplications() {
+    function getApplications(id = null) {
         $.ajax({
             url: "/account/schedular/find-applications",
             type: "POST",
             async: false,
-            data: {'_csrf-common': $('meta[name="csrf-token"]').attr("content")},
+            data: {'_csrf-common': $('meta[name="csrf-token"]').attr("content"),'application_id':id},
             beforeSend: function () {
                 $('#schedular-loader').fadeIn(1000);
             },
@@ -205,29 +207,24 @@
         $(this).removeClass('active');
     });
 
-    function load_script() {
+    function load_script(es) {
 
-        //rounds dropdown
-        $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
-        $('#rounds option').each(function () {
-            var background = $(this).data('url');
-            $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
-        });
-        $('#rounds').remove();
-        $('#newrounds').attr('id', 'rounds');
-        $('#rounds li').first().addClass('init');
-        $("#rounds").on("click", ".init", function () {
-            $(this).closest("#rounds").children('li:not(.init)').toggle();
-        });
-        var allOptions = $("#rounds").children('li:not(.init)');
-        $("#rounds").on("click", "li:not(.init)", function () {
+        if (es) {
+            $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
+            $('#rounds option').each(function () {
+                var background = $(this).data('url');
+                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+            });
+            $('#rounds').remove();
+            $('#newrounds').attr('id', 'rounds');
+            $('#rounds li').first().remove();
+            $('#rounds, #rounds li').css('height','50px');
+            $('#rounds li').css('display','block');
+            $('#rounds li').css('padding-top','15px');
             $('#select-application-process').html('');
-            var application_id = $(this).attr('value');
-            results.application_id = $(this).attr('value');
+            var application_id = $('#rounds li').attr('value');
+            results.application_id = $('#rounds li').attr('value');
             $('#selected_application_id').val(application_id);
-            if ($('#select-application-sch').find('.error-msg').length > 0) {
-                $('#select-application-sch').find('.error-msg').remove();
-            }
             $.ajax({
                 url: '/account/schedular/find-rounds',
                 type: 'POST',
@@ -247,12 +244,54 @@
                     load_script_again();
                 }
             });
-            allOptions.removeClass('selected');
-            $(this).addClass('selected');
-            $("#rounds").children('.init').html($(this).html());
-            allOptions.toggle();
+        } else {
+            //rounds dropdown
+            $('#rounds').parent().append('<ul id="newrounds" class="select-list" name="rounds"></ul>');
+            $('#rounds option').each(function () {
+                var background = $(this).data('url');
+                $('#newrounds').append('<li value="' + $(this).val() + '"><img src="' + background + '" alt="">' + $(this).text() + '</li>');
+            });
+            $('#rounds').remove();
+            $('#newrounds').attr('id', 'rounds');
+            $('#rounds li').first().addClass('init');
+            $("#rounds").on("click", ".init", function () {
+                $(this).closest("#rounds").children('li:not(.init)').toggle();
+            });
+            var allOptions = $("#rounds").children('li:not(.init)');
+            $("#rounds").on("click", "li:not(.init)", function () {
+                $('#select-application-process').html('');
+                var application_id = $(this).attr('value');
+                results.application_id = $(this).attr('value');
+                $('#selected_application_id').val(application_id);
+                if ($('#select-application-sch').find('.error-msg').length > 0) {
+                    $('#select-application-sch').find('.error-msg').remove();
+                }
+                $.ajax({
+                    url: '/account/schedular/find-rounds',
+                    type: 'POST',
+                    // async: false,
+                    data: {
+                        application_id
+                    },
+                    beforeSend: function () {
+                        $('#schedular-loader').fadeIn(1000);
+                    },
+                    success: function (data) {
+                        $('#schedular-loader').fadeOut(1000);
+                        results.interviewrounds = data.results;
+                        var html = $('#select-round').html();
+                        var output = Mustache.render(html, results);
+                        $('#select-app-round').html(output);
+                        load_script_again();
+                    }
+                });
+                allOptions.removeClass('selected');
+                $(this).addClass('selected');
+                $("#rounds").children('.init').html($(this).html());
+                allOptions.toggle();
 
-        });
+            });
+        }
 
         //interview dates datepicker
         $('.date-picker').datepicker({
@@ -486,6 +525,8 @@
         var interview_type = $(this).attr("value");
 
         if (interview_type == 'fixed') {
+            $('.btn-next').css('display', 'none');
+            $('#select-application-process').css('display','none');
             var html_no_candidates = $('#number-of-candidates').html();
             var output_cand = Mustache.render(html_no_candidates);
             $('#canddidate').append(output_cand);
@@ -501,6 +542,7 @@
 
         } else {
             $('.btn-next').css('display', 'none');
+            $('#select-application-process').css('display','block');
             if ($('#number_candidate_cont')) {
                 $('#number_candidate_cont').remove();
             }
@@ -515,8 +557,13 @@
 
         }
         setTimeout(function () {
-            getApplications();
-            load_script();
+            if(pre_selected){
+                getApplications(pre_selected);
+                load_script(true);
+            }else{
+                getApplications();
+                load_script();
+            }
         }, 100);
 
     });

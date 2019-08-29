@@ -21,10 +21,10 @@
             </div>
             <div id="more-interviewers"></div>
             <div class="col-md-12 pl-35">
-                <input type="radio" id="notify" name="radio1" class="interviewer interviewer_option" value="0">
+                <input type="radio" id="notify" name="radio1" class="interviewer interviewer_option" value="zero">
                 <label for="notify" class="interviewer">Just Notify Interviewer</label>
 
-                <input type="radio" id="acceptance" name="radio1" class="interviewer interviewer_option" value="1">
+                <input type="radio" id="acceptance" name="radio1" class="interviewer interviewer_option" value="one">
                 <label for="acceptance" class="interviewer">Request for Acceptance</label>
                 <p class="i-error interviewer-option-error"></p>
             </div>

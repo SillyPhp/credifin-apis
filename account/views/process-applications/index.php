@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'ScheduleInterview',
+    'id' => $application_id
 ]);
 echo $this->render('/widgets/schedule_interview/main');
 ?>

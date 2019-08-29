@@ -26,12 +26,26 @@ use yii\web\HttpException;
 
 class SchedularController extends Controller
 {
-    public function actionInterview()
+    public function actionInterview($id = null)
     {
         if (Yii::$app->user->identity->organization->organization_enc_id) {
-            return $this->render('test');
+            return $this->render('test',
+                [
+                    'application_id' => $id,
+                ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionInerviewerStatus($id)
+    {
+        $interviewer_details = InterviewerDetail::find()
+            ->where(['interviewer_detail_enc_id'=> $id])
+            ->one();
+
+        if(!empty($interviewer_details)){
+            $interviewer_details->status = 1;
         }
     }
 
@@ -41,16 +55,17 @@ class SchedularController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $req = Yii::$app->request->post();
             $organization_id = Yii::$app->user->identity->organization->organization_enc_id;
-            $res = $this->findOrganizationApplications($organization_id);
+            $app_id = $req['application_id'];
+            $res = $this->findOrganizationApplications($organization_id, $app_id);
             return [
                 'response' => $res
             ];
         }
     }
 
-    public function findOrganizationApplications($id)
+    public function findOrganizationApplications($id, $application_id = null)
     {
-        return EmployerApplications::find()
+        $applications = EmployerApplications::find()
             ->alias('a')
             ->select(['a.application_enc_id', 'a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'b.parent_enc_id', 'CONCAT(c.name, " - ", d.name) application_name'])
 //            ->innerJoinWith(['applicationInterviewQuestionnaires z'])
@@ -58,14 +73,24 @@ class SchedularController extends Controller
             ->joinWith(['title b' => function ($x) {
                 $x->joinWith(['categoryEnc c']);
                 $x->joinWith(['parentEnc d']);
-            }], false)
-            ->where([
+            }], false);
+        if ($application_id == null) {
+            $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.is_deleted' => 0,
-            ])
-            ->groupBy(['a.application_enc_id'])
+            ]);
+        } else {
+            $applications->where([
+                'a.organization_enc_id' => $id,
+                'a.application_enc_id' => $application_id,
+                'a.is_deleted' => 0,
+            ]);
+        }
+        $result = $applications->groupBy(['a.application_enc_id'])
             ->asArray()
             ->all();
+
+        return $result;
     }
 
     public function actionFindRounds()
@@ -198,7 +223,7 @@ class SchedularController extends Controller
                         ];
                     }
                 }
-                if($req['timings']) {
+                if ($req['timings']) {
                     foreach ($req['timings'] as $key => $value) {
                         $res['timings'][$key] = $value;
                     }
@@ -235,6 +260,13 @@ class SchedularController extends Controller
 
             $save = $this->saveData($res);
             if ($save) {
+               $this->sendComapanyMail();
+//                print_r(Yii::$app->user->identity->organization->name);
+//                print_r(Yii::$app->user->identity->organization->email);
+                if ($res['interviewer_options']) {
+                    $this->sendInterviewerMail($save, $res['interviewer_options']);
+                }
+                die();
                 return [
                     'status' => 200,
                     'response' => $res
@@ -247,6 +279,48 @@ class SchedularController extends Controller
 //            $res = $this->findOrganizationInterviewLocations($req['application_id']);
 
         }
+    }
+
+    private function sendComapanyMail()
+    {
+        $mail = Yii::$app->mail;
+        $mail->receivers = [];
+        $mail->receivers[] = [
+            "name" => Yii::$app->user->identity->organization->name,
+            "email" => Yii::$app->user->identity->organization->email,
+        ];
+        print_r($mail->receivers);
+        $mail->subject = 'new interview scheduled by your organization';
+        $mail->data = ['job' => 'scipy job'];
+        $mail->template = 'interview-schedular';
+        if ($mail->send()) {
+            return true;
+        }
+    }
+
+    private function sendInterviewerMail($interviewer, $type)
+    {
+        foreach ($interviewer as $i) {
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                'name' => $i['name'],
+                'email' => $i['email']
+            ];
+            if ($type == 'zero') {
+                $mail->subject = 'you are selected to take interview';
+                $mail->data = ['job' => 'scipy'];
+                $mail->template = 'interview-schedular';
+            } elseif ($type == 'one') {
+                $mail->subject = 'you are selected to take interview';
+                $mail->data = ['job' => 'scipy', 'id' => $i['interviewer_enc_id']];
+                $mail->template = 'request-for-acceptance';
+            }
+            if (!$mail->send()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function divideTime($StartTime, $EndTime, $Duration)
@@ -267,7 +341,7 @@ class SchedularController extends Controller
     private function saveData($data)
     {
 
-        if ($data['fixed']) {
+        if ($data['type'] == 'fixed') {
             $duration = $data['time_duration'];
             $result = [];
 
@@ -280,6 +354,7 @@ class SchedularController extends Controller
                 array_push($result[$date], $a);
             }
         }
+
 
         $_flag = null;
 
@@ -319,7 +394,11 @@ class SchedularController extends Controller
                     $interview_options->interview_duration = $data['time_duration'];
                     $interview_options->interview_rooms = $data['interview_rooms'];
                     if ($data['interviewer_options']) {
-                        $interview_options->interviewer_required = $data['interviewer_options'];
+                        if ($data['interviewer_options'] == 'zero') {
+                            $interview_options->interviewer_required = 0;
+                        } elseif ($data['interviewer_options'] == 'one') {
+                            $interview_options->interviewer_required = 1;
+                        }
                     }
                     if (!$interview_options->save()) {
                         $transaction->rollback();
@@ -421,6 +500,8 @@ class SchedularController extends Controller
 
                             if ($interviewer->save()) {
 
+                                $user = [];
+                                $users = [];
                                 $interviewer_detail = new InterviewerDetail();
                                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                                 $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
@@ -428,6 +509,11 @@ class SchedularController extends Controller
                                 $interviewer_detail->name = $i['name'];
                                 $interviewer_detail->email = $i['email'];
                                 $interviewer_detail->phone = $i['phone'];
+                                $user['interviewer_enc_id'] = $interviewer_detail->interviewer_detail_enc_id;
+                                $user['name'] = $interviewer_detail->name;
+                                $user['email'] = $interviewer_detail->email;
+                                array_push($users, $user);
+
                                 if (!$interviewer_detail->save()) {
                                     $transaction->rollback();
                                     return false;
@@ -443,7 +529,7 @@ class SchedularController extends Controller
                 }
 
                 $transaction->commit();
-                return true;
+                return $users;
             } else {
                 $transaction->rollback();
                 return false;
