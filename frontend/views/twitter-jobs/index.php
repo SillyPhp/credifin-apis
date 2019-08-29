@@ -40,12 +40,15 @@ $this->params['header_dark'] = true;
 <section>
     <div class="container">
         <div class="row">
+            <?php
+            if (!empty($tweets)):
+            ?>
             <div class="masonry">
                 <div id="twitter_jobs_cards">
 
                 </div>
                 <?php
-                if (!empty($tweets)):
+
                 foreach ($tweets as $tweet) {
                     ?>
                     <div class="tweet-main">
@@ -73,16 +76,18 @@ $this->params['header_dark'] = true;
                     </div>
                     <?php
                 }
+                ?>
+            </div>
+            <?php
                 else:
-                    ?>
+                ?>
                 <div class="no_tweets_found">
                     <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
                 </div>
 
-                <?php
-                endif;
-                ?>
-            </div>
+            <?php
+            endif;
+            ?>
         </div>
     </div>
 </section>
@@ -92,6 +97,7 @@ $this->registerCss("
 .z-index-9{z-index:9;}
 .not-found{
     max-width: 400px;
+    width:100%;
     margin: auto;
     display: block;
 }
@@ -397,6 +403,11 @@ float:right;
 .overlay-image.i-4 {
     bottom: 0px;
     left: 20%;
+}
+@media only screen and (max-width: 550px){
+    .overlay-image {
+        max-width: 115px;
+    }
 }
 ");
 $script = <<< JS
