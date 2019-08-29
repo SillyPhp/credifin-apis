@@ -36,7 +36,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 <section class="bg-blue">
-    <div class="container-fluid">
+    <div class="large-container">
         <div class="row">
             <div class="col-md-2 color-bg">
                 <div class="top-categories">
@@ -258,6 +258,12 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.large-container{
+    max-width: 1500px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin:auto;
+}
 .footer{
 margin-top:0px !important;
 }
@@ -288,7 +294,7 @@ padding-right:0px;
 padding-left:0px;
 }
 .bg-blue{
-background:#ecf5fe;
+//background:#ecf5fe;
 }
 .color-bg{
 padding-top:0px;
@@ -381,24 +387,32 @@ float: left;
 }
 /*----------*/
 .video-frame{
-max-height:480px;
-width:100%;
+    max-height: 480px;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -20px;
+    border-radius: 10px 10px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
 .white-bg{
-background:#fff;
-border-left:1px solid #eee;
-border-right:1px solid #eee;
-padding:20px 30px 30px 30px;
+    background:#fff;
+    border-left:1px solid #eee;
+    border-right:1px solid #eee;
+    padding:20px 30px 30px 30px;
+    box-shadow: 0px 1px 10px 0px #ddd;
+    margin: 20px 0px;
+    border-radius: 10px;
 }
 .video-options{
-padding:5px 10px;
-border:1px solid #262626;
-border-radius:0 0 5px 5px;
-background:#262626;
+    padding:5px 10px;
+    border:1px solid #262626;
+    background:#262626;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -6px;
 }
 .flex-view{
 display:flex;
@@ -569,7 +583,7 @@ display:inline-block;
 padding:5px 10px;
 border:1px solid #999;
 border-radius:8px;
-margin-right:5px;
+margin:3px;
 }
 .v-tags ul a li{
 margin-bottom:10px;
@@ -577,7 +591,7 @@ margin-bottom:10px;
 .video-container{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
-    height:auto;
+    height:182px;
     position:relative;
     margin-bottom:20px;
 }

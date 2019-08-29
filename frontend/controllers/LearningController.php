@@ -445,6 +445,8 @@ class LearningController extends Controller
                     ->alias('a')
                     ->joinWith(['learningVideoTags b'], false)
                     ->where(['in', 'b.tag_enc_id', $tags_id])
+                    ->andWhere(['a.status' => 1])
+                    ->andWhere(['a.is_deleted' => 0])
                     ->andWhere(['!=', 'b.video_enc_id', $current_video_id['video_enc_id']])
                     ->asArray()
                     ->all();
