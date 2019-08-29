@@ -1,11 +1,9 @@
 <?php
-
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-
 ?>
     <div class="container">
         <div class="portlet light" id="form_wizard_1">
