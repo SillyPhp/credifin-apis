@@ -7,5 +7,5 @@ use yii\helpers\Url; ?>
 
 <p>send your confirmation</p>
 
-<a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id'],'https')?>">Accept</a>
-<a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id'],'https')?>">Reject</a>
+<a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=accept','https')?>">Accept</a>
+<a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=reject','https')?>">Reject</a>

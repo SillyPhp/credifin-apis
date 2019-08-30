@@ -7,6 +7,7 @@ use common\models\ApplicationInterviewLocations;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\AppliedApplicationProcess;
 use common\models\AppliedApplications;
+use common\models\EmailLogs;
 use common\models\EmployerApplications;
 use common\models\extended\OrganizationInterviewProcess;
 use common\models\InterviewCandidates;
@@ -38,14 +39,22 @@ class SchedularController extends Controller
         }
     }
 
-    public function actionInerviewerStatus($id)
+    public function actionInerviewerStatus($id, $type)
     {
         $interviewer_details = InterviewerDetail::find()
-            ->where(['interviewer_detail_enc_id'=> $id])
+            ->where(['interviewer_detail_enc_id' => $id])
             ->one();
 
-        if(!empty($interviewer_details)){
-            $interviewer_details->status = 1;
+        if (!empty($interviewer_details)) {
+            if ($type == 'accept') {
+                $interviewer_details->status = 1;
+            } elseif ($type == 'reject') {
+                $interviewer_details->status = 2;
+            }
+
+            if($interviewer_details->update()){
+
+            }
         }
     }
 
@@ -260,13 +269,16 @@ class SchedularController extends Controller
 
             $save = $this->saveData($res);
             if ($save) {
-               $this->sendComapanyMail();
-//                print_r(Yii::$app->user->identity->organization->name);
-//                print_r(Yii::$app->user->identity->organization->email);
+
+                $this->sendComapanyMail();
                 if ($res['interviewer_options']) {
-                    $this->sendInterviewerMail($save, $res['interviewer_options']);
+                    $this->sendInterviewerMail($save[2], $res['interviewer_options']);
                 }
-                die();
+                if($res['type'] == 'fixed'){
+                    $this->findCandidates($save[1],$save[0]->application_enc_id);
+                }elseif ($res['type'] == 'flexible'){
+                    $this->findCandidatesFlexible($save[0]->scheduled_interview_enc_id);
+                }
                 return [
                     'status' => 200,
                     'response' => $res
@@ -289,12 +301,20 @@ class SchedularController extends Controller
             "name" => Yii::$app->user->identity->organization->name,
             "email" => Yii::$app->user->identity->organization->email,
         ];
-        print_r($mail->receivers);
         $mail->subject = 'new interview scheduled by your organization';
         $mail->data = ['job' => 'scipy job'];
         $mail->template = 'interview-schedular';
         if ($mail->send()) {
-            return true;
+            $mail_logs = new EmailLogs();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $mail_logs->email_log_enc_id = $utilitiesModel->encrypt();
+            $mail_logs->email_type = 3;
+            $mail_logs->user_enc_id = Yii::$app->user->identity->user_enc_id;
+            $mail_logs->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $mail_logs->subject = $mail->subject;
+            $mail_logs->template = $mail->template;
+            $mail_logs->save();
         }
     }
 
@@ -316,11 +336,72 @@ class SchedularController extends Controller
                 $mail->data = ['job' => 'scipy', 'id' => $i['interviewer_enc_id']];
                 $mail->template = 'request-for-acceptance';
             }
-            if (!$mail->send()) {
-                return false;
+            if ($mail->send()) {
+
             }
         }
-        return true;
+    }
+
+    private function sendCandidateMail($applied_candidate){
+
+        $candidates = [];
+        $user = [];
+
+        foreach ($applied_candidate as $a){
+            $user['name'] = $a['name'];
+            $user['email'] = $a['email'];
+            array_push($candidates,$user);
+        }
+
+        $mail = Yii::$app->mail;
+        $mail->receivers = [];
+        $mail->receivers = $candidates;
+        $mail->subject = 'interview scheduled by company for scipy';
+        $mail->data = ['job' => 'scipy job'];
+        $mail->template = 'interview-schedular';
+        if ($mail->send()) {
+
+        }
+    }
+
+    private function findCandidatesFlexible($id){
+            $candidate = InterviewCandidates::find()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id','CONCAT(c.first_name, " ", c.last_name) name','c.email'])
+                ->joinWith(['appliedApplicationEnc b'=>function($b){
+                    $b->joinWith(['createdBy c']);
+                }],false)
+                ->where(['a.scheduled_interview_enc_id'=>$id])
+                ->asArray()
+                ->all();
+
+            if(!empty($candidate)){
+                $this->sendCandidateMail($candidate);
+            }
+    }
+
+    private function findCandidates($data,$app_id){
+        $applied_candidates = AppliedApplications::find()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id', 'a.resume_enc_id', 'b.user_enc_id', 'CONCAT(c.first_name, " ", c.last_name) name','c.email' , 'a.current_round', 'e.sequence'])
+            ->joinWith(['resumeEnc b' => function ($x) {
+                $x->joinWith(['userEnc c']);
+            }], false)
+            ->joinWith(['appliedApplicationProcesses d' => function ($d) use ($data) {
+                $d->joinWith(['fieldEnc e']);
+                $d->where(['d.field_enc_id' => $data->process_field_enc_id]);
+            }], false)
+            ->where([
+                'application_enc_id' => $app_id
+            ])
+            ->andWhere(new \yii\db\Expression('`a`.`current_round` = `e`.`sequence`'))
+            ->groupBy(['b.user_enc_id'])
+            ->asArray()
+            ->all();
+
+        if(!empty($applied_candidates)){
+            $this->sendCandidateMail($applied_candidates);
+        }
     }
 
     private function divideTime($StartTime, $EndTime, $Duration)
@@ -368,6 +449,7 @@ class SchedularController extends Controller
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $required_data = [];
             $interview = new ScheduledInterview();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -380,6 +462,7 @@ class SchedularController extends Controller
             }
             $interview->created_by = Yii::$app->user->identity->user_enc_id;
             $interview->created_on = date('Y-m-d H:i:s');
+            array_push($required_data,$interview);
 
             if ($interview->save()) {
 
@@ -400,6 +483,7 @@ class SchedularController extends Controller
                             $interview_options->interviewer_required = 1;
                         }
                     }
+                    array_push($required_data,$interview_options);
                     if (!$interview_options->save()) {
                         $transaction->rollback();
                         return false;
@@ -441,6 +525,7 @@ class SchedularController extends Controller
                 } elseif ($data['type'] == 'flexible') {
 
                     foreach ($candidate_applications as $application_enc_id) {
+                        $candidate_data = [];
                         $interview_candidate = new InterviewCandidates();
                         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                         $interview_candidate->interview_candidate_enc_id = $utilitiesModel->encrypt();
@@ -448,11 +533,14 @@ class SchedularController extends Controller
                         $interview_candidate->type = $data['type'];
                         $interview_candidate->scheduled_interview_enc_id = $interview['scheduled_interview_enc_id'];
                         $interview_candidate->applied_application_enc_id = $application_enc_id;
+                        array_push($candidate_data,$interview_candidate);
                         if (!$interview_candidate->save()) {
                             $transaction->rollback();
                             return false;
                         }
                     }
+                    array_push($required_data,$candidate_data);
+
 
                     foreach ($data['timings'] as $date => $time) {
 
@@ -488,6 +576,8 @@ class SchedularController extends Controller
                 }
 
                 if ($data['interviewers']) {
+                    $user = [];
+                    $users = [];
 
                     foreach ($data['interviewers'] as $i) {
 
@@ -500,8 +590,7 @@ class SchedularController extends Controller
 
                             if ($interviewer->save()) {
 
-                                $user = [];
-                                $users = [];
+
                                 $interviewer_detail = new InterviewerDetail();
                                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                                 $interviewer_detail->interviewer_detail_enc_id = $utilitiesModel->encrypt();
@@ -525,11 +614,12 @@ class SchedularController extends Controller
                         }
 
                     }
+                  array_push($required_data,$users);
 
                 }
 
                 $transaction->commit();
-                return $users;
+                return $required_data;
             } else {
                 $transaction->rollback();
                 return false;

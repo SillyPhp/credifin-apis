@@ -348,6 +348,7 @@ class DashboardController extends Controller
 //                'd.process_field_enc_id'
             ])
             ->innerJoinWith(['appliedApplicationEnc b' => function ($b) {
+                $b->joinWith(['createdBy y'],false);
                 $b->joinWith(['applicationEnc e' => function ($e) {
                     $e->joinWith(['designationEnc z']);
                     $e->joinWith(['organizationEnc f']);
@@ -592,6 +593,7 @@ class DashboardController extends Controller
                     $interview_candidates->interview_date_timing_enc_id = $date_enc_id;
 
                     if ($interview_candidates->update()) {
+                        $this->sendCandidateStatus($applied_app_enc_id,$status);
                         if ($status == 2) {
                             return [
                                 'status' => 200,
@@ -645,6 +647,7 @@ class DashboardController extends Controller
                         $save_fixed_user_acceptance->applied_application_enc_id = $applied_app_enc_id;
                         $save_fixed_user_acceptance->status = $status;
                         if ($save_fixed_user_acceptance->save()) {
+                            $this->sendCandidateStatus($applied_app_enc_id,$status);
                             if ($status == 2) {
                                 return [
                                     'status' => 200,
@@ -674,6 +677,42 @@ class DashboardController extends Controller
 
         }
 
+    }
+
+    //send candidate status to company
+    private function sendCandidateStatus($applied_application_enc_id,$status){
+
+        if($status == 2){
+            $status = 'Accepted';
+        }elseif ($status == 3){
+            $status ='Rejected';
+        }
+
+        $org_detail = AppliedApplications::find()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id','c.name','c.email','CONCAT(d.first_name, " ", d.last_name) name'])
+            ->joinWith(['applicationEnc b'=>function($b){
+                $b->joinWith(['organizationEnc c']);
+            }],false)
+            ->joinWith(['createdBy d'])
+            ->where(['a.applied_application_enc_id'=>$applied_application_enc_id])
+            ->asArray()
+            ->one();
+
+        if(!empty($org_detail)){
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                'name' => $org_detail['name'],
+                'email' => $org_detail['email']
+            ];
+            $mail->subject = 'candidate status';
+            $mail->data = ['job' => $status];
+            $mail->template = 'interview-schedular';
+            if ($mail->send()) {
+
+            }
+        }
     }
 
     private function checkNumbers($s_id)
