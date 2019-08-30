@@ -95,4 +95,8 @@ class ApplicationOptions extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
+    public function getCurrencyEnc()
+    {
+        return $this->hasOne(Currencies::className(), ['currency_enc_id' => 'currency_enc_id']);
+    }
 }

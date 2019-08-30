@@ -31,11 +31,13 @@ class ShortJobs extends Model
     public $gender;
     public $exp;
     public $skills;
+    public $country = 'India';
+    public $currency;
 
     public function rules()
     {
         return [
-            [['job_title','skills','positions','exp','location','gender','job_profile','wage_type','job_type'],'required'],
+            [['job_title','skills','positions','exp','location','currency','country','gender','job_profile','wage_type','job_type'],'required'],
             [['email','description','fixed_wage','min_salary','max_salary'],'safe'],
             [['job_title'],'string','max'=>50],
             [['job_title','fixed_wage','min_salary','max_salary','positions','email'],'trim'],
@@ -144,6 +146,7 @@ class ShortJobs extends Model
             $applicationoptionsModel->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_wage) : null);
             $applicationoptionsModel->ctc = null;
             $applicationoptionsModel->wage_duration = 'Annually';
+            $applicationoptionsModel->currency_enc_id = $this->currency;
             $applicationoptionsModel->has_online_interview = 0;
             $applicationoptionsModel->has_questionnaire = 0;
             $applicationoptionsModel->positions = $this->positions;

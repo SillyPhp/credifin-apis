@@ -3,6 +3,7 @@
 namespace account\models\applications;
 
 use common\models\ApplicationOption;
+use common\models\Currencies;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -747,7 +748,15 @@ class ApplicationForm extends Model
         $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
         return $que;
     }
-
+    public function getCurrency()
+    {
+        $d = Currencies::find()
+            ->select(['currency_enc_id','CONCAT(code," ",html_code) code'])
+            ->orderBy([new \yii\db\Expression('FIELD (code, "INR") DESC, code ASC')])
+            ->asArray()->all();
+        $d = ArrayHelper::map($d, 'currency_enc_id', 'code');
+        return $d;
+    }
     public function getOrganizationLocations($type = 1)
     {
         $loc_list = OrganizationLocations::find()
