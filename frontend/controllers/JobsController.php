@@ -916,7 +916,7 @@ class JobsController extends Controller
                 }], false)
                 ->where(['a.assigned_to' => ucfirst('Jobs')])
                 ->orderBy([
-                    'total' => SORT_DESC,
+//                    'total' => SORT_DESC,
                     'b.name' => SORT_ASC,
                 ])
                 ->asArray()

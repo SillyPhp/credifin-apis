@@ -36,7 +36,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 <section class="bg-blue">
-    <div class="container-fluid">
+    <div class="large-container">
         <div class="row">
             <div class="col-md-2 color-bg">
                 <div class="top-categories">
@@ -113,12 +113,12 @@ $this->params['seo_tags'] = [
                                         <?= $video_detail['child_name']; ?></span></li>
                             </ul>
                         </div>
-                        <div class="v-tags">
-                            <ul id="tags-cont">
+                        <div class="v-tagss">
+                            <ul id="tags-cont" class="v-tags">
                                 <?php
                                 foreach ($video_detail['learningVideoTags'] as $v) {
                                     ?>
-                                    <li id="<?= $v['tag_enc_id'] ?>"> <?= $v['name']; ?></li>
+                                    <li id="<?= $v['tag_enc_id'] ?>" class="v-tag"> <?= $v['name']; ?></li>
                                     <?php
                                 }
                                 ?>
@@ -258,6 +258,12 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.large-container{
+    max-width: 1500px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin:auto;
+}
 .footer{
 margin-top:0px !important;
 }
@@ -288,7 +294,7 @@ padding-right:0px;
 padding-left:0px;
 }
 .bg-blue{
-background:#ecf5fe;
+//background:#ecf5fe;
 }
 .color-bg{
 padding-top:0px;
@@ -381,24 +387,32 @@ float: left;
 }
 /*----------*/
 .video-frame{
-max-height:480px;
-width:100%;
+    max-height: 480px;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -20px;
+    border-radius: 10px 10px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
 .white-bg{
-background:#fff;
-border-left:1px solid #eee;
-border-right:1px solid #eee;
-padding:20px 30px 30px 30px;
+    background:#fff;
+    border-left:1px solid #eee;
+    border-right:1px solid #eee;
+    padding:20px 30px 30px 30px;
+    box-shadow: 0px 1px 10px 0px #ddd;
+    margin: 20px 0px;
+    border-radius: 10px;
 }
 .video-options{
-padding:5px 10px;
-border:1px solid #262626;
-border-radius:0 0 5px 5px;
-background:#262626;
+    padding:5px 10px;
+    border:1px solid #262626;
+    background:#262626;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -6px;
 }
 .flex-view{
 display:flex;
@@ -561,23 +575,74 @@ color:#000;
 .v-category span{
 font-weight:500;
 }
-.v-tags{
-padding:20px 0 20px;
+//.v-tags{
+//padding:20px 0 20px;
+//}
+//.v-tags ul li{
+//display:inline-block;
+//padding:5px 10px;
+//border:1px solid #999;
+//border-radius:8px;
+//margin:3px;
+//}
+//.v-tags ul a li{
+//margin-bottom:10px;
+//}
+.v-tags {
+  list-style: none;
+  margin: 0;
+  overflow: hidden; 
+  padding: 0;
+  margin-top:15px;
 }
-.v-tags ul li{
-display:inline-block;
-padding:5px 10px;
-border:1px solid #999;
-border-radius:8px;
-margin-right:5px;
+.v-tags li {
+  float: left; 
 }
-.v-tags ul a li{
-margin-bottom:10px;
+.v-tag {
+  background: #eee;
+  border-radius: 3px 0 0 3px;
+  color: #777;
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 20px 0 23px;
+  position: relative;
+  margin: 0 10px 10px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+}
+.v-tag::before {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  content: \'\';
+  height: 6px;
+  left: 10px;
+  position: absolute;
+  width: 6px;
+  top: 10px;
+}
+.v-tag::after {
+  background: #fff;
+  border-bottom: 13px solid transparent;
+  border-left: 10px solid #eee;
+  border-top: 13px solid transparent;
+  content: \'\';
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.v-tag:hover {
+  background-color: #00a0e3;
+  color: white;
+}
+.v-tag:hover::after {
+   border-left-color: #00a0e3; 
 }
 .video-container{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
-    height:auto;
+    height:182px;
     position:relative;
     margin-bottom:20px;
 }
@@ -869,6 +934,7 @@ position: relative;
 display:block;
 transition:.3s all;
 text-transform:capitalize;
+    text-align: left;
 }
 .tg-widgetcategories .tg-widgetcontent ul li a:hover{
 padding: 0 0 0 15px;
@@ -894,7 +960,7 @@ visibility: visible;
 border-top: 1px solid #e6e6e6;
 }
 .tg-widgetcontent ul li a span {
-float: left;
+float: none !Important;
 }
 
 .video-container2{
@@ -1236,8 +1302,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     <ul id="top-categories">
                         {{#.}}
                         <li>
-                            <a href="/learning/videos/category/{{slug}}"><span>{{parent_name}}</span>
-                                {{cnt}} </a></li>
+                            <a href="/learning/videos/category/{{slug}}"><span>{{name}}</span>
+<!--                                {{cnt}}-->
+                            </a>
+                        </li>
                         {{/.}}
                     </ul>
                 </div>

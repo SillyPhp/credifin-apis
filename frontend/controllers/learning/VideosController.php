@@ -81,12 +81,12 @@ class VideosController extends Controller
                     ->alias('a')
                     ->joinWith(['assignedCategoryEnc b' => function ($x) use($slug) {
                         $x->andOnCondition(['b.assigned_to' => 'Videos']);
-                        $x->andOnCondition(['b.status' => 'Approved']);
+//                        $x->andOnCondition(['b.status' => 'Approved']);
                         $x->andOnCondition(['b.is_deleted' => 0]);
-                        $x->joinWith(['parentEnc c' => function($y) use($slug){
+                        $x->innerJoinWith(['parentEnc c' => function($y) use($slug){
                             $y->andOnCondition(['c.slug' => $slug]);
-                        }], false);
-                    }], false)
+                        }]);
+                    }])
                     ->andWhere(['a.status' => 1])
                     ->andWhere(['a.is_deleted' => 0])
                     ->asArray()
