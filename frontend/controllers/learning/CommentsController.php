@@ -1,19 +1,18 @@
 <?php
 
-namespace frontend\controllers\blog;
+namespace frontend\controllers\learning;
 
+use common\models\LearningVideoComments;
+use common\models\LearningVideos;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
 use yii\helpers\Url;
-use common\models\Posts;
-use common\models\PostComments;
 use common\models\Utilities;
 
 class CommentsController extends Controller
 {
-
     public function actionGetParentComments()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -21,19 +20,18 @@ class CommentsController extends Controller
 
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $learning_video = LearningVideos::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
-            $result = PostComments::find()
+            $result = LearningVideoComments::find()
                 ->alias('a')
-                ->select(['a.post_enc_id','a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
-                ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -41,12 +39,10 @@ class CommentsController extends Controller
 
             $i = 0;
             foreach ($result as $r) {
-                $a = PostComments::find()
-                    ->where([
-                        'reply_to' => $r['comment_enc_id'],
-                        'post_enc_id' => $r['post_enc_id'],
-                        'is_deleted' => 0
-                    ])
+                $a = LearningVideoComments::find()
+                    ->where(['reply_to' => $r['comment_enc_id']])
+                    ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if ($a) {
                     $result[$i]['hasChild'] = true;
@@ -71,19 +67,18 @@ class CommentsController extends Controller
             $q = Yii::$app->request->post('param');
             $parent = Yii::$app->request->post('parent');
 
-            $post = Posts::find()
+            $learning_video = LearningVideos::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
-            $result = PostComments::find()
+            $result = LearningVideoComments::find()
                 ->alias('a')
                 ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => $parent])
-                ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
                 ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
@@ -104,16 +99,15 @@ class CommentsController extends Controller
             $comment = Yii::$app->request->post('comment');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $learning_video = LearningVideos::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if ($a = $this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
+            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, NULL)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -133,6 +127,7 @@ class CommentsController extends Controller
             }
 
         }
+
     }
 
     public function actionChildComment()
@@ -144,16 +139,15 @@ class CommentsController extends Controller
             $reply_id = Yii::$app->request->post('parent_id');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $learning_video = LearningVideos::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $current_user = Yii::$app->user->identity->user_enc_id;
 
-            if ($a = $this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
+            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, $reply_id)) {
                 $user_info = [
                     'logo' => Yii::$app->user->identity->image,
                     'username' => Yii::$app->user->identity->username,
@@ -174,15 +168,15 @@ class CommentsController extends Controller
         }
     }
 
-    private function saveComment($comment, $post_enc_id, $current_user, $reply_id = NULL)
+    private function saveComment($comment, $video_id, $current_user, $reply_id = NULL)
     {
-        $commentModel = new PostComments();
+        $commentModel = new LearningVideoComments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $commentModel->comment_enc_id = $utilitiesModel->encrypt();
         $commentModel->comment = $comment;
         $commentModel->reply_to = $reply_id;
-        $commentModel->post_enc_id = $post_enc_id;
+        $commentModel->video_enc_id = $video_id;
         $commentModel->user_enc_id = $current_user;
         $commentModel->created_on = date('Y-m-d H:i:s');
         if ($commentModel->save()) {

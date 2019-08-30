@@ -2,18 +2,6 @@
 
 namespace frontend\controllers;
 
-use common\models\AssignedCategories;
-use common\models\AssignedTags;
-use common\models\Categories;
-use common\models\LearningVideoComments;
-use common\models\LearningVideoLikes;
-use common\models\LearningVideos;
-use common\models\LearningVideoTags;
-use common\models\Roles;
-use common\models\SubmittedVideos;
-use common\models\Tags;
-use common\models\UserPrivileges;
-use common\models\Users;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
@@ -21,9 +9,20 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
 use common\models\Utilities;
+use common\models\AssignedCategories;
+use common\models\AssignedTags;
+use common\models\Categories;
+use common\models\LearningVideoComments;
+use common\models\LearningVideoLikes;
+use common\models\LearningVideos;
+use common\models\LearningVideoTags;
+use common\models\SubmittedVideos;
+use common\models\Tags;
+use common\models\Users;
 
 class LearningController extends Controller
 {
+
     public function behaviors()
     {
         return [
@@ -339,7 +338,7 @@ class LearningController extends Controller
         $categories = AssignedCategories::find()
             ->alias('a')
             ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
-            ->joinWith(['learningVideos b' => function($b){
+            ->joinWith(['learningVideos b' => function ($b) {
                 $b->andOnCondition(['b.status' => 1]);
                 $b->andOnCondition(['b.is_deleted' => 0]);
             }], false)
@@ -370,7 +369,7 @@ class LearningController extends Controller
             ->joinWith(['learningVideoTags c' => function ($x) {
                 $x->joinWith(['videoEnc d'], false);
             }], false)
-            ->joinWith(['assignedTags b' => function($b) {
+            ->joinWith(['assignedTags b' => function ($b) {
                 $b->andOnCondition(['b.assigned_to' => 2]);
                 $b->andOnCondition(['b.status' => 'Approved']);
                 $b->andOnCondition(['b.is_deleted' => 0]);
@@ -385,8 +384,8 @@ class LearningController extends Controller
 
         $contributors = Users::find()
             ->alias('a')
-            ->select(['a.user_type_enc_id','CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
-            ->innerJoinWith(['userTypeEnc b' => function($b){
+            ->select(['a.user_type_enc_id', 'CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
+            ->innerJoinWith(['userTypeEnc b' => function ($b) {
                 $b->andOnCondition(['b.user_type' => 'Contributor']);
             }], false)
             ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
@@ -499,7 +498,7 @@ class LearningController extends Controller
             }
             return ($response);
         }
-        if(!empty($video_detail)) {
+        if (!empty($video_detail)) {
             $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
             $likeStatus = LearningVideoLikes::find()
                 ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
@@ -527,7 +526,7 @@ class LearningController extends Controller
                 'dislike_count' => $dislikeCount,
                 'comment_count' => $commentCount,
             ]);
-        }else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
@@ -614,50 +613,10 @@ class LearningController extends Controller
         }
     }
 
-    public function actionGetParentComments()
+    public function actionBatchVideos()
     {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            $q = Yii::$app->request->post('param');
-
-            $learning_video = LearningVideos::find()
-                ->where(['slug' => $q])
-                ->andWhere(['status' => 1])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
-
-            $result = LearningVideoComments::find()
-                ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
-                ->joinWith(['userEnc b'], false)
-                ->where(['a.reply_to' => NULL])
-                ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
-                ->andWhere(['a.is_deleted' => 0])
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            $i = 0;
-            foreach ($result as $r) {
-                $a = LearningVideoComments::find()
-                    ->where(['reply_to' => $r['comment_enc_id']])
-                    ->andWhere(['video_enc_id' => $learning_video['video_enc_id']])
-                    ->andWhere(['is_deleted' => 0])
-                    ->exists();
-                if ($a) {
-                    $result[$i]['hasChild'] = true;
-                } else {
-                    $result[$i]['hasChild'] = false;
-                }
-                $i++;
-            }
-
-            return [
-                'status' => 200,
-                'result' => $result
-            ];
-        }
+        $this->layout = 'main-secondary';
+        return $this->render('batch-videos');
     }
 
     public function actionIncrementViews()
@@ -698,160 +657,26 @@ class LearningController extends Controller
         }
     }
 
-    public function actionGetChildComments()
-    {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            $q = Yii::$app->request->post('param');
-            $parent = Yii::$app->request->post('parent');
-
-            $learning_video = LearningVideos::find()
-                ->where(['slug' => $q])
-                ->andWhere(['status' => 1])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
-
-            $result = LearningVideoComments::find()
-                ->alias('a')
-                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
-                ->joinWith(['userEnc b'], false)
-                ->where(['a.reply_to' => $parent])
-                ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
-                ->andWhere(['a.is_deleted' => 0])
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            return [
-                'status' => 200,
-                'result' => $result
-            ];
-        }
-    }
-
-    public function actionParentComment()
-    {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            $comment = Yii::$app->request->post('comment');
-            $q = Yii::$app->request->post('param');
-
-            $learning_video = LearningVideos::find()
-                ->where(['slug' => $q])
-                ->andWhere(['status' => 1])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
-
-            $current_user = Yii::$app->user->identity->user_enc_id;
-
-            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, NULL)) {
-                $user_info = [
-                    'logo' => Yii::$app->user->identity->image,
-                    'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
-                    'color' => Yii::$app->user->identity->initials_color,
-                    'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
-                    'comment_enc_id' => $a
-                ];
-                return [
-                    'status' => 200,
-                    'user_info' => $user_info
-                ];
-            } else {
-                return [
-                    'status' => 201,
-                ];
-            }
-
-        }
-
-    }
-
-    public function actionChildComment()
-    {
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-
-            $comment = Yii::$app->request->post('reply');
-            $reply_id = Yii::$app->request->post('parent_id');
-            $q = Yii::$app->request->post('param');
-
-            $learning_video = LearningVideos::find()
-                ->where(['slug' => $q])
-                ->andWhere(['status' => 1])
-                ->andWhere(['is_deleted' => 0])
-                ->one();
-
-            $current_user = Yii::$app->user->identity->user_enc_id;
-
-            if ($a = $this->saveComment($comment, $learning_video['video_enc_id'], $current_user, $reply_id)) {
-                $user_info = [
-                    'logo' => Yii::$app->user->identity->image,
-                    'username' => Yii::$app->user->identity->username,
-                    'path' => Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image,
-                    'color' => Yii::$app->user->identity->initials_color,
-                    'name' => Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name,
-                    'comment_enc_id' => $a
-                ];
-                return [
-                    'status' => 200,
-                    'user_info' => $user_info
-                ];
-            } else {
-                return [
-                    'status' => 201,
-                ];
-            }
-        }
-    }
-
-    private function saveComment($comment, $video_id, $current_user, $reply_id = NULL)
-    {
-        $commentModel = new LearningVideoComments();
-        $utilitiesModel = new Utilities();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $commentModel->comment_enc_id = $utilitiesModel->encrypt();
-        $commentModel->comment = $comment;
-        $commentModel->reply_to = $reply_id;
-        $commentModel->video_enc_id = $video_id;
-        $commentModel->user_enc_id = $current_user;
-        $commentModel->created_on = date('Y-m-d H:i:s');
-        if ($commentModel->save()) {
-            return $commentModel->comment_enc_id;
-        } else {
-            return false;
-        }
-    }
-
-    public function actionBatchVideos(){
-        $this->layout = 'main-secondary';
-        return $this->render('batch-videos');
-    }
-
     public function actionSaveVideoData()
     {
-
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
-
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-
             $data = Yii::$app->request->post();
-            foreach ($data['data'] as $d){
-                if(!$this->saveData($d)){
+            foreach ($data['data'] as $d) {
+                if (!$this->saveData($d)) {
                     return false;
                 }
             }
             return $response = [
-                    'status'=>200,
-                    'message'=>'saved successfully'
-                ];
+                'status' => 200,
+                'message' => 'saved successfully'
+            ];
         }
 
     }
 
-    private function saveData($data){
+    private function saveData($data)
+    {
         $submittedVideosModel = new SubmittedVideos();
         $utilitiesModel = new Utilities();
         $submittedVideosModel->channel_id = $data['channel_id'];
@@ -862,7 +687,7 @@ class LearningController extends Controller
         $submittedVideosModel->description = $data['description'];
         $submittedVideosModel->video_duration = $this->video_length($data['duration']);
         if (!empty($data['tags'])) {
-            $submittedVideosModel->tags = implode(',',$data['tags']);
+            $submittedVideosModel->tags = implode(',', $data['tags']);
         }
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();

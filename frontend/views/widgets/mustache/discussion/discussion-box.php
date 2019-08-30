@@ -58,13 +58,13 @@ $this->registerJs('
     
     $.ajax({
         type: "POST",
-        url: "/'. Yii::$app->controller->id . '/comments/get-parent-comments",
+        url: "/' . Yii::$app->controller->id . '/comments/get-parent-comments",
         async: false,
         data: {
             param: window.location.pathname.split("/")[2]
         },
         success: function(response){
-            if(response.status == 200){
+            if(response.status == 200 && response.result.length > 0){
                 var temp1 = document.getElementById("replytemp").innerHTML;
                 var output = Mustache.render(temp1, response.result);
                 var a = document.getElementById("activecomments");
@@ -78,7 +78,7 @@ $this->registerJs('
 $script = <<<JS
     
     //main comment
-    function doComment(){
+    function doComment() {
         var toLogin= $('#user_id').val();
         if(!toLogin){
             $('#loginModal').modal('show');
@@ -116,15 +116,11 @@ $script = <<<JS
                 result['username'] = response.user_info.username;
                 
                 if (response.status == 200) {
-                   
                     var temp1 = document.getElementById("replytemp").innerHTML;
                     var output = Mustache.render(temp1, result);
-                   
                     var a = document.getElementById("activecomments");
-                    
                     var b = document.createElement('div');
                     b.innerHTML = output;
-                
                     a.prepend(b);
                     utilities.initials();
                     document.getElementById("commentArea").classList.remove("errorClass");
@@ -143,6 +139,7 @@ $script = <<<JS
     
     $(document).on('click', '#sendComment', function(){
         doComment();
+        return false;
     });
 
     $(document).bind('keypress','#commentReply', function(e) {

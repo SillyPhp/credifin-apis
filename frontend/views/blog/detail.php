@@ -60,8 +60,8 @@ $this->params['seo_tags'] = [
                             <?= $post['description']; ?>
                         </div>
                     </div>
-                    <!--                    <div class="divider"></div>-->
-                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <div class="divider"></div>
+                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -90,20 +90,6 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <!--                            <div class="popular-heading about-heading"> About Blog</div>-->
-                            <!--                            <div class="blog-tags">-->
-                            <!--                                <span>Category:</span>-->
-                            <!--                                <ul>-->
-                            <!--                                    --><?php
-                            //                                    foreach ($post['postCategories'] as $cat) {
-                            //                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                            //                                    }
-                            //                                    ?>
-                            <!--                                </ul>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="blog-pub">-->
-                            <!--                                <span>Published:</span> -->
-                            <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
                                 <span>Tags:</span>
                                 <ul>
@@ -130,7 +116,7 @@ $this->params['seo_tags'] = [
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
-                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
+                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3">
                                     <div class="video-container">
                                         <a href="/blog/<?= $related['slug'] ?>">
                                             <div class="video-icon">
@@ -152,6 +138,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 $this->registerCss('
