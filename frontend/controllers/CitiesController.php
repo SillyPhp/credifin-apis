@@ -58,6 +58,21 @@ class CitiesController extends Controller
             return $cities;
         }
     }
+    public function actionCountryList($q = null)
+    {
+        if (!is_null($q)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Countries::find()
+                ->alias('a')
+                ->select(['a.name text','a.country_enc_id id'])
+                ->where('a.name LIKE "' . $q . '%"')
+                ->limit(20)
+                ->asArray()
+                ->all();
+            $out['results'] = array_values($data);
+            return $out;
+        }
+    }
 
     public function actionCareerCityList($q = null,$cid='b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09')
     {

@@ -1,7 +1,10 @@
 <?php
 
 namespace frontend\controllers;
+use account\models\applications\ApplicationForm;
 use common\models\TwitterJobs;
+use frontend\models\applications\QuickJob;
+use frontend\models\twitterjobs\TwitterJobsForm;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -71,5 +74,29 @@ class TwitterJobsController extends Controller
                 ];
             }
     }
+   }
+
+   public function actionCreate()
+   {
+       $this->layout = 'main-secondary';
+       $model = new TwitterJobsForm();
+       $data = new ApplicationForm();
+       $primary_cat = $data->getPrimaryFields();
+       if ($model->load(Yii::$app->request->post())) {
+           Yii::$app->response->format = Response::FORMAT_JSON;
+           if ($model->save())
+           {
+               return [
+                   'status'=>true,
+               ];
+           }
+           else
+           {
+               return [
+                   'status'=>false,
+               ];
+           }
+       }
+       return $this->render('create-twitter-post.php',['primary_cat'=>$primary_cat,'model'=>$model]);
    }
 }
