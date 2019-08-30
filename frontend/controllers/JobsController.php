@@ -347,6 +347,28 @@ class JobsController extends Controller
         }
     }
     public function actionQuickJob()
+{
+    $this->layout = 'main-secondary';
+    $model = new QuickJob();
+    $typ = 'Jobs';
+    $data = new ApplicationForm();
+    $primary_cat = $data->getPrimaryFields();
+    $job_type = $data->getApplicationTypes();
+    if ($model->load(Yii::$app->request->post()))
+    {
+        if ($model->save($typ))
+        {
+            Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+        }
+        else
+        {
+            Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+        }
+        return $this->refresh();
+    }
+    return $this->render('quick-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+}
+    public function actionTwitterJob()
     {
         $this->layout = 'main-secondary';
         $model = new QuickJob();
@@ -366,7 +388,7 @@ class JobsController extends Controller
             }
             return $this->refresh();
         }
-        return $this->render('quick-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+        return $this->render('twitter-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
     }
     public function actionJobPreview($eipdk)
     {
