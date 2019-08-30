@@ -16,22 +16,22 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section class="topics-main">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Topics</div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="popular-cate">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="topics-main">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="heading-style">Topics</div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="popular-cate">-->
+<!---->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
 <!--    <section>-->
 <!--        <div class="container">-->
