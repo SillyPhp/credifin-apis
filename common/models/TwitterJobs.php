@@ -31,6 +31,7 @@ use Yii;
  * @property string $last_updated_on On which date information was updated
  * @property string $last_updated_by By which User information was updated
  *
+ * @property TwitterJobSkills[] $twitterJobSkills
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property UnclaimedOrganizations $unclaimOrganizationEnc
@@ -38,6 +39,7 @@ use Yii;
  * @property AssignedCategories $jobTitle
  * @property Categories $profile0
  * @property ApplicationTypes $applicationTypeEnc
+ * @property TwitterPlacementCities[] $twitterPlacementCities
  */
 class TwitterJobs extends \yii\db\ActiveRecord
 {
@@ -76,6 +78,14 @@ class TwitterJobs extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobSkills()
+    {
+        return $this->hasMany(TwitterJobSkills::className(), ['tweet_enc_id' => 'tweet_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -131,5 +141,13 @@ class TwitterJobs extends \yii\db\ActiveRecord
     public function getApplicationTypeEnc()
     {
         return $this->hasOne(ApplicationTypes::className(), ['application_type_enc_id' => 'application_type_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterPlacementCities()
+    {
+        return $this->hasMany(TwitterPlacementCities::className(), ['tweet_enc_id' => 'tweet_enc_id']);
     }
 }
