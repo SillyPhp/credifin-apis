@@ -11,6 +11,7 @@ use Yii;
  * @property string $tweet_enc_id tweet Encrypted Encrypted ID
  * @property string $unclaim_organization_enc_id unclaim organization enc id
  * @property string $claim_organization_enc_id
+ * @property string $application_type_enc_id
  * @property string $profile job profile
  * @property string $job_title job title
  * @property string $wage_type
@@ -36,6 +37,7 @@ use Yii;
  * @property Organizations $claimOrganizationEnc
  * @property AssignedCategories $jobTitle
  * @property Categories $profile0
+ * @property ApplicationTypes $applicationTypeEnc
  */
 class TwitterJobs extends \yii\db\ActiveRecord
 {
@@ -58,7 +60,7 @@ class TwitterJobs extends \yii\db\ActiveRecord
             [['fixed_wage', 'min_wage', 'max_wage'], 'number'],
             [['is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['tweet_enc_id', 'unclaim_organization_enc_id', 'claim_organization_enc_id', 'profile', 'job_title', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['tweet_enc_id', 'unclaim_organization_enc_id', 'claim_organization_enc_id', 'application_type_enc_id', 'profile', 'job_title', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['url', 'contact_email', 'apply_url', 'author_name', 'author_url'], 'string', 'max' => 255],
             [['tweet_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -67,6 +69,7 @@ class TwitterJobs extends \yii\db\ActiveRecord
             [['claim_organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['claim_organization_enc_id' => 'organization_enc_id']],
             [['job_title'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['job_title' => 'assigned_category_enc_id']],
             [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['profile' => 'category_enc_id']],
+            [['application_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationTypes::className(), 'targetAttribute' => ['application_type_enc_id' => 'application_type_enc_id']],
         ];
     }
 
@@ -120,5 +123,13 @@ class TwitterJobs extends \yii\db\ActiveRecord
     public function getProfile0()
     {
         return $this->hasOne(Categories::className(), ['category_enc_id' => 'profile']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationTypeEnc()
+    {
+        return $this->hasOne(ApplicationTypes::className(), ['application_type_enc_id' => 'application_type_enc_id']);
     }
 }

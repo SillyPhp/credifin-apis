@@ -76,15 +76,16 @@ class TwitterJobsController extends Controller
     }
    }
 
-   public function actionCreate()
+   public function actionJob()
    {
        $this->layout = 'main-secondary';
        $model = new TwitterJobsForm();
        $data = new ApplicationForm();
+       $type = 'Jobs';
        $primary_cat = $data->getPrimaryFields();
        if ($model->load(Yii::$app->request->post())) {
            Yii::$app->response->format = Response::FORMAT_JSON;
-           if ($model->save())
+           if ($model->save($type))
            {
                return [
                    'status'=>true,
@@ -97,6 +98,31 @@ class TwitterJobsController extends Controller
                ];
            }
        }
-       return $this->render('create-twitter-post.php',['primary_cat'=>$primary_cat,'model'=>$model]);
+       return $this->render('create-twitter-post.php',['type'=>$type,'primary_cat'=>$primary_cat,'model'=>$model]);
    }
+
+    public function actionInternship()
+    {
+        $this->layout = 'main-secondary';
+        $model = new TwitterJobsForm();
+        $data = new ApplicationForm();
+        $type = 'Internships';
+        $primary_cat = $data->getPrimaryFields();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($model->save($type))
+            {
+                return [
+                    'status'=>true,
+                ];
+            }
+            else
+            {
+                return [
+                    'status'=>false,
+                ];
+            }
+        }
+        return $this->render('create-twitter-post.php',['type'=>$type,'primary_cat'=>$primary_cat,'model'=>$model]);
+    }
 }

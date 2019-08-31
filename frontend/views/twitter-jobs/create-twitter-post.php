@@ -5,8 +5,9 @@ use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
-$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/twitterbg.png';
 $url2 = \yii\helpers\Url::to(['/cities/country-list']);
+Yii::$app->view->registerJs('var typ = "'. $type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
 function cities_url(){
@@ -17,25 +18,23 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
-        <?php
-        if (Yii::$app->session->hasFlash('success')):
-            echo "<div class='m-cover hidden'></div>
+       <div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
-                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
-                        <p>Your Application has successfully submitted.</p>
+                        <p>Your <?= (($type=="Jobs")?"Job":"Internship") ?> Tweet Has Been has successfully Posted.</p>
+                        <img src='/assets/themes/ey/images/pages/jobs/submitted.png'>
                         <div class='m-actions'>
-                            <a href='javascript:;' class='close-m-mo'>Post Another Job</a>
-                            <a href='/internships/quick-internship'>Post Internship</a>
+                            <?php if ($type=="Jobs"): ?>
+                            <a href='javascript:;' class='close-m-mo'>Tweet Another Job</a>
+                            <a href='/twitter-jobs/internship'>Tweet Another Internship</a>
+                            <?php else: ?>
+                            <a href='/twitter-jobs/job' class='close-m-mo'>Tweet Another Job</a>
+                            <a href='javascript:;'>Tweet Another Internship</a>
+                            <?php endif; ?>
                             <a href='/signup/individual'>Signup or Login</a>
                         </div>
                     </div>
-                </div>";
-        else:
-            Yii::$app->session->hasFlash('error');
-            echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
-        endif;
-        ?>
+                </div>
         <div class="f-contain">
             <div class="form-wrapper">
                 <div class="row">
@@ -62,10 +61,10 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile'])->label(false); ?>
+                                        <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")? "Job" : "Internship").' Profile'])->label(false); ?>
                                     </div>
                                     <div class="col-lg-6">
-                                        <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control','placeholder'=>'Job Title'])->label(false); ?>
+                                        <?= $form->field($model, 'title')->textInput(['class' => 'capitalize form-control','placeholder'=>''.(($type=="Jobs")? "Job" : "Internship").' Title'])->label(false); ?>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -273,7 +272,7 @@ $(document).on('submit','#twitter_form',function(e) {
             },
         dataType:"jsonp",
         beforeSend: function () {
-             $('.sbt_btn').html('Post Tweet <i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+             $('.sbt_btn').html('Post Tweet <i class="fas fa-circle-notch fa-spin fa-fw"></i>');
              $('.sbt_btn').attr('disabled','disabled');
         },
         success: function (response,textStatus,xhr) {
@@ -287,7 +286,54 @@ $(document).on('submit','#twitter_form',function(e) {
                  btn_setting();
             });
 })
-
+$('#profile').on('change',function()
+    {
+      prime_id = $(this).val();
+      $('#title').val('');
+      $('#title').typeahead('destroy');
+      load_job_titles(prime_id);
+   });
+ if (typ=='Jobs'){ 
+var titles_url = '/categories-list/load-titles?id=';
+}
+else
+    {
+        var titles_url = '/categories-list/load-titles?type=Internships&id=';
+    }
+function load_job_titles(prime_id)
+{
+var categories = new Bloodhound({
+  datumTokenizer: function(d) {
+        var tokens = Bloodhound.tokenizers.whitespace(d.value);
+            $.each(tokens,function(k,v){
+                i = 0;
+                while( (i+1) < v.length ){
+                    tokens.push(v.substr(i,v.length));
+                    i++;
+                }
+            })
+            return tokens;
+        },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  {
+      url:titles_url+prime_id,
+      cache:false,
+      filter:function(res) {
+        job_titles = [];
+        job_titles = res;
+        return res;
+      }
+  }
+});
+$('#title').typeahead(null, {
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  limit: 20,
+});
+return true;
+}
 function btn_setting() {
   $('.sbt_btn').removeAttr('disabled');
   $('.sbt_btn').html('<i class="fa fa-twitter" aria-hidden="true"></i> Post Tweet');
@@ -320,16 +366,17 @@ function data_submit(name,html) {
       success:function(response) {
        if (response.status)
            {
-                toastr.success('Tweet Posted', 'Success');
-                        $('form').trigger('reset');
+                     $('form').trigger('reset');
                         btn_setting();
                         btn_setting();
                         btn_setting();
+                $('.m-modal, .m-cover').removeClass("hidden");
+                $('.m-modal').addClass("zoom");
            }
        else
            {
                toastr.error('Internal Server Error', 'Error');
-                        btn_setting();
+               btn_setting();
            }
       }
   })
@@ -402,9 +449,16 @@ $('#search-skill').typeahead(null, {
   {
       add_tags($(this),'skill_tag_list','skills');
    });
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
 $this->registerCss("
+body{
+    background-size:cover;
+}
 .logo-dark-color{
     background-color: #00a0e3;
     border-color: #00a0e3;
@@ -750,7 +804,9 @@ float:right;
   left: 0;
   opacity: .9;
 }
-
+.m-modal hidden{
+//display:none;
+}
 .m-modal {
   z-index: 2;
   height: 370px;
