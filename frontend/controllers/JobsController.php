@@ -2,16 +2,6 @@
 
 namespace frontend\controllers;
 
-use account\models\applications\ApplicationForm;
-use common\models\ApplicationPlacementLocations;
-use common\models\AssignedCategories;
-use common\models\BusinessActivities;
-use common\models\Cities;
-use common\models\OrganizationLocations;
-use common\models\Skills;
-use frontend\models\applications\CreateCompany;
-use frontend\models\applications\QuickJob;
-use frontend\models\workingProfiles\WorkingProfile;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -35,6 +25,7 @@ use common\models\Skills;
 use frontend\models\applications\CreateCompany;
 use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
+use account\models\applications\ApplicationForm;
 
 class JobsController extends Controller
 {
@@ -354,27 +345,24 @@ class JobsController extends Controller
     }
 
     public function actionQuickJob()
-{
-    $this->layout = 'main-secondary';
-    $model = new QuickJob();
-    $typ = 'Jobs';
-    $data = new ApplicationForm();
-    $primary_cat = $data->getPrimaryFields();
-    $job_type = $data->getApplicationTypes();
-    if ($model->load(Yii::$app->request->post()))
     {
-        if ($model->save($typ))
-        {
-            Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+        $this->layout = 'main-secondary';
+        $model = new QuickJob();
+        $typ = 'Jobs';
+        $data = new ApplicationForm();
+        $primary_cat = $data->getPrimaryFields();
+        $job_type = $data->getApplicationTypes();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save($typ)) {
+                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            }
+            return $this->refresh();
         }
-        else
-        {
-            Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
-        }
-        return $this->refresh();
+        return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
     }
-    return $this->render('quick-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
-}
+
     public function actionTwitterJob()
     {
         $this->layout = 'main-secondary';
@@ -383,19 +371,15 @@ class JobsController extends Controller
         $data = new ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
-        if ($model->load(Yii::$app->request->post()))
-        {
-            if ($model->save($typ))
-            {
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save($typ)) {
                 Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
-            }
-            else
-            {
+            } else {
                 Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
             }
             return $this->refresh();
         }
-        return $this->render('twitter-job',['typ'=>$typ,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+        return $this->render('twitter-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
     }
 
     public function actionJobPreview($eipdk)
