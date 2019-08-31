@@ -103,7 +103,8 @@ class SearchController extends ApiBaseController{
             ->select([
                 'a.last_date',
                 'i.name category',
-                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+                'a.slug',
                 'd.initials_color color',
                 'CONCAT("' . Url::to('/', true) .'", d.slug) organization_link',
                 "g.name as city",
@@ -162,7 +163,8 @@ class SearchController extends ApiBaseController{
             ->select([
                 'a.last_date',
                 'a.type',
-                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+                'a.slug',
                 'i.name category',
                 'l.designation',
                 'd.initials_color color',
