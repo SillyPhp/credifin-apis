@@ -115,4 +115,9 @@ class TwitterJobsController extends Controller
         }
         return $this->render('create-twitter-post.php', ['type' => $type, 'primary_cat' => $primary_cat, 'model' => $model]);
     }
+
+    public function actionTest()
+    {
+        return Yii::$app->notificationEmails->userAppliedNotify();
+    }
 }
