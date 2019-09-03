@@ -3,36 +3,8 @@
 use yii\helpers\Url;
 
 $referral = Yii::$app->referral->getReferralCode("&");
-
-$this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
-$keywords = 'Empower youth,Jobs,Jobs near me,Job Search,Govt Jobs,Free Job alert,Naukri,Jobs in Delhi,Jobs in Mumbai';
-$description = "India's no. 1 free Job Portal her's you can get, Pharma Jobs, Finance Jobs, IT Jobs, Engernering Jobs, Digital Marketing Jobs, Manufacturing Jobs, and many Jobs & Internships.";
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
+
 ?>
 
 <section class="slider">
@@ -62,11 +34,11 @@ $this->params['seo_tags'] = [
                                         <div class="row no-gape">
                                             <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
                                                 <div class="job-field">
-                                                    <input type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input id="search-input" type="text" name="keyword" placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit">Search <i class="fas fa-search"></i></button>
+                                                <button type="submit" id="search-submit">Search <i class="fas fa-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -1688,6 +1660,13 @@ function scrollFunction() {
 	  infinite: true,
 	  dots: false
 	});
+});
+
+$(document).on('click','#search-submit',function() {
+   var value = $('#search-input').val();
+   if(value == ''){
+       return false;
+   }
 });
 
 JS;

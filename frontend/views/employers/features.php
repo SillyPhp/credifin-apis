@@ -2,36 +2,8 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-$this->title = Yii::t('frontend', 'ATS');
-$this->params['header_dark'] = false;
 
-$keywords = 'Application,Apply Now,Latest Jobs,Job Alert,Free Jobs Alert,Job Application,company';
-$description = 'ATS is applicant tracking system. It enables companies to track their applicants’ status. Ats makes interview scheduling, candidate record keeping, candidate comparison etc easy.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
+$this->params['header_dark'] = false;
 ?>
 <section class="animate-header">
     <div class="container">
@@ -86,7 +58,8 @@ $this->params['seo_tags'] = [
                         <div data-aos="fade-right" class="cf-heading">Interview Scheduler</div>
                     </div>
                     <div class="col-md-6 ">
-                        <div data-aos="fade-right" class="cf-subheading">Modernize the way of scheduling interviews</div>
+                        <div data-aos="fade-right" class="cf-subheading">Modernize the way of scheduling interviews
+                        </div>
                         <div data-aos="fade-right" class="cf-text">
                             Know the applicant’s interviewing schedule. You can keep record of exact time and
                             date of the interview and notify them instead of calling whenever needed.
@@ -120,8 +93,11 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-left" class="cf-subheading">Avoid the headache of keeping all applications together!</div>
-                        <div data-aos="fade-left" class="cf-text">You can take applications from different locations and keep them
+                        <div data-aos="fade-left" class="cf-subheading">Avoid the headache of keeping all applications
+                            together!
+                        </div>
+                        <div data-aos="fade-left" class="cf-text">You can take applications from different locations and
+                            keep them
                             together without missing any application. This can be easier for the applicants
                             also as they can approach you from anywhere and also you can manage all the applications.
                             <ul>
@@ -180,7 +156,9 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-left" class="cf-subheading">Presorted candidates according to your preferences</div>
+                        <div data-aos="fade-left" class="cf-subheading">Presorted candidates according to your
+                            preferences
+                        </div>
                         <div data-aos="fade-left" class="cf-text">
                             Allot every candidate with the work according to their skills in the resume.
                             Match patterns with the candidates qualifications and the work required in the job.
@@ -240,7 +218,8 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <div class="col-md-6 ">
-                        <div data-aos="fade-left" class="cf-subheading">Hiring the best fit for your company is a crucial part so compare
+                        <div data-aos="fade-left" class="cf-subheading">Hiring the best fit for your company is a
+                            crucial part so compare
                             candidates.
                         </div>
                         <div data-aos="fade-left" class="cf-text">
@@ -299,7 +278,8 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="col-md-6">
-                <div data-aos="fade-left" class="cf-subheading">Skip the hectic process of filling details, design your application with
+                <div data-aos="fade-left" class="cf-subheading">Skip the hectic process of filling details, design your
+                    application with
                     templates.
                 </div>
                 <div data-aos="fade-left" class="cf-text">
@@ -323,7 +303,9 @@ $this->params['seo_tags'] = [
                 <div data-aos="fade-right" class="heading-style">Chat Box</div>
             </div>
             <div class="col-md-6">
-                <div data-aos="fade-right" class="cf-subheading">Don’t you think that e-mails are professional but slow?</div>
+                <div data-aos="fade-right" class="cf-subheading">Don’t you think that e-mails are professional but
+                    slow?
+                </div>
                 <div data-aos="fade-right" class="cf-text">
                     Connect with the applicants with the chat box. You can have a smooth conversation with the
                     applicants

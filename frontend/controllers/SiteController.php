@@ -53,6 +53,16 @@ class SiteController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        $route = ltrim(Yii::$app->request->url, '/');
+        if ($route === "") {
+            $route = "/";
+        }
+        Yii::$app->seo->setSeoByRoute($route, $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $feedbackFormModel = new FeedbackForm();

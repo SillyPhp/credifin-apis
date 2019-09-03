@@ -4,35 +4,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 
 $this->params['header_dark'] = true;
-$this->title = Yii::t('frontend', 'Candidate Features');
-
-$keywords = 'Candidates,Jobs,Internships,Resume,Jobs Apply,Latest Jobs,Jobs in India';
-$description = 'Empoweryouth candidate feature page will help you to know the gist of the platform. see how the feature like ATS and immediate resume making makes the platform unique from others.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
     <section class="candidate-header">
         <div class="container">
@@ -41,21 +12,27 @@ $this->params['seo_tags'] = [
                     <div class="animation-relative">
                         <div class="element1" id="el1">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/2girls.png') ?>" id="text-img" alt="Candidates Features"/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/2girls.png') ?>"
+                                     id="text-img" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c1.png') ?>" alt="Candidates Features"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c1.png') ?>"
+                                 alt="Candidates Features"/>
                         </div>
                         <div class="element2">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/asst-boss.png') ?>" id="text-img3" alt="Candidates Features"/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/asst-boss.png') ?>"
+                                     id="text-img3" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c2.png') ?>" alt="Candidates Features"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c2.png') ?>"
+                                 alt="Candidates Features"/>
                         </div>
                         <div class="element3">
                             <div class="chat-box2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/boy.png') ?>" id="text-img2" alt="Candidates Features"/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/animation-company-feature/boy.png') ?>"
+                                     id="text-img2" alt="Candidates Features"/>
                             </div>
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c3.png') ?>" alt="Candidates Features"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/c3.png') ?>"
+                                 alt="Candidates Features"/>
                         </div>
                     </div>
                 </div>
@@ -79,7 +56,9 @@ $this->params['seo_tags'] = [
                         <div data-aos="fade-right" class="heading">Most informative jobs site ever!</div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-right" class="sub-heading"> Know every minor detail about the company before you apply</div>
+                        <div data-aos="fade-right" class="sub-heading"> Know every minor detail about the company before
+                            you apply
+                        </div>
 
                         <div data-aos="fade-right" class="feature-list">
                             <ul>
@@ -91,7 +70,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/job-info.png')?>" alt="Jobs Site">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/job-info.png') ?>"
+                                 alt="Jobs Site">
                         </div>
                     </div>
                 </div>
@@ -103,15 +83,19 @@ $this->params['seo_tags'] = [
             <div class="container">
                 <div class="cf-box">
                     <div class="col-md-6 col-md-offset-6">
-                        <div data-aos="fade-left" class="heading">Build your career with verified jobs and internships</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/build-career.png') ?>" alt="Build Career">
+                        <div data-aos="fade-left" class="heading">Build your career with verified jobs and internships
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-left" class="sub-heading">Tired of counterfeit jobs? Get only verified jobs without any doubt.</div>
+                        <div data-aos="fade-right" class="cf-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/build-career.png') ?>"
+                                 alt="Build Career">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div data-aos="fade-left" class="sub-heading">Tired of counterfeit jobs? Get only verified jobs
+                            without any doubt.
+                        </div>
 
                         <div data-aos="fade-left" class="feature-list">
                             <ul>
@@ -132,7 +116,9 @@ $this->params['seo_tags'] = [
                         <div data-aos="fade-right" class="heading">Give your review, might help someone!</div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-right" class="sub-heading">You can freely give your reviews and let others know your opinions.</div>
+                        <div data-aos="fade-right" class="sub-heading">You can freely give your reviews and let others
+                            know your opinions.
+                        </div>
 
                         <div data-aos="fade-right" class="feature-list">
                             <ul>
@@ -144,7 +130,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/reviews-icon.png')?>" alt="Give Review"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/reviews-icon.png') ?>"
+                                 alt="Give Review"/>
                         </div>
                     </div>
                 </div>
@@ -159,12 +146,15 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv.png')?>" alt="Build Resume"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv.png') ?>"
+                                 alt="Build Resume"/>
                         </div>
                     </div>
                     <div class="col-md-6">
 
-                        <div data-aos="fade-left" class="sub-heading">Don’t worry if you don’t have a resume. You can make your resume and apply for any job of your choice.</div>
+                        <div data-aos="fade-left" class="sub-heading">Don’t worry if you don’t have a resume. You can
+                            make your resume and apply for any job of your choice.
+                        </div>
 
                         <div data-aos="fade-left" class="feature-list">
                             <ul>
@@ -186,19 +176,22 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
 
-                        <div data-aos="fade-right" class="sub-heading">You can easily find us on various social media platforms. </div>
+                        <div data-aos="fade-right" class="sub-heading">You can easily find us on various social media
+                            platforms.
+                        </div>
 
                         <div data-aos="fade-right" class="feature-list">
                             <ul>
                                 <li>See posts related to new upgrades</li>
-                                <li>You can also drop comments and messages </li>
+                                <li>You can also drop comments and messages</li>
                                 <li>Also see posts related jobs and internships</li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/socialmedia.png')?>" alt="Connect with Us"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/socialmedia.png') ?>"
+                                 alt="Connect with Us"/>
                         </div>
                     </div>
                 </div>
@@ -213,12 +206,15 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv1.png')?>" alt="Drop Resume"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/cv1.png') ?>"
+                                 alt="Drop Resume"/>
                         </div>
                     </div>
                     <div class="col-md-6">
 
-                        <div data-aos="fade-left" class="sub-heading">Your dream company does not have any vacancies? Still apply.</div>
+                        <div data-aos="fade-left" class="sub-heading">Your dream company does not have any vacancies?
+                            Still apply.
+                        </div>
 
                         <div data-aos="fade-left" class="feature-list">
                             <ul>
@@ -239,7 +235,9 @@ $this->params['seo_tags'] = [
                         <div data-aos="fade-right" class="heading">Compare jobs and internships</div>
                     </div>
                     <div class="col-md-6">
-                        <div data-aos="fade-right" class="sub-heading">Know what is best for you! compare jobs and internships</div>
+                        <div data-aos="fade-right" class="sub-heading">Know what is best for you! compare jobs and
+                            internships
+                        </div>
 
                         <div data-aos="fade-right" class="feature-list">
                             <ul>
@@ -251,7 +249,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/comparejob.png')?>" alt="Compare Jobs and Internships">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/comparejob.png') ?>"
+                                 alt="Compare Jobs and Internships">
                         </div>
                     </div>
                 </div>
@@ -266,12 +265,15 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/confidential-info.png')?>" alt="Confidentiality of personal information"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/confidential-info.png') ?>"
+                                 alt="Confidentiality of personal information"/>
                         </div>
                     </div>
                     <div class="col-md-6">
 
-                        <div data-aos="fade-left" class="sub-heading">No worries of privacy any more, all your personal information will be safe.</div>
+                        <div data-aos="fade-left" class="sub-heading">No worries of privacy any more, all your personal
+                            information will be safe.
+                        </div>
 
                         <div data-aos="fade-left" class="feature-list">
                             <ul>
@@ -298,13 +300,14 @@ $this->params['seo_tags'] = [
                             <ul>
                                 <li>Easily accessible</li>
                                 <li>Have access to your account anywhere</li>
-                                <li>Get notified on your phone </li>
+                                <li>Get notified on your phone</li>
                             </ul>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-left" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/phone.png')?>" alt="Operate through your phone"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/phone.png') ?>"
+                                 alt="Operate through your phone"/>
                         </div>
                     </div>
                 </div>
@@ -319,7 +322,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="col-md-6">
                         <div data-aos="fade-right" class="cf-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>" alt="Track your application's status"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png') ?>"
+                                 alt="Track your application's status"/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -341,24 +345,25 @@ $this->params['seo_tags'] = [
                 <div class="cf-box">
                     <div class="col-md-12">
                         <div data-aos="fade-right" class="heading">Easy steps to apply</div>
-                </div>
-                <div class="col-md-6">
-                    <div data-aos="fade-right" class="sub-heading">Make your career development journey fun!</div>
-                    <div data-aos="fade-right" class="feature-list">
-                        <ul>
-                            <li>Add daily tasks</li>
-                            <li>Create and manage your profile</li>
-                            <li>Edit your job preferences</li>
-                        </ul>
                     </div>
-                </div>
-                <div class="col-md-6">
-                    <div data-aos="fade-left" class="cf-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/stepstoapply1.png')?>" alt="Easy to apply"/>
+                    <div class="col-md-6">
+                        <div data-aos="fade-right" class="sub-heading">Make your career development journey fun!</div>
+                        <div data-aos="fade-right" class="feature-list">
+                            <ul>
+                                <li>Add daily tasks</li>
+                                <li>Create and manage your profile</li>
+                                <li>Edit your job preferences</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div data-aos="fade-left" class="cf-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/stepstoapply1.png') ?>"
+                                 alt="Easy to apply"/>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
 
 

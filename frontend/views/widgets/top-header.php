@@ -4,11 +4,11 @@
 
 use yii\helpers\Url;
 ?>
-    <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
-        <li><a href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
+    <ul class="menuzord-menu" itemscope itemtype="http://www.schema.org/SiteNavigationElement">
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
         <?php if (!Yii::$app->user->isGuest): ?>
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
         <?php else: ?>
