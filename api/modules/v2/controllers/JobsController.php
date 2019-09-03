@@ -18,26 +18,55 @@ use yii\helpers\Url;
 class JobsController extends ApiBaseController
 {
 
-//    public function behaviors()
-//    {
-//        $behaviors = parent::behaviors();
-//        $behaviors['authenticator'] = [
-//            'except' => [
-//                'application-detail',
-//            ],
-//            'class' => HttpBearerAuth::className()
-//        ];
-//        $behaviors['verbs'] = [
-//            'class' => \yii\filters\VerbFilter::className(),
-//            'actions' => [
-//                'application-detail' => ['POST'],
-//            ]
-//        ];
-//        return $behaviors;
-//    }
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'application-detail',
+            ],
+            'class' => HttpBearerAuth::className()
+        ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'application-detail' => ['POST','OPTIONS'],
+                'shortlist-application' => ['POST','OPTIONS'],
+            ]
+        ];
+        return $behaviors;
+    }
+
+    private function userId()
+    {
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::find()
+            ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('authorization'))[1]])
+            ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+            ->one();
+
+        $user = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+
+        return $user;
+    }
 
     public function actionApplicationDetail()
     {
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+
         $req = Yii::$app->request->post();
         if (!empty($req['slug'])) {
             $data = $this->getApplication($req['slug']);
@@ -46,10 +75,10 @@ class JobsController extends ApiBaseController
                 return $this->response(404);
             }
 
-            if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
+            if (Yii::$app->request->headers->get('authorization') && Yii::$app->request->headers->get('source')) {
 
                 $token_holder_id = UserAccessTokens::find()
-                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                    ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('authorization'))[1]])
                     ->andWhere(['source' => Yii::$app->request->headers->get('source')])
                     ->one();
 
@@ -59,25 +88,30 @@ class JobsController extends ApiBaseController
 
                 if ($user) {
                     $hasApplied = AppliedApplications::find()
-                        ->where(['application_enc_id' => $req['id']])
+                        ->where(['application_enc_id' => $data['application_enc_id']])
                         ->andWhere(['created_by' => $user->user_enc_id])
                         ->exists();
                     $data['hasApplied'] = $hasApplied;
 
                     $shortlist = ShortlistedApplications::find()
                         ->select('shortlisted')
-                        ->where(['shortlisted' => 1, 'application_enc_id' => $req['id'], 'created_by' => $user->user_enc_id])
+                        ->where(['shortlisted' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasShortlisted"] = $shortlist;
 
                     $reviewlist = ReviewedApplications::find()
                         ->select(['review'])
-                        ->where(['review' =>1,'application_enc_id'=>$req['id'], 'created_by'=>$user->user_enc_id])
+                        ->where(['review' =>1,'application_enc_id'=>$data['application_enc_id'], 'created_by'=>$user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
                 } else {
                     return $this->response(401);
                 }
+            }
+
+            if(!empty($data['timings_from']) && !empty($data['timings_to'])){
+                $data['timings_from'] = date("H:i", strtotime($data['timings_from']));
+                $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
             }
 
             if ($data['wage_type'] == 'Fixed') {
@@ -256,14 +290,14 @@ class JobsController extends ApiBaseController
                 $x->joinWith(['locationEnc s' => function ($x) {
                     $x->joinWith(['cityEnc t'], false);
                 }], false);
-                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 't.city_enc_id', 't.name']);
+                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions','s.latitude','s.longitude', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($x) {
                 $x->onCondition(['p.is_deleted' => 0]);
                 $x->joinWith(['locationEnc u' => function ($x) {
                     $x->joinWith(['cityEnc v'], false);
                 }], false);
-                $x->select(['p.location_enc_id', 'p.application_enc_id', 'v.city_enc_id', 'v.name']);
+                $x->select(['p.location_enc_id', 'p.application_enc_id','u.latitude' ,'u.longitude','v.city_enc_id', 'v.name']);
             }])
             ->joinWith(['organizationEnc w' => function ($s) {
                 $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
@@ -271,6 +305,90 @@ class JobsController extends ApiBaseController
             ->joinWith(['preferredIndustry x'], false)
             ->asArray()
             ->one();
+    }
+
+    public function actionShortlistApplication()
+    {
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+        $candidate = $this->userId();
+        $parameters = \Yii::$app->request->post();
+        
+
+        if (!empty($parameters['application_enc_id']) && isset($parameters['application_enc_id'])) {
+            $id = $parameters['application_enc_id'];
+            $chkshort = ShortlistedApplications::find()
+                ->select(['shortlisted'])
+                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                ->asArray()
+                ->one();
+            $short_status = $chkshort['shortlisted'];
+            if (empty($chkshort)) {
+                $shortlist_application = new ShortlistedApplications();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $shortlist_application->shortlisted_enc_id = $utilitiesModel->encrypt();
+                $shortlist_application->application_enc_id = $id;
+                $shortlist_application->shortlisted = 1;
+                $shortlist_application->created_by = $candidate->user_enc_id;
+                $shortlist_application->created_on = date('Y-m-d H:i:s');
+                if ($shortlist_application->validate() && $shortlist_application->save()) {
+
+                    $chkuser = ReviewedApplications::find()
+                        ->select(['review'])
+                        ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                        ->asArray()
+                        ->one();
+                    $status = $chkuser['review'];
+
+                    if ($status == 1) {
+                        $delete_application = ReviewedApplications::find()
+                            ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                            ->one();
+                        $delete_application->review = 0;
+                        $delete_application->last_updated_by = $candidate->user_enc_id;
+                        $delete_application->last_updated_on = date('Y-m-d H:i:s');
+                        $delete_application->update();
+                    }
+                    return $this->response(201, 'successfully shortlisted.');
+                } else {
+                    return $this->response(500, 'not shortlisted');
+                }
+            } elseif ($short_status == 0) {
+                $update_shortlisted = ShortlistedApplications::find()
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->one();
+
+                $update_shortlisted->shortlisted = 1;
+                $update_shortlisted->last_updated_by = $candidate->user_enc_id;
+                $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
+                if ($update_shortlisted->update()) {
+                    return $this->response(201, 'successfully shortlisted.');
+                } else {
+                    return $this->response(500, 'not shorlisted');
+                }
+            } elseif ($short_status == 1) {
+                $delete_shortlisted = ShortlistedApplications::find()
+                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->one();
+                $delete_shortlisted->shortlisted = 0;
+                $delete_shortlisted->last_updated_by = $candidate->user_enc_id;
+                $delete_shortlisted->last_updated_on = date('Y-m-d H:i:s');
+                if ($delete_shortlisted->update()) {
+                    return $this->response(200, 'deleted successfully');
+                } else {
+                    return $this->response(500, 'Job is not deleted in shortlist');
+                }
+            } else {
+                return $this->response(409, 'already deleted or not found');
+            }
+        } else {
+            return $this->response(422);
+        }
     }
 
 }

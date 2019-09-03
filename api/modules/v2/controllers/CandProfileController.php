@@ -19,7 +19,7 @@ use common\models\Utilities;
 use yii\web\UploadedFile;
 use yii\filters\auth\HttpBearerAuth;
 
-class CandProfile extends ApiBaseController{
+class CandProfileController extends ApiBaseController{
 
     public function behaviors()
     {
@@ -31,7 +31,8 @@ class CandProfile extends ApiBaseController{
                 'get-skills',
                 'save-basic-info',
                 'save-applications',
-                'upload-profile-picture'
+                'upload-profile-picture',
+                'profile-picture'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -43,7 +44,8 @@ class CandProfile extends ApiBaseController{
                 'get-skills' => ['GET'],
                 'save-basic-info' => ['POST'],
                 'save-applications' => ['POST'],
-                'upload-profile-picture' => ['POST']
+                'upload-profile-picture' => ['POST'],
+                'profile-picture' => ['POST','OPTIONS']
             ]
         ];
         return $behaviors;
@@ -515,14 +517,22 @@ class CandProfile extends ApiBaseController{
         }
     }
 
-    public function getProfilePicture()
+    public function actionProfilePicture()
     {
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
         $candidate = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
+
         if(!empty($candidate->image_location)){
             return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
         }else {

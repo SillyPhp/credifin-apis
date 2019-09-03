@@ -29,12 +29,15 @@ class AuthController extends ApiBaseController{
 
         $model = new IndividualSignup();
         if($model->load(Yii::$app->request->post(), '')){
+//            print_r($model);
+//            die();
             if($model->validate()){
                 if(!$this->usernameValid($model)){
                     return $this->response(409, [
                         'username' => 'Username already taken'
                     ]);
                 }
+
                 if($model->saveUser()){
                     return $this->response(200);
                 }else{
@@ -185,6 +188,7 @@ class AuthController extends ApiBaseController{
                 ->where(['a.user_enc_id'=>$find_user['user_enc_id']])
                 ->asArray()
                 ->one();
+
         }
 
         return [
@@ -192,7 +196,7 @@ class AuthController extends ApiBaseController{
             'username' => $user_detail['username'],
             'user_type' => $user_detail['user_type'],
             'city' => $user_detail['city_name'],
-            'college' => $user_detail['city_name'],
+            'college' => $user_detail['org_name'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
             'last_name' => $user_detail['last_name'],

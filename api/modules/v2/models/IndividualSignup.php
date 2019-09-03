@@ -75,6 +75,7 @@ class IndividualSignup extends Model
 
     public function saveUser()
     {
+
         $user = new Candidates();
         $username = new Usernames();
         $user_other_details = new UserOtherDetails();
@@ -109,6 +110,7 @@ class IndividualSignup extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
         $user_other_details->organization_enc_id = $this->college;
+        $user_other_details->user_enc_id = $user->user_enc_id;
 
         $d = Departments::find()
             ->where([
@@ -124,7 +126,9 @@ class IndividualSignup extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $department->department_enc_id = $utilitiesModel->encrypt();
             $department->name = $this->department;
-            $department->save();
+            if(!$department->save()){
+                return false;
+            }
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
@@ -144,7 +148,9 @@ class IndividualSignup extends Model
             $eduReq->educational_requirement = $this->course_name;
             $eduReq->created_on = date('Y-m-d H:i:s');
             $eduReq->created_by = $user->user_enc_id;
-            $eduReq->save();
+            if(!$eduReq->save()){
+                return false;
+            }
             $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
         }
 
