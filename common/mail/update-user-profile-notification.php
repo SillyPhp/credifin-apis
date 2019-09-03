@@ -204,7 +204,7 @@ $this->registerCss('
             your preferences.
         </div>
         <div class="btns">
-            <div class="btn"><a href="<?= Url::to("/" . $data[''] . "/edit", "https"); ?>">Edit Profile</a></div>
+            <div class="btn"><a href="<?= Url::to("/" . $data['username'] . "/edit", "https"); ?>">Edit Profile</a></div>
             <div class="btn1"><a href="<?= Url::to("/account/preferences", "https"); ?>">Edit Preferences</a></div>
         </div>
 
