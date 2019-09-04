@@ -31,7 +31,9 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <a href='/twitter-jobs/job' class='close-m-mo'>Tweet Another Job</a>
                             <a href='javascript:;'>Tweet Another Internship</a>
                             <?php endif; ?>
+                            <?php if (Yii::$app->user->isGuest): ?>
                             <a href='/signup/individual'>Signup or Login</a>
+                            <?php endif; ?> 
                         </div>
                     </div>
                 </div>
@@ -41,6 +43,13 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 <?php $form = ActiveForm::begin([
                                     'id' => 'twitter_form',
                                 ]); ?>
+                            <?php if (Yii::$app->user->identity->organization): ?>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <?= $form->field($model, 'company_name')->textInput(['class' => 'capitalize form-control', 'id' => 'search_comp', 'placeholder' => 'Search For Your Company','disabled'=>true,'value'=>Yii::$app->user->identity->organization->name])->label(false); ?>
+                                    </div>
+                                </div>
+                            <?php else: ?>
                                 <div class="row">
                                     <div class="col-md-9">
                                         <div class="load-suggestions Typeahead-spinner">
@@ -59,6 +68,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                         ]); ?>
                                     </div>
                                 </div>
+                            <?php endif; ?>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")? "Job" : "Internship").' Profile'])->label(false); ?>
