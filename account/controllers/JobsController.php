@@ -1010,7 +1010,6 @@ class JobsController extends Controller
         } else {
             $viewed = 1;
         }
-
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
@@ -1235,59 +1234,5 @@ class JobsController extends Controller
     public function actionTestProcess(){
         return $this->render('test-new');
     }
-    public function actionQuickJobClone($editid)
-    {
-        if(Yii::$app->user->identity->organization)
-        {
-            $typ = 'Jobs';
-            $obj = new ShortJobs();
-            $data = new ApplicationForm();
-            $primary_cat = $data->getPrimaryFields();
-            $model = $obj->setData($editid, $typ);
-            $job_type = $data->getApplicationTypes();
-            $placement_locations = $data->PlacementLocations();
-            $currencies = $data->getCurrency();
-            if ($obj->load(Yii::$app->request->post()))
-            {
-                if ($obj->save())
-                {
-                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
-                }
-                else
-                {
-                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
-                }
-                return $this->refresh();
-            }
-            return $this->render('/employer-applications/one-click-job',['skill' => $model['skill'],'typ'=>$typ,'currencies'=>$currencies,'placement_locations'=>$placement_locations,'model'=>$model['mod'],'list'=>$model['list'],'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
-        }
-    }
 
-    public function actionQuickJobEdit($editid)
-    {
-        if(Yii::$app->user->identity->organization)
-        {
-            $typ = 'Jobs';
-            $obj = new ShortJobs();
-            $data = new ApplicationForm();
-            $primary_cat = $data->getPrimaryFields();
-            $model = $obj->setData($editid, $typ);
-            $job_type = $data->getApplicationTypes();
-            $placement_locations = $data->PlacementLocations();
-            $currencies = $data->getCurrency();
-            if ($obj->load(Yii::$app->request->post()))
-            {
-                if ($obj->update($editid, $typ))
-                {
-                    Yii::$app->session->setFlash('success', 'Your Information Has Been Updated Successfully');
-                }
-                else
-                {
-                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
-                }
-                return $this->refresh();
-            }
-            return $this->render('/employer-applications/one-click-job',['skill' => $model['skill'],'typ'=>$typ,'currencies'=>$currencies,'placement_locations'=>$placement_locations,'model'=>$model['mod'],'list'=>$model['list'],'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
-        }
-    }
 }

@@ -120,6 +120,9 @@ class TwitterJobsForm extends Model
         $twitterJobs->min_wage = (($this->min_salary) ? str_replace(',', '', $this->min_salary) : null);
         $twitterJobs->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_salary) : null);
         $twitterJobs->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
+        if (Yii::$app->user->identity->organization):
+            $twitterJobs->claim_organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            else:
         $chk_com = UnclaimedOrganizations::find()
             ->select(['organization_enc_id'])
             ->where(['name' => $this->company_name])
@@ -153,6 +156,7 @@ class TwitterJobsForm extends Model
                 $twitterJobs->unclaim_organization_enc_id = $model->organization_enc_id;
             }
         endif;
+            endif;
             if ($twitterJobs->save())
             {
                 if (!empty($this->skills)) {
