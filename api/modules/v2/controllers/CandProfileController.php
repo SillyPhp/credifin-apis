@@ -4,6 +4,7 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\PictureUpload;
+use api\modules\v2\models\ProfilePicture;
 use common\models\Skills;
 use common\models\User;
 use common\models\UserAccessTokens;
@@ -453,7 +454,7 @@ class CandProfileController extends ApiBaseController{
     }
 
     public function actionUploadProfilePicture(){
-        $pictureModel = new PictureUpload();
+        $pictureModel = new ProfilePicture();
         $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
         if($pictureModel->profile_image && $pictureModel->validate()){
             if($pictureModel->update()){

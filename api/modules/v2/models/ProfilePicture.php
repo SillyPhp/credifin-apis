@@ -2,6 +2,7 @@
 
 namespace api\modules\v2\models;
 
+use api\modules\v1\models\Candidates;
 use common\models\UserAccessTokens;
 use Yii;
 use yii\base\Model;
@@ -9,7 +10,7 @@ use yii\web\UploadedFile;
 use common\models\Utilities;
 use common\models\Users;
 
-class PictureUpload extends Model{
+class ProfilePicture extends Model{
     public $profile_image;
 
     public function formName(){
