@@ -1235,15 +1235,4 @@ class JobsController extends Controller
         return $this->render('test-new');
     }
 
-    public function actionTweetJob()
-    {
-        if (Yii::$app->user->identity->organization)
-        {
-            return 'tweet job';
-        }
-        else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
-        }
-    }
-
 }
