@@ -33,7 +33,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <?php endif; ?>
                             <?php if (Yii::$app->user->isGuest): ?>
                             <a href='/signup/individual'>Signup or Login</a>
-                            <?php endif; ?> 
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
