@@ -361,8 +361,8 @@ class ShortJobs extends Model
             $applicationoptionsModel->application_enc_id = $employerApplication->application_enc_id;
             $applicationoptionsModel->wage_type = $wage_type;
             $applicationoptionsModel->fixed_wage = (($this->fixed_wage) ? str_replace(',', '', $this->fixed_wage) : null);
-            $applicationoptionsModel->min_wage = (($this->min_salary) ? str_replace(',', '', $this->min_wage) : null);
-            $applicationoptionsModel->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_wage) : null);
+            $applicationoptionsModel->min_wage = (($this->min_salary) ? str_replace(',', '', $this->min_salary) : null);
+            $applicationoptionsModel->max_wage = (($this->max_salary) ? str_replace(',', '', $this->max_salary) : null);
             $applicationoptionsModel->ctc = null;
             $applicationoptionsModel->wage_duration = 'Annually';
             $applicationoptionsModel->currency_enc_id = $this->currency;
