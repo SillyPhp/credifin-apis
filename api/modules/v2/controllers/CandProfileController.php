@@ -39,7 +39,7 @@ class CandProfileController extends ApiBaseController{
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'get-user-prefs' => ['GET'],
+                'get-user-prefs' => ['POST','OPTIONS'],
                 'get-industry' => ['GET'],
                 'get-skills' => ['GET'],
                 'save-basic-info' => ['POST'],
@@ -51,16 +51,29 @@ class CandProfileController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionGetUserPrefs($id, $type){
+    public function actionGetUserPrefs(){
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
+
         $result = [];
 
-        $job_skills = $this->getPrefs($id, 'Jobs');
+        $job_prefs = $this->getPrefs($id, 'Jobs');
 
-        $result['job_skills'] = $job_skills;
+        $result['job_prefs'] = $job_prefs;
 
-        $intern_skills = $this->getPrefs($id, 'Internships');
+        $intern_prefs = $this->getPrefs($id, 'Internships');
 
-        $result['intern_skills'] = $intern_skills;
+        $result['intern_prefs'] = $intern_prefs;
 
         return $this->response(200, $result);
     }
@@ -88,7 +101,7 @@ class CandProfileController extends ApiBaseController{
                 $z->joinWith(['skillEnc']);
             }])
             ->asArray()
-            ->all();
+            ->one();
     }
 
     public function actionGetIndustry($q = null)

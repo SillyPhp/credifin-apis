@@ -24,6 +24,7 @@ class JobsController extends ApiBaseController
         $behaviors['authenticator'] = [
             'except' => [
                 'application-detail',
+                'shortlist-application'
             ],
             'class' => HttpBearerAuth::className()
         ];

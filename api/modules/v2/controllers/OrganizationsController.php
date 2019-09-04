@@ -144,7 +144,7 @@ class OrganizationsController extends ApiBaseController
             $organization = Organizations::find()
                 ->select(['organization_enc_id', 'name', 'slug username', 'email', 'tag_line', 'initials_color', 'establishment_year', 'description', 'mission', 'vision', 'value', 'website', 'phone', 'fax', 'facebook', 'google', 'twitter', 'linkedin', 'instagram', 'number_of_employees', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo', 'CASE WHEN cover_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '", cover_image_location, "/", cover_image) ELSE NULL END cover_image'])
                 ->where(['slug' => $req['slug']])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 'Active','is_erexx_registered'=>1])
                 ->andWhere(['is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -184,7 +184,7 @@ class OrganizationsController extends ApiBaseController
                 $result['opportunties_count'] = $opportunities_count;
 
                 $industry = Industries::find()
-                    ->select(['industry'])
+                    ->select(['industry_enc_id','industry'])
                     ->where(['industry_enc_id' => $organization['industry_enc_id']])
                     ->asArray()
                     ->one();
