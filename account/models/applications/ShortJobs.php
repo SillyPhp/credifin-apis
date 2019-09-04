@@ -484,7 +484,7 @@ class ShortJobs extends Model
             ->alias('a')
             ->select(['a.assigned_category_enc_id', 'b.name', 'b.category_enc_id', 'a.parent_enc_id'])
             ->joinWith(['categoryEnc b'], false)
-            ->where(['not', ['parent_enc_id' => null]])
+            ->where(['not', ['a.parent_enc_id' => null]])
             ->andWhere(['assigned_to' =>$typ, 'assigned_category_enc_id' => $modelData['title']])->asArray()->one();
         switch ($modelData['wage_type']) {
             case 'Fixed':
