@@ -5,6 +5,10 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\PictureUpload;
 use api\modules\v2\models\ProfilePicture;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\Industries;
 use common\models\Skills;
 use common\models\User;
 use common\models\UserAccessTokens;
@@ -33,7 +37,9 @@ class CandProfileController extends ApiBaseController{
                 'save-basic-info',
                 'save-applications',
                 'upload-profile-picture',
-                'profile-picture'
+                'profile-picture',
+                'profiles',
+                'get-cities'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -41,12 +47,14 @@ class CandProfileController extends ApiBaseController{
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'get-user-prefs' => ['POST','OPTIONS'],
-                'get-industry' => ['GET'],
-                'get-skills' => ['GET'],
+                'get-industry' => ['POST'],
+                'get-skills' => ['POST'],
+                'get-cities' => ['POST'],
                 'save-basic-info' => ['POST'],
-                'save-applications' => ['POST'],
+                'save-applications' => ['POST','OPTIONS'],
                 'upload-profile-picture' => ['POST','OPTIONS'],
-                'profile-picture' => ['POST','OPTIONS']
+                'profile-picture' => ['POST','OPTIONS'],
+                'profiles'=>['POST'],
             ]
         ];
         return $behaviors;
@@ -88,6 +96,7 @@ class CandProfileController extends ApiBaseController{
             ])
             ->joinWith(['userPreferredJobProfiles b' => function($x){
                 $x->onCondition(['b.is_deleted' => 0]);
+                $x->joinWith(['jobProfileEnc']);
             }])
             ->joinWith(['userPreferredLocations c' => function($x){
                 $x->onCondition(['c.is_deleted' => 0]);
@@ -105,22 +114,32 @@ class CandProfileController extends ApiBaseController{
             ->one();
     }
 
-    public function actionGetIndustry($q = null)
+    public function actionProfiles($type){
+        $profiles = Categories::find()
+            ->alias('a')
+            ->select(['a.name value', 'a.category_enc_id key'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['b.assigned_to' => $type, 'b.status' => 'Approved'])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, $profiles);
+    }
+
+    public function actionGetIndustry()
     {
             $industryModel = new Industries();
             $industry = $industryModel->find()
-                ->select(['industry_enc_id AS id', 'industry AS text'])
-                ->where('industry LIKE "%' . $q . '%"')
+                ->select(['industry_enc_id AS key', 'industry AS value'])
                 ->orderBy(['industry' => SORT_ASC])
                 ->asArray()
                 ->all();
-            return $industry;
+        return $this->response(200, $industry);
     }
 
-    public function actionGetSkills($q){
-        return Skills::find()
-            ->select(['skill as value', 'skill_enc_id as id'])
-            ->where('skill like "%' . $q . '%"')
+    public function actionGetSkills(){
+        $skills =  Skills::find()
+            ->select(['skill as value', 'skill_enc_id as key'])
             ->andWhere([
                 'status' => 'Publish'
             ])
@@ -128,8 +147,19 @@ class CandProfileController extends ApiBaseController{
                 'is_deleted' => 0
             ])
             ->asArray()
-            ->limit(20)
             ->all();
+
+        return $this->response(200, $skills);
+    }
+
+    public function actionGetCities($q){
+        $city =  Cities::find()
+            ->select(['name as value', 'city_enc_id as key'])
+            ->where('name like "%' . $q . '%"')
+            ->asArray()
+            ->all();
+
+        return $this->response(200, $city);
     }
 
     public function actionSaveBasicInfo(){
@@ -161,6 +191,8 @@ class CandProfileController extends ApiBaseController{
 
     public function actionSaveApplications(){
         if($req = Yii::$app->request->post()){
+            print_r($req);
+            die();
             $user_id = $req['user_id'];
 
             if($req['type'] == "Jobs") {

@@ -149,9 +149,6 @@ class OrganizationsController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            print_r($organization);
-            die();
-
             if ($organization) {
                 $result['organization'] = $organization;
 
@@ -191,7 +188,7 @@ class OrganizationsController extends ApiBaseController
                     ->where(['industry_enc_id' => $organization['industry_enc_id']])
                     ->asArray()
                     ->one();
-                $result['industry'] = $industry;
+                $result['industry'] = $industry['industry'];
 
                 if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
@@ -210,7 +207,7 @@ class OrganizationsController extends ApiBaseController
                             ->where(['created_by' => $user->user_enc_id, 'organization_enc_id' => $organization['organization_enc_id']])
                             ->asArray()
                             ->one();
-                        $result['follow'] = $follow;
+                        $result['follow'] = $follow['followed'];
                     } else {
                         return $this->response(401);
                     }
@@ -266,7 +263,7 @@ class OrganizationsController extends ApiBaseController
                 $followed->last_updated_on = date('Y-m-d H:i:s');
                 $followed->last_updated_by = $user->user_enc_id;
                 if ($followed->save()) {
-                    return $this->response(200);
+                    return $this->response(200,['status'=>200]);
                 } else {
                     return $this->response(500);
                 }
@@ -275,14 +272,14 @@ class OrganizationsController extends ApiBaseController
                     ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
                     ->execute();
                 if ($update == 1) {
-                    return $this->response(200);
+                    return $this->response(200,['status'=>201]);
                 }
             } else if ($status == 0) {
                 $update = Yii::$app->db->createCommand()
                     ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
                     ->execute();
                 if ($update == 1) {
-                    return $this->response(200);
+                    return $this->response(200,['status'=>200]);
                 }
             }
         } else {
