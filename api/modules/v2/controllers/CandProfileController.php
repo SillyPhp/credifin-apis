@@ -45,7 +45,7 @@ class CandProfileController extends ApiBaseController{
                 'get-skills' => ['GET'],
                 'save-basic-info' => ['POST'],
                 'save-applications' => ['POST'],
-                'upload-profile-picture' => ['POST'],
+                'upload-profile-picture' => ['POST','OPTIONS'],
                 'profile-picture' => ['POST','OPTIONS']
             ]
         ];
@@ -454,6 +454,11 @@ class CandProfileController extends ApiBaseController{
     }
 
     public function actionUploadProfilePicture(){
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
         $pictureModel = new ProfilePicture();
         $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
         if($pictureModel->profile_image && $pictureModel->validate()){
