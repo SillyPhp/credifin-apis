@@ -417,15 +417,9 @@ $this->registerCss("
         font-weight: bold;
         font-family: 'Roboto', sans-serif;
     }
-");
+", ['media' => 'screen']);
 
 $this->registerCss("
-");
-$this->registerCss("");
-$this->registerCss("");
-?>
-
-<style type="text/css">
     @media screen and (max-width: 500px) {
         .sett {
             width: 100%
@@ -549,8 +543,8 @@ $this->registerCss("");
             padding-left: 48px;
         }
     }
-
-</style>
+", ['media' => 'only screen and (max-device-width: 500px), only screen and (max-device-width: 450px), only screen and (max-width: 414px)']);
+?>
 <div class="border">
     <div class="position-relative">
         <div class="logo"><a href="#"><img src="images/com.png" class="responsive"></a>
@@ -560,8 +554,6 @@ $this->registerCss("");
     <div class="border2">
         <div class="hdr">
             <div class="seeker">Job Seekers Resume</div>
-            <!-- <img src="images/v2.png"> -->
-            <!-- <img src="images/v1.png"> -->
         </div>
         <div class="candidate-profile">
             <div class>
