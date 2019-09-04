@@ -122,6 +122,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             ])->label(false); ?>
                         </div>
                     </div>
+                    <strong>Salary Description</strong>
                     <div class="row">
                         <div class="col-md-4">
                             <?= $form->field($model, 'wage_type')->inline()->radioList([
@@ -129,23 +130,31 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 2 => 'Negotiable',
                             ])->label(false); ?>
                         </div>
-                        <div class="col-md-2">
-                            <?= $form->field($model, 'currency')->inline()->dropDownList($currencies)->label(false); ?>
-                        </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div id="fixed_stip">
-                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary (Per Annum)'])->label(false); ?>
+                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary'])->label(false); ?>
                             </div>
                             <div id="min_max">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder' => 'Max Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder' => 'Max'])->label(false) ?>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $form->field($model, 'currency')->inline()->dropDownList($currencies)->label(false); ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $form->field($model, 'wage_duration')->dropDownList([
+                                'Annually' => 'Annually',
+                                'Monthly' => 'Monthly',
+                                'Weekly' => 'Weekly',
+                                'Hourly' => 'Hourly',
+                            ])->label(false); ?>
                         </div>
                     </div>
 
@@ -157,10 +166,21 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <?= $form->field($model, 'positions')->textInput(['placeholder'=>'No Of Openings'])->label(false); ?>
                         </div>
                     </div>
+                    <strong>Required Skills</strong>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="pf-field no-margin">
                                 <ul class="tags_input skill_tag_list">
+                                    <?php if (isset($skill) && !empty($skill)) {
+                                        foreach ($skill as $s) { ?>
+                                            <li class="addedTag"><?= $s ?><span
+                                                        onclick="$(this).parent().remove();"
+                                                        class="tagRemove">x</span><input type="hidden"
+                                                                                         name="skills[]"
+                                                                                         value="<?= $s ?>">
+                                            </li>
+                                        <?php }
+                                    } ?>
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
                                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -171,9 +191,10 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             </div>
                         </div>
                     </div>
+                    <strong>Fill Up Job Description Below</strong>
                     <div class="row">
                         <div class="col-md-12">
-                            <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label('Fill Up Job Description Below'); ?>
+                            <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
                         </div>
                     </div>
                     <div class="row">
