@@ -3,8 +3,10 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v1\models\Candidates;
+use api\modules\v1\models\JobApply;
 use api\modules\v2\controllers\ApiBaseController;
 use common\models\ApplicationInterviewQuestionnaire;
+use common\models\ApplicationTypes;
 use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\InterviewProcessFields;
@@ -386,6 +388,86 @@ class JobsController extends ApiBaseController
                 }
             } else {
                 return $this->response(409, 'already deleted or not found');
+            }
+        } else {
+            return $this->response(422);
+        }
+    }
+
+    public function actionApply()
+    {
+        $model = new \api\modules\v2\models\JobApply();
+
+        $reqParams = Yii::$app->request->post();
+
+        if (!empty($reqParams['job_id']) && isset($reqParams['city_id'])) {
+
+            if ($reqParams['city_id'] != '') {
+                $city_enc_ids = explode(",", $reqParams['city_id']);
+            } else {
+                $city_enc_ids = [];
+            }
+
+//            $application_type = ApplicationTypes::find()
+//                ->select(['application_type_enc_id'])
+//                ->where(['name' => 'Jobs'])
+//                ->asArray()
+//                ->one();
+
+            $id = $reqParams['job_id'];
+
+            $application_details = EmployerApplications::find()
+                ->where([
+                    'application_enc_id' => $id,
+                    'is_deleted' => 0,
+//                    'application_type_enc_id' => $application_type["application_type_enc_id"]
+                ])
+                ->one();
+
+            if (!$application_details) {
+                return $this->response(404);
+            }
+
+            $token_holder_id = UserAccessTokens::find()
+                ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
+                ->andWhere(['source' => Yii::$app->request->headers->get('source')])
+                ->one();
+
+            $user = Candidates::findOne([
+                'user_enc_id' => $token_holder_id->user_enc_id
+            ]);
+
+            $hasApplied = AppliedApplications::find()
+                ->where(['application_enc_id' => $application_details->application_enc_id])
+                ->andWhere(['created_by' => $user->user_enc_id])
+                ->exists();
+
+            if (!$hasApplied) {
+                $application_questionnaire = ApplicationInterviewQuestionnaire::find()
+                    ->alias('a')
+                    ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
+                    ->where(['a.application_enc_id' => $reqParams['job_id']])
+                    ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
+                    ->andWhere(['b.field_name' => 'Get Applications'])
+                    ->exists();
+
+                $model->id = $reqParams['job_id'];
+//                $model->resume_list = $reqParams['resume_enc_id'];
+                $model->location_pref = $city_enc_ids;
+
+                if ($application_questionnaire) {
+                    $model->status = 'incomplete';
+                } else {
+                    $model->status = 'Pending';
+                }
+
+                if ($res = $model->saveValues()) {
+                    return $this->response(200, $res);
+                } else {
+                    return $this->response(500);
+                }
+            } else {
+                return $this->response(409);
             }
         } else {
             return $this->response(422);
