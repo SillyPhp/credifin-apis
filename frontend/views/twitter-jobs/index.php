@@ -7,6 +7,7 @@ use yii\bootstrap\ActiveForm;
 $this->params['header_dark'] = true;
 //$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <div id="loading_img">
 </div>
 <section class="head-bg">
@@ -448,6 +449,6 @@ $(window).on('load', function() {
 });
 JS;
 $this->registerJs($script);
-$this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
+//$this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
