@@ -6,16 +6,46 @@ use common\models\AppliedApplications;
 use common\models\FollowedOrganizations;
 use common\models\Organizations;
 use common\models\ShortlistedApplications;
+use common\models\UserAccessTokens;
 use Yii;
 use yii\helpers\Url;
+use yii\filters\auth\HttpBearerAuth;
 
 class CandhomeController extends ApiBaseController
 {
 
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'get-data',
+               ],
+            'class' => HttpBearerAuth::className()
+        ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'get-data' => ['POST','OPTIONS'],
+            ]
+        ];
+        return $behaviors;
+    }
+
     public function actionGetData()
     {
 
-        $id = Yii::$app->request->post('id');
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
 
         $applied_count = AppliedApplications::find()
             ->alias('a')

@@ -47,14 +47,14 @@ class CandProfileController extends ApiBaseController{
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'get-user-prefs' => ['POST','OPTIONS'],
-                'get-industry' => ['POST'],
-                'get-skills' => ['POST'],
-                'get-cities' => ['POST'],
-                'save-basic-info' => ['POST'],
+                'get-industry' => ['POST','OPTIONS'],
+                'get-skills' => ['POST','OPTIONS'],
+                'get-cities' => ['POST','OPTIONS'],
+                'save-basic-info' => ['POST','OPTIONS'],
                 'save-applications' => ['POST','OPTIONS'],
                 'upload-profile-picture' => ['POST','OPTIONS'],
                 'profile-picture' => ['POST','OPTIONS'],
-                'profiles'=>['POST'],
+                'profiles'=>['POST','OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -115,6 +115,7 @@ class CandProfileController extends ApiBaseController{
     }
 
     public function actionProfiles($type){
+
         $profiles = Categories::find()
             ->alias('a')
             ->select(['a.name value', 'a.category_enc_id key'])
@@ -163,67 +164,97 @@ class CandProfileController extends ApiBaseController{
     }
 
     public function actionSaveBasicInfo(){
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
         $candidate = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
+        $city_enc_id = '';
         $req = Yii::$app->request->post();
-        $candidate->first_name = $req['firstName'];
-        $candidate->last_name = $req['lastName'];
+        if($req['location']){
+            $city_id = Cities::findone([
+               'name'=>$req['location']
+            ]);
+
+            $city_enc_id = $city_id->city_enc_id;
+        }
+        $candidate->first_name = $req['first_name'];
+        $candidate->last_name = $req['last_name'];
         $candidate->phone = $req['phone'];
         $candidate->email = $req['email'];
+        if(!empty($city_enc_id)){
+            $candidate->city_enc_id = $city_enc_id;
+        }
         if($candidate->update()){
             $candidate_options = UserOtherDetails::findOne([
                 'user_enc_id' => $token_holder_id->user_enc_id
             ]);
             if($candidate_options){
-                $candidate_options->organization_enc_id = $req['organization_enc_id'];
+                $candidate_options->organization_enc_id = $req['college_enc_id'];
                 $candidate_options->update();
             }else{
                 return $this->response(404);
             }
 
+        }else{
+            print_r($candidate->getErrors());
         }
 
     }
 
     public function actionSaveApplications(){
-        if($req = Yii::$app->request->post()){
-            print_r($req);
-            die();
-            $user_id = $req['user_id'];
 
-            if($req['type'] == "Jobs") {
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $user_id = $token_holder_id->user_enc_id;
+
+        if($req = Yii::$app->request->post()){
+
+            if($req['for'] == "Jobs") {
                 $user = UserPreferences::find()
                     ->where(['created_by' => $user_id])
                     ->andWhere(['assigned_to' => 'Jobs'])
                     ->one();
 
                 if ($user) {
-                    if ($this->updateData($req)) {
+                    if ($this->updateData($req,$user_id)) {
                         return $this->response(200);
                     }
                 } else {
-                    if ($this->saveData($req)) {
+                    if ($this->saveData($req,$user_id)) {
                         return $this->response(200);
                     }
                 }
             }
 
-            if($req['type'] == "Internships"){
+            if($req['for'] == "Internships"){
                 $user = UserPreferences::find()
                     ->where(['created_by' => $user_id])
                     ->andWhere(['assigned_to' => 'Internships'])
                     ->one();
 
                 if ($user) {
-                    if ($this->updateData($req)) {
+                    if ($this->updateData($req,$user_id)) {
                         return $this->response(200);
                     }
                 } else {
-                    if ($this->saveData($req)) {
+                    if ($this->saveData($req,$user_id)) {
                         return $this->response(200);
                     }
                 }
@@ -231,7 +262,7 @@ class CandProfileController extends ApiBaseController{
         }
     }
 
-    private function saveData($r){
+    private function saveData($r,$user_id){
         $user_preference = new UserPreferences();
         $utilities = new Utilities();
         $utilities->variables['string'] = time() . rand(100,100000);
@@ -239,63 +270,84 @@ class CandProfileController extends ApiBaseController{
         $user_preference->type = $r['type'];
         $user_preference->assigned_to = $r['for'];
         $user_preference->created_on = date('Y-m-d H:i:s');
-        $user_preference->created_by = $r['user_enc_id'];
+        $user_preference->created_by = $user_id;
         if($user_preference->save()){
-            foreach(explode(',', $r['locations']) as $loc){
+            $location = [];
+            foreach ($r['locations'] as $l){
+                array_push($location,$l['key']);
+            }
+
+            foreach($location as $loc){
                 $user_locations_model = new UserPreferredLocations();
                 $user_locations_model->preference_enc_id =  $user_preference->preference_enc_id;
                 $utilities->variables['string'] = time() . rand(100, 100000);
+                $user_locations_model->preferred_location_enc_id = $utilities->encrypt();
                 $user_locations_model->city_enc_id = $loc;
                 $user_locations_model->created_on = date('Y-m-d H:i:s');
-                $user_locations_model->created_by = $r['user_enc_id'];
+                $user_locations_model->created_by = $user_id;
                 if(!$user_locations_model->save()){
-                    return false;
+                    print_r($user_locations_model->getErrors());
                 }
             }
 
-            foreach(explode(',', $r['industry']) as $indus){
+            $industry = [];
+            foreach ($r['industry'] as $i){
+                array_push($industry,$i['key']);
+            }
+
+            foreach($industry as $indus){
                 $user_industries_model = new UserPreferredIndustries();
                 $user_industries_model->preference_enc_id = $user_preference->preference_enc_id;
                 $utilities->variables['string'] = time() . rand(100, 100000);
                 $user_industries_model->preferred_industry_enc_id = $utilities->encrypt();
                 $user_industries_model->industry_enc_id = $indus;
-                $user_industries_model->created_by = $r['user_enc_id'];
+                $user_industries_model->created_by = $user_id;
                 $user_industries_model->created_on = date('Y-m-d H:i:s');
                 if(!$user_industries_model->save()){
-                    return false;
+                    print_r($user_industries_model->getErrors());
                 }
             }
-            foreach($r['skills'] as $skill){
-                $this->setSkill($skill, $user_preference->preference_enc_id);
+
+            $skills = [];
+            foreach ($r['skills'] as $s){
+                array_push($skills,$s['value']);
+            }
+            foreach($skills as $skill){
+                $this->setSkill($skill, $user_preference->preference_enc_id,$user_id);
             }
 
-            foreach($r['job_profile'] as $p){
+            $profile = [];
+            foreach ($r['profiles'] as $p){
+                array_push($profile,$p['key']);
+            }
+
+            foreach($profile as $p){
                 $user_jobs_profile = new UserPreferredJobProfile();
                 $user_jobs_profile->preference_enc_id = $user_preference->preference_enc_id;
                 $utilities->variables['string'] = time() . rand(100, 100000);
                 $user_jobs_profile->preferred_job_profile_enc_id = $utilities->encrypt();
                 $user_jobs_profile->job_profile_enc_id = $p;
                 $user_jobs_profile->created_on = date('Y-m-d H:i:s');
-                $user_jobs_profile->created_by = $r['user_enc_id'];
+                $user_jobs_profile->created_by = $user_id;
                 if(!$user_jobs_profile->save()){
-                    return false;
+                    print_r($user_jobs_profile->getErrors());
                 }
             }
             return true;
         }else{
-            return false;
+            print_r($user_preference->getErrors());
         }
     }
 
-    private function updateData($r){
+    private function updateData($r,$user_id){
         $user_preference = UserPreferences::findOne([
-            'created_by' => $r['user_enc_id'],
+            'created_by' => $user_id,
             'assigned_to' => 'Jobs'
         ]);
 
         $user_preference->type = $r['type'];
         $user_preference->last_updated_on = date('Y-m-d H:i:s');
-        $user_preference->last_updated_by = $r['user_enc_id'];
+        $user_preference->last_updated_by = $user_id;
 
         if($user_preference->update()){
 
@@ -311,7 +363,12 @@ class CandProfileController extends ApiBaseController{
                     array_push($already_saved_locations, $loc['city_enc_id']);
                 }
 
-                $new_location_to_update = explode(',',$r['location']);
+
+                $location = [];
+                foreach ($r['locations'] as $l){
+                    array_push($location,$l['key']);
+                }
+                $new_location_to_update = $location;
 
                 $to_be_added_location = array_diff($new_location_to_update, $already_saved_locations);
                 $to_be_deleted_location = array_diff($already_saved_locations, $new_location_to_update);
@@ -340,9 +397,9 @@ class CandProfileController extends ApiBaseController{
                         $user_locations_model->preferred_location_enc_id = $utilities->encrypt();
                         $user_locations_model->city_enc_id = $loc;
                         $user_locations_model->created_on = date('Y-m-d H:i:s');
-                        $user_locations_model->created_by = $r['user_enc_id'];
+                        $user_locations_model->created_by = $user_id;
                         if(!$user_locations_model->save()){
-                            return false;
+                            print_r($user_locations_model->getErrors());
                         }
                     }
                 }
@@ -362,7 +419,11 @@ class CandProfileController extends ApiBaseController{
                     array_push($already_saved_industry, $ind['industry_enc_id']);
                 }
 
-                $new_industry_to_update = explode(',', $r['industry']);
+                $industry = [];
+                foreach ($r['industry'] as $i){
+                    array_push($industry,$i['key']);
+                }
+                $new_industry_to_update = $industry;
 
                 $to_be_added_industry = array_diff($new_industry_to_update, $already_saved_industry);
                 $to_be_deleted_industry = array_diff($already_saved_industry, $new_industry_to_update);
@@ -391,9 +452,9 @@ class CandProfileController extends ApiBaseController{
                         $user_industries_model->preferred_industry_enc_id = $utilities->encrypt();
                         $user_industries_model->industry_enc_id = $indus;
                         $user_industries_model->created_on = date('Y-m-d H:i:s');
-                        $user_industries_model->created_by = $r['user_enc_id'];
+                        $user_industries_model->created_by = $user_id;
                         if(!$user_industries_model->save()){
-                            return false;
+                            print_r($user_industries_model->getErrors());
                         }
                     }
                 }
@@ -415,7 +476,12 @@ class CandProfileController extends ApiBaseController{
                     array_push($s_name,$skill_name['skill']);
                 }
 
-                $new_userskill_to_update = $r['skills'];
+            $skills = [];
+            foreach ($r['skills'] as $s){
+                array_push($skills,$s['value']);
+            }
+
+                $new_userskill_to_update = $skills;
 
                 $userskill = [];
                 foreach($user_skill as $skill){
@@ -433,9 +499,10 @@ class CandProfileController extends ApiBaseController{
 
                 if(count($to_be_added_userskill) > 0){
                     foreach($to_be_added_userskill as $skill){
-                        $this->setSkills($skill, $user_preference['preference_enc_id'], $r['user_enc_id']);
+                        $this->setSkills($skill, $user_preference['preference_enc_id'], $user_id);
                     }
                 }
+
 
                 $user_job_profile = UserPreferredJobProfile::find()
                     ->select(['job_profile_enc_id'])
@@ -449,8 +516,13 @@ class CandProfileController extends ApiBaseController{
                     array_push($userjob, $jobp['job_profile_enc_id']);
                 }
 
-                $to_be_added_userjob = array_diff($r['job_categories'], $userjob);
-                $to_be_deleted_userjob = array_diff($userjob, $r['job_categories']);
+                $profile = [];
+                foreach ($r['profiles'] as $p){
+                    array_push($profile,$p['key']);
+                }
+
+                $to_be_added_userjob = array_diff($profile, $userjob);
+                $to_be_deleted_userjob = array_diff($userjob, $profile);
 
                 if(count($to_be_deleted_userjob) > 0){
                     foreach($to_be_deleted_userjob as $del){
@@ -472,16 +544,16 @@ class CandProfileController extends ApiBaseController{
                         $userpreferredJobsModel->preferred_job_profile_enc_id = $utilitiesModel->encrypt();
                         $userpreferredJobsModel->job_profile_enc_id = $job;
                         $userpreferredJobsModel->created_on = date('Y-m-d h:i:s');
-                        $userpreferredJobsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        $userpreferredJobsModel->created_by = $user_id;
                         if(!$userpreferredJobsModel->save()){
-                            return false;
+                            print_r($userpreferredJobsModel->getErrors());
                         }
                     }
                 }
 
-                return true;
+               return $this->response(200,'updated');
         }else{
-            return false;
+            print_r($user_preference->getErrors());
         }
     }
 
@@ -532,7 +604,7 @@ class CandProfileController extends ApiBaseController{
             $obj->created_on = date('Y-m-d h:i:s');
             $obj->created_by = $user_enc_id;
             if (!$obj->save()) {
-                return false;
+                print_r($obj->getErrors());
             } else {
                 $user_obj = new UserPreferredSkills();
                 $utilitiesModel = new Utilities();
@@ -543,7 +615,7 @@ class CandProfileController extends ApiBaseController{
                 $user_obj->created_on = date('Y-m-d h:i:s');
                 $user_obj->created_by = $user_enc_id;
                 if (!$user_obj->save()) {
-                    return false;
+                    print_r($user_obj->getErrors());
                 }
             }
         } else {
@@ -562,7 +634,7 @@ class CandProfileController extends ApiBaseController{
                 $user_obj->created_on = date('Y-m-d h:i:s');
                 $user_obj->created_by = $user_enc_id;
                 if (!$user_obj->save()) {
-                    return false;
+                    print_r($user_obj->getErrors());
                 }
             }
         }
