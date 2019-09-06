@@ -3,7 +3,7 @@
     <div class="col-md-3 col-sm-6 col-xs-6 category">
         <a href="{{link}}">
             <div class="grids">
-                <img class="grids-image" src="{{icon}}">
+                <img class="grids-image" src="{{icon}}" alt="{{name}}">
             </div>
             <h4 class="name">{{name}}</h4>
         </a>

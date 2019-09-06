@@ -18,6 +18,7 @@ if (!empty($total_applications)) {
                 <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
+                            <?php if (!empty($applications[$next]['interview_process_enc_id'])): ?>
                             <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>"
                                target="_blank"
                                class="j-edit">
@@ -28,6 +29,18 @@ if (!empty($total_applications)) {
                                class="j-clone share_btn">
                                 <i class="fa fa-clone"></i>
                             </a>
+                        <?php else: ?>
+                                <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR .'quick-job-edit?editid='.$applications[$next]["application_enc_id"]); ?>"
+                                   target="_blank"
+                                   class="j-edit">
+                                    <i class="fa fa-pencil-square-o"></i>
+                                </a>
+                                <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR .'quick-job-clone?editid='.$applications[$next]["application_enc_id"]); ?>"
+                                   target="_blank"
+                                   class="j-clone share_btn">
+                                    <i class="fa fa-clone"></i>
+                                </a>
+                        <?php endif; ?>
                             <button type="button" class="j-delete"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
@@ -70,7 +83,15 @@ if (!empty($total_applications)) {
                                 <?= $applications[$next]['name']; ?>
                             </div>
                             <div class="hr-com-field">
-                                <?= $applications[$next]['placementLocations'][0]['total']; ?> Openings
+                                <?php
+                                if (!empty($applications[$next]['placementLocations'][0]['total'])):
+                                    echo $applications[$next]['placementLocations'][0]['total'].' '.'Openings';
+                                elseif (!empty($applications[$next]['positions'])):
+                                    echo $applications[$next]['positions'].' '.'Openings';
+                                else:
+                                    echo 'Work From Home';
+                                endif;
+                                ?>
                             </div>
                         </a>
                         <div class="hr-com-jobs">

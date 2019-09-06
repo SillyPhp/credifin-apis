@@ -559,20 +559,20 @@ class JobsController extends ApiBaseController
                 'i.location_enc_id location_id',
                 "k.name as city",
             ])
-            ->joinWith(['applicationTypeEnc b'], false)
-            ->joinWith(['organizationEnc c'], false)
-            ->joinWith(['title d' => function ($x) {
+            ->innerJoinWith(['applicationTypeEnc b'], false)
+            ->innerJoinWith(['organizationEnc c'], false)
+            ->innerJoinWith(['title d' => function ($x) {
                 $x->joinWith(['categoryEnc g'], false);
                 $x->joinWith(['parentEnc h'], false);
             }], false)
-            ->joinWith(['designationEnc e'], false)
-            ->joinWith(['preferredIndustry f'], false)
-            ->joinWith(['applicationPlacementLocations i' => function ($x) {
+            ->innerJoinWith(['designationEnc e'], false)
+            ->innerJoinWith(['preferredIndustry f'], false)
+            ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
                 $x->joinWith(['locationEnc j' => function ($x) {
                     $x->joinWith(['cityEnc k'], false);
                 }], false);
             }], false)
-            ->joinWith(['applicationOptions l'], false)
+            ->innerJoinWith(['applicationOptions l'], false)
             ->where([
                 'b.name' => 'Jobs',
                 'a.for_careers' => 0,
@@ -674,18 +674,18 @@ class JobsController extends ApiBaseController
                 'i.location_enc_id location_id',
                 "k.name as city",
             ])
-            ->joinWith(['applicationTypeEnc b'], false)
-            ->joinWith(['organizationEnc c'], false)
-            ->joinWith(['title d' => function ($x) {
+            ->innerJoinWith(['applicationTypeEnc b'], false)
+            ->innerJoinWith(['organizationEnc c'], false)
+            ->innerJoinWith(['title d' => function ($x) {
                 $x->joinWith(['categoryEnc g'], false);
                 $x->joinWith(['parentEnc h'], false);
             }], false)
-            ->joinWith(['applicationPlacementLocations i' => function ($x) {
+            ->innerJoinWith(['applicationPlacementLocations i' => function ($x) {
                 $x->joinWith(['locationEnc j' => function ($x) {
                     $x->joinWith(['cityEnc k'], false);
                 }], false);
             }], false)
-            ->joinWith(['applicationOptions l'], false)
+            ->innerJoinWith(['applicationOptions l'], false)
             ->where([
                 'b.name' => 'Internships',
                 'a.for_careers' => 0,
@@ -772,7 +772,7 @@ class JobsController extends ApiBaseController
                 'title',
                 'CONCAT("' . Url::to('/blog/', 'https') . '", slug) link',
                 'excerpt',
-                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, " / ", featured_image) ELSE NULL END image'
+                'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, "/", featured_image) ELSE NULL END image'
             ])
             ->where([
                 'status' => 'Active',
@@ -990,8 +990,8 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
-                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
             ])
             ->where([
                 'a.application_enc_id' => $id,

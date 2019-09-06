@@ -8,7 +8,7 @@ use yii\helpers\Url;
                 <a href="/blog/{{slug}}">
                     <div class="col-md-5">
                         <div class="tp-icon">
-                            <img src="{{image}}">
+                            <img src="{{image}}" alt="{{title}}">
                         </div>
                     </div>
                     <div class="col-md-7 no-padd">

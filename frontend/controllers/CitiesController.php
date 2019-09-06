@@ -58,23 +58,39 @@ class CitiesController extends Controller
             return $cities;
         }
     }
-
-    public function actionCareerCityList($q = null)
+    public function actionCountryList($q = null)
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
-            $cities = Cities::find()
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Countries::find()
                 ->alias('a')
-                ->select(['a.city_enc_id AS id', 'a.name AS text'])
-                ->innerJoin(States::tableName() . ' as b', 'b.state_enc_id = a.state_enc_id')
-                ->innerJoin(Countries::tablename() . ' as c', 'c.country_enc_id = b.country_enc_id')
-                ->where(['like', 'a.name', $q])
-                ->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
+                ->select(['a.name text','a.country_enc_id id'])
+                ->where('a.name LIKE "' . $q . '%"')
                 ->limit(20)
                 ->asArray()
                 ->all();
-            $out['results'] = array_values($cities);
+            $out['results'] = array_values($data);
+            return $out;
+        }
+    }
 
+    public function actionCareerCityList($q = null,$cid='b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09')
+    {
+        if (!is_null($q)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Cities::find()
+                ->alias('a')
+                ->select(['a.name text','a.city_enc_id id'])
+                ->where('a.name LIKE "' . $q . '%"')
+                ->joinWith(['stateEnc b'=>function($b) use ($cid)
+                {
+                    $b->joinWith(['countryEnc c']);
+                    $b->andWhere(['c.country_enc_id' => $cid]);
+                }],false)
+                ->limit(20)
+                ->asArray()
+                ->all();
+            $out['results'] = array_values($data);
             return $out;
         }
     }

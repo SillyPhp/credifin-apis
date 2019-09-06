@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%categories}}".
  *
@@ -21,8 +23,12 @@ namespace common\models;
  * @property AssignedEducationalRequirements[] $assignedEducationalRequirements
  * @property AssignedJobDescription[] $assignedJobDescriptions
  * @property AssignedSkills[] $assignedSkills
+ * @property CandidateJobTitle[] $candidateJobTitles
+ * @property CareerAdvise[] $careerAdvises
+ * @property CareerAdvise[] $careerAdvises0
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property EmployerReviews[] $employerReviews
  * @property NewOrganizationReviews[] $newOrganizationReviews
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
@@ -47,7 +53,7 @@ class Categories extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category_enc_id', 'name', 'slug', 'created_by'], 'required'],
+            [['category_enc_id', 'name', 'slug'], 'required'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['category_enc_id', 'name', 'slug', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['icon', 'icon_png'], 'string', 'max' => 50],
@@ -59,6 +65,9 @@ class Categories extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -102,6 +111,30 @@ class Categories extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCandidateJobTitles()
+    {
+        return $this->hasMany(CandidateJobTitle::className(), ['job_title_enc_id' => 'category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['title' => 'category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises0()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['title' => 'category_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCreatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
@@ -113,6 +146,14 @@ class Categories extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployerReviews()
+    {
+        return $this->hasMany(EmployerReviews::className(), ['category_enc_id' => 'category_enc_id']);
     }
 
     /**

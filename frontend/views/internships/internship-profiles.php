@@ -27,7 +27,9 @@ use yii\helpers\Url;
                                 <div class="icon"><img
                                             src="<?= $p['icon']?>">
                                 </div>
-                                <div class="text"><?= $p['name']?></div>
+                                <div class="pr-detail">
+                                    <div class="text"><?= $p['name']?></div>
+                                </div>
 <!--                                <div class="total">Total-Internships : 5</div>-->
                             </div>
                         </a>
@@ -69,12 +71,12 @@ $this->registerCss('
     transform: translate(-50%, -50%);
     }
 .text{
-    border-top:1px solid #eee;
-    text-align: center;
-    padding-top: 8px;
-    font-size: 18px;  
-    font-family:lora;  
-    }
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    left: 50%;
+    transform: translate(-50%,-50%); 
+}
 .total{
     text-align: center;
     padding-bottom: 8px;
@@ -82,6 +84,15 @@ $this->registerCss('
     font-family:roboto;
     font-weight:300;   
     }
+.pr-detail{
+    border-top: 1px solid #eee;
+    text-align: center;
+    padding-top: 5px;
+    font-size: 17px;
+    line-height: 21px;
+    min-height: 60px;
+    position: relative;
+}
 ');
 $script = <<<JS
 JS;

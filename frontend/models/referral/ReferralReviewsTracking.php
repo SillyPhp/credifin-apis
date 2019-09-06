@@ -26,7 +26,7 @@ class ReferralReviewsTracking extends Widget
             $model = new ReferralReviewTracking();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $model->tracking_signup_enc_id = $utilitiesModel->encrypt();
+            $model->tracking_review_enc_id = $utilitiesModel->encrypt();
             $model->referral_enc_id = $ref->referral_enc_id;
             if (!empty($this->claim_review_id)) {
                 $model->claimed_review_enc_id = $this->claim_review_id;

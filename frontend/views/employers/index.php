@@ -2,35 +2,8 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-$this->title = Yii::t('frontend', 'Employers');
+
 $this->params['header_dark'] = false;
-$keywords = 'Jobs,Jobs in Ludhiana,Online Jobs,Internships,Summer Internships,Paid Internships,Jobs in Jalandhar,Top 10 Websites for Jobs,Data Entry Jobs,Latest IT Jobs for Freshers,Apply for Internship in India,Jobs near me,Internships near me,Top career sites,Best Career sites in India';
-$description = 'Empower Youth is a career development platform where the candidate can apply for their desired job and internship.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
     <section class="header">
         <div class="container">
@@ -40,7 +13,8 @@ $this->params['seo_tags'] = [
                         <div class="vertically-center">
                             <div class="main-tagline">Want to attract top talent ?</div>
                             <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &
-                                Save Time On Hiring Candidates.</div>
+                                Save Time On Hiring Candidates.
+                            </div>
                             <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>
                             <div class="main-bttn">
                                 <a href="/signup/organization" class="button2">Create Account
@@ -52,39 +26,39 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-<!--    <section class="showcase">-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <div class="showcase-heading">-->
-<!--                        <span>Showcase Your employer brand</span>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                </div>-->
-<!--                <div class="row">-->
-<!--                <div class="showcase-subparts">-->
-<!--                    <div class="col-md-4">-->
-<!--                        <div class="showcase-icon">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/create-profile.png')?><!--">-->
-<!--                        </div>-->
-<!--                        <div class="showcase-title"><span>Create Company Profile</span></div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-4">-->
-<!--                        <div class="showcase-icon">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/hiring.png')?><!--">-->
-<!--                        </div>-->
-<!--                        <div class="showcase-title"><span>Hiring Posters</span></div>-->
-<!--                    </div>-->
-<!--                    <div class="col-md-4">-->
-<!--                        <div class="showcase-icon">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/index2/responsive.png')?><!--">-->
-<!--                        </div>-->
-<!--                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+    <!--    <section class="showcase">-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <div class="showcase-heading">-->
+    <!--                        <span>Showcase Your employer brand</span>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                </div>-->
+    <!--                <div class="row">-->
+    <!--                <div class="showcase-subparts">-->
+    <!--                    <div class="col-md-4">-->
+    <!--                        <div class="showcase-icon">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/create-profile.png')?><!--">-->
+    <!--                        </div>-->
+    <!--                        <div class="showcase-title"><span>Create Company Profile</span></div>-->
+    <!--                    </div>-->
+    <!--                    <div class="col-md-4">-->
+    <!--                        <div class="showcase-icon">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/hiring.png')?><!--">-->
+    <!--                        </div>-->
+    <!--                        <div class="showcase-title"><span>Hiring Posters</span></div>-->
+    <!--                    </div>-->
+    <!--                    <div class="col-md-4">-->
+    <!--                        <div class="showcase-icon">-->
+    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/responsive.png')?><!--">-->
+    <!--                        </div>-->
+    <!--                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -96,7 +70,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works11.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works11.png') ?>">
                         </div>
                         <div class="hwn-title">Create a free account</div>
                     </div>
@@ -104,7 +78,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works22.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works22.png') ?>">
                         </div>
                         <div class="hwn-title">Add a position</div>
                     </div>
@@ -112,7 +86,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works33.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works33.png') ?>">
                         </div>
                         <div class="hwn-title">Get applications</div>
                     </div>
@@ -120,7 +94,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works44.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works44.png') ?>">
                         </div>
                         <div class="hwn-title">Hire your star employee</div>
                     </div>
@@ -157,7 +131,8 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="step-heading">Show your true identity</div>
                         <div class="step-dis">Attract top talent by showing who you really are with a powerful
-                            employer branding campaign.</div>
+                            employer branding campaign.
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -166,7 +141,8 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="step-heading">save time on recruitment</div>
                     <div class="step-dis">Make the most of our collaboration platform and
-                        interview only qualified, culture-fit candidates.</div>
+                        interview only qualified, culture-fit candidates.
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <div class="step-icon">
@@ -174,20 +150,21 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="step-heading">Recruit top talent</div>
                     <div class="step-dis">Get on board fully engaged employees and boost
-                        your retention rates </div>
+                        your retention rates
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
 
-    <?= $this->render('/widgets/companies-with-us'); ?>
+<?= $this->render('/widgets/companies-with-us'); ?>
 
-    <?= $this->render('/widgets/partner-with-us-and-feedback-form',[
-        'feedbackFormModel' => $feedbackFormModel,
-        'partnerWithUsModel' => $partnerWithUsModel,
-    ]);?>
-<!--    <div class="bluebg"></div>-->
+<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
+    'feedbackFormModel' => $feedbackFormModel,
+    'partnerWithUsModel' => $partnerWithUsModel,
+]); ?>
+    <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
 .hwn{
@@ -424,5 +401,4 @@ $this->registerCss('
   -webkit-transform: translateY(5px);
   transform: translateY(5px);
 }
-
 ');

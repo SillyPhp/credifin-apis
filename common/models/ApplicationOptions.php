@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%application_options}}".
  *
@@ -9,6 +11,7 @@ namespace common\models;
  * @property string $option_enc_id Option Encrypted ID
  * @property string $application_enc_id Foreign Key To Employer Applications Table
  * @property string $wage_type Wage Type
+ * @property int $positions no of openings
  * @property double $fixed_wage Fixed Wage
  * @property double $min_wage Minimum Wage
  * @property double $max_wage Maximum Wage
@@ -53,8 +56,8 @@ class ApplicationOptions extends \yii\db\ActiveRecord
         return [
             [['option_enc_id', 'application_enc_id', 'wage_type', 'created_by'], 'required'],
             [['wage_type', 'wage_duration', 'saturday_frequency', 'sunday_frequency', 'internship_duration_type'], 'string'],
+            [['positions', 'has_placement_offer', 'has_questionnaire', 'has_benefits', 'has_online_interview', 'internship_duration'], 'integer'],
             [['fixed_wage', 'min_wage', 'max_wage', 'ctc', 'pre_placement_offer'], 'number'],
-            [['has_placement_offer', 'has_questionnaire', 'has_benefits', 'has_online_interview', 'internship_duration'], 'integer'],
             [['interview_start_date', 'interview_end_date', 'created_on', 'last_updated_on'], 'safe'],
             [['option_enc_id', 'application_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['working_days'], 'string', 'max' => 30],
@@ -64,6 +67,10 @@ class ApplicationOptions extends \yii\db\ActiveRecord
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -87,5 +94,9 @@ class ApplicationOptions extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+    public function getCurrencyEnc()
+    {
+        return $this->hasOne(Currencies::className(), ['currency_enc_id' => 'currency_enc_id']);
     }
 }

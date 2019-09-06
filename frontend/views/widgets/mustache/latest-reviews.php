@@ -2,7 +2,7 @@
 use yii\helpers\Url;
 ?>
     <script id="latest-reviews" type="text/template">
-        <div class="qr-heading">Latest Reviws</div>
+        <div class="qr-heading">Latest Reviews</div>
         <ul>
             {{#.}}
             <li>
