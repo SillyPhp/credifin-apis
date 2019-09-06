@@ -62,7 +62,7 @@ class UploadController extends ApiBaseController
     public function actionResume()
     {
         $req = Yii::$app->request->post();
-        if (!empty($req['resume_string']) && !empty($req['resume_ext']) && !empty($req['resume_name'])) {
+        if (empty($req['resume_string']) && empty($req['resume_ext']) && empty($req['resume_name'])) {
             return $this->response(422);
         }
         $resume = base64_decode($req['resume_string']);
