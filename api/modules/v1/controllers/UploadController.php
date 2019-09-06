@@ -40,12 +40,11 @@ class UploadController extends ApiBaseController
 
     public function actionProfilePicture()
     {
-
         $req = Yii::$app->request->post();
-        $image = base64_decode($req['image_string']);
-        if(empty($image)){
+        if (empty($req['image_string'])) {
             return $this->response(422);
         }
+        $image = base64_decode($req['image_string']);
 
         $userProfilePicture = new PictureUpload();
         if ($user_id = $userProfilePicture->update($image)) {
@@ -62,16 +61,20 @@ class UploadController extends ApiBaseController
 
     public function actionResume()
     {
-        $userResume = new ResumeUpload();
-        $userResume->resume_file = UploadedFile::getInstanceByName('resume_file');
-        if ($userResume->resume_file && $userResume->validate()) {
-            if ($res = $userResume->upload()) {
-                return $this->response(202, $res);
-            } else {
-                return $this->response(500);
-            }
-        } else {
-            return $this->response(409);
+        $req = Yii::$app->request->post();
+        if (!empty($req['resume_string']) && !empty($req['resume_ext']) && !empty($req['resume_name'])) {
+            return $this->response(422);
         }
+        $resume = base64_decode($req['resume_string']);
+        $resume_ext = $req['resume_ext'];
+        $resume_name = $req['resume_name'];
+
+        $userResume = new ResumeUpload();
+        if ($res = $userResume->upload($resume, $resume_ext,$resume_name)) {
+            return $this->response(202, $res);
+        } else {
+            return $this->response(500);
+        }
+
     }
 }
