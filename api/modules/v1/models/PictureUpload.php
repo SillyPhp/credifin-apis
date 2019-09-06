@@ -43,9 +43,9 @@ class PictureUpload extends Model{
             if($user->update()){
                 if(!is_dir($base_path)){
                     if(mkdir($base_path, 0755, true)){
-                        if($a = file_put_contents($base_path . DIRECTORY_SEPARATOR . $user->image, $image)) {
+                        if(file_put_contents($base_path . DIRECTORY_SEPARATOR . $user->image, $image)) {
                             if($user->save()) {
-                                return $a;
+                                return $user->user_enc_id;
                             }
                         }else{
                             return false;

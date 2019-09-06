@@ -8,6 +8,8 @@ use api\modules\v1\models\PictureUpload;
 use api\modules\v1\models\ResumeUpload;
 use common\models\AssignedCategories;
 use common\models\Categories;
+use yii\helpers\Url;
+use common\models\Users;
 use yii\filters\auth\HttpBearerAuth;
 use common\models\Cities;
 use common\models\Countries;
@@ -43,8 +45,14 @@ class UploadController extends ApiBaseController
         $image = base64_decode($req['image_string']);
 
         $userProfilePicture = new PictureUpload();
-        if ($a = $userProfilePicture->update($image)) {
-            return $this->response(200, $a);
+        if ($user_id = $userProfilePicture->update($image)) {
+            $usersModel = new Users();
+            $user = $usersModel->find()
+                ->where(['user_enc_id' => $user_id])
+                ->one();
+
+            $result['profile_picture'] = Url::to(Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
+            return $this->response(200, $result);
         }
         return $this->response(500);
     }
