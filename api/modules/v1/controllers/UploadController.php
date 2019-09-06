@@ -43,6 +43,9 @@ class UploadController extends ApiBaseController
 
         $req = Yii::$app->request->post();
         $image = base64_decode($req['image_string']);
+        if(empty($image)){
+            return $this->response(422);
+        }
 
         $userProfilePicture = new PictureUpload();
         if ($user_id = $userProfilePicture->update($image)) {
