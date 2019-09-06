@@ -18,8 +18,10 @@ use Yii;
 use yii\web\UploadedFile;
 
 
-class UploadController extends ApiBaseController{
-    public function behaviors(){
+class UploadController extends ApiBaseController
+{
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className()
@@ -34,29 +36,30 @@ class UploadController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionProfilePicture(){
+    public function actionProfilePicture()
+    {
+
+        $req = Yii::$app->request->post();
+        $image = base64_decode($req['image_string']);
+
         $userProfilePicture = new PictureUpload();
-        $userProfilePicture->profile_image = UploadedFile::getInstanceByName('profile_image');
-        if($userProfilePicture->profile_image && $userProfilePicture->validate()) {
-            if($userProfilePicture->update()){
-                return $this->response(200, 'Successfully Updated');
-            }
-            return $this->response(500);
-        }else{
-            return $this->response(409);
+        if ($a = $userProfilePicture->update($image)) {
+            return $this->response(200, $a);
         }
+        return $this->response(500);
     }
 
-    public function actionResume(){
+    public function actionResume()
+    {
         $userResume = new ResumeUpload();
         $userResume->resume_file = UploadedFile::getInstanceByName('resume_file');
-        if($userResume->resume_file && $userResume->validate()) {
+        if ($userResume->resume_file && $userResume->validate()) {
             if ($res = $userResume->upload()) {
                 return $this->response(202, $res);
             } else {
                 return $this->response(500);
             }
-        }else{
+        } else {
             return $this->response(409);
         }
     }
