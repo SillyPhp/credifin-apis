@@ -224,43 +224,50 @@ class CandProfileController extends ApiBaseController{
 
         $user_id = $token_holder_id->user_enc_id;
 
-        if($req = Yii::$app->request->post()){
+        if($reqq = Yii::$app->request->post()){
 
-            if($req['for'] == "Jobs") {
-                $user = UserPreferences::find()
-                    ->where(['created_by' => $user_id])
-                    ->andWhere(['assigned_to' => 'Jobs'])
-                    ->one();
+            foreach ($reqq as $req) {
 
-                if ($user) {
-                    if ($this->updateData($req,$user_id)) {
-                        return $this->response(200);
-                    }
-                } else {
-                    if ($this->saveData($req,$user_id)) {
-                        return $this->response(200);
+                if ($req['for'] == "Jobs") {
+                    $user = UserPreferences::find()
+                        ->where(['created_by' => $user_id])
+                        ->andWhere(['assigned_to' => 'Jobs'])
+                        ->one();
+
+                    if ($user) {
+                        $a = $this->updateData($req, $user_id);
+//                        if ($this->updateData($req, $user_id)) {
+//                            return $this->response(200);
+//                        }
+                    } else {
+                        $b = $this->saveData($req, $user_id);
+//                        if ($this->saveData($req, $user_id)) {
+//                            return $this->response(200);
+//                        }
                     }
                 }
-            }
 
-            if($req['for'] == "Internships"){
-                $user = UserPreferences::find()
-                    ->where(['created_by' => $user_id])
-                    ->andWhere(['assigned_to' => 'Internships'])
-                    ->one();
+                if ($req['for'] == "Internships") {
+                    $user = UserPreferences::find()
+                        ->where(['created_by' => $user_id])
+                        ->andWhere(['assigned_to' => 'Internships'])
+                        ->one();
 
-                if ($user) {
-                    if ($this->updateData($req,$user_id)) {
-                        return $this->response(200);
-                    }
-                } else {
-                    if ($this->saveData($req,$user_id)) {
-                        return $this->response(200);
+                    if ($user) {
+                        if ($this->updateData($req, $user_id)) {
+                            return $this->response(200);
+                        }
+                    } else {
+                        if ($this->saveData($req, $user_id)) {
+                            return $this->response(200);
+                        }
                     }
                 }
             }
         }
     }
+
+
 
     private function saveData($r,$user_id){
         $user_preference = new UserPreferences();
@@ -313,7 +320,7 @@ class CandProfileController extends ApiBaseController{
                 array_push($skills,$s['value']);
             }
             foreach($skills as $skill){
-                $this->setSkill($skill, $user_preference->preference_enc_id,$user_id);
+                $this->setSkills($skill, $user_preference->preference_enc_id,$user_id);
             }
 
             $profile = [];
@@ -342,8 +349,10 @@ class CandProfileController extends ApiBaseController{
     private function updateData($r,$user_id){
         $user_preference = UserPreferences::findOne([
             'created_by' => $user_id,
-            'assigned_to' => 'Jobs'
+            'assigned_to' => $r['for'],
         ]);
+
+        print_r($user_preference->type);
 
         $user_preference->type = $r['type'];
         $user_preference->last_updated_on = date('Y-m-d H:i:s');
@@ -470,7 +479,7 @@ class CandProfileController extends ApiBaseController{
                 foreach ($user_skill as $skill_id){
                     $skill_name = Skills::find()
                         ->select(['skill'])
-                        ->where(['skill_enc_id'=>$skill_id])
+                        ->where(['skill_enc_id'=>$skill_id['skill_enc_id']])
                         ->asArray()
                         ->one();
                     array_push($s_name,$skill_name['skill']);
@@ -551,7 +560,7 @@ class CandProfileController extends ApiBaseController{
                     }
                 }
 
-               return $this->response(200,'updated');
+               return true;
         }else{
             print_r($user_preference->getErrors());
         }
