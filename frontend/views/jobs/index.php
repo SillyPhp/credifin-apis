@@ -2,7 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
-$referral = Yii::$app->referral->getReferralCode("&");
+
 ?>
 <section class="backgrounds">
     <div class="container">
@@ -111,7 +111,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -125,7 +125,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -139,7 +139,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
