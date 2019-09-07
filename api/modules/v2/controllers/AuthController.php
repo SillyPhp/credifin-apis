@@ -50,6 +50,19 @@ class AuthController extends ApiBaseController{
         return $this->response(422);
     }
 
+    public function actionUsername(){
+        $username = Yii::$app->request->post('username');
+        $user_names = Usernames::find()
+            ->where(['username'=>$username])
+            ->exists();
+
+        if($user_names){
+            return $this->response(200,['status'=>201,'exists'=>true]);
+        }else{
+            return $this->response(200,['status'=>200,'exists'=>false]);
+        }
+    }
+
     public function actionLogin(){
         $model = new LoginForm();
         if($model->load(Yii::$app->request->post(), '')){

@@ -267,8 +267,6 @@ class CandProfileController extends ApiBaseController{
         }
     }
 
-
-
     private function saveData($r,$user_id){
         $user_preference = new UserPreferences();
         $utilities = new Utilities();
@@ -351,8 +349,6 @@ class CandProfileController extends ApiBaseController{
             'created_by' => $user_id,
             'assigned_to' => $r['for'],
         ]);
-
-        print_r($user_preference->type);
 
         $user_preference->type = $r['type'];
         $user_preference->last_updated_on = date('Y-m-d H:i:s');

@@ -140,9 +140,9 @@ class CandhomeController extends ApiBaseController
                     $x->groupBy(['e.placement_location_enc_id']);
                 }], false);
             }])
-            ->joinWith(['resumeEnc c'], false)
+//            ->joinWith(['resumeEnc c'], false)
             ->where([
-                'c.user_enc_id' => $id,
+                'a.created_by' => $id,
                 'a.is_deleted' => 0,
                 'd.is_erexx_registered' => 1,
                 'd.is_deleted' => 0,

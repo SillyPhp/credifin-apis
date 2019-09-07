@@ -359,7 +359,7 @@ class JobsController extends ApiBaseController
                         $delete_application->last_updated_on = date('Y-m-d H:i:s');
                         $delete_application->update();
                     }
-                    return $this->response(201, 'successfully shortlisted.');
+                    return $this->response(201, ['status'=>200]);
                 } else {
                     return $this->response(500, 'not shortlisted');
                 }
@@ -372,7 +372,7 @@ class JobsController extends ApiBaseController
                 $update_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($update_shortlisted->update()) {
-                    return $this->response(201, 'successfully shortlisted.');
+                    return $this->response(200, ['status'=>200]);
                 } else {
                     return $this->response(500, 'not shorlisted');
                 }
@@ -384,12 +384,10 @@ class JobsController extends ApiBaseController
                 $delete_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $delete_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($delete_shortlisted->update()) {
-                    return $this->response(200, 'deleted successfully');
+                    return $this->response(200, ['status'=>201]);
                 } else {
                     return $this->response(500, 'Job is not deleted in shortlist');
                 }
-            } else {
-                return $this->response(409, 'already deleted or not found');
             }
         } else {
             return $this->response(422);
@@ -471,7 +469,7 @@ class JobsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
-                    return $this->response(200);
+                    return $this->response(200,['status'=>200]);
                 } else {
                     return $this->response(500);
                 }
