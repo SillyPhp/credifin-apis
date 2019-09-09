@@ -111,11 +111,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <h3 class="text-white">Share</h3>
         <div class="buttons">
             <?php
-            $referral = Yii::$app->referral->getReferralCode();
             if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug . $referral, 'https');
+                $link = Url::to('internship/' . $application_slug, 'https');
             } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug . $referral, 'https');
+                $link = Url::to('job/' . $application_slug, 'https');
             }
             ?>
             <a href="#"

@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
 ?>
 <section class="backgrounds">
     <div class="container">
@@ -150,7 +149,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -164,7 +163,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
@@ -178,7 +177,7 @@ $referral = Yii::$app->referral->getReferralCode("&");
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>

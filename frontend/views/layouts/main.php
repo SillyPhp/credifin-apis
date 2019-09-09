@@ -12,7 +12,6 @@ use frontend\assets\AppAssets;
 use frontend\widgets\login;
 
 AppAssets::register($this);
-$referral = Yii::$app->referral->getReferralCode();
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -61,6 +60,7 @@ $referral = Yii::$app->referral->getReferralCode();
                 "query-input": "required name=search_term_string"
             }
         }
+
     </script>
 </head>
 <body class="fullwidth-page">
@@ -93,7 +93,7 @@ $referral = Yii::$app->referral->getReferralCode();
                 <nav id="menuzord-right"
                      class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
                     <a class="menuzord-brand pull-left flip mt-15"
-                       href="<?= "/" . $referral; ?>">
+                       href="<?= "/"; ?>">
                         <?php
                         if (!Yii::$app->user->isGuest) {
                             ?>
@@ -158,7 +158,6 @@ $referral = Yii::$app->referral->getReferralCode();
 
                     echo $this->render('/widgets/top-header', [
                         'menu_class' => 'menuzord-menu' . (!$this->params['header_dark']) ? ' dark' : '',
-                        'referral' => $referral,
                     ]);
                     ?>
                 </nav>
@@ -174,7 +173,6 @@ $referral = Yii::$app->referral->getReferralCode();
         if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
             echo $this->render('/widgets/sub-header', [
                 'data' => $this->params['sub_header'],
-                'referral' => $referral,
             ]);
         }
         ?>
@@ -209,7 +207,7 @@ $referral = Yii::$app->referral->getReferralCode();
                             <div class="col-md-12 col-sm-12">
                                 <div class="quick-btns">
                                     <ul class="qb">
-                                        <li><a href="<?= "/careers" . $referral; ?>" class="career-btn">Careers</a></li>
+                                        <li><a href="<?= "/careers"; ?>" class="career-btn">Careers</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -225,7 +223,7 @@ $referral = Yii::$app->referral->getReferralCode();
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="f-logo">
-                        <a href="<?= "/" . $referral; ?>" title='Empower Youth'>
+                        <a href="<?= "/"; ?>" title='Empower Youth'>
                             <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
                                  alt="Empower Youth"/>
                         </a>
@@ -254,9 +252,7 @@ $referral = Yii::$app->referral->getReferralCode();
     </footer>
     <?php
     if (!Yii::$app->user->isGuest) {
-        echo $this->render('/widgets/user-profile-sidebar-right', [
-            'referral' => $referral,
-        ]);
+        echo $this->render('/widgets/user-profile-sidebar-right');
     } elseif (Yii::$app->user->isGuest) {
         echo login::widget();
     }
