@@ -18,7 +18,7 @@ use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\Response;
 
-class TwitterJobsController extends Controller
+class TweetsController extends Controller
 {
     public function actionIndex($keywords = null, $location = null,$type=null,$limit=null,$offset=null)
     {
