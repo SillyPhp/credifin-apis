@@ -93,8 +93,50 @@ $this->params['header_dark'] = true;
     </div>
 </section>
 <?php
+if($type == 'internships') {
+    ?>
+    <div class="re-twitte">
+        <a href="/tweets/internship/create" class="t-btn">
+            <i class="fab fa-twitter"></i>
+            Post Internship Tweet
+        </a>
+    </div>
+    <?php
+} else {
+    ?>
+    <div class="re-twitte">
+        <a href="/tweets/job/create" class="t-btn">
+            <i class="fab fa-twitter"></i>
+            Post Job Tweet
+        </a>
+    </div>
+    <?php
+}
 //echo $this->render('/widgets/twitter-jobs');
 $this->registerCss("
+.re-twitte{
+	position:fixed;
+	width:215px;
+	height:80px;
+	bottom:0px;
+	right:10px;
+	z-index: 9999;
+}
+.t-btn{
+    position:absolute;
+    right:10px;
+    padding:15px;
+    border:none;
+    background-color:#00a0e3;
+    border-radius:5px;
+    box-shadow:0px 5px 9px 3px skyblue;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+.t-btn:hover, .t-btn:focus{
+    color:#fff;
+}
 .z-index-9{z-index:9;}
 .not-found{
     max-width: 400px;

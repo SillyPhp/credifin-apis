@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$link = Url::to($org_slug . '/reviews' . $referral, true);
+$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-student-reviews" type="text/template">
         {{#.}}

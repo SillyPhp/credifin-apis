@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
 $this->params['header_dark'] = false;
-
 ?>
 
 <section class="slider">
@@ -43,6 +41,10 @@ $this->params['header_dark'] = false;
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
+                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
+                                    <a href="/internships">Internships</a>, <a href="/reviews">Reviews</a>,
+                                    <a href="">Learning Content</a>, <a href="/blog">Blogs</a>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -626,7 +628,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -640,7 +642,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -667,7 +669,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
@@ -683,6 +685,16 @@ $this->params['header_dark'] = false;
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.job-search > span{
+    color:#fff !important;
+}
+.feature-links a{
+    color: #d5d8f3;
+    padding-right: 5px;    
+}
+.feature-links a:hover{
+    color:#ff7803;
+}
 .pos-rel{
     position:relative;
     min-height:300px;

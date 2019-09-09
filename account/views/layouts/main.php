@@ -10,7 +10,6 @@ use yii\helpers\Url;
 
 AppAssets::register($this);
 $this->beginPage();
-$referral = Yii::$app->referral->getReferralCode();
 ?>
     <!DOCTYPE html>
     <!--[if IE 8]>
@@ -39,7 +38,7 @@ $referral = Yii::$app->referral->getReferralCode();
                         <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">
                             <div id="menuzord" class="menuzord">
                                 <a style="position:relative;float: left;margin-top: 10px;"
-                                   href="<?= '/' . $referral; ?>">
+                                   href="<?= '/'; ?>">
                                     <img id="header-logo" alt="<?= Yii::$app->params->site_name; ?>"
                                          src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
                                     <span class="logo_beta">Beta</span>
@@ -82,7 +81,6 @@ $referral = Yii::$app->referral->getReferralCode();
                                 <?=
                                 $this->render('/widgets/common/header/top-header', [
                                     'menu_class' => 'menuzord-menu',
-                                    'referral' => $referral,
                                 ]);
                                 ?>
                             </div>
@@ -90,9 +88,7 @@ $referral = Yii::$app->referral->getReferralCode();
                     </div>
                     <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">
                         <?=
-                        $this->render('/widgets/header/top-header', [
-                            'referral' => $referral,
-                        ]);
+                        $this->render('/widgets/header/top-header');
                         ?>
                     </div>
                 </div>
@@ -108,11 +104,7 @@ $referral = Yii::$app->referral->getReferralCode();
             <p class="copyright"> <?= Yii::t('account', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('account', 'All Rights Reserved') . '.'; ?>
             </p>
         </div>
-        <?php
-        echo $this->render('/widgets/common/sidebar/user-profile-sidebar-right', [
-            'referral' => $referral,
-        ]);
-        ?>
+        <?= $this->render('/widgets/common/sidebar/user-profile-sidebar-right'); ?>
     </div>
     <?php
     echo $this->render('/widgets/chat/main');

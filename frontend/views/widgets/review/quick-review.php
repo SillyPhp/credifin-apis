@@ -450,7 +450,7 @@ $(document).on('click','#review_btn',function(e) {
         $('.search').addClass('open');
         close_button.fadeIn(500);
         input.fadeIn(500);
-        input.focus();
+        $('input').focus();
         $('body').css('overflow-y','hidden');
     });
     
