@@ -1,181 +1,127 @@
 <nav class="ey-main-menu-nav">
     <ul class="ey-menu-inner-main">
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="#">Member Benefits <i
-                        class="fas fa-arrow-down" aria-hidden="true"></i></a>
+            <a href="/jobs">
+                Jobs
+                <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </a>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
-                    <div class="container">
+                    <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
                                 <li class="ey-head-sub-menu-has-child">
-                                    <a href="#">Hosting</a>
-                                    <div class="ey-sub-sec">
-                                        <ul class="ey-head-sub-menu-items">
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/">
-                                                    <div>
-                                                        <span class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Features</span>
-                                                </a>
-                                            </li>
-                                            <li class="ey-head-sub-menu-icon">
-                                                <a
-                                                        href="/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Plans &amp; Pricing</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/enterprise-hosting/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Enterprise</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/migration/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Migration</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <a href="/jobs/near-me">Jobs Near Me</a>
+                                    <!--                                    <div class="ey-sub-sec">-->
+                                    <!--                                        <ul class="ey-head-sub-menu-items">-->
+                                    <!--                                            <li class="ey-head-sub-menu-icon">-->
+                                    <!--                                                <a href="/">-->
+                                    <!--                                                    <div>-->
+                                    <!--                                                        <span class="ey-services-icons"></span>-->
+                                    <!--                                                    </div>-->
+                                    <!--                                                    <span>Test</span>-->
+                                    <!--                                                </a>-->
+                                    <!--                                            </li>-->
+                                    <!--                                        </ul>-->
+                                    <!--                                    </div>-->
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
-                                    <a href="/">Site Management</a>
-                                    <div class="ey-sub-sec">
-                                        <ul class="ey-head-sub-menu-items">
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/hub-welcome/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>The Hub</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/reports/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>White Label Reports</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/updates/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Automation</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/project/snapshot/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Backups</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a
-                                                        href="/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Monitor</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/multisite/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Multisite</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <a href="/organizations">Explore Companies</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
-                                    <a href="/">Marketing</a>
-                                    <div class="ey-sub-sec">
-                                        <ul class="ey-head-sub-menu-items">
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Forms &amp; Quizes</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>White Label Branding</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/"
-                                                   data-ga-text="Marketing SEO Optimization">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>SEO Optimization</span>
-                                                </a>
-                                            </li>
-                                            <li
-                                                    class="ey-head-sub-menu-icon">
-                                                <a href="/">
-                                                    <div><span
-                                                                class="ey-services-icons"></span>
-                                                    </div>
-                                                    <span>Optin &amp; Popups</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <a href="/jobs/compare">Compare Jobs</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/organizations/explore">Featured Companies</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/tweets/jobs">Job Tweets</a>
                                 </li>
                             </ul>
                         </nav>
-                        <div class="ey-header-sub-menu-container"></div>
+                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
         </li>
-        <li class="ey-nav-item">
-            <a href="/">Plugins</a>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/internships">
+                Internships
+                <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/internships/near-me">Internships Near Me</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/organizations">Explore Companies</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/internships/compare">Compare Internships</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/organizations/explore">Featured Companies</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/tweets/internships">Internship Tweets</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
+                    </div>
+                </div>
+            </div>
         </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/reviews">
+                Reviews
+                <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/reviews/companies">Companies</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/reviews/colleges">Colleges</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/reviews/schools">Schools</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/reviews/institutes">Educational Institutes</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/blog">Blog</a>
+        </li>
+        <?php if (!Yii::$app->user->isGuest) { ?>
+            <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                <a href="/account/dashboard">Dashboard</a>
+            </li>
+        <?php } ?>
     </ul>
 </nav>
 <?php
 $this->registerCss('
-.ey-header *{
+.ey-header, .ey-header *{
     color: #333;
+    transition: transform .3s;
 }
 .ey-header {
-    transition: transform .3s;
     min-height: 60px;
 }
 .ey-head-main {
@@ -209,14 +155,15 @@ $this->registerCss('
 .ey-header-logo .ey-logo {
     font-size: 14px;
     line-height: 1em;
+    position:relative;
 }
 .ey-logo img{
     max-height: 45px;
 }
 .ey-menu-main {
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+    -webkit-box-flex:16;
+    -ms-flex: 16;
+    flex: 16;
     margin: 0 30px;
 }
 
@@ -228,6 +175,7 @@ $this->registerCss('
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
+    justify-content: flex-end;
 }
 
 .ey-main-menu-nav {
@@ -237,7 +185,7 @@ $this->registerCss('
 
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
-    margin: 0;
+//    margin: auto;
     padding: 0;
 }
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
@@ -271,7 +219,7 @@ $this->registerCss('
     flex-wrap: wrap;
     list-style: none;
     min-height: 50px;
-    margin-left: 147px;
+    justify-content: flex-end;
 }
 
 .ey-sub-menu .ey-head-sub-menu-has-child {
@@ -402,11 +350,15 @@ $this->registerCss('
 }
 .ey-sub-menu {
     display: none;
-    left: 0;
+    left: 50%;
     position: absolute;
     right: 0;
     top: 61px;
     z-index: 4;
+    height:0px;
+    width: 100vw;
+    transform: translate(-50%, 0%);
+    overflow:hidden;
 }
 
 @media (min-width: 1080px) {
@@ -416,7 +368,6 @@ $this->registerCss('
 }
 
 .ey-mobile-menu .ey-mob-nav-main {
-    background: #fff;
     min-height: 50px;
     padding: 0;
     position: relative;
@@ -578,6 +529,22 @@ $this->registerCss('
 }
 .ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu {
     display: block;
+    overflow:visible;
+    height:50px;
+    -webkit-animation-name: ey_menu;
+    -webkit-animation-duration: 1s;
+    animation-name: ey_menu;
+    animation-duration: 1s;
+}
+
+@-webkit-keyframes ey_menu {
+  from {overflow:hidden;display: none;height: 0px;}
+  to {overflow:visible;display: block;height: 50px;}
+}
+
+@keyframes ey_menu {
+  from {overflow:hidden;display: none;height: 0px;}
+  to {overflow:visible;display: block;height: 50px;}
 }
 .ey-sub-menu:before {
     background: #f8f8f8;
@@ -786,5 +753,28 @@ $this->registerCss('
     padding: 20px 0 20px 20px;
     visibility: visible;
 }
+.ey-header-main .ey-menu-main nav .ey-menu-inner-main .ey-nav-item a,
+.ey-header-main .ey-nav-actions div a,
+.ey-header-main .ey-header-logo a span{
+    color:#444;
+}
+.container.add-padding .ey-header-main > .ey-menu-main nav .ey-menu-inner-main .ey-nav-item > a,
+.container.add-padding .ey-header-main > .ey-nav-actions div a,
+.container.add-padding .ey-header-main > .ey-header-logo a span{
+    color:#fff;
+}
+.container.add-padding .ey-mob-nav-items > .ey-humburger-menu-main button > span{
+    background:#fff;
+}
+.large-container{
+    max-width:1400px !important;
+    width:auto;
+}
+#header-main{
+    padding:6px 0px;
+}
+.ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
+    color:#00a0e3 !Important;
+} 
 ');
 ?>

@@ -165,11 +165,22 @@ $referral = Yii::$app->referral->getReferralCode();
 <!--            </div>-->
             <div class="ey-head-main">
                 <div class="container-fluid">
-                    <div class="container">
+                    <div class="large-container container">
                         <div class="ey-header-main">
                             <div class="ey-header-logo">
                                 <a class="ey-logo" href="/">
-                                    <img src="http://ajay.eygb.me/assets/common/logos/empower_youth_plus.svg"/>
+<!--                                    <img src="http://ajay.eygb.me/assets/common/logos/empower_youth_plus.svg"/>-->
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                         src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                        <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
+                                             src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                        <?php
+                                    }
+                                    ?>
+                                    <span class="logo-beta">Beta</span>
                                 </a>
                             </div>
                             <div class="ey-menu-main">
@@ -177,7 +188,42 @@ $referral = Yii::$app->referral->getReferralCode();
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
-                                    <a href="">Log In</a>
+                                    <?php
+                                    if (!Yii::$app->user->isGuest) {
+                                        $name = $image = $color = NULL;
+                                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                            if (Yii::$app->user->identity->organization->logo) {
+                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                            }
+                                            $name = Yii::$app->user->identity->organization->name;
+                                            $color = Yii::$app->user->identity->organization->initials_color;
+                                        } else {
+                                            if (Yii::$app->user->identity->image) {
+                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                            }
+                                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                            $color = Yii::$app->user->identity->initials_color;
+                                        }
+                                        ?>
+                                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
+                                        <div class="my-profiles-sec">
+                                            <?php if ($image): ?>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
+                                            <?php else: ?>
+                                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
+                                                              height="40" font="20px"></canvas></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php Pjax::end(); ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
+                                            Log In
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -204,7 +250,42 @@ $referral = Yii::$app->referral->getReferralCode();
                                     </a>
                                 </div>
                                 <div class="ey-mob-actions">
-                                    <a href="#">Sign in</a>
+                                    <?php
+                                    if (!Yii::$app->user->isGuest) {
+                                        $name = $image = $color = NULL;
+                                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                            if (Yii::$app->user->identity->organization->logo) {
+                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                            }
+                                            $name = Yii::$app->user->identity->organization->name;
+                                            $color = Yii::$app->user->identity->organization->initials_color;
+                                        } else {
+                                            if (Yii::$app->user->identity->image) {
+                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                            }
+                                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                            $color = Yii::$app->user->identity->initials_color;
+                                        }
+                                        ?>
+                                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
+                                        <div class="my-profiles-sec">
+                                            <?php if ($image): ?>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
+                                            <?php else: ?>
+                                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
+                                                              height="40" font="20px"></canvas></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php Pjax::end(); ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
+                                            Log In
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -524,7 +605,7 @@ $this->registerCss('
 }
 @media screen and (max-width: 900px) and (min-width: 0px) {
     .my-profiles-sec span{
-        margin-top:9.5px !important;
+        margin-top:1px !important;
     }
     .menuzord .showhide em{
         background-color: #777;
