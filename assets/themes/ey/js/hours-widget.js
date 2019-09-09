@@ -120,7 +120,7 @@ function removeIt(thisObj) {
             if($currentDay.length) {
                 // New Business Hours line initialization
                 this.$results[last] = this.$resultTemplate.clone();
-
+                console.log(this.$results[last]);
                 this.log('New line');
 
                 var from = $currentDay.val();
@@ -139,7 +139,7 @@ function removeIt(thisObj) {
                     this.log('current input index : '+j);
                     this.log('Next checked input found :'+to);
                     j++;
-                }
+                };
 
                 this.log('To : '+to);
                 if(to)

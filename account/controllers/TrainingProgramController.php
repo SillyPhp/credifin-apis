@@ -17,6 +17,7 @@ class TrainingProgramController extends Controller
         $primary_cat = $object->getPrimaryFields();
         if ($model->load(Yii::$app->request->post())) {
             print_r($model);
+            exit;
         }
         return $this->render('index',['model'=>$model,'primary_cat'=>$primary_cat]);
     }

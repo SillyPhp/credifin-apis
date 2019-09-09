@@ -25,50 +25,56 @@ use yii\web\JsExpression;
                 ]);
                 ?>
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Course Profile'])->label(false); ?>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Course Title'])->label(false); ?>
                     </div>
-                    <div class="col-md-2">
-                        <?= $form->field($model, 'fees')->textInput(['id' => 'fees'])->label('Fees'); ?>
-                    </div>
-                    <div class="col-md-2">
-                        <?= $form->field($model, 'fees_type')->dropDownList([1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually', 4 => 'One Time'])->label(false); ?>
-                    </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration'])->label('Training Duration'); ?>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="module2-heading">
-                            Location
+                            Batch and Location Details
                         </div>
                     </div>
+                    <br>
                     <div class="col-md-12">
-                        <?= $form->field($model, 'cities')->widget(Select2::classname(), [
-                            'options' => ['placeholder' => 'Select City...', 'multiple' => true],
-                            'pluginOptions' => [
-                                'allowClear' => true,
-                                'minimumInputLength' => 1,
-                                'language' => [
-                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                ],
-                                'ajax' => [
-                                    'url' => '/cities/career-city-list',
-                                    'dataType' => 'json',
-                                    'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                                ],
-                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
-                            ],
-                        ])->label(false); ?>
+                        <div class="contenu">
+                            <div class="choice_pattern">
+                                <div class="results"></div>
+                                <div class="selection">
+                                    <input type="text" class="city_select" placeholder="Choose city">
+                                    <input type="text" class="fees_select" placeholder="Fees">
+                                    <select>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Weekly">Weekly</option>
+                                        <option value="Anually">Anually</option>
+                                        <option value="Onetime">One Time</option>
+                                    </select>
+                                    <label for="">From </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="09:00"/>
+                                    <label for="">to </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="05:00"/>
+                                    <input id="toallday" type="checkbox" name="toallday" value="toallday"/>
+                                    <label for="toallday">Apply to all day</label>
+                                </div>
+                                <div class="jours">
+                                    <div id="custom-checkboxes"></div>
+                                    <div class="check-selection">
+                                        <a href="#" class="btn add">Add Batch</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -98,39 +104,6 @@ use yii\web\JsExpression;
                                     </div>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="module2-heading">
-                            Batch Details
-                        </div>
-                    </div>
-                    <br>
-                    <div class="col-md-12">
-                        <div class="contenu">
-                            <div class="choice_pattern">
-                                <div class="results"></div>
-                                <div class="selection">
-                                    <label for="">From </label>
-                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                           value="09:00"/>
-                                    <label for="">to </label>
-                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                           value="05:00"/>
-
-                                    <input id="toallday" type="checkbox" name="toallday" value="toallday"/>
-                                    <label for="toallday">Apply to all day</label>
-                                </div>
-                                <div class="jours">
-                                    <div id="custom-checkboxes"></div>
-                                    <div class="check-selection">
-                                        <a href="#" class="btn cancel">Cancel</a>
-                                        <a href="#" class="btn add">Add</a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,13 +164,13 @@ $this->registerCss('
   color: #e4e4e3;
 }
 .contenu .choice_pattern {
-  background-color: #eeeeee;
+  background-color: #ffff;
   padding: 1em 2em;
   margin-bottom: 1em;
   border-radius: 0px;
   position: relative;
   top: -0.5em;
-  border: 0.5em solid #c4c4c4;
+  border: 0.5em solid #c1d0de;
 }
 .contenu .choice_pattern .results {
   margin-bottom: 1em;
@@ -414,8 +387,7 @@ margin-top:12px;
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.twitter-typeahead {
-    
+.skill_wrapper .twitter-typeahead { 
     width: 100% !important;
 }
 .tt-hint {
@@ -587,6 +559,27 @@ function add_tags(thisObj,tag_class,name,duplicates)
                      thisObj.val('');
                 }
 }
+
+var location = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch: 
+  {
+      url:'/account/cities/fetch-all',
+      cache:false,
+      filter:function(res) {
+        return res;
+      }
+      }
+});    
+            
+$('.city_select').typeahead(null, {
+  display: 'value',
+  source: location,
+  minLength: 1,
+  limit: 20,
+})
+
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
