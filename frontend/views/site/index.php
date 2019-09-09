@@ -41,6 +41,10 @@ $this->params['header_dark'] = false;
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
+                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
+                                    <a href="/internships">Internships</a>, <a href="/reviews">Reviews</a>,
+                                    <a href="">Learning Content</a>, <a href="/blog">Blogs</a>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -681,6 +685,16 @@ $this->params['header_dark'] = false;
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.job-search > span{
+    color:#fff !important;
+}
+.feature-links a{
+    color: #d5d8f3;
+    padding-right: 5px;    
+}
+.feature-links a:hover{
+    color:#ff7803;
+}
 .pos-rel{
     position:relative;
     min-height:300px;

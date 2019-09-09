@@ -35,6 +35,19 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
+    <div class="row">
+        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+            <div class="">
+                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+                <a href="/twitter-jobs" data-hover="Propinquity">Internship Tweets</a>
+            </div>
+        </nav>
+    </div>
+</section>
+<section>
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center ">
@@ -59,6 +72,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -552,7 +566,7 @@ $this->registerCss('
 }
 /* animated menu css starts */
 .nav1{
-    padding:60px 0;
+    padding:60px 0 30px;
     text-align:center;
 }
 .nav1 a {
@@ -640,6 +654,15 @@ $this->registerCss('
 @media only screen and (max-width: 992px){
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
+}
+@media only screen and (max-width: 768px){
+    .nav1 a {
+        margin: 15px 10px 50px;
+    }
+    .nav1{
+        padding:60px 0 0px;
+        text-align:center;
+    }
 }
 @media only screen and (max-width: 425px){
     .set-col-2{

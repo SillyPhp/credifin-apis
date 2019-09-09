@@ -36,6 +36,21 @@ use yii\helpers\Url;
 </section>
 <section>
     <div class="container">
+        <div class="row">
+            <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+                <div class="container">
+                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+                    <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
+                    <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
+                    <a href="/twitter-jobs" data-hover="Propinquity">Job Tweets</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
         <div class="row mt-20">
             <div class="col-md-6 col-sm-6 col-xs-6">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
@@ -454,7 +469,7 @@ $this->registerCss('
 }
 /* animated menu css starts */
 .nav1{
-    padding:60px 0;
+    padding:40px 0 30px;
     text-align:center;
 }
 .nav1 a {
@@ -542,6 +557,18 @@ $this->registerCss('
 @media only screen and (max-width: 992px){
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
+}
+@media only screen and (max-width: 768px){
+    .nav1 a {
+        margin: 15px 10px 50px;
+    }
+    .nav1{
+        padding:40px 0 0px;
+        text-align:center;
+    }
+    .mt-20{
+        margin-top:0px !important;
+    }
 }
 /* animated menu css ends */
 .search-job{font-family:lobster; font-size:35px; padding-bottom:0px; color:#fff;}
