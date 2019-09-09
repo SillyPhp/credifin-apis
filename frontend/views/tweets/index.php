@@ -1,11 +1,10 @@
 <?php
-//$this->params['grid_size'] = 'col-md-12';
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = true;
-//$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <div id="loading_img">
@@ -32,7 +31,6 @@ $this->params['header_dark'] = true;
                 </div>
             </div>
         </div>
-<!--        <div class="overlay-image i-1"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet1.png');?><!--"/></div>-->
         <div class="overlay-image i-2"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet2.png');?>"/></div>
         <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet3.png');?>"/></div>
         <div class="overlay-image i-4"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?>"/></div>
@@ -46,10 +44,8 @@ $this->params['header_dark'] = true;
             ?>
             <div class="masonry">
                 <div id="twitter_jobs_cards">
-
                 </div>
                 <?php
-
                 foreach ($tweets as $tweet) {
                     ?>
                     <div class="tweet-main">
@@ -79,16 +75,11 @@ $this->params['header_dark'] = true;
                 }
                 ?>
             </div>
-            <?php
-                else:
-                ?>
+            <?php else: ?>
                 <div class="no_tweets_found">
                     <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
                 </div>
-
-            <?php
-            endif;
-            ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
@@ -112,11 +103,10 @@ if($type == 'internships') {
     </div>
     <?php
 }
-//echo $this->render('/widgets/twitter-jobs');
 $this->registerCss("
 .re-twitte{
 	position:fixed;
-	width:215px;
+	width:225px;
 	height:80px;
 	bottom:0px;
 	right:10px;
@@ -291,10 +281,6 @@ margin-top:20px
     overflow: hidden;
     box-shadow: 0px 2px 10px 2px #eaeaea;
 }
-#load_me
-{
-//display:none;
-}
 
 #loading_img
 {
@@ -454,7 +440,6 @@ float:right;
 }
 ");
 $script = <<< JS
-//$('#loading_img').addClass('show');
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -491,6 +476,4 @@ $(window).on('load', function() {
 });
 JS;
 $this->registerJs($script);
-//$this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>
