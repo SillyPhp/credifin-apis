@@ -40,9 +40,9 @@ class TestController extends ApiBaseController
     public function actionDemo()
     {
         if($this->isAuthorized()){
-            return 1;
+            return $this->response(200,1);
         }else{
-            return 2;
+            return $this->response(201, 2);
         }
     }
 }
