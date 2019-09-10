@@ -52,7 +52,7 @@ AppAssets::register($this);
         {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "name" : "<?= Yii::$app->params->site_name; ?>",
+            "name": "<?= Yii::$app->params->site_name; ?>",
             "url": "<?= Url::base("https"); ?>",
             "potentialAction": {
                 "@type": "SearchAction",
@@ -71,6 +71,27 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '<div id="main-header" class="header-nav navbar-fixed-top header-dark navbar-white navbar-transparent navbar-sticky-animated animated-active">' : ''; ?>
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
+            <?php
+//            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
+            if (Yii::$app->user->isGuest) {
+                ?>
+                <div class="secondary-top-header">
+                    <div class="secondary-top-header-left">
+
+                        <span><i class="far fa-check-circle"></i>
+                            Post a quick <a href="/jobs/quick-job">Job</a> or <a  href="/internships/quick-internship">Internship</a>
+                        </span>
+                        <!--                        <a href="/jobs/quick-job"><i class="far fa-check-circle"></i> Post a Job</a>-->
+                    </div>
+                    <div class="secondary-top-header-right">
+                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/signup/organization">Signup as Company</a>
+                        <a href="/signup/individual">Signup as Candidate</a>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
             <div class="ey-head-main">
                 <div class="container-fluid">
                     <div class="large-container container">
@@ -91,7 +112,7 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('/widgets/top-header-beta');?>
+                                <?= $this->render('/widgets/top-header-beta'); ?>
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
@@ -115,9 +136,11 @@ AppAssets::register($this);
                                         <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
                                         <div class="my-profiles-sec">
                                             <?php if ($image): ?>
-                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                           alt="<?= $name; ?>"/></span>
                                             <?php else: ?>
-                                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
+                                                <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                              color="<?= $color; ?>" width="40"
                                                               height="40" font="20px"></canvas></span>
                                             <?php endif; ?>
                                         </div>
@@ -143,7 +166,8 @@ AppAssets::register($this);
                         <div class="container">
                             <div class="ey-mob-nav-items">
                                 <div class="ey-humburger-menu-main">
-                                    <button id="open-mobile-menu" class="ey-humburger-menu" type="button" aria-expanded="false">
+                                    <button id="open-mobile-menu" class="ey-humburger-menu" type="button"
+                                            aria-expanded="false">
                                         <span aria-hidden="true"></span>
                                         <span aria-hidden="true"></span>
                                         <span aria-hidden="true"></span>
@@ -176,9 +200,11 @@ AppAssets::register($this);
                                         <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
                                         <div class="my-profiles-sec">
                                             <?php if ($image): ?>
-                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                           alt="<?= $name; ?>"/></span>
                                             <?php else: ?>
-                                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
+                                                <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                              color="<?= $color; ?>" width="40"
                                                               height="40" font="20px"></canvas></span>
                                             <?php endif; ?>
                                         </div>
@@ -200,7 +226,7 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('/widgets/top-header-mobile');?>
+                            <?= $this->render('/widgets/top-header-mobile'); ?>
                         </div>
                     </div>
                 </div>
@@ -213,11 +239,11 @@ AppAssets::register($this);
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
         <?php
-//        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-//            echo $this->render('/widgets/sub-header', [
-//                'data' => $this->params['sub_header'],
-//            ]);
-//        }
+        //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+        //            echo $this->render('/widgets/sub-header', [
+        //                'data' => $this->params['sub_header'],
+        //            ]);
+        //        }
         ?>
         <?= $content; ?>
     </div>
@@ -363,14 +389,14 @@ $this->registerCss('
 
 .secondary-top-header{
     height:30px;
-    margin-top:-30px;
+    margin-top:-32px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top:0px;
+    margin-top:-2px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -379,10 +405,11 @@ $this->registerCss('
     width:auto;
 }
 .secondary-top-header-left{padding-left:80px;float:left;}
-.secondary-top-header-left a i{font-size:16px;}
-.secondary-top-header-left a{margin:15px;}
+.secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
+.secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
+.secondary-top-header-left span a{font-weight:500;}
 .secondary-top-header-right{padding-right:50px;float:right;}
-.secondary-top-header a{
+.secondary-top-header a, .secondary-top-header span{
     color:#fff;
     transition: all 500ms;
 }
@@ -695,14 +722,16 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
 if (Yii::$app->user->isGuest) {
     $this->registerJs('
         window.addEventListener("scroll", header_main);
-        
+        var lastScrollTop = 50;
         function header_main() {
+            var st = $(this).scrollTop();
             var check_h_type = document.getElementById("header-main");
-            if(window.pageYOffset <= 0) {
-                check_h_type.classList.add("header-show");
-            } else if(window.pageYOffset > 5){
+            if(st > lastScrollTop) {
                 check_h_type.classList.remove("header-show");
+            } else {
+                check_h_type.classList.add("header-show");
             }
+            lastScrollTop = st;
         }
         header_main();
     ');
@@ -719,7 +748,16 @@ if (!$this->params['header_dark']) {
                 }
             }); ");
 }
-$this->registerJs('$(".page-loading").fadeOut();');
+$this->registerJs('
+$(".page-loading").fadeOut();
+var thispageurl = window.location.pathname;
+$(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
+    var attr = $(this).attr("href");
+      if (attr === thispageurl) {
+        $(this).next(".ey-sub-menu").addClass("ey-active-menu");
+      }
+});
+');
 $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 $this->registerJs('
             WebFont.load({
