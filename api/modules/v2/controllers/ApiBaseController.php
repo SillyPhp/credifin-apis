@@ -2,13 +2,28 @@
 
 namespace api\modules\v2\controllers;
 
+use Yii;
+use yii\web\Response;
+use yii\rest\Controller;
+use yii\filters\ContentNegotiator;
 use api\modules\v1\models\Candidates;
 use common\models\UserAccessTokens;
-use Yii;
-use yii\rest\Controller;
 
 class ApiBaseController extends Controller
 {
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['contentNegotiator'] = [
+            'class' => ContentNegotiator::className(),
+            'formats' => [
+                'application/json' => Response::FORMAT_JSON,
+            ],
+        ];
+        return $behaviors;
+    }
 
     public function response($code, $data = '')
     {
@@ -22,8 +37,9 @@ class ApiBaseController extends Controller
 
         $this->setHeader($code);
 
-        echo json_encode($response);
-        die();
+        return $response;
+//        echo json_encode($response);
+//        die();
     }
 
     private function getStatusCodeMessage($status)
