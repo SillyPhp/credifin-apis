@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\PictureUpload;
 use api\modules\v2\models\ProfilePicture;
+use common\models\AppliedApplications;
 use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
@@ -18,6 +19,7 @@ use common\models\UserPreferredIndustries;
 use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredLocations;
 use common\models\UserPreferredSkills;
+use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -174,9 +176,7 @@ class CandProfileController extends ApiBaseController{
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
-        $candidate = Candidates::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
+
         $city_enc_id = '';
         $req = Yii::$app->request->post();
         if($req['location']){
@@ -186,28 +186,17 @@ class CandProfileController extends ApiBaseController{
 
             $city_enc_id = $city_id->city_enc_id;
         }
-        $candidate->first_name = $req['first_name'];
-        $candidate->last_name = $req['last_name'];
-        $candidate->phone = $req['phone'];
-        $candidate->email = $req['email'];
+
         if(!empty($city_enc_id)){
-            $candidate->city_enc_id = $city_enc_id;
-        }
-        if($candidate->update()){
-            $candidate_options = UserOtherDetails::findOne([
-                'user_enc_id' => $token_holder_id->user_enc_id
-            ]);
-            if($candidate_options){
-                $candidate_options->organization_enc_id = $req['college_enc_id'];
-                $candidate_options->update();
-            }else{
-                return $this->response(404);
+            $update = Yii::$app->db->createCommand()
+                ->update(Users::tableName(), ['city_enc_id'=>$city_enc_id], ['user_enc_id' => $token_holder_id->user_enc_id])
+                ->execute();
+            if ($update) {
+                return $this->response(200,['status'=>200]);
+            } else {
+                print_r($update->getErrors());
             }
-
-        }else{
-            print_r($candidate->getErrors());
         }
-
     }
 
     public function actionSaveApplications(){

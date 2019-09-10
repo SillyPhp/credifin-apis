@@ -4,16 +4,107 @@ namespace api\modules\v2\controllers;
 
 use common\models\Cities;
 use common\models\User;
+use common\models\UserAccessTokens;
 use common\models\UserEducation;
 use common\models\Users;
 use common\models\UserSkills;
 use common\models\UserWorkExperience;
 use Yii;
 use common\models\Utilities;
+use yii\filters\auth\HttpBearerAuth;
 
 class CandResumeController extends ApiBaseController{
-    public function actionAboutMe($id){
-        $u = Users::find()
+
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'fetch-details',
+                'save-about',
+                'save-qualification'
+            ],
+            'class' => HttpBearerAuth::className()
+        ];
+        $behaviors['verbs'] = [
+            'class' => \yii\filters\VerbFilter::className(),
+            'actions' => [
+                'fetch-details' => ['POST','OPTIONS'],
+                'save-about' => ['POST','OPTIONS'],
+                'save-qualification' => ['POST','OPTIONS'],
+            ]
+        ];
+        return $behaviors;
+    }
+
+//    public function actionAboutMe(){
+//
+//        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+//        {
+//            header("HTTP/1.1 202 Accepted");
+//            exit;
+//        }
+//
+//        $token_holder_id = UserAccessTokens::findOne([
+//            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+//        ]);
+//
+//        $id = $token_holder_id->user_enc_id;
+//
+//        $u = Users::find()
+//            ->select(['description'])
+//            ->where([
+//                'user_enc_id' => $id
+//            ])
+//            ->asArray()
+//            ->one();
+//
+//    }
+
+    public function actionSaveAbout(){
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
+
+        $about = Yii::$app->request->post('description');
+
+        $users = Users::find()
+            ->where(['user_enc_id' => $id])
+            ->one();
+
+        $users->description = $about;
+        if($users->update()){
+            return $this->response(200,['status'=>200]);
+        }else{
+            print_r($users->getErrors());
+        }
+    }
+
+    public function actionFetchDetails(){
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
+
+        $about = Users::find()
             ->select(['description'])
             ->where([
                 'user_enc_id' => $id
@@ -21,22 +112,9 @@ class CandResumeController extends ApiBaseController{
             ->asArray()
             ->one();
 
-        return $this->response(200, $u);
-    }
-
-    public function actionSaveAbout($id, $about){
-        $users = Users::find()
-            ->where(['user_enc_id' => $id])
-            ->one();
-
-        $users->description = $about;
-        $users->update();
-    }
-
-    public function actionFetchDetails($id){
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
+            ->select(['a.experience_enc_id id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
             ->innerJoin(Cities::tableName() . "b", "b.city_enc_id=a.city_enc_id")
             ->where(['a.created_by'=>$id])
             ->orderBy(['a.id'=>SORT_DESC])
@@ -51,13 +129,14 @@ class CandResumeController extends ApiBaseController{
 
         $skills = UserSkills::find()
             ->alias('a')
-            ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted', 'a.user_skill_enc_id'])
+            ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted'])
             ->joinWith(['skillEnc c'], false)
             ->where(['a.created_by'=>$id,'a.is_deleted'=>0])
             ->asArray()
             ->all();
 
         $data = [];
+        $data['about'] = $about;
         $data['experience'] = $experience;
         $data['education'] = $education;
         $data['skills'] = $skills;
@@ -96,7 +175,18 @@ class CandResumeController extends ApiBaseController{
 //            ->selecrt
 //    }
 
-    public function actionSaveQualification($id){
+    public function actionSaveQualification(){
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
         $req = Yii::$app->request->post();
 
         $utilities = new Utilities();
@@ -104,21 +194,20 @@ class CandResumeController extends ApiBaseController{
         $from = Yii::$app->formatter->asDate($req['from'], 'yyyy-MM-dd');
         $to = Yii::$app->formatter->asDate($req['to'], 'yyyy-MM-dd');
 
-        $user_education_model->institute = $req['school'];
+        $user_education_model->institute = $req['college'];
         $user_education_model->degree = $req['degree'];
         $user_education_model->from_date = $from;
         $user_education_model->to_date = $to;
-        $user_education_model->field = $req['field'];
         $user_education_model->created_by = $id;
         $user_education_model->user_enc_id = $id;
         $user_education_model->created_on = date('Y-m-d H:i:s');
         $utilities->variables['string'] = time() . rand(100, 100000);
         $user_education_model->education_enc_id = $utilities->encrypt();
         if(!$user_education_model->save()){
-            return false;
+            print_r($user_education_model->getErrors());
         }
 
-        return true;
+        return $this->response(200,['status'=>200]);
     }
 
     public function updateQualification($education_id){
