@@ -26,7 +26,8 @@ class JobsController extends ApiBaseController
         $behaviors['authenticator'] = [
             'except' => [
                 'application-detail',
-                'shortlist-application'
+                'shortlist-application',
+                'apply'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -35,6 +36,7 @@ class JobsController extends ApiBaseController
             'actions' => [
                 'application-detail' => ['POST','OPTIONS'],
                 'shortlist-application' => ['POST','OPTIONS'],
+                'apply' => ['POST','OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -357,7 +359,7 @@ class JobsController extends ApiBaseController
                         $delete_application->last_updated_on = date('Y-m-d H:i:s');
                         $delete_application->update();
                     }
-                    return $this->response(201, 'successfully shortlisted.');
+                    return $this->response(201, ['status'=>200]);
                 } else {
                     return $this->response(500, 'not shortlisted');
                 }
@@ -370,7 +372,7 @@ class JobsController extends ApiBaseController
                 $update_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($update_shortlisted->update()) {
-                    return $this->response(201, 'successfully shortlisted.');
+                    return $this->response(200, ['status'=>200]);
                 } else {
                     return $this->response(500, 'not shorlisted');
                 }
@@ -382,12 +384,10 @@ class JobsController extends ApiBaseController
                 $delete_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $delete_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($delete_shortlisted->update()) {
-                    return $this->response(200, 'deleted successfully');
+                    return $this->response(200, ['status'=>201]);
                 } else {
                     return $this->response(500, 'Job is not deleted in shortlist');
                 }
-            } else {
-                return $this->response(409, 'already deleted or not found');
             }
         } else {
             return $this->response(422);
@@ -396,14 +396,21 @@ class JobsController extends ApiBaseController
 
     public function actionApply()
     {
+
+        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
+        {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
         $model = new \api\modules\v2\models\JobApply();
 
         $reqParams = Yii::$app->request->post();
 
-        if (!empty($reqParams['job_id']) && isset($reqParams['city_id'])) {
+        if (!empty($reqParams['app_id']) && isset($reqParams['city_id'])) {
 
             if ($reqParams['city_id'] != '') {
-                $city_enc_ids = explode(",", $reqParams['city_id']);
+                $city_enc_ids = $reqParams['city_id'];
             } else {
                 $city_enc_ids = [];
             }
@@ -414,7 +421,7 @@ class JobsController extends ApiBaseController
 //                ->asArray()
 //                ->one();
 
-            $id = $reqParams['job_id'];
+            $id = $reqParams['app_id'];
 
             $application_details = EmployerApplications::find()
                 ->where([
@@ -446,12 +453,12 @@ class JobsController extends ApiBaseController
                 $application_questionnaire = ApplicationInterviewQuestionnaire::find()
                     ->alias('a')
                     ->select(['a.field_enc_id', 'a.questionnaire_enc_id', 'b.field_name'])
-                    ->where(['a.application_enc_id' => $reqParams['job_id']])
+                    ->where(['a.application_enc_id' => $reqParams['app_id']])
                     ->innerJoin(InterviewProcessFields::tableName() . 'as b', 'b.field_enc_id = a.field_enc_id')
                     ->andWhere(['b.field_name' => 'Get Applications'])
                     ->exists();
 
-                $model->id = $reqParams['job_id'];
+                $model->id = $reqParams['app_id'];
 //                $model->resume_list = $reqParams['resume_enc_id'];
                 $model->location_pref = $city_enc_ids;
 
@@ -462,7 +469,7 @@ class JobsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
-                    return $this->response(200, $res);
+                    return $this->response(200,['status'=>200]);
                 } else {
                     return $this->response(500);
                 }

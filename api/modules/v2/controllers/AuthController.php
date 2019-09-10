@@ -50,6 +50,19 @@ class AuthController extends ApiBaseController{
         return $this->response(422);
     }
 
+    public function actionUsername(){
+        $username = Yii::$app->request->post('username');
+        $user_names = Usernames::find()
+            ->where(['username'=>$username])
+            ->exists();
+
+        if($user_names){
+            return $this->response(200,['status'=>201,'exists'=>true]);
+        }else{
+            return $this->response(200,['status'=>200,'exists'=>false]);
+        }
+    }
+
     public function actionLogin(){
         $model = new LoginForm();
         if($model->load(Yii::$app->request->post(), '')){
@@ -179,7 +192,7 @@ class AuthController extends ApiBaseController{
         if(!empty($find_user)){
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.first_name','a.last_name','a.username','a.phone','a.email','a.initials_color','b.user_type','c.name city_name','e.name org_name'])
+                ->select(['a.first_name','a.last_name','a.username','a.phone','a.email','a.initials_color','b.user_type','c.name city_name','e.name org_name','d.organization_enc_id'])
                 ->joinWith(['userTypeEnc b'],false)
                 ->joinWith(['cityEnc c'],false)
                 ->joinWith(['userOtherInfo d'=>function($d){
@@ -197,6 +210,7 @@ class AuthController extends ApiBaseController{
             'user_type' => $user_detail['user_type'],
             'city' => $user_detail['city_name'],
             'college' => $user_detail['org_name'],
+            'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
             'last_name' => $user_detail['last_name'],
