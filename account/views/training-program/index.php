@@ -52,6 +52,7 @@ use yii\web\JsExpression;
                                 <div class="selection">
                                     <input type="text" class="city_select" placeholder="Choose city">
                                     <input type="text" class="fees_select" placeholder="Fees">
+                                    <input type="text" class="total_seat" placeholder="Seats">
                                     <select>
                                         <option value="Monthly">Monthly</option>
                                         <option value="Weekly">Weekly</option>
@@ -559,7 +560,7 @@ function add_tags(thisObj,tag_class,name,duplicates)
                      thisObj.val('');
                 }
 }
-
+var locations_val = [];
 var location = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -568,6 +569,7 @@ var location = new Bloodhound({
       url:'/account/cities/fetch-all',
       cache:false,
       filter:function(res) {
+        locations_val = res;  
         return res;
       }
       }
@@ -578,7 +580,21 @@ $('.city_select').typeahead(null, {
   source: location,
   minLength: 1,
   limit: 20,
-})
+}).blur(validation_check);
+
+function validation_check() {
+   var theIndex = -1;
+       for (var i = 0; i < locations_val.length; i++) {
+           if (locations_val[i].value == $(this).val()) {
+               theIndex = i;
+               
+               break;
+           }
+       }
+       if (theIndex == -1) {
+           $(this).val("");
+       }
+}
 
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),

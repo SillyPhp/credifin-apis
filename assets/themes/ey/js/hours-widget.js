@@ -2,7 +2,7 @@ function removeIt(thisObj) {
     thisObj.parent().next().remove();
     thisObj.parent().remove();
 }
-
+var result_array = [];
 (function ( $, window, document, undefined ) {
     "use strict";
 
@@ -14,9 +14,12 @@ function removeIt(thisObj) {
             cancelButton: ".btn.cancel",
             // The DOM structure must stay the same
             // span + strong + strong + .cancelCurrent
-            resultTemplate: '<p><span></span> : from <strong></strong> to <strong></strong> <i class="fa fa-times cancelCurrent" onclick="removeIt($(this));"></i></p>',
+            resultTemplate: '<p><span></span> : from <strong></strong> to <strong></strong> <i class="fa fa-times cancelCurrent" onclick="removeIt($(this));"></i><b>Fees: </b><span></span><b>City: </b></b><span></span> <b>Seat: </b> <span></span></p>',
             timeInputs : ".selection input[type='time']",
             checkAllDays: '#toallday',
+            feesInput:$('.fees_select'),
+            cityInput:$('.city_select'),
+            totalSeat:$('.total_seat'),
             debug : true
         };
 
@@ -54,16 +57,12 @@ function removeIt(thisObj) {
                     return false;
                 }
                 plugin.appendResults();
-
                 for(var k=0;k<plugin.$results.length;k++)
                     plugin.log(plugin.$results[k].html());
 
                 $(plugin.inputs).each(function () {
                     this.checked = false;
                 });
-
-
-
                 return false;
             });
 
@@ -120,9 +119,7 @@ function removeIt(thisObj) {
             if($currentDay.length) {
                 // New Business Hours line initialization
                 this.$results[last] = this.$resultTemplate.clone();
-                console.log(this.$results[last]);
                 this.log('New line');
-
                 var from = $currentDay.val();
                 // We'll need to reduce the input range so we can recursively call the function without index
                 $inputsToRemoveFromRange.push($currentDay);
@@ -140,13 +137,15 @@ function removeIt(thisObj) {
                     this.log('Next checked input found :'+to);
                     j++;
                 };
-
                 this.log('To : '+to);
                 if(to)
                     to = ' - '+to;
 
                 // Now we can fill the line and insert it in the DOM
                 this.$results[last].find('span').text(from + to);
+                var fees = this.settings.feesInput.val();
+                var city = this.settings.cityInput.val();
+                var seat = this.settings.totalSeat.val();
                 for(var i=0;i<2;i++) {
                     var v = $(this.settings.timeInputs).eq(i).val();
                     // Returning something is considered error and will be displayed
@@ -154,7 +153,11 @@ function removeIt(thisObj) {
                         return 'You must enter a well formatted time';
                     this.$results[last].find('strong:eq('+i+')').text(v);
                 }
-
+                if (fees==""||city==""||seat=="")
+                {return "Fields could not be blank";}
+                this.$results[last].find('span:eq(1)').text(fees);
+                this.$results[last].find('span:eq(2)').text(city);
+                this.$results[last].find('span:eq(3)').text(seat);
 
                 // Remove all parsed inputs from range
                 this.removeInputsFromRanges($inputsToRemoveFromRange);
