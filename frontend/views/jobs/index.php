@@ -166,6 +166,21 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="heading-style">Job Tweets</h1>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
+    </div>
+</section>
+
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -775,6 +790,7 @@ $this->registerCss('
         width:98%;
     }
 }
+
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -807,6 +823,14 @@ loader = false;
 getCategories();
 getCards();
 addToReviewList();
+
+$(window).on('load', function() {
+    var head = $(".posted-tweet iframe").contents().find("head");
+    var css = '<style type="text/css">' +
+              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+              '</style>';
+    jQuery(head).append(css);
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
