@@ -213,11 +213,11 @@ AppAssets::register($this);
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
         <?php
-        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-            echo $this->render('/widgets/sub-header', [
-                'data' => $this->params['sub_header'],
-            ]);
-        }
+//        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+//            echo $this->render('/widgets/sub-header', [
+//                'data' => $this->params['sub_header'],
+//            ]);
+//        }
         ?>
         <?= $content; ?>
     </div>
