@@ -341,9 +341,9 @@ $this->registerCss('
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
+    -webkit-box-flex: 1.2;
+    -ms-flex: 1.2;
+    flex: 1.2;
     -webkit-box-pack: end;
     -ms-flex-pack: end;
     justify-content: flex-end;
@@ -353,7 +353,7 @@ $this->registerCss('
     left: 50%;
     position: absolute;
     right: 0;
-    top: 61px;
+    top: 63px;
     z-index: 4;
     height:0px;
     width: 100vw;
@@ -771,7 +771,12 @@ $this->registerCss('
     width:auto;
 }
 #header-main{
-    padding:6px 0px;
+    padding:2px 0px;
+}
+@media screen and (max-width: 900px) and (min-width: 0px) {
+    #header-main{
+        padding:6px 0px;
+    }
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
