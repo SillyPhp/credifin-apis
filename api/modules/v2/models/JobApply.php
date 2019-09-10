@@ -35,6 +35,7 @@ class JobApply extends Model
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
+
         $user = Candidates::findOne([
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
