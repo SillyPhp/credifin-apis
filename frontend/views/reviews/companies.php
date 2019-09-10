@@ -710,6 +710,7 @@ fetch_cards_new_most_comp(params={'rating':[5,4],'limit':4,'most_reviewed':1},te
 fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
 fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
 JS;
+$this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>
