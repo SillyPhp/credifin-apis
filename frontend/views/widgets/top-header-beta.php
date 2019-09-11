@@ -789,7 +789,7 @@ $this->registerCss('
 }
 .bg-theme-colored {
     background-color: #fff !important;
-    height:65px;
+    min-height:65px;
 }
 #header-main{
     padding:2px 0px;

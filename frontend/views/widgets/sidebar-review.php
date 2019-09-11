@@ -175,6 +175,7 @@ li.draggable-item.ui-sortable-placeholder {
     margin-top: -5px;
     border-radius: 50%;
 }
+.secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
 @media only screen and (max-width: 767px) {
     .sidebar-review-bar{
