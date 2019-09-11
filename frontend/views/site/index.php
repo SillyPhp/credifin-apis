@@ -580,7 +580,6 @@ $this->params['header_dark'] = false;
         }
         ?>
     </div>
-    </div>
 </section>
 <!--how it works ends-->
 <!--new section starts-->

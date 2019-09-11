@@ -155,6 +155,6 @@ class TweetsController extends Controller
             ->orderBy(['created_on' => SORT_DESC])
             ->all();
 
-        return $this->render('index', ['tweets' => $result, 'keywords' => $keywords, 'location' => $location]);
+        return $this->render('index', ['tweets' => $result, 'keywords' => $keywords, 'location' => $location, 'type' => $type]);
     }
 }
