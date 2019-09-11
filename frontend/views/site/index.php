@@ -32,11 +32,13 @@ $this->params['header_dark'] = false;
                                         <div class="row no-gape">
                                             <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
                                                 <div class="job-field">
-                                                    <input id="search-input" type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input id="search-input" type="text" name="keyword"
+                                                           placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit" id="search-submit">Search <i class="fas fa-search"></i></button>
+                                                <button type="submit" id="search-submit">Search <i
+                                                            class="fas fa-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
@@ -577,7 +579,6 @@ $this->params['header_dark'] = false;
             <?php
         }
         ?>
-    </div>
     </div>
 </section>
 <!--how it works ends-->
