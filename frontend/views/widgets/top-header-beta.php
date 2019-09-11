@@ -218,12 +218,12 @@ $this->registerCss('
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     list-style: none;
-    min-height: 50px;
+    min-height: 40px;
     justify-content: flex-end;
 }
 
 .ey-sub-menu .ey-head-sub-menu-has-child {
-    font: 500 14px/30px Roboto, Arial, sans-serif;
+    font: 500 13px/30px Roboto, Arial, sans-serif;
     padding: 0;
     margin: 0 10px;
 }
@@ -256,12 +256,12 @@ $this->registerCss('
     left: 0;
     list-style: none;
     height: 0;
-    min-height: 50px;
+    min-height: 40px;
     opacity: 0;
     position: absolute;
     right: 0;
     visibility: hidden;
-    top: 50px;
+    top: 40px;
     -webkit-transition: opacity .4s;
     -o-transition: opacity .4s;
     transition: opacity .4s;
@@ -359,6 +359,7 @@ $this->registerCss('
     width: 100vw;
     transform: translate(-50%, 0%);
     overflow:hidden;
+    box-shadow: 0px 3px 10px 0px #DDD;
 }
 
 @media (min-width: 1080px) {
@@ -368,7 +369,7 @@ $this->registerCss('
 }
 
 .ey-mobile-menu .ey-mob-nav-main {
-    min-height: 50px;
+    min-height: 40px;
     padding: 0;
     position: relative;
     z-index: 4;
@@ -387,7 +388,7 @@ $this->registerCss('
 .ey-mobile-menu .ey-mob-nav-items {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    min-height: 50px;
+    min-height: 40px;
 }
 
 .ey-mobile-menu .ey-humburger-menu-main {
@@ -503,7 +504,7 @@ $this->registerCss('
     flex-wrap: wrap;
     height: 100%;
     min-height: 100vh;
-    padding-top: 50px;
+    padding-top: 40px;
 }
 
 .ey-mobile-menu .ey-mobile-menu-inner-content {
@@ -530,22 +531,22 @@ $this->registerCss('
 .ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-active-menu {
     display: block;
     overflow:visible;
-    height:50px;
+    height:40px;
     -webkit-animation-name: ey_menu;
-    -webkit-animation-duration: 0.8s;
+    -webkit-animation-duration: 0.5s;
     animation-name: ey_menu;
-    animation-duration: 0.8s;
+    animation-duration: 0.5s;
 }
 .ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover{z-index:99;}
 
 @-webkit-keyframes ey_menu {
   from {overflow:hidden;display: none;height: 0px;}
-  to {overflow:visible;display: block;height: 50px;}
+  to {overflow:visible;display: block;height: 40px;}
 }
 
 @keyframes ey_menu {
   from {overflow:hidden;display: none;height: 0px;}
-  to {overflow:visible;display: block;height: 50px;}
+  to {overflow:visible;display: block;height: 40px;}
 }
 .ey-sub-menu:before {
     background: #f8f8f8;
@@ -558,8 +559,24 @@ $this->registerCss('
     transform: translateX(-50%);
     height: 100%;
     width: 100vw;
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
 }
-
+.large-container.container.add-padding .ey-header-main .ey-menu-main nav ul > .ey-header-item-is-menu > .ey-sub-menu{box-shadow: 0px 3px 10px -5px #DDD;}
+.large-container.container.add-padding .ey-header-main .ey-menu-main nav ul > .ey-header-item-is-menu > .ey-sub-menu:before {
+    background: #000000;
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+}
+.large-container.container.add-padding .ey-header-main .ey-menu-main nav ul > .ey-header-item-is-menu > .ey-sub-menu.ey-active-menu:before {
+    background: #00000047;
+    -webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+}
+.large-container.container.add-padding nav ul > .ey-head-sub-menu-has-child a{color: #f2f2f2;}
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>a,
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>span,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover>a,
@@ -589,7 +606,7 @@ $this->registerCss('
     background-color: #fff;
     height: 0;
     opacity: 0;
-    top: 50px;
+    top: 40px;
     -webkit-transition: .25s ease-in-out .3s;
     -o-transition: .25s ease-in-out .3s;
     transition: .25s ease-in-out .3s;
@@ -781,6 +798,6 @@ $this->registerCss('
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
-} 
+}
 ');
 ?>

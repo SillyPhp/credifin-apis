@@ -176,7 +176,7 @@ AppAssets::register($this);
                                 </div>
                                 <div class="ey-mobile-logo-main">
                                     <a class="ey-logo" href="/">
-                                        <img src="http://ajay.eygb.me/assets/common/logos/empower_youth_plus.svg"/>
+                                        <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"/>
                                     </a>
                                 </div>
                                 <div class="ey-mob-actions">
@@ -755,6 +755,7 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
+        $(this).children("i").css("display", "none");
       }
 });
 ');
