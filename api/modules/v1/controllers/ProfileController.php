@@ -22,8 +22,10 @@ use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 use Yii;
 
-class ProfileController extends ApiBaseController{
-    public function behaviors(){
+class ProfileController extends ApiBaseController
+{
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className()
@@ -42,7 +44,8 @@ class ProfileController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionDetail(){
+    public function actionDetail()
+    {
         $token_holder_id = UserAccessTokens::find()
             ->where(['access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]])
             ->andWhere(['source' => Yii::$app->request->headers->get('source')])
@@ -61,28 +64,28 @@ class ProfileController extends ApiBaseController{
         $result['username'] = $candidate->username;
         $result['color'] = $candidate->initials_color;
 
-        if(!($basicDetails->getJobFunction() == "")){
+        if (!($basicDetails->getJobFunction() == "")) {
             $result['title'] = $basicDetails->getJobFunction()["title"];
-        }else{
+        } else {
             $result['title'] = NULL;
         }
-        if(!($basicDetails->getProfilePicture() == "")){
+        if (!($basicDetails->getProfilePicture() == "")) {
             $result['profile_picture'] = $basicDetails->getProfilePicture();
-        }else{
+        } else {
             $result['profile_picture'] = NULL;
         }
-            
-        if(!($basicDetails->getCurrentCity() == "")){
+
+        if (!($basicDetails->getCurrentCity() == "")) {
             $result['current_city'] = $basicDetails->getCurrentCity()["city_name"];
             $result['current_state'] = $basicDetails->getCurrentCity()["state_name"];
-        }else{
+        } else {
             $result['current_city'] = NULL;
             $result['current_state'] = NULL;
         }
 
-        if(!($basicDetails->getJobFunction() == "")){
+        if (!($basicDetails->getJobFunction() == "")) {
             $result['profile'] = $basicDetails->getJobFunction()['profile'];
-        }else{
+        } else {
             $result['profile'] = NULL;
         }
 
@@ -94,16 +97,16 @@ class ProfileController extends ApiBaseController{
         $result['linkedin'] = $candidate->linkedin;
         $result['google'] = $candidate->google;
 
-        if($candidate->is_available) {
+        if ($candidate->is_available) {
             $result['availability'] = $candidate->is_available;
-        }else{
+        } else {
             $result['availability'] = 5;
 
         }
 
-        if($candidate->gender) {
+        if ($candidate->gender) {
             $result['gender'] = $candidate->gender;
-        }else{
+        } else {
             $result['gender'] = 5;
         }
 
@@ -120,7 +123,7 @@ class ProfileController extends ApiBaseController{
     {
         $basicDetails = new CandidateProfile();
         $req = Yii::$app->request->post();
-        if (isset($req['exp_month']) && isset($req['gender']) && isset($req['exp_year']) && isset($req['dob'])  && isset($req['availability'])  && isset($req['state']) && isset($req['city'])){
+        if (isset($req['exp_month']) && isset($req['gender']) && isset($req['exp_year']) && isset($req['dob']) && isset($req['availability']) && isset($req['state']) && isset($req['city'])) {
             if ($basicDetails->load(Yii::$app->request->post())) {
                 if ($basicDetails->validate()) {
                     if ($basicDetails->update()) {
@@ -133,42 +136,43 @@ class ProfileController extends ApiBaseController{
             } else {
                 return $this->response(422);
             }
-        }else{
+        } else {
             return $this->response(422);
         }
     }
 
-    public function actionUpdateDescription(){
+    public function actionUpdateDescription()
+    {
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
         $req = Yii::$app->request->post();
 
-        if(isset($req['description'])) {
+        if (isset($req['description'])) {
 
             $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['description'=>$req['description']], ['user_enc_id' => $token_holder_id->user_enc_id])
+                ->update(Users::tableName(), ['description' => $req['description'], 'last_updated_on' => date('Y-m-d H:i:s')], ['user_enc_id' => $token_holder_id->user_enc_id])
                 ->execute();
 
             if ($update) {
-                return $this->response(200,'updated');
+                return $this->response(200, 'updated');
             } else {
-                return $this->response(500, 'error occured while updating applied applications');
+                return $this->response(500, 'error occured while updating description');
             }
 
-        }else{
+        } else {
             return $this->response(422);
         }
     }
 
-    public function actionUpdateSkills(){
-        $flag = 0;
+    public function actionUpdateSkills()
+    {
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
         $req = Yii::$app->request->post();
 
-        if(isset($req['skills'])) {
+        if (isset($req['skills'])) {
 
             $skills = $req['skills'];
             if ($skills != '') {
@@ -201,7 +205,7 @@ class ProfileController extends ApiBaseController{
                         $skillsModel->created_on = date('Y-m-d H:i:s');
                         $skillsModel->created_by = $token_holder_id->user_enc_id;
                         if (!$skillsModel->save()) {
-                            return $this->response(500,'an error occured while saving skills');
+                            return $this->response(500, 'an error occured while saving skills');
                         }
                         $skill_set[] = $skillsModel->skill_enc_id;
                     }
@@ -227,9 +231,7 @@ class ProfileController extends ApiBaseController{
                     $skillsModel->created_on = date('Y-m-d H:i:s');
                     $skillsModel->created_by = $token_holder_id->user_enc_id;
                     if (!$skillsModel->save()) {
-                        return $this->response(500,'an error occured add new');
-                    } else {
-                        $flag++;
+                        return $this->response(500, 'an error occured add new');
                     }
                 }
             }
@@ -246,28 +248,24 @@ class ProfileController extends ApiBaseController{
                         ])
                         ->execute();
                     if (!$update) {
-                        return $this->response(500,'an error occured delete');
-                    } else {
-                        $flag++;
+                        return $this->response(500, 'an error occured delete');
                     }
                 }
             }
-            if($flag != 0){
-                return $this->response(200,'skills added');
-            }
-        }else{
+            return $this->response(200, 'skills added');
+        } else {
             return $this->response(422);
         }
     }
 
-    public function actionUpdateLanguages(){
-        $flag = 0;
+    public function actionUpdateLanguages()
+    {
         $token_holder_id = UserAccessTokens::findOne([
             'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
         ]);
         $req = Yii::$app->request->post();
 
-        if(isset($req['languages'])) {
+        if (isset($req['languages'])) {
 
             $lang = $req['languages'];
             if ($lang != '') {
@@ -300,7 +298,7 @@ class ProfileController extends ApiBaseController{
                         $languageModel->created_on = date('Y-m-d H:i:s');
                         $languageModel->created_by = $token_holder_id->user_enc_id;
                         if (!$languageModel->save()) {
-                            return $this->response(500,'an error occured');
+                            return $this->response(500, 'an error occured');
                         }
                         $language_set[] = $languageModel->language_enc_id;
                     }
@@ -326,9 +324,7 @@ class ProfileController extends ApiBaseController{
                     $languageModel->created_on = date('Y-m-d H:i:s');
                     $languageModel->created_by = $token_holder_id->user_enc_id;
                     if (!$languageModel->save()) {
-                        return $this->response(500,'an error occured');
-                    } else {
-                        $flag++;
+                        return $this->response(500, 'an error occured');
                     }
                 }
             }
@@ -345,29 +341,25 @@ class ProfileController extends ApiBaseController{
                         ])
                         ->execute();
                     if (!$update) {
-                        return $this->response(500,'an error occured');
-                    } else {
-                        $flag++;
+                        return $this->response(500, 'an error occured');
                     }
                 }
             }
-
-            if($flag != 0){
-                return $this->response(200,'languages added');
-            }
-        }else{
+                return $this->response(200, 'languages added');
+        } else {
             return $this->response(422);
         }
     }
 
-    public function actionUpdateSocial(){
+    public function actionUpdateSocial()
+    {
         $socialDetails = new CandidateProfile();
-        if($socialDetails->load(Yii::$app->request->post())){
-            if($socialDetails->updateValues()){
+        if ($socialDetails->load(Yii::$app->request->post())) {
+            if ($socialDetails->updateValues()) {
                 return $this->response(200, 'Successfully Updated');
             }
             return $this->response(200, 'Already Updated');
-        }else{
+        } else {
             return $this->response(422);
         }
     }
