@@ -243,13 +243,13 @@ $this->registerCss('
     white-space: nowrap;
     height: 540px;
 }
-.ey-logo{
+.inner-main-log-fom > .ey-logo{
     position:absolute;
     top:20px;
     left:50%;
     transform:translateX(-50%);
 }
-.ey-logo img{
+.inner-main-log-fom > .ey-logo img{
     max-width:200px;
 }
 .log-btn{

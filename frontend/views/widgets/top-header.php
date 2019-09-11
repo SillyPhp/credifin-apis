@@ -1,14 +1,17 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
+
 ?>
-    <ul class="menuzord-menu" itemscope itemtype="http://www.schema.org/SiteNavigationElement">
-        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
-        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('frontend', 'Blog'); ?></a></li>
+    <ul class="menuzord-menu" itemscope itemtype="https://www.schema.org/SiteNavigationElement">
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a>
+        </li>
+        <li itemprop="name"><a itemprop="url"
+                               href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <li itemprop="name"><a itemprop="url"
+                               href="<?= Url::to('/reviews'); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/blog'); ?>"><?= Yii::t('frontend', 'Blog'); ?></a>
+        </li>
         <?php if (!Yii::$app->user->isGuest): ?>
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
         <?php else: ?>
@@ -44,8 +47,6 @@ $this->registerCss('
     color:#fff !important;
 }
 .menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
-    /*    background: url("../../../asset/images/hover1.png");
-        background-size: 100%;*/
     color:#f08440;
 }
 @media only screen and (max-width: 901px) and (min-width: 451px) {

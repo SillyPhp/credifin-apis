@@ -15,10 +15,9 @@ class SearchController extends Controller
 {
     private function findUnclaimed($s)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         return UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'CONCAT(a.slug, "' . $referral . '") as slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.organization_type_enc_id', 'a.name', 'a.slug as slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
             ->joinWith(['organizationTypeEnc b' => function ($y) {
                 $y->select(['b.business_activity_enc_id', 'b.business_activity']);
             }])
@@ -45,13 +44,11 @@ class SearchController extends Controller
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            $referral = Yii::$app->referral->getReferralCode();
             $s = Yii::$app->request->post('keyword');
-
             $result = [];
             $organizations = Organizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'CONCAT(a.slug, "' . $referral . '") as slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug as slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
                 ->joinWith(['organizationTypeEnc b'], false)
                 ->joinWith(['businessActivityEnc c'], false)
                 ->joinWith(['industryEnc d'], false)
@@ -118,7 +115,7 @@ class SearchController extends Controller
             $posts = Posts::find()
                 ->select([
                     'title',
-                    'CONCAT("/blog/", slug, "' . $referral . '") link',
+                    'CONCAT("/blog/", slug) link',
                     'excerpt',
                     'CASE WHEN featured_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", featured_image_location, "/", featured_image) ELSE NULL END image'
                 ])

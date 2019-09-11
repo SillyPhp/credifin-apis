@@ -102,7 +102,7 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
