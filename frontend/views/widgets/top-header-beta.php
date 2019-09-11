@@ -785,8 +785,11 @@ $this->registerCss('
     background:#fff;
 }
 .large-container{
-    max-width:1400px !important;
     width:auto;
+}
+.bg-theme-colored {
+    background-color: #fff !important;
+    height:65px;
 }
 #header-main{
     padding:2px 0px;
@@ -798,6 +801,9 @@ $this->registerCss('
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
+}
+.ey-mobile-menu{
+    padding: 10px 5px 3px 0px;
 }
 ');
 ?>

@@ -77,15 +77,16 @@ AppAssets::register($this);
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
-
-                        <span><i class="far fa-check-circle"></i>
-                            Post a quick <a href="/jobs/quick-job">Job</a> or <a  href="/internships/quick-internship">Internship</a>
+                        <span>
+                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
                         </span>
-                        <!--                        <a href="/jobs/quick-job"><i class="far fa-check-circle"></i> Post a Job</a>-->
+                        <span>
+                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job Tweet</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                        </span>
                     </div>
                     <div class="secondary-top-header-right">
                         <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
-                        <a href="/signup/organization">Signup as Company</a>
+                        <a href="/signup/organization" class="org-signup">Signup as Company</a>
                         <a href="/signup/individual">Signup as Candidate</a>
                     </div>
                 </div>
@@ -404,12 +405,12 @@ $this->registerCss('
 .secondary-top-header-left, .secondary-top-header-right{
     width:auto;
 }
-.secondary-top-header-left{padding-left:80px;float:left;}
+.secondary-top-header-left{padding-left:40px;float:left;}
 .secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
 .secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
 .secondary-top-header-left span a{font-weight:500;}
-.secondary-top-header-right{padding-right:50px;float:right;}
-.secondary-top-header a, .secondary-top-header span{
+.secondary-top-header-right{padding-right:40px;float:right;}
+.secondary-top-header a, .secondary-top-header span, .secondary-top-header-left *{
     color:#fff;
     transition: all 500ms;
 }
@@ -417,10 +418,10 @@ $this->registerCss('
     float: right;
     height: 30px;
     line-height: 30px;
-    padding: 0px 20px;
+    padding: 0px 10px;
     margin-left: 5px;
 }
-.secondary-top-header a:hover{color:#ff7803;}
+.secondary-top-header a:hover, .secondary-top-header a:hover *{color:#ff7803 !important;}
 @media screen and (max-width: 610px) and (min-width: 0px) {
     .secondary-top-header-left{padding-left: 20px;}
 }
@@ -428,8 +429,12 @@ $this->registerCss('
     .secondary-top-header-right{padding-right:15px;}
     .secondary-top-header-left{padding-left: 10px;}
     .secondary-top-header-right a{padding:0px 5px;}
+    .org-signup{display:none;}
 }
-@media screen and (max-width: 450px) and (min-width: 0px) {
+@media screen and (max-width: 1090px) and (min-width: 0px) {
+    .secondary-top-header-left{padding-left: 0px;}
+}
+@media screen and (max-width: 1015px) and (min-width: 0px) {
     .secondary-top-header-left{display:none;}
 }
 .send_mail{
