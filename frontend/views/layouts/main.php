@@ -81,7 +81,7 @@ AppAssets::register($this);
                             <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
                         </span>
                         <span>
-                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job Tweet</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
