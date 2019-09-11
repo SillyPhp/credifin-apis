@@ -4,10 +4,15 @@ namespace api\modules\v1\controllers;
 
 use api\modules\v1\controllers\ApiBaseController;
 use api\modules\v1\models\Candidates;
+use common\models\AppliedApplications;
 use common\models\Categories;
 use common\models\Cities;
+use common\models\Skills;
+use common\models\SpokenLanguages;
 use common\models\States;
+use common\models\User;
 use common\models\UserAccessTokens;
+use common\models\UserSpokenLanguages;
 use yii\filters\auth\HttpBearerAuth;
 use common\models\Users;
 use common\models\UserSkills;
@@ -27,6 +32,9 @@ class ProfileController extends ApiBaseController{
             'actions' => [
                 'detail' => ['POST'],
                 'update-profile' => ['POST'],
+                'update-skills' => ['POST'],
+                'update-description' => ['POST'],
+                'update-languages' => ['POST'],
                 'update-social' => ['POST'],
             ]
         ];
@@ -111,7 +119,7 @@ class ProfileController extends ApiBaseController{
     {
         $basicDetails = new CandidateProfile();
         $req = Yii::$app->request->post();
-        if (isset($req['exp_month']) && isset($req['gender']) && isset($req['exp_year']) && isset($req['dob']) && isset($req['languages']) && isset($req['skills']) && isset($req['availability']) && isset($req['description']) && isset($req['state']) && isset($req['city'])){
+        if (isset($req['exp_month']) && isset($req['gender']) && isset($req['exp_year']) && isset($req['dob'])  && isset($req['availability'])  && isset($req['state']) && isset($req['city'])){
             if ($basicDetails->load(Yii::$app->request->post())) {
                 if ($basicDetails->validate()) {
                     if ($basicDetails->update()) {
@@ -123,6 +131,228 @@ class ProfileController extends ApiBaseController{
                 }
             } else {
                 return $this->response(422);
+            }
+        }else{
+            return $this->response(422);
+        }
+    }
+
+    public function actionUpdateDescription(){
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $req = Yii::$app->request->post();
+
+        if(isset($req['description'])) {
+
+            $update = Yii::$app->db->createCommand()
+                ->update(Users::tableName(), ['description'=>$req['description']], ['user_enc_id' => $token_holder_id->user_enc_id])
+                ->execute();
+
+            if ($update) {
+                return $this->response(200);
+            } else {
+                return $this->response(500, 'error occured while updating applied applications');
+            }
+
+        }else{
+            return $this->response(422);
+        }
+    }
+
+    public function actionUpdateSkills(){
+        $flag = 0;
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $req = Yii::$app->request->post();
+
+        if(isset($req['skills'])) {
+
+            $skills = $req['skills'];
+            if ($skills != '') {
+                $skills_array = explode(",", $skills);
+                foreach ($skills_array as $s) {
+                    trim($s);
+                }
+                $skills_array = array_unique($skills_array);
+            } else {
+                $skills_array = [];
+            }
+
+            if (!empty($skills_array)) {
+                $skill_set = [];
+                foreach ($skills_array as $val) {
+                    $chk_skill = Skills::find()
+                        ->distinct()
+                        ->select(['skill_enc_id'])
+                        ->where(['skill' => $val])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_skill)) {
+                        $skill_set[] = $chk_skill['skill_enc_id'];
+                    } else {
+                        $skillsModel = new Skills();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
+                        $skillsModel->skill = $val;
+                        $skillsModel->created_on = date('Y-m-d H:i:s');
+                        $skillsModel->created_by = $token_holder_id->user_enc_id;
+                        if (!$skillsModel->save()) {
+                            return false;
+                        }
+                        $skill_set[] = $skillsModel->skill_enc_id;
+                    }
+                }
+            } else {
+                $skill_set = [];
+            }
+            $userSkills = UserSkills::find()
+                ->where(['created_by' => $token_holder_id->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
+            $new_skill = array_diff($skill_set, $skillArray);
+            $delete_skill = array_diff($skillArray, $skill_set);
+            if (!empty($new_skill)) {
+                foreach ($new_skill as $val) {
+                    $skillsModel = new UserSkills();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $skillsModel->user_skill_enc_id = $utilitiesModel->encrypt();
+                    $skillsModel->skill_enc_id = $val;
+                    $skillsModel->created_on = date('Y-m-d H:i:s');
+                    $skillsModel->created_by = $token_holder_id->user_enc_id;
+                    if (!$skillsModel->save()) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
+                }
+            }
+            if (!empty($delete_skill)) {
+                foreach ($delete_skill as $val) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UserSkills::tableName(), [
+                            'is_deleted' => 1,
+                            'last_updated_on' => date('Y-m-d H:i:s'),
+                            'last_updated_by' => $token_holder_id->user_enc_id
+                        ], [
+                            'created_by' => $token_holder_id->user_enc_id,
+                            'skill_enc_id' => $val
+                        ])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
+                }
+            }
+            if($flag != 0){
+                return $this->response(200);
+            }
+        }else{
+            return $this->response(422);
+        }
+    }
+
+    public function actionUpdateLanguages(){
+        $flag = 0;
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $req = Yii::$app->request->post();
+
+        if(isset($req['languages'])) {
+
+            $lang = $req['languages'];
+            if ($lang != '') {
+                $languages_array = explode(",", $lang);
+                foreach ($languages_array as $t) {
+                    trim($t);
+                }
+                $languages_array = array_unique($languages_array);
+            } else {
+                $languages_array = [];
+            }
+
+            if (!empty($languages_array)) {
+                $language_set = [];
+                foreach ($languages_array as $val) {
+                    $chk_language = SpokenLanguages::find()
+                        ->distinct()
+                        ->select(['language_enc_id'])
+                        ->where(['language' => $val])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_language)) {
+                        $language_set[] = $chk_language['language_enc_id'];
+                    } else {
+                        $languageModel = new SpokenLanguages();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $languageModel->language_enc_id = $utilitiesModel->encrypt();
+                        $languageModel->language = $val;
+                        $languageModel->created_on = date('Y-m-d H:i:s');
+                        $languageModel->created_by = $token_holder_id->user_enc_id;
+                        if (!$languageModel->save()) {
+                            return false;
+                        }
+                        $language_set[] = $languageModel->language_enc_id;
+                    }
+                }
+            } else {
+                $language_set = [];
+            }
+            $userLanguage = UserSpokenLanguages::find()
+                ->where(['created_by' => $token_holder_id->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->asArray()
+                ->all();
+            $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
+            $new_language = array_diff($language_set, $languageArray);
+            $delete_language = array_diff($languageArray, $language_set);
+            if (!empty($new_language)) {
+                foreach ($new_language as $val) {
+                    $languageModel = new UserSpokenLanguages();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $languageModel->user_language_enc_id = $utilitiesModel->encrypt();
+                    $languageModel->language_enc_id = $val;
+                    $languageModel->created_on = date('Y-m-d H:i:s');
+                    $languageModel->created_by = $token_holder_id->user_enc_id;
+                    if (!$languageModel->save()) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
+                }
+            }
+            if (!empty($delete_language)) {
+                foreach ($delete_language as $val) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UserSpokenLanguages::tableName(), [
+                            'is_deleted' => 1,
+                            'last_updated_on' => date('Y-m-d H:i:s'),
+                            'last_updated_by' => $token_holder_id->user_enc_id
+                        ], [
+                            'created_by' => $token_holder_id->user_enc_id,
+                            'language_enc_id' => $val
+                        ])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    } else {
+                        $flag++;
+                    }
+                }
+            }
+
+            if($flag != 0){
+                return $this->response(200);
             }
         }else{
             return $this->response(422);
