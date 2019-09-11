@@ -147,7 +147,7 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
 
-        $tweets = $this->_getTweets($keywords = null, $location = null, $type = "Internships", $limit = 8, $offset = null);
+        $tweets = $this->_getTweets($keywords = null, $location = null, $type = "Internships", $limit = 4, $offset = null);
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,

@@ -121,11 +121,26 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h1 class="heading-style">Internship Tweets</h1>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -189,20 +204,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="heading-style">Internship Tweets</h1>
-            </div>
-        </div>
-        <?=
-        $this->render('/widgets/twitter-masonry', [
-            'tweets' => $tweets
-        ]);
-        ?>
-    </div>
-</section>
+
 
 <?php
 echo $this->render('/widgets/mustache/category-card');

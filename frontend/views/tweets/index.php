@@ -40,11 +40,56 @@ $this->params['header_dark'] = true;
 </section>
 <section>
     <div class="container">
-        <?=
-            $this->render('/widgets/tweitter-masonry',[
-               'tweets' => $tweets
-            ]);
-        ?>
+        <div class="row">
+            <?php
+            if (!empty($tweets)):
+                ?>
+                <div class="masonry">
+                    <div id="twitter_jobs_cards">
+
+                    </div>
+                    <?php
+
+                    foreach ($tweets as $tweet) {
+                        ?>
+                        <div class="tweet-main">
+                            <div class="tweet-inner-main">
+                                <div class="tweet-org-deatail">
+                                    <div class="tweet-org-logo">
+                                        <?php if (!empty($tweet['logo'])): ?>
+                                            <img src="<?= $tweet['logo'] ?>"/>
+                                        <?php else: ?>
+                                            <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
+                                                    height="150"
+                                                    color="<?= $tweet['color'] ?>" font="70px"></canvas>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="tweet-org-description">
+                                        <h2><?= ucwords($tweet['job_title']) ?></h2>
+                                        <h4><?= ucwords($tweet['org_name']) ?></h4>
+                                        <p><?= $tweet['job_type'] ?></p>
+                                    </div>
+                                </div>
+                                <div class="posted-tweet">
+                                    <?= $tweet['html_code']; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            <?php
+            else:
+                ?>
+                <div class="no_tweets_found">
+                    <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
+                </div>
+
+            <?php
+            endif;
+            ?>
+        </div>
     </div>
 </section>
 <?php

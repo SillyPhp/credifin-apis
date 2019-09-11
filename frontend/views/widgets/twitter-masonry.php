@@ -5,43 +5,38 @@ use yii\helpers\Html;
     <div class="row">
         <?php
         if (!empty($tweets)):
-            ?>
-            <div class="masonry">
-                <div id="twitter_jobs_cards">
+            foreach ($tweets as $tweet) {
+                ?>
+                <div class="col-md-3 col-sm-6 twitter-cards" data-id="<?= $tweet['application_type'] ?>">
+                    <div id="twitter_jobs_cards">
 
-                </div>
-                <?php
-
-                foreach ($tweets as $tweet) {
-                    ?>
+                    </div>
                     <div class="tweet-main">
-                        <div class="tweet-inner-main">
-                            <div class="tweet-org-deatail">
-                                <div class="tweet-org-logo">
-                                    <?php if (!empty($tweet['logo'])): ?>
-                                        <img src="<?= $tweet['logo'] ?>"/>
-                                    <?php else: ?>
-                                        <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
-                                                height="150"
-                                                color="<?= $tweet['color'] ?>" font="70px"></canvas>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="tweet-org-description">
-                                    <h2><?= ucwords($tweet['job_title']) ?></h2>
-                                    <h4><?= ucwords($tweet['org_name']) ?></h4>
-                                    <p><?= $tweet['job_type'] ?></p>
-                                </div>
+                    <div class="tweet-inner-main">
+                        <div class="tweet-org-deatail">
+                            <div class="tweet-org-logo">
+                                <?php if (!empty($tweet['logo'])): ?>
+                                    <img src="<?= $tweet['logo'] ?>"/>
+                                <?php else: ?>
+                                    <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
+                                            height="150"
+                                            color="<?= $tweet['color'] ?>" font="70px"></canvas>
+                                <?php endif; ?>
                             </div>
-                            <div class="posted-tweet">
-                                <?= $tweet['html_code']; ?>
+                            <div class="tweet-org-description">
+                                <h2><?= ucwords($tweet['job_title']) ?></h2>
+                                <h4><?= ucwords($tweet['org_name']) ?></h4>
+                                <p><?= $tweet['job_type'] ?></p>
                             </div>
                         </div>
+                        <div class="posted-tweet">
+                            <?= $tweet['html_code']; ?>
+                        </div>
                     </div>
-                    <?php
-                }
-                ?>
-            </div>
-        <?php
+                </div>
+                </div>
+                <?php
+            }
         else:
             ?>
             <div class="no_tweets_found">

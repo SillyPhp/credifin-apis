@@ -192,7 +192,7 @@ class JobsController extends Controller
             ->asArray()
             ->all();
 
-        $tweets = $this->_getTweets(null, null,"Jobs", 8 , "");
+        $tweets = $this->_getTweets(null, null,"Jobs", 4 , "");
 
         return $this->render('index', [
             'job_profiles' => $job_profiles,

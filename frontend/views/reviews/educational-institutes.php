@@ -44,41 +44,15 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Review Methodology</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
-                        </div>
-                        <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Faculity</span>, <span>Teaching Style</span>,
-                            <span>Accessibilit Of Faculty</span></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
-                        </div>
-                        <div class="rb-heading">Infrastructure and Environment</div>
-                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>,
-                            <span>Value For Money</span></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
-                        </div>
-                        <div class="rb-heading">Growth and Development</div>
-                        <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Coverage Of Subject Matter</span>
-                        </div>
+                    <div class="heading-style">Top Rated Educational Institute</div>
+                    <div id="uncliamed_top">
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
     <section class="share-box">
         <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
         <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
@@ -118,9 +92,36 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rated Educational Institute</div>
-                    <div id="uncliamed_top">
-
+                    <div class="heading-style">Review Methodology</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
+                        </div>
+                        <div class="rb-heading">Learning and Teaching</div>
+                        <div class="rb-text">Reviews on the basis of <span>Faculity</span>, <span>Teaching Style</span>,
+                            <span>Accessibilit Of Faculty</span></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
+                        </div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
+                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>,
+                            <span>Value For Money</span></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
+                        </div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Coverage Of Subject Matter</span>
+                        </div>
                     </div>
                 </div>
             </div>
