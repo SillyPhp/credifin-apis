@@ -14,6 +14,7 @@ use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\UserSpokenLanguages;
 use yii\filters\auth\HttpBearerAuth;
+use common\models\Utilities;
 use common\models\Users;
 use common\models\UserSkills;
 use api\modules\v1\models\CandidateProfile;
@@ -150,7 +151,7 @@ class ProfileController extends ApiBaseController{
                 ->execute();
 
             if ($update) {
-                return $this->response(200);
+                return $this->response(200,'updated');
             } else {
                 return $this->response(500, 'error occured while updating applied applications');
             }
@@ -200,7 +201,7 @@ class ProfileController extends ApiBaseController{
                         $skillsModel->created_on = date('Y-m-d H:i:s');
                         $skillsModel->created_by = $token_holder_id->user_enc_id;
                         if (!$skillsModel->save()) {
-                            return false;
+                            return $this->response(500,'an error occured while saving skills');
                         }
                         $skill_set[] = $skillsModel->skill_enc_id;
                     }
@@ -226,7 +227,7 @@ class ProfileController extends ApiBaseController{
                     $skillsModel->created_on = date('Y-m-d H:i:s');
                     $skillsModel->created_by = $token_holder_id->user_enc_id;
                     if (!$skillsModel->save()) {
-                        return false;
+                        return $this->response(500,'an error occured add new');
                     } else {
                         $flag++;
                     }
@@ -245,14 +246,14 @@ class ProfileController extends ApiBaseController{
                         ])
                         ->execute();
                     if (!$update) {
-                        return false;
+                        return $this->response(500,'an error occured delete');
                     } else {
                         $flag++;
                     }
                 }
             }
             if($flag != 0){
-                return $this->response(200);
+                return $this->response(200,'skills added');
             }
         }else{
             return $this->response(422);
@@ -299,7 +300,7 @@ class ProfileController extends ApiBaseController{
                         $languageModel->created_on = date('Y-m-d H:i:s');
                         $languageModel->created_by = $token_holder_id->user_enc_id;
                         if (!$languageModel->save()) {
-                            return false;
+                            return $this->response(500,'an error occured');
                         }
                         $language_set[] = $languageModel->language_enc_id;
                     }
@@ -325,7 +326,7 @@ class ProfileController extends ApiBaseController{
                     $languageModel->created_on = date('Y-m-d H:i:s');
                     $languageModel->created_by = $token_holder_id->user_enc_id;
                     if (!$languageModel->save()) {
-                        return false;
+                        return $this->response(500,'an error occured');
                     } else {
                         $flag++;
                     }
@@ -344,7 +345,7 @@ class ProfileController extends ApiBaseController{
                         ])
                         ->execute();
                     if (!$update) {
-                        return false;
+                        return $this->response(500,'an error occured');
                     } else {
                         $flag++;
                     }
@@ -352,7 +353,7 @@ class ProfileController extends ApiBaseController{
             }
 
             if($flag != 0){
-                return $this->response(200);
+                return $this->response(200,'languages added');
             }
         }else{
             return $this->response(422);
