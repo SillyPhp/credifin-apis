@@ -9,13 +9,18 @@ use yii\widgets\Pjax;
 ?>
 
     <div class="row">
-        <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4">
-                <a class="btn btn-primary custom-buttons" href="/account/jobs/hr-application">
-                    Create a Job
+        <div class="col-md-6 col-md-offset-6">
+            <div class="col-md-3">
+                <a class="btn btn-primary custom-buttons" href="/account/jobs/create">
+                    Create quick Job
                 </a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <a class="btn btn-primary custom-buttons" href="/account/jobs/hr-application">
+                    Create Job
+                </a>
+            </div>
+            <div class="col-md-3">
                 <?=
                 Html::button('Add New Candidate', [
                     'class' => 'btn btn-primary custom-buttons',
@@ -26,7 +31,7 @@ use yii\widgets\Pjax;
                 ]);
                 ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <!--      <a class="btn btn-primary custom-buttons" href="/account/companies">
                                    Add new company
                                 </a>-->

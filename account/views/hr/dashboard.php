@@ -8,13 +8,18 @@ use yii\helpers\Url;
 ?>
 
     <div class="row">
-        <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4">
+        <div class="col-md-6 col-md-offset-6">
+            <div class="col-md-3">
                 <a class="btn btn-primary custom-buttons" href="/account/jobs/create">
-                    Create a Job
+                    Create quick Job
                 </a>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <a class="btn btn-primary custom-buttons" href="/account/jobs/create">
+                    Create Job
+                </a>
+            </div>
+            <div class="col-md-3">
                 <?=
                 Html::button('Add New Candidate', [
                     'class' => 'btn btn-primary custom-buttons',
@@ -25,7 +30,7 @@ use yii\helpers\Url;
                 ]);
                 ?>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <!--      <a class="btn btn-primary custom-buttons" href="/account/companies">
                                    Add new company
                                 </a>-->
@@ -44,138 +49,7 @@ use yii\helpers\Url;
 
     <div class="row">
     <div class="col-md-3">
-        <section class="card card-transparent nd-shadow">
-            <div class="card-body">
-                <section class="card card-group">
-                    <header class="card-header bg-primary">
-                        <div class="widget-profile-info">
-                            <div class="profile-picture">
-                                <img src="<?= Url::to('@adminAssets/img/!logged-user.jpg'); ?>">
-                            </div>
-                            <div class="profile-info">
-                                <h4 class="name font-weight-semibold"><?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name; ?></h4>
-                                <h5 class="role"><?= Yii::$app->user->identity->type->user_type; ?></h5>
-                                <div class="profile-footer">
-                                    <a href="<?= Url::to('/account/personal-profile'); ?>">(edit profile)</a>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-                    <div id="accordion" class="w-100 ">
-                        <div class="card card-accordion card-accordion-first" style="" data-always-visible="1"
-                             data-rail-visible="0" data-initialized="1">
-                            <div class="card-header border-bottom-0">
-                                <h4 class="card-title">
-                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
-                                       href="#collapse1One">
-                                        <i class="fa fa-check mr-1"></i> Tasks
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapse1One" class="accordion-body collapse show">
-                                <div class="card-body">
-                                    <form method="get" class="form-horizontal form-bordered">
-                                        <div class="form-group row">
-                                            <div class="col-sm-12">
-                                                <div class="input-group mb-3">
-                                                    <input type="text" class="form-control">
-                                                    <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-primary" tabindex="-1">
-                                                            Add
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <hr class="solid mt-3 mb-3">
-                                    <ul class="widget-todo-list">
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" checked="" id="todoListItem1"
-                                                       class="todo-check">
-                                                <label class="todo-label" for="todoListItem1"><span>Curabitur ac sem at nibh egestas urabitur ac sem at nibh egestas.</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem2" class="todo-check">
-                                                <label class="todo-label" for="todoListItem2"><span>Lorem ipsum dolor sit amet</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem3" class="todo-check">
-                                                <label class="todo-label" for="todoListItem3"><span>Curabitur ac sem at nibh egestas</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem4" class="todo-check">
-                                                <label class="todo-label" for="todoListItem4"><span>Lorem ipsum dolor sit amet</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem5" class="todo-check">
-                                                <label class="todo-label" for="todoListItem5"><span>Curabitur ac sem at nibh egestas.</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem6" class="todo-check">
-                                                <label class="todo-label" for="todoListItem6"><span>Lorem ipsum dolor sit amet</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="checkbox-custom checkbox-default">
-                                                <input type="checkbox" id="todoListItem7" class="todo-check">
-                                                <label class="todo-label" for="todoListItem7"><span>Curabitur ac sem at nibh egestas.</span></label>
-                                            </div>
-                                            <div class="todo-actions">
-                                                <a class="todo-remove" href="#">
-                                                    <!--<i class="fa fa-times"></i>-->
-                                                </a>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </section>
+        <?= $this->render('/widgets/tasks/taskbar-card'); ?>
     </div>
     <div class="col-md-9">
         <div class="widget-row">
@@ -206,15 +80,16 @@ use yii\helpers\Url;
                     </div>
                 </a>
             </div>
-<!--            <div class="col-md-4 col-sm-6">-->
-<!--                <a href="#">-->
-<!--                    <div class="box-des box2 mt">-->
-<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
-<!--                        <span class="count">50</span>-->
-<!--                        <span class="box-text">Candidates Under Review</span>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
+            <!--            <div class="col-md-4 col-sm-6">-->
+            <!--                <a href="#">-->
+            <!--                    <div class="box-des box2 mt">-->
+            <!--                        <img src="-->
+            <?//= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
+            <!--                        <span class="count">50</span>-->
+            <!--                        <span class="box-text">Candidates Under Review</span>-->
+            <!--                    </div>-->
+            <!--                </a>-->
+            <!--            </div>-->
             <div class="col-md-4 col-sm-6">
                 <a href="#">
                     <div class="box-des box4 mt box2set">
@@ -667,7 +542,7 @@ use yii\helpers\Url;
                 <!--                        <div class="portlet-body">-->
                 <!--                            <div class="tab-content">-->
                 <!--                                <div class="tab-pane active" id="tab_actions_pending">-->
-                <!--                                    <!-- BEGIN: Actions -->
+                <!--                                    <-- BEGIN: Actions -->
                 <!--                                    <div class="row">-->
                 <!--                                        <div class="col-md-12">-->
                 <!--                                            <div class="mt-actions " style="">-->
@@ -917,33 +792,33 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-<!--    <div class="modal fade" id="add-job" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
-<!--         style="padding-top:10%;">-->
-<!--        <div class="modal-dialog">-->
-<!--            <!-- Modal content-->-->
-<!--            <div class="modal-content">-->
-<!--                <div class="modal-header">-->
-<!--                    <span class="org-info">Select Organization</span>-->
-<!--                </div>-->
-<!--                <div class="modal-body">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <select class="form-control" id="exampleFormControlSelect1">-->
-<!--                                <option>select</option>-->
-<!--                                <option>dsb</option>-->
-<!--                                <option>dsbedutech</option>-->
-<!--                                <option>vsc</option>-->
-<!--                                <option>dsb law group</option>-->
-<!--                            </select>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="modal-footer">-->
-<!--                    <a href="/account/jobs/create" class="btn btn-primary">Next</a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--    <div class="modal fade" id="add-job" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+    <!--         style="padding-top:10%;">-->
+    <!--        <div class="modal-dialog">-->
+    <!--            Modal content-->
+    <!--            <div class="modal-content">-->
+    <!--                <div class="modal-header">-->
+    <!--                    <span class="org-info">Select Organization</span>-->
+    <!--                </div>-->
+    <!--                <div class="modal-body">-->
+    <!--                    <div class="row">-->
+    <!--                        <div class="col-md-12">-->
+    <!--                            <select class="form-control" id="exampleFormControlSelect1">-->
+    <!--                                <option>select</option>-->
+    <!--                                <option>dsb</option>-->
+    <!--                                <option>dsbedutech</option>-->
+    <!--                                <option>vsc</option>-->
+    <!--                                <option>dsb law group</option>-->
+    <!--                            </select>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="modal-footer">-->
+    <!--                    <a href="/account/jobs/create" class="btn btn-primary">Next</a>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
     <div class="modal fade" id="add-new-candidate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          style="padding-top:10%;">
         <div class="modal-dialog">
@@ -990,6 +865,12 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.btn-outline{
+    border-radius:0px 25px 25px 0 !important;
+}
+.btn-outline:hover{
+    box-shadow: 0 0 9px 5px #eee !important;
+}
 .temp-field{position:relative;}
 .remove-cand{
     position: absolute;
@@ -1262,14 +1143,14 @@ a:hover{
     text-decoration:none;
 }
 .btn.btn-outline.orange {
-    border-color: #ff7803;
-    color: #ff7803;
+    border-color: #00A0E3;
+    color: #00A0E3;
     background: 0 0;
 }
 .btn.btn-outline.orange.active, .btn.btn-outline.orange:active, .btn.btn-outline.orange:active:focus, .btn.btn-outline.orange:active:hover, .btn.btn-outline.orange:focus, .btn.btn-outline.orange:hover {
-    border-color: #ff7803;
+    border-color: #00A0E3;
     color: #fff;
-    background-color: #ff7803;
+    background-color: #00A0E3;
 }
 
 .com-logo {

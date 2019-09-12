@@ -10,8 +10,7 @@ use yii\widgets\Pjax;
             src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
 <section>
     <div class="row">
-        <div class="col-md-12"
-        >
+        <div class="col-md-12">
             <!--            <div class="col-md-3">-->
             <!--                --><? //=
             //                Html::button('Upload CV', ['value' => URL::to('/account/upload-cv'), 'class' => 'btn btn-primary custom-buttons',
@@ -52,65 +51,41 @@ use yii\widgets\Pjax;
 </section>
 
 <div class="row widget-row">
-    <div class="col-md-3">
-        <div class="widget-thumb jobs_count widget-bg-color-white text-uppercase margin-bottom-20 ">
-            <a href="/account/view-jobs">
-                <h4 class="widget-thumb-heading">Total Jobs</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-icon bg-green icon-bulb widget-thumb-subtitle">Total number of candidates</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="7,644">1  </span>
-                    </div>
-                </div>
-            </a>
-        </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="#">
+            <div class="box-des box3 mt">
+                <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
+                <span class="count">100+</span>
+                <span class="box-text">Total Job Openings</span>
+            </div>
+        </a>
     </div>
-    <div class="col-md-3">
-        <div class="widget-thumb processes_count widget-bg-color-white text-uppercase margin-bottom-20 ">
-            <a href="/account/view-process">
-                <h4 class="widget-thumb-heading">Total Processes</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-subtitle">USD</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="1,293"><?= $states[0]['totalProcess'][0]['total_process'] ?></span>
-                    </div>
-                </div>
-            </a>
-        </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="#">
+            <div class="box-des box6 mt">
+                <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
+                <span class="count">100+</span>
+                <span class="box-text">Total Process</span>
+            </div>
+        </a>
     </div>
-    <div class="col-md-3">
-        <div class="widget-thumb questionnaire_count widget-bg-color-white text-uppercase margin-bottom-20 ">
-            <a href="/account/view-questionnaire">
-                <h4 class="widget-thumb-heading">Total Questionnaire</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-purple fa fa-question"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-subtitle">USD</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="815"><?= $states[0]['totalQuestionnaire'][0]['total_que'] ?></span>
-                    </div>
-                </div>
-            </a>
-        </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="#">
+            <div class="box-des box5 mt">
+                <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
+                <span class="count">100+</span>
+                <span class="box-text">Total Questionnaire</span>
+            </div>
+        </a>
     </div>
-    <div class="col-md-3">
-        <div class="widget-thumb employees_count widget-bg-color-white text-uppercase margin-bottom-20 ">
-            <a href="/account/candidates">
-                <h4 class="widget-thumb-heading">Total Employees</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
-                    <div class="widget-thumb-body">
-                        <span class="widget-thumb-subtitle"></span>
-                        <span class="widget-thumb-body-stat" data-counter="counterup"
-                              data-value="5,071"><?= $states[0]['totalUsers'][0]['total_users'] ?></span>
-                    </div>
-                </div>
-            </a>
-        </div>
+    <div class="col-md-3 col-sm-6">
+        <a href="#">
+            <div class="box-des box4 mt box2set">
+                <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
+                <span class="count">20</span>
+                <span class="box-text">Total Employees</span>
+            </div>
+        </a>
     </div>
 </div>
 
@@ -515,6 +490,45 @@ $total_applications = count($employerApplications);
 </div>
 <?php
 $this->registerCss('
+.box1{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1job.png");}
+.box2{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1company.png");}
+.box3{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1internship.png");}
+.box4{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1institute.png");}
+.box5{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1school.png");}
+.box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
+.box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
+.box-des {
+   background-size: 100% 100%;
+   background-repeat: no-repeat;
+   position: relative;
+   height: 160px;
+}
+.mt{margin-bottom:15px;}
+.box-des img{
+   position: absolute;
+   max-width: 63px;
+   right: 25px;
+   top: 15px;
+}
+.box2set img{
+    max-width: 80px !important;
+}
+.box-text {
+   position: absolute;
+   bottom: 3px;
+   left: 16px;
+   color: white;
+   font-size: 21px;
+   font-family: roboto;
+}
+.count {
+   position: absolute;
+   bottom: 28px;
+   left: 16px;
+   color: white;
+   font-size: 30px;
+   font-family: roboto;
+}
 .e-bttn {
 	background: transparent;
 	border: none;

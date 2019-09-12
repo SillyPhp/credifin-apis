@@ -4,78 +4,61 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
+
 ?>
-<section>
-    <div class="row">
-        <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4 col-md-offset-8">
-                <!--                <a class="btn btn-primary custom-buttons" href="/account/job-application-test">
-                                    Create a Job
-                                </a>-->
-                <?=
-                Html::button('Add New Company', [
-                    'class' => 'btn btn-primary custom-buttons',
-                    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-                    'id' => 'open-modal',
-                    'data-toggle' => 'modal',
-                    'data-target' => '#add-new',
-                ]);
-                ?>
+    <section>
+        <div class="row">
+            <div class="col-md-5 col-md-offset-7">
+                <div class="col-md-4 col-md-offset-8">
+                    <!--                <a class="btn btn-primary custom-buttons" href="/account/job-application-test">
+                                        Create a Job
+                                    </a>-->
+                    <?=
+                    Html::button('Add New Company', [
+                        'class' => 'btn btn-primary custom-buttons',
+                        'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
+                        'id' => 'open-modal',
+                        'data-toggle' => 'modal',
+                        'data-target' => '#add-new',
+                    ]);
+                    ?>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<div class="">
+    </section>
+
     <div class="row widget-row">
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                <h4 class="widget-thumb-heading">Total Companies </h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-subtitle">Total number of candidates</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="7,644">0</span>
+        <div class="col-md-12">
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box1 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
+                        <span class="count">10</span>
+                        <span class="box-text">Total Companies</span>
                     </div>
-                </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box6 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Looking For Candidates</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <a href="#">
+                    <div class="box-des box3 mt">
+                        <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
+                        <span class="count">100+</span>
+                        <span class="box-text">Total Job Openings</span>
+                    </div>
+                </a>
             </div>
         </div>
-        <div class="col-md-3"> 
-            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                <h4 class="widget-thumb-heading">Looking for Candidates</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-subtitle">USD</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="1,293">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                <h4 class="widget-thumb-heading">Total Job Openings</h4>
-                <div class="widget-thumb-wrap">
-                    <i class="widget-thumb-icon bg-purple fa fa-user"></i>
-                    <div class="widget-thumb-body">
-                        <!--<span class="widget-thumb-subtitle">USD</span>-->
-                        <span class="widget-thumb-body-stat" data-counter="counterup" data-value="815">0</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--        <div class="col-md-3">
-                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
-                        <h4 class="widget-thumb-heading"></h4>
-                        <div class="widget-thumb-wrap">
-                            <i class="widget-thumb-icon bg-blue fa fa-user"></i>
-                            <div class="widget-thumb-body">
-                                <span class="widget-thumb-subtitle">USD</span>
-                                <span class="widget-thumb-body-stat" data-counter="counterup" data-value="5,071">0</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
     </div>
+
     <div class="row">
         <div class="col-lg-12 col-xs-12 col-sm-12">
             <div class="portlet light ">
@@ -341,23 +324,63 @@ use borales\extensions\phoneInput\PhoneInput;
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-<!-- Modal -->
+    <!-- Modal -->
 
-<div class="modal fade" id="add-new" role="dialog">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content">
-            <div class="modal-body">
-                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
-                <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+    <div class="modal fade" id="add-new" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <?php
-$this->registerCss(' 
+$this->registerCss('
+.box1{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1job.png");}
+.box2{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1company.png");}
+.box3{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1internship.png");}
+.box4{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1institute.png");}
+.box5{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1school.png");}
+.box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
+.box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
+.box-des {
+   background-size: 100% 100%;
+   background-repeat: no-repeat;
+   position: relative;
+   height: 160px;
+}
+.mt{margin-bottom:15px;}
+.box-des img{
+   position: absolute;
+   max-width: 63px;
+   right: 25px;
+   top: 15px;
+}
+.box2set img{
+    max-width: 80px !important;
+}
+.box-text {
+   position: absolute;
+   bottom: 3px;
+   left: 16px;
+   color: white;
+   font-size: 21px;
+   font-family: roboto;
+}
+.count {
+   position: absolute;
+   bottom: 28px;
+   left: 16px;
+   color: white;
+   font-size: 30px;
+   font-family: roboto;
+} 
 .topic-con{
 position:relative;
 width:100%;
