@@ -598,7 +598,7 @@ $this->params['header_dark'] = false;
             <div class="col-md-6">
                 <div class="tweetLinks">
                     <a href="/tweets/jobs" id="tweetAllLink">View All</a>
-                    <a href="/tweets/job/create" id="tweetPostLink">Post</a>
+                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
                 </div>
             </div>
         </div>
