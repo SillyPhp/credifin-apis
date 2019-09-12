@@ -43,7 +43,7 @@ use yii\helpers\Url;
                     <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                     <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
                     <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
-                    <a href="/twitter-jobs" data-hover="Propinquity">Job Tweets</a>
+                    <a href="/tweets/jobs" data-hover="Propinquity">Job Tweets</a>
                 </div>
             </nav>
         </div>
