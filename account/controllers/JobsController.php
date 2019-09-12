@@ -37,6 +37,12 @@ use common\models\WidgetTutorials;
 class JobsController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        return parent::beforeAction($action);
+    }
+
     private function reviewZero()
     {
         $update = Yii::$app->db->createCommand()

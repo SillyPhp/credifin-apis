@@ -31,13 +31,138 @@ endif;
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
+            <div class="widget-row">
+                <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 blue" href="<?= Url::to('/account/jobs/reviewed') ?>">
+                        <div class="visual">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="1349">3</span>
+                            </div>
+                            <div class="desc">Applications Reviewed </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 red" href="<?= Url::to('/account/jobs/shortlisted') ?>">
+                        <div class="visual">
+                            <i class="fa fa-bar-chart-o"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="12,5">6</span>
+                            </div>
+                            <div class="desc">Applications Shortlisted </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 green" href="<?= Url::to('/account/jobs/applied') ?>">
+                        <div class="visual">
+                            <i class="fa fa-shopping-cart"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="549">1</span>
+                            </div>
+                            <div class="desc"> Applications Applied </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 purple" href="<?= Url::to('/account/jobs/accepted') ?>">
+                        <div class="visual">
+                            <i class="fa fa-globe"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="89">3</span> </div>
+                            <div class="desc"> Applications Accepted</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 yellow" href="<?= Url::to('/account/jobs/pending') ?>">
+                        <div class="visual">
+                            <i class="fa fa-globe"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="89">2</span> </div>
+                            <div class="desc">Applications Pending</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <a class="dashboard-stat dashboard-stat-v2 pink" href="<?= Url::to('/account/organization/shortlisted') ?>">
+                        <div class="visual">
+                            <i class="fa fa-building"></i>
+                        </div>
+                        <div class="details">
+                            <div class="number">
+                                <span data-counter="counterup" data-value="89">2</span> </div>
+                            <div class="desc">Followed Companies</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            </div>
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
-                    'question_list' => $question_list
+                    'question_list' => $question_list,
+                    'shortlist_org' => $shortlist_org
                 ]); ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
-                <div class="portlet light portlet-fit">
+                <div class="row marg">
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/jobs'); ?>">
+                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Jobs'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
+                                    <div class="widget-thumb-body">
+                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                              data-value="">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/hiring-processes'); ?>">
+                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
+                                    <div class="widget-thumb-body">
+                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                              data-value="">10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::toRoute('/jobs'); ?>">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-subtitle"></span>
+                                        <span class="widget-thumb-body-stat" data-counter="counterup"
+                                              data-value="">5</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="portlet light portlet-fit nd-shadow">
                     <div class="portlet-title" style="border-bottom:none;">
                         <div class="check-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
@@ -99,7 +224,7 @@ endif;
                         </div>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
@@ -131,7 +256,7 @@ endif;
                         ?>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
@@ -168,6 +293,11 @@ endif;
     </div>
 <?php
 $this->registerCss("
+@media only screen and (max-width: 950px) {
+.marg{
+    margin-top:20px !important;
+    }
+}
 .posRel{
     position:relative;
 }

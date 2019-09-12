@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 ?>
-    <div class="portlet applied_app light portlet-fit">
+    <div class="portlet applied_app light portlet-fit nd-shadow">
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
@@ -73,7 +73,7 @@ use yii\helpers\Url;
         </div>
     </div>
 
-    <div class="portlet light view_applications">
+    <div class="portlet light view_applications nd-shadow">
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
@@ -106,7 +106,33 @@ use yii\helpers\Url;
         </div>
     </div>
     </div>
-    <div class="portlet light portlet-fit">
+
+    <div class="row">
+        <div class="col-lg-12 col-xs-12 col-sm-12">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title tabbable-line">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                    </div>
+                    <div class="actions">
+                        <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <?=
+                        $this->render('/widgets/organization/card', [
+                            'organization_data' => $shortlist_org,
+                        ]);
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="portlet light portlet-fit nd-shadow">
         <div class="portlet-title" style="border-bottom:none;">
             <div class="check-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">

@@ -16,7 +16,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="container">
-    <div class="portlet light" id="form_wizard_1">
+    <div class="portlet light nd-shadow" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
@@ -234,6 +234,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
 <div class="fader"></div>
 <?php
 $this->registerCss("
+.g-pref{
+    display:block;
+    }
 .step {
    -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -437,7 +440,7 @@ textarea{
 }
 .divider{
     border-top:2px solid #eee;
-    margin: 35px -40px 19px;
+    margin: 35px -30px 19px;
 }
 .module2-heading{
     text-transform: uppercase;
