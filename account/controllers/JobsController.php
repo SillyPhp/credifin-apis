@@ -1050,6 +1050,7 @@ class JobsController extends Controller
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
         $placement_locations = $data->PlacementLocations();
+        $currencies = $data->getCurrency();
         if ($model->load(Yii::$app->request->post()))
         {
             if ($model->save())
@@ -1062,7 +1063,7 @@ class JobsController extends Controller
             }
             return $this->refresh();
         }
-        return $this->render('/employer-applications/one-click-job',['placement_locations'=>$placement_locations,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+        return $this->render('/employer-applications/one-click-job',['currencies'=>$currencies,'placement_locations'=>$placement_locations,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
         else:
             return $this->redirect('/');
         endif;

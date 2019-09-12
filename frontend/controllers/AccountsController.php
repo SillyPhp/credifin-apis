@@ -16,7 +16,6 @@ use frontend\models\accounts\ForgotPasswordForm;
 use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
-use frontend\models\accounts\UserEmails;
 use frontend\models\ChangePasswordForm;
 use common\models\Utilities;
 
@@ -49,6 +48,12 @@ class AccountsController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        return parent::beforeAction($action);
     }
 
     public function actionLogin()

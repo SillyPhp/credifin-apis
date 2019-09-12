@@ -67,4 +67,21 @@ class CitiesController extends Controller
         return $data;
     }
 
+    public function actionCountryList($q = null)
+    {
+        if (!is_null($q)) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Countries::find()
+                ->alias('a')
+                ->select(['a.name text','a.country_enc_id id'])
+                ->where('a.name LIKE "' . $q . '%"')
+                ->limit(20)
+                ->asArray()
+                ->all();
+            $out['results'] = array_values($data);
+            return $out;
+        }
+    }
+
+
 }

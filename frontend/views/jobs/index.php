@@ -1,38 +1,8 @@
 <?php
-$this->title = Yii::t('frontend', 'Jobs');
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
-
-$keywords = 'Govt jobs,Jobs,Empower youth,Jobs near me,Jobs in Bangalore, IT Jobs,Job Vacancies,Fresher Jobs,Web Development Jobs,Jobs in Delhi,Bank Jobs';
-$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 <section class="backgrounds">
     <div class="container">
@@ -61,6 +31,21 @@ $this->params['seo_tags'] = [
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+                <div class="container">
+                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+                    <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
+                    <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
+                    <a href="/twitter-jobs" data-hover="Propinquity">Job Tweets</a>
+                </div>
+            </nav>
         </div>
     </div>
 </section>
@@ -113,6 +98,20 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h1 class="heading-style">Job Tweets</h1>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets,
+        ]);
+        ?>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
@@ -133,6 +132,7 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -141,7 +141,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -155,7 +155,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -169,7 +169,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
@@ -181,6 +181,8 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -484,7 +486,7 @@ $this->registerCss('
 }
 /* animated menu css starts */
 .nav1{
-    padding:60px 0;
+    padding:40px 0 30px;
     text-align:center;
 }
 .nav1 a {
@@ -572,6 +574,18 @@ $this->registerCss('
 @media only screen and (max-width: 992px){
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
+}
+@media only screen and (max-width: 768px){
+    .nav1 a {
+        margin: 15px 10px 50px;
+    }
+    .nav1{
+        padding:40px 0 0px;
+        text-align:center;
+    }
+    .mt-20{
+        margin-top:0px !important;
+    }
 }
 /* animated menu css ends */
 .search-job{font-family:lobster; font-size:35px; padding-bottom:0px; color:#fff;}
@@ -778,6 +792,7 @@ $this->registerCss('
         width:98%;
     }
 }
+
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -810,6 +825,14 @@ loader = false;
 getCategories();
 getCards();
 addToReviewList();
+
+$(window).on('load', function() {
+    var head = $(".posted-tweet iframe").contents().find("head");
+    var css = '<style type="text/css">' +
+              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+              '</style>';
+    jQuery(head).append(css);
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -828,8 +851,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
     function expandFirst(elem) {
         var i = 0;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (k < listElementsLength) {
             if (k < i + 4) {
                 if (document.getElementById(elem)) {
@@ -853,18 +876,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        // var i = 0;
+        // i += 5;
+        // var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if(document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if(f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
     $(document).on('click', '.hideElem', function () {

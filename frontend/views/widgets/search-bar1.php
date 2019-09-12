@@ -281,7 +281,7 @@ $('#cities').typeahead(null, {
         
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
-        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"50px"}, 1000);
+        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);
     } else if ($(window).scrollTop() == 0){
         $('.set-scroll-fixed').removeClass('stickyheader').css({"top":"-100%"});
     }
