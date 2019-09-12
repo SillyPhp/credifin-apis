@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
     <div class="container">
         <div class="row">

@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
-
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
