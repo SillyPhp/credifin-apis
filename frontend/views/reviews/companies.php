@@ -43,36 +43,9 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Review Methodology</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
-                        </div>
-                        <div class="rb-heading">Growth and Development</div>
-                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>,
-                            <span>Skill Development</span></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png') ?>">
-                        </div>
-                        <div class="rb-heading">Human Resources</div>
-                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>,
-                            <span>Work - Life Balance</span></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png') ?>">
-                        </div>
-                        <div class="rb-heading">Financial Sustainability</div>
-                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>,
-                            <span>Job Security</span></div>
+                    <div class="heading-style">Top Rated Organizations</div>
+                    <div id="review_container">
+
                     </div>
                 </div>
             </div>
@@ -113,6 +86,46 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Review Methodology</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
+                        </div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Career Growth</span>,
+                            <span>Skill Development</span></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/human-resource.png') ?>">
+                        </div>
+                        <div class="rb-heading">Human Resources</div>
+                        <div class="rb-text">Reviews on the basis of <span>Company Culture</span>, <span>Work Satisfaction</span>,
+                            <span>Work - Life Balance</span></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/financial.png') ?>">
+                        </div>
+                        <div class="rb-heading">Financial Sustainability</div>
+                        <div class="rb-text">Reviews on the basis of <span>Salary</span>, <span>Employee Benefits</span>,
+                            <span>Job Security</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="ey-helps">
         <div class="container">
             <div class="row">
@@ -150,18 +163,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Rated Organizations</div>
-                    <div id="review_container">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="qr-bg">
         <div class="container">
             <div class="row">

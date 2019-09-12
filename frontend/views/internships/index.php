@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -42,7 +43,7 @@ use yii\helpers\Url;
                 <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                 <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
                 <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
-                <a href="/twitter-jobs" data-hover="Propinquity">Internship Tweets</a>
+                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
             </div>
         </nav>
     </div>
@@ -121,11 +122,26 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h1 class="heading-style">Internship Tweets</h1>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -189,6 +205,8 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
+
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');

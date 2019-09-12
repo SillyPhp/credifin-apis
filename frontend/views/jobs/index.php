@@ -4,6 +4,7 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -43,7 +44,7 @@ use yii\helpers\Url;
                     <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
                     <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
                     <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
-                    <a href="/twitter-jobs" data-hover="Propinquity">Job Tweets</a>
+                    <a href="/tweets/jobs" data-hover="Propinquity">Job Tweets</a>
                 </div>
             </nav>
         </div>
@@ -98,6 +99,20 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                <h1 class="heading-style">Job Tweets</h1>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets,
+        ]);
+        ?>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
@@ -118,6 +133,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -166,6 +182,8 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
+
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -775,6 +793,7 @@ $this->registerCss('
         width:98%;
     }
 }
+
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -807,6 +826,14 @@ loader = false;
 getCategories();
 getCards();
 addToReviewList();
+
+$(window).on('load', function() {
+    var head = $(".posted-tweet iframe").contents().find("head");
+    var css = '<style type="text/css">' +
+              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+              '</style>';
+    jQuery(head).append(css);
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -825,8 +852,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
     function expandFirst(elem) {
         var i = 0;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (k < listElementsLength) {
             if (k < i + 4) {
                 if (document.getElementById(elem)) {
@@ -850,18 +877,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        // var i = 0;
+        // i += 5;
+        // var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if(document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if(f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
     $(document).on('click', '.hideElem', function () {

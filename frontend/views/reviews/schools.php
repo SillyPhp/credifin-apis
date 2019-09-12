@@ -43,6 +43,54 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="heading-style">Top Rated Schools</div>
+                    <div id="uncliamed_top">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="share-box">
+        <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
+        <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Post Genuine Review About Your School</div>
+                    <div class="col-md-4 set style-set">
+                        <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
+                        <div class="text">Share Your Experience</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo2"><img src="<?= Url::to('@eyAssets/images/pages/review/refer-a-frnd.png')?>"></div>
+                        <div class="text">Refer a Friend</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo3"><img src="<?= Url::to('@eyAssets/images/pages/review/be-a-guide.png')?>"></div>
+                        <div class="text">Be a Guide</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Recent Reviews</div>
+                    <div id="uncliamed_recent">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
                     <div class="heading-style">Review Methodology</div>
                 </div>
                 <div class="col-md-4">
@@ -77,29 +125,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section class="share-box">
-        <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
-        <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Post Genuine Review About Your School</div>
-                    <div class="col-md-4 set style-set">
-                        <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
-                        <div class="text">Share Your Experience</div>
-                    </div>
-                    <div class="col-md-4 set">
-                        <div class="logo2"><img src="<?= Url::to('@eyAssets/images/pages/review/refer-a-frnd.png')?>"></div>
-                        <div class="text">Refer a Friend</div>
-                    </div>
-                    <div class="col-md-4 set">
-                        <div class="logo3"><img src="<?= Url::to('@eyAssets/images/pages/review/be-a-guide.png')?>"></div>
-                        <div class="text">Be a Guide</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
     <section class="green-bg">
         <div class="container">
             <div class="pos-abso">
@@ -114,30 +140,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Recent Reviews</div>
-                    <div id="uncliamed_recent">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Rated Schools</div>
-                    <div id="uncliamed_top">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="qr-bg">
         <div class="container">
             <div class="row">
@@ -202,7 +205,7 @@ $this->registerCss('
     margin-top:0px !important;
 }
 .qr-bg{
-    margin-top:20px;
+//    margin-top:20px;
     background:#ecf5fe;
     padding:30px 0;
 }

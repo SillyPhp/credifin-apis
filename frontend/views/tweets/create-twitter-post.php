@@ -26,10 +26,10 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                         <div class='m-actions'>
                             <?php if ($type=="Jobs"): ?>
                             <a href='javascript:;' class='close-m-mo'>Tweet Another Job</a>
-                            <a href='/twitter-jobs/internship'>Tweet Another Internship</a>
+                            <a href='/tweets/internship/create'>Tweet Another Internship</a>
                             <?php else: ?>
-                            <a href='/twitter-jobs/job' class='close-m-mo'>Tweet Another Job</a>
-                            <a href='javascript:;'>Tweet Another Internship</a>
+                            <a href='/tweets/job/create'>Tweet Another Job</a>
+                            <a href='javascript:;' class='close-m-mo'>Tweet Another Internship</a>
                             <?php endif; ?>
                             <?php if (Yii::$app->user->isGuest): ?>
                             <a href='/signup/individual'>Signup or Login</a>

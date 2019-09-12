@@ -45,41 +45,15 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Review Methodology</div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
-                        </div>
-                        <div class="rb-heading">Learning and Teaching</div>
-                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculty & Teaching Quality</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
-                        </div>
-                        <div class="rb-heading">Infrastructure and Environment</div>
-                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accommodation & Food</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="rb-box">
-                        <div class="rb-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
-                        </div>
-                        <div class="rb-heading">Growth and Development</div>
-                        <div class="rb-text">Reviews on the basis of <span>Placements/Internships</span>, <span>Social Life/Extracurriculars</span>,
-                            <span>Culture & Diversity</span></div>
+                    <div class="heading-style">Top Rated Colleges</div>
+                    <div id="uncliamed_top">
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
 <section class="share-box">
     <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
     <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
@@ -119,9 +93,36 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="heading-style">Top Rated Colleges</div>
-                    <div id="uncliamed_top">
-
+                    <div class="heading-style">Review Methodology</div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/learning-teaching.png') ?>">
+                        </div>
+                        <div class="rb-heading">Learning and Teaching</div>
+                        <div class="rb-text">Reviews on the basis of <span>Academics</span>, <span>Faculty & Teaching Quality</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/infra-environ.png') ?>">
+                        </div>
+                        <div class="rb-heading">Infrastructure and Environment</div>
+                        <div class="rb-text">Reviews on the basis of <span>Infrastructure</span>, <span>Accommodation & Food</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="rb-box">
+                        <div class="rb-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/growth-develop.png') ?>">
+                        </div>
+                        <div class="rb-heading">Growth and Development</div>
+                        <div class="rb-text">Reviews on the basis of <span>Placements/Internships</span>, <span>Social Life/Extracurriculars</span>,
+                            <span>Culture & Diversity</span></div>
                     </div>
                 </div>
             </div>
