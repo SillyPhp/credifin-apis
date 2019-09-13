@@ -204,7 +204,7 @@ $this->params['seo_tags'] = [
     <section class="bg-black">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-xs-4">
                     <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
                     <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
                 </div>
@@ -718,6 +718,7 @@ $this->registerCss('
     width:100%;
     height:100%;
     display:none;
+    object-fit:contain;
 }
 .imgmain-div{
     width:60%;
@@ -870,6 +871,7 @@ hr {
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -887,6 +889,7 @@ hr {
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    
 }
 .type-1 div a span {
     position: relative;

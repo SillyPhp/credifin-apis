@@ -183,10 +183,15 @@ $this->registerCss('
     width:100%;
     transform:translate(-50%, -50%);
 }
+
+
 .gb-text{
     color:#fff;
     font-size:22px;
+    padding: 10px;
 }
+
+
 .gb-text span{
     font-weight:bold;
 }
@@ -194,7 +199,7 @@ $this->registerCss('
     width:100%;
     padding:0 0 20px 0;
     font-weight:bold;
-    font-size:30px;
+    font-size:25px;
     color:#fff;
        
 }
