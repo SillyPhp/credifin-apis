@@ -507,6 +507,7 @@ $this->registerCss('
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    margin-bottom:10px;
 }
 .type-1 div a span {
     position: relative;
