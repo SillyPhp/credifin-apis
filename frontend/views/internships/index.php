@@ -118,7 +118,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section>
+<section class="j-tweets">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -217,6 +217,11 @@ use yii\helpers\Url;
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.j-tweets{
+    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
 .tweetLinks{
     text-align: right;
     margin-top:30px;
@@ -234,6 +239,7 @@ $this->registerCss('
     color: #222;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
     margin-left:5px;
+    background:#fff;
 }
 .tweetLinks a:hover{
        background-color: #00a0e3;

@@ -581,15 +581,12 @@ $this->params['header_dark'] = false;
         ?>
     </div>
 </section>
+
 <!--how it works ends-->
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
-<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
-    'feedbackFormModel' => $feedbackFormModel,
-    'partnerWithUsModel' => $partnerWithUsModel,
-]); ?>
-<section>
+<section class="j-tweets">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -618,6 +615,11 @@ $this->params['header_dark'] = false;
         ?>
     </div>
 </section>
+<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
+    'feedbackFormModel' => $feedbackFormModel,
+    'partnerWithUsModel' => $partnerWithUsModel,
+]); ?>
+
 <section class="moble-bg">
     <div class="container">
         <div class="row">
@@ -715,6 +717,11 @@ $this->params['header_dark'] = false;
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.j-tweets{
+    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
 .tweetLinks{
     text-align: right;
     margin-top:30px;
@@ -732,6 +739,7 @@ $this->registerCss('
     color: #222;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
     margin-left:5px;
+     background: #fff;
 }
 .tweetLinks a:hover{
        background-color: #00a0e3;
