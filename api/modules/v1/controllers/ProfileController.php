@@ -76,20 +76,20 @@ class ProfileController extends ApiBaseController
         }
 
         if (!($basicDetails->getCurrentCity() == "")) {
-            $result['current_city'] = $basicDetails->getCurrentCity()["city_name"];
-            $result['current_state'] = $basicDetails->getCurrentCity()["state_name"];
+            $result['current_city'] = $basicDetails->getCurrentCity()["city_name"] .','. $basicDetails->getCurrentCity()['city_enc_id'];
+            $result['current_state'] = $basicDetails->getCurrentCity()["state_name"].','. $basicDetails->getCurrentCity()['state_enc_id'];
         } else {
             $result['current_city'] = NULL;
             $result['current_state'] = NULL;
         }
 
         if (!($basicDetails->getJobFunction() == "")) {
-            $result['profile'] = $basicDetails->getJobFunction()['profile'];
+            $result['profile'] = $basicDetails->getJobFunction()['profile'].','.$basicDetails->getJobFunction()['category_enc_id'];
         } else {
             $result['profile'] = NULL;
         }
 
-        $result['dob'] = $candidate->dob;
+        $result['dob'] = date('d-M-Y', strtotime($candidate->dob));
         $result['description'] = $candidate->description;
 
         $result['facebook'] = $candidate->facebook;
