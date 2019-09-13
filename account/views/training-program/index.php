@@ -8,6 +8,23 @@ use yii\web\JsExpression;
 
 ?>
     <div class="container">
+        <?php
+        if (Yii::$app->session->hasFlash('success')):
+            echo "<div class='m-cover hidden'></div>
+                <div class='m-modal hidden'>
+                    <div class='m-content'>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <p>Your Application has successfully submitted.</p>
+                        <div class='m-actions'>
+                            <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
+                        </div>
+                    </div>
+                </div>";
+        else:
+            Yii::$app->session->hasFlash('error');
+            echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
+        endif;
+        ?>
         <div class="portlet light" id="form_wizard_1">
             <div class="portlet-title">
                 <div class="caption">
@@ -29,10 +46,12 @@ use yii\web\JsExpression;
                         <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Course Profile'])->label(false); ?>
                     </div>
                     <div class="col-md-3">
-                        <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Course Title'])->label(false); ?>
+                        <div class="title_wrapper">
+                            <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Course Title'])->label(false); ?>
+                        </div>
                     </div>
                     <div class="col-md-3">
-                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration'])->label('Training Duration'); ?>
+                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration','maxlength'=>2])->label('Training Duration'); ?>
                     </div>
                     <div class="col-md-3">
                         <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
@@ -50,14 +69,14 @@ use yii\web\JsExpression;
                             <div class="choice_pattern">
                                 <div class="results"></div>
                                 <div class="selection">
-                                    <input type="text" class="city_select" placeholder="Choose city">
-                                    <input type="text" class="fees_select" placeholder="Fees">
-                                    <input type="text" class="total_seat" placeholder="Seats">
-                                    <select>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="Weekly">Weekly</option>
-                                        <option value="Anually">Anually</option>
-                                        <option value="Onetime">One Time</option>
+                                    <input type="text" data-value="" class="city_select" placeholder="Search city">
+                                    <input type="number" class="total_seat" placeholder="Seats">
+                                    <input type="number" class="fees_select" placeholder="Fees">
+                                    <select class="fees_method" name="fees_method">
+                                        <option value="1">Monthly</option>
+                                        <option value="2">Weekly</option>
+                                        <option value="3">Anually</option>
+                                        <option value="4">One Time</option>
                                     </select>
                                     <label for="">From </label>
                                     <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
@@ -71,11 +90,12 @@ use yii\web\JsExpression;
                                 <div class="jours">
                                     <div id="custom-checkboxes"></div>
                                     <div class="check-selection">
-                                        <a href="#" class="btn add">Add Batch</a>
+                                        <a href="#" class="btn add">Add New Batch</a>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <?= $form->field($model, 'batch_details')->hiddenInput(['id' => 'final_result'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -117,9 +137,51 @@ use yii\web\JsExpression;
             </div>
         </div>
     </div>
-
 <?php
 $this->registerCss('
+.m-cover {
+  z-index: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  opacity: .9;
+}
+
+.m-modal {
+  z-index: 2;
+  height: 370px;
+  width: 600px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  border-top: solid 3px #ababab;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.m-modal .m-content p {
+  font-size: 1.2em;
+  color: #444;
+}
+.m-content img{
+    max-width: 310px;
+    display: block;
+    margin: 20px auto;
+}
+@media screen and (max-width: 600px) {
+    .m-content img{max-width: 290px;}
+    .m-modal{
+        height: 430px;
+        width: 300px;
+    }
+}
 @font-face {
   font-family: \'Roboto\';
   font-style: normal;
@@ -176,7 +238,7 @@ $this->registerCss('
 .contenu .choice_pattern .results {
   margin-bottom: 1em;
 }
-.contenu .choice_pattern .results p {
+.contenu .choice_pattern .results .result-item {
   position: relative;
   width: 70%;
   font-size: 14px;
@@ -187,13 +249,13 @@ $this->registerCss('
   height: 32px;
   margin: -1px 0 0 0;
 }
-.contenu .choice_pattern .results p span {
+.contenu .choice_pattern .results .result-item .result-data span {
   font-size: 15px;
 }
-.contenu .choice_pattern .results p strong {
+.contenu .choice_pattern .results .result-item .result-data strong {
   font-weight: 700;
 }
-.contenu .choice_pattern .results p i {
+.contenu .choice_pattern .results .result-item .result-data i {
   position: absolute;
   top: 8px;
   right: 10px;
@@ -202,9 +264,13 @@ $this->registerCss('
 {
 margin-top:12px;
 }
-.contenu .choice_pattern .results p i:hover {
+.contenu .choice_pattern .results .result-item .result-data i:hover {
   color: red;
   cursor: pointer;
+}
+.result-data {
+    display: inline-block;
+    margin: 4px 10px;
 }
 .contenu .choice_pattern .selection > label {
   text-align: left;
@@ -229,7 +295,10 @@ margin-top:12px;
   outline: none;
 }
 .contenu .jours .check-selection {
-  text-align: center;
+    text-align: center;
+    display: inline-block;
+    margin-top: 12px;
+    margin-left: 30px; 
 }
 .contenu .jours .check-selection a.btn {
   display: inline-block;
@@ -262,9 +331,11 @@ margin-top:12px;
   background-color: #005375;
 }
 .contenu .jours #custom-checkboxes {
-  width: 100%;
-  height: 30px;
-  margin: 0 0 1.8em 1em;
+    width: auto;
+    height: 30px;
+    margin: 0 0 1.8em 1em;
+    display: inline-block;
+    float: left;
 }
 .contenu .jours #custom-checkboxes label {
   width: 56px;
@@ -391,6 +462,9 @@ margin-top:12px;
 .skill_wrapper .twitter-typeahead { 
     width: 100% !important;
 }
+.title_wrapper .twitter-typeahead { 
+    width: 100% !important;
+}
 .tt-hint {
   color: #999
 }
@@ -508,18 +582,31 @@ margin-top:12px;
     margin-bottom: 5px;
     font-weight:bold;
 }
+.choice_pattern input{
+    border: 1px solid #ddd;
+    padding: 4px 5px;
+    border-radius: 4px;
+    margin:1px;
+}
+.twitter-typeahead{
+    float: left;
+    margin-top: 1px;
+}
+.title_wrapper div div > .twitter-typeahead{
+    float:none;
+}
 .has-error .form-group .help-block.help-block-error{
     opacity: 1 !important;
     color: #e73d4a !important;
     filter: alpha(opacity=100);
-}
+}  
 ');
 $script = <<< JS
         var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
                 '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+                '<input type="checkbox" data-value="'+(y+1)+'" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
             );
 
         $("input[type='radio']").on("change", function(){
@@ -544,7 +631,7 @@ $(document).on('keyup','#search-skill',function(e)
     if(e.which==13)
         {
           add_tags($(this),'skill_tag_list','skills');  
-        }
+        } 
 });
 function add_tags(thisObj,tag_class,name,duplicates)
 {
@@ -554,11 +641,13 @@ function add_tags(thisObj,tag_class,name,duplicates)
                          duplicates.push($.trim($(this).val()).toUpperCase());
                         });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-                thisObj.val('');
+                thisObj.val('');  
+                $('#search-skill').typeahead('val','');
                     } else {
                      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
                      thisObj.val('');
-                }
+                     $('#search-skill').typeahead('val','');
+                } 
 }
 var locations_val = [];
 var location = new Bloodhound({
@@ -586,8 +675,8 @@ function validation_check() {
    var theIndex = -1;
        for (var i = 0; i < locations_val.length; i++) {
            if (locations_val[i].value == $(this).val()) {
-               theIndex = i;
-               
+               $(this).attr('data-value',locations_val[i].id); 
+               theIndex = i; 
                break;
            }
        }
@@ -638,14 +727,13 @@ let appEditor;
         console.error( error );
     } );
 var prime_id = null;
-var titles_url = '/account/categories-list/load-titles?type=Jobs&id=';
+var titles_url = '/account/categories-list/load-titles?type=Training&id=';
 $('#profile').on('change',function()
     {
       prime_id = $(this).val();
       $('#title').val('');
       $('#title').typeahead('destroy');
       load_job_titles(prime_id);
-      
    });
 function load_job_titles(prime_id)
 {
@@ -682,7 +770,16 @@ $('#title').typeahead(null, {
   limit: 20,
 })
 }
+setTimeout(function() {
+  $('.m-modal, .m-cover').removeClass("hidden");
+  $('.m-modal').addClass("zoom");
+}, 1000);
 
+//hide modal
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/hours-widget.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
