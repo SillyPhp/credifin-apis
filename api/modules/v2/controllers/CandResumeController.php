@@ -3,6 +3,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\Cities;
+use common\models\Skills;
 use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\UserEducation;
@@ -13,7 +14,8 @@ use Yii;
 use common\models\Utilities;
 use yii\filters\auth\HttpBearerAuth;
 
-class CandResumeController extends ApiBaseController{
+class CandResumeController extends ApiBaseController
+{
 
 
     public function behaviors()
@@ -23,16 +25,20 @@ class CandResumeController extends ApiBaseController{
             'except' => [
                 'fetch-details',
                 'save-about',
-                'save-qualification'
+                'save-qualification',
+                'save-experience',
+                'save-skills',
             ],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'fetch-details' => ['POST','OPTIONS'],
-                'save-about' => ['POST','OPTIONS'],
-                'save-qualification' => ['POST','OPTIONS'],
+                'fetch-details' => ['POST', 'OPTIONS'],
+                'save-about' => ['POST', 'OPTIONS'],
+                'save-qualification' => ['POST', 'OPTIONS'],
+                'save-experience' => ['POST', 'OPTIONS'],
+                'save-skills' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -62,10 +68,10 @@ class CandResumeController extends ApiBaseController{
 //
 //    }
 
-    public function actionSaveAbout(){
+    public function actionSaveAbout()
+    {
 
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -83,17 +89,17 @@ class CandResumeController extends ApiBaseController{
             ->one();
 
         $users->description = $about;
-        if($users->update()){
-            return $this->response(200,['status'=>200]);
-        }else{
+        if ($users->update()) {
+            return $this->response(200, ['status' => 200]);
+        } else {
             print_r($users->getErrors());
         }
     }
 
-    public function actionFetchDetails(){
+    public function actionFetchDetails()
+    {
 
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -114,10 +120,10 @@ class CandResumeController extends ApiBaseController{
 
         $experience = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.experience_enc_id id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
-            ->innerJoin(Cities::tableName() . "b", "b.city_enc_id=a.city_enc_id")
-            ->where(['a.created_by'=>$id])
-            ->orderBy(['a.id'=>SORT_DESC])
+            ->select(['a.experience_enc_id id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current'])
+//            ->innerJoin(Cities::tableName() . "b", "b.city_enc_id=a.city_enc_id")
+            ->where(['a.created_by' => $id])
+            ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
 
@@ -131,7 +137,7 @@ class CandResumeController extends ApiBaseController{
             ->alias('a')
             ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted'])
             ->joinWith(['skillEnc c'], false)
-            ->where(['a.created_by'=>$id,'a.is_deleted'=>0])
+            ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
             ->asArray()
             ->all();
 
@@ -144,8 +150,25 @@ class CandResumeController extends ApiBaseController{
         return $this->response(200, $data);
     }
 
-    public function actionSaveExperience($id){
+    public function actionSaveExperience()
+    {
+
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
+
         $req = Yii::$app->request->post();
+
+        $from = Yii::$app->formatter->asDate($req['from'], 'yyyy-MM-dd');
+        $to = Yii::$app->formatter->asDate($req['to'], 'yyyy-MM-dd');
+
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $obj = new UserWorkExperience();
@@ -153,31 +176,30 @@ class CandResumeController extends ApiBaseController{
         $obj->user_enc_id = $id;
         $obj->title = $req['title'];
         $obj->company = $req['company'];
-        $obj->city_enc_id = $req['city'];
-        $obj->from_date = $req['from'];
-        $obj->to_date = $req['to'];
-        $obj->is_current = $req['checkbox'];
+        $obj->from_date = $from;
+        $obj->to_date = $to;
         $obj->created_on = date('Y-m-d H:i:s');
         $obj->created_by = $id;
         $obj->description = $req['description'];
 
-        if(!$obj->save()){
-            return $this->response(200);
-        }else{
+        if ($obj->save()) {
+            $experience = UserWorkExperience::find()
+                ->alias('a')
+                ->select(['a.experience_enc_id id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current'])
+//                ->innerJoin(Cities::tableName() . "b", "b.city_enc_id=a.city_enc_id")
+                ->where(['a.created_by' => $id])
+                ->orderBy(['a.id' => SORT_DESC])
+                ->asArray()
+                ->all();
+            return $this->response(200, ['status' => 200, 'data' => $experience]);
+        } else {
             return $this->response(500);
         }
     }
 
-//    public function actionUpdateExperience(){
-//        $req = Yii::$app->request->post();
-//        $editexp = UserWorkExperience::find()
-//            ->alias('a')
-//            ->selecrt
-//    }
-
-    public function actionSaveQualification(){
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+    public function actionSaveQualification()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -203,14 +225,21 @@ class CandResumeController extends ApiBaseController{
         $user_education_model->created_on = date('Y-m-d H:i:s');
         $utilities->variables['string'] = time() . rand(100, 100000);
         $user_education_model->education_enc_id = $utilities->encrypt();
-        if(!$user_education_model->save()){
+        if (!$user_education_model->save()) {
             print_r($user_education_model->getErrors());
         }
 
-        return $this->response(200,['status'=>200]);
+        $education = UserEducation::find()
+            ->where(['created_by' => $id])
+            ->orderBy(['id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, ['status' => 200, 'data' => $education]);
     }
 
-    public function updateQualification($education_id){
+    public function updateQualification($education_id)
+    {
         $req = Yii::$app->request->post();
         $from = Yii::$app->formatter->asDate($req['qualification_from'], 'yyyy-MM-dd');
         $to = Yii::$app->formatter->asDate($req['qualification_to'], 'yyyy-MM-dd');
@@ -222,27 +251,84 @@ class CandResumeController extends ApiBaseController{
         $data->field = $req['field'];
         $data->from_date = $from;
         $data->to_date = $to;
-        if(!$data->update()){
+        if (!$data->update()) {
             return false;
         }
 
         return true;
     }
 
-    public function actionSkillRemove(){
+    public function actionSkillRemove()
+    {
         $req = Yii::$app->request->post();
 
-        $skill_id= $req['skill_id'];
+        $skill_id = $req['skill_id'];
         $skill_rmv = UserSkills::findOne([
             'user_skill_enc_id' => $skill_id,
             'is_deleted' => 0
         ]);
 
         $skill_rmv->is_deleted = 1;
-        if($skill_rmv->update()){
+        if ($skill_rmv->update()) {
             return $this->response(200);
-        }else{
+        } else {
             return $this->response(500);
         }
+    }
+
+    public function actionSaveSkills()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            header("HTTP/1.1 202 Accepted");
+            exit;
+        }
+
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+
+        $id = $token_holder_id->user_enc_id;
+
+        $user_skill = Yii::$app->request->post('skills');
+
+
+        $s_name = [];
+        foreach ($user_skill as $skill_id) {
+            $skill_name = Skills::find()
+                ->select(['skill'])
+                ->where(['skill' => $skill_id['value']])
+                ->asArray()
+                ->one();
+            array_push($s_name, $skill_name['skill']);
+        }
+
+        $skills = [];
+        foreach ($skills as $s) {
+            array_push($skills, $s['value']);
+        }
+
+        $new_userskill_to_update = $skills;
+
+        $userskill = [];
+        foreach ($user_skill as $skill) {
+            array_push($userskill, $skill['skill_enc_id']);
+        }
+
+        $to_be_added_userskill = array_diff($new_userskill_to_update, $s_name);
+        $to_be_deleted_userskill = array_diff($s_name, $new_userskill_to_update);
+
+        if (count($to_be_deleted_userskill) > 0) {
+            foreach ($to_be_deleted_userskill as $del) {
+                $this->delSkills($del, $user_preference['preference_enc_id']);
+            }
+        }
+
+        if (count($to_be_added_userskill) > 0) {
+            foreach ($to_be_added_userskill as $skill) {
+                $this->setSkills($skill, $user_preference['preference_enc_id'], $user_id);
+            }
+        }
+
+
     }
 }
