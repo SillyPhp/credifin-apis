@@ -9,6 +9,8 @@ use yii\web\HttpException;
 use yii\web\Response;
 use common\models\EmployerApplications;
 use common\models\AssignedCategories;
+use common\models\Industries;
+use common\models\FollowedOrganizations;
 use common\models\Categories;
 use common\models\Organizations;
 use common\models\AppliedApplications;
@@ -31,6 +33,12 @@ class DashboardController extends Controller
                 'class' => 'yii\web\ErrorAction',
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        return parent::beforeAction($action);
     }
 
     private $_condition;
@@ -89,6 +97,17 @@ class DashboardController extends Controller
                 ->asArray()
                 ->all();
 
+            $shortlist_org = FollowedOrganizations::find()
+                ->alias('a')
+                ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+                ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
+                ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
+                ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+                ->orderBy(['a.id' => SORT_DESC])
+                ->limit(8)
+                ->asArray()
+                ->all();
+
             $applications_applied = AppliedApplications::find()
                 ->select(['applied_application_enc_id id', 'current_round'])
                 ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
@@ -122,6 +141,7 @@ class DashboardController extends Controller
             'applied' => $applied_app,
             'services' => $services,
             'model' => $servicesModel,
+            'shortlist_org' => $shortlist_org,
             'applications' => $applications,
             'question_list' => $question,
             'viewed' => $viewed,

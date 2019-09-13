@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 ?>
-<div class="portlet light">
+<div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
