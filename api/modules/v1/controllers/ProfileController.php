@@ -89,7 +89,12 @@ class ProfileController extends ApiBaseController
             $result['profile'] = NULL;
         }
 
-        $result['dob'] = date('d-M-Y', strtotime($candidate->dob));
+        if($candidate->dob){
+            $result['dob'] = date('d-M-Y', strtotime($candidate->dob));
+        }else{
+            $result['dob'] = null;
+        }
+//        $result['dob'] = date('d-M-Y', strtotime($candidate->dob));
         $result['description'] = $candidate->description;
 
         $result['facebook'] = $candidate->facebook;
@@ -99,8 +104,10 @@ class ProfileController extends ApiBaseController
 
         if ($candidate->is_available) {
             $result['availability'] = $candidate->is_available;
+        }else if($candidate->is_available == 0){
+            $result['availability'] = 0;
         } else {
-            $result['availability'] = 5;
+            $result['availability'] = 1;
 
         }
 
