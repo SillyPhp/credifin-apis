@@ -369,12 +369,12 @@ class LearningController extends Controller
             ->select(['a.tag_enc_id', 'a.name', 'a.slug', 'COUNT(c.video_tag_enc_id) cnt'])
             ->joinWith(['learningVideoTags c' => function ($x) {
                 $x->joinWith(['videoEnc d'], false);
-            }], false)
-            ->joinWith(['assignedTags b' => function($b) {
+            }])
+            ->innerJoinWith(['assignedTags b' => function($b) {
                 $b->andOnCondition(['b.assigned_to' => 2]);
                 $b->andOnCondition(['b.status' => 'Approved']);
                 $b->andOnCondition(['b.is_deleted' => 0]);
-            }], false)
+            }])
             ->andWhere(['d.is_deleted' => 0])
             ->andWhere(['d.status' => 1])
             ->orderBy(['COUNT(c.tag_enc_id)' => SORT_DESC])
@@ -445,6 +445,8 @@ class LearningController extends Controller
                     ->alias('a')
                     ->joinWith(['learningVideoTags b'], false)
                     ->where(['in', 'b.tag_enc_id', $tags_id])
+                    ->andWhere(['a.status' => 1])
+                    ->andWhere(['a.is_deleted' => 0])
                     ->andWhere(['!=', 'b.video_enc_id', $current_video_id['video_enc_id']])
                     ->asArray()
                     ->all();
@@ -468,20 +470,23 @@ class LearningController extends Controller
                 ->all();
             $top_category = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name', 'COUNT(a.parent_enc_id) cnt'])
-                ->joinWith(['learningVideos b'])
+                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'COUNT(a.parent_enc_id) cnt'])
+                ->joinWith(['learningVideos b' => function($b){
+                    $b->andOnCondition(['b.status' => 1]);
+                    $b->andOnCondition(['b.is_deleted' => 0]);
+                }], false)
                 ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['parentEnc d'], false)
                 ->where(['a.assigned_to' => 'Videos'])
                 ->andWhere(['a.status' => 'Approved'])
-                ->andWhere(['!=', 'a.parent_enc_id', 'NULL'])
+                ->andWhere([
+                    'or',
+                    ['a.parent_enc_id' => ""],
+                    ['a.parent_enc_id' => NULL]
+                ])
                 ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['b.status' => 1])
-                ->andWhere(['b.is_deleted' => 0])
-                ->groupBy(['b.assigned_category_enc_id'])
-                ->groupBy(['a.parent_enc_id'])
-                ->limit(15)
+                ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
+                ->limit(15)
                 ->all();
             if ($related_videos || $top_videos || $top_category || $interested_videos) {
                 $response = [

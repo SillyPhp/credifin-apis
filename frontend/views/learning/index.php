@@ -163,66 +163,64 @@ use yii\helpers\Url;
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
                             </div>
                             <div class="lc-item-desciption">
-                                <a class="lc-item-user-icon" href="#">
-                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""
-                                         width="40" height="40">
-                                </a>
+                                <!--                                <a class="lc-item-user-icon" href="#">-->
+                                <!--                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""-->
+                                <!--                                         width="40" height="40">-->
+                                <!--                                </a>-->
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
-                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>">
+                                        <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
-                                    <div class="lc-item-user-sub-main">
-                                        <a class="lc-item-user-sub-detail" href="#">
-                                            <span>casper392945</span>
-                                        </a>
-                                    </div>
+                                    <!--                                    <div class="lc-item-user-sub-main">-->
+                                    <!--                                        <a class="lc-item-user-sub-detail" href="#">-->
+                                    <!--                                            <span>casper392945</span>-->
+                                    <!--                                        </a>-->
+                                    <!--                                    </div>-->
                                 </div>
-                                <div class="lc-item-video-actions">
-                                    <button class="lc-item-video-menu" aria-expanded="false">
-                                        <i class="fas fa-ellipsis-v"></i>
-                                    </button>
-                                </div>
+                                <!--                                <div class="lc-item-video-actions">-->
+                                <!--                                    <button class="lc-item-video-menu" aria-expanded="false">-->
+                                <!--                                        <i class="fas fa-ellipsis-v"></i>-->
+                                <!--                                    </button>-->
+                                <!--                                </div>-->
                             </div>
                             <div class="lc-item-video-stats">
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="fas fa-heart"></i> 5
-                            </span>
-                                </a>
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="far fa-comments"></i> 0
-                            </span>
-                                </a>
-                                <a class="lc-item-video-stat" href="#">
-                            <span>
-                                <i class="fas fa-eye"></i> 0
-                            </span>
-                                </a>
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="fas fa-heart"></i> 5-->
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="far fa-comments"></i> 0-->
+<!--                                    </span>-->
+<!--                                </a>-->
+<!--                                <a class="lc-item-video-stat" href="#">-->
+<!--                                    <span>-->
+<!--                                        <i class="fas fa-eye"></i> 0-->
+<!--                                    </span>-->
+<!--                                </a>-->
                                 <span class="lc-item-video-stat marg">
-                        <a href="https://www.facebook.com/" target="blank">
-                            <span>
-                                <img src="facebook.png">
-                            </span>
-                        </a>
-                        <a href="https://twitter.com/EmpowerYouth__" target="blank">
-                            <span>
-                            	<img src="twitter.png">
-                            </span>
-                        </a>
-                        <a href="https://www.instagram.com/empoweryouth.in" target="blank">
-                            <span>
-                            	<img src="instagram.png">
-                            </span>
-                        </a>
-                        <a href="https://www.linkedin.com/company/empoweryouth" target="blank">
-                            <span>
-                            	<img src="linkedin.png">
-                            </span>
-                        </a>
-                        </span>
+                                    <?php
+                                    $link = Url::to('learning/video/' . $p['slug'], 'https');
+                                    ?>
+                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>" target="blank">
+                                            <span>
+                                                <i class="fab fa-facebook-f"></i>
+                                            </span>
+                                        </a>
+                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>" target="blank">
+                                            <span>
+                                                <i class="fab fa-twitter"></i>
+                                            </span>
+                                        </a>
+                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>" target="blank">
+                                            <span>
+                                                <i class="fab fa-linkedin"></i>
+                                            </span>
+                                        </a>
+                                </span>
                             </div>
                         </div>
                     <?php } ?>
@@ -256,22 +254,26 @@ if (!empty($contributors)) {
                                 <ul class="social-icon">
 
                                     <?php if (!empty($contributor['facebook'])) { ?>
-                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>" target="_blank">
+                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-facebook"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['twitter'])) { ?>
-                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>" target="_blank">
+                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-twitter"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['linkedin'])) { ?>
-                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>" target="_blank">
+                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-linkedin"></i></a>
                                         </li>
                                     <?php } ?>
                                     <?php if (!empty($contributor['instagram'])) { ?>
-                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>" target="_blank">
+                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>"
+                                               target="_blank">
                                                 <i class="fab fa-instagram"></i></a>
                                         </li>
                                     <?php } ?>
@@ -569,18 +571,19 @@ $this->registerCss('
 #mixedSlider .MS-content {
     white-space: nowrap;
     overflow: hidden;	
-    margin: 0 5%;
+    margin: 0 45px;
+    margin-left: 35px;
 }
 #mixedSlider .MS-content .item {
-  display: inline-block;
-  width: 33.3333%;
-  position: relative;
-  vertical-align: top;
-  height: 100%;
-  white-space: normal;
-  padding: 5px 10px;
-  margin: 15px 20px;
-  margin-bottom:30px;
+    display: inline-block;
+    width: 31.9%;
+    position: relative;
+    vertical-align: top;
+    height: 100%;
+    white-space: normal;
+    padding: 5px 10px;
+    margin: 15px 8px;
+    margin-bottom: 30px;
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {
@@ -617,12 +620,10 @@ text-align: left;
   padding-top: 0px !important;
 }
 #mixedSlider .MS-content .item a {
-//  margin: 0 0 0 0;
-//  font-size: 16px;
-//  font-style: italic;
-//  color: rgba(173, 0, 0, 0.82);
-//  font-weight: bold;
-//  transition: linear 0.1s;
+  font-size: 16px;
+}
+.marg a {
+    margin: 0px 2px;
 }
 #mixedSlider .MS-content .item a:hover {
 //  text-shadow: 0 0 1px grey;
@@ -800,6 +801,7 @@ text-align: left;
     -ms-flex-pack: center;
     justify-content: center;
     height: 200px;
+    width:calc(100% - 200px);
 }
 .collaborators-main .c-detail .title {
     font-size: 20px;
@@ -1031,9 +1033,6 @@ text-align: left;
     position: relative;
 }
 .lc-item-video-stats {
-    position: absolute;
-    bottom: -35px;
-    left: -7px;
     padding: 0 0 0 7px;
     height: 45px;
     z-index: 1;
@@ -1041,7 +1040,8 @@ text-align: left;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
+    justify-content: flex-end;
+    -webkit-box-align: center;  
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
@@ -1086,7 +1086,7 @@ button.lc-item-video-menu {
     position: absolute;
     content: \'\';
     right: 0px;
-    bottom: 0px;
+    bottom: 35px;
     left: 1rem;
     top: 1rem;
     background: #202229;
@@ -1099,7 +1099,7 @@ button.lc-item-video-menu {
     left: -5px;
     right: -5px;
     top: -5px;
-    bottom: -30px;
+    bottom: 0px;
 }
 .lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat {
     -webkit-transform: translateY(0);

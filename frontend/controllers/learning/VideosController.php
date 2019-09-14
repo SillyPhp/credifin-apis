@@ -26,7 +26,7 @@ class VideosController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                    'only' => ['submit'],
+                'only' => ['submit'],
                 'rules' => [
                     [
                         'actions' => ['submit'],
@@ -62,7 +62,8 @@ class VideosController extends Controller
         ]);
     }
 
-    public function actionSearch($type, $slug){
+    public function actionSearch($type, $slug)
+    {
         if ($type === "category") {
             $parentId = Categories::find()
                 ->alias('a')
@@ -79,14 +80,14 @@ class VideosController extends Controller
             if ($type === "category") {
                 $result = LearningVideos::find()
                     ->alias('a')
-                    ->joinWith(['assignedCategoryEnc b' => function ($x) use($slug) {
+                    ->joinWith(['assignedCategoryEnc b' => function ($x) use ($slug) {
                         $x->andOnCondition(['b.assigned_to' => 'Videos']);
-                        $x->andOnCondition(['b.status' => 'Approved']);
+//                        $x->andOnCondition(['b.status' => 'Approved']);
                         $x->andOnCondition(['b.is_deleted' => 0]);
-                        $x->joinWith(['parentEnc c' => function($y) use($slug){
+                        $x->innerJoinWith(['parentEnc c' => function ($y) use ($slug) {
                             $y->andOnCondition(['c.slug' => $slug]);
-                        }], false);
-                    }], false)
+                        }]);
+                    }])
                     ->andWhere(['a.status' => 1])
                     ->andWhere(['a.is_deleted' => 0])
                     ->asArray()
@@ -95,7 +96,7 @@ class VideosController extends Controller
                 $categories = AssignedCategories::find()
                     ->alias('a')
                     ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'c.icon_png child_icon', 'd.icon_png parent_icon'])
-                    ->joinWith(['learningVideos b' => function($b){
+                    ->joinWith(['learningVideos b' => function ($b) {
                         $b->andOnCondition(['b.status' => 1]);
                         $b->andOnCondition(['b.is_deleted' => 0]);
                     }], false)
@@ -135,7 +136,7 @@ class VideosController extends Controller
             return $response;
 
         }
-        return $this->render('video-gallery',[
+        return $this->render('video-gallery', [
             'parentId' => $parentId,
         ]);
     }
@@ -144,7 +145,6 @@ class VideosController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
             $s = Yii::$app->request->post('keyword');
             $jobs = EmployerApplications::find()
                 ->alias('a')
@@ -152,7 +152,7 @@ class VideosController extends Controller
                     'a.application_enc_id application_id',
                     'a.last_date',
                     'a.type',
-                    'CONCAT("/job/", a.slug, "' . $referral . '") link',
+                    'CONCAT("/job/", a.slug) link',
                     '(CASE
                     WHEN a.experience = "0" THEN "No Experience"
                     WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
@@ -165,7 +165,7 @@ class VideosController extends Controller
                     ELSE "No Experience"
                     END) as experience',
                     'c.initials_color color',
-                    'CONCAT("/", c.slug, "' . $referral . '") organization_link',
+                    'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
                     'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
@@ -281,9 +281,9 @@ class VideosController extends Controller
                     'a.application_enc_id application_id',
                     'a.last_date',
                     'a.type',
-                    'CONCAT("/internship/", a.slug, "' . $referral . '") link',
+                    'CONCAT("/internship/", a.slug) link',
                     'c.initials_color color',
-                    'CONCAT("/", c.slug, "' . $referral . '") organization_link',
+                    'CONCAT("/", c.slug) organization_link',
                     'c.name as organization_name',
                     'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'h.name category',
@@ -398,7 +398,8 @@ class VideosController extends Controller
         }
     }
 
-    public function actionVideos($slug){
+    public function actionVideos($slug)
+    {
         $result = LearningVideos::find()
             ->alias('a')
             ->select(['a.video_enc_id', 'a.title', 'a.cover_image', 'a.slug'])
@@ -409,11 +410,11 @@ class VideosController extends Controller
             ->asArray()
             ->all();
 
-        if($result) {
+        if ($result) {
             return $this->render('tags-gallery', [
                 'result' => $result,
             ]);
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }

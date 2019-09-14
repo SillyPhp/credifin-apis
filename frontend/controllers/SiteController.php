@@ -55,7 +55,7 @@ class SiteController extends Controller
 
     public function beforeAction($action)
     {
-        $route = Yii::$app->requestedRoute;
+        $route = ltrim(Yii::$app->request->url, '/');
         if ($route === "") {
             $route = "/";
         }

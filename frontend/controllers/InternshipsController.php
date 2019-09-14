@@ -48,7 +48,7 @@ class InternshipsController extends Controller
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
-        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
@@ -57,7 +57,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $cards = ApplicationCards::internships($options);
             if ($cards) {
@@ -735,7 +735,7 @@ class InternshipsController extends Controller
             }], false)
             ->where(['a.assigned_to' => ucfirst('Internships')])
             ->orderBy([
-                'total' => SORT_DESC,
+//                'total' => SORT_DESC,
                 'b.name' => SORT_ASC,
             ])
             ->asArray()

@@ -25,6 +25,7 @@ use common\models\Skills;
 use frontend\models\applications\CreateCompany;
 use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
+use account\models\applications\ApplicationForm;
 
 class JobsController extends Controller
 {
@@ -52,7 +53,7 @@ class JobsController extends Controller
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
-        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
@@ -101,7 +102,7 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
@@ -348,7 +349,7 @@ class JobsController extends Controller
         $this->layout = 'main-secondary';
         $model = new QuickJob();
         $typ = 'Jobs';
-        $data = new \account\models\applications\ApplicationForm();
+        $data = new ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
         if ($model->load(Yii::$app->request->post())) {
@@ -360,6 +361,25 @@ class JobsController extends Controller
             return $this->refresh();
         }
         return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+    }
+
+    public function actionTwitterJob()
+    {
+        $this->layout = 'main-secondary';
+        $model = new QuickJob();
+        $typ = 'Jobs';
+        $data = new ApplicationForm();
+        $primary_cat = $data->getPrimaryFields();
+        $job_type = $data->getApplicationTypes();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save($typ)) {
+                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+            } else {
+                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            }
+            return $this->refresh();
+        }
+        return $this->render('twitter-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
     }
 
     public function actionJobPreview($eipdk)
@@ -916,7 +936,7 @@ class JobsController extends Controller
                 }], false)
                 ->where(['a.assigned_to' => ucfirst('Jobs')])
                 ->orderBy([
-                    'total' => SORT_DESC,
+//                    'total' => SORT_DESC,
                     'b.name' => SORT_ASC,
                 ])
                 ->asArray()
