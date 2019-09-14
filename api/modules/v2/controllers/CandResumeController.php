@@ -289,46 +289,89 @@ class CandResumeController extends ApiBaseController
 
         $id = $token_holder_id->user_enc_id;
 
-        $user_skill = Yii::$app->request->post('skills');
+        $skills = Yii::$app->request->post('skills');
 
+        //finding already saved skills
+        $saved_skills = UserSkills::find()
+            ->select(['skill_enc_id'])
+            ->where(['created_by' => $id, 'is_deleted' => 0])
+            ->asArray()
+            ->all();
 
-        $s_name = [];
-        foreach ($user_skill as $skill_id) {
-            $skill_name = Skills::find()
-                ->select(['skill'])
-                ->where(['skill' => $skill_id['value']])
-                ->asArray()
-                ->one();
-            array_push($s_name, $skill_name['skill']);
+        $s_skill = [];
+        foreach ($saved_skills as $s) {
+            array_push($s_skill, $s['skill_enc_id']);
         }
 
-        $skills = [];
+        //get skill_enc_id of new added skills
+        $model = new Skills();
+        $new_skill_keys = [];
         foreach ($skills as $s) {
-            array_push($skills, $s['value']);
-        }
-
-        $new_userskill_to_update = $skills;
-
-        $userskill = [];
-        foreach ($user_skill as $skill) {
-            array_push($userskill, $skill['skill_enc_id']);
-        }
-
-        $to_be_added_userskill = array_diff($new_userskill_to_update, $s_name);
-        $to_be_deleted_userskill = array_diff($s_name, $new_userskill_to_update);
-
-        if (count($to_be_deleted_userskill) > 0) {
-            foreach ($to_be_deleted_userskill as $del) {
-                $this->delSkills($del, $user_preference['preference_enc_id']);
+            if (empty($s['key'])) {
+                $utilities = new Utilities();
+                $utilities->variables['string'] = time() . rand(100, 100000);
+                $model->skill_enc_id = $utilities->encrypt();
+                $model->skill = $s['value'];
+                $model->created_by = $id;
+                $model->created_on = date('Y-m-d H:i:s');
+                if ($model->save()) {
+                    array_push($new_skill_keys, $model->skill_enc_id);
+                }else{
+                    print_r($model->getErrors());
+                }
+            } else {
+                array_push($new_skill_keys, $s['key']);
             }
         }
 
-        if (count($to_be_added_userskill) > 0) {
-            foreach ($to_be_added_userskill as $skill) {
-                $this->setSkills($skill, $user_preference['preference_enc_id'], $user_id);
+        //check difference between skills
+        $to_be_added_skills = array_diff($new_skill_keys, $s_skill);
+        $to_be_deleted_skills = array_diff($s_skill, $new_skill_keys);
+
+        //add skills to user skills table
+        if(!empty($to_be_added_skills)){
+            foreach ($to_be_added_skills as $skill){
+                $model = new UserSkills();
+                $utilities = new Utilities();
+                $utilities->variables['string'] = time() . rand(100, 100000);
+                $model->user_skill_enc_id = $utilities->encrypt();
+                $model->skill_enc_id = $skill;
+                $model->created_on = date('Y-m-d H:i:s');
+                $model->created_by = $id;
+                if(!$model->save()){
+                    print_r($model->getErrors());
+                }
             }
         }
 
+        //remove skills from user skills table
+        if(!empty($to_be_deleted_skills)){
+            foreach ($to_be_deleted_skills as $d){
+                $skill = UserSkills::find()
+                    ->where(['skill_enc_id'=>$d,'created_by'=>$id])
+                    ->one();
+
+                $skill->is_deleted = 1;
+                $skill->last_updated_by = $id;
+                $skill->last_updated_on = date('Y-m-d H:i:s');
+
+                if(!$skill->update()){
+                    print_r($skill->getErrors());
+                }
+
+            }
+        }
+
+        $skills = UserSkills::find()
+            ->alias('a')
+            ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted'])
+            ->joinWith(['skillEnc c'], false)
+            ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
+            ->asArray()
+            ->all();
+
+        return $this->response(200,['status'=>200,'skills'=>$skills]);
 
     }
+
 }
