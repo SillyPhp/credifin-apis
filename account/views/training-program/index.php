@@ -4,292 +4,182 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-$url = \yii\helpers\Url::to(['/cities/career-city-list']);
 ?>
-<script type="text/javascript">
-    $(document).ready(function(){
-    });
-
-    ;(function ( $, window, document, undefined ) {
-
-        "use strict";
-
-        // Create the defaults once
-        var pluginName = "businessHoursWidget",
-            defaults = {
-                container : ".results",
-                addButton: ".btn.add",
-                cancelButton: ".btn.cancel",
-                // The DOM structure must stay the same
-                // span + strong + strong + .cancelCurrent
-                resultTemplate: '<p><span></span> : from <strong></strong> to <strong></strong> <i class="fa fa-times cancelCurrent"></i></p>',
-                timeInputs : ".selection input[type='time']",
-                checkAllDays: '#toallday',
-                debug : true
-            };
-
-        // The actual plugin constructor
-        function Plugin ( elements, options ) {
-            this.inputs = elements;
-
-            this.settings = $.extend( {}, defaults, options );
-            this.log=function(l){if(typeof console != 'undefined' && this.settings.debug){console.log(l);}};
-            this._defaults = defaults;
-            this._name = pluginName;
-
-            this.$resultTemplate = $(this.settings.resultTemplate);
-
-            this.$inputsChecked = null;
-            this.$inputsRange = null;
-
-            this.$results = null;
-
-            this.init();
-        }
-
-        // Avoid Plugin.prototype conflicts
-        $.extend(Plugin.prototype, {
-            init: function () {
-                var plugin = this;
-
-                $(plugin.settings.addButton).on("click", function(){
-                    // Business hours lines init
-                    plugin.$results = [];
-
-                    var errors = plugin.startParsing();
-                    if(errors) {
-                        alert(errors);
-                        return false;
-                    }
-                    plugin.appendResults();
-
-                    for(var k=0;k<plugin.$results.length;k++)
-                        plugin.log(plugin.$results[k].html());
-
-                    $(plugin.inputs).each(function () {
-                        this.checked = false;
-                    });
-                    return false;
-                });
-
-                $(plugin.settings.cancelButton).on("click", function(){
-                    $(plugin.settings.container+" p").remove();
-                    plugin.log('removing all lines');
-                    return false;
-                });
-
-                $(plugin.settings.container+" i").on("click", function(){
-                    $(this).parent().remove();
-                    plugin.log('removing a line');
-                    return false;
-                });
-
-                $(plugin.settings.checkAllDays).on("change", function(){
-                    $(plugin.inputs).each(function () {
-                        this.checked = $(plugin.settings.checkAllDays)[0].checked;
-                    });
-                });
-            },
-            appendResults : function () {
-                for(var i in this.$results) {
-                    this.$results[i].appendTo(this.settings.container);
-                    $('<input type="hidden" name"business_hours[]" value="'+(this.$results[i].text())+'" />').appendTo(this.settings.container);
-                }
-            },
-            removeInputsFromRanges : function ($inputsToRemoveFromRange) {
-                $.each($inputsToRemoveFromRange,function (i,$input) {
-                    $input[0].checked = false;
-                });
-            },
-            startParsing: function () {
-                // This set contains only checked elements
-                this.$inputsChecked = $(this.inputs).filter(':checked');
-
-                // Index of the first checked element in the inputs list
-                var startIndex = $(this.inputs).index(this.$inputsChecked.eq('0'))-1;
-                this.log('start index : '+startIndex);
-
-                // We need a range containing all inputs starting from startIndex so we can compare inputs lists
-                // Filter only if startIndex is not -1 ( otherwise gt() doesn't work)
-                this.$inputsRange = $(this.inputs);
-                if(startIndex != -1)
-                    this.$inputsRange = this.$inputsRange.filter( ':gt('+startIndex+')');
-
-                this.log('Input Range total size : ' + this.$inputsRange.length);
-
-                var last = this.$results.length;
-                // We start from the first checked input. Then we'll look for the nexts
-                var $currentDay = this.$inputsChecked.eq(0);
-                var $inputsToRemoveFromRange = [];
-
-                if($currentDay.length) {
-                    // New Business Hours line initialization
-                    this.$results[last] = this.$resultTemplate.clone();
-
-                    this.log('New line');
-
-                    var from = $currentDay.val();
-                    // We'll need to reduce the input range so we can recursively call the function without index
-                    $inputsToRemoveFromRange.push($currentDay);
-                    this.log('From : '+from);
-
-                    var to = '';
-                    var j = 1;
-                    // Search through all the next checked input and stop at first non-checked input
-                    // If we stop its either a gap between selected days, or there's no more checked inputs
-                    while(this.$inputsRange[j] && this.$inputsRange[j].checked) {
-                        to  = this.$inputsRange.eq(j).val();
-                        $inputsToRemoveFromRange.push(this.$inputsRange.eq(j));
-
-                        this.log('current input index : '+j);
-                        this.log('Next checked input found :'+to);
-                        j++;
-                    }
-
-                    this.log('To : '+to);
-                    if(to)
-                        to = ' - '+to;
-
-                    // Now we can fill the line and insert it in the DOM
-                    this.$results[last].find('span').text(from + to);
-                    for(var i=0;i<2;i++) {
-                        var v = $(this.settings.timeInputs).eq(i).val();
-                        // Returning something is considered error and will be displayed
-                        if(!v)
-                            return 'You must enter a well formatted time';
-                        this.$results[last].find('strong:eq('+i+')').text(v);
-                    }
-
-
-                    // Remove all parsed inputs from range
-                    this.removeInputsFromRanges($inputsToRemoveFromRange);
-                    this.log('Remaining checked inputs to parse : '+this.$inputsChecked.length);
-
-                    // After parsed inputs removal, we start again if there's still checked inputs to parse.
-                    if($(this.inputs).filter(':checked').length)
-                        return this.startParsing();
-
-                    // Empty string returned means no error
-                    return '';
-                }
-                else {
-                    return 'Please select your business hours';
-                }
-            }
-        });
-
-        // A really lightweight plugin wrapper around the constructor,
-        // preventing against multiple instantiations
-        $.fn[ pluginName ] = function ( options ) {
-            if ( !$.data( this, "plugin_" + pluginName ) ) {
-                return $.data( this, "plugin_" + pluginName, new Plugin( this, options ) );
-            }
-            else {
-                return $.data( this, "plugin_" + pluginName);
-            }
-        };
-
-    })( jQuery, window, document );
-</script>
-<div class="container">
-    <div class="portlet light" id="form_wizard_1">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Training Program
-                </span>
-            </div>
-        </div>
-    <div class="portlet-body form">
-        <?php $form = ActiveForm::begin([
-            'id' => 'training_form',
-            'fieldConfig' => [
-                'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
-            ]
-        ]);
-        ?>
-        <div class="row">
-            <div class="col-md-3">
-                <?= $form->field($model,'profile')->dropDownList($primary_cat,['prompt'=>'Course Profile'])->label(false); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'title')->textInput(['id'=>'title'])->label('Course Title'); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees')->textInput(['id'=>'fees'])->label('Fees'); ?>
-            </div>
-            <div class="col-md-3">
-                <?= $form->field($model,'fees_type')->dropDownList([1=>'Monthly',2=>'Weekly',3=>'Annually',4=>'One Time'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                    Course Description
-                </div>
-            </div>
-            <div class="col-md-12">
-                <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="module2-heading">
-                   Skills Required
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="pf-field no-margin">
-                    <ul class="tags_input skill_tag_list">
-                        <li class="tagAdd taglist">
-                            <div class="skill_wrapper">
-                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                <input type="text" id="search-skill" class="skill-input" placeholder="Search For Skill">
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="contenu">
-                <h1>Business Hours Widget</h1>
-                <div id="type_hours">
-                    <i class="fa fa-calendar"></i>
-                </div>
-                <div class="choice_pattern">
-                    <div class="results"></div>
-                    <div class="selection">
-                        <label for="">From </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
-                        <label for="">to </label>
-                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"   />
-
-                        <input id="toallday" type="checkbox" name="toallday" value="toallday" />
-                        <label for="toallday">Apply to all day</label>
+    <div class="container">
+        <?php
+        if (Yii::$app->session->hasFlash('success')):
+            echo "<div class='m-cover hidden'></div>
+                <div class='m-modal hidden'>
+                    <div class='m-content'>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <p>Your Application has successfully submitted.</p>
+                        <div class='m-actions'>
+                            <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
+                        </div>
                     </div>
-                    <div class="jours">
-                        <div id="custom-checkboxes"></div>
-                        <div class="check-selection">
-                            <a href="#" class="btn cancel">Cancel</a>
-                            <a href="#" class="btn add">Add</a>
+                </div>";
+        else:
+            Yii::$app->session->hasFlash('error');
+            echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
+        endif;
+        ?>
+        <div class="portlet light" id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-layers font-red"></i>
+                    <span class="caption-subject font-red bold uppercase">Training Program
+                </span>
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <?php $form = ActiveForm::begin([
+                    'id' => 'training_form',
+                    'fieldConfig' => [
+                        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                    ]
+                ]);
+                ?>
+                <div class="row">
+                    <div class="col-md-3">
+                        <?= $form->field($model, 'profile')->dropDownList($primary_cat, ['prompt' => 'Course Profile'])->label(false); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="title_wrapper">
+                            <?= $form->field($model, 'title')->textInput(['id' => 'title', 'placeholder' => 'Course Title'])->label(false); ?>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration','maxlength'=>2])->label('Training Duration'); ?>
+                    </div>
+                    <div class="col-md-3">
+                        <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Batch and Location Details
+                        </div>
+                    </div>
+                    <br>
+                    <div class="col-md-12">
+                        <div class="contenu">
+                            <div class="choice_pattern">
+                                <div class="results"></div>
+                                <div class="selection">
+                                    <input type="text" data-value="" class="city_select" placeholder="Search city">
+                                    <input type="number" class="total_seat" placeholder="Seats">
+                                    <input type="number" class="fees_select" placeholder="Fees">
+                                    <select class="fees_method" name="fees_method">
+                                        <option value="1">Monthly</option>
+                                        <option value="2">Weekly</option>
+                                        <option value="3">Anually</option>
+                                        <option value="4">One Time</option>
+                                    </select>
+                                    <label for="">From </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="09:00"/>
+                                    <label for="">to </label>
+                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                           value="05:00"/>
+                                    <input id="toallday" type="checkbox" name="toallday" value="toallday"/>
+                                    <label for="toallday">Apply to all day</label>
+                                </div>
+                                <div class="jours">
+                                    <div id="custom-checkboxes"></div>
+                                    <div class="check-selection">
+                                        <a href="#" class="btn add">Add New Batch</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?= $form->field($model, 'batch_details')->hiddenInput(['id' => 'final_result'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Course Description
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Skills Required
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pf-field no-margin">
+                            <ul class="tags_input skill_tag_list">
+                                <li class="tagAdd taglist">
+                                    <div class="skill_wrapper">
+                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                        <input type="text" id="search-skill" class="skill-input"
+                                               placeholder="Search For Skill">
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+                    </div>
+                </div>
+                <?php ActiveForm::end() ?>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <?= Html::submitButton('Submit',['class'=>'btn btn-primary']) ?>
-            </div>
-        </div>
-        <?php ActiveForm::end() ?>
     </div>
-    </div>
-</div>
-
 <?php
 $this->registerCss('
+.m-cover {
+  z-index: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  opacity: .9;
+}
+
+.m-modal {
+  z-index: 2;
+  height: 370px;
+  width: 600px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  border-top: solid 3px #ababab;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.m-modal .m-content p {
+  font-size: 1.2em;
+  color: #444;
+}
+.m-content img{
+    max-width: 310px;
+    display: block;
+    margin: 20px auto;
+}
+@media screen and (max-width: 600px) {
+    .m-content img{max-width: 290px;}
+    .m-modal{
+        height: 430px;
+        width: 300px;
+    }
+}
 @font-face {
   font-family: \'Roboto\';
   font-style: normal;
@@ -335,18 +225,18 @@ $this->registerCss('
   color: #e4e4e3;
 }
 .contenu .choice_pattern {
-  background-color: #eeeeee;
+  background-color: #ffff;
   padding: 1em 2em;
   margin-bottom: 1em;
   border-radius: 0px;
   position: relative;
   top: -0.5em;
-  border: 0.5em solid #e4e4e3;
+  border: 0.5em solid #c1d0de;
 }
 .contenu .choice_pattern .results {
   margin-bottom: 1em;
 }
-.contenu .choice_pattern .results p {
+.contenu .choice_pattern .results .result-item {
   position: relative;
   width: 70%;
   font-size: 14px;
@@ -357,20 +247,28 @@ $this->registerCss('
   height: 32px;
   margin: -1px 0 0 0;
 }
-.contenu .choice_pattern .results p span {
+.contenu .choice_pattern .results .result-item .result-data span {
   font-size: 15px;
 }
-.contenu .choice_pattern .results p strong {
+.contenu .choice_pattern .results .result-item .result-data strong {
   font-weight: 700;
 }
-.contenu .choice_pattern .results p i {
+.contenu .choice_pattern .results .result-item .result-data i {
   position: absolute;
   top: 8px;
   right: 10px;
 }
-.contenu .choice_pattern .results p i:hover {
+.pf-field,.contenu
+{
+margin-top:12px;
+}
+.contenu .choice_pattern .results .result-item .result-data i:hover {
   color: red;
   cursor: pointer;
+}
+.result-data {
+    display: inline-block;
+    margin: 4px 10px;
 }
 .contenu .choice_pattern .selection > label {
   text-align: left;
@@ -380,7 +278,6 @@ $this->registerCss('
   font-size: 14px;
   font-weight: 300;
   color: #7f7f7f;
-  width: 80px;
   height: 30px;
   background-color: transparent;
   border: 2px solid #c6c5c4;
@@ -396,7 +293,10 @@ $this->registerCss('
   outline: none;
 }
 .contenu .jours .check-selection {
-  text-align: center;
+    text-align: center;
+    display: inline-block;
+    margin-top: 12px;
+    margin-left: 30px; 
 }
 .contenu .jours .check-selection a.btn {
   display: inline-block;
@@ -429,13 +329,15 @@ $this->registerCss('
   background-color: #005375;
 }
 .contenu .jours #custom-checkboxes {
-  width: 100%;
-  height: 30px;
-  margin: 0 0 1.8em 1em;
+    width: auto;
+    height: 30px;
+    margin: 0 0 1.8em 1em;
+    display: inline-block;
+    float: left;
 }
 .contenu .jours #custom-checkboxes label {
   width: 56px;
-  margin: 0 30px;
+  margin: 0 3px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked),
 .contenu .jours #custom-checkboxes input[type="checkbox"]:checked {
@@ -555,8 +457,10 @@ $this->registerCss('
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
-.twitter-typeahead {
-    
+.skill_wrapper .twitter-typeahead { 
+    width: 100% !important;
+}
+.title_wrapper .twitter-typeahead { 
     width: 100% !important;
 }
 .tt-hint {
@@ -615,7 +519,7 @@ $this->registerCss('
 {
     float: left;
     width: 100%;
-    border: 2px solid #e8ecec;
+    border: 1px solid #c4c4c4;
     border-radius: 8px;
     padding: 8px;
     list-style: outside none none;
@@ -676,21 +580,31 @@ $this->registerCss('
     margin-bottom: 5px;
     font-weight:bold;
 }
+.choice_pattern input{
+    border: 1px solid #ddd;
+    padding: 4px 5px;
+    border-radius: 4px;
+    margin:1px;
+}
+.twitter-typeahead{
+    float: left;
+    margin-top: 1px;
+}
+.title_wrapper div div > .twitter-typeahead{
+    float:none;
+}
+.has-error .form-group .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+}  
 ');
 $script = <<< JS
-var arrType=new Array("No available time","always open","permanently closed","Open to selected time");
-        for(var x=0; x<arrType.length; x++)
-            $('#type_hours').append(
-                '<label for="' + arrType[x] + '">' +
-                '<input type="radio" '+(x==3?"checked value='show'":"")+' name="choice" id="' + arrType[x] + '"/>' + arrType[x] +
-                '</label>'
-            );
-
         var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
                 '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+                '<input type="checkbox" data-value="'+(y+1)+'" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
             );
 
         $("input[type='radio']").on("change", function(){
@@ -715,7 +629,7 @@ $(document).on('keyup','#search-skill',function(e)
     if(e.which==13)
         {
           add_tags($(this),'skill_tag_list','skills');  
-        }
+        } 
 });
 function add_tags(thisObj,tag_class,name,duplicates)
 {
@@ -725,12 +639,50 @@ function add_tags(thisObj,tag_class,name,duplicates)
                          duplicates.push($.trim($(this).val()).toUpperCase());
                         });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-                thisObj.val('');
+                thisObj.val('');  
+                $('#search-skill').typeahead('val','');
                     } else {
                      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
                      thisObj.val('');
-                }
+                     $('#search-skill').typeahead('val','');
+                } 
 }
+var locations_val = [];
+var location = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   prefetch: 
+  {
+      url:'/account/cities/fetch-all',
+      cache:false,
+      filter:function(res) {
+        locations_val = res;  
+        return res;
+      }
+      }
+});    
+            
+$('.city_select').typeahead(null, {
+  display: 'value',
+  source: location,
+  minLength: 1,
+  limit: 20,
+}).blur(validation_check);
+
+function validation_check() {
+   var theIndex = -1;
+       for (var i = 0; i < locations_val.length; i++) {
+           if (locations_val[i].value == $(this).val()) {
+               $(this).attr('data-value',locations_val[i].id); 
+               theIndex = i; 
+               break;
+           }
+       }
+       if (theIndex == -1) {
+           $(this).val("");
+       }
+}
+
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -772,10 +724,64 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
+var prime_id = null;
+var titles_url = '/account/categories-list/load-titles?type=Training&id=';
+$('#profile').on('change',function()
+    {
+      prime_id = $(this).val();
+      $('#title').val('');
+      $('#title').typeahead('destroy');
+      load_job_titles(prime_id);
+   });
+function load_job_titles(prime_id)
+{
+var categories = new Bloodhound({
+  datumTokenizer: function(d) {
+        var tokens = Bloodhound.tokenizers.whitespace(d.value);
+            $.each(tokens,function(k,v){
+                i = 0;
+                while( (i+1) < v.length ){
+                    tokens.push(v.substr(i,v.length));
+                    i++;
+                }
+            })
+            return tokens;
+        },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  {
+      url:titles_url+prime_id,
+      cache:false,
+      filter:function(res) {
+        job_titles = [];
+        job_titles = res;
+        return res;
+      }
+      }
+  
+});
+
+$('#title').typeahead(null, {
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  limit: 20,
+})
+}
+setTimeout(function() {
+  $('.m-modal, .m-cover').removeClass("hidden");
+  $('.m-modal').addClass("zoom");
+}, 1000);
+
+//hide modal
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+});
 JS;
 $this->registerJs($script);
+$this->registerJsFile('@eyAssets/js/hours-widget.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-
