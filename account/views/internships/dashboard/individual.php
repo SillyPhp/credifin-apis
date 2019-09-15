@@ -115,7 +115,7 @@ use yii\widgets\Pjax;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line text-center">
                 <div class="caption col-lg-11">
                     <ul class="tabs" id="head-tabs">
@@ -441,7 +441,7 @@ use yii\widgets\Pjax;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>

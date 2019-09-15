@@ -92,9 +92,14 @@ $this->registerCss('
     border-bottom: 1px solid #e8e8e8;
 }
 .tweet-org-logo{
-    display:inline-block;
-    max-width:50px;
-    float:left;
+   display: inline-block;
+    height: 50px;
+    width: 50px;
+    float: left;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    overflow: hidden;
 }
 .tweet-org-description{
     display:inline-block;
@@ -102,11 +107,16 @@ $this->registerCss('
     padding-left:10px;
 }
 .tweet-org-logo img, .tweet-org-logo canvas{
-    width:100%;
-    height:100%;
-    border-radius:50%;
-    border:1px solid #ddd;
-    margin-top: 3px;
+    max-width: 40px;
+    max-height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.tweet-org-logo canvas{
+    max-width: 50px !important;
+    max-height: 50px !important;
 }
 .tweet-org-description *{
     text-overflow: ellipsis;

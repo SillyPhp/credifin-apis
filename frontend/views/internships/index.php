@@ -118,11 +118,17 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<section>
+<section class="j-tweets">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h1 class="heading-style">Internship Tweets</h1>
+            </div>
+            <div class="col-md-6">
+                <div class="tweetLinks">
+                    <a href="/tweets/internships" id="tweetAllLink">View All</a>
+                    <a href="/tweets/internship/create" id="tweetPostLink">Post Tweet</a>
+                </div>
             </div>
         </div>
         <?=
@@ -211,6 +217,34 @@ use yii\helpers\Url;
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.j-tweets{
+    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
+.tweetLinks{
+    text-align: right;
+    margin-top:30px;
+}
+.tweetLinks a{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left:5px;
+    background:#fff;
+}
+.tweetLinks a:hover{
+       background-color: #00a0e3;
+    color: #fff;
+}
 .center-text{
     font-family:lora;
     }
@@ -473,6 +507,7 @@ $this->registerCss('
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    margin-bottom:10px;
 }
 .type-1 div a span {
     position: relative;
