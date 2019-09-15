@@ -122,7 +122,7 @@ endif;
                     <div class="col-md-4 col-sm-6">
                         <a href="javascript:;">
                             <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
-                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Jobs'); ?></h4>
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Applications'); ?></h4>
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
                                     <div class="widget-thumb-body">
