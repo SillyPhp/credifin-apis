@@ -205,7 +205,7 @@
                     <?php
                 } else {
                     ?>
-                    <div class="ey-sub-menu">
+                    <div class="ey-sub-menu ey-active-menu">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
