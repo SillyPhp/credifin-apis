@@ -10,7 +10,7 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                     <!--                                    <div class="ey-sub-sec">-->
                                     <!--                                        <ul class="ey-head-sub-menu-items">-->
@@ -25,16 +25,16 @@
                                     <!--                                        </ul>-->
                                     <!--                                    </div>-->
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/jobs/compare">Compare Jobs</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/organizations/explore">Featured Companies</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/tweets/jobs">Job Tweets</a>
                                 </li>
                             </ul>
@@ -54,19 +54,19 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/internships/near-me">Internships Near Me</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/internships/compare">Compare Internships</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/organizations/explore">Featured Companies</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/tweets/internships">Internship Tweets</a>
                                 </li>
                             </ul>
@@ -86,16 +86,16 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/reviews/companies">Companies</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/reviews/colleges">Colleges</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/reviews/schools">Schools</a>
                                 </li>
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
                                     <a href="/reviews/institutes">Educational Institutes</a>
                                 </li>
                             </ul>
@@ -112,12 +112,12 @@
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="/account/dashboard">
                     Dashboard
-                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+<!--                    <i class="fa fa-caret-down" aria-hidden="true"></i>-->
                 </a>
                 <?php
                 if (Yii::$app->user->identity->organization_enc_id) {
                     ?>
-                    <div class="ey-sub-menu">
+                    <div class="ey-sub-menu ey-active-menu">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
@@ -136,7 +136,7 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/">
+                                                        <a href="/jobs/quick-job">
                                                             <div>
                                                                 <span class="ey-services-icons quick"></span>
                                                             </div>
@@ -144,7 +144,7 @@
                                                         </a>
                                                     </li>
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/tweets/jobs/create">
+                                                        <a href="/tweets/job/create">
                                                             <div>
                                                                 <span class="ey-services-icons tweet"></span>
                                                             </div>
@@ -152,7 +152,7 @@
                                                         </a>
                                                     </li>
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/">
+                                                        <a href="/account/jobs/create">
                                                             <div>
                                                                 <span class="ey-services-icons ai"></span>
                                                             </div>
@@ -167,7 +167,7 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/">
+                                                        <a href="/internships/quick-internship">
                                                             <div>
                                                                 <span class="ey-services-icons quick"></span>
                                                             </div>
@@ -175,7 +175,7 @@
                                                         </a>
                                                     </li>
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/tweets/internships/create">
+                                                        <a href="/tweets/internship/create">
                                                             <div>
                                                                 <span class="ey-services-icons tweet"></span>
                                                             </div>
@@ -183,7 +183,7 @@
                                                         </a>
                                                     </li>
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/">
+                                                        <a href="/account/internships/create">
                                                             <div>
                                                                 <span class="ey-services-icons ai"></span>
                                                             </div>
@@ -205,7 +205,7 @@
                     <?php
                 } else {
                     ?>
-                    <div class="ey-sub-menu">
+                    <div class="ey-sub-menu ey-active-menu">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">

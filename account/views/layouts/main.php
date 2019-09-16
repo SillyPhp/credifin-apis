@@ -235,7 +235,7 @@ $this->beginPage();
     <?php
     echo $this->render('/widgets/chat/main');
     $this->registerCss('
-            .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -15px;color: #fff;}
+            .logo_beta{font-size: 11px;position: absolute;bottom: -2px;right: -22px;color: #fff;}
             .page-loading {
                 background-color: #ffffff;
                 content: "";
@@ -434,14 +434,17 @@ $this->beginPage();
             }
         ');
     $script = <<<JS
-        var thispageurl = window.location.pathname;
-        $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
-            var attr = $(this).attr("href");
-              if (attr === thispageurl) {
-                $(this).next(".ey-sub-menu").addClass("ey-active-menu");
-                $(this).children("i").css("display", "none");
-              }
-        });
+        // var thispageurl = window.location.pathname;
+        // $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
+        //     // var attr = $(this).attr("href");
+        //     var action = window.location.pathname;
+        //     var path = action.split("/", 2);
+        //     path = path.toString().replace(/^,|,$/g,'');
+        //       if (path === "account") {
+        //         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
+        //         $(this).children("i").css("display", "none");
+        //       }
+        // });
         
         // jQuery("#menuzord").menuzord({
         //     align: "right",
