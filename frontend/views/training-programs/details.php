@@ -104,54 +104,56 @@ $this->render('/widgets/employer_applications/top-banner', [
                         <div class="job-single-head2">
                             <h4 class="p-location-heading">Navigate to institute Location</h4>
                             <ul class="p-locations">
+                                <?php $j = 0; ?>
+                                <?php $i = 0; ?>
+                                <?php foreach ($grouped_cities as $key => $bt) { ?>
                                 <li>
-                                    <a class="loc" data-key="demo" href="javascript:;">
+                                    <a class="loc" data-key="demo<?=$j?>" href="javascript:;">
                                         <img src="/assets/themes/ey/images/pages/jobs/city-map.png"/>
-                                        <span>Ludhiana</span>
+                                        <span><?= $key ?></span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a class="loc" data-key="demo1" href="javascript:;">
-                                        <img src="/assets/themes/ey/images/pages/jobs/city-map.png"/>
-                                        <span>Jalandhar</span>
-                                    </a>
-                                </li>
+                              <?php $j++; } ?>
                             </ul>
                         </div>
                         <div class="batches-main">
-                            <div class="loc-batches" id="demo">
-                                <h2 class="heading-style">Ludhiana Batches</h2>
-                                <div class="row marg">
+                            <?php foreach ($grouped_cities as $key=>$batch){ ?>
+                            <div class="loc-batches" id="demo<?=$i ?>">
+                                <h2 class="heading-style"><?= $key ?> Batches</h2>
+                                <?php foreach ($batch as $key=>$batches){
+                                    $working_days_data = json_decode($batches['days']);
+                                    ?>
+                                    <div class="row marg">
                                     <div class="col-md-12">
-                                        <div class="batch">Batch 1</div>
+                                        <div class="batch">Batch <?= ($key+1) ?></div>
                                         <div class="row sett">
                                             <div class="week-days">
                                                 <ul>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(1, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Monday</span>
                                                         <h2>M</h2>
                                                     </li>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(2, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Tuesday</span>
                                                         <h2>T</h2>
                                                     </li>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(3, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Wednesday</span>
                                                         <h2>W</h2>
                                                     </li>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(4, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Thursday</span>
                                                         <h2>T</h2>
                                                     </li>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(5, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Friday</span>
                                                         <h2>F</h2>
                                                     </li>
-                                                    <li class="active">
+                                                    <li class="<?= in_array(6, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Saturday</span>
                                                         <h2>S</h2>
                                                     </li>
-                                                    <li class="">
+                                                    <li class="<?= in_array(7, $working_days_data) ? 'active' : '' ?>">
                                                         <span>Sunday</span>
                                                         <h2>S</h2>
                                                     </li>
@@ -160,175 +162,22 @@ $this->render('/widgets/employer_applications/top-banner', [
 <!--                                            <div class="row">-->
                                                 <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
                                                     <div class="working-time-from">
-                                                        09:30am To 11:00am
-                                                    </div>
+                                                        <?= date("H:i", strtotime($batches['start_time'])); ?> To <?= date("H:i", strtotime($batches['end_time'])); ?>
+                                    </div>
                                                 </div>
 <!--                                            </div>-->
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="no-of-seats">Total No. Seats Available - 10</div>
+                                                <div class="no-of-seats">Total No. Seats Available - <?= $batches['seats'] ?></div>
+                                                <div class="no-of-seats">Fees ₹ - <?= $batches['fees'].' '.$batches['fees_method'] ?></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row marg">
-                                    <div class="col-md-12">
-                                        <div class="batch">Batch 2</div>
-                                        <div class="row sett">
-                                            <div class="week-days">
-                                                <ul>
-                                                    <li class="active">
-                                                        <span>Monday</span>
-                                                        <h2>M</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Tuesday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Wednesday</span>
-                                                        <h2>W</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Thursday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Friday</span>
-                                                        <h2>F</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Saturday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                    <li class="">
-                                                        <span>Sunday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                </ul>
-                                            </div>
-<!--                                            <div class="row">-->
-                                                <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="working-time-from">
-                                                        09:30am To 11:00am
-                                                    </div>
-                                                </div>
-<!--                                            </div>-->
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="no-of-seats">Total No. Seats Available - 10</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                              <?php  } ?>
                             </div>
-                            <div class="loc-batches" id="demo1">
-                                <h2 class="heading-style">Jalandhar Batches</h2>
-                                <div class="row marg">
-                                    <div class="col-md-12">
-                                        <div class="batch">Batch 1</div>
-                                        <div class="row sett">
-                                            <div class="week-days">
-                                                <ul>
-                                                    <li class="active">
-                                                        <span>Monday</span>
-                                                        <h2>M</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Tuesday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Wednesday</span>
-                                                        <h2>W</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Thursday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Friday</span>
-                                                        <h2>F</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Saturday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                    <li class="">
-                                                        <span>Sunday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                </ul>
-                                            </div>
-<!--                                            <div class="row">-->
-                                                <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="working-time-from">
-                                                        09:30am To 11:00am
-                                                    </div>
-                                                </div>
-<!--                                            </div>-->
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="no-of-seats">Total No. Seats Available - 10</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row marg">
-                                    <div class="col-md-12">
-                                        <div class="batch">Batch 2</div>
-                                        <div class="row sett">
-                                            <div class="week-days">
-                                                <ul>
-                                                    <li class="active">
-                                                        <span>Monday</span>
-                                                        <h2>M</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Tuesday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Wednesday</span>
-                                                        <h2>W</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Thursday</span>
-                                                        <h2>T</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Friday</span>
-                                                        <h2>F</h2>
-                                                    </li>
-                                                    <li class="active">
-                                                        <span>Saturday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                    <li class="">
-                                                        <span>Sunday</span>
-                                                        <h2>S</h2>
-                                                    </li>
-                                                </ul>
-                                            </div>
-<!--                                            <div class="row">-->
-                                                <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
-                                                    <div class="working-time-from">
-                                                        09:30am To 11:00am
-                                                    </div>
-                                                </div>
-<!--                                            </div>-->
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="no-of-seats">Total No. Seats Available - 10</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <?php $i++; } ?>
                         </div>
                     </div>
                 </div>

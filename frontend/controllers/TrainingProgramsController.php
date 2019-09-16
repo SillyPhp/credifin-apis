@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use common\models\TrainingProgramApplication;
+use common\models\TrainingProgramBatches;
 use Yii;
 use yii\web\Controller;
 
@@ -34,8 +35,9 @@ class TrainingProgramsController extends Controller
                 ->joinWith(['trainingProgramBatches d'=>function($b)
                 {
                     $b->onCondition(['d.is_deleted'=>0]);
-                    $b->select(['d.application_enc_id','i.name','d.fees','d.fees_methods','d.seats','d.days','start_time','d.end_time']);
+                    $b->select(['d.application_enc_id','d.city_enc_id','i.name']);
                     $b->joinWith(['cityEnc i'],false);
+                    $b->distinct('d.city_enc_id');
                 }])
                 ->joinWith(['trainingProgramSkills g' => function ($b) {
                 $b->onCondition(['g.is_deleted' => 0]);
@@ -44,11 +46,30 @@ class TrainingProgramsController extends Controller
                 }])
                 ->asArray()
                 ->one();
+        $batches = TrainingProgramBatches::find()
+            ->alias('d')
+            ->where(['d.application_enc_id'=>$application_details['application_enc_id']])
+            ->joinWith(['cityEnc i'],false)
+            ->select(['d.application_enc_id','d.city_enc_id','i.name','d.fees','(CASE
+                WHEN d.fees_methods = "1" THEN "Monthly"
+                WHEN d.fees_methods = "2" THEN "Weekly"
+                WHEN d.fees_methods = "3" THEN "Anually"
+                WHEN d.fees_methods = "4" THEN "One Time"
+                ELSE "N/A"
+               END) as fees_method','d.seats','d.days','start_time','d.end_time'])
+            ->asArray()
+            ->all();
+        $grouped_cities = [];
+        foreach($batches as $batch){
+            $grouped_cities[$batch['name']][] = $batch;
+        }
 
         return $this->render('details',[
             'org' => $org_details,
             'data' => $data,
             'application_details' => $application_details,
+            'batches' => $batches,
+            'grouped_cities' => $grouped_cities,
         ]);
     }
 
