@@ -58,23 +58,36 @@ use yii\helpers\Html;
     <!-- Modal content -->
     <div class="modal-content">
         <span class="close">&times;</span>
-        <div id="clickedTweet"></div>
+        <div class="row ds-block">
+            <div class="col-md-6 col-sm-6">
+                hello
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div id="clickedTweet"></div>
+            </div>
+        </div>
+
     </div>
+
 
 </div>
 <?php
 
 $script = <<< JS
-$(window).on('load', function() {
-    var head = $(".posted-tweet iframe").contents().find("head");
-    var css = '<style type="text/css">' +
-              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
-              '</style>';
-    jQuery(head).append(css);
+$(document).on('load', function() {
+    $('#clickedTweet .twitter-tweet').attr('style', 'margin-top: 0px !important');
+    // var head = $(".posted-tweet iframe").contents().find("head");
+    // var css = '<style type="text/css">' +
+    //           '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+    //           '</style>';
+    // jQuery(head).append(css);
 });
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.ds-block{
+    display:inline;
+}
 .masonry { 
     -webkit-column-count: 4;
   -moz-column-count:4;
@@ -173,7 +186,7 @@ twitter-widget[style]{
     max-width: 100%;
     width: 100% !important;
     min-width: 220px;
-    margin-top: 69px !important;
+    margin-top: 69px;
     margin-bottom: 10px;
 }
 .EmbeddedTweet{
@@ -200,12 +213,12 @@ twitter-widget[style]{
 
 /* Modal Content/Box */
 .modal-content {
-   background: none;
-  margin: 0 auto; /* 15% from the top and centered */
+   background: #fff;
+  margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: none;
   box-shadow:none;
-  max-width: 40%; /* Could be more or less, depending on screen size */
+  width: 70%; /* Could be more or less, depending on screen size */
   position:absolute;
   top:50%;
   left:50%;
@@ -225,6 +238,14 @@ twitter-widget[style]{
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+.w-50{
+    float:left;
+    width:50%;
+}
+
+@media screen only and (max-width: 768px){
+    
 }
 ');
 ?>
