@@ -21,6 +21,7 @@ use Yii;
  * @property string $created_by By which User Training Program Batch information was added
  * @property string $last_updated_on On which date Training Program Batch information was updated
  * @property string $last_updated_by By which User Training Program information was updated
+ * @property int $is_deleted
  *
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
@@ -43,8 +44,8 @@ class TrainingProgramBatches extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['batch_enc_id', 'application_enc_id', 'city_enc_id', 'fees', 'fees_methods', 'seats', 'days', 'start_time', 'end_time', 'created_on', 'created_by'], 'required'],
-            [['fees_methods'], 'integer'],
+            [['batch_enc_id', 'application_enc_id', 'city_enc_id', 'fees', 'fees_methods', 'seats', 'days', 'start_time', 'end_time', 'created_by'], 'required'],
+            [['fees_methods', 'is_deleted'], 'integer'],
             [['start_time', 'end_time', 'created_on', 'last_updated_on'], 'safe'],
             [['batch_enc_id', 'application_enc_id', 'city_enc_id', 'fees', 'seats', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['days'], 'string', 'max' => 50],

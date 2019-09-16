@@ -116,6 +116,10 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             } else if ($type == 'Job') {
                 $link = Url::to('job/' . $application_slug, 'https');
             }
+            else if ($type=='Training')
+            {
+                $link = Url::to('training/' . $application_slug, 'https');
+            }
             ?>
             <a href="#"
                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
