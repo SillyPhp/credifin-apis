@@ -106,7 +106,29 @@
             </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/blog">Blog</a>
+            <a href="/blog">
+                Blog
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li>
+                                    <a href="/blog/category/articles">Articles</a>
+                                </li>
+                                <li>
+                                    <a href="/blog/category/infographics">Infographics</a>
+                                </li>
+                                <li>
+                                    <a href="/quizzes/all">All Quizzes</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
         </li>
         <?php if (!Yii::$app->user->isGuest) { ?>
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">

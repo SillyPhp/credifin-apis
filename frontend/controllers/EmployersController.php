@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use frontend\models\FeedbackForm;
 use frontend\models\PartnerWithUsForm;
+use frontend\models\accounts\LoginForm;
 
 class EmployersController extends Controller
 {
@@ -21,10 +22,12 @@ class EmployersController extends Controller
     {
         $feedbackFormModel = new FeedbackForm();
         $partnerWithUsModel = new PartnerWithUsForm();
+        $loginFormModel = new LoginForm();
 
         return $this->render('index', [
             'feedbackFormModel' => $feedbackFormModel,
             'partnerWithUsModel' => $partnerWithUsModel,
+            'loginFormModel' => $loginFormModel,
         ]);
     }
 
