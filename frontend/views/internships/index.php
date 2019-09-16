@@ -121,10 +121,10 @@ use yii\helpers\Url;
 <section class="j-tweets">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <h1 class="heading-style">Internship Tweets</h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <div class="tweetLinks">
                     <a href="/tweets/internships" id="tweetAllLink">View All</a>
                     <a href="/tweets/internship/create" id="tweetPostLink">Post Tweet</a>
@@ -704,8 +704,14 @@ $this->registerCss('
     margin: 15px 10px;}
 }
 @media only screen and (max-width: 992px){
-    .nav1 a{font-size: 10px;
-    margin: 15px 10px;}
+    .nav1 a{
+        font-size: 10px;
+        margin: 15px 10px;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
+    }
 }
 @media only screen and (max-width: 768px){
     .nav1 a {
@@ -714,6 +720,10 @@ $this->registerCss('
     .nav1{
         padding:60px 0 0px;
         text-align:center;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
     }
 }
 @media only screen and (max-width: 425px){

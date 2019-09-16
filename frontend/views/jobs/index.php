@@ -98,10 +98,10 @@ use yii\helpers\Url;
 <section class="j-tweets">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <h1 class="heading-style">Job Tweets</h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <div class="tweetLinks">
                     <a href="/tweets/jobs" id="tweetAllLink">View All</a>
                     <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
@@ -826,6 +826,10 @@ $this->registerCss('
 @media only screen and (max-width: 767px) and (min-width: 375px) {
     .form-inline .input-group{
         width:98%;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
     }
 }
 

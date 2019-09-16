@@ -589,10 +589,10 @@ $this->params['header_dark'] = false;
 <section class="j-tweets">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <h1 class="heading-style" id="tweetHeading">Tweets</h1>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-sm-6">
                 <div class="tweetLinks">
                     <a href="/tweets/jobs" id="tweetAllLink">View All</a>
                     <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
@@ -790,9 +790,11 @@ $this->registerCss('
     max-height:300px;
 }
 .moble-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-    background-repeat:no-repeat;
-    background-size:cover;
+background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .'); 
+background-attachment:fixed;
+//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
+//    background-repeat:no-repeat;
+//    background-size:cover;
 }
 .mob-heading{
     font-size:33px;
@@ -1269,6 +1271,10 @@ how-icon{
     }
     .job-search-sec{
         min-width:100%;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
     }
 }
 .job-field select{
