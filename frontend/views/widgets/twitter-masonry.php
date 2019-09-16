@@ -208,22 +208,11 @@ twitter-widget[style]{
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+  background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
 }
 
 /* Modal Content/Box */
-.modal-content {
-   background: #fff;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: none;
-  box-shadow:none;
-  width: 70%; /* Could be more or less, depending on screen size */
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-}
+
 
 /* The Close Button */
 .close {
