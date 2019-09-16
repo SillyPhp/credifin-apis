@@ -136,7 +136,7 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/jobs/quick-job">
+                                                        <a href="/account/jobs/quick-job">
                                                             <div>
                                                                 <span class="ey-services-icons quick"></span>
                                                             </div>
@@ -166,14 +166,6 @@
                                             <a href="javascript:;">Create Internship</a>
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <a href="/internships/quick-internship">
-                                                            <div>
-                                                                <span class="ey-services-icons quick"></span>
-                                                            </div>
-                                                            <span>Create Quick Internship</span>
-                                                        </a>
-                                                    </li>
                                                     <li class="ey-head-sub-menu-icon">
                                                         <a href="/tweets/internship/create">
                                                             <div>
