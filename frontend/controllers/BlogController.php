@@ -142,6 +142,56 @@ class BlogController extends Controller
         return $this->_getPostDetails($slug, 1);
     }
 
+    private function _getPostDetails($slug, $is_crawled = 1)
+    {
+        $postsModel = new Posts();
+        $post = $postsModel->find()->alias('a')
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.image', 'f.image_location', 'f.initials_color'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->select(['b.post_enc_id', 'b.category_enc_id']);
+                $b->joinWith(['categoryEnc c' => function ($y) {
+                    $y->select(['c.category_enc_id', 'c.name', 'c.slug']);
+                }]);
+            }])
+            ->joinWith(['postTags d' => function ($b) {
+                $b->select(['d.post_enc_id', 'd.tag_enc_id']);
+                $b->joinWith(['tagEnc e' => function ($z) {
+                    $z->select(['e.tag_enc_id', 'e.name', 'e.slug']);
+                }]);
+            }])
+            ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
+            ->where([
+                'a.slug' => $slug,
+                'a.status' => 'Active',
+                'is_crawled' => $is_crawled,
+                'a.is_deleted' => 0,
+            ])
+            ->asArray()
+            ->one();
+
+        if ($post) {
+            $similar_posts = $postsModel->find()->alias('a')
+                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+                ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
+                ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
+                ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
+                ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
+                ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id'],
+                    'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->limit(3)
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->asArray()
+                ->all();
+
+            return $this->render('detail', [
+                'post' => $post,
+                'similar_posts' => $similar_posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
     public function actionGetPostsByCategory($slug)
     {
         $postsModel = new Posts();
@@ -156,8 +206,14 @@ class BlogController extends Controller
             ->all();
 
         if ($posts) {
-            return $this->render('posts-by-category', [
+            if ($slug === "articles" || $slug === "infographics") {
+                $page = 'category-landing-page';
+            } else {
+                $page = 'posts-by-category';
+            }
+            return $this->render($page, [
                 'posts' => $posts,
+                'slug' => $slug,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
@@ -242,56 +298,6 @@ class BlogController extends Controller
     public function actionUncralwedPost($slug)
     {
         return $this->_getPostDetails($slug, 0);
-    }
-
-    private function _getPostDetails($slug, $is_crawled = 1)
-    {
-        $postsModel = new Posts();
-        $post = $postsModel->find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.image', 'f.image_location', 'f.initials_color'])
-            ->joinWith(['postCategories b' => function ($b) {
-                $b->select(['b.post_enc_id', 'b.category_enc_id']);
-                $b->joinWith(['categoryEnc c' => function ($y) {
-                    $y->select(['c.category_enc_id', 'c.name', 'c.slug']);
-                }]);
-            }])
-            ->joinWith(['postTags d' => function ($b) {
-                $b->select(['d.post_enc_id', 'd.tag_enc_id']);
-                $b->joinWith(['tagEnc e' => function ($z) {
-                    $z->select(['e.tag_enc_id', 'e.name', 'e.slug']);
-                }]);
-            }])
-            ->leftJoin(Users::tablename() . ' as f', 'f.user_enc_id = a.author_enc_id')
-            ->where([
-                'a.slug' => $slug,
-                'a.status' => 'Active',
-                'is_crawled' => $is_crawled,
-                'a.is_deleted' => 0,
-            ])
-            ->asArray()
-            ->one();
-
-        if ($post) {
-            $similar_posts = $postsModel->find()->alias('a')
-                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
-                ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-                ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
-                ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
-                ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-                ->andWhere(['c.tag_enc_id' => $post['postTags'][0]['tag_enc_id'],
-                    'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->limit(3)
-                ->orderBy(['a.created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-
-            return $this->render('detail', [
-                'post' => $post,
-                'similar_posts' => $similar_posts,
-            ]);
-        } else {
-            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
-        }
     }
 
 }
