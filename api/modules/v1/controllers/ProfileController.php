@@ -84,7 +84,7 @@ class ProfileController extends ApiBaseController
         }
 
         if (!($basicDetails->getJobFunction() == "")) {
-            $result['profile'] = $basicDetails->getJobFunction()['profile'].','.$basicDetails->getJobFunction()['category_enc_id'];
+            $result['profile'] = $basicDetails->getJobFunction()['profile'].','.$basicDetails->getJobFunction()['parent_enc_id'];
         } else {
             $result['profile'] = NULL;
         }
