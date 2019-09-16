@@ -1,32 +1,36 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
-?>
-    <div class="row">
-        <?php
-        if (!empty($tweets)):
-            foreach ($tweets as $tweet) {
-                ?>
-                <div class="col-md-3 col-sm-6 twitter-cards" data-id="<?= $tweet['application_type'] ?>">
-                    <div id="twitter_jobs_cards">
 
-                    </div>
-                    <div class="tweet-main">
+?>
+<div class="row">
+    <?php
+    if (!empty($tweets)):
+        foreach ($tweets as $tweet) {
+            ?>
+            <div class="col-md-3 col-sm-6 twitter-cards" data-id="<?= $tweet['application_type'] ?>">
+                <div id="twitter_jobs_cards">
+
+                </div>
+                <div class="tweet-main">
                     <div class="tweet-inner-main">
                         <div class="tweet-org-deatail">
-                            <div class="tweet-org-logo">
-                                <?php if (!empty($tweet['logo'])): ?>
-                                    <img src="<?= $tweet['logo'] ?>"/>
-                                <?php else: ?>
-                                    <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
-                                            height="150"
-                                            color="<?= $tweet['color'] ?>" font="70px"></canvas>
-                                <?php endif; ?>
-                            </div>
-                            <div class="tweet-org-description">
-                                <h2><?= ucwords($tweet['job_title']) ?></h2>
-                                <h4><?= ucwords($tweet['org_name']) ?></h4>
-                                <p><?= $tweet['job_type'] ?></p>
+                            <div class="myBtn">
+                                <div class="tweet-org-logo">
+                                    <?php if (!empty($tweet['logo'])): ?>
+                                        <img src="<?= $tweet['logo'] ?>"/>
+                                    <?php else: ?>
+                                        <canvas class="user-icon" name="<?= $tweet['org_name'] ?>" width="150"
+                                                height="150"
+                                                color="<?= $tweet['color'] ?>" font="70px"></canvas>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="tweet-org-description">
+                                    <h2><?= ucwords($tweet['job_title']) ?></h2>
+                                    <h4><?= ucwords($tweet['org_name']) ?></h4>
+                                    <p><?= $tweet['job_type'] ?></p>
+                                </div>
                             </div>
                         </div>
                         <div class="posted-tweet">
@@ -34,31 +38,56 @@ use yii\helpers\Html;
                         </div>
                     </div>
                 </div>
-                </div>
-                <?php
-            }
-        else:
-            ?>
-            <div class="no_tweets_found">
-                <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
             </div>
-
-        <?php
-        endif;
+            <?php
+        }
+    else:
         ?>
+        <div class="no_tweets_found">
+            <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
+        </div>
+
+    <?php
+    endif;
+    ?>
+</div>
+
+<div id="testAdi"></div>
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="row ds-block">
+            <div class="col-md-6 col-sm-6">
+                hello
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div id="clickedTweet"></div>
+            </div>
+        </div>
+
     </div>
+
+
+</div>
 <?php
+
 $script = <<< JS
-$(window).on('load', function() {
-    var head = $(".posted-tweet iframe").contents().find("head");
-    var css = '<style type="text/css">' +
-              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
-              '</style>';
-    jQuery(head).append(css);
+$(document).on('load', function() {
+    $('#clickedTweet .twitter-tweet').attr('style', 'margin-top: 0px !important');
+    // var head = $(".posted-tweet iframe").contents().find("head");
+    // var css = '<style type="text/css">' +
+    //           '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+    //           '</style>';
+    // jQuery(head).append(css);
 });
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.ds-block{
+    display:inline;
+}
 .masonry { 
     -webkit-column-count: 4;
   -moz-column-count:4;
@@ -149,6 +178,84 @@ $this->registerCss('
     overflow: hidden;
     box-shadow: 0px 2px 10px 2px #eaeaea;
 }
+twitter-widget[style]{
+    position: static;
+    visibility: visible;
+    display: block;
+    transform: rotate(0deg);
+    max-width: 100%;
+    width: 100% !important;
+    min-width: 220px;
+    margin-top: 69px;
+    margin-bottom: 10px;
+}
+.EmbeddedTweet{
+    max-width:100% !important;
+}
+.EmbeddedTweet-tweetContainer{
+    max-width:100% !important;
+}
+.myBtn{
+    cursor: pointer;
+}
 
+
+/* Modal Content/Box */
+
+
+/* The Close Button */
+.close {
+  color: #FFF;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.w-50{
+    float:left;
+    width:50%;
+}
+
+@media screen only and (max-width: 768px){
+    
+}
 ');
 ?>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script>
+    let modal = document.getElementById("myModal");
+
+
+    let btn = document.querySelectorAll(".myBtn");
+    for (let i = 0; i <= btn.length; i++) {
+        btn[i].addEventListener('click', function (e) {
+            modal.style.display = "block";
+            let target = e.target || e.rootElement;
+            let cl = target.closest('.tweet-org-deatail').nextElementSibling.querySelector('twitter-widget').getAttribute('data-tweet-id');
+            twttr.widgets.createTweet(
+                cl,
+                document.getElementById('clickedTweet'),
+            )
+        });
+        let span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            modal.style.display = "none";
+            document.getElementById('clickedTweet').innerHTML = null
+        };
+
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+                document.getElementById('clickedTweet').innerHTML = null
+
+            }
+        }
+
+    }
+</script>

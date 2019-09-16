@@ -164,7 +164,7 @@
                             <div class="ey-mobile-sub-menu-container">
                                 <div class="ey-mobile-sub-nav-items">
                                     <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                        <a href="/jobs/quick-job">
+                                        <a href="/account/jobs/quick-job">
                                             <div>
                                                 <span class="ey-services-icons quick"></span>
                                             </div>
@@ -199,14 +199,6 @@
                             </div>
                             <div class="ey-mobile-sub-menu-container">
                                 <div class="ey-mobile-sub-nav-items">
-                                    <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                        <a href="/internships/quick-internship">
-                                            <div>
-                                                <span class="ey-services-icons quick"></span>
-                                            </div>
-                                            <span>Create Quick Internship</span>
-                                        </a>
-                                    </div>
                                     <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
                                         <a href="/tweets/internship/create">
                                             <div>
