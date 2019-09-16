@@ -12,6 +12,7 @@ class TrainingProgramController extends Controller
 {
     public function actionCreate()
     {
+        if (Yii::$app->user->identity->organization):
         $model = new TrainingProgram();
         $object = new ApplicationForm();
         $primary_cat = $object->getPrimaryFields();
@@ -24,11 +25,38 @@ class TrainingProgramController extends Controller
             return $this->refresh();
         }
         return $this->render('index',['model'=>$model,'primary_cat'=>$primary_cat]);
+        endif;
     }
 
-    public function actionTest()
+    public function actionDashboard()
     {
-        return Yii::$app->cache->flush();
+        if (Yii::$app->user->identity->organization) {
+            return $this->__organizationDashboard();
+        }
     }
 
+    private function __organizationDashboard()
+    {
+        return $this->render('dashboard/organization', [
+            'applications'=>$this->__trainings(8)
+        ]);
+    }
+
+    private function __trainings($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Trainings',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.is_deleted' => 0,
+            ],
+            'orderBy' => [
+                'a.created_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\TrainingApplications();
+        return $applications->getApplications($options);
+    }
 }
