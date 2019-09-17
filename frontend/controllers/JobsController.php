@@ -57,6 +57,36 @@ class JobsController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionJobsUnclaimApply()
+    {
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $id = Yii::$app->request->post('data');
+                $applied_jobs = AppliedApplications::find()
+                    ->where(['application_enc_id' => $id])
+                    ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if (!$applied_jobs):
+                $model = new \frontend\models\applications\JobApplied();
+                $model->id = $id;
+                $model->resume_list = NULL;
+                $model->status = 'Pending';
+                $res = $model->saveValues();
+                if ($res['status'])
+                {
+                    return $res;
+                }
+                else
+                {
+                    return false;
+                }
+                endif;
+            }
+        }
+    }
+
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();

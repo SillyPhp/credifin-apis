@@ -267,6 +267,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'website'=>$org['website'],
                         'email'=>$org['email'],
                         'job_url'=>$data1['job_url'],
+                        'application_id'=>$data1['application_enc_id'],
                         'type'=>$type,
                         'applied'=>false,
                         'application_slug'=>$application_details["slug"],
