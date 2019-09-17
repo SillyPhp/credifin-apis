@@ -1,4 +1,6 @@
 <?php
+use yii\helpers\Html;
+use yii\helpers\Url;
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Lora&display=swap");
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Quattrocento&display=swap");
@@ -41,7 +43,7 @@ $this->registerCss("
     .logo {
         text-align: left;
         padding: 18px 0 0px 30px;
-        background: url(images/hdrshape.png);
+        background: url(".Url::to('@commonAssets/user_applied/hdsharp.png', 'https').");
         background-size: 300px 100px;
         background-repeat: no-repeat;
         background-position: left;
@@ -81,7 +83,7 @@ $this->registerCss("
     }
 
     .hdr {
-        background-image: url(images/v2.png), url(images/v1.png);
+        background-image: url(".Url::to('@commonAssets/user_applied/v2.png', 'https')."), url(".Url::to('@commonAssets/user_applied/v1.png', 'https').");
         background-position: left bottom, right bottom;
         background-repeat: no-repeat, no-repeat;
         height: 200px;
@@ -150,7 +152,7 @@ $this->registerCss("
     }
 
     .candidate-border {
-        font-weight: bold;
+        font-weight: bold; 
         font-size: 17px;
         font-family: 'Roboto', sans-serif;
         text-transform: capitalize;
@@ -428,7 +430,7 @@ $this->registerCss("
 
     @media (max-width: 450px) {
         .hdr {
-            background-image: url(images/v1.png);
+            background-image: url(".Url::to('@commonAssets/user_applied/v1.png', 'https').");
             background-size: contain;
         }
 
@@ -547,9 +549,9 @@ $this->registerCss("
 ?>
 <div class="border">
     <div class="position-relative">
-        <div class="logo"><a href="#"><img src="images/com.png" class="responsive"></a>
+        <div class="logo"><a href="#"><img src="<?= Url::to('@commonAssets/user_applied/com.png', 'https') ?>" class="responsive"></a>
         </div>
-        <div class="cmp-logo"><img src="images/vsc.png" height="50%"></div>
+        <div class="cmp-logo"><img src="<?= Url::to('@commonAssets/user_applied/vsc.png', 'https') ?>" height="50%"></div>
     </div>
     <div class="border2">
         <div class="hdr">
@@ -557,27 +559,37 @@ $this->registerCss("
         </div>
         <div class="candidate-profile">
             <div class>
-                <div class="newlogo"><img src="images/index.jpg"></div>
+                <div class="newlogo"><img src="<?= Url::to('@commonAssets/user_applied/index.jpg', 'https') ?>"></div>
                 <div class="job-ds"></div>
-                <div class="cand-name"><img src="images/user-15.png" height="16px" width="14px"><span
+                <div class="cand-name"><img src="<?= Url::to('@commonAssets/user_applied/user-15.png', 'https')?>" height="16px" width="14px"><span
                             class="g">Sohal</span></div>
-                <div class="cand-skills"><img src="images/skills.png" height="16px" width="14px"><span class="f">Html, Css, Php, bootstrap</span>
+                <div class="cand-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="16px" width="14px"><span class="f">Html, Css, Php, bootstrap</span>
                 </div>
-                <div class="com-skills"><img src="images/jobexxx.png" height="16px" width="14px"><span
+                <div class="com-skills"><img src="<?= Url::to('@commonAssets/user_applied/jobexxx.png', 'https')?>" height="16px" width="14px"><span
                             class="f">2year</span></div>
             </div>
             <div class="btn1"><a href="#">Download resume</a></div>
             <div class="btn2"><a href="#">View full application</a></div>
         </div>
         <div class="job-info">Job Information</div>
-        <div class="designation">Junior web Developer</div>
-        <div class="job-location"><img src="images/location1.png" height="15px" width="15px">
-            <span class="f">Ludhiana</span></div>
-        <div class="job-skills"><img src="images/skills.png" height="15px" width="15px"><span class="f">Php, Css, Html, Bootstrap.</span>
+        <div class="designation"><?= $data['cat_name'] ?></div>
+        <div class="job-location"><img src="<?= Url::to('@commonAssets/user_applied/location1.png', 'https')?>" height="15px" width="15px">
+            <?php if (!empty($data['applicationPlacementCities'])){ ?>
+            <?php foreach ($data['applicationPlacementCities'] as $d){ ?>
+                <span class="f"><?= $d['name'] ?></span></div>
+           <?php } ?>
+           <?php } ?>
+        <?php if (!empty($data['applicationSkills'])){ ?>
+        <?php foreach ($data['applicationSkills'] as $e){
+              $skils_arr .= $e['skill'].',';
+         } ?>
+        <?php } ?>
+        <div class="job-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="15px" width="15px">
+            <span class="f"><?= rtrim($skils_arr,','); ?></span>
         </div>
-        <div class="job-salary"><img src="images/salary.png" height="16px" width="14px"><span class="f">₹ 96000 - ₹ 120000 p.a.</span>
+        <div class="job-salary"><img src="<?= Url::to('@commonAssets/user_applied/salary.png', 'https') ?>" height="16px" width="14px"><span class="f">₹ 96000 - ₹ 120000 p.a.</span>
         </div>
-        <div class="btn"><a href="#">View Job</a></div>
+        <div class="btn"><a href="<?= Url::to($data['link'], 'https')?>">View Job</a></div>
     </div>
     <div class="main">
         <div class="parent1">
@@ -591,7 +603,7 @@ $this->registerCss("
             <div class="all-features">
                 <div class="first-feature sett">
                     <div class="main-logo">
-                        <div class="logo-set"><img src="images/browser-white.png"></div>
+                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/browser-white.png', 'https') ?>"></div>
                         <div class="main-text">Jobs & Internships</div>
                     </div>
                     <div class="inner-text">Create Jobs or Internship using our AI Powered Tool, Traditional Job Posting
@@ -600,7 +612,7 @@ $this->registerCss("
                 </div>
                 <div class="second-feature sett">
                     <div class="main-logo">
-                        <div class="logo-set"><img src="images/development-white.png"></div>
+                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/development-white.png', 'https') ?>"></div>
                         <div class="main-text">Recruitment HRMS</div>
                     </div>
                     <div class="inner-text">We Have Made Words First Free Applicant Tracking System, Now You Can Know In
@@ -609,7 +621,7 @@ $this->registerCss("
                 </div>
                 <div class="third-feature sett">
                     <div class="main-logo">
-                        <div class="logo-set"><img src="images/test-white.png"></div>
+                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/test-white.png', 'https') ?>"></div>
                         <div class="main-text">Interview Scheduler</div>
                     </div>
                     <div class="inner-text">Schedule Interviews With Candidates and among all your Recruitments Much
@@ -618,7 +630,7 @@ $this->registerCss("
                 </div>
                 <div class="fourth-feature sett">
                     <div class="main-logo">
-                        <div class="logo-set"><img src="images/service-white.png"></div>
+                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/service-white.png', 'https') ?>"></div>
                         <div class="main-text">Campus Placements</div>
                     </div>
                     <div class="inner-text">Recruit Interns or Job Candidates without Any Number Restrictions. Now
@@ -631,15 +643,15 @@ $this->registerCss("
     </div>
     <div class="border4">
         <div class="teaming position-relative">
-            <div class="cmp-logo1"><img src="images/name.png"></div>
+            <div class="cmp-logo1"><img src="<?= Url::to('@commonAssets/user_applied/name.png', 'https') ?>"></div>
             <div class="good">Best Regards,</div>
-            <div class="team">Shyna and EmpowerYouth <span class="team1">Team</span></div>
+            <div class="team">EmpowerYouth <span class="team1">Team</span></div>
             <div class="social-icons">
-                <a href="https://www.facebook.com/empower/" target="blank"><img src="images/fbicon.png"></a>
-                <a href="https://twitter.com/EmpowerYouth__" target="blank"><img src="images/twittericon.png"></a>
-                <a href="https://www.instagram.com/empoweryouth.in" target="blank"><img src="images/instaicon.png"></a>
+                <a href="https://www.facebook.com/empower/" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/fbicon.png', 'https') ?>"></a>
+                <a href="https://twitter.com/EmpowerYouth__" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/twittericon.png', 'https') ?>"></a>
+                <a href="https://www.instagram.com/empoweryouth.in" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/instaicon.png', 'https') ?>"></a>
                 <a href="https://www.linkedin.com/in/empower-youth-11231118a/" target="blank"><img
-                            src="images/linkedin.png"></a>
+                            src="<?= Url::to('@commonAssets/user_applied/linkedin.png', 'https') ?>"></a>
             </div>
         </div>
     </div>

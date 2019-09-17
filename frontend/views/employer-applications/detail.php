@@ -264,6 +264,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'org_name'=>$org['org_name'],
                         'initial_color'=>$org['color'],
                         'slug'=>$org['slug'],
+                        'cid'=>$org['organization_enc_id'],
                         'website'=>$org['website'],
                         'email'=>$org['email'],
                         'job_url'=>$data1['job_url'],

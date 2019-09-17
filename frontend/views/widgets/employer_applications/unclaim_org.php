@@ -59,7 +59,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="<?= $job_url ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                <a href="<?= $job_url ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
                 <div class="sub-actions">
@@ -346,10 +346,11 @@ $script = <<< JS
  $(document).on('click','.apply-job-btn',function(e)
             {
                 var data = $(this).attr('value');
+                var cid = $(this).attr('cid');
                 $.ajax({
                     url:'/jobs/jobs-unclaim-apply',
                     dataType: 'text',                    
-                    data: {data:data},                         
+                    data: {data:data,cid:cid},                         
                     type: 'post',
                     success:function(res)
                     {
