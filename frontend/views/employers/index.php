@@ -10,22 +10,30 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <div class="header-content">
-                        <div class="vertically-center">
-                            <div class="main-tagline">Want to attract top talent ?</div>
-                            <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &
-                                Save Time On Hiring Candidates.
-                            </div>
-                            <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>
-                            <div class="main-bttn">
-                                <a href="/signup/organization" class="button2">Create Account
-                                    <span><i class="fas fa-arrow-right"></i></span> </a>
-                            </div>
-                        </div>
+                        <!--                        <div class="vertically-center">-->
+                        <!--                            <div class="main-tagline">Want to attract top talent ?</div>-->
+                        <!--                            <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &-->
+                        <!--                                Save Time On Hiring Candidates.-->
+                        <!--                            </div>-->
+                        <!--                            <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>-->
+                        <!--                            <div class="main-bttn">-->
+                        <!--                                <a href="/signup/organization" class="button2">Create Account-->
+                        <!--                                    <span><i class="fas fa-arrow-right"></i></span> </a>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <?php
+    if (Yii::$app->user->isGuest) {
+        echo $this->render('/widgets/sign-in-form', [
+            'loginFormModel' => $loginFormModel,
+        ]);
+    } ?>
+
     <!--    <section class="showcase">-->
     <!--        <div class="container">-->
     <!--            <div class="row">-->
@@ -168,7 +176,6 @@ $this->params['header_dark'] = false;
 <?php
 $this->registerCss('
 .hwn{
-   
     text-align:center;
     padding:30px 0 50px;
 }
@@ -251,7 +258,7 @@ $this->registerCss('
     height:50px;
 }    
 .header{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/cover-image.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/index2/cover-img.png') . ');
     background-repeat:no-repeat; 
     background-size:cover;
 }
@@ -400,5 +407,10 @@ $this->registerCss('
   opacity: 1;
   -webkit-transform: translateY(5px);
   transform: translateY(5px);
+}
+@media only screen and (max-width: 450px){
+    .header{
+        background-position:-55px !important;
+    }
 }
 ');
