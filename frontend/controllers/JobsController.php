@@ -57,6 +57,38 @@ class JobsController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionJobsUnclaimApply()
+    {
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $id = Yii::$app->request->post('data');
+                $c_id = Yii::$app->request->post('cid');
+                $applied_jobs = AppliedApplications::find()
+                    ->where(['application_enc_id' => $id])
+                    ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if (!$applied_jobs):
+                $model = new \frontend\models\applications\JobApplied();
+                $model->id = $id;
+                $model->resume_list = NULL;
+                $model->status = 'Pending';
+                $res = $model->saveValues();
+                if ($res['status'])
+                {
+                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$id,$company_id=null,$unclaim_company_id=$c_id,$type="Jobs");
+                    return $res;
+                }
+                else
+                {
+                    return false;
+                }
+                endif;
+            }
+        }
+    }
+
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
@@ -267,10 +299,10 @@ class JobsController extends Controller
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
         }
         if (!Yii::$app->user->isGuest) {
