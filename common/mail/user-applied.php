@@ -1,28 +1,34 @@
 <?php
+
 use yii\helpers\Html;
 use yii\helpers\Url;
+
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Lora&display=swap");
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Quattrocento&display=swap");
 $this->registerCssFile("https://fonts.googleapis.com/css?family=Roboto:300&display=swap");
 
 $this->registerCss("
-    body {
+    .border-main {
         margin: 0;
         padding: 0;
-        background-color: #f8f8f8;
+        width:100%;
+        background-color: #fbfbfb;
         font-family: open sans;
-
     }
 
     .border {
         max-width: 600px;
         margin: 0 auto;
+        background-color: #fff;
     }
 
     .border2 {
         background: white;
         text-align: center;
+    }
+    .border2 *{
+        color:#222;
     }
 
     .border3 {
@@ -43,12 +49,14 @@ $this->registerCss("
     .logo {
         text-align: left;
         padding: 18px 0 0px 30px;
-        background: url(".Url::to('@commonAssets/user_applied/hdsharp.png', 'https').");
+        background: url(" . Url::to('@commonAssets/user_applied/hdrshape.png', 'https') . ");
         background-size: 300px 100px;
         background-repeat: no-repeat;
         background-position: left;
         height: 81px;
         background-color: #fff;
+        display: inline-block;
+        width:65%;
     }
 
     .logo img {
@@ -60,20 +68,16 @@ $this->registerCss("
         height: 60px;
         border-radius: 50%;
         border: 1px solid #eee;
-        position: absolute;
-        top: 10%;
-        right: 5%;
-        padding: 10px 0 0 10px;
+        padding: 10px;
         background-color: white;
+        display: inline-block;
+        float: right;
+        margin-right:10px;
     }
 
     .cmp-logo img {
-        max-width: 80px;
-        max-height: 60px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        max-width: 100%;
+        max-height: 100%;
         height: 70px;
     }
 
@@ -83,7 +87,7 @@ $this->registerCss("
     }
 
     .hdr {
-        background-image: url(".Url::to('@commonAssets/user_applied/v2.png', 'https')."), url(".Url::to('@commonAssets/user_applied/v1.png', 'https').");
+        background-image: url(" . Url::to('@commonAssets/user_applied/v2.png', 'https') . "), url(" . Url::to('@commonAssets/user_applied/v1.png', 'https') . ");
         background-position: left bottom, right bottom;
         background-repeat: no-repeat, no-repeat;
         height: 200px;
@@ -201,19 +205,11 @@ $this->registerCss("
         margin: 5px 0;
     }
 
-    .cand-skills {
+    .cand-skills, .com-skills {
         font-size: 16px;
         font-family: 'Roboto', sans-serif;
         text-transform: capitalize;
         margin: 5px 0;
-    }
-
-    .com-skills {
-        font-size: 16px;
-        font-family: 'Roboto', sans-serif;
-        text-transform: capitalize;
-        margin: 5px 0;
-
     }
 
     .position-relative {
@@ -268,17 +264,19 @@ $this->registerCss("
         width: 70px;
         height: 70px;
         border-radius: 50%;
+        display: inline-block;
+        float: left;
         position: relative;
     }
 
     .cmp-logo1 img {
         width: 70px;
         height: 70px;
-        position: absolute;
-        top: 55%;
-        left: 51%;
-        transform: translate(-50%, -50%);
         border-radius: 50%;
+    }
+    .regards-main{ 
+        display: inline-block;
+        padding: 10px 5px;
     }
 
     .good {
@@ -430,7 +428,7 @@ $this->registerCss("
 
     @media (max-width: 450px) {
         .hdr {
-            background-image: url(".Url::to('@commonAssets/user_applied/v1.png', 'https').");
+            background-image: url(" . Url::to('@commonAssets/user_applied/v1.png', 'https') . ");
             background-size: contain;
         }
 
@@ -547,161 +545,191 @@ $this->registerCss("
     }
 ", ['media' => 'only screen and (max-device-width: 500px), only screen and (max-device-width: 450px), only screen and (max-width: 414px)']);
 ?>
-<div class="border">
-    <div class="position-relative">
-        <div class="logo"><a href="https://www.empoweryouth.com"><img src="<?= Url::to('@commonAssets/user_applied/com.png', 'https') ?>" class="responsive"></a>
-        </div>
-        <div class="cmp-logo">
-            <?php
-            if (!empty($data['org_info']['logo'])) {
-                ?>
-                <img src="<?= Url::to($data['org_info']['logo'], 'https') ?>" height="50%">
+<div class="border-main">
+    <div class="border">
+        <div class="position-relative">
+            <div class="logo"><a href="https://www.empoweryouth.com"><img
+                            src="<?= Url::to('@commonAssets/user_applied/com.png', 'https') ?>" class="responsive"></a>
+            </div>
+            <div class="cmp-logo">
                 <?php
-            } else {
-                ?>
-                <img src="<?= Url::to('@commonAssets/user_applied/bd.png', 'https') ?>" height="50%">
-                <?php
-            }
-            ?>
-        </div>
-    </div>
-    <div class="border2">
-        <div class="hdr">
-            <div class="seeker">Job Seekers Resume</div>
-        </div>
-        <div class="candidate-profile">
-            <div class>
-                <div class="newlogo">
-                    <?php if(!empty($data['user_details']['logo'])): ?>
-                        <img src="<?= Url::to($data['user_details']['logo'], 'https') ?>">
-                  <?php else: ?>
-                        <img src="<?= Url::to('@commonAssets/user_applied/index.jpg', 'https') ?>">
-                   <?php endif; ?>
-                </div>
-                <div class="job-ds"></div>
-                <div class="cand-name"><img src="<?= Url::to('@commonAssets/user_applied/user-15.png', 'https')?>" height="16px" width="14px"><span
-                            class="g"><?= $data['user_details']['full_name'] ?></span></div>
-                <?php if (!empty($data['user_skills'])):
-                    foreach ($data['user_skills'] as $s)
-                    {
-                        $us .= $s['skills'].',';
-                    }
+                if (!empty($data['org_info']['logo'])) {
                     ?>
-                    <div class="cand-skills">
-                        <img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="16px" width="14px">
-                        <span class="f"><?= rtrim($us,','); ?></span>
+                    <img src="<?= Url::to($data['org_info']['logo'], 'https') ?>" height="50%">
+                    <?php
+                } else {
+                    ?>
+                    <img src="<?= Url::to('@commonAssets/user_applied/bd.png', 'https') ?>" height="50%">
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
+        <div class="border2">
+            <div class="hdr">
+                <div class="seeker">Job Seekers Resume</div>
+            </div>
+            <div class="candidate-profile">
+                <div class>
+                    <div class="newlogo">
+                        <?php if (!empty($data['user_details']['logo'])): ?>
+                            <img src="<?= Url::to($data['user_details']['logo'], 'https') ?>">
+                        <?php else: ?>
+                            <img src="<?= Url::to('@commonAssets/user_applied/index.jpg', 'https') ?>">
+                        <?php endif; ?>
                     </div>
-                <?php endif; ?>
-                <div class="com-skills"><img src="<?= Url::to('@commonAssets/user_applied/jobexxx.png', 'https')?>" height="16px" width="14px"><span
-                            class="f"><?php
-                        if ($data['user_details']['experience']) {
-                            $strToArr = explode('"', $data['user_details']['experience']);
-                            if ($strToArr[1] != 0) {
-                                echo $strToArr[1] . ' Year(s) ';
-                            }
-                            if ($strToArr[3] != 0) {
-                                echo $strToArr[3] . ' Month(s)';
-                            }
-                        } else {
-                            echo '--';
+                    <div class="job-ds"></div>
+                    <div class="cand-name"><img src="<?= Url::to('@commonAssets/user_applied/user-15.png', 'https') ?>"
+                                                height="16px" width="14px"><span
+                                class="g"><?= $data['user_details']['full_name'] ?></span></div>
+                    <?php if (!empty($data['user_skills'])):
+                        foreach ($data['user_skills'] as $s) {
+                            $us .= $s['skills'] . ',';
                         }
-                        ?></span></div>
+                        ?>
+                        <div class="cand-skills">
+                            <img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https') ?>" height="16px"
+                                 width="14px">
+                            <span class="f"><?= rtrim($us, ','); ?></span>
+                        </div>
+                    <?php endif; ?>
+                    <div class="com-skills"><img src="<?= Url::to('@commonAssets/user_applied/jobexxx.png', 'https') ?>"
+                                                 height="16px" width="14px"><span
+                                class="f"><?php
+                            if ($data['user_details']['experience']) {
+                                $strToArr = explode('"', $data['user_details']['experience']);
+                                if ($strToArr[1] != 0) {
+                                    echo $strToArr[1] . ' Year(s) ';
+                                }
+                                if ($strToArr[3] != 0) {
+                                    echo $strToArr[3] . ' Month(s)';
+                                }
+                            } else {
+                                echo '--';
+                            }
+                            ?></span></div>
+                </div>
+                <?php if ($data['resume']): ?>
+                    <div class="btn1"><a href="<?= Url::to($data['resume'], 'https') ?>">Download resume</a></div>
+                <?php endif; ?>
+                <div class="btn2"><a href="<?= Url::to('/' . $data['user_details']['username'], 'https') ?>">View Full
+                        Profile</a></div>
+                <?php if ($data['is_claimed']) { ?>
+                    <div class="btn2"><a
+                                href="<?= Url::to('/account/process-applications/' . $data['application_enc_id'], 'https') ?>">View
+                            Full Application</a></div>
+                <?php } ?>
             </div>
-            <?php if ($data['resume']): ?>
-            <div class="btn1"><a href="<?= Url::to($data['resume'], 'https') ?>">Download resume</a></div>
-            <?php endif; ?>
-            <div class="btn2"><a href="<?= Url::to('/'.$data['user_details']['username'], 'https') ?>">View Full Profile</a></div>
-            <?php if ($data['is_claimed']){ ?>
-            <div class="btn2"><a href="<?= Url::to('/account/process-applications/'.$data['application_enc_id'], 'https') ?>">View Full Application</a></div>
-            <?php } ?>
-        </div>
-        <div class="job-info">Job Information</div>
-        <div class="designation"><?= $data['cat_name'] ?></div>
-        <div class="job-location"><img src="<?= Url::to('@commonAssets/user_applied/location1.png', 'https')?>" height="15px" width="15px">
-            <?php if (!empty($data['applicationPlacementCities'])){ ?>
-            <?php foreach ($data['applicationPlacementCities'] as $d){ ?>
+            <div class="job-info">Job Information</div>
+            <div class="designation"><?= $data['cat_name'] ?></div>
+            <div class="job-location"><img src="<?= Url::to('@commonAssets/user_applied/location1.png', 'https') ?>"
+                                           height="15px" width="15px">
+                <?php if (!empty($data['applicationPlacementCities'])){ ?>
+                <?php foreach ($data['applicationPlacementCities'] as $d){ ?>
                 <span class="f"><?= $d['name'] ?></span></div>
-           <?php } ?>
-           <?php } ?>
-        <?php if (!empty($data['applicationSkills'])){ ?>
-        <?php foreach ($data['applicationSkills'] as $e){
-              $skils_arr .= $e['skill'].',';
-         } ?>
-        <?php } ?>
-        <div class="job-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="15px" width="15px">
-            <span class="f"><?= rtrim($skils_arr,','); ?></span>
+            <?php } ?>
+            <?php } ?>
+            <?php if (!empty($data['applicationSkills'])) { ?>
+                <?php foreach ($data['applicationSkills'] as $e) {
+                    $skils_arr .= $e['skill'] . ',';
+                } ?>
+            <?php } ?>
+            <div class="job-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https') ?>"
+                                         height="15px" width="15px">
+                <span class="f"><?= rtrim($skils_arr, ','); ?></span>
+            </div>
+            <div class="job-salary"><img src="<?= Url::to('@commonAssets/user_applied/salary.png', 'https') ?>"
+                                         height="16px" width="14px"><span class="f"><?= $data['amount'] ?></span>
+            </div>
+            <div class="btn"><a href="<?= Url::to($data['link'], 'https') ?>">View Job</a></div>
         </div>
-        <div class="job-salary"><img src="<?= Url::to('@commonAssets/user_applied/salary.png', 'https') ?>" height="16px" width="14px"><span class="f"><?= $data['amount'] ?></span>
-        </div>
-        <div class="btn"><a href="<?= Url::to($data['link'], 'https')?>">View Job</a></div>
-    </div>
-    <div class="main">
-        <div class="parent1">
-            <div class="feature-head">
-                <div class="hed">Features</div>
-                <div class="feature-text"><a href="https://www.empoweryouth.com"><span class="em">Empower</span><span class="yo">Youth.com</span></a> Gives You The
-                    Flexibility To Create Jobs in Many Different Ways Also The Power of AI to Manage Your Candidates
-                    Efficiently Effectively.
+        <div class="main">
+            <div class="parent1">
+                <div class="feature-head">
+                    <div class="hed">Features</div>
+                    <div class="feature-text"><a href="https://www.empoweryouth.com"><span
+                                    class="em">Empower</span><span
+                                    class="yo">Youth.com</span></a> Gives You The
+                        Flexibility To Create Jobs in Many Different Ways Also The Power of AI to Manage Your Candidates
+                        Efficiently Effectively.
+                    </div>
+                </div>
+                <div class="all-features">
+                    <div class="first-feature sett">
+                        <div class="main-logo">
+                            <div class="logo-set"><img
+                                        src="<?= Url::to('@commonAssets/user_applied/browser-white.png', 'https') ?>">
+                            </div>
+                            <div class="main-text">Jobs & Internships</div>
+                        </div>
+                        <div class="inner-text">Create Jobs or Internship using our AI Powered Tool, Traditional Job
+                            Posting
+                            Tool or Directly From Your Twitter Link.
+                        </div>
+                    </div>
+                    <div class="second-feature sett">
+                        <div class="main-logo">
+                            <div class="logo-set"><img
+                                        src="<?= Url::to('@commonAssets/user_applied/development-white.png', 'https') ?>">
+                            </div>
+                            <div class="main-text">Recruitment HRMS</div>
+                        </div>
+                        <div class="inner-text">We Have Made Words First Free Applicant Tracking System, Now You Can
+                            Know In
+                            Depth Knowledge About Your Candidate Before Recruitment.
+                        </div>
+                    </div>
+                    <div class="third-feature sett">
+                        <div class="main-logo">
+                            <div class="logo-set"><img
+                                        src="<?= Url::to('@commonAssets/user_applied/test-white.png', 'https') ?>">
+                            </div>
+                            <div class="main-text">Interview Scheduler</div>
+                        </div>
+                        <div class="inner-text">Schedule Interviews With Candidates and among all your Recruitments Much
+                            More Effectively Cutting Your Valuable Time Loss By 80%.
+                        </div>
+                    </div>
+                    <div class="fourth-feature sett">
+                        <div class="main-logo">
+                            <div class="logo-set"><img
+                                        src="<?= Url::to('@commonAssets/user_applied/service-white.png', 'https') ?>">
+                            </div>
+                            <div class="main-text">Campus Placements</div>
+                        </div>
+                        <div class="inner-text">Recruit Interns or Job Candidates without Any Number Restrictions. Now
+                            Conduct Campus Placements in Any College using our Campus Drive Sitting in The Comfort Of
+                            Your
+                            Office.
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="all-features">
-                <div class="first-feature sett">
-                    <div class="main-logo">
-                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/browser-white.png', 'https') ?>"></div>
-                        <div class="main-text">Jobs & Internships</div>
-                    </div>
-                    <div class="inner-text">Create Jobs or Internship using our AI Powered Tool, Traditional Job Posting
-                        Tool or Directly From Your Twitter Link.
-                    </div>
+        </div>
+        <div class="border4">
+            <div class="teaming position-relative">
+                <div class="cmp-logo1"><a href="https://www.empoweryouth.com"><img
+                                src="<?= Url::to('@commonAssets/user_applied/ey.png', 'https') ?>"></a></div>
+                <div class="regards-main">
+                    <div class="good">Best Regards,</div>
+                    <div class="team">EmpowerYouth <span class="team1">Team</span></div>
                 </div>
-                <div class="second-feature sett">
-                    <div class="main-logo">
-                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/development-white.png', 'https') ?>"></div>
-                        <div class="main-text">Recruitment HRMS</div>
-                    </div>
-                    <div class="inner-text">We Have Made Words First Free Applicant Tracking System, Now You Can Know In
-                        Depth Knowledge About Your Candidate Before Recruitment.
-                    </div>
-                </div>
-                <div class="third-feature sett">
-                    <div class="main-logo">
-                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/test-white.png', 'https') ?>"></div>
-                        <div class="main-text">Interview Scheduler</div>
-                    </div>
-                    <div class="inner-text">Schedule Interviews With Candidates and among all your Recruitments Much
-                        More Effectively Cutting Your Valuable Time Loss By 80%.
-                    </div>
-                </div>
-                <div class="fourth-feature sett">
-                    <div class="main-logo">
-                        <div class="logo-set"><img src="<?= Url::to('@commonAssets/user_applied/service-white.png', 'https') ?>"></div>
-                        <div class="main-text">Campus Placements</div>
-                    </div>
-                    <div class="inner-text">Recruit Interns or Job Candidates without Any Number Restrictions. Now
-                        Conduct Campus Placements in Any College using our Campus Drive Sitting in The Comfort Of Your
-                        Office.
-                    </div>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/empower/" target="blank"><img
+                                src="<?= Url::to('@commonAssets/user_applied/fbicon.png', 'https') ?>"></a>
+                    <a href="https://twitter.com/EmpowerYouth__" target="blank"><img
+                                src="<?= Url::to('@commonAssets/user_applied/twittericon.png', 'https') ?>"></a>
+                    <a href="https://www.instagram.com/empoweryouth.in" target="blank"><img
+                                src="<?= Url::to('@commonAssets/user_applied/instaicon.png', 'https') ?>"></a>
+                    <a href="https://www.linkedin.com/in/empower-youth-11231118a/" target="blank"><img
+                                src="<?= Url::to('@commonAssets/user_applied/linkedin.png', 'https') ?>"></a>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="border4">
-        <div class="teaming position-relative">
-            <div class="cmp-logo1"><a href="https://www.empoweryouth.com"><img src="<?= Url::to('@commonAssets/user_applied/ey.png', 'https') ?>"></a></div>
-            <div class="good">Best Regards,</div>
-            <div class="team">EmpowerYouth <span class="team1">Team</span></div>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/empower/" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/fbicon.png', 'https') ?>"></a>
-                <a href="https://twitter.com/EmpowerYouth__" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/twittericon.png', 'https') ?>"></a>
-                <a href="https://www.instagram.com/empoweryouth.in" target="blank"><img src="<?= Url::to('@commonAssets/user_applied/instaicon.png', 'https') ?>"></a>
-                <a href="https://www.linkedin.com/in/empower-youth-11231118a/" target="blank"><img
-                            src="<?= Url::to('@commonAssets/user_applied/linkedin.png', 'https') ?>"></a>
+        <div class="border3">
+            <div class="copyright">
+                <div class="">Copyright © 2019 Empower Youth</div>
             </div>
-        </div>
-    </div>
-    <div class="border3">
-        <div class="copyright">
-            <div class="">Copyright © 2019 Empower Youth</div>
         </div>
     </div>
 </div>
