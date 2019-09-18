@@ -57,7 +57,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $cards = ApplicationCards::internships($options);
             if ($cards) {
@@ -147,11 +147,13 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
 
+        $tweets = $this->_getTweets($keywords = null, $location = null, $type = "Internships", $limit = 4, $offset = null);
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
+            'tweets' => $tweets
         ]);
     }
 
@@ -741,6 +743,68 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
         return $this->render('internship-profiles', ['profiles' => $activeProfiles]);
+
+    }
+
+    private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
+    {
+        $tweets1 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\UnclaimedOrganizations::tableName() . 'as c', 'c.organization_enc_id = a.unclaim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $tweets2 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\Organizations::tableName() . 'as c', 'c.organization_enc_id = a.claim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $result = (new \yii\db\Query())
+            ->from([
+                $tweets1->union($tweets2),
+            ])
+            ->limit($limit)
+            ->offset($offset)
+            ->groupBy('tweet_enc_id')
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
+
+        return $result;
     }
 
 }

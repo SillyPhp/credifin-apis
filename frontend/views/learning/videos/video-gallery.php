@@ -3,8 +3,6 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-//print_r($parentId);
-//exit();
 ?>
     <section class="background" style="background: url('<?= $parentId['banner']?>');">
         <div class="container">
@@ -524,7 +522,7 @@ $this->registerCss('
     min-height:475px;
     padding-top: 120px;
     padding-left: 50px;
-    background-size: 100% 100% !Important;
+    background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
 }

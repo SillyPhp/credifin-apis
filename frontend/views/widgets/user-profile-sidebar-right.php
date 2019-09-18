@@ -1,7 +1,5 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -46,7 +44,7 @@ use yii\widgets\Pjax;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
 
@@ -69,7 +67,7 @@ use yii\widgets\Pjax;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
                     </li>

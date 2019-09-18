@@ -4,7 +4,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$referral = Yii::$app->referral->getReferralCode();
 ?>
 
     <section class="head-bg">
@@ -50,7 +49,7 @@ $referral = Yii::$app->referral->getReferralCode();
             <div class="row">
                 <div class="tc">
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/companies" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/companies"); ?>">
                             <div class="review-cat-box com-hover">
                                 <div class="rcb-icon" id="company-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
@@ -60,7 +59,7 @@ $referral = Yii::$app->referral->getReferralCode();
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/colleges" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/colleges"); ?>">
                             <div class="review-cat-box college-hover">
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
@@ -70,7 +69,7 @@ $referral = Yii::$app->referral->getReferralCode();
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/schools" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/schools"); ?>">
                             <div class="review-cat-box sch-hover">
                                 <div class="rcb-icon" id="school-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
@@ -80,7 +79,7 @@ $referral = Yii::$app->referral->getReferralCode();
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/institutes" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/institutes"); ?>">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
@@ -969,15 +968,6 @@ float:right;
     text-align:center;
     white-space: nowrap;
     height: 540px;
-}
-.ey-logo{
-    position:absolute;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-}
-.ey-logo img{
-    max-width:200px;
 }
 .log-btn{
     padding:100px

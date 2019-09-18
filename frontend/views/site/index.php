@@ -2,11 +2,9 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
 $this->params['header_dark'] = false;
-
 ?>
-
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
@@ -34,15 +32,21 @@ $this->params['header_dark'] = false;
                                         <div class="row no-gape">
                                             <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
                                                 <div class="job-field">
-                                                    <input id="search-input" type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input id="search-input" type="text" name="keyword"
+                                                           placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit" id="search-submit">Search <i class="fas fa-search"></i></button>
+                                                <button type="submit" id="search-submit">Search <i
+                                                            class="fas fa-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
+                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
+                                    <a href="/internships">Internships</a>, <a href="/reviews">Reviews</a>,
+                                    <a href="">Learning Content</a>, <a href="/blog">Blogs</a>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -576,16 +580,46 @@ $this->params['header_dark'] = false;
         }
         ?>
     </div>
-    </div>
 </section>
+
 <!--how it works ends-->
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
+<section class="j-tweets">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <h1 class="heading-style" id="tweetHeading">Tweets</h1>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="tweetLinks">
+                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>
+                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tweet-btn">
+                    <button type="button" id="jobtweet" onclick="jobTweet()">Jobs</button>
+                    /
+                    <button type="button" id="interntweet" onclick="internTweet()">Internships</button>
+                </div>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
+    </div>
+</section>
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [
     'feedbackFormModel' => $feedbackFormModel,
     'partnerWithUsModel' => $partnerWithUsModel,
 ]); ?>
+
 <section class="moble-bg">
     <div class="container">
         <div class="row">
@@ -626,7 +660,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -640,7 +674,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -667,7 +701,7 @@ $this->params['header_dark'] = false;
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
@@ -683,6 +717,57 @@ $this->params['header_dark'] = false;
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.j-tweets{
+    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
+.tweetLinks{
+    text-align: right;
+    margin-top:30px;
+}
+.tweetLinks a{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left:5px;
+     background: #fff;
+}
+.tweetLinks a:hover{
+       background-color: #00a0e3;
+    color: #fff;
+}
+.tweet-btn{
+    padding-bottom:20px;
+    marginn-top:-10px;
+}
+.tweet-btn button{
+    background:none;
+    border:none;
+    font-size: 18px;
+    font-family: lora;  
+}
+.tweet-btn button:hover{
+    color:#00a0e3;
+}
+.job-search > span{
+    color:#fff !important;
+}
+.feature-links a{
+    color: #d5d8f3;
+    padding-right: 5px;    
+}
+.feature-links a:hover{
+    color:#ff7803;
+}
 .pos-rel{
     position:relative;
     min-height:300px;
@@ -705,9 +790,11 @@ $this->registerCss('
     max-height:300px;
 }
 .moble-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-    background-repeat:no-repeat;
-    background-size:cover;
+background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .'); 
+background-attachment:fixed;
+//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
+//    background-repeat:no-repeat;
+//    background-size:cover;
 }
 .mob-heading{
     font-size:33px;
@@ -1185,6 +1272,10 @@ how-icon{
     .job-search-sec{
         min-width:100%;
     }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
+    }
 }
 .job-field select{
     float: left;
@@ -1640,6 +1731,7 @@ $script = <<< JS
         $("#"+tab_id).addClass('current');
     });
 
+
 window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
@@ -1669,6 +1761,8 @@ $(document).on('click','#search-submit',function() {
    }
 });
 
+
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
@@ -1678,6 +1772,57 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 ?>
 <script>
+    var twitterTweets = document.querySelectorAll('.twitter-cards');
+    const settings = {
+        jobs: {
+            color: "#00a0e3",
+            title: "Job Tweets",
+            viewAllLink: "/tweets/jobs",
+            postLink: "/tweets/job/create"
+        },
+        internships: {
+            color: "#00a0e3",
+            title: "Internship Tweets",
+            viewAllLink: "/tweets/internships",
+            postLink: "/tweets/internship/create"
+        }
+    };
+    window.onload = function () {
+        jobTweet();
+    }
+
+    function jobTweet() {
+        document.getElementById('jobtweet').style.color = "#00a0e3";
+        document.getElementById('interntweet').style.color = "#000";
+        document.getElementById('tweetHeading').innerHTML = "Job Tweets";
+        document.getElementById('tweetAllLink').href = "/tweets/jobs";
+        document.getElementById('tweetPostLink').href = "/tweets/job/create";
+
+        for (var i = 0; i < twitterTweets.length; i++) {
+            if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+                twitterTweets[i].style.display = "none";
+            } else if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+                twitterTweets[i].style.display = "block";
+            }
+        }
+    }
+
+    function internTweet() {
+        document.getElementById('interntweet').style.color = "#00a0e3";
+        document.getElementById('jobtweet').style.color = "#000";
+        document.getElementById('tweetHeading').innerHTML = "Internship Tweets";
+        document.getElementById('tweetAllLink').href = "/tweets/internships";
+        document.getElementById('tweetPostLink').href = "/tweets/internship/create";
+
+        for (var i = 0; i < twitterTweets.length; i++) {
+            if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+                twitterTweets[i].style.display = "none";
+            } else if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+                twitterTweets[i].style.display = "block";
+            }
+        }
+    }
+
     expandFirst('searches');
     expandFirst('cities');
     expandFirst('jobs');
@@ -1711,18 +1856,28 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        // var i = 0;
+        // i += 5;
+        // var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
     $(document).on('click', '.hideElem', function () {

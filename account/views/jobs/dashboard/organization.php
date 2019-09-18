@@ -20,7 +20,7 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
     <div class="row">
         <div class="col-lg-12 col-xs-12 col-sm-12">
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -53,7 +53,7 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
     <div class="row">
         <div class="col-lg-6 col-xs-12 col-sm-12">
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -87,7 +87,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -136,7 +136,7 @@ echo $this->render('/widgets/header/secondary-header', [
             ]); ?>
         </div>
             <div class="col-lg-6 col-xs-12 col-sm-12">
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
