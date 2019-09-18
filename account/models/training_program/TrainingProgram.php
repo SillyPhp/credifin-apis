@@ -76,7 +76,7 @@ class TrainingProgram extends Model
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $trainingProgramApplication, 'Training');
             } else {
-                print_r($categoriesModel->getErrors());
+                return  false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -117,7 +117,7 @@ class TrainingProgram extends Model
                         $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                         $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if (!$applicationSkillsModel->save()) {
-                            print_r($applicationSkillsModel->getErrors);
+                            return false;
                         }
                         $this->assignedSkill($skills_set['skill_enc_id'], $cat_id);
                     } else {
@@ -139,7 +139,7 @@ class TrainingProgram extends Model
                             $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                             $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                             if (!$applicationSkillsModel->save()) {
-                                print_r($applicationSkillsModel->getErrors());
+                                return false;
                             }
                             $this->assignedSkill($skillsModel->skill_enc_id, $cat_id);
                         }
@@ -168,7 +168,7 @@ class TrainingProgram extends Model
                     $trainingProgramBatches->days = json_encode($a['days']);
                     if (!$trainingProgramBatches->save())
                     {
-                       print_r($trainingProgramBatches->getErrors());
+                       return false;
                     }
 
                 }
@@ -177,7 +177,7 @@ class TrainingProgram extends Model
         }
         else
         {
-            print_r($trainingProgramApplication->getErrors());
+            return false;
         }
     }
     private function assignedSkill($s_id, $cat_id)
@@ -191,7 +191,7 @@ class TrainingProgram extends Model
         $asignedSkillModel->created_on = date('Y-m-d H:i:s');
         $asignedSkillModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedSkillModel->save()) {
-            print_r($asignedSkillModel->getErrors());
+            return false;
         }
     }
     private function addNewAssignedCategory($category_id, $trainingProgramApplication, $typ)
@@ -213,7 +213,7 @@ class TrainingProgram extends Model
             $utilitiesModel->variables['field_name'] = 'slug';
             $trainingProgramApplication->slug = $utilitiesModel->create_slug();
         } else {
-            print_r($assignedCategoryModel->getErrors());
+            return false;
         }
     }
 }

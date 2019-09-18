@@ -18,7 +18,6 @@ class TrainingProgramController extends Controller
         $object = new ApplicationForm();
         $primary_cat = $object->getPrimaryFields();
         if ($model->load(Yii::$app->request->post())) {
-            return json_encode($model->save());
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
             } else {
