@@ -109,7 +109,7 @@ use yii\web\JsExpression;
                 <div class="row">
                     <div class="col-md-12">
                         <div class="module2-heading">
-                            Skills Required
+                            Skills To Be Learned
                         </div>
                     </div>
                     <div class="col-md-12">
