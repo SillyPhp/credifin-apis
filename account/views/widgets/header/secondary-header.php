@@ -48,6 +48,12 @@ use yii\helpers\Url;
                         <?= Yii::t('account', 'Create Internship'); ?>
                     </a>
                 </div>
+            <?php elseif ($for == 'Trainings'): ?>
+                <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/training-program/create'); ?>">
+                        <?= Yii::t('account', 'Create Training Program'); ?>
+                    </a>
+                </div>
             <?php elseif ($for == 'Questionnaire'): ?>
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/questionnaire/create'); ?>">

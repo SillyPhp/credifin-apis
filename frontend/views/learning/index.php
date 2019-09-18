@@ -370,7 +370,6 @@ $this->registerCss('
 @media only screen and (max-width:992px) {
   .jumbo-heading{
     font-size: 25px !important; margin-top: -30px !important;}
-    //    .topp-pad{padding-top:40px;}
 }
 @media only screen and (max-width:767px) {
     .topp-pad{text-align:center; margin-top:50px !important;}
@@ -422,7 +421,7 @@ $this->registerCss('
 }
 .popular-cate{
     text-align:center;
-    }
+}
 .newset{
     text-align:center;
     max-width: 160px;
@@ -431,10 +430,10 @@ $this->registerCss('
     position: relative;
     width:100%;
     margin-bottom:20px;
-    }
+}
 .imag{
     text-align: right;
-    }
+}
 .txt{
     position: absolute;
     line-height: 30px;
@@ -444,31 +443,7 @@ $this->registerCss('
     color:#222;
     font-family:roboto;
     text-transform:uppercase;
-     }
-.pc-main:nth-child(1) a .newset {
-  background-color:#ffc0cb36;
-}
-.pc-main:nth-child(2) a .newset {
-  background-color:#4e3cd52b;
-}
-.pc-main:nth-child(3) a .newset {
-  background-color:#3cc2d52b;
-}
-.pc-main:nth-child(4) a .newset {
-  background-color:#13060836;
-}
-.pc-main:nth-child(5) a .newset {
-  background-color:#ff009b2b;
-}
-.pc-main:nth-child(6) a .newset {
-  background-color:#1bc11a2b;
-}
-.pc-main:nth-child(7) a .newset {
-  background-color:#7102022b;
-}
-.pc-main:nth-child(8) a .newset {
-  background-color:#0ccc772b;
-}
+ }
 .b-padding{
     padding-top: 125px;
 }

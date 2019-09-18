@@ -76,7 +76,7 @@ class TrainingProgram extends Model
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $trainingProgramApplication, 'Training');
             } else {
-                return false;
+                return  false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -130,7 +130,7 @@ class TrainingProgram extends Model
                         $skillsModel->created_on = date('Y-m-d H:i:s');
                         $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                         if ($skillsModel->save()) {
-                            $applicationSkillsModel = new ApplicationSkills();
+                            $applicationSkillsModel = new TrainingProgramSkills();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                             $applicationSkillsModel->application_skill_enc_id = $utilitiesModel->encrypt();
@@ -168,7 +168,7 @@ class TrainingProgram extends Model
                     $trainingProgramBatches->days = json_encode($a['days']);
                     if (!$trainingProgramBatches->save())
                     {
-                        return false;
+                       return false;
                     }
 
                 }
@@ -191,7 +191,7 @@ class TrainingProgram extends Model
         $asignedSkillModel->created_on = date('Y-m-d H:i:s');
         $asignedSkillModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedSkillModel->save()) {
-            return 17;
+            return false;
         }
     }
     private function addNewAssignedCategory($category_id, $trainingProgramApplication, $typ)
@@ -213,7 +213,7 @@ class TrainingProgram extends Model
             $utilitiesModel->variables['field_name'] = 'slug';
             $trainingProgramApplication->slug = $utilitiesModel->create_slug();
         } else {
-            return 18;
+            return false;
         }
     }
 }
