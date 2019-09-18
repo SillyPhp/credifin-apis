@@ -549,9 +549,21 @@ $this->registerCss("
 ?>
 <div class="border">
     <div class="position-relative">
-        <div class="logo"><a href="#"><img src="<?= Url::to('@commonAssets/user_applied/com.png', 'https') ?>" class="responsive"></a>
+        <div class="logo"><a href="https://www.empoweryouth.com"><img src="<?= Url::to('@commonAssets/user_applied/com.png', 'https') ?>" class="responsive"></a>
         </div>
-        <div class="cmp-logo"><img src="<?= Url::to('@commonAssets/user_applied/vsc.png', 'https') ?>" height="50%"></div>
+        <div class="cmp-logo">
+            <?php
+            if (!empty($data['org_info']['logo'])) {
+                ?>
+                <img src="<?= Url::to($data['org_info']['logo'], 'https') ?>" height="50%">
+                <?php
+            } else {
+                ?>
+                <img src="<?= Url::to('@commonAssets/user_applied/bd.png', 'https') ?>" height="50%">
+                <?php
+            }
+            ?> 
+        </div>
     </div>
     <div class="border2">
         <div class="hdr">
@@ -559,17 +571,49 @@ $this->registerCss("
         </div>
         <div class="candidate-profile">
             <div class>
-                <div class="newlogo"><img src="<?= Url::to('@commonAssets/user_applied/index.jpg', 'https') ?>"></div>
+                <div class="newlogo">
+                    <?php if(!empty($data['user_details']['logo'])): ?>
+                        <img src="<?= Url::to($data['user_details']['logo'], 'https') ?>">
+                  <?php else: ?>
+                        <img src="<?= Url::to('@commonAssets/user_applied/index.jpg', 'https') ?>">
+                   <?php endif; ?>
+                </div>
                 <div class="job-ds"></div>
                 <div class="cand-name"><img src="<?= Url::to('@commonAssets/user_applied/user-15.png', 'https')?>" height="16px" width="14px"><span
-                            class="g">Sohal</span></div>
-                <div class="cand-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="16px" width="14px"><span class="f">Html, Css, Php, bootstrap</span>
-                </div>
+                            class="g"><?= $data['user_details']['full_name'] ?></span></div>
+                <?php if (!empty($data['user_skills'])):
+                    foreach ($data['user_skills'] as $s)
+                    {
+                        $us .= $s['skills'].',';
+                    }
+                    ?>
+                    <div class="cand-skills">
+                        <img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="16px" width="14px">
+                        <span class="f"><?= rtrim($us,','); ?></span>
+                    </div>
+                <?php endif; ?>
                 <div class="com-skills"><img src="<?= Url::to('@commonAssets/user_applied/jobexxx.png', 'https')?>" height="16px" width="14px"><span
-                            class="f">2year</span></div>
+                            class="f"><?php
+                        if ($data['user_details']['experience']) {
+                            $strToArr = explode('"', $data['user_details']['experience']);
+                            if ($strToArr[1] != 0) {
+                                echo $strToArr[1] . ' Year(s) ';
+                            }
+                            if ($strToArr[3] != 0) {
+                                echo $strToArr[3] . ' Month(s)';
+                            }
+                        } else {
+                            echo '--';
+                        }
+                        ?></span></div>
             </div>
-            <div class="btn1"><a href="#">Download resume</a></div>
-            <div class="btn2"><a href="#">View full application</a></div>
+            <?php if ($data['resume']): ?>
+            <div class="btn1"><a href="<?= Url::to($data['resume'], 'https') ?>">Download resume</a></div>
+            <?php endif; ?>
+            <div class="btn2"><a href="<?= Url::to('/'.$data['user_details']['username'], 'https') ?>">View Full Profile</a></div>
+            <?php if ($data['is_claimed']){ ?>
+            <div class="btn2"><a href="<?= Url::to('/account/process-applications/'.$data['application_enc_id'], 'https') ?>">View Full Application</a></div>
+            <?php } ?>
         </div>
         <div class="job-info">Job Information</div>
         <div class="designation"><?= $data['cat_name'] ?></div>
@@ -587,7 +631,7 @@ $this->registerCss("
         <div class="job-skills"><img src="<?= Url::to('@commonAssets/user_applied/skills.png', 'https')?>" height="15px" width="15px">
             <span class="f"><?= rtrim($skils_arr,','); ?></span>
         </div>
-        <div class="job-salary"><img src="<?= Url::to('@commonAssets/user_applied/salary.png', 'https') ?>" height="16px" width="14px"><span class="f">₹ 96000 - ₹ 120000 p.a.</span>
+        <div class="job-salary"><img src="<?= Url::to('@commonAssets/user_applied/salary.png', 'https') ?>" height="16px" width="14px"><span class="f"><?= $data['amount'] ?></span>
         </div>
         <div class="btn"><a href="<?= Url::to($data['link'], 'https')?>">View Job</a></div>
     </div>
@@ -595,7 +639,7 @@ $this->registerCss("
         <div class="parent1">
             <div class="feature-head">
                 <div class="hed">Features</div>
-                <div class="feature-text"><span class="em">Empower</span><span class="yo">Youth.com</span> Gives You The
+                <div class="feature-text"><a href="https://www.empoweryouth.com"><span class="em">Empower</span><span class="yo">Youth.com</span></a> Gives You The
                     Flexibility To Create Jobs in Many Different Ways Also The Power of AI to Manage Your Candidates
                     Efficiently Effectively.
                 </div>
@@ -643,7 +687,7 @@ $this->registerCss("
     </div>
     <div class="border4">
         <div class="teaming position-relative">
-            <div class="cmp-logo1"><img src="<?= Url::to('@commonAssets/user_applied/name.png', 'https') ?>"></div>
+            <div class="cmp-logo1"><a href="https://www.empoweryouth.com"><img src="<?= Url::to('@commonAssets/user_applied/ey.png', 'https') ?>"></a></div>
             <div class="good">Best Regards,</div>
             <div class="team">EmpowerYouth <span class="team1">Team</span></div>
             <div class="social-icons">

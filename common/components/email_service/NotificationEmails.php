@@ -5,95 +5,126 @@ namespace common\components\email_service;
 use common\models\ApplicationUnclaimOptions;
 use common\models\EmployerApplications;
 use common\models\Organizations;
+use common\models\UnclaimedOrganizations;
+use common\models\Users;
+use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use common\models\Utilities;
 use Yii;
 
-class NotificationEmails extends Component{
+class NotificationEmails extends Component
+{
 
-    public function userAppliedNotify($application_id=null,$company_id=null,$unclaim_company_id=null,$type=null)
+    public function userAppliedNotify($user_id = null, $application_id = null, $company_id = null, $unclaim_company_id = null, $type = null)
     {
-       $object = new \account\models\applications\ApplicationForm();
-        $application_details = EmployerApplications::find()
-            ->where([
-                'application_enc_id' => $application_id,
-                'is_deleted' => 0
-            ])
+        $object = new \account\models\applications\ApplicationForm();
+        $user_info = Users::find()
+            ->where(['user_enc_id' => $user_id])
+            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience','CONCAT("' . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo'])
+            ->asArray()
             ->one();
-      if (!empty($unclaim_company_id))
-      {
-          $data = $object->getCloneUnclaimed($application_id, $type);
-          $email = ApplicationUnclaimOptions::findOne(['application_enc_id'=>$application_id])->email;
-      }
-      if (!empty($company_id))
-      {
-          $data = $object->getCloneData($application_id, $type);
-          $email = Organizations::findOne(['organization_enc_id'=>$company_id])->email;
-      }
-        if ($type=='Job') {
-            if ($data2['wage_type'] == 'Fixed') {
-                if ($data2['wage_duration'] == 'Monthly') {
-                    $data2['fixed_wage'] = $data2['fixed_wage'] * 12;
-                } elseif ($data2['wage_duration'] == 'Hourly') {
-                    $data2['fixed_wage'] = $data2['fixed_wage'] * 40 * 52;
-                } elseif ($data2['wage_duration'] == 'Weekly') {
-                    $data2['fixed_wage'] = $data2['fixed_wage'] * 52;
+        $user_skills = \common\models\UserSkills::find()
+            ->alias('a')
+            ->select(['b.skill skills'])
+            ->innerJoin(\common\models\Skills::tableName() . 'b', 'b.skill_enc_id = a.skill_enc_id')
+            ->where(['a.created_by' => $user_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $userCv = \common\models\UserResume::find()
+            ->select(['CONCAT("' . Yii::$app->params->upload_directories->resume->file . '",resume_location,"/",resume) resume'])
+            ->where(['user_enc_id' => $user_id])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->asArray()
+            ->one();
+
+        if (!empty($unclaim_company_id)) {
+            $data = $object->getCloneUnclaimed($application_id, $type);
+            $org_d = UnclaimedOrganizations::find()
+                ->select(['initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->where(['organization_enc_id'=>$unclaim_company_id])
+                ->asArray()->one();
+            $email = ApplicationUnclaimOptions::findOne(['application_enc_id' => $application_id])->email;
+            $data['is_claimed'] = false;
+        }
+        if (!empty($company_id)) {
+            $data = $object->getCloneData($application_id, $type);
+            $org_d = Organizations::findOne(['organization_enc_id' => $company_id])
+                ->select(['initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->asArray()
+                ->one();
+            $email = $org_d['email'];
+            $data['is_claimed'] = true;
+        }
+        if ($type == 'Jobs') {
+            if ($data['wage_type'] == 'Fixed') {
+                if ($data['wage_duration'] == 'Monthly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 12;
+                } elseif ($data['wage_duration'] == 'Hourly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 40 * 52;
+                } elseif ($data['wage_duration'] == 'Weekly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] * 52;
                 }
                 setlocale(LC_MONETARY, 'en_IN');
-                $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.a.';
-            } else if ($data2['wage_type'] == 'Negotiable') {
-                if ($data2['wage_duration'] == 'Monthly') {
-                    $data2['min_wage'] = $data2['min_wage'] * 12;
-                    $data2['max_wage'] = $data2['max_wage'] * 12;
-                } elseif ($data2['wage_duration'] == 'Hourly') {
-                    $data2['min_wage'] = $data2['min_wage'] * 40 * 52;
-                    $data2['max_wage'] = $data2['max_wage'] * 40 * 52;
-                } elseif ($data2['wage_duration'] == 'Weekly') {
-                    $data2['min_wage'] = $data2['min_wage'] * 52;
-                    $data2['max_wage'] = $data2['max_wage'] * 52;
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.a.';
+            } else if ($data['wage_type'] == 'Negotiable') {
+                if ($data['wage_duration'] == 'Monthly') {
+                    $data['min_wage'] = $data['min_wage'] * 12;
+                    $data['max_wage'] = $data['max_wage'] * 12;
+                } elseif ($data['wage_duration'] == 'Hourly') {
+                    $data['min_wage'] = $data['min_wage'] * 40 * 52;
+                    $data['max_wage'] = $data['max_wage'] * 40 * 52;
+                } elseif ($data['wage_duration'] == 'Weekly') {
+                    $data['min_wage'] = $data['min_wage'] * 52;
+                    $data['max_wage'] = $data['max_wage'] * 52;
                 }
                 setlocale(LC_MONETARY, 'en_IN');
-                if (!empty($data2['min_wage']) && !empty($data2['max_wage'])) {
-                    $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-                } elseif (!empty($data2['min_wage'])) {
-                    $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . 'p.a.';
-                } elseif (!empty($data2['max_wage'])) {
-                    $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-                } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
+                if (!empty($data['min_wage']) && !empty($data['max_wage'])) {
+                    $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+                } elseif (!empty($data['min_wage'])) {
+                    $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . 'p.a.';
+                } elseif (!empty($data['max_wage'])) {
+                    $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.a.';
+                } elseif (empty($data['min_wage']) && empty($data['max_wage'])) {
                     $amount = 'Negotiable';
                 }
             }
         }
-        if ($type=='Internship') {
-            if ($data2['wage_type'] == 'Fixed') {
-                if ($data2['wage_duration'] == 'Weekly') {
-                    $data2['fixed_wage'] = $data2['fixed_wage'] / 7 * 30;
+        if ($type == 'Internships') {
+            if ($data['wage_type'] == 'Fixed') {
+                if ($data['wage_duration'] == 'Weekly') {
+                    $data['fixed_wage'] = $data['fixed_wage'] / 7 * 30;
                 }
                 setlocale(LC_MONETARY, 'en_IN');
-                $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.m.';
-            } elseif ($data2['wage_type'] == 'Negotiable' || $data2['wage_type'] == 'Performance Based') {
-                if ($data2['wage_duration'] == 'Weekly') {
-                    $data2['min_wage'] = $data2['min_wage'] / 7 * 30;
-                    $data2['max_wage'] = $data2['max_wage'] / 7 * 30;
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.';
+            } elseif ($data['wage_type'] == 'Negotiable' || $data['wage_type'] == 'Performance Based') {
+                if ($data['wage_duration'] == 'Weekly') {
+                    $data['min_wage'] = $data['min_wage'] / 7 * 30;
+                    $data['max_wage'] = $data['max_wage'] / 7 * 30;
                 }
                 setlocale(LC_MONETARY, 'en_IN');
-                $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.m.';
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . 'p.m.';
             }
         }
+        $data['amount'] = $amount;
+        $data['user_skills'] = $user_skills;
+        $data['user_details'] = $user_info;
+        $data['resume'] = $userCv['resume'];
+        $data['org_info'] = $org_d;
         Yii::$app->mailer->htmlLayout = 'layouts/email';
         $mail = Yii::$app->mailer->compose(
             ['html' => 'user-applied'], ['data' => $data]
-            )
+        )
             ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$email => 'Sneh'])
             ->setSubject(Yii::t('frontend', 'Someone Has Applied On Your Job Via Empower Youth'));
 
-        if($mail->send()){
+        if ($mail->send()) {
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
