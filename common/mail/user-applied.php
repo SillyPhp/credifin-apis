@@ -562,7 +562,7 @@ $this->registerCss("
                 <img src="<?= Url::to('@commonAssets/user_applied/bd.png', 'https') ?>" height="50%">
                 <?php
             }
-            ?> 
+            ?>
         </div>
     </div>
     <div class="border2">
