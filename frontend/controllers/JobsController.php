@@ -97,17 +97,18 @@ class JobsController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
                     $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id = Yii::$app->request->post("application_enc_id");
+                    $model->id =  Yii::$app->request->post("application_enc_id");
                     $model->resume_list = Yii::$app->request->post("resume_enc_id");
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->saveValues()) {
+                    $application_typ = Yii::$app->request->post("application_type");
+                    $cid = Yii::$app->request->post("org_id");
+                    $res = $model->saveValues();
+                    if ($res['status']) {
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
                         return $res;
                     } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
+                        return false;
                     }
                 } else if (Yii::$app->request->post("check") == 0) {
                     $arr_loc = Yii::$app->request->post("json_loc");
@@ -115,13 +116,14 @@ class JobsController extends Controller
                     $model->id = Yii::$app->request->post("id");
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->upload()) {
+                    $application_typ = Yii::$app->request->post("application_type");
+                    $cid = Yii::$app->request->post("org_id");
+                    $res = $model->upload();
+                    if ($res['status']) {
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
                         return $res;
                     } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
+                        return false;
                     }
                 }
             }

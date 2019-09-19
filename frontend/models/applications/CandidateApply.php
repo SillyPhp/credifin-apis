@@ -14,6 +14,7 @@ use Yii;
 class CandidateApply extends Widget
 {
     public $application_enc_id;
+    public $organization_enc_id;
     public $btn_class;
 
     public function init()
@@ -67,7 +68,13 @@ class CandidateApply extends Widget
                 ->limit(3)
                 ->all();
         }
-        return $this->render('@frontend/views/widgets/employer_applications/job-applied',['model'=>$model,'btn_class'=>$this->btn_class,'application_enc_id'=>$this->application_enc_id,'locations'=>$locations,'que'=>$app_que,'resumes'=>$resumes]);
+        return $this->render('@frontend/views/widgets/employer_applications/job-applied',['model'=>$model,
+            'btn_class'=>$this->btn_class,
+            'application_enc_id'=>$this->application_enc_id,
+            'organization_enc_id'=>$this->organization_enc_id,
+            'locations'=>$locations,
+            'que'=>$app_que,
+            'resumes'=>$resumes]);
     }
 }
 

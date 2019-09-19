@@ -17,6 +17,7 @@ class JobApplied extends Model
 {
     public $resume_file;
     public $id;
+    public $org_id;
     public $check;
     public $resume_list;
     public $questionnaire_id;
@@ -27,7 +28,7 @@ class JobApplied extends Model
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
+            [['id', 'resume_file', 'org_id','status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
             [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg','maxSize' => 1024 * 1024 * 2],
         ];
     }
