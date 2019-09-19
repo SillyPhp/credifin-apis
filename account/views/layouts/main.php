@@ -32,186 +32,119 @@ $this->beginPage();
     <?php $this->beginBody(); ?>
     <div class="wrapper">
         <header class="page-header">
-            <!--            <nav class="navbar mega-menu" role="navigation">-->
-            <!--                <div class="container-fluid">-->
-            <!--                    <div class="clearfix navbar-fixed-top">-->
-            <!--                        <div class="topbar-actions" style="width: 100%;position: relative;float: left;top:0;left:0;">-->
-            <!--                            <div id="menuzord" class="menuzord">-->
-            <!--                                <a style="position:relative;float: left;margin-top: 10px;"-->
-            <!--                                   href="--><? //= '/'; ?><!--">-->
-            <!--                                    <img id="header-logo" alt="-->
-            <? //= Yii::$app->params->site_name; ?><!--"-->
-            <!--                                         src="-->
-            <? //= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?><!--">-->
-            <!--                                    <span class="logo_beta">Beta</span>-->
-            <!--                                </a>-->
-            <!--                                --><?php
-            //                                $name = $image = $color = NULL;
-            //                                if (Yii::$app->user->identity->organization->organization_enc_id) {
-            //                                    if (Yii::$app->user->identity->organization->logo) {
-            //                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-            //                                    }
-            //                                    $name = Yii::$app->user->identity->organization->name;
-            //                                    $color = Yii::$app->user->identity->organization->initials_color;
-            //                                } else {
-            //                                    if (Yii::$app->user->identity->image) {
-            //                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-            //                                    }
-            //                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-            //                                    $color = Yii::$app->user->identity->initials_color;
-            //                                }
-            //                                ?>
-            <!--                                <button type="button" class="navbar-toggle" data-toggle="collapse"-->
-            <!--                                        data-target=".navbar-responsive-collapse">-->
-            <!--                                    <span class="sr-only">Toggle navigation</span>-->
-            <!--                                    <span class="toggle-icon">-->
-            <!--                                    <span class="icon-bar"></span>-->
-            <!--                                    <span class="icon-bar"></span>-->
-            <!--                                    <span class="icon-bar"></span>-->
-            <!--                                </span>-->
-            <!--                                </button>-->
-            <!--                                <div class="my-profiles-sec">-->
-            <!--                                    --><?php //if ($image): ?>
-            <!--                                        <span><img src="--><? //= $image; ?><!--" title="-->
-            <? //= $name; ?><!--"-->
-            <!--                                                   alt="--><? //= $name; ?><!--"/></span>-->
-            <!--                                    --><?php //else: ?>
-            <!--                                        <span><canvas class="user-icon" name="-->
-            <? //= $name; ?><!--" color="--><? //= $color; ?><!--"-->
-            <!--                                                      width="40" height="40" font="20px"></canvas></span>-->
-            <!--                                    --><?php //endif; ?>
-            <!--                                </div>-->
-            <!---->
-            <!--                                --><? //=
-            //                                $this->render('/widgets/common/header/top-header', [
-            //                                    'menu_class' => 'menuzord-menu',
-            //                                ]);
-            //                                ?>
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <div class="nav-collapse collapse navbar-collapse navbar-responsive-collapse">-->
-            <!----><? ////=
-            ////                        $this->render('/widgets/header/top-header', [
-            ////                            'referral' => $referral,
-            ////                        ]);
-            ////                        ?>
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--            </nav>-->
-                        <nav class="navbar mega-menu" role="navigation">
-                            <div class="container-fluid">
-                                <div class="clearfix navbar-fixed-top">
-            <div class="ey-head-main">
+            <nav class="navbar mega-menu" role="navigation">
                 <div class="container-fluid">
-                    <div class="large-container container">
-                        <div class="ey-header-main">
-                            <div class="ey-header-logo">
-                                <a class="ey-logo" href="/">
-                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
-                                         src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                    <span class="logo_beta">Beta</span>
-                                </a>
+                    <div class="clearfix navbar-fixed-top">
+                        <div class="ey-head-main">
+                            <div class="container-fluid">
+                                <div class="large-container container">
+                                    <div class="ey-header-main">
+                                        <div class="ey-header-logo">
+                                            <a class="ey-logo" href="/">
+                                                <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                                     src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                                <span class="logo_beta">Beta</span>
+                                            </a>
+                                        </div>
+                                        <div class="ey-menu-main">
+                                            <?= $this->render('/widgets/common/header/top-header-beta'); ?>
+                                        </div>
+                                        <div class="ey-nav-actions">
+                                            <div class="ey-menu-login">
+                                                <?php
+                                                $name = $image = $color = NULL;
+                                                if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                                    if (Yii::$app->user->identity->organization->logo) {
+                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                    }
+                                                    $name = Yii::$app->user->identity->organization->name;
+                                                    $color = Yii::$app->user->identity->organization->initials_color;
+                                                } else {
+                                                    if (Yii::$app->user->identity->image) {
+                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                    }
+                                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                                    $color = Yii::$app->user->identity->initials_color;
+                                                }
+                                                ?>
+                                                <div class="my-profiles-sec">
+                                                    <?php if ($image): ?>
+                                                        <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                                   alt="<?= $name; ?>"/></span>
+                                                    <?php else: ?>
+                                                        <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                                      color="<?= $color; ?>" width="40"
+                                                                      height="40" font="20px"></canvas></span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="ey-menu-main">
-                                <?= $this->render('/widgets/common/header/top-header-beta'); ?>
+                        </div>
+                        <div class="ey-mobile-menu">
+                            <div class="ey-mob-nav-main">
+                                <div class="container-fluid">
+                                    <div class="container">
+                                        <div class="ey-mob-nav-items">
+                                            <div class="ey-humburger-menu-main">
+                                                <button id="open-mobile-menu" class="ey-humburger-menu" type="button"
+                                                        aria-expanded="false">
+                                                    <span aria-hidden="true"></span>
+                                                    <span aria-hidden="true"></span>
+                                                    <span aria-hidden="true"></span>
+                                                    <span aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                            <div class="ey-mobile-logo-main">
+                                                <a class="ey-logo" href="/">
+                                                    <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"/>
+                                                </a>
+                                            </div>
+                                            <div class="ey-mob-actions">
+                                                <?php
+                                                $name = $image = $color = NULL;
+                                                if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                                    if (Yii::$app->user->identity->organization->logo) {
+                                                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                                    }
+                                                    $name = Yii::$app->user->identity->organization->name;
+                                                    $color = Yii::$app->user->identity->organization->initials_color;
+                                                } else {
+                                                    if (Yii::$app->user->identity->image) {
+                                                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                                    }
+                                                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                                    $color = Yii::$app->user->identity->initials_color;
+                                                }
+                                                ?>
+                                                <div class="my-profiles-sec">
+                                                    <?php if ($image): ?>
+                                                        <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                                   alt="<?= $name; ?>"/></span>
+                                                    <?php else: ?>
+                                                        <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                                      color="<?= $color; ?>" width="40"
+                                                                      height="40" font="20px"></canvas></span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="ey-nav-actions">
-                                <div class="ey-menu-login">
-                                    <?php
-                                    $name = $image = $color = NULL;
-                                    if (Yii::$app->user->identity->organization->organization_enc_id) {
-                                        if (Yii::$app->user->identity->organization->logo) {
-                                            $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                                        }
-                                        $name = Yii::$app->user->identity->organization->name;
-                                        $color = Yii::$app->user->identity->organization->initials_color;
-                                    } else {
-                                        if (Yii::$app->user->identity->image) {
-                                            $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                                        }
-                                        $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                        $color = Yii::$app->user->identity->initials_color;
-                                    }
-                                    ?>
-                                    <div class="my-profiles-sec">
-                                        <?php if ($image): ?>
-                                            <span><img src="<?= $image; ?>" title="<?= $name; ?>"
-                                                       alt="<?= $name; ?>"/></span>
-                                        <?php else: ?>
-                                            <span><canvas class="user-icon" name="<?= $name; ?>"
-                                                          color="<?= $color; ?>" width="40"
-                                                          height="40" font="20px"></canvas></span>
-                                        <?php endif; ?>
+                            <div class="ey-mobile-content">
+                                <div class="ey-mobile-menu-main-content">
+                                    <div class="ey-mobile-menu-inner-content">
+                                        <?= $this->render('/widgets/common/header/top-header-mobile'); ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="ey-mobile-menu">
-                <div class="ey-mob-nav-main">
-                    <div class="container-fluid">
-                        <div class="container">
-                            <div class="ey-mob-nav-items">
-                                <div class="ey-humburger-menu-main">
-                                    <button id="open-mobile-menu" class="ey-humburger-menu" type="button"
-                                            aria-expanded="false">
-                                        <span aria-hidden="true"></span>
-                                        <span aria-hidden="true"></span>
-                                        <span aria-hidden="true"></span>
-                                        <span aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                                <div class="ey-mobile-logo-main">
-                                    <a class="ey-logo" href="/">
-                                        <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"/>
-                                    </a>
-                                </div>
-                                <div class="ey-mob-actions">
-                                    <?php
-                                    $name = $image = $color = NULL;
-                                    if (Yii::$app->user->identity->organization->organization_enc_id) {
-                                        if (Yii::$app->user->identity->organization->logo) {
-                                            $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                                        }
-                                        $name = Yii::$app->user->identity->organization->name;
-                                        $color = Yii::$app->user->identity->organization->initials_color;
-                                    } else {
-                                        if (Yii::$app->user->identity->image) {
-                                            $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                                        }
-                                        $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                        $color = Yii::$app->user->identity->initials_color;
-                                    }
-                                    ?>
-                                    <div class="my-profiles-sec">
-                                        <?php if ($image): ?>
-                                            <span><img src="<?= $image; ?>" title="<?= $name; ?>"
-                                                       alt="<?= $name; ?>"/></span>
-                                        <?php else: ?>
-                                            <span><canvas class="user-icon" name="<?= $name; ?>"
-                                                          color="<?= $color; ?>" width="40"
-                                                          height="40" font="20px"></canvas></span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ey-mobile-content">
-                    <div class="ey-mobile-menu-main-content">
-                        <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('/widgets/common/header/top-header-mobile'); ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-                                </div>
-                            </div>
-                        </nav>
+            </nav>
         </header>
         <div class="container-fluid">
             <div class="page-content" style="padding-top:50px;">

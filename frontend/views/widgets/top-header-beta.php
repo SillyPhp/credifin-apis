@@ -314,7 +314,7 @@ $this->registerCss('
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
     font: 500 14px/16px Roboto, Arial, sans-serif;
     margin: 0 20px 0 0;
-    padding: 0;
+    padding: 7px 0px;
 }
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
