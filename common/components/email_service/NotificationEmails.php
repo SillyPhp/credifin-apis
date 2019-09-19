@@ -52,8 +52,9 @@ class NotificationEmails extends Component
         }
         if (!empty($company_id)) {
             $data = $object->getCloneData($application_id, $type);
-            $org_d = Organizations::findOne(['organization_enc_id' => $company_id])
-                ->select(['initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+            $org_d = Organizations::find()
+                ->where(['organization_enc_id' => $company_id])
+                ->select(['email','initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->asArray()
                 ->one();
             $email = $org_d['email'];
