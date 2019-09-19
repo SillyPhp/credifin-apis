@@ -142,7 +142,7 @@
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
-                            <a href="/quizzes/all">All Quizzes</a>
+                            <a href="/quizzes/all">Quizzes</a>
                         </div>
                     </div>
                 </div>

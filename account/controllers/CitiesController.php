@@ -31,6 +31,25 @@ class CitiesController extends Controller
         }
     }
 
+    public function actionGetState()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if ($id = Yii::$app->request->post('id')) {
+            $states = States::find()->select(['state_enc_id AS id', 'name'])->where(['country_enc_id' => $id])->orderBy(['name' => SORT_ASC])->asArray()->all();
+        }
+
+        if (count($states) > 0) {
+            return [
+                'status' => 200,
+                'states' => $states
+            ];
+        } else {
+            return [
+                'status' => 201
+            ];
+        }
+    }
+
     public function actionCityList($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

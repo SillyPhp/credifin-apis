@@ -57,6 +57,38 @@ class JobsController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionJobsUnclaimApply()
+    {
+        if (Yii::$app->request->isPost) {
+            if (!Yii::$app->user->isGuest) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $id = Yii::$app->request->post('data');
+                $c_id = Yii::$app->request->post('cid');
+                $applied_jobs = AppliedApplications::find()
+                    ->where(['application_enc_id' => $id])
+                    ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if (!$applied_jobs):
+                $model = new \frontend\models\applications\JobApplied();
+                $model->id = $id;
+                $model->resume_list = NULL;
+                $model->status = 'Pending';
+                $res = $model->saveValues();
+                if ($res['status'])
+                {
+                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$id,$company_id=null,$unclaim_company_id=$c_id,$type="Jobs");
+                    return $res;
+                }
+                else
+                {
+                    return false;
+                }
+                endif;
+            }
+        }
+    }
+
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
@@ -65,17 +97,18 @@ class JobsController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
                     $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id = Yii::$app->request->post("application_enc_id");
+                    $model->id =  Yii::$app->request->post("application_enc_id");
                     $model->resume_list = Yii::$app->request->post("resume_enc_id");
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->saveValues()) {
+                    $application_typ = Yii::$app->request->post("application_type");
+                    $cid = Yii::$app->request->post("org_id");
+                    $res = $model->saveValues();
+                    if ($res['status']) {
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
                         return $res;
                     } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
+                        return false;
                     }
                 } else if (Yii::$app->request->post("check") == 0) {
                     $arr_loc = Yii::$app->request->post("json_loc");
@@ -83,13 +116,14 @@ class JobsController extends Controller
                     $model->id = Yii::$app->request->post("id");
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
-                    if ($res = $model->upload()) {
+                    $application_typ = Yii::$app->request->post("application_type");
+                    $cid = Yii::$app->request->post("org_id");
+                    $res = $model->upload();
+                    if ($res['status']) {
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
                         return $res;
                     } else {
-                        $status = [
-                            'status' => false,
-                        ];
-                        return $status;
+                        return false;
                     }
                 }
             }
@@ -267,10 +301,10 @@ class JobsController extends Controller
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
         }
         if (!Yii::$app->user->isGuest) {

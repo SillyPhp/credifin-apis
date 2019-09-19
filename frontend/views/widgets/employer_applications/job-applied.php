@@ -7,6 +7,7 @@ use yii\helpers\Url;
 
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -20,6 +21,7 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
                     echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
                 } ?>
                 <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $application_enc_id]); ?>
+                <?= $form->field($model, 'org_id', ['template' => '{input}'])->hiddenInput(['id' => 'organization_id', 'value' => $organization_enc_id]); ?>
                 <?php
                 if ($que) {
                     $ques = 1;
@@ -208,6 +210,7 @@ $script = <<< JS
                     {
                       var formData = new FormData();
                       var id = $('#application_id').val();
+                      var org_id = $('#organization_id').val();
                       var check = 1;
                        var loc_array = [];
                        $("input[name='JobApplied[location_pref][]']:checked").each(function(){
@@ -217,6 +220,8 @@ $script = <<< JS
                       formData.append('application_enc_id',id);
                       formData.append('resume_enc_id',resume_enc_id);
                       formData.append('check',check);
+                      formData.append('application_type',application_type);
+                      formData.append('org_id',org_id);
                       if($('#question_id').val() == 1)
                         {
                           var status = 'incomplete';
@@ -251,6 +256,7 @@ $script = <<< JS
                         });
             var formData = new FormData($('form')[0]);
                  var id = $('#application_id').val();
+                 var org_id = $('#organization_id').val();
                  if($('#question_id').val() == 1)
                         {
                           var status = 'incomplete';
@@ -262,6 +268,8 @@ $script = <<< JS
                           formData.append('status',status);
                         }
                 formData.append('id',id);
+                formData.append('application_type',application_type);    
+                formData.append('org_id',org_id);    
                 var json_loc = JSON.stringify(loc_array);
                 formData.append('json_loc',json_loc);
                 ajax_call(formData);

@@ -306,9 +306,11 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'org_name'=>$org['org_name'],
                         'initial_color'=>$org['color'],
                         'slug'=>$org['slug'],
+                        'cid'=>$org['organization_enc_id'],
                         'website'=>$org['website'],
                         'email'=>$org['email'],
                         'job_url'=>$data1['job_url'],
+                        'application_id'=>$data1['application_enc_id'],
                         'type'=>$type,
                         'applied'=>false,
                         'application_slug'=>$application_details["slug"],
@@ -327,7 +329,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn']);
+        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn','organization_enc_id'=>$org['organization_enc_id']]);
     }
     ?>
 </section>

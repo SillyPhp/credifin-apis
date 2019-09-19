@@ -12,18 +12,6 @@
                             <ul class="ey-sub-nav-items">
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/jobs/near-me">Jobs Near Me</a>
-                                    <!--                                    <div class="ey-sub-sec">-->
-                                    <!--                                        <ul class="ey-head-sub-menu-items">-->
-                                    <!--                                            <li class="ey-head-sub-menu-icon">-->
-                                    <!--                                                <a href="/">-->
-                                    <!--                                                    <div>-->
-                                    <!--                                                        <span class="ey-services-icons"></span>-->
-                                    <!--                                                    </div>-->
-                                    <!--                                                    <span>Test</span>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-                                    <!--                                        </ul>-->
-                                    <!--                                    </div>-->
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
@@ -39,7 +27,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -122,7 +109,7 @@
                                     <a href="/blog/category/infographics">Infographics</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
-                                    <a href="/quizzes/all">All Quizzes</a>
+                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>
@@ -132,7 +119,121 @@
         </li>
         <?php if (!Yii::$app->user->isGuest) { ?>
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-                <a href="/account/dashboard">Dashboard</a>
+                <a href="/account/dashboard">
+                    Dashboard
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                </a>
+                <?php
+                if (Yii::$app->user->identity->organization_enc_id) {
+                    ?>
+                    <div class="ey-sub-menu">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <li>
+                                            <a href="/account/dashboard">Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="/account/jobs/dashboard">Manage Jobs</a>
+                                        </li>
+                                        <li>
+                                            <a href="/account/internships/dashboard">Manage Internships</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Create Job</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/quick-job">
+                                                            <div>
+                                                                <span class="ey-services-icons quick"></span>
+                                                            </div>
+                                                            <span>Create Quick Job</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/job/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Job Tweet</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Job</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Create Internship</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/internship/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Internship Tweet</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/internships/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Internship</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <a href="/account/templates">Templates</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <div class="ey-header-sub-menu-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="ey-sub-menu">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/dashboard">Dashboard</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/jobs/dashboard">Manage Jobs</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/internships/dashboard">Manage Internships</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/preferences">My Preferences</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/resume-builder">Build Resume</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
             </li>
         <?php } ?>
     </ul>
@@ -213,7 +314,7 @@ $this->registerCss('
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
     font: 500 14px/16px Roboto, Arial, sans-serif;
     margin: 0 20px 0 0;
-    padding: 0;
+    padding: 7px 0px;
 }
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
@@ -244,7 +345,7 @@ $this->registerCss('
     justify-content: flex-end;
 }
 
-.ey-sub-menu .ey-head-sub-menu-has-child {
+.ey-sub-menu .ey-head-sub-menu-has-child, .ey-sub-nav-items > li {
     font: 500 13px/30px Roboto, Arial, sans-serif;
     padding: 0;
     margin: 0 10px;
@@ -255,14 +356,14 @@ $this->registerCss('
     padding-left: 0;
 }
 
-.ey-sub-menu .ey-head-sub-menu-has-child>a,
-.ey-sub-menu .ey-head-sub-menu-has-child>span {
+.ey-sub-menu li > a,
+.ey-sub-menu li > span {
     cursor: pointer;
     padding: 0 0 17px;
     position: relative;
 }
 
-.ey-sub-menu .ey-head-sub-menu-has-child>a {
+.ey-sub-menu li > a {
     -webkit-transition: none;
     -o-transition: none;
     transition: none;
@@ -333,13 +434,19 @@ $this->registerCss('
 }
 
 .ey-services-icons {
-    background-color: #333;
-    height: 35px;
-    width: 35px;
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-position: center;
-    -webkit-mask-image: url(https://premium.wpmudev.org/wp-content/themes/wpmudev-2015-1/assets/dist/img/service-icons/svg/Features.svg);
-    mask-image: url(https://premium.wpmudev.org/wp-content/themes/wpmudev-2015-1/assets/dist/img/service-icons/svg/Features.svg);
+    height: 50px;
+    width: 50px;
+    background-repeat: no-repeat !important;
+    background-size: 100% 100% !important;
+}
+.ey-services-icons.quick {
+    background: url(/assets/themes/ey/images/job-profiles/quick.png);
+}
+.ey-services-icons.tweet {
+    background: url(/assets/themes/ey/images/job-profiles/twitter.png);
+}
+.ey-services-icons.ai {
+    background: url(/assets/themes/ey/images/job-profiles/ai.png);
 }
 
 .ey-sub-sec .ey-head-sub-menu-icon a>span {
@@ -598,14 +705,57 @@ $this->registerCss('
     -ms-transition: background-color 500ms linear;
     transition: background-color 500ms linear;
 }
-.large-container.container.add-padding nav ul > .ey-head-sub-menu-has-child a{color: #f2f2f2;}
+.large-container.container.add-padding nav .ey-sub-nav-items > li a{color: #f2f2f2 !important;}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon > a > span{color:#444;}
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>a,
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>span,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover>a,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover>span {
     color: #286efa;
 }
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:hover > a > div > span {
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
+}
+.ey-sub-sec .ey-head-sub-menu-items > .ey-head-sub-menu-icon{
+    position:relative;
+    -webkit-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    -webkit-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:hover:before{
+    top: -3px;
+    bottom: -3px;
+    left: -3px;
+    right: -3px;
+    background-color: #fff;
+    box-shadow: 0 0 50px rgba(32,32,32,.15);
+    border-radius: 8px;
+}
 
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
 .ey-sub-menu .ey-head-sub-menu-has-child:focus .ey-sub-sec,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover .ey-sub-sec {
     height: auto;

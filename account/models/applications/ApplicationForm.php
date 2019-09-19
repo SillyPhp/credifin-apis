@@ -883,6 +883,7 @@ class ApplicationForm extends Model
 
     public function getCloneData($aidk, $application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -902,7 +903,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience', 'b.*'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
@@ -961,6 +962,7 @@ class ApplicationForm extends Model
 
     public function getCloneUnclaimed($aidk,$application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -976,7 +978,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience'])
+                END) as experience','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);

@@ -12,18 +12,6 @@
                             <ul class="ey-sub-nav-items">
                                 <li>
                                     <a href="/jobs/near-me">Jobs Near Me</a>
-                                    <!--                                    <div class="ey-sub-sec">-->
-                                    <!--                                        <ul class="ey-head-sub-menu-items">-->
-                                    <!--                                            <li class="ey-head-sub-menu-icon">-->
-                                    <!--                                                <a href="/">-->
-                                    <!--                                                    <div>-->
-                                    <!--                                                        <span class="ey-services-icons"></span>-->
-                                    <!--                                                    </div>-->
-                                    <!--                                                    <span>Test</span>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-                                    <!--                                        </ul>-->
-                                    <!--                                    </div>-->
                                 </li>
                                 <li>
                                     <a href="/organizations">Explore Companies</a>
@@ -39,7 +27,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -71,7 +58,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -100,7 +86,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -122,7 +107,7 @@
                                     <a href="/blog/category/infographics">Infographics</a>
                                 </li>
                                 <li>
-                                    <a href="/quizzes/all">All Quizzes</a>
+                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>
@@ -302,7 +287,6 @@ $this->registerCss('
     flex: 16;
     margin: 0 30px;
 }
-
 .ey-head-main .ey-main-menu-nav,
 .ey-head-main .ey-menu-inner-main {
     -webkit-box-align: center;
@@ -318,7 +302,6 @@ $this->registerCss('
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
-
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
     margin-top: 10px;
@@ -327,7 +310,7 @@ $this->registerCss('
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
     font: 500 14px/16px Roboto, Arial, sans-serif;
     margin: 0 20px 0 0;
-    padding: 0;
+    padding: 7px 0px;
 }
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
@@ -725,7 +708,49 @@ $this->registerCss('
 .ey-sub-menu .ey-head-sub-menu-has-child:hover>span {
     color: #286efa;
 }
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:hover > a > div > span {
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
+}
+.ey-sub-sec .ey-head-sub-menu-items > .ey-head-sub-menu-icon{
+    position:relative;
+    -webkit-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    -webkit-transition: all 0.3s ease 0s;
+    transition: all 0.3s ease 0s;
+}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon:hover:before{
+    top: -3px;
+    bottom: -3px;
+    left: -3px;
+    right: -3px;
+    background-color: #fff;
+    box-shadow: 0 0 50px rgba(32,32,32,.15);
+    border-radius: 8px;
+}
 
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
 .ey-sub-menu .ey-head-sub-menu-has-child:focus .ey-sub-sec,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover .ey-sub-sec {
     height: auto;
