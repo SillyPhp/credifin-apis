@@ -12,18 +12,6 @@
                             <ul class="ey-sub-nav-items">
                                 <li>
                                     <a href="/jobs/near-me">Jobs Near Me</a>
-                                    <!--                                    <div class="ey-sub-sec">-->
-                                    <!--                                        <ul class="ey-head-sub-menu-items">-->
-                                    <!--                                            <li class="ey-head-sub-menu-icon">-->
-                                    <!--                                                <a href="/">-->
-                                    <!--                                                    <div>-->
-                                    <!--                                                        <span class="ey-services-icons"></span>-->
-                                    <!--                                                    </div>-->
-                                    <!--                                                    <span>Test</span>-->
-                                    <!--                                                </a>-->
-                                    <!--                                            </li>-->
-                                    <!--                                        </ul>-->
-                                    <!--                                    </div>-->
                                 </li>
                                 <li>
                                     <a href="/organizations">Explore Companies</a>
@@ -39,7 +27,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -71,7 +58,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -100,7 +86,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -302,7 +287,6 @@ $this->registerCss('
     flex: 16;
     margin: 0 30px;
 }
-
 .ey-head-main .ey-main-menu-nav,
 .ey-head-main .ey-menu-inner-main {
     -webkit-box-align: center;
@@ -318,7 +302,6 @@ $this->registerCss('
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
-
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
     margin-top: 10px;
@@ -327,7 +310,7 @@ $this->registerCss('
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
     font: 500 14px/16px Roboto, Arial, sans-serif;
     margin: 0 20px 0 0;
-    padding: 0;
+    padding: 7px 0px;
 }
 .ey-head-main .ey-nav-item:last-child {
     margin: 0;
