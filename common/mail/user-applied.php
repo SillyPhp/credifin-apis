@@ -717,11 +717,11 @@ $this->registerCss("
                 <div class="social-icons">
                     <a href="https://www.facebook.com/empower/" target="blank"><img
                                 src="<?= Url::to('@commonAssets/user_applied/fbicon.png', 'https') ?>"></a>
-                    <a href="https://twitter.com/EmpowerYouth__" target="blank"><img
+                    <a href="https://twitter.com/EmpowerYouthin" target="blank"><img
                                 src="<?= Url::to('@commonAssets/user_applied/twittericon.png', 'https') ?>"></a>
                     <a href="https://www.instagram.com/empoweryouth.in" target="blank"><img
                                 src="<?= Url::to('@commonAssets/user_applied/instaicon.png', 'https') ?>"></a>
-                    <a href="https://www.linkedin.com/in/empower-youth-11231118a/" target="blank"><img
+                    <a href="https://www.linkedin.com/company/empoweryouth/" target="blank"><img
                                 src="<?= Url::to('@commonAssets/user_applied/linkedin.png', 'https') ?>"></a>
                 </div>
             </div>
