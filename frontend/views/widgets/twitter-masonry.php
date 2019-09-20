@@ -204,6 +204,11 @@ $this->registerCss('
     -webkit-box-sizing: border-box;
     margin-bottom: 20px;
 }
+@media only screen and (min-width:992px and max-width:1200px){
+    .tweet-main{
+        width: auto !important;
+    }
+}
 .tweet-org-deatail{
     width:100%;
     position:relative;
