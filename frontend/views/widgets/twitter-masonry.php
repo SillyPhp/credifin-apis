@@ -53,17 +53,59 @@ use yii\helpers\Html;
 </div>
 
 <div id="testAdi"></div>
-<div id="myModal" class="modal">
+<div id="myModal" class="TweetModal">
 
     <!-- Modal content -->
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="row ds-block">
-            <div class="col-md-6 col-sm-6">
-                hello
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div id="clickedTweet"></div>
+    <div class="TweetModal-content">
+        <div class="row">
+        <span class="Tweetclose">&times;</span>
+<!--            <div class="col-md-6 col-sm-6">-->
+<!--                <div class="tweet-org-logo tweetTextWhite">-->
+<!--                    --><?php //if (!empty($tweet['logo'])): ?>
+<!--                        <img src="--><?//= $tweet['logo'] ?><!--"/>-->
+<!--                    --><?php //else: ?>
+<!--                        <canvas class="user-icon" name="--><?//= $tweet['org_name'] ?><!--" width="150"-->
+<!--                                height="150"-->
+<!--                                color="--><?//= $tweet['color'] ?><!--" font="70px"></canvas>-->
+<!--                    --><?php //endif; ?>
+<!--                </div>-->
+<!--                <div class="tweet-org-description tweetTextWhite">-->
+<!--                    <h2>--><?//= ucwords($tweet['job_title']) ?><!--</h2>-->
+<!--                    <h4>--><?//= ucwords($tweet['org_name']) ?><!--</h4>-->
+<!--                    <p>--><?//= $tweet['job_type'] ?><!--</p>-->
+<!--                </div>-->
+<!--                <div class="tweetSalary">-->
+<!--                    <div class="ts-Skills">Job Profile: <span class="ts-salary">Information Technology</span> </div>-->
+<!--                </div>-->
+<!--                <div class="tweetSkills">-->
+<!--                    <div class="ts-Skills">Skills Required</div>-->
+<!--                    <ul>-->
+<!--                        <li>Html</li>-->
+<!--                        <li>JavaScript</li>-->
+<!--                        <li>CSS3</li>-->
+<!--                        <li>Bootstarp</li>-->
+<!--                        <li>Php</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div class="tweetSalary">-->
+<!--                    <div class="ts-Skills">Salary Offered: <span class="ts-salary">3.5 Lakh CTC</span> </div>-->
+<!--                </div>-->
+<!--                <div class="tweetSkills">-->
+<!--                    <div class="ts-Skills">Cities</div>-->
+<!--                    <ul>-->
+<!--                        <li>Ludhiana</li>-->
+<!--                        <li>Patiala</li>-->
+<!--                        <li>Mohali</li>-->
+<!--                    </ul>-->
+<!--                </div>-->
+<!--                <div class="tweet-apply">-->
+<!--                    <button class="ts-btn">Click to Apply</button>-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="col-md-12 col-sm-12">
+                <div class="mar-center">
+                    <div id="clickedTweet"></div>
+                </div>
             </div>
         </div>
 
@@ -75,7 +117,7 @@ use yii\helpers\Html;
 
 $script = <<< JS
 $(document).on('load', function() {
-    $('#clickedTweet .twitter-tweet').attr('style', 'margin-top: 0px !important');
+    $('.posted-tweet .EmbeddedTweet').attr('style', 'min-width: 100%');
     // var head = $(".posted-tweet iframe").contents().find("head");
     // var css = '<style type="text/css">' +
     //           '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
@@ -85,9 +127,62 @@ $(document).on('load', function() {
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.ds-block{
-    display:inline;
+.mar-center{
+    margin:0 auto;
+    width:100%;
 }
+.posted-tweet{
+    margin-top:69px !important;
+}
+.ts-Skills{
+    color:#f2f2f2;
+    font-size: 18px;
+}
+.ts-salary{
+    padding-left: 10px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+}
+.ts-btn{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    border:none;
+//    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    background: #fff;
+}
+.ts-btn:hover{
+    background-color: #00a0e3;
+    color: #fff;
+}
+.tweetSalary{
+    margin-top:30px;
+}
+.tweet-apply{
+    padding-top:20px;
+}
+.tweetSkills{
+    margin-top:30px;
+}
+.tweetSkills ul{
+    padding-top:10px;
+}
+.tweetSkills ul li{
+    background: rgba(88, 83, 83, 0.5);
+    color: #fff;
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 3px;
+}
+
 .masonry { 
     -webkit-column-count: 4;
   -moz-column-count:4;
@@ -111,6 +206,11 @@ $this->registerCss('
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     margin-bottom: 20px;
+}
+@media only screen and (min-width:992px and max-width:1200px){
+    .tweet-main{
+        width: auto !important;
+    }
 }
 .tweet-org-deatail{
     width:100%;
@@ -201,21 +301,49 @@ twitter-widget[style]{
 
 
 /* Modal Content/Box */
-
-
+.TweetModal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+}
+.TweetModal-content {
+    margin: 10% auto;
+    padding: 20px;
+    border: none;
+    width: 100%;
+    max-width: 550px;
+    position: relative;
+    text-align: center;
+}
+.tweetTextWhite h2, .tweetTextWhite h4, .tweetTextWhite p{
+    color:#fff;
+}
 /* The Close Button */
-.close {
-  color: #FFF;
+.Tweetclose {
+  color: #fff;
   float: right;
   font-size: 28px;
   font-weight: bold;
+  position:absolute;
+    top: -10px;
+    right: 5px;
 }
 
-.close:hover,
-.close:focus {
-  color: black;
+.Tweetclose:hover,
+.Tweetclose:focus {
+  color: #00a0e3;
   text-decoration: none;
   cursor: pointer;
+  font-size: 28px;
+  transform: rotate(180deg);
+    transition: .3s ease 
 }
 .w-50{
     float:left;
@@ -243,7 +371,7 @@ twitter-widget[style]{
                 document.getElementById('clickedTweet'),
             )
         });
-        let span = document.getElementsByClassName("close")[0];
+        let span = document.getElementsByClassName("Tweetclose")[0];
         span.onclick = function () {
             modal.style.display = "none";
             document.getElementById('clickedTweet').innerHTML = null
