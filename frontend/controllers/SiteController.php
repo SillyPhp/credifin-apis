@@ -224,7 +224,9 @@ class SiteController extends Controller
             'contactFormModel' => $contactFormModel,
         ]);
     }
-
+    public function actionTweetDetail(){
+        return $this->render('tweet-detail');
+    }
     public function actionAllQuiz()
     {
         $quizes = Quiz::find()
