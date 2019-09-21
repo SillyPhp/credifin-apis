@@ -125,7 +125,6 @@ class JobsController extends ApiBaseController
                 return $this->response(404);
             }
 
-
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
                 $token_holder_id = UserAccessTokens::find()
@@ -179,7 +178,7 @@ class JobsController extends ApiBaseController
             $i = 0;
             foreach ($data["applicationEmployeeBenefits"] as $d) {
                 if (!empty($d["icon"])) {
-                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon"], 'https');
+                    $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to(Yii::$app->params->upload_directories->benefits->icon . $d["icon_location"] . DIRECTORY_SEPARATOR . $d["icon_png"], 'https');
                 } else {
                     $data["applicationEmployeeBenefits"][$i]["full_location"] = Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https');
                 }
