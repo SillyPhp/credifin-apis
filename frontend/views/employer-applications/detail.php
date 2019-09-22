@@ -153,6 +153,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'icon_png'=>(($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
     'shortlist'=>$shortlist,
+    'shortlist_btn_display'=>true
 ]);
 ?>
 <section>
@@ -298,6 +299,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'applied'=>$applied,
                     'application_slug'=>$application_details["slug"],
                     'shortlist'=>$shortlist,
+                    'shortlist_btn_display'=>true
                 ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org',[
@@ -315,6 +317,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'applied'=>false,
                         'application_slug'=>$application_details["slug"],
                         'shortlist'=>$shortlist,
+                        'shortlist_btn_display'=>true
                     ]);
               endif;
                 ?>

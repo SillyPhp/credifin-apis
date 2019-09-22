@@ -66,6 +66,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
+            <?php if ($shortlist_btn_display): ?>
                 <div class="sub-actions">
                     <?php
                     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
@@ -96,6 +97,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
+              <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
         <?php
