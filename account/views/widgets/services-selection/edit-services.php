@@ -4,7 +4,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 
 ?>
-<section class="status-activity">
+<section class="status-activity nd-shadow">
     <?php
     $form = ActiveForm::begin([
         'id' => 'services_form',

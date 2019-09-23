@@ -1,5 +1,5 @@
 <input type="hidden" id="parent_enc_id">
-<div class="portlet light ">
+<div class="portlet light nd-shadow">
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>

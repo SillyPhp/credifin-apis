@@ -30,13 +30,12 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
+                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -79,8 +78,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-                'CONCAT("/job/", a.slug, "' . $referral . '") organization_link',
+                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -285,13 +284,12 @@ class ApplicationCards
 
     private static function _getCardsFromInternships($options)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
-                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
+                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -324,8 +322,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") organization_link',
+                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',

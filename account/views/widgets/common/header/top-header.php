@@ -1,14 +1,13 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
+
 ?>
     <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs' . $referral); ?>"><?= Yii::t('account', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships' . $referral); ?>"><?= Yii::t('account', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews' . $referral); ?>"><?= Yii::t('account', 'Reviews'); ?></a></li>
-        <li><a href="<?= Url::to('/blog' . $referral); ?>"><?= Yii::t('account', 'Blog'); ?></a></li>
+        <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('account', 'Jobs'); ?></a></li>
+        <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('account', 'Internships'); ?></a></li>
+        <li><a href="<?= Url::to('/reviews'); ?>"><?= Yii::t('account', 'Reviews'); ?></a></li>
+        <li><a href="<?= Url::to('/blog'); ?>"><?= Yii::t('account', 'Blog'); ?></a></li>
     </ul>
 <?php
 $this->registerCss('

@@ -633,18 +633,37 @@ background: #cadfe8 !important;
 {
 border: 2px solid #cadfe8 !important;
 }  
-.logo-box{
-    height:150px;
-    width:150px;
+//.logo-box{
+//    height:150px;
+//    width:150px;
 //    padding:0 10px;
-    background:#fff;
-    display:block;
-    line-height:150px; 
-    text-align:center;
+//    background:#fff;
+//    display:block;
+//    line-height:150px; 
+//    text-align:center;
+//    border-radius:6px;
+//}  
+.logo-box{
+    height: 150px;
+    width: 150px;
+    padding: 0 10px;
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+.logo-box canvas{
     border-radius:6px;
-}  
-.logo-box img, .logo-box canvas{
-    border-radius:6px;
+}
+.logo-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: top center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 .com-name{
     font-size:38px;

@@ -1,11 +1,10 @@
 <?php
-//$this->params['grid_size'] = 'col-md-12';
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = true;
-//$this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <div id="loading_img">
@@ -32,7 +31,6 @@ $this->params['header_dark'] = true;
                 </div>
             </div>
         </div>
-<!--        <div class="overlay-image i-1"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet1.png');?><!--"/></div>-->
         <div class="overlay-image i-2"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet2.png');?>"/></div>
         <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet3.png');?>"/></div>
         <div class="overlay-image i-4"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?>"/></div>
@@ -46,10 +44,8 @@ $this->params['header_dark'] = true;
             ?>
             <div class="masonry">
                 <div id="twitter_jobs_cards">
-
                 </div>
                 <?php
-
                 foreach ($tweets as $tweet) {
                     ?>
                     <div class="tweet-main">
@@ -79,22 +75,58 @@ $this->params['header_dark'] = true;
                 }
                 ?>
             </div>
-            <?php
-                else:
-                ?>
+            <?php else: ?>
                 <div class="no_tweets_found">
                     <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
                 </div>
-
-            <?php
-            endif;
-            ?>
+            <?php endif; ?>
         </div>
     </div>
 </section>
 <?php
-//echo $this->render('/widgets/twitter-jobs');
+if($type == 'internships') {
+    ?>
+    <div class="re-twitte">
+        <a href="/tweets/internship/create" class="t-btn">
+            <i class="fab fa-twitter"></i>
+            Post Internship Tweet
+        </a>
+    </div>
+    <?php
+} else {
+    ?>
+    <div class="re-twitte">
+        <a href="/tweets/job/create" class="t-btn">
+            <i class="fab fa-twitter"></i>
+            Post Job Tweet
+        </a>
+    </div>
+    <?php
+}
 $this->registerCss("
+.re-twitte{
+	position:fixed;
+	width:225px;
+	height:80px;
+	bottom:0px;
+	right:10px;
+	z-index: 9999;
+}
+.t-btn{
+    position:absolute;
+    right:10px;
+    padding:15px;
+    border:none;
+    background-color:#00a0e3;
+    border-radius:5px;
+    box-shadow:0px 5px 9px 3px skyblue;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+}
+.t-btn:hover, .t-btn:focus{
+    color:#fff;
+}
 .z-index-9{z-index:9;}
 .not-found{
     max-width: 400px;
@@ -248,10 +280,6 @@ margin-top:20px
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0px 2px 10px 2px #eaeaea;
-}
-#load_me
-{
-//display:none;
 }
 
 #loading_img
@@ -412,7 +440,6 @@ float:right;
 }
 ");
 $script = <<< JS
-//$('#loading_img').addClass('show');
 var city = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -449,6 +476,4 @@ $(window).on('load', function() {
 });
 JS;
 $this->registerJs($script);
-//$this->registerJsFile("https://platform.twitter.com/widgets.js", ['position' => \yii\web\View::POS_HEAD]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>

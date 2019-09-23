@@ -17,7 +17,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="portlet light portlet-fit portlet-datatable">
+            <div class="portlet light portlet-fit portlet-datatable nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>

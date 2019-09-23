@@ -125,7 +125,6 @@ class JobsController extends ApiBaseController
                 return $this->response(404);
             }
 
-
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
 
                 $token_holder_id = UserAccessTokens::find()
