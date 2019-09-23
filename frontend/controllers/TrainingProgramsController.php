@@ -2,14 +2,17 @@
 
 namespace frontend\controllers;
 
+use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
+use frontend\models\TrainingAppliedForm;
 use Yii;
 use yii\web\Controller;
 
 class TrainingProgramsController extends Controller
 {
     public function actionDetail($eaidk){
+        $model = new TrainingAppliedForm();
         $application_details = TrainingProgramApplication::find()
             ->where([
                 'slug' => $eaidk,
@@ -50,7 +53,7 @@ class TrainingProgramsController extends Controller
             ->alias('d')
             ->where(['d.application_enc_id'=>$application_details['application_enc_id']])
             ->joinWith(['cityEnc i'],false)
-            ->select(['d.application_enc_id','d.city_enc_id','i.name','d.fees','(CASE
+            ->select(['batch_enc_id','d.application_enc_id','d.city_enc_id','i.name','d.fees','(CASE
                 WHEN d.fees_methods = "1" THEN "Monthly"
                 WHEN d.fees_methods = "2" THEN "Weekly"
                 WHEN d.fees_methods = "3" THEN "Anually"
@@ -60,8 +63,16 @@ class TrainingProgramsController extends Controller
             ->asArray()
             ->all();
         $grouped_cities = [];
+        $grouped = [];
         foreach($batches as $batch){
-            $grouped_cities[$batch['name']][] = $batch;
+                $grouped_cities[$batch['name']][] = $batch;
+        }
+        if (!Yii::$app->user->isGuest) {
+            $applied_jobs = AppliedTrainingApplications::find()
+                ->where(['application_enc_id' => $application_details->application_enc_id])
+                ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
         }
 
         return $this->render('details',[
@@ -70,11 +81,24 @@ class TrainingProgramsController extends Controller
             'application_details' => $application_details,
             'batches' => $batches,
             'grouped_cities' => $grouped_cities,
+            'model' => $model,
+            'applied' => $applied_jobs,
         ]);
     }
 
-    public function actionTest()
+    public function actionApply()
     {
-        return $this->render('detail');
+        $model = new TrainingAppliedForm();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            if ($model->save())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

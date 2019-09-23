@@ -13,6 +13,7 @@ use yii\helpers\Url;
                             <img src="/assets/common/categories/profile/<?= $icon_png; ?>"/>
                         </div>
                         <h3><?= $job_title; ?></h3>
+                    <?php if ($shortlist_btn_display): ?>
                         <div class="job-statistic">
                             <?php
                             if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
@@ -30,6 +31,7 @@ use yii\helpers\Url;
                             }
                             ?>
                         </div>
+            <?php endif; ?>
                     </div>
                 </div>
             </div>
