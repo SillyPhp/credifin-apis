@@ -6,8 +6,10 @@ use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
 use frontend\models\TrainingAppliedForm;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 
 class TrainingProgramsController extends Controller
 {
@@ -100,5 +102,53 @@ class TrainingProgramsController extends Controller
                 return false;
             }
         }
+    }
+
+    public function actionList()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $parameters = Yii::$app->request->post();
+            $options = [];
+
+            if ($parameters['page'] && (int)$parameters['page'] >= 1) {
+                $options['page'] = $parameters['page'];
+            } else {
+                $options['page'] = 1;
+            }
+
+            $options['limit'] = 27;
+
+            if ($parameters['location'] && !empty($parameters['location'])) {
+                $options['location'] = $parameters['location'];
+            }
+
+            if ($parameters['category'] && !empty($parameters['category'])) {
+                $options['category'] = $parameters['category'];
+            }
+
+            if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+                $options['keyword'] = $parameters['keyword'];
+            }
+
+            if ($parameters['company'] && !empty($parameters['company'])) {
+                $options['company'] = $parameters['company'];
+            }
+
+            $cards = ApplicationCards::TraininingCards($options);
+            if (count($cards) > 0) {
+                $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('list');
     }
 }

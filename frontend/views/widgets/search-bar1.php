@@ -16,7 +16,7 @@ use yii\helpers\Url;
                                 ?>
                                 <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword'); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="Job Title or Keywords or Company" class="form-control">
+                                        <input type="text" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
