@@ -13,6 +13,7 @@ use Yii;
  * @property string $institute School/College/University Name
  * @property string $field Field
  * @property string $degree Degree
+ * @property double $cgpa cgpa
  * @property string $from_date From Date
  * @property string $to_date To Date
  * @property string $created_on On which date User Education information was added to database
@@ -38,6 +39,7 @@ class UserEducation extends \yii\db\ActiveRecord
         return [
             [['education_enc_id', 'user_enc_id', 'institute', 'degree', 'from_date', 'created_by'], 'required'],
             [['degree'], 'string'],
+            [['cgpa'], 'number'],
             [['from_date', 'to_date', 'created_on', 'last_updated_on'], 'safe'],
             [['education_enc_id', 'user_enc_id', 'institute', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['field'], 'string', 'max' => 50],

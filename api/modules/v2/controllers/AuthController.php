@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
+use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
@@ -69,6 +70,20 @@ class AuthController extends ApiBaseController{
             if($model->login()){
                 $source = Yii::$app->request->post()['source'];
                 $user = $this->findUser($model);
+                if($user->organization_enc_id){
+                    $user_type = Users::find()
+                        ->alias('a')
+                        ->select(['a.user_enc_id','a.organization_enc_id','c.business_activity type'])
+                        ->joinWith(['organizationEnc b'=>function($b){
+                            $b->joinWith(['businessActivityEnc c']);
+                        }],false)
+                        ->where(['a.user_enc_id'=>$user->user_enc_id,'b.is_erexx_registered'=>1,'b.is_deleted'=>0])
+                        ->asArray()
+                        ->one();
+                    if($user_type['type'] != 'College'){
+                        return false;
+                    }
+                }
                 $token = $this->findToken($user, $source);
                 if(empty($token)){
                     if($token=$this->newToken($user->user_enc_id,$source)){
@@ -190,6 +205,11 @@ class AuthController extends ApiBaseController{
             ->one();
 
         if(!empty($find_user)){
+            $user_type = Users::find()
+                ->where(['!=','organization_enc_id','null'])
+                ->exists();
+
+
             $user_detail = Users::find()
                 ->alias('a')
                 ->select(['a.first_name','a.last_name','a.username','a.phone','a.email','a.initials_color','b.user_type','c.name city_name','e.name org_name','d.organization_enc_id'])

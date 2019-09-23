@@ -41,17 +41,11 @@ class IndividualSignup extends Model
         return [
             [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year'], 'safe'],
 
-            ['first_name', 'required'],
-            ['first_name', 'trim'],
-            ['last_name', 'required'],
-            ['last_name', 'trim'],
+            [['first_name','last_name','phone','username','email'], 'required'],
+            [['first_name','last_name','phone','username','email'], 'trim'],
 
-            ['phone', 'required'],
-            [['phone'], 'required'],
             ['phone', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'phone number already registered'],
 
-            ['username', 'trim'],
-            ['username', 'required'],
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             ['username', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'username already taken'],
@@ -59,8 +53,6 @@ class IndividualSignup extends Model
             ['starting_year', 'safe'],
             ['ending_year', 'safe'],
 
-            ['email', 'trim'],
-            ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'email already taken'],
 

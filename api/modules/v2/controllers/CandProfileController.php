@@ -25,6 +25,11 @@ use yii\helpers\Url;
 use common\models\Utilities;
 use yii\web\UploadedFile;
 use yii\filters\auth\HttpBearerAuth;
+use yii\web\Response;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\filters\ContentNegotiator;
 
 class CandProfileController extends ApiBaseController
 {
@@ -32,22 +37,9 @@ class CandProfileController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'except' => [
-                'get-user-prefs',
-                'get-industry',
-                'get-skills',
-                'save-basic-info',
-                'save-applications',
-                'upload-profile-picture',
-                'profile-picture',
-                'profiles',
-                'get-cities'
-            ],
-            'class' => HttpBearerAuth::className()
-        ];
+
         $behaviors['verbs'] = [
-            'class' => \yii\filters\VerbFilter::className(),
+            'class' => VerbFilter::className(),
             'actions' => [
                 'get-user-prefs' => ['POST', 'OPTIONS'],
                 'get-industry' => ['POST', 'OPTIONS'],
@@ -60,34 +52,38 @@ class CandProfileController extends ApiBaseController
                 'profiles' => ['POST', 'OPTIONS'],
             ]
         ];
+
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['http://127.0.0.1:5500'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
         return $behaviors;
     }
 
     public function actionGetUserPrefs()
     {
+        if ($user = $this->isAuthorized()) {
+            $id = $user->user_enc_id;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("HTTP/1.1 202 Accepted");
-            exit;
+            $result = [];
+
+            $job_prefs = $this->getPrefs($id, 'Jobs');
+
+            $result['job_prefs'] = $job_prefs;
+
+            $intern_prefs = $this->getPrefs($id, 'Internships');
+
+            $result['intern_prefs'] = $intern_prefs;
+
+            return $this->response(200, $result);
+        } else {
+            return $this->response(401);
         }
-
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
-
-        $id = $token_holder_id->user_enc_id;
-
-        $result = [];
-
-        $job_prefs = $this->getPrefs($id, 'Jobs');
-
-        $result['job_prefs'] = $job_prefs;
-
-        $intern_prefs = $this->getPrefs($id, 'Internships');
-
-        $result['intern_prefs'] = $intern_prefs;
-
-        return $this->response(200, $result);
     }
 
     private function getPrefs($id, $type)
@@ -172,92 +168,80 @@ class CandProfileController extends ApiBaseController
 
     public function actionSaveBasicInfo()
     {
+        if ($user = $this->isAuthorized()) {
+            $city_enc_id = '';
+            $req = Yii::$app->request->post();
+            if ($req['location']) {
+                $city_id = Cities::findone([
+                    'name' => $req['location']
+                ]);
 
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("HTTP/1.1 202 Accepted");
-            exit;
-        }
-
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
-
-        $city_enc_id = '';
-        $req = Yii::$app->request->post();
-        if ($req['location']) {
-            $city_id = Cities::findone([
-                'name' => $req['location']
-            ]);
-
-            $city_enc_id = $city_id->city_enc_id;
-        }
-
-        if (!empty($city_enc_id)) {
-            $update = Yii::$app->db->createCommand()
-                ->update(Users::tableName(), ['city_enc_id' => $city_enc_id], ['user_enc_id' => $token_holder_id->user_enc_id])
-                ->execute();
-            if ($update) {
-                return $this->response(200, ['status' => 200]);
-            } else {
-                print_r($update->getErrors());
+                $city_enc_id = $city_id->city_enc_id;
             }
+
+            if (!empty($city_enc_id)) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(Users::tableName(), ['city_enc_id' => $city_enc_id,'last_updated_on'=>Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
+                    ->execute();
+                if ($update) {
+                    return $this->response(200, ['status' => 200]);
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return $this->response(401);
         }
     }
 
     public function actionSaveApplications()
     {
+        if ($user = $this->isAuthorized()) {
+            $user_id = $user->user_enc_id;
 
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("HTTP/1.1 202 Accepted");
-            exit;
-        }
+            if ($reqq = Yii::$app->request->post()) {
 
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
+                foreach ($reqq as $req) {
 
-        $user_id = $token_holder_id->user_enc_id;
+                    if ($req['for'] == "Jobs") {
+                        $user = UserPreferences::find()
+                            ->where(['created_by' => $user_id])
+                            ->andWhere(['assigned_to' => 'Jobs'])
+                            ->one();
 
-        if ($reqq = Yii::$app->request->post()) {
-
-            foreach ($reqq as $req) {
-
-                if ($req['for'] == "Jobs") {
-                    $user = UserPreferences::find()
-                        ->where(['created_by' => $user_id])
-                        ->andWhere(['assigned_to' => 'Jobs'])
-                        ->one();
-
-                    if ($user) {
-                        $a = $this->updateData($req, $user_id);
+                        if ($user) {
+                            $a = $this->updateData($req, $user_id);
 //                        if ($this->updateData($req, $user_id)) {
 //                            return $this->response(200);
 //                        }
-                    } else {
-                        $b = $this->saveData($req, $user_id);
+                        } else {
+                            $b = $this->saveData($req, $user_id);
 //                        if ($this->saveData($req, $user_id)) {
 //                            return $this->response(200);
 //                        }
-                    }
-                }
-
-                if ($req['for'] == "Internships") {
-                    $user = UserPreferences::find()
-                        ->where(['created_by' => $user_id])
-                        ->andWhere(['assigned_to' => 'Internships'])
-                        ->one();
-
-                    if ($user) {
-                        if ($this->updateData($req, $user_id)) {
-                            return $this->response(200);
                         }
-                    } else {
-                        if ($this->saveData($req, $user_id)) {
-                            return $this->response(200);
+                    }
+
+                    if ($req['for'] == "Internships") {
+                        $user = UserPreferences::find()
+                            ->where(['created_by' => $user_id])
+                            ->andWhere(['assigned_to' => 'Internships'])
+                            ->one();
+
+                        if ($user) {
+                            if ($this->updateData($req, $user_id)) {
+                                return $this->response(200);
+                            }
+                        } else {
+                            if ($this->saveData($req, $user_id)) {
+                                return $this->response(200);
+                            }
                         }
                     }
                 }
             }
+        } else {
+            return $this->response(401);
         }
     }
 
@@ -560,19 +544,19 @@ class CandProfileController extends ApiBaseController
 
     public function actionUploadProfilePicture()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("HTTP/1.1 202 Accepted");
-            exit;
-        }
-        $pictureModel = new ProfilePicture();
-        $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
-        if ($pictureModel->profile_image && $pictureModel->validate()) {
-            if ($pictureModel->update()) {
-                return $this->response(200);
+        if ($user = $this->isAuthorized()) {
+            $pictureModel = new ProfilePicture();
+            $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
+            if ($pictureModel->profile_image && $pictureModel->validate()) {
+                if ($pictureModel->update()) {
+                    return $this->response(200);
+                }
+                return $this->response(500);
+            } else {
+                return $this->response(409);
             }
-            return $this->response(500);
         } else {
-            return $this->response(409);
+            return $this->response(401);
         }
     }
 
@@ -646,22 +630,18 @@ class CandProfileController extends ApiBaseController
     public function actionProfilePicture()
     {
 
-        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-            header("HTTP/1.1 202 Accepted");
-            exit;
-        }
+        if ($user = $this->isAuthorized()) {
+            $candidate = Candidates::findOne([
+                'user_enc_id' => $user->user_enc_id
+            ]);
 
-        $token_holder_id = UserAccessTokens::findOne([
-            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
-        ]);
-        $candidate = Candidates::findOne([
-            'user_enc_id' => $token_holder_id->user_enc_id
-        ]);
-
-        if (!empty($candidate->image_location)) {
-            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
+            if (!empty($candidate->image_location)) {
+                return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
+            } else {
+                return '';
+            }
         } else {
-            return '';
+            return $this->response(401);
         }
     }
 }
