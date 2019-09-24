@@ -55,7 +55,7 @@ if (!empty($total_applications)) {
                                      class="img-responsive ">
                             </div>
                             <div class="hr-com-name">
-                                <?= $applications[$next]['title']; ?> 
+                                <?= $applications[$next]['title']; ?>
                             </div>
                             <div class="hr-com-field">
                                 <?php
