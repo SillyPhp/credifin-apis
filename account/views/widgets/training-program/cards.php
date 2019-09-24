@@ -59,8 +59,8 @@ if (!empty($total_applications)) {
                             </div>
                             <div class="hr-com-field">
                                 <?php
-                                if (!empty($applications[$next]['total_seats'])):
-                                    echo $applications[$next]['total_seats'].' Seats';
+                                if (!empty($applications[$next]['totalSeats'])):
+                                    echo $applications[$next]['totalSeats'][0]['total'].' Seats';
                                 else:
                                     echo 'No Seats Avialable';
                                 endif;
