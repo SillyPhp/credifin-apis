@@ -476,7 +476,7 @@ class JobsController extends ApiBaseController
 
         $organizations = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,  'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'a.initials_color color'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['businessActivityEnc c'], false)
             ->joinWith(['industryEnc d'], false)
