@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
         <!-- Modal content -->
         <div class="appliedModal-content">
-            <span class="applied-close">&times;</span>
+            <span class="applied-close" data-dismiss="modal">&times;</span>
             <div class="appcon-center">
                 <div class="row">
                     <div class="col-md-12">
@@ -111,7 +111,7 @@ $this->registerCss('
 .appliedModal {
   display: none;
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   left: 0;
   top: 0;
   width: 100%; 
