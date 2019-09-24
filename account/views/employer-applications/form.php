@@ -233,6 +233,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
 </div>
 <div class="fader"></div>
 <?php
+echo $this->render('/widgets/campus-placement/select-college-for-campus-placement');
 $this->registerCss("
 .g-pref{
     display:block;

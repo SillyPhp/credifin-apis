@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
 <section>
     <div class="row">
@@ -37,6 +38,16 @@ use yii\helpers\Url;
                         <?= Yii::t('account', 'Create Quick Job'); ?>
                     </a>
                 </div>
+                <?php
+                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+                    ?>
+                    <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                    <a class="btn btn-primary custom-buttons" data-toggle="modal" data-target="#select-colleges">
+                        <?= Yii::t('account', 'Select Colleges'); ?>
+                    </a>
+                    </div><?php
+                }
+                ?>
             <?php elseif ($for == 'Internships'): ?>
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/questionnaire/create'); ?>">
@@ -50,7 +61,8 @@ use yii\helpers\Url;
                 </div>
             <?php elseif ($for == 'Trainings'): ?>
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
-                    <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/training-program/create'); ?>">
+                    <a class="btn btn-primary custom-buttons"
+                       href="<?= Url::to('/account/training-program/create'); ?>">
                         <?= Yii::t('account', 'Create Training Program'); ?>
                     </a>
                 </div>
