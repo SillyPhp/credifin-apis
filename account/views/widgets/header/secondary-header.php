@@ -42,7 +42,7 @@ use yii\helpers\Url;
                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
                     ?>
                     <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
-                    <a class="btn btn-primary custom-buttons" data-toggle="modal" data-target="#select-colleges">
+                    <a class="btn btn-primary custom-buttons" data-toggle="modal" data-target="#select-colleges-modal">
                         <?= Yii::t('account', 'Select Colleges'); ?>
                     </a>
                     </div><?php
