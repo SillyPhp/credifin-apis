@@ -810,7 +810,7 @@ class JobsController extends ApiBaseController
             ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $candidate->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
             ->execute();
         if ($update) {
-            return $this->response(201);
+            return $this->response(201,'data saved');
         } else {
             return $this->response(500, 'error occured while updating applied applications');
         }
