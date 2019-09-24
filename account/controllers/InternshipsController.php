@@ -415,7 +415,6 @@ class InternshipsController extends Controller
         }
     }
 
-
     public function actionPendingDelete()
     {
         if (Yii::$app->request->isPost) {
@@ -446,7 +445,6 @@ class InternshipsController extends Controller
             }
         }
     }
-
 
     public function actionShortlistDelete()
     {
@@ -951,6 +949,7 @@ class InternshipsController extends Controller
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__internships(8),
+            'erexx_applications' => $this->__erexxInternships(8),
             'closed_application' => $this->__closedinternships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships', 10),
@@ -987,6 +986,29 @@ class InternshipsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
+                'a.application_for' => 1,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __erexxInternships($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'internships',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 2,
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')

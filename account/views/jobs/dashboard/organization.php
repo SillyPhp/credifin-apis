@@ -11,7 +11,7 @@ echo $this->render('/widgets/header/secondary-header', [
         <?=
         $this->render('/widgets/jobs/stats', [
             'questionnaire' => $questionnaire,
-            'applications' => $applications,
+            'applications' => $applications['total'] + $erexx_applications['total'],
             'interview_processes' => $interview_processes,
             'total_applied' => $total_applied,
             'viewed'=>$viewed,
@@ -45,6 +45,38 @@ echo $this->render('/widgets/header/secondary-header', [
                     } else {
                         ?>
                         <h3>No Active Jobs</h3>
+                    <?php }
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 col-xs-12 col-sm-12">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase">Active Erexx Jobs</span>
+                    </div>
+                    <div class="actions">
+                        <a href="<?= Url::toRoute('/jobs/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <?php if ($erexx_applications['total'] > 8): ?>
+                            <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <?php
+                    if ($erexx_applications['total'] > 0) {
+                        echo $this->render('/widgets/applications/card', [
+                            'applications' => $erexx_applications['data'],
+                            'per_row' => 4,
+                        ]);
+                    } else {
+                        ?>
+                        <h3>No Active Erexx Jobs</h3>
                     <?php }
                     ?>
                 </div>

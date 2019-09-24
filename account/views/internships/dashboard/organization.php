@@ -12,7 +12,7 @@ echo $this->render('/widgets/header/secondary-header', [
         <?=
         $this->render('/widgets/internships/stats', [
             'questionnaire' => $questionnaire,
-            'applications' => $applications,
+            'applications' => $applications['total'] + $erexx_applications['total'],
             'interview_processes' => $interview_processes,
             'total_applied' => $total_applied,
             'viewed'=>$viewed,
@@ -39,6 +39,37 @@ echo $this->render('/widgets/header/secondary-header', [
                     if ($applications['total'] > 0) {
                         echo $this->render('/widgets/applications/card', [
                             'applications' => $applications['data'],
+                            'per_row' => 4,
+                            'col_width' => 'col-lg-3 col-md-3 col-sm-3',
+                        ]);
+                    } else {
+                        ?>
+                        <h3>No Active Internships</h3>
+                    <?php }
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12 col-xs-12 col-sm-12">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
+                    </div>
+                    <div class="actions">
+                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <?php if ($erexx_applications['total'] > 8): ?>
+                            <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <?php
+                    if ($erexx_applications['total'] > 0) {
+                        echo $this->render('/widgets/applications/card', [
+                            'applications' => $erexx_applications['data'],
                             'per_row' => 4,
                             'col_width' => 'col-lg-3 col-md-3 col-sm-3',
                         ]);

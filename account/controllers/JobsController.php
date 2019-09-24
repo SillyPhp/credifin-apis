@@ -485,7 +485,6 @@ class JobsController extends Controller
         }
     }
 
-
     public function actionReviewDelete()
     {
         if (Yii::$app->request->isPost) {
@@ -629,7 +628,6 @@ class JobsController extends Controller
         }
 
     }
-
 
     public function actionOrgDelete()
     {
@@ -1019,6 +1017,7 @@ class JobsController extends Controller
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__jobs(8),
+            'erexx_applications' => $this->__erexxJobs(8),
             'closed_application' => $this->__closedjobs(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
@@ -1028,7 +1027,6 @@ class JobsController extends Controller
             'primary_fields' => $this->getCategories()
         ]);
     }
-
 
     private function getCategories()
     {
@@ -1068,6 +1066,7 @@ class JobsController extends Controller
             return $this->redirect('/');
         endif;
     }
+
     private function __organizationJobs()
     {
         return $this->render('list/organization', [
@@ -1082,6 +1081,29 @@ class JobsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
+                'a.application_for' => 1,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __erexxJobs($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 2,
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')
