@@ -31,7 +31,7 @@ class TrainingProgramsController extends Controller
                 ->distinct()
                 ->groupBy('d.id')
                 ->where(['a.application_enc_id' => $application_details['application_enc_id']])
-                ->select(['a.application_enc_id','SUM(d.seats) total_seats','a.description','a.training_duration','a.training_duration_type','l.name','c.name as cat_name', 'l.name', 'l.icon_png',])
+                ->select(['a.application_enc_id','a.description','a.training_duration','a.training_duration_type','l.name','c.name as cat_name', 'l.name', 'l.icon_png',])
                 ->joinWith(['title0 b'=>function($b)
                 {
                     $b->joinWith(['parentEnc l'], false);
@@ -51,6 +51,8 @@ class TrainingProgramsController extends Controller
                 }])
                 ->asArray()
                 ->one();
+        $command = Yii::$app->db->createCommand("SELECT sum(seats) FROM {{%training_program_batches}} where application_enc_id = '{$application_details['application_enc_id']}'");
+        $sum = $command->queryScalar();
         $batches = TrainingProgramBatches::find()
             ->alias('d')
             ->where(['d.application_enc_id'=>$application_details['application_enc_id']])
@@ -85,6 +87,7 @@ class TrainingProgramsController extends Controller
             'grouped_cities' => $grouped_cities,
             'model' => $model,
             'applied' => $applied_jobs,
+            'total_seats' => $sum,
         ]);
     }
 

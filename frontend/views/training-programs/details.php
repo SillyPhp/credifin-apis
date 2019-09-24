@@ -83,7 +83,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     <span><?= $data['training_duration'] . ' ' . $duration ?></span></li>
                                 <li><i class="fas fa-chart-line"></i>
                                     <h3>Total Seats</h3>
-                                    <span><?= $data['total_seats'] ?></span></li>
+                                    <span><?= $total_seats ?></span></li>
                             </ul>
                         </div>
                     </div>
