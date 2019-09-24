@@ -38,7 +38,13 @@ class ResumeUpload extends Model{
         $userResumeModel->resume_location = Yii::$app->getSecurity()->generateRandomString();
         $base_path = Yii::$app->params->upload_directories->resume->file_path . $userResumeModel->resume_location;
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $userResumeModel->resume = $utilitiesModel->encrypt() . '.' . $resume_ext;
+
+        $encrypted_string = $utilitiesModel->encrypt();
+        if(substr($encrypted_string,-1) == '.'){
+            $encrypted_string = substr($encrypted_string,0,-1);
+        }
+
+        $userResumeModel->resume = $encrypted_string . '.' . $resume_ext;
         $userResumeModel->title = $resume_name . '.' . $resume_ext;
         $userResumeModel->alt = $resume_name . '.' . $resume_ext;
         $userResumeModel->created_on = date('Y-m-d h:i:s');

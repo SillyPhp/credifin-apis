@@ -39,7 +39,13 @@ class PictureUpload extends Model{
             $user->image_location = \Yii::$app->getSecurity()->generateRandomString();
             $base_path = Yii::$app->params->upload_directories->users->image_path . $user->image_location;
             $utilitiesModel->variables['string'] = time(). rand(100, 100000);
-            $user->image = $utilitiesModel->encrypt() . '.png';
+
+            $encrypted_string = $utilitiesModel->encrypt();
+            if(substr($encrypted_string,-1) == '.'){
+                $encrypted_string = substr($encrypted_string,0,-1);
+            }
+
+            $user->image = $encrypted_string . '.png';
             if($user->update()){
                 if(!is_dir($base_path)){
                     if(mkdir($base_path, 0755, true)){

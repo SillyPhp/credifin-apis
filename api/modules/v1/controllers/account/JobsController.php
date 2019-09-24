@@ -505,7 +505,7 @@ class JobsController extends ApiBaseController
                 'b.initials_color',
                 'c.industry',
                 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-            ->joinWith(['organizationEnc b' => function ($a) {
+            ->innerJoinWith(['organizationEnc b' => function ($a) {
                 $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);
             }], false)
