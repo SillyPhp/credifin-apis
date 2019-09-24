@@ -324,8 +324,9 @@ $script = <<< JS
                         });
                      }
                     else if(res.status == true)
-                      {
-                          swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
+                      { 
+                         $('#appliedModal').modal('show') 
+                          // swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
                         applied();
                       }
                       else
