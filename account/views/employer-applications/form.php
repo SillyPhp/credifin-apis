@@ -233,7 +233,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
 </div>
 <div class="fader"></div>
 <?php
-echo $this->render('/widgets/campus-placement/select-college-for-campus-placement');
+echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
+        'colleges' => $colleges,
+]);
 $this->registerCss("
 .g-pref{
     display:block;
@@ -1718,6 +1720,11 @@ window.ChildFunction = ChildFunction;
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
+            setTimeout(function() {
+                $('.m-modal, .m-cover').removeClass("hidden");
+                $('.m-modal').addClass("zoom");
+            }, 500);
+            return false;
              var url =  $('#submit_form').attr('action');
              var data = $('#submit_form').serialize()+'&n='+session_tok;
                   $.ajax({
@@ -1736,7 +1743,7 @@ window.ChildFunction = ChildFunction;
                     function explode(){
                      window.location.replace(redirect_url); 
                      }
-                       setTimeout(explode, 2000); 
+                       setTimeout(explode, 2000);
                      }
                      else {
                      $('#loading_img').removeClass('show');

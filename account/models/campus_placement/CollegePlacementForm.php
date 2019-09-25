@@ -24,9 +24,13 @@ class CollegePlacementForm extends Model
 
     public function save()
     {
+        if (!$this->validate()) {
+            return false;
+        }
+
         $already_saved_college = ErexxCollaborators::find()
             ->select(['college_enc_id'])
-            ->where(['organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id,'is_deleted'=>0])
+            ->where(['organization_enc_id'=>Yii::$app->user->identity->organization->organization_enc_id, 'is_deleted' => 0])
             ->asArray()
             ->all();
 
@@ -71,16 +75,27 @@ class CollegePlacementForm extends Model
     }
 
     private function addCollege($id){
-        $utilitiesModel = new Utilities();
-        $erexxCollaboratorsModel = new ErexxCollaborators();
-        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-        $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
-        $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-        $erexxCollaboratorsModel->college_enc_id = $id;
-        $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
-        $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
-        if (!$erexxCollaboratorsModel->save()) {
-            return false;
+        $college = ErexxCollaborators::find()
+            ->where(['college_enc_id'=>$id])
+            ->one();
+        if(!empty($college) && $college->is_deleted == 1){
+            $college->is_deleted = 0;
+            $college->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            if(!$college->update()){
+                return false;
+            }
+        } else {
+            $utilitiesModel = new Utilities();
+            $erexxCollaboratorsModel = new ErexxCollaborators();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+            $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+            $erexxCollaboratorsModel->college_enc_id = $id;
+            $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+            $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if (!$erexxCollaboratorsModel->save()) {
+                return false;
+            }
         }
     }
 
@@ -88,8 +103,11 @@ class CollegePlacementForm extends Model
         $college = ErexxCollaborators::find()
             ->where(['college_enc_id'=>$id])
             ->one();
-
-        $college->is_deleted = 1;
+        if($college->is_deleted == 0) {
+            $college->is_deleted = 1;
+        } else{
+            $college->is_deleted = 0;
+        }
         $college->last_updated_by = Yii::$app->user->identity->user_enc_id;
         if(!$college->update()){
             return false;

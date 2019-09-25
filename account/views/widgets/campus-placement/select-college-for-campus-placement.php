@@ -1,7 +1,7 @@
 <div class='m-cover hidden'></div>
 <div class='m-modal hidden'>
     <div class='m-content'>
-        <img src='https://ajay.eygb.me/assets/themes/ey/images/pages/jobs/submitted.png'/>
+        <img src='/assets/themes/ey/images/pages/jobs/submitted.png'/>
         <p>Do you want to create this job for Campus placment?</p>
         <div class='m-actions'>
             <a href='javascript:;' class="choose-next">Yes</a>
@@ -12,52 +12,7 @@
 <div class='m-modal2 hidden'>
     <div class='m-content'>
         <div class="form-group select-app-for">
-            <h4>Choose application for</h4>
-            <input type="radio" name="college" id="all" value="1"/>
-            <label for="all">All Colleges</label>
-            <input type="radio" name="college" id="c-select" value="0"/>
-            <label for="c-select">Choose Colleges</label>
-        </div>
-        <div class="college-list hidden">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="one"/>
-                    <label for="one">Colleges one</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="two"/>
-                    <label for="two">Colleges Two</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="three"/>
-                    <label for="three">Colleges Three</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="four"/>
-                    <label for="four">Colleges Four</label>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="five"/>
-                    <label for="five">Colleges Five</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="six"/>
-                    <label for="six">Colleges Six</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="seven"/>
-                    <label for="seven">Colleges Seven</label>
-                </div>
-                <div class="form-group">
-                    <input type="checkbox" name="colleges" id="eight"/>
-                    <label for="eight">Colleges Eight</label>
-                </div>
-            </div>
-        </div>
-        <div class='m-actions'>
-            <a href='javascript:;' id="submit-cl">Submit</a>
+            <h4><i class="fas fa-circle-notch fa-spin fa-fw"></i> Loading..</h4>
         </div>
     </div>
 </div>
@@ -87,6 +42,7 @@ $this->registerCss("
     left: 0;
     right: 0;
     margin: auto;
+    overflow: hidden;
 }
 .m-modal .m-content p, .m-modal2 .m-content p {
     font-size: 1.3em;
@@ -104,7 +60,7 @@ $this->registerCss("
     animation-fill-mode: forwards;
     box-shadow:0px 2px 10px 2px #dcdcdcc7;
 }
-.m-actions a {
+.m-actions a, .m-actions button {
     display: inline-block;
     border: 1px solid #ddd;
     padding: 7px 25px;
@@ -180,12 +136,12 @@ $this->registerCss("
 }
 ");
 $script = <<< JS
-$(document).on('click', '#openn', function(){
-    setTimeout(function() {
-        $('.m-modal, .m-cover').removeClass("hidden");
-        $('.m-modal').addClass("zoom");
-    }, 500);
-});
+// $(document).on('click', '#openn', function(){
+//     setTimeout(function() {
+//         $('.m-modal, .m-cover').removeClass("hidden");
+//         $('.m-modal').addClass("zoom");
+//     }, 500);
+// });
 $(document).on('click', '.choose-next', function(e){
     e.preventDefault();
     setTimeout(function() {
@@ -194,6 +150,7 @@ $(document).on('click', '.choose-next', function(e){
         $('.m-modal2, .m-cover').removeClass("hidden");
         $('.m-modal2').addClass("zoom");
     }, 500);
+    $(".m-modal2 .m-content").load('/account/jobs/get-colleges');
 });
 $(document).on('change', 'input[name=college]', function(){
     var val = $(this).attr('value');

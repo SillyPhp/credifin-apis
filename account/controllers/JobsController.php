@@ -512,6 +512,21 @@ class JobsController extends Controller
         }
     }
 
+    public function actionGetColleges(){
+        if (Yii::$app->request->isAjax) {
+            $colleges = ErexxCollaborators::find()
+                ->alias('a')
+                ->select(['a.college_enc_id', 'b.name'])
+                ->joinWith(['collegeEnc b'], false)
+                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            return $this->renderAjax('/employer-applications/college-list',[
+                'colleges' => $colleges,
+            ]);
+        }
+    }
+
     public function actionApproveCandidate()
     {
         if (Yii::$app->request->isPost) {
@@ -1171,6 +1186,14 @@ class JobsController extends Controller
                     ];
                 }
             }
+        }
+    }
+
+    public function actionApplicationCollegesSubmit()
+    {
+        if (Yii::$app->request->isAjax) {
+            print_r(Yii::$app->request->post());
+            exit();
         }
     }
 

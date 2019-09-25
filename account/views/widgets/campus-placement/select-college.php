@@ -12,13 +12,13 @@ $college = ArrayHelper::map($colleges, 'organization_enc_id', 'name');
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title"><?= Yii::t('account', 'Add Employee'); ?></h4>
+                    <h4 class="modal-title"><?= Yii::t('account', 'Add Colleges'); ?></h4>
                 </div>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'select-college-form',
                     'fieldConfig' => [
-                        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}{error}</div>",
+                        'template' => "<div class=''>{input}{label}{hint}{error}</div>",
                     ]
                 ]);
                 ?>
@@ -56,7 +56,11 @@ $college = ArrayHelper::map($colleges, 'organization_enc_id', 'name');
     </div>
 <?php
 $this->registerCss('
-
+.has-error div > .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);  
+}
 ');
 $script = <<< JS
 $(document).on('submit', '#select-college-form', function (event) {
@@ -73,17 +77,17 @@ $(document).on('submit', '#select-college-form', function (event) {
         type: 'post',
         data: data,
         beforeSend: function (){
-            // $('.sav_benft').prop('disabled', 'disabled');
+            // $('.submit-colleges').prop('disabled', 'disabled');
         },
         success: function (response) {
-            if (response.status == 'success') {
+            if (response.status == 200) {
                 toastr.success(response.message, response.title);
                 // $("#select-college-form")[0].reset();
                 // $.pjax.reload({container: '#pjax_benefits', async: false});
             } else {
                 toastr.error(response.message, response.title);
             }
-            $('#modal_benefit').modal('toggle');
+            $('#select-colleges-modal').modal('toggle');
         },
         complete: function() {
         me.data('requestRunning', false);
