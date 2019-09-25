@@ -72,6 +72,7 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
     </div>
 </div>
 <?php
+echo $this->render('/widgets/employer_applications/applied-modal');
 $this->registerCss("
     .inputGroup {
       background-color: #fff;
@@ -324,8 +325,9 @@ $script = <<< JS
                         });
                      }
                     else if(res.status == true)
-                      {
-                          swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
+                      { 
+                         $('#appliedModal').modal('show');
+                          // swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
                         applied();
                       }
                       else

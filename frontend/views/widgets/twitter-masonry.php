@@ -135,7 +135,7 @@ $this->registerCss('
     margin-top:69px !important;
 }
 .ts-Skills{
-    color:#f2f2f2;
+    color:#f2f2f2; 
     font-size: 18px;
 }
 .ts-salary{
@@ -362,28 +362,29 @@ twitter-widget[style]{
 
     let btn = document.querySelectorAll(".myBtn");
     for (let i = 0; i <= btn.length; i++) {
-        btn[i].addEventListener('click', function (e) {
-            modal.style.display = "block";
-            let target = e.target || e.rootElement;
-            let cl = target.closest('.tweet-org-deatail').nextElementSibling.querySelector('twitter-widget').getAttribute('data-tweet-id');
-            twttr.widgets.createTweet(
-                cl,
-                document.getElementById('clickedTweet'),
-            )
-        });
-        let span = document.getElementsByClassName("Tweetclose")[0];
-        span.onclick = function () {
-            modal.style.display = "none";
-            document.getElementById('clickedTweet').innerHTML = null
-        };
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
+        if (btn[i]){
+            btn[i].addEventListener('click', function (e) {
+                modal.style.display = "block";
+                let target = e.target || e.rootElement;
+                let cl = target.closest('.tweet-org-deatail').nextElementSibling.querySelector('twitter-widget').getAttribute('data-tweet-id');
+                twttr.widgets.createTweet(
+                    cl,
+                    document.getElementById('clickedTweet'),
+                )
+            });
+            let span = document.getElementsByClassName("Tweetclose")[0];
+            span.onclick = function () {
                 modal.style.display = "none";
                 document.getElementById('clickedTweet').innerHTML = null
+            };
 
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                    document.getElementById('clickedTweet').innerHTML = null
+
+                }
             }
         }
-
     }
 </script>

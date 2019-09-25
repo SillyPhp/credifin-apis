@@ -3,6 +3,7 @@
 namespace account\controllers;
 use account\models\applications\ApplicationForm;
 use account\models\training_program\TrainingProgram;
+use account\models\training_program\UserAppliedTraining;
 use common\models\TrainingProgramApplication;
 use yii\web\Response;
 use Yii;
@@ -38,8 +39,10 @@ class TrainingProgramController extends Controller
 
     private function __organizationDashboard()
     {
+        $userApplied = new UserAppliedTraining();
         return $this->render('dashboard/organization', [
-            'applications'=>$this->__trainings(8)
+            'applications'=>$this->__trainings(8),
+            'total_applied' => $userApplied->total_applied(),
         ]);
     }
 

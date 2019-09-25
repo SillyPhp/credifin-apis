@@ -49,6 +49,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     'job_title' => $data['cat_name'],
     'icon_png' => $data['icon_png'],
     'shortlist' => $shortlist,
+    'shortlist_btn_display'=>false
 ]);
 ?>
 <section>
@@ -82,7 +83,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     <span><?= $data['training_duration'] . ' ' . $duration ?></span></li>
                                 <li><i class="fas fa-chart-line"></i>
                                     <h3>Total Seats</h3>
-                                    <span><?= $data['total_seats'] ?></span></li>
+                                    <span><?= $total_seats ?></span></li>
                             </ul>
                         </div>
                     </div>
@@ -159,13 +160,11 @@ $this->render('/widgets/employer_applications/top-banner', [
                                                     </li>
                                                 </ul>
                                             </div>
-<!--                                            <div class="row">-->
                                                 <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
                                                     <div class="working-time-from">
                                                         <?= date("H:i", strtotime($batches['start_time'])); ?> To <?= date("H:i", strtotime($batches['end_time'])); ?>
-                                    </div>
+                                                    </div>
                                                 </div>
-<!--                                            </div>-->
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -195,16 +194,40 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'applied' => $applied,
                     'application_slug' => $application_details["slug"],
                     'shortlist' => $shortlist,
+                    'shortlist_btn_display'=>false
                 ]); ?>
             </div>
         </div>
     </div>
-    <?php
-    if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-        //echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn']);
-    }
-    ?>
 </section>
+<div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <?php $form = ActiveForm::begin(['id' => 'training_form']); ?>
+            <div class="modal-header">
+                <h4 class="modal-title">Fill Out The Details</h4>
+            </div>
+            <div class="modal-body pt-0">
+                <?= $form->field($model, 'application_id', ['template' => '{input}'])->hiddenInput(['id'=>'application_id','value'=>$application_details['application_enc_id']]) ?>
+                <?php foreach ($grouped_cities as $key => $g){
+                    echo "<label class='location_batches'>".$key."</label>";
+                    ?>
+                    <ul class="batch-items">
+                    <?php foreach ($g as $key => $b){
+                        ?>
+                    <li><input type="checkbox" name="batch_id[]" value="<?=$b['batch_enc_id'] ?>"> Batch <?= ($key+1); ?></li>
+                     <?php } ?>
+                    </ul>
+               <?php } ?>
+            </div>
+            <div class="modal-footer">
+                <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
+                <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
+            </div>
+            <?php ActiveForm::end(); ?>
+        </div>
+    </div>
+</div>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
@@ -217,6 +240,15 @@ $this->render('/widgets/employer_applications/top-banner', [
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss("
+    label.location_batches {
+        margin-bottom: 0px;
+    }
+    ul.batch-items {
+        margin-bottom: 10px;
+    }
+    .batch-items > li {
+        padding-left: 15px;
+    }
     .no-of-seats{
         text-align:center;
         font-size: 20px;
@@ -1418,13 +1450,58 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
-$script = <<<JS
+$script = <<< JS
 $(document).on('click', '.loc', function(e) {
     e.preventDefault();
     var id = $(this).attr('data-key');
     $('.loc-batches').fadeOut(500);
     $('#'+ id).fadeIn(1000);
 });
+$(document).on('click','.apply-btn',function(e) {
+  e.preventDefault();
+  if($(this).attr("disabled") == "disabled")
+            {
+               return false;
+            }
+  $('#modal').modal('show');
+})
+
+$(document).on('click','.sav_job',function(e) {
+  e.preventDefault();
+  if ($('input[name="batch_id[]"]:checked').length==0){
+      alert("choose atlease one batch");
+      return false;
+  }
+  $.ajax({
+  url:'/training-programs/apply',
+  type: 'post',
+  data: $('#training_form').serialize(),                         
+  beforeSend:function()
+  {
+  $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+  },     
+  success:function(res)
+  {
+    if (res==true)
+        {
+        applied();
+        swal("Submitted!", "Your Application Has been successfully registered with the Institute. keep checking your Dashboard Regularly for further confirmation..", "success");
+        }
+    else {
+         alert('Something went wrong..');
+        }
+  }
+});
+});
+ function applied()
+        {
+             $('#modal').modal('toggle');
+                     $('.apply-btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                     $('.apply-btn').html('<i class = "fas fa-check"></i>Applied');
+                     $('.apply-btn').attr("disabled","true");
+            }
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
