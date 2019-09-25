@@ -42,7 +42,7 @@ class UploadController extends ApiBaseController
     {
         $req = Yii::$app->request->post();
         if (empty($req['image_string'])) {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
         $image = base64_decode($req['image_string']);
 
@@ -56,14 +56,14 @@ class UploadController extends ApiBaseController
             $result['profile_picture'] = Url::to(Yii::$app->params->upload_directories->users->image . $user->image_location . DIRECTORY_SEPARATOR . $user->image, 'https');
             return $this->response(200, $result);
         }
-        return $this->response(500);
+        return $this->response(500,'error or not saved');
     }
 
     public function actionResume()
     {
         $req = Yii::$app->request->post();
         if (empty($req['resume_string']) && empty($req['resume_ext']) && empty($req['resume_name'])) {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
         $resume = base64_decode($req['resume_string']);
         $resume_ext = $req['resume_ext'];
@@ -73,7 +73,7 @@ class UploadController extends ApiBaseController
         if ($res = $userResume->upload($resume, $resume_ext,$resume_name)) {
             return $this->response(202, $res);
         } else {
-            return $this->response(500);
+            return $this->response(500,'an error or not saved');
         }
 
     }
