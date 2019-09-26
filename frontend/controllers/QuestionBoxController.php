@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\questions\PostQuestion;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -29,6 +30,7 @@ class QuestionBoxController extends Controller
     }
 
     public function actionList(){
-        return $this->render('question-landing-page');
+        $model =  new PostQuestion();
+        return $this->render('question-landing-page',['model'=>$model]);
     }
 }

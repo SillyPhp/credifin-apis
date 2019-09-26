@@ -1,9 +1,9 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 $this->params['header_dark'] = false;
 ?>
-
     <section class="bg-imgg">
         <div class="container">
             <div class="row">
@@ -15,7 +15,7 @@ $this->params['header_dark'] = false;
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
-                    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#postQuestion">Ask Question
+                    <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal" data-target="#postQuestion">Ask Question
                     </button>
                 </div>
             </div>
@@ -214,18 +214,41 @@ $this->params['header_dark'] = false;
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
+                        <?php
+                        $form = ActiveForm::begin([
+                            'id' => 'post-questions-form',
+                        ])
+                        ?>
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Add Question</h4>
                         </div>
                         <div class="modal-body">
-                            <div class="first-field">
-                                <input type="text" class="form-control" placeholder="enter your question here.....">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <?= $form->field($model,'question')->textInput(['id'=>'question','placeholder'=>'Enter Your Question Here..'])->label(false); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="pf-field no-margin">
+                                        <ul class="tags_input skill_tag_list">
+                                            <li class="tagAdd taglist">
+                                                <div class="skill_wrapper">
+                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search For Topics..">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <?= Html::submitButton('Post', ['class' => 'btn btn-primary btn-sm']) ?>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
+                        <?php ActiveForm::end() ?>
                     </div>
                 </div>
             </div>
@@ -233,6 +256,185 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registercss('
+.typeahead,
+.tt-query,
+ {
+  width: 396px;
+  height: 30px;
+  padding: 8px 12px;
+  font-size: 18px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  -webkit-border-radius: 8px;
+     -moz-border-radius: 8px;
+          border-radius: 8px;
+  outline: none;
+}
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.twitter-typeahead {
+    
+    width: 100% !important;
+}
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+    width: 100%;
+    margin: 12px 0;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    text-align: left;
+    max-height:210px;
+    overflow-y:auto;
+    overscroll-behavior: none;
+}
+.tt-menu .tt-dataset .suggestion_wrap:nth-child(odd) {
+    background-color: #eff1f6;
+    }
+    .tt-suggestion {
+  padding: 3px 20px;
+  font-size: 14px;
+  line-height: 24px;
+  height:54px;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf !important;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf !important;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    z-index: 999;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 20px 1px;
+}
+
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+.no_result_found
+{
+display:inline-block;
+}
+.add_org
+{
+float:right;
+}
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+.skill_wrapper .twitter-typeahead {
+    width: auto !important;
+}
+.addedTag {
+    float: left;
+    background: #f4f5fa;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 7px 17px;
+    margin-right: 10px;
+    position: relative;
+}
+.skill_wrapper .twitter-typeahead input {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 31px;
+    padding: 0px 10px;
+    margin-top: 1px;
+}
+.tags_input li {
+    margin: 8px;
+   
+}
+.tags_input li {
+    color: #1e1e1e;
+    position: relative;
+    float:left !important;
+}
+.tags_input > .addedTag > span {
+    position: absolute;
+    right: -6px;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    font-style: normal;
+    background: #fb236a;
+    border-radius: 50%;
+    color: #ffffff;
+    text-align: center;
+    line-height: 13px;
+    font-size: 10px;
+    font-family: Open Sans;
+    cursor: pointer;
+}
+.skill_tag_list
+{
+    float: left;
+    width: 100%;
+    border: 2px solid #dedede;
+    padding: 4px 8px;
+    list-style: outside none none;
+}
+.btn-ask-question
+{
+    margin-left: 319px;
+    margin-top: 11px;
+}
 .topp-pad{padding-top:190px;}
 .search-box1{
     max-width:500px;
@@ -533,14 +735,72 @@ $this->registercss('
     float: right;
 }
 .best-images img{
-    height: 20px;
+    height: 20px; 
     width: 20px;
     border-radius: 25px;
 }
 ');
-$script = <<<js
+$script = <<< JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
-js;
+
+$(document).on('submit','#post-questions-form',function(e) {
+  e.preventDefault();
+  console.log('sneh'); 
+});
+var skills = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/categories-list/skills-data',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#search-skill').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list;
+        }
+  }
+});    
+            
+$('#search-skill').typeahead(null, {
+  name: 'skill',
+  display: 'value',
+  source: skills,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+     $('.skill_wrapper .Typeahead-spinner').show();
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+     $('.skill_wrapper .Typeahead-spinner').hide();
+  }).on('typeahead:selected',function(e, datum)
+  {
+      add_tags($(this),'skill_tag_list','skills');
+   });
+function add_tags(thisObj,tag_class,name,duplicates)
+{
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                        {
+                         duplicates.push($.trim($(this).val()).toUpperCase());
+                        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
+      thisObj.val('');
+      $('#search-skill').typeahead('val','');
+      } else {
+      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+      thisObj.val('');
+      $('#search-skill').typeahead('val','');
+      }
+}
+$(document).on('keyup','#search-skill',function(e)
+{
+if(e.which==13)
+{
+add_tags($(this),'skill_tag_list','skills');  
+}
+});
+JS;
+$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
