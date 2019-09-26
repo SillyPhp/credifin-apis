@@ -417,7 +417,7 @@ function twShare(url, title, winWidth, winHeight) {
 pen_id = $('._pen_id').text();
 
 $('body').on('click', '.share', () => {
-    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouth__ and others.`, 520, 350);
+    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouthin and others.`, 520, 350);
     return false;
 });
 
