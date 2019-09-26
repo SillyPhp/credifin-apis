@@ -181,7 +181,7 @@ class CandProfileController extends ApiBaseController
 
             if (!empty($city_enc_id)) {
                 $update = Yii::$app->db->createCommand()
-                    ->update(Users::tableName(), ['city_enc_id' => $city_enc_id,'last_updated_on'=>Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
+                    ->update(Users::tableName(), ['city_enc_id' => $city_enc_id, 'last_updated_on' => Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
                     ->execute();
                 if ($update) {
                     return $this->response(200, ['status' => 200]);
@@ -198,44 +198,40 @@ class CandProfileController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $user_id = $user->user_enc_id;
+            $req = Yii::$app->request->post('data');
+            if ($req) {
+                if ($req['for'] == "Jobs") {
+                    $user = UserPreferences::find()
+                        ->where(['created_by' => $user_id])
+                        ->andWhere(['assigned_to' => 'Jobs'])
+                        ->one();
 
-            if ($reqq = Yii::$app->request->post()) {
-
-                foreach ($reqq as $req) {
-
-                    if ($req['for'] == "Jobs") {
-                        $user = UserPreferences::find()
-                            ->where(['created_by' => $user_id])
-                            ->andWhere(['assigned_to' => 'Jobs'])
-                            ->one();
-
-                        if ($user) {
-                            $a = $this->updateData($req, $user_id);
-//                        if ($this->updateData($req, $user_id)) {
-//                            return $this->response(200);
-//                        }
-                        } else {
-                            $b = $this->saveData($req, $user_id);
-//                        if ($this->saveData($req, $user_id)) {
-//                            return $this->response(200);
-//                        }
+                    if ($user) {
+//                        $a = $this->updateData($req, $user_id);
+                        if ($this->updateData($req, $user_id)) {
+                            return $this->response(200,['status'=>200]);
+                        }
+                    } else {
+//                        $b = $this->saveData($req, $user_id);
+                        if ($this->saveData($req, $user_id)) {
+                            return $this->response(200,['status'=>200]);
                         }
                     }
+                }
 
-                    if ($req['for'] == "Internships") {
-                        $user = UserPreferences::find()
-                            ->where(['created_by' => $user_id])
-                            ->andWhere(['assigned_to' => 'Internships'])
-                            ->one();
+                if ($req['for'] == "Internships") {
+                    $user = UserPreferences::find()
+                        ->where(['created_by' => $user_id])
+                        ->andWhere(['assigned_to' => 'Internships'])
+                        ->one();
 
-                        if ($user) {
-                            if ($this->updateData($req, $user_id)) {
-                                return $this->response(200);
-                            }
-                        } else {
-                            if ($this->saveData($req, $user_id)) {
-                                return $this->response(200);
-                            }
+                    if ($user) {
+                        if ($this->updateData($req, $user_id)) {
+                            return $this->response(200,['status'=>200]);
+                        }
+                    } else {
+                        if ($this->saveData($req, $user_id)) {
+                            return $this->response(200,['status'=>200]);
                         }
                     }
                 }
@@ -347,7 +343,6 @@ class CandProfileController extends ApiBaseController
             foreach ($already_saved_location as $loc) {
                 array_push($already_saved_locations, $loc['city_enc_id']);
             }
-
 
             $location = [];
             foreach ($r['locations'] as $l) {

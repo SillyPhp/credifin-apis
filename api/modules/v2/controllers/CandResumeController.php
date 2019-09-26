@@ -291,8 +291,6 @@ class CandResumeController extends ApiBaseController
             $to_be_added_skills = array_diff($new_skill_keys, $s_skill);
             $to_be_deleted_skills = array_diff($s_skill, $new_skill_keys);
 
-            print_r($to_be_added_skills);
-
             //add skills to user skills table
             if (!empty($to_be_added_skills)) {
                 foreach ($to_be_added_skills as $skill) {
