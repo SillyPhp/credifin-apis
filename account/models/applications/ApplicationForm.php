@@ -611,7 +611,7 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
-            return true;
+            return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
         }

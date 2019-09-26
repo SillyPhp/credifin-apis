@@ -232,6 +232,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="fader"></div>
+<input type="hidden" id="app_id_main"/>
 <?php
 echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
         'colleges' => $colleges,
@@ -1720,11 +1721,6 @@ window.ChildFunction = ChildFunction;
         $(document).on('click','.button-submit',function(event)
             {
             event.preventDefault();
-            setTimeout(function() {
-                $('.m-modal, .m-cover').removeClass("hidden");
-                $('.m-modal').addClass("zoom");
-            }, 500);
-            return false;
              var url =  $('#submit_form').attr('action');
              var data = $('#submit_form').serialize()+'&n='+session_tok;
                   $.ajax({
@@ -1735,22 +1731,25 @@ window.ChildFunction = ChildFunction;
                        {
                          $('.button-submit').prop('disabled','disabled');
                        },
-                   success: function(data) {
-                   if(data == true)
-                    {
-                    $('.fader').css('display','block');    
-                    $('#loading_img').addClass('show');    
-                    function explode(){
-                     window.location.replace(redirect_url); 
+                   success: function(res) {
+                   if(res['status'] == 200) {
+                        // $('.fader').css('display','block');    
+                        // $('#loading_img').addClass('show');
+                        $('#app_id_main').val(res['app_id']);
+                        setTimeout(function() {
+                            $('.m-modal, .m-cover').removeClass("hidden");
+                            $('.m-modal').addClass("zoom");
+                        }, 500);
+                    // function explode(){
+                    //  window.location.replace(redirect_url); 
+                    //  }
+                    //    setTimeout(explode, 2000);
+                     } else {
+                         $('#loading_img').removeClass('show');
+                         $('.button-submit').prop('disabled','');
+                         $('.fader').css('display','none');
+                         toastr.error('Opps Something went wrong', 'Server Error');
                      }
-                       setTimeout(explode, 2000);
-                     }
-                     else {
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
-                     $('.fader').css('display','none');
-                     toastr.error('Opps Something went wrong', 'Server Error');
-                       }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');

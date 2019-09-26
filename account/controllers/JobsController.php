@@ -10,6 +10,7 @@ use account\models\applications\UserAppliedApplication;
 use account\models\campus_placement\CollegePlacementForm;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
+use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
@@ -485,13 +486,18 @@ class JobsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -1192,6 +1198,7 @@ class JobsController extends Controller
     public function actionApplicationCollegesSubmit()
     {
         if (Yii::$app->request->isAjax) {
+            $errex_application = new ErexxEmployerApplications();
             print_r(Yii::$app->request->post());
             exit();
         }
@@ -1266,11 +1273,6 @@ class JobsController extends Controller
         }
 
         return false;
-    }
-
-    public function actionTestProcess()
-    {
-        return $this->render('test-new');
     }
 
     private function reviewZero()

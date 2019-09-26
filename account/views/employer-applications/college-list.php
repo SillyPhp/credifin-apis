@@ -7,12 +7,13 @@
         <label for="c-select">Choose Colleges</label>
     </div>
     <div class="college-list hidden">
+        <input type="hidden" name="app_id" id="app_id"/>
         <?php
         foreach ($colleges as $clg) {
             ?>
             <div class="col-md-6">
                 <div class="form-group">
-                    <input type="checkbox" name="colleges" id="<?= $clg['college_enc_id'] ?>"
+                    <input type="checkbox" name="colleges[]" id="<?= $clg['college_enc_id'] ?>"
                            value="<?= $clg['college_enc_id'] ?>"/>
                     <label for="<?= $clg['college_enc_id'] ?>"><?= $clg['name'] ?></label>
                 </div>
@@ -28,8 +29,10 @@
 <?php
 $script = <<< JS
 $(document).on('submit', '#job_for_colleges', function (event) {
-    var me = $('.submit-colleges');
     event.preventDefault();
+    event.stopImmediatePropagation();
+    $('#app_id').val($('#app_id_main').val());
+    var me = $('#submit-cl');
     if ( me.data('requestRunning') ) {
         return;
     }
