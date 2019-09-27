@@ -89,13 +89,18 @@ class InternshipsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }

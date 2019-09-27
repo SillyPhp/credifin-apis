@@ -1,5 +1,5 @@
 <div class='m-cover hidden'></div>
-<div class='m-modal hidden'>
+<div class='m-modal hidden' data-key="<?= $type;?>">
     <div class='m-content'>
         <img src='/assets/themes/ey/images/pages/jobs/submitted.png'/>
         <p>Do you want to create this job for Campus placment?</p>
@@ -18,6 +18,7 @@
 </div>
 <?php
 $this->registerCss("
+.colleges-error{color:red !Important;}
 .m-cover {
     z-index: 1;
     position: fixed;
@@ -68,6 +69,11 @@ $this->registerCss("
     border-radius: 4px;
     color: #fff;
     background-color: #00a0e3;
+}
+.m-actions button.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
 }
 .m-actions a:hover {
     text-decoration:none;
@@ -136,6 +142,12 @@ $this->registerCss("
 }
 ");
 $script = <<< JS
+var doc_type2 = $('.m-modal').attr('data-key');
+if (doc_type2=='Jobs'||doc_type2=='Clone_Jobs'||doc_type2=='Edit_Jobs') {
+    var redirect_url2 = '/account/jobs/dashboard';
+} else if(doc_type2=="Internships"||doc_type2=='Clone_Internships'||doc_type2=='Edit_Internships') {
+    var redirect_url2 = '/account/internships/dashboard';
+}
 // $(document).on('click', '#openn', function(){
 //     setTimeout(function() {
 //         $('.m-modal, .m-cover').removeClass("hidden");
@@ -168,10 +180,7 @@ $(document).on('change', 'input[name=college]', function(){
 $(".close-m-mo").on("click", function() {
     $('.m-modal').attr('class', 'm-modal');
     $('.m-modal, .m-cover').addClass("hidden");
-});
-$(".close-m-mo2").on("click", function() {
-    $('.m-modal2').attr('class', 'm-modal2');
-    $('.m-modal2, .m-cover').addClass("hidden");
+    window.location.replace(redirect_url2);
 });
 JS;
 $this->registerJs($script);

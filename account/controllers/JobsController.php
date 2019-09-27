@@ -518,7 +518,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionGetColleges(){
+    public function actionGetColleges()
+    {
         if (Yii::$app->request->isAjax) {
             $colleges = ErexxCollaborators::find()
                 ->alias('a')
@@ -527,7 +528,7 @@ class JobsController extends Controller
                 ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
-            return $this->renderAjax('/employer-applications/college-list',[
+            return $this->renderAjax('/employer-applications/college-list', [
                 'colleges' => $colleges,
             ]);
         }
@@ -641,13 +642,18 @@ class JobsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -1198,9 +1204,54 @@ class JobsController extends Controller
     public function actionApplicationCollegesSubmit()
     {
         if (Yii::$app->request->isAjax) {
-            $errex_application = new ErexxEmployerApplications();
-            print_r(Yii::$app->request->post());
-            exit();
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $application = EmployerApplications::find()
+                ->where(['application_enc_id' => $data['app_id']])
+                ->one();
+            $application->application_for = 0;
+            $application->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            if ($data['college'] == 1) {
+                $application->for_all_colleges = 1;
+                if ($application->update()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Application added for Campus Placement',
+                    ];
+                }
+            }
+            if ($data['college'] == 0) {
+                $application->update();
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errex_application = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errex_application->application_enc_id = $utilitiesModel->encrypt();
+                    $errex_application->employer_application_enc_id = $data['app_id'];
+                    $errex_application->college_enc_id = $clg;
+                    $errex_application->created_on = date('Y-m-d H:i:s');
+                    $errex_application->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errex_application->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Application added for Campus Placement',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occured. Please Try again later.',
+                ];
+            }
         }
     }
 
@@ -1273,6 +1324,11 @@ class JobsController extends Controller
         }
 
         return false;
+    }
+
+    public function actionTestProcess()
+    {
+        return $this->render('test-new');
     }
 
     private function reviewZero()

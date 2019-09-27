@@ -43,7 +43,7 @@ use yii\helpers\Url;
                     ?>
                     <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" data-toggle="modal" data-target="#select-colleges-modal">
-                        <?= Yii::t('account', 'Select Colleges'); ?>
+                        <?= Yii::t('account', 'Campus Hiring'); ?>
                     </a>
                     </div><?php
                 }

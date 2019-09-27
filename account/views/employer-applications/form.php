@@ -235,7 +235,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
 <input type="hidden" id="app_id_main"/>
 <?php
 echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
-        'colleges' => $colleges,
+    'type' => $type,
 ]);
 $this->registerCss("
 .g-pref{
