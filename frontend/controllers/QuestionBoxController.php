@@ -15,7 +15,6 @@ use yii\web\Response;
  */
 class QuestionBoxController extends Controller
 {
-
     public function actions()
     {
         return [
@@ -27,10 +26,18 @@ class QuestionBoxController extends Controller
 
     public function actionDetail($slug=null){
         return $this->render('question-detail-page');
-    }
+    } 
 
-    public function actionList(){
+    public function actionList(){ 
         $model =  new PostQuestion();
+        if ($model->load(Yii::$app->request->post()))
+        {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($model->save())
+            {
+
+            }
+        }
         return $this->render('question-landing-page',['model'=>$model]);
     }
 }

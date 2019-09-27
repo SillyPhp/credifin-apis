@@ -232,11 +232,12 @@ $this->params['header_dark'] = false;
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="pf-field no-margin">
+                                        <h4>Enter Comma Seprated Tags For Topics</h4>
                                         <ul class="tags_input skill_tag_list">
                                             <li class="tagAdd taglist">
                                                 <div class="skill_wrapper">
                                                     <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search For Topics..">
+                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search Or Add Topics..">
                                                 </div>
                                             </li>
                                         </ul>
@@ -245,7 +246,7 @@ $this->params['header_dark'] = false;
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <?= Html::submitButton('Post', ['class' => 'btn btn-primary btn-sm']) ?>
+                            <?= Html::submitButton('Post', ['class' => 'btn btn-primary btn-sm sav_post']) ?>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                         <?php ActiveForm::end() ?>
@@ -256,6 +257,23 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registercss('
+#search-skill::-webkit-input-placeholder { /* Edge */
+  font-size:14px;
+}
+
+#search-skill:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  font-size:14px;
+}
+
+#search-skill::placeholder {
+  font-size:14px;
+}
+.pf-field
+{
+    float: left;
+    width: 100%;
+    position: relative;
+}
 .typeahead,
 .tt-query,
  {
@@ -327,58 +345,10 @@ $this->registercss('
 .tt-suggestion p {
   margin: 0;
 }
-/*Load Suggestions loader css starts*/
-.load-suggestions{
-    display:none;
-    position: absolute;
-    right: 20px;
-    z-index: 999;
-}
-.load-suggestions span{
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 100%;
-  background-color: #3498db;
-  margin: 20px 1px;
-}
 
-.load-suggestions span:nth-child(1){
-  animation: bounce 1s ease-in-out infinite;
-}
-
-.load-suggestions span:nth-child(2){
-  animation: bounce 1s ease-in-out 0.33s infinite;
-}
-
-.load-suggestions span:nth-child(3){
-  animation: bounce 1s ease-in-out 0.66s infinite;
-}
-.no_result_found
-{
-display:inline-block;
-}
-.add_org
-{
-float:right;
-}
-@keyframes bounce{
-  0%, 75%, 100%{
-    -webkit-transform: translateY(0);
-    -ms-transform: translateY(0);
-    -o-transform: translateY(0);
-    transform: translateY(0);
-  }
-
-  25%{
-    -webkit-transform: translateY(-15px);
-    -ms-transform: translateY(-15px);
-    -o-transform: translateY(-15px);
-    transform: translateY(-15px);
-  }
-}
 .skill_wrapper .twitter-typeahead {
     width: auto !important;
+    position:relative;
 }
 .addedTag {
     float: left;
@@ -422,11 +392,19 @@ float:right;
     font-family: Open Sans;
     cursor: pointer;
 }
+.Typeahead-spinner
+{
+display:none;
+position: absolute;
+right: 5px;
+top: 10px;
+z-index: 9;
+}
 .skill_tag_list
 {
     float: left;
     width: 100%;
-    border: 2px solid #dedede;
+    border: 1px solid #dedede;
     padding: 4px 8px;
     list-style: outside none none;
 }
@@ -747,7 +725,29 @@ $(document).ready(function(){
 
 $(document).on('submit','#post-questions-form',function(e) {
   e.preventDefault();
-  console.log('sneh'); 
+  if ($('#question').val()=='' || $('input[name="topics[]"]').length==0) 
+      {
+          return false; 
+      }
+        var l_btn = $('.sav_post');
+        if ( l_btn.data('requestRunning') ) {
+            return false;
+        }
+        l_btn.data('requestRunning', true);
+  $.ajax({
+            url: $(this).attr('action'),
+            type: 'post',
+            data: $(this).serialize(),
+            beforeSend: function () {
+                
+            },
+            success: function (response) {
+                console.log(response);
+            },
+            complete: function() {
+                l_btn.data('requestRunning', false);
+            }
+        }); 
 });
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -771,12 +771,12 @@ $('#search-skill').typeahead(null, {
   source: skills,
    limit: 6,
 }).on('typeahead:asyncrequest', function() {
-     $('.skill_wrapper .Typeahead-spinner').show();
+     $('.skill_wrapper .Typeahead-spinner').css('display','block');
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-     $('.skill_wrapper .Typeahead-spinner').hide();
+     $('.skill_wrapper .Typeahead-spinner').css('display','none');
   }).on('typeahead:selected',function(e, datum)
   {
-      add_tags($(this),'skill_tag_list','skills');
+      add_tags($(this),'skill_tag_list','topics');
    });
 function add_tags(thisObj,tag_class,name,duplicates)
 {
@@ -798,7 +798,7 @@ $(document).on('keyup','#search-skill',function(e)
 {
 if(e.which==13)
 {
-add_tags($(this),'skill_tag_list','skills');  
+add_tags($(this),'skill_tag_list','topics');  
 }
 });
 JS;
