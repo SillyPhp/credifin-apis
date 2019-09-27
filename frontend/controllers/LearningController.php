@@ -353,6 +353,7 @@ class LearningController extends Controller
             ])
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.assigned_category_enc_id'])
+            ->limit(12)
             ->asArray()
             ->all();
 
@@ -395,6 +396,7 @@ class LearningController extends Controller
                 ['a.organization_enc_id' => ""],
                 ['a.organization_enc_id' => NULL]
             ])
+            ->limit(6)
             ->asArray()
             ->all();
 

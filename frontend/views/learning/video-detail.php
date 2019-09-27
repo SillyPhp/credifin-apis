@@ -186,6 +186,27 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <div class="sharing-box">
+                    <div class="sharing-pic">
+                        <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
+                    </div>
+                    <!--                        <div class="share-it">Share :-</div>-->
+                    <div class="fb-share">
+                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                    </div>
+                    <div class="tw-share">
+                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                    </div>
+                    <div class="li-share">
+                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                    </div>
+                    <div class="wa-share">
+                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                    </div>
+                    <div class="mail-share">
+                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+                    </div>
+                </div>
                 <div class="rate-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -1082,6 +1103,71 @@ left:10px;
     box-shadow: 0px 2px 9px 0px #b1b1b1c9;
 }
 /*---Rate this video css ends---*/
+
+.fb-share, .tw-share, .li-share, .wa-share{
+    display:inline-block;
+}
+.marg{
+    margin-right:5px;
+}
+.share-it {
+    text-align: center;
+    font-size: 19px;
+    padding-bottom: 10px;
+    color: #fff;
+    font-weight: bold;
+}
+.sharing-box{
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #eee;
+    width:100%;
+    background-color:#1d759a;
+}
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    padding: 10px 0;
+    width:135px;
+    background: #00a0e3;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.fb-btn:hover {
+    background-color: #fff;
+    color: #1d759a;
+}
+.li-btn:hover {
+    background-color: #fff;
+    color: #0077b5;
+}
+.tw-btn:hover {
+    background-color: #fff;
+    color: #28aae1;
+}
+.wa-btn:hover {
+    background-color: #fff;
+    color: #00e676;
+}
+.mail-btn:hover {
+    background-color: #fff;
+    color:#d4483a;
+}
+.sharing-pic{
+    padding-bottom:10px;
+}
+.sharing-pic img{
+    width:100%;
+    height:180px;
+}
+.mail-share{
+    text-align:center;
+}
 ');
 
 $script = <<<JS

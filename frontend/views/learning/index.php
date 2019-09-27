@@ -434,16 +434,18 @@ $this->registerCss('
 .imag{
     text-align: right;
 }
-.txt{
+.txt {
     position: absolute;
-    line-height: 30px;
+    line-height: 17px;
     bottom: 10px;
-    left: 10px;
+    left: -4px;
     font-weight: 400;
-    color:#222;
-    font-family:roboto;
-    text-transform:uppercase;
- }
+    color: #222;
+    font-family: roboto;
+    text-transform: capitalize;
+    background-color: #fff;
+    padding: 0px 5px;
+}
 .b-padding{
     padding-top: 125px;
 }
