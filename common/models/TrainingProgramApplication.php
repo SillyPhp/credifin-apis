@@ -25,6 +25,7 @@ use Yii;
  * @property string $last_updated_by By which User Application information was updated
  * @property int $is_deleted Is Application Deleted (0 as False, 1 as True)
  *
+ * @property AppliedTrainingApplications[] $appliedTrainingApplications
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property AssignedCategories $title0
@@ -72,6 +73,14 @@ class TrainingProgramApplication extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppliedTrainingApplications()
+    {
+        return $this->hasMany(AppliedTrainingApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
