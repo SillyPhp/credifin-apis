@@ -41,6 +41,10 @@ class TrainingApplications extends TrainingPrograms
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc c'],false);
             }],false)
+            ->joinWith(['appliedTrainingApplications d'=>function($b)
+            {
+                $b->select(['d.application_enc_id']);
+            }],true)
             ->joinWith(['totalSeats']);
 
         if ($this->_applicationType) {

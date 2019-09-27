@@ -43,6 +43,7 @@ class TrainingProgramController extends Controller
         return $this->render('dashboard/organization', [
             'applications'=>$this->__trainings(8),
             'total_applied' => $userApplied->total_applied(),
+            'applied_applications'=>$userApplied->getUserDetails('Trainings',10)
         ]);
     }
 

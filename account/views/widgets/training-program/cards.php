@@ -68,7 +68,7 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedApplications']); ?>
+                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedTrainingApplications']); ?>
                                 Applications
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a
