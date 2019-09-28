@@ -1326,6 +1326,18 @@ class JobsController extends Controller
         return false;
     }
 
+    public function actionCampusPlacement(){
+        $applications = EmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc b'])
+            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['b.name' => 'Jobs'])
+            ->asArray()
+            ->all();
+        print_r($this->__jobs());
+        return $this->render('campus-placement');
+    }
+
     public function actionTestProcess()
     {
         return $this->render('test-new');
