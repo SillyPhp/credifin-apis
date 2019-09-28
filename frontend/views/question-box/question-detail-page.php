@@ -9,15 +9,18 @@ $this->params['header_dark'] = true;
         <div class="row">
             <div class="col-md-8">
                 <div class="question-field">
-                    <div class="question-head">What is the best way to cook fried eggs ?<span class="edit">edit</span></div>
+                    <div class="question-head"><?= $object['question']; ?>
+<!--                        <span class="edit">edit</span>-->
+                    </div>
+                    <?php if (!empty($object['tagEncs'])): ?>
                     <div class="new-tags">
                         <ul class="q-tags">
-                            <li class="q-tag">new tag</li>
-                            <li class="q-tag">new tag</li>
-                            <li class="q-tag">new tag</li>
-                            <li class="q-tag">new tag</li>
+                            <?php foreach ($object['tagEncs'] as $tags){ ?>
+                            <li class="q-tag"><?= $tags['name']; ?></li>
+                            <?php } ?>
                         </ul>
                     </div>
+                    <?php endif; ?>
                     <div class="answers">
                         <span>2 Answers</span>
                         <span class="ask-ans">Ask to Answer</span>

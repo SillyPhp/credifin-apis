@@ -11,7 +11,7 @@ $this->params['header_dark'] = false;
                     <div class="jumbo-heading">Search Your Question & Find Best Answers</div>
                     <div class="search-box1">
                         <form action="<?= Url::to('/learning/search-video') ?>">
-                            <input type="text" placeholder="Search" name="keyword">
+                            <input type="text" placeholder="Search" name="keyword" id="keyword">
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -21,7 +21,6 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-
     <section>
         <div class="container">
             <div class="row">
@@ -30,24 +29,27 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="lc-items-grids">
-                <div class="lc-single-item-main">
-                    <div class="lc-item-img">
-                        <div class="question-main">
-                            <div class="head">
-                                <div class="logo">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                <?php if (!empty($object)){
+                    foreach ($object as $obj){
+                        $link = Url::to('question-box/detail?slug='.$obj['slug'], true);
+                    ?>
+                    <div class="lc-single-item-main">
+                        <div class="lc-item-img">
+                            <div class="question-main">
+                                <div class="head">
+                                    <div class="logo">
+                                        <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                                    </div>
+                                    <div class="r-details">
+                                        <div class="category-name"><a href=""><?= $obj['name'] ?></a></div>
+                                    </div>
                                 </div>
-                                <div class="r-details">
-                                    <div class="category-name"><a href="">Topics</a></div>
+                                <div class="box-content">
+                                    <?= $obj['question']; ?>
                                 </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.
-                            </div>
-                            <div class="total-answers">
-                                <span class="answers">Answers</span>
-                                <span class="best-answers">
+                                <div class="total-answers">
+                                    <span class="answers">Answers</span>
+                                    <span class="best-answers">
                             <span class="best-images">
                                 <a href="#" data-toggle="tooltip" title="Eddy">
                                     <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
@@ -64,17 +66,17 @@ $this->params['header_dark'] = false;
                                 </a>
                             </span>
                         </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="lc-item-desciption">
-                        <div class="lc-item-user-detail">
-                            <h3 class="lc-item-video-title">
-                                <a href="#">Category</a>
-                            </h3>
-                        </div>
-                        <span class="count">10 answers</span>
-                        <span class="lc-item-video-stat marg">
+                        <div class="lc-item-desciption">
+                            <div class="lc-item-user-detail">
+                                <h3 class="lc-item-video-title">
+                                    <a href="#"><?= $obj['name'] ?></a>
+                                </h3>
+                            </div>
+                            <span class="count"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?> answers</a></span>
+                            <span class="lc-item-video-stat marg">
                             <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
                                target="blank">
                                             <span><i class="fab fa-facebook-f"></i></span></a>
@@ -85,123 +87,9 @@ $this->params['header_dark'] = false;
                                            target="blank">
                                             <span><i class="fab fa-linkedin"></i></span></a>
                                 </span>
-                    </div>
-                </div>
-                <div class="lc-single-item-main">
-                    <div class="lc-item-img">
-                        <div class="question-main">
-                            <div class="head">
-                                <div class="logo">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </div>
-                                <div class="r-details">
-                                    <div class="category-name"><a href="">Topics</a></div>
-                                </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.
-                            </div>
-                            <div class="total-answers">
-                                <span class="answers">Answers</span>
-                                <span class="best-answers">
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                               <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                        </span>
-                            </div>
                         </div>
                     </div>
-                    <div class="lc-item-desciption">
-                        <div class="lc-item-user-detail">
-                            <h3 class="lc-item-video-title">
-                                <a href="#">Category</a>
-                            </h3>
-                        </div>
-                        <span class="count">10 answers</span>
-                        <span class="lc-item-video-stat marg">
-                            <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                               target="blank">
-                                            <span><i class="fab fa-facebook-f"></i></span></a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-twitter"></i></span></a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-linkedin"></i></span></a>
-                                </span>
-                    </div>
-                </div>
-                <div class="lc-single-item-main">
-                    <div class="lc-item-img">
-                        <div class="question-main">
-                            <div class="head">
-                                <div class="logo">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </div>
-                                <div class="r-details">
-                                    <div class="category-name"><a href="">Topics</a></div>
-                                </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.
-                            </div>
-                            <div class="total-answers">
-                                <span class="answers">Answers</span>
-                                <span class="best-answers">
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                               <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                        </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lc-item-desciption">
-                        <div class="lc-item-user-detail">
-                            <h3 class="lc-item-video-title">
-                                <a href="#">Category</a>
-                            </h3>
-                        </div>
-                        <span class="count">10 answers</span>
-                        <span class="lc-item-video-stat marg">
-                            <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                               target="blank">
-                                            <span><i class="fab fa-facebook-f"></i></span></a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-twitter"></i></span></a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-linkedin"></i></span></a>
-                                </span>
-                    </div>
-                </div>
-
+                <?php } } ?>
             </div>
         </div>
     </section>
@@ -225,19 +113,34 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="modal-body">
                             <div class="row">
+                                <div class="col-md-8 col-md-offset-2">
+                                    <div class="col-md-6">
+                                        <h4>Ask Question As:</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <?= $form->field($model,'privacy')->dropDownList([1=>'Public',0=>'Anonymous'])->label(false); ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-12">
-                                    <?= $form->field($model,'question')->textInput(['id'=>'question','placeholder'=>'Enter Your Question Here..'])->label(false); ?>
+                                    <?= $form->field($model,'question')->textInput(['id'=>'question','placeholder'=>'Ask Your Question Here (Max 200 Characters)'])->label(false); ?>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <?= $form->field($model,'topic')->textInput(['id'=>'topic','placeholder'=>'Enter Topic For The Question'])->label(false); ?>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="pf-field no-margin">
-                                        <h4>Enter Comma Seprated Tags For Topics</h4>
+                                        <h4>Enter Comma Seprated Tags (Optional)</h4>
                                         <ul class="tags_input skill_tag_list">
                                             <li class="tagAdd taglist">
                                                 <div class="skill_wrapper">
                                                     <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search Or Add Topics..">
+                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search Or Add Tags..">
                                                 </div>
                                             </li>
                                         </ul>
@@ -257,6 +160,10 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registercss('
+#privacy
+{
+  border-radius: 13px;
+}
 #search-skill::-webkit-input-placeholder { /* Edge */
   font-size:14px;
 }
@@ -722,38 +629,56 @@ $script = <<< JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
+(function($) {
+  $.fn.setCursorPosition = function(pos) {
+    if ($(this).get(0).setSelectionRange) {
+      $(this).get(0).setSelectionRange(pos, pos);
+    } else if ($(this).get(0).createTextRange) {
+      var range = $(this).get(0).createTextRange();
+      range.collapse(true);
+      range.moveEnd('character', pos);
+      range.moveStart('character', pos);
+      range.select();
+    }
+  }
+}(jQuery));
 
-$(document).on('submit','#post-questions-form',function(e) {
-  e.preventDefault();
-  if ($('#question').val()=='' || $('input[name="topics[]"]').length==0) 
-      {
-          return false; 
-      }
-        var l_btn = $('.sav_post');
-        if ( l_btn.data('requestRunning') ) {
-            return false;
+    $("#question").keyup(function(){
+        if ($(this).val().split('').pop() !== '?') {
+            $(this).val($(this).val() + "?");
+            $(this).setCursorPosition( $(this).val().length - 1)
         }
-        l_btn.data('requestRunning', true);
-  $.ajax({
-            url: $(this).attr('action'),
-            type: 'post',
-            data: $(this).serialize(),
-            beforeSend: function () {
-                
-            },
-            success: function (response) {
-                console.log(response);
-            },
-            complete: function() {
-                l_btn.data('requestRunning', false);
-            }
-        }); 
+    });
+$(document).on('keypress','input',function(e)
+{
+if(e.which==13)
+{
+ return false;
+ }
 });
+// $(document).on('submit','#post-questions-form',function(e) {
+//   e.preventDefault();
+//   if ($('#question').val()=='' ||$("#question").val().length < 6|| $('#topic').val()=='') 
+//       {
+//           return false; 
+//       }
+//   $.ajax({
+//             url: $(this).attr('action'),
+//             type: 'post',
+//             data: $(this).serialize(),
+//             beforeSend: function () {
+//                
+//             },
+//             success: function (response) {
+//                 console.log(response);
+//             },
+//         }); 
+// });
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/categories-list/skills-data',
+    url:'/categories-list/tags-data',
     prepare: function (query, settings) {
              settings.url += '?q=' +$('#search-skill').val();
              return settings;
@@ -763,8 +688,70 @@ var skills = new Bloodhound({
              return list;
         }
   }
-});    
-            
+}); 
+
+var searchable_question = new Bloodhound({ 
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+   remote: {
+    url:'/categories-list/tags-data',
+    prepare: function (query, settings) {
+             settings.url += '?q=' +$('#keyword').val();
+             return settings;
+        },   
+    cache: false,    
+    filter: function(list) {
+             return list;
+        }
+  }
+});
+$('#keyword').typeahead(null, {
+  name: 'keyword',
+  display: 'value',
+  source: searchable_question,
+   limit: 6,
+}).on('typeahead:asyncrequest', function() {
+     $('.skill_wrapper .Typeahead-spinner').css('display','block');
+  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
+     $('.skill_wrapper .Typeahead-spinner').css('display','none');
+  }).on('typeahead:selected',function(e, datum)
+  {
+   });
+load_job_titles();
+function load_job_titles()
+{
+var categories = new Bloodhound({
+  datumTokenizer: function(d) {
+        var tokens = Bloodhound.tokenizers.whitespace(d.value);
+            $.each(tokens,function(k,v){
+                i = 0;
+                while( (i+1) < v.length ){
+                    tokens.push(v.substr(i,v.length));
+                    i++;
+                }
+            })
+            return tokens;
+        },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: 
+  {
+      url:'/categories-list/load-topics',
+      cache:false,
+      filter:function(res) {
+        return res;
+      }
+      }
+  
+});
+
+$('#topic').typeahead(null, {
+  display: 'value',
+  source: categories,
+  minLength: 1,
+  limit: 20,
+});
+}
+
 $('#search-skill').typeahead(null, {
   name: 'skill',
   display: 'value',
@@ -776,7 +763,7 @@ $('#search-skill').typeahead(null, {
      $('.skill_wrapper .Typeahead-spinner').css('display','none');
   }).on('typeahead:selected',function(e, datum)
   {
-      add_tags($(this),'skill_tag_list','topics');
+      add_tags($(this),'skill_tag_list','tags');
    });
 function add_tags(thisObj,tag_class,name,duplicates)
 {
@@ -798,7 +785,7 @@ $(document).on('keyup','#search-skill',function(e)
 {
 if(e.which==13)
 {
-add_tags($(this),'skill_tag_list','topics');  
+add_tags($(this),'skill_tag_list','tags');  
 }
 });
 JS;
