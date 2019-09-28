@@ -34,6 +34,7 @@ use yii\helpers\Url;
     <div class="empty"></div>
 
 
+<?php if (!empty($categories)) { ?>
     <div class="container ">
         <div class="cat-padding">
             <div class="row col-md-12">
@@ -65,6 +66,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php } ?>
 
     <!--dynamic categories start-->
 
@@ -107,6 +109,7 @@ use yii\helpers\Url;
     <div class="clearfix"></div>
     <div class="empty"></div>
 
+<?php if (!empty($topics)) { ?>
     <div class="container ">
         <div class="cat-padding">
             <div class="mv">
@@ -140,10 +143,12 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php } ?>
 
     <div class="clearfix"></div>
     <div class="empty"></div>
 
+<?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <!-- Example row of columns -->
         <div class="row col-md-12">
@@ -186,36 +191,39 @@ use yii\helpers\Url;
                                 <!--                                </div>-->
                             </div>
                             <div class="lc-item-video-stats">
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="fas fa-heart"></i> 5-->
-<!--                                    </span>-->
-<!--                                </a>-->
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="far fa-comments"></i> 0-->
-<!--                                    </span>-->
-<!--                                </a>-->
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="fas fa-eye"></i> 0-->
-<!--                                    </span>-->
-<!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-heart"></i> 5-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="far fa-comments"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-eye"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
                                 <span class="lc-item-video-stat marg">
                                     <?php
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
                                     ?>
-                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-facebook-f"></i>
                                             </span>
                                         </a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-twitter"></i>
                                             </span>
                                         </a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-linkedin"></i>
                                             </span>
@@ -232,8 +240,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php } ?>
 <?php
-if (!empty($contributors)) {
+if (false) {
     ?>
     <section>
         <div class="container">
