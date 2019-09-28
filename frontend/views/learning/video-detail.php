@@ -456,6 +456,10 @@ font-size:18px
 .views i{
 font-size:15px;
 }
+.views, .likes, .comms{
+    display:inline-block;
+    margin-right:10px;
+}
 .dislikeGray{
 background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislike1.png') . ');
 width:20px;
@@ -1160,13 +1164,40 @@ left:10px;
 }
 .sharing-pic{
     padding-bottom:10px;
+    text-align:center;
 }
 .sharing-pic img{
-    width:100%;
+    width:330px;
     height:180px;
 }
 .mail-share{
     text-align:center;
+}
+@media only screen and (max-width: 768px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:137px;
+}
+.mail-share{
+    display:inline-block;
+}
+}
+@media only screen and (max-width: 450px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:174px;
+}
+.mail-share {
+    display: inherit;
+}
+}
+@media only screen and (max-width: 380px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:154px;
+}
+}
+@media only screen and (max-width: 362px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:147px;
+}
 }
 ');
 

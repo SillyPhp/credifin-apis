@@ -363,6 +363,7 @@ class LearningController extends Controller
                 'is_deleted' => 0,
                 'status' => 1
             ])
+            ->limit(6)
             ->asArray()
             ->all();
         $topics = Tags::find()
@@ -460,6 +461,7 @@ class LearningController extends Controller
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
+                ->limit(10)
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
@@ -893,6 +895,11 @@ class LearningController extends Controller
     {
         $duration = new \DateInterval($youtube_time);
         return $duration->h . ':' . $duration->i . ':' . $duration->s;
+    }
+
+    public function actionCategoryListPage()
+    {
+        return $this->render('category-list-page');
     }
 
 }
