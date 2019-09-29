@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                         ?>
                                         <?php if (!empty($exp)): ?>
                                         <div class="desination"><i
-                                                    class="fa fa-briefcase"></i> <?= $exp[0].'Years'.$exp[1].'Months' ?>
+                                                    class="fa fa-briefcase"></i> <?= $exp[0].'Years'.' '.$exp[1].'Months' ?>
                                         </div>
                                         <?php endif; ?>
                                     </div>
