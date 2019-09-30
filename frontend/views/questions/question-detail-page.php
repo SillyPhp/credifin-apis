@@ -1,16 +1,17 @@
 <?php
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
 $this->params['header_dark'] = true;
+Yii::$app->view->registerJs('var is_answer = "'. $is_answer.'"',  \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"',  \yii\web\View::POS_HEAD);
 ?>
-
 <Section>
     <div class="container">
         <div class="row">
             <div class="col-md-8">
                 <div class="question-field">
                     <div class="question-head"><?= $object['question']; ?>
-<!--                        <span class="edit">edit</span>-->
                     </div>
                     <?php if (!empty($object['tagEncs'])): ?>
                     <div class="new-tags">
@@ -22,56 +23,35 @@ $this->params['header_dark'] = true;
                     </div>
                     <?php endif; ?>
                     <div class="answers">
-                        <span>2 Answers</span>
-                        <span class="ask-ans">Ask to Answer</span>
+                        <span><?= $answers_count; ?> Answers</span>
                     </div>
-                    <div class="client-side">
-                        <div class="client-img">
-                            <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                        </div>
-                        <div class="client">
-                            <div class="client-name">Chanpory rith</div>
-                            <div class="client-edit"><a href="#">Edit bio,</a><a href="#"> Make Anonymous</a></div>
-                        </div>
-                    </div>
-                    <div class="client-comment">
-                        <textarea class="form-control set-font-size" rows="3" id="comment" placeholder="Add your answer"></textarea>
-                    </div>
-                    <div class="divide"></div>
-                    <div class="user-side">
-                        <div class="user-img">
-                            <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                        </div>
-                        <div class="user">
-                            <div class="user-name">Chanpory rith</div>
-                            <div class="user-edit">updated sep 9</div>
-                        </div>
-                    </div>
-                    <div class="user-content">My friend and I were on our first cruise. Little did we know that cruises seem to attract the most “bogan” (Aussie slang for white trash) of patrons.One night we were waiting patiently in line at a pop-up sushi stand, our stomachs churned in anticipation of the delights to come. We ate sushi regularly at lunch times back home, so the longish wait would be worth it. We were sick of the all-you-can-eat buffet. We wanted something different.As we watched and admired Chef demonstrate his amazing knife skillz, and lusted over the smells, we were finally next in line to eat - yay!
-                    </div>
-                    <div class="views-field">
-                        <div class="views">8k views</div>
-                        <div class="promotes"><a href="">View promotes</a></div>
-                        <div class="shares"><a href="">View Shares</a></div>
-                    </div>
-                    <div class="like-share-promote">
-                        <div class="like"><a href=""><i class="fa fa-thumbs-up paddi"></i>Like</a></div>
-                        <div class="share"><a href=""><i class="fa fa-share-alt paddi"></i>Share</a></div>
-                        <div class="promote"></div>
-                    </div>
-                    <div class="all-comments">
-                        <div class="commenter-side">
-                            <div class="commenter-img">
+                    <?php if (!Yii::$app->user->isGuest):
+                        if (!$is_answer):
+                        $form = ActiveForm::begin([
+                            'id' => 'post-answer-form',
+                            'action' => '/questions/post-answer',
+                        ])
+                        ?>
+                        <div class="client-side">
+                            <div class="client-img">
                                 <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
                             </div>
-                            <div class="commenter">
-                                <div class="commenter-name">Chanpory rith</div>
-                                <div class="comments-sec">this is how i work</div>
+                            <div class="client">
+                                <div class="client-name">Chanpory rith</div>
+                                <!--                            <div class="client-edit"><a href="#">Edit bio,</a><a href="#"> Make Anonymous</a></div>-->
                             </div>
                         </div>
+                    <div class="client-comment">
+                        <?= $form->field($model,'answer')->textArea(['id'=>'comment','placeholder'=>'Add your answer','rows'=>3,'class'=>'form-control set-font-size'])->label(false); ?>
+                        <?= $form->field($model,'question_id',['template'=>'{input}'])->hiddenInput(['id'=>'question_id','value'=>$object['question_pool_enc_id']])->label(false) ?>
                     </div>
-                    <div class="add-comment">
-                        <button type="button" class="btn btn-primary set-new-btn">Add comment</button>
+                    <div class="answer_button">
+                        <?= Html::submitButton('Post Answer',['class'=>'btn btn-primary post_answer']) ?>
+                    </div>
+                    <?php  ActiveForm::end(); endif; endif; ?>
+                    <div class="divide"></div>
+                    <div id="posted_answers">
+
                     </div>
                 </div>
             </div>
@@ -120,9 +100,13 @@ $this->params['header_dark'] = true;
         </div>
     </div>
 </Section>
-
 <?php
+echo $this->render('/widgets/mustache/questions-answers');
 $this->registerCss('
+.answer_button
+{
+text-align:right;
+}
 .add-comment{text-align:right}
 .set-new-btn{
     padding:5px 5px !important;
@@ -329,15 +313,14 @@ body{
 ');
 
 $script = <<<JS
+fetch_cards_new_answers(params={'que_id':que_id},template=$('#posted_answers'));
+if (!is_answer){ 
 ClassicEditor
 		   .create(document.querySelector('#comment'), {
 		       removePlugins: ['Heading', 'Link' ],
 		       toolbar: {items: 
-		       	['heading','|','bold','italic','link','bulletedList','numberedList','imageUpload',
+		       	['heading','|','bold','italic','link','bulletedList','numberedList',
         'blockQuote',]
-    },
-    image: {
-        toolbar: ['imageStyle:full','imageStyle:side','|','imageTextAlternative']
     },
 		   }  )
 		   .then( editor => {
@@ -347,6 +330,11 @@ ClassicEditor
 		   .catch( error => {
 		       console.error( error );
 		   } );
+$('#post-answer-form').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true;
+});
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

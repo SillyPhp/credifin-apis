@@ -31,7 +31,7 @@ $this->params['header_dark'] = false;
             <div class="lc-items-grids">
                 <?php if (!empty($object)){
                     foreach ($object as $obj){
-                        $link = Url::to('question-box/detail?slug='.$obj['slug'], true);
+                        $link = Url::to('question/'.$obj['slug'], true);
                     ?>
                     <div class="lc-single-item-main">
                         <div class="lc-item-img">
@@ -691,17 +691,17 @@ var skills = new Bloodhound({
 }); 
 
 var searchable_question = new Bloodhound({ 
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('question'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/categories-list/tags-data?q=%QUERY',
+    url:'/categories-list/question-data?q=%QUERY',
     wildcard: '%QUERY',    
     cache: true,    
   },
 });
 $('#keyword').typeahead(null, {
   name: 'keyword',
-  display: 'value',
+  display: 'question',
   source: searchable_question,
    limit: 6,
 }).on('typeahead:asyncrequest', function() {

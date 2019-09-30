@@ -42,7 +42,12 @@ class CategoriesListController extends Controller
             ->all();
         return $categories;
     }
-   
+    public function actionQuestionData($q=null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = Yii::$app->db->createCommand("SELECT question FROM {{%questions_pool}} WHERE MATCH (question) AGAINST ('{$q}' IN NATURAL LANGUAGE MODE);");
+        return $result->queryAll();
+    }
     public function actionLoadTopics($type = 'Videos')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
