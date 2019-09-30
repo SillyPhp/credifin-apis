@@ -34,10 +34,21 @@ use yii\helpers\Url;
     <div class="empty"></div>
 
 
+<?php if (!empty($categories)) { ?>
     <div class="container ">
         <div class="cat-padding">
-            <div class="row col-md-12">
-                <div class="heading-style col-md-6 col-sm-6">All Category</div>
+            <div class="row col-md-6 col-xs-4">
+                <div class="heading-style col-md-6 col-sm-6">Category</div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="learning/category-list-page" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="container">
                 <div class="row">
@@ -65,6 +76,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+<?php } ?>
 
     <!--dynamic categories start-->
 
@@ -74,83 +86,84 @@ use yii\helpers\Url;
 
     <!--dynamic categories end-->
 
-    <div class="working-box ">
-        <div class="container">
-            <div class="heading-style">How It Works</div>
-        </div>
-        <div class="box1 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?>"
-                                       alt=""/></div>
-            <div class="w-heading">Want to Learn</div>
-            <div class="w-text">Do you have something in mind that you want to learn</div>
-        </div>
-        <div class="box2 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?>"
-                                       alt=""/></div>
-            <div class="w-heading">Don't Know</div>
-            <div class="w-text">Missing resources from where you can learn</div>
-        </div>
-        <div class="box3 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?>"
-                                       alt=""/></div>
-            <div class="w-heading">Search Here</div>
-            <div class="w-text">Search Empower Youth's learning corner.</div>
-        </div>
-        <div class="box4 col-md-3 col-sm-6">
-            <div class="bar-icon"><img src="<?= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?>"
-                                       alt=""/></div>
-            <div class="w-heading">Start Learning</div>
-            <div class="w-text">Find resources and start learning at empower youth</div>
-        </div>
-    </div>
+<!--    <div class="working-box ">-->
+<!--        <div class="container">-->
+<!--            <div class="heading-style">How It Works</div>-->
+<!--        </div>-->
+<!--        <div class="box1 col-md-3 col-sm-6">-->
+<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?><!--"-->
+<!--                                       alt=""/></div>-->
+<!--            <div class="w-heading">Want to Learn</div>-->
+<!--            <div class="w-text">Do you have something in mind that you want to learn</div>-->
+<!--        </div>-->
+<!--        <div class="box2 col-md-3 col-sm-6">-->
+<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?><!--"-->
+<!--                                       alt=""/></div>-->
+<!--            <div class="w-heading">Don't Know</div>-->
+<!--            <div class="w-text">Missing resources from where you can learn</div>-->
+<!--        </div>-->
+<!--        <div class="box3 col-md-3 col-sm-6">-->
+<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?><!--"-->
+<!--                                       alt=""/></div>-->
+<!--            <div class="w-heading">Search Here</div>-->
+<!--            <div class="w-text">Search Empower Youth's learning corner.</div>-->
+<!--        </div>-->
+<!--        <div class="box4 col-md-3 col-sm-6">-->
+<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?><!--"-->
+<!--                                       alt=""/></div>-->
+<!--            <div class="w-heading">Start Learning</div>-->
+<!--            <div class="w-text">Find resources and start learning at empower youth</div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <div class="clearfix"></div>
     <div class="empty"></div>
 
-    <div class="container ">
-        <div class="cat-padding">
-            <div class="mv">
-                <div class="container">
-                    <div class="heading-style">Most Popular Topics</div>
-                    <div class="mt-actions " style="">
-                        <?php
-                        foreach ($topics as $topic) {
-                            ?>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="topic-con">
-                                    <a href="<?= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?>">
-                                        <div class="hr-company-box">
-                                            <div class="hr-company-box-center">
-                                                <div class="hr-com-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?>"
-                                                         class="img-responsive ">
-                                                </div>
-                                                <div class="hr-com-name"><?= $topic['name'] ?></div>
-                                                <div class="hr-com-field"><?= $topic['cnt'] ?> Videos</div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<!--    <div class="container ">-->
+<!--        <div class="cat-padding">-->
+<!--            <div class="mv">-->
+<!--                <div class="container">-->
+<!--                    <div class="heading-style">Most Popular Topics</div>-->
+<!--                    <div class="mt-actions " style="">-->
+<!--                        --><?php
+//                        foreach ($topics as $topic) {
+//                            ?>
+<!--                            <div class="col-md-3 col-sm-4">-->
+<!--                                <div class="topic-con">-->
+<!--                                    <a href="--><?//= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?><!--">-->
+<!--                                        <div class="hr-company-box">-->
+<!--                                            <div class="hr-company-box-center">-->
+<!--                                                <div class="hr-com-icon">-->
+<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?><!--"-->
+<!--                                                         class="img-responsive ">-->
+<!--                                                </div>-->
+<!--                                                <div class="hr-com-name">--><?//= $topic['name'] ?><!--</div>-->
+<!--                                                <div class="hr-com-field">--><?//= $topic['cnt'] ?><!-- Videos</div>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            --><?php
+//                        }
+//                        ?>
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <div class="clearfix"></div>
     <div class="empty"></div>
 
+<?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <!-- Example row of columns -->
         <div class="row col-md-12">
             <div class="heading-style col-md-6 col-sm-6">Most Popular Videos</div>
         </div>
     </div>
-    <div class="v-slider">
+    <div>
         <div class="container">
             <div id="mixedSlider">
                 <div class="MS-content lc-items-grids">
@@ -186,36 +199,39 @@ use yii\helpers\Url;
                                 <!--                                </div>-->
                             </div>
                             <div class="lc-item-video-stats">
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="fas fa-heart"></i> 5-->
-<!--                                    </span>-->
-<!--                                </a>-->
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="far fa-comments"></i> 0-->
-<!--                                    </span>-->
-<!--                                </a>-->
-<!--                                <a class="lc-item-video-stat" href="#">-->
-<!--                                    <span>-->
-<!--                                        <i class="fas fa-eye"></i> 0-->
-<!--                                    </span>-->
-<!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-heart"></i> 5-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="far fa-comments"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
+                                <!--                                <a class="lc-item-video-stat" href="#">-->
+                                <!--                                    <span>-->
+                                <!--                                        <i class="fas fa-eye"></i> 0-->
+                                <!--                                    </span>-->
+                                <!--                                </a>-->
                                 <span class="lc-item-video-stat marg">
                                     <?php
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
                                     ?>
-                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-facebook-f"></i>
                                             </span>
                                         </a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-twitter"></i>
                                             </span>
                                         </a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>" target="blank">
+                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                           target="blank">
                                             <span>
                                                 <i class="fab fa-linkedin"></i>
                                             </span>
@@ -225,15 +241,16 @@ use yii\helpers\Url;
                         </div>
                     <?php } ?>
                 </div>
-                <div class="MS-controls">
-                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>
-                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>
-                </div>
+<!--                <div class="MS-controls">-->
+<!--                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>-->
+<!--                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>-->
+<!--                </div>-->
             </div>
         </div>
     </div>
+<?php } ?>
 <?php
-if (!empty($contributors)) {
+if (false) {
     ?>
     <section>
         <div class="container">
@@ -425,7 +442,6 @@ $this->registerCss('
 .newset{
     text-align:center;
     max-width: 160px;
-    min-height: 245px;  
     line-height: 210px;
     position: relative;
     width:100%;
@@ -434,16 +450,18 @@ $this->registerCss('
 .imag{
     text-align: right;
 }
-.txt{
+.txt {
     position: absolute;
-    line-height: 30px;
+    line-height: 17px;
     bottom: 10px;
-    left: 10px;
+    left: -4px;
     font-weight: 400;
-    color:#222;
-    font-family:roboto;
-    text-transform:uppercase;
- }
+    color: #222;
+    font-family: roboto;
+    text-transform: capitalize;
+    background-color: #fff;
+    padding: 0px 5px;
+}
 .b-padding{
     padding-top: 125px;
 }
@@ -540,25 +558,24 @@ $this->registerCss('
     padding-top: 20px; 
     padding-bottom: 40px;
 }
-#mixedSlider {
-    position: relative;
-}
-#mixedSlider .MS-content {
-    white-space: nowrap;
-    overflow: hidden;	
-    margin: 0 45px;
-    margin-left: 35px;
-}
+//#mixedSlider {
+//    position: relative;
+//}
+//#mixedSlider .MS-content {
+//    white-space: nowrap;
+//    overflow: hidden;	
+//    margin: 0 45px;
+//    margin-left: 35px;
+//}
 #mixedSlider .MS-content .item {
     display: inline-block;
-    width: 31.9%;
+    width: 31.7%;
     position: relative;
     vertical-align: top;
     height: 100%;
     white-space: normal;
     padding: 5px 10px;
     margin: 15px 8px;
-    margin-bottom: 30px;
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {
@@ -568,6 +585,7 @@ $this->registerCss('
 @media (max-width: 767px) {
   #mixedSlider .MS-content .item {
     width: 100%;
+    margin:0px;
   }
 }
 #mixedSlider .MS-content .item .imgTitle a {
@@ -604,45 +622,45 @@ text-align: left;
 //  text-shadow: 0 0 1px grey;
   text-decoration: none;
 }
-#mixedSlider .MS-controls button {
-  position: absolute;
-  border: none;
-  background-color: transparent;
-  outline: 0;
-  font-size: 50px;
-  top: 95px;
-  color: rgba(0, 0, 0, 0.4);
-  transition: 0.15s linear;
-}
-#mixedSlider .MS-controls button:hover {
-  color: rgba(0, 0, 0, 0.8);
-}
-@media (max-width: 992px) {
-  #mixedSlider .MS-controls button {
-    font-size: 30px;
-  }
-}
-@media (max-width: 767px) {
-  #mixedSlider .MS-controls button {
-    font-size: 20px;
-  }
-}
-#mixedSlider .MS-controls .MS-left {
-  left: 0px;
-}
-@media (max-width: 767px) {
-  #mixedSlider .MS-controls .MS-left {
-    left: -10px;
-  }
-}
-#mixedSlider .MS-controls .MS-right {
-  right: 0px;
-}
-@media (max-width: 767px) {
-  #mixedSlider .MS-controls .MS-right {
-    right: -10px;
-  }
-}
+//#mixedSlider .MS-controls button {
+//  position: absolute;
+//  border: none;
+//  background-color: transparent;
+//  outline: 0;
+//  font-size: 50px;
+//  top: 95px;
+//  color: rgba(0, 0, 0, 0.4);
+//  transition: 0.15s linear;
+//}
+//#mixedSlider .MS-controls button:hover {
+//  color: rgba(0, 0, 0, 0.8);
+//}
+//@media (max-width: 992px) {
+//  #mixedSlider .MS-controls button {
+//    font-size: 30px;
+//  }
+//}
+//@media (max-width: 767px) {
+//  #mixedSlider .MS-controls button {
+//    font-size: 20px;
+//  }
+//}
+//#mixedSlider .MS-controls .MS-left {
+//  left: 0px;
+//}
+//@media (max-width: 767px) {
+//  #mixedSlider .MS-controls .MS-left {
+//    left: -10px;
+//  }
+//}
+//#mixedSlider .MS-controls .MS-right {
+//  right: 0px;
+//}
+//@media (max-width: 767px) {
+//  #mixedSlider .MS-controls .MS-right {
+//    right: -10px;
+//  }
+//}
 /*topics css*/
 .topic-con{
     position: relative;
@@ -658,7 +676,90 @@ text-align: left;
     width: 100%;
     height: auto;
 }
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+    
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.txt-cate {
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+
+/*<!---- view-all button css ends --->*/
 .overlay {
     position: absolute;
     bottom: 0;
@@ -1131,25 +1232,25 @@ button.lc-item-video-menu {
 ');
 
 $script = <<< JS
-    (function (b, o, i, l, e, r) {
-        b.GoogleAnalyticsObject = l;
-        b[l] || (b[l] =
-                function () {
-                    (b[l].q = b[l].q || []).push(arguments)
-                });
-        b[l].l = +new Date;
-        e = o.createElement(i);
-        r = o.getElementsByTagName(i)[0];
-        e.src = '//www.google-analytics.com/analytics.js';
-        r.parentNode.insertBefore(e, r)
-    }(window, document, 'script', 'ga'));
-    ga('create', 'UA-XXXXX-X', 'auto');
-    ga('send', 'pageview');
-
-    $('#mixedSlider').multislider({
-        duration: 750,
-        interval: 3000
-    });
+    // (function (b, o, i, l, e, r) {
+    //     b.GoogleAnalyticsObject = l;
+    //     b[l] || (b[l] =
+    //             function () {
+    //                 (b[l].q = b[l].q || []).push(arguments)
+    //             });
+    //     b[l].l = +new Date;
+    //     e = o.createElement(i);
+    //     r = o.getElementsByTagName(i)[0];
+    //     e.src = '//www.google-analytics.com/analytics.js';
+    //     r.parentNode.insertBefore(e, r)
+    // }(window, document, 'script', 'ga'));
+    // ga('create', 'UA-XXXXX-X', 'auto');
+    // ga('send', 'pageview');
+    //
+    // $('#mixedSlider').multislider({
+    //     duration: 750,
+    //     interval: 3000
+    // });
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/candidates-list/modernizr-2.8.3-respond-1.4.2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -21,6 +21,7 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
 use common\models\Utilities;
+use yii\db\Expression;
 
 class LearningController extends Controller
 {
@@ -313,7 +314,7 @@ class LearningController extends Controller
             $result
                 ->andFilterWhere([
                     'or',
-                    ['like', 'a.type', $k],
+                    ['like', 'a.slug', $k],
                     ['like', 'a.title', $k],
                     ['like', 'a.description', $k],
                     ['like', 'c.name', $k],
@@ -322,6 +323,7 @@ class LearningController extends Controller
                 ]);
 
             $output = $result
+//                ->limit(20)
                 ->asArray()
                 ->all();
 
@@ -345,6 +347,7 @@ class LearningController extends Controller
             }], false)
             ->joinWith(['categoryEnc c'], false)
             ->where(['a.assigned_to' => 'Videos'])
+            ->andWhere(['not',['a.banner' => null]])
             ->andWhere(['a.status' => 'Approved'])
             ->andWhere([
                 'or',
@@ -353,6 +356,7 @@ class LearningController extends Controller
             ])
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy(['a.assigned_category_enc_id'])
+            ->limit(12)
             ->asArray()
             ->all();
 
@@ -362,8 +366,11 @@ class LearningController extends Controller
                 'is_deleted' => 0,
                 'status' => 1
             ])
+            ->orderBy(new Expression('rand()'))
+            ->limit(6)
             ->asArray()
             ->all();
+
         $topics = Tags::find()
             ->alias('a')
             ->select(['a.tag_enc_id', 'a.name', 'a.slug', 'COUNT(c.video_tag_enc_id) cnt'])
@@ -383,26 +390,26 @@ class LearningController extends Controller
             ->asArray()
             ->all();
 
-        $contributors = Users::find()
-            ->alias('a')
-            ->select(['a.user_type_enc_id','CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
-            ->innerJoinWith(['userTypeEnc b' => function($b){
-                $b->andOnCondition(['b.user_type' => 'Contributor']);
-            }], false)
-            ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere([
-                'or',
-                ['a.organization_enc_id' => ""],
-                ['a.organization_enc_id' => NULL]
-            ])
-            ->asArray()
-            ->all();
+//        $contributors = Users::find()
+//            ->alias('a')
+//            ->select(['a.user_type_enc_id','CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
+//            ->innerJoinWith(['userTypeEnc b' => function($b){
+//                $b->andOnCondition(['b.user_type' => 'Contributor']);
+//            }], false)
+//            ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
+//            ->andWhere([
+//                'or',
+//                ['a.organization_enc_id' => ""],
+//                ['a.organization_enc_id' => NULL]
+//            ])
+//            ->asArray()
+//            ->all();
 
         return $this->render('index', [
             'categories' => $categories,
             'popular_videos' => $popular_videos,
             'topics' => $topics,
-            'contributors' => $contributors,
+//            'contributors' => $contributors,
         ]);
     }
 
@@ -458,6 +465,7 @@ class LearningController extends Controller
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
+                ->limit(10)
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
@@ -891,6 +899,11 @@ class LearningController extends Controller
     {
         $duration = new \DateInterval($youtube_time);
         return $duration->h . ':' . $duration->i . ':' . $duration->s;
+    }
+
+    public function actionCategoryListPage()
+    {
+        return $this->render('category-list-page');
     }
 
 }
