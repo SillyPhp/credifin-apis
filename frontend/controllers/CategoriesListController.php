@@ -42,7 +42,7 @@ class CategoriesListController extends Controller
             ->all();
         return $categories;
     }
-
+   
     public function actionLoadTopics($type = 'Videos')
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

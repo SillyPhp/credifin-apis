@@ -694,16 +694,10 @@ var searchable_question = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
    remote: {
-    url:'/categories-list/tags-data',
-    prepare: function (query, settings) {
-             settings.url += '?q=' +$('#keyword').val();
-             return settings;
-        },   
-    cache: false,    
-    filter: function(list) {
-             return list;
-        }
-  }
+    url:'/categories-list/tags-data?q=%QUERY',
+    wildcard: '%QUERY',    
+    cache: true,    
+  },
 });
 $('#keyword').typeahead(null, {
   name: 'keyword',
