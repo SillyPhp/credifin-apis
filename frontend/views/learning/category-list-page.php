@@ -4,60 +4,37 @@ $this->params['header_dark'] = true;
 use yii\helpers\Url;
 
 ?>
-
-<section>
-    <div class="container">
-        <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">All Categories</div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="popular-cate">
-                    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                        <a href="#">
-                            <div class="newset">
-                                <div class="imag">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/learning-corner/othercategory.png');?>">
-                                </div>
-                                <div class="txt">name</div>
+<?php if (!empty($categories)) { ?>
+    <section>
+        <div class="container">
+            <div class="row col-md-12">
+                <div class="heading-style col-md-6 col-sm-6">All Categories</div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="popular-cate">
+                        <?php foreach ($categories as $c) { ?>
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+                                <a href="/learning/videos/category/<?= $c['slug']; ?>">
+                                    <div class="newset">
+                                        <div class="imag">
+                                            <img src="<?= $c['icon'] ?>">
+                                        </div>
+                                        <div class="txt"><?= $c['name']?></div>
+                                    </div>
+                                </a>
                             </div>
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                        <a href="#">
-                            <div class="newset">
-                                <div class="imag">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/learning-corner/othercategory.png');?>">
-                                </div>
-                                <div class="txt">name</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                        <a href="#">
-                            <div class="newset">
-                                <div class="imag">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/learning-corner/othercategory.png');?>">
-                                </div>
-                                <div class="txt">name</div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                        <a href="#">
-                            <div class="newset">
-                                <div class="imag">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/learning-corner/othercategory.png');?>">
-                                </div>
-                                <div class="txt">name</div>
-                            </div>
-                        </a>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+<?php } else { ?>
+    <section id="not-found" class="text-center">
+        <img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>
+    </section>
+<?php } ?>
 
 <?php
 $this->registerCss('

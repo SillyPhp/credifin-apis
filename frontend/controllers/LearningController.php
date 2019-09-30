@@ -905,9 +905,30 @@ class LearningController extends Controller
         return $duration->h . ':' . $duration->i . ':' . $duration->s;
     }
 
-    public function actionCategoryListPage()
+    public function actionCategories()
     {
-        return $this->render('category-list-page');
+        $categories = AssignedCategories::find()
+            ->alias('a')
+            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
+            ->joinWith(['learningVideos b' => function($b){
+                $b->andOnCondition(['b.status' => 1]);
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['categoryEnc c'], false)
+            ->where(['a.assigned_to' => 'Videos'])
+            ->andWhere(['not',['a.banner' => null]])
+            ->andWhere(['a.status' => 'Approved'])
+            ->andWhere([
+                'or',
+                ['a.parent_enc_id' => ""],
+                ['a.parent_enc_id' => NULL]
+            ])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy(['a.assigned_category_enc_id'])
+            ->asArray()
+            ->all();
+
+        return $this->render('category-list-page',['categories'=>$categories]);
     }
 
 }
