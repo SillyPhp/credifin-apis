@@ -64,6 +64,12 @@
             </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/training-programs/list">
+                Training Courses
+                <!--                <i class="fas fa-caret-down" aria-hidden="true"></i>-->
+            </a>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
                 <i class="fas fa-caret-down" aria-hidden="true"></i>
@@ -91,6 +97,12 @@
                     </div>
                 </div>
             </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/learning">
+                Learning
+<!--                <i class="fas fa-caret-down" aria-hidden="true"></i>-->
+            </a>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
@@ -139,6 +151,9 @@
                                         </li>
                                         <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
+                                        </li>
+                                        <li>
+                                            <a href="/account/training-program">Manage Training Programs</a>
                                         </li>
                                         <li class="ey-head-sub-menu-has-child">
                                             <a href="javascript:;">Create Job</a>
@@ -189,6 +204,21 @@
                                                                 <span class="ey-services-icons ai"></span>
                                                             </div>
                                                             <span>Create AI Internship</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Create Training Programs</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/training-program/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Training Programs</span>
                                                         </a>
                                                     </li>
                                                 </ul>

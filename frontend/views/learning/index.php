@@ -43,7 +43,7 @@ use yii\helpers\Url;
             <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="learning/category-list-page" class="btn btn-3">
+                        <a href="learning/categories" class="btn btn-3">
                             <span class="txt-cate">View all</span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
