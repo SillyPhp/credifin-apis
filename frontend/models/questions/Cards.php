@@ -15,7 +15,7 @@ class Cards
                    'b.initials_color color',
                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image',
                    'b.username',
-                   'a.created_on'])
+                   'DATE_FORMAT(a.created_on,"%e %M %Y") created_on'])
                ->where(['question_pool_enc_id'=>$options['que_id']])
                ->andWhere(['a.is_deleted'=>0])
                ->orderBy(['a.created_on' => SORT_DESC])
