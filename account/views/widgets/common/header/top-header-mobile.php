@@ -345,7 +345,7 @@ $(document).on("click", ".ey-mob-menu-inner-item.ey-mob-menu-has-sub .ey-mobile-
     $(this).parent().next(".ey-mob-sub-menu-has-container").toggleClass("ey-mobile-sub-menu-show");
 });
 $(document).on("click", ".ey-mob-sub-item.ey-mobile-sub-has-container .ey-mobile-sub-menu-heading", function(e){
-    e.preventDefault();
+//    e.preventDefault();
     $(this).next(".ey-mobile-sub-menu-container").toggleClass("ey-mobile-sub-nav-show");
 });
 ');
