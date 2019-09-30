@@ -1173,6 +1173,16 @@ left:10px;
 .mail-share{
     text-align:center;
 }
+@media only screen and (max-width: 1280px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:127px;
+}
+}
+@media only screen and (max-width: 1024px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:190px;
+}
+}
 @media only screen and (max-width: 768px){
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     width:137px;
