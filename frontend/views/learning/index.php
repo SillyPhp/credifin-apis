@@ -250,7 +250,7 @@ use yii\helpers\Url;
     </div>
 <?php } ?>
 <?php
-if (false) {
+if (!empty($contributors)) {
     ?>
     <section>
         <div class="container">
