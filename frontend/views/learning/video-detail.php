@@ -279,6 +279,9 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.comment-text{
+    word-break: break-all;
+}
 .large-container{
     max-width: 1500px !important;
     padding-left: 15px;
