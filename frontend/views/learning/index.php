@@ -34,7 +34,6 @@ use yii\helpers\Url;
     <div class="empty"></div>
 
 
-<?php if (!empty($categories)) { ?>
     <div class="container ">
         <div class="cat-padding">
             <div class="row col-md-6 col-xs-4">
@@ -53,30 +52,14 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="popular-cate">
-                            <?php
-                            foreach ($categories as $cat) {
-                                ?>
-                                <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-                                    <a href="/learning/videos/category/<?= $cat['slug']; ?>">
-                                        <div class="newset">
-                                            <div class="imag">
-                                                <img src="<?= $cat['icon']; ?>">
-                                            </div>
-                                            <div class="txt"><?= $cat['name']; ?></div>
-                                        </div>
-                                    </a>
-                                </div>
-                                <?php
-                            }
-                            ?>
+                        <div class="popular-cate" id="categories">
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-<?php } ?>
 
     <!--dynamic categories start-->
 
@@ -86,72 +69,72 @@ use yii\helpers\Url;
 
     <!--dynamic categories end-->
 
-<!--    <div class="working-box ">-->
-<!--        <div class="container">-->
-<!--            <div class="heading-style">How It Works</div>-->
-<!--        </div>-->
-<!--        <div class="box1 col-md-3 col-sm-6">-->
-<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?><!--"-->
-<!--                                       alt=""/></div>-->
-<!--            <div class="w-heading">Want to Learn</div>-->
-<!--            <div class="w-text">Do you have something in mind that you want to learn</div>-->
-<!--        </div>-->
-<!--        <div class="box2 col-md-3 col-sm-6">-->
-<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?><!--"-->
-<!--                                       alt=""/></div>-->
-<!--            <div class="w-heading">Don't Know</div>-->
-<!--            <div class="w-text">Missing resources from where you can learn</div>-->
-<!--        </div>-->
-<!--        <div class="box3 col-md-3 col-sm-6">-->
-<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?><!--"-->
-<!--                                       alt=""/></div>-->
-<!--            <div class="w-heading">Search Here</div>-->
-<!--            <div class="w-text">Search Empower Youth's learning corner.</div>-->
-<!--        </div>-->
-<!--        <div class="box4 col-md-3 col-sm-6">-->
-<!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?><!--"-->
-<!--                                       alt=""/></div>-->
-<!--            <div class="w-heading">Start Learning</div>-->
-<!--            <div class="w-text">Find resources and start learning at empower youth</div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--    <div class="working-box ">-->
+    <!--        <div class="container">-->
+    <!--            <div class="heading-style">How It Works</div>-->
+    <!--        </div>-->
+    <!--        <div class="box1 col-md-3 col-sm-6">-->
+    <!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-1.png'); ?><!--"-->
+    <!--                                       alt=""/></div>-->
+    <!--            <div class="w-heading">Want to Learn</div>-->
+    <!--            <div class="w-text">Do you have something in mind that you want to learn</div>-->
+    <!--        </div>-->
+    <!--        <div class="box2 col-md-3 col-sm-6">-->
+    <!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-2.png'); ?><!--"-->
+    <!--                                       alt=""/></div>-->
+    <!--            <div class="w-heading">Don't Know</div>-->
+    <!--            <div class="w-text">Missing resources from where you can learn</div>-->
+    <!--        </div>-->
+    <!--        <div class="box3 col-md-3 col-sm-6">-->
+    <!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-3.png'); ?><!--"-->
+    <!--                                       alt=""/></div>-->
+    <!--            <div class="w-heading">Search Here</div>-->
+    <!--            <div class="w-text">Search Empower Youth's learning corner.</div>-->
+    <!--        </div>-->
+    <!--        <div class="box4 col-md-3 col-sm-6">-->
+    <!--            <div class="bar-icon"><img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/bar-icon-4.png'); ?><!--"-->
+    <!--                                       alt=""/></div>-->
+    <!--            <div class="w-heading">Start Learning</div>-->
+    <!--            <div class="w-text">Find resources and start learning at empower youth</div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <div class="clearfix"></div>
     <div class="empty"></div>
 
-<!--    <div class="container ">-->
-<!--        <div class="cat-padding">-->
-<!--            <div class="mv">-->
-<!--                <div class="container">-->
-<!--                    <div class="heading-style">Most Popular Topics</div>-->
-<!--                    <div class="mt-actions " style="">-->
-<!--                        --><?php
+    <!--    <div class="container ">-->
+    <!--        <div class="cat-padding">-->
+    <!--            <div class="mv">-->
+    <!--                <div class="container">-->
+    <!--                    <div class="heading-style">Most Popular Topics</div>-->
+    <!--                    <div class="mt-actions " style="">-->
+    <!--                        --><?php
 //                        foreach ($topics as $topic) {
 //                            ?>
-<!--                            <div class="col-md-3 col-sm-4">-->
-<!--                                <div class="topic-con">-->
-<!--                                    <a href="--><?//= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?><!--">-->
-<!--                                        <div class="hr-company-box">-->
-<!--                                            <div class="hr-company-box-center">-->
-<!--                                                <div class="hr-com-icon">-->
-<!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?><!--"-->
-<!--                                                         class="img-responsive ">-->
-<!--                                                </div>-->
-<!--                                                <div class="hr-com-name">--><?//= $topic['name'] ?><!--</div>-->
-<!--                                                <div class="hr-com-field">--><?//= $topic['cnt'] ?><!-- Videos</div>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            --><?php
+    <!--                            <div class="col-md-3 col-sm-4">-->
+    <!--                                <div class="topic-con">-->
+    <!--                                    <a href="--><?//= Url::to('/learning/videos/videos?slug=' . $topic['slug']) ?><!--">-->
+    <!--                                        <div class="hr-company-box">-->
+    <!--                                            <div class="hr-company-box-center">-->
+    <!--                                                <div class="hr-com-icon">-->
+    <!--                                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/lc_tags.png'); ?><!--"-->
+    <!--                                                         class="img-responsive ">-->
+    <!--                                                </div>-->
+    <!--                                                <div class="hr-com-name">--><?//= $topic['name'] ?><!--</div>-->
+    <!--                                                <div class="hr-com-field">--><?//= $topic['cnt'] ?><!-- Videos</div>-->
+    <!--                                            </div>-->
+    <!--                                        </div>-->
+    <!--                                    </a>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            --><?php
 //                        }
 //                        ?>
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
 
     <div class="clearfix"></div>
     <div class="empty"></div>
@@ -241,77 +224,27 @@ use yii\helpers\Url;
                         </div>
                     <?php } ?>
                 </div>
-<!--                <div class="MS-controls">-->
-<!--                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>-->
-<!--                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>-->
-<!--                </div>-->
+                <!--                <div class="MS-controls">-->
+                <!--                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>-->
+                <!--                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>-->
+                <!--                </div>-->
             </div>
         </div>
     </div>
 <?php } ?>
-<?php
-if (!empty($contributors)) {
-    ?>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="heading-style">Our Collaborators</h2>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                foreach ($contributors as $contributor) {
-                    ?>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="collaborators-main">
-                            <div class="c-detail">
-                                <h4 class="title"><?= $contributor['name']; ?></h4>
-                                <span class="post">Contributor</span>
-                                <ul class="social-icon">
 
-                                    <?php if (!empty($contributor['facebook'])) { ?>
-                                        <li><a href="https://www.facebook.com/<?= $contributor['facebook']; ?>"
-                                               target="_blank">
-                                                <i class="fab fa-facebook"></i></a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (!empty($contributor['twitter'])) { ?>
-                                        <li><a href="https://www.twitter.com/<?= $contributor['twitter']; ?>"
-                                               target="_blank">
-                                                <i class="fab fa-twitter"></i></a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (!empty($contributor['linkedin'])) { ?>
-                                        <li><a href="https://www.linkedin.com/in/<?= $contributor['linkedin']; ?>"
-                                               target="_blank">
-                                                <i class="fab fa-linkedin"></i></a>
-                                        </li>
-                                    <?php } ?>
-                                    <?php if (!empty($contributor['instagram'])) { ?>
-                                        <li><a href="https://www.instagram.com/<?= $contributor['instagram']; ?>"
-                                               target="_blank">
-                                                <i class="fab fa-instagram"></i></a>
-                                        </li>
-                                    <?php } ?>
-                                </ul>
-                            </div>
-                            <div class="thumb">
-                                <img src="<?= $contributor['image']; ?>"
-                                     alt="">
-                            </div>
-                        </div>
-                    </div>
-
-                    <?php
-                }
-                ?>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="heading-style">Our Collaborators</h2>
             </div>
         </div>
-    </section>
-    <?php
-}
-?>
+        <div class="row" id="contributors">
+
+        </div>
+    </div>
+</section>
 
 <?php
 $this->registerCss('
@@ -1251,7 +1184,105 @@ $script = <<< JS
     //     duration: 750,
     //     interval: 3000
     // });
+    
+   $.ajax({
+        method: "POST",
+        url : '/learning/contributors',
+        async: false,
+        success: function(response) {
+            if(response.status === 200) {
+                if(response.result.length == 0){
+                    $('#not-found').fadeIn(1000);
+                }else{
+                    var contributor = $('#video-collaborators').html();
+                    $("#contributors").html(Mustache.render(contributor, response.result));
+                    console.log('data');
+                }
+            }
+        }
+   });
+
+    $.ajax({
+        method: "POST",
+        url : '/learning/home-categories',
+        async: false,
+        success: function(response) {
+            if(response.status === 200) {
+                if(response.result.length == 0){
+                    $('#not-found').fadeIn(1000);
+                }else{
+                    var contributor = $('#video-categories').html();
+                    $("#categories").html(Mustache.render(contributor, response.result));
+                }
+            }
+        }
+   });
+
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/candidates-list/modernizr-2.8.3-respond-1.4.2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+
+<script id="video-collaborators" type="text/template">
+    {{#.}}
+            <div class="col-lg-4 col-md-6">
+                <div class="collaborators-main">
+                    <div class="c-detail">
+                        <h4 class="title">{{name}}</h4>
+                        <span class="post">Contributor</span>
+                        <ul class="social-icon">
+                            {{#facebook}}
+                            <li><a href="https://www.facebook.com/{{facebook}}"
+                                   target="_blank">
+                                    <i class="fab fa-facebook"></i></a>
+                            </li>
+                            {{/facebook}}
+
+                            {{#twitter}}
+                            <li><a href="https://www.twitter.com/twitter"
+                                   target="_blank">
+                                    <i class="fab fa-twitter"></i></a>
+                            </li>
+                            {{/twitter}}
+
+
+                            {{#linkedin}}
+                            <li><a href="https://www.linkedin.com/in/"
+                                   target="_blank">
+                                    <i class="fab fa-linkedin"></i></a>
+                            </li>
+                            {{/linkedin}}
+
+                            {{#instagram}}
+                            <li><a href="https://www.instagram.com/"
+                                   target="_blank">
+                                    <i class="fab fa-instagram"></i></a>
+                            </li>
+                            {{/instagram}}
+                        </ul>
+                    </div>
+                    <div class="thumb">
+                        <img src="{{image}}"
+                             alt="">
+                    </div>
+                </div>
+            </div>
+    {{/.}}
+</script>
+
+<script id="video-categories" type="text/template">
+    {{#.}}
+    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
+        <a href="/learning/videos/category/{{slug}}">
+            <div class="newset">
+                <div class="imag">
+                    <img src="{{icon}}">
+                </div>
+                <div class="txt">{{name}}</div>
+            </div>
+        </a>
+    </div>
+    {{/.}}
+</script>
