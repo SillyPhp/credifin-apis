@@ -2,6 +2,7 @@
 namespace frontend\controllers;
 use common\models\Categories;
 use common\models\Skills;
+use common\models\Tags;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -30,6 +31,39 @@ class CategoriesListController extends Controller
         return $categories;
     }
 
+    public function actionTagsData($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = Tags::find()
+            ->select(['name as value', 'tag_enc_id as id'])
+            ->where('name LIKE "%' . $q . '%"')
+            ->asArray()
+            ->limit(20)
+            ->all();
+        return $categories;
+    }
+    public function actionQuestionData($q=null)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $result = Yii::$app->db->createCommand("SELECT question FROM {{%questions_pool}} WHERE MATCH (question) AGAINST ('{$q}' IN NATURAL LANGUAGE MODE);");
+        return $result->queryAll();
+    }
+    public function actionLoadTopics($type = 'Videos')
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $categories = Categories::find()
+            ->alias('a')
+            ->select(['a.name as value', 'a.category_enc_id as id'])
+            ->joinWith(['assignedCategories b'],false)
+            ->andWhere([
+                'b.assigned_to' => $type,
+            ])
+            ->andWhere(['=', 'b.status', 'Approved'])
+            ->asArray()
+            ->all();
+
+        return $categories;
+    }
     public function actionSkillsData($q)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
