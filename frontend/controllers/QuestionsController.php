@@ -86,7 +86,7 @@ class QuestionsController extends Controller
             $res = $model->save();
             if ($res['status'])
             {
-                return $this->redirect('/'.$res['slug']);
+                return $this->redirect('/question/'.$res['slug']);
             }
             else
             {
