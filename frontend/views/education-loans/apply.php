@@ -1,13 +1,15 @@
 <?php
 $this->title = Yii::t('frontend', 'Education Loan');
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
 
 $EducationalLoanForm = ActiveForm::begin([
-    'id'=> 'education-loan',
+    'id' => 'education-loan',
     'fieldConfig' => [
-            'template' => '<div class="col-md-12 padd-20"><div class="input-group">{input}{error}</div></div>',
-            'labelOption' => ['class' => '']
+        'template' => '<div class="col-md-12 padd-20"><div class="input-group">{label}{input}{error}</div></div>',
+        'labelOptions' => ['class' => 'input-group-text']
     ],
 ]);
 ?>
@@ -16,7 +18,7 @@ $EducationalLoanForm = ActiveForm::begin([
         <div class="row">
             <div class="col-md-12">
                 <div class="form-start">
-                    <form action="" >
+                    <form action="">
                         <div class="tab">
                             <div class="row">
                                 <div class="col-md-12">
@@ -50,56 +52,98 @@ $EducationalLoanForm = ActiveForm::begin([
                                 </div>
                             </div>
 
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group">
-                                    <div class="radio-heading input-group-text">
-                                        Which degree do you want to pursue
-                                    </div>
-                                    <label class="container-radio">Graduation
-                                        <input type="radio" checked="checked" name="degree">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container-radio">Post Graduation
-                                        <input type="radio" name="degree">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group">
-                                    <div class="radio-heading input-group-text">
-                                        Select a course
-                                    </div>
-                                    <ul>
-                                        <li class="service-list">
-                                            <input type="radio" name="course" id="law" class="checkbox-input services" />
-                                            <label for="law">Law</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="course" id="medicine" class="checkbox-input services" />
-                                            <label for="medicine">Medicine</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="course" id="management" class="checkbox-input services" />
-                                            <label for="management">Management</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="course" id="others" class="checkbox-input services" />
-                                            <label for="others">Others</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <div class="input-group">-->
+<!--                                    <div class="radio-heading input-group-text">-->
+<!--                                        Which degree do you want to pursue-->
+<!--                                    </div>-->
+<!--                                    <label class="container-radio">Graduation-->
+<!--                                        <input type="radio" checked="checked" name="degree">-->
+<!--                                        <span class="checkmark"></span>-->
+<!--                                    </label>-->
+<!--                                    <label class="container-radio">Post Graduation-->
+<!--                                        <input type="radio" name="degree">-->
+<!--                                        <span class="checkmark"></span>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <?php
+                                $EducationalLoan-> degree = [0];
+                            ?>
                             <?=
-                            $EducationalLoanForm->field($EducationalLoan,'number')->textinput([
-                                    'placeholder' => $EducationalLoan->getAttributeLabel('number')
-                            ]);
+                                $EducationalLoanForm->field($EducationalLoan, 'degree')->radiolist([
+                                    0=> 'Graduation',
+                                    1=> 'Post Graduation',
+                                ],[
+                                    'item' => function ($index, $label,$name, $checked, $value){
+                                        $return = '<label for="degree-'. $index .'" class="container-radio">'. $label;
+                                        $return .= '<input type="radio" id="degree-'. $index .'" name="'. $name .'" value="'.$value.'"'.(($checked) ? 'checked' : '').' />';
+                                        $return .= '<span class="checkmark"></span>';
+                                        $return .='</label>';
+                                        return $return;
+                                    }
+                                ])
+                            ?>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <div class="input-group">-->
+<!--                                    <div class="radio-heading input-group-text">-->
+<!--                                        Select a course-->
+<!--                                    </div>-->
+<!--                                    <ul>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="course" id="law" class="checkbox-input services"/>-->
+<!--                                            <label for="law">Law</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="course" id="medicine"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="medicine">Medicine</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="course" id="management"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="management">Management</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="course" id="others"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="others">Others</label>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'course')->radioList([
+                                0 => 'Law',
+                                1 => 'Medicine',
+                                2 => 'Management',
+                                3 => 'Engineering',
+                                4 => 'Diploma',
+                                5 => 'Chartered Accountant',
+                                6 => 'Computer Science',
+                                7 => 'Others',
+                            ],[
+                                'item' => function($index, $label, $name, $checked, $value){
+                                    $return = '<li class="service-list">';
+                                    $return .= '<input type="radio" id="course-'. $index .'" name="'.$name.'" value="'.$value.'" class="checkbox-input services" />';
+                                    $return .= '<label for="course-'. $index .'">'. $label ;
+                                    $return .='</label></li>';
+                                    return $return;
+                                }
+                            ])
+                            ?>
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'number')->textinput([
+                                'class' => 'custom-select',
+                                'placeholder' => $EducationalLoan->getAttributeLabel('number')
+                            ])->label('number');
 
                             ?>
-<!--                                    <label for="number" class="input-group-text" >-->
-<!--                                        Phone Number-->
-<!--                                    </label>-->
-<!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Phone Number">-->
+                            <!--                                    <label for="number" class="input-group-text" >-->
+                            <!--                                        Phone Number-->
+                            <!--                                    </label>-->
+                            <!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Phone Number">-->
 
                         </div>
 
@@ -111,120 +155,194 @@ $EducationalLoanForm = ActiveForm::begin([
                             </div>
 
                             <?=
-                                $EducationalLoanForm->field($EducationalLoan,'first_name')->textinput([
-                                        'placeholder' =>$EducationalLoan->getAttributeLabel('first_name')
+                            $EducationalLoanForm->field($EducationalLoan, 'first_name')->textinput([
+                                'class' => 'custom-select',
+                                'placeholder' => $EducationalLoan->getAttributeLabel('first_name')
                             ]);
                             ?>
-<!--                                    <label for="number" class="input-group-text">-->
-<!--                                        Full Name-->
-<!--                                    </label>-->
-<!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Full Name">-->
+                            <!--                                    <label for="number" class="input-group-text">-->
+                            <!--                                        Full Name-->
+                            <!--                                    </label>-->
+                            <!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Full Name">-->
                             <?=
-                                $EducationalLoanForm->field($EducationalLoan,'last_name')->textinput([
-                                        'placeholder' =>$EducationalLoan->getAttributeLabel('last_name')
-                                ])
-//                          ?>
+                            $EducationalLoanForm->field($EducationalLoan, 'last_name')->textinput([
+                                'class' => 'custom-select',
+                                'placeholder' => $EducationalLoan->getAttributeLabel('last_name')
+                            ])
+                            //                           ?>
+                            <!--                            <div class="col-md-12 padd-20">-->
+                            <!--                                <div class="input-group">-->
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'dob')->textinput([
+                                'class' => 'custom-select',
+                                'placeholder' => $EducationalLoan->getAttributeLabel('dob')
+                            ])
+                            ?>
+                            <!--                                    <label for="number" class="input-group-text">-->
+                            <!--                                        Date Of Birth-->
+                            <!--                                    </label>-->
+                            <!--                                    <input type="text" class="custom-select" id="number" placeholder="DD/MM/YYYY">-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'email')->textinput([
+                                'class' => 'custom-select',
+                                'placeholder' => $EducationalLoan->getAttributeLabel('email')
+                            ])
+                            ?>
+                            <!--                            <div class="col-md-12 padd-20">-->
+                            <!--                                <div class="input-group">-->
+                            <!--                                    <label for="number" class="input-group-text">-->
+                            <!--                                        Email Address-->
+                            <!--                                    </label>-->
+                            <!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Email Address">-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
 <!--                            <div class="col-md-12 padd-20">-->
 <!--                                <div class="input-group">-->
-                            <?=
-                                $EducationalLoanForm->field($EducationalLoan,'dob')->textinput([
-                                        'dob'=>$EducationalLoan->getAttributeLabel('dob')
-                                ])
-                            ?>
 <!--                                    <label for="number" class="input-group-text">-->
-<!--                                        Date Of Birth-->
+<!--                                        Monthly Income-->
 <!--                                    </label>-->
-<!--                                    <input type="text" class="custom-select" id="number" placeholder="DD/MM/YYYY">-->
+<!--                                    <input type="text" class="custom-select" id="number"-->
+<!--                                           placeholder="Enter Monthly Income">-->
 <!--                                </div>-->
 <!--                            </div>-->
                             <?=
-                                $EducationalLoanForm->field($EducationalLoan,'')
+                                $EducationalLoanForm ->field($EducationalLoan , 'monthly_income')->textinput([
+                                        'class' => 'custom-select',
+                                        'placeholder' => $EducationalLoan->getAttributeLabel('monthly_income')
+                                ])
+                            ?>
+<!--                            <div class="col-md-12 padd-20">-->
+<!--                                <div class="input-group ">-->
+<!--                                    <div class="radio-heading input-group-text">-->
+<!--                                        Gender-->
+<!--                                    </div>-->
+<!--                                    <label class="container-radio">Male-->
+<!--                                        <input type="radio" checked="checked" name="genderRadio">-->
+<!--                                        <span class="checkmark"></span>-->
+<!--                                    </label>-->
+<!--                                    <label class="container-radio">Female-->
+<!--                                        <input type="radio" name="genderRadio">-->
+<!--                                        <span class="checkmark"></span>-->
+<!--                                    </label>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                            <?php $EducationalLoan->gender = [0]; ?>
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan,'gender')->radioList([
+                                0=>'Male',
+                                1=>'Female'
+                            ],[
+                                'item' => function($index, $label, $name, $checked, $value){
+                                    $return ='<label for="gender-'. $index .'" class="container-radio">'. $label;
+                                    $return .='<input type="radio" name="'. $name .'" id="gender-' . $index . '" value="'. $value .'"'. (($checked) ? 'checked' : '') . '/>';
+                                    $return .= '<span class="checkmark"></span>';
+                                    $return .= '</label>';
+                                    return $return;
+                                }
+
+                            ])
+                            ?>
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'co_borrower')->radioList([
+                                0 => 'Father',
+                                1 => 'Mother',
+                                2 => 'Brother',
+                                3 => 'Sister',
+                                4 => 'Guardian',
+                            ],[
+                                'item' => function($index, $label, $name, $checked, $value){
+                                    $return = '<li class="service-list">';
+                                    $return .= '<input type="radio" id="co_borrower-'. $index .'" name="'.$name.'" value="'.$value.'" class="checkbox-input services" />';
+                                    $return .= '<label for="co_borrower-'. $index .'">'. $label ;
+                                    $return .='</label></li>';
+                                    return $return;
+                                }
+                            ])
                             ?>
 <!--                            <div class="col-md-12 padd-20">-->
 <!--                                <div class="input-group">-->
-<!--                                    <label for="number" class="input-group-text">-->
-<!--                                        Email Address-->
-<!--                                    </label>-->
-<!--                                    <input type="text" class="custom-select" id="number" placeholder="Enter Email Address">-->
+<!--                                    <div class="radio-heading input-group-text">-->
+<!--                                        Who would be your co-borrower?-->
+<!--                                    </div>-->
+<!--                                    <ul>-->
+
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="name" id="father"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="father">Father</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="name" id="mother"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="mother">Mother</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="name" id="brother"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="brother">Brother</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="name" id="sister"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="sister">Sister</label>-->
+<!--                                        </li>-->
+<!--                                        <li class="service-list">-->
+<!--                                            <input type="radio" name="name" id="guardian"-->
+<!--                                                   class="checkbox-input services"/>-->
+<!--                                            <label for="guardian">Guardian</label>-->
+<!--                                        </li>-->
+<!--                                    </ul>-->
 <!--                                </div>-->
 <!--                            </div>-->
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group">
-                                    <label for="number" class="input-group-text">
-                                        Monthly Income
-                                    </label>
-                                    <input type="text" class="custom-select" id="number" placeholder="Enter Monthly Income">
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group ">
-                                    <div class="radio-heading input-group-text">
-                                        Gender
-                                    </div>
-                                    <label class="container-radio">Male
-                                        <input type="radio" checked="checked" name="genderRadio">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container-radio">Female
-                                        <input type="radio" name="genderRadio">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group">
-                                    <div class="radio-heading input-group-text">
-                                        Who would be your co-borrower?
-                                    </div>
-                                    <ul>
-                                        <li class="service-list">
-                                            <input type="radio" name="name" id="father" class="checkbox-input services" />
-                                            <label for="father">Father</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="name" id="mother" class="checkbox-input services" />
-                                            <label for="mother">Mother</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="name" id="brother" class="checkbox-input services" />
-                                            <label for="brother">Brother</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="name" id="sister" class="checkbox-input services" />
-                                            <label for="sister">Sister</label>
-                                        </li>
-                                        <li class="service-list">
-                                            <input type="radio" name="name" id="guardian" class="checkbox-input services" />
-                                            <label for="guardian">Guardian</label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-12 padd-20">
-                                <div class="input-group">
-                                    <div class="radio-heading input-group-text">
-                                        Your Co-borrower's employment type ?
-                                    </div>
-                                    <label class="container-radio">Salaried
-                                        <input type="radio" checked="checked" name="borrowRadio">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container-radio">Self-Employed
-                                        <input type="radio" name="borrowRadio">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                    <label class="container-radio">Non-Working
-                                        <input type="radio" name="borrowRadio">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </div>
+
+                            <!--                            <div class="col-md-12 padd-20">-->
+                            <!--                                <div class="input-group">-->
+                            <!--                                    <div class="radio-heading input-group-text">-->
+                            <!--                                        Your Co-borrower's employment type ?-->
+                            <!--                                    </div>-->
+                            <!--                                    <label class="container-radio">Salaried-->
+                            <!--                                        <input type="radio" checked="checked" name="borrowRadio">-->
+                            <!--                                        <span class="checkmark"></span>-->
+                            <!--                                    </label>-->
+                            <!--                                    <label class="container-radio">Self-Employed-->
+                            <!--                                        <input type="radio" name="borrowRadio">-->
+                            <!--                                        <span class="checkmark"></span>-->
+                            <!--                                    </label>-->
+                            <!--                                    <label class="container-radio">Non-Working-->
+                            <!--                                        <input type="radio" name="borrowRadio">-->
+                            <!--                                        <span class="checkmark"></span>-->
+                            <!--                                    </label>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
+
+                            <?php $EducationalLoan->co_borrower_emp = [0]; ?>
+                            <?=
+                            $EducationalLoanForm->field($EducationalLoan, 'co_borrower_emp')->radioList([
+                                0 => 'Salaried',
+                                1 => 'Self-Employed',
+                                2 => 'Non-Working'
+                            ], [
+                                'item' => function ($index, $label, $name, $checked, $value) {
+                                    $return = '<label for="weekday-' . $index . '" class="container-radio">' . $label;
+                                    $return .= '<input type="radio" name="' . $name . '" id="weekday-' . $index . '" value="' . $value . '" ' . (($checked) ? 'checked' : '') . '/>';
+                                    $return .= '<span class="checkmark"></span>';
+                                    $return .= '</label>';
+                                    return $return;
+                                }
+                            ])
+                            ?>
                         </div>
+
 
                         <div class="input-group padd-20">
                             <div class="btn-center">
-                                <button type="button" class="button-slide" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-                                <button type="button" class="button-slide" id="nextBtn" onclick="nextPrev(1)">Next </button>
+                                <button type="button" class="button-slide" id="prevBtn" onclick="nextPrev(-1)">
+                                    Previous
+                                </button>
+                                <button type="button" class="button-slide" id="nextBtn" onclick="nextPrev(1)">Next
+                                </button>
                             </div>
                         </div>
 
@@ -238,9 +356,11 @@ $EducationalLoanForm = ActiveForm::begin([
             <div class="col-md-12">
                 <div class="max-300">
                     <div class="cl-heading">Get the Best Education Loan</div>
-                    <div class="cl-text"> We tie up with the best providers in the country to help you plan your education.
+                    <div class="cl-text"> We tie up with the best providers in the country to help you plan your
+                        education.
                         With offers that provide up to 100% of your required loan amount, planning for your education
-                        is now more easier than ever.</div>
+                        is now more easier than ever.
+                    </div>
                 </div>
             </div>
         </div>
@@ -335,6 +455,7 @@ $this->registerCss('
     font-family: lora;
     color: #000;
     font-size: 15px;
+    text-transform: capitalize;
 }
 .head-padding{
     padding-top:50px;
@@ -494,9 +615,10 @@ $this->registerJs($script);
         // var leftDiv =  document.getElementById('cl');
         var divHeight = document.getElementById('sd').offsetHeight;
         console.log(divHeight);
-        document.getElementById('cl').style.height = ( divHeight + "px");
+        document.getElementById('cl').style.height = (divHeight + "px");
         console.log(document.getElementById('cl').offsetHeight)
     }
+
     window.onload = matchHeight();
 
     var currentTab = 0; // Current tab is set to be the first tab (0)
@@ -508,7 +630,7 @@ $this->registerJs($script);
         x[n].style.display = "block";
         if (n == 0) {
             document.getElementById("prevBtn").style.display = "none";
-            x[n+1].style.display = "none";
+            x[n + 1].style.display = "none";
         } else {
             document.getElementById("prevBtn").style.display = "inline";
         }
