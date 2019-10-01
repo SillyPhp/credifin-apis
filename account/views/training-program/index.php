@@ -23,7 +23,7 @@ use yii\web\JsExpression;
             echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
         endif;
         ?>
-        <div class="portlet light" id="form_wizard_1">
+        <div class="portlet light nd-shadow" id="form_wizard_1">
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-layers font-red"></i>
@@ -53,6 +53,36 @@ use yii\web\JsExpression;
                     </div>
                     <div class="col-md-3">
                         <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Skills To Be Learned
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="pf-field no-margin">
+                            <ul class="tags_input skill_tag_list">
+                                <li class="tagAdd taglist">
+                                    <div class="skill_wrapper">
+                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
+                                        <input type="text" id="search-skill" class="skill-input"
+                                               placeholder="Search For Skill">
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="module2-heading">
+                            Course Description
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -96,36 +126,8 @@ use yii\web\JsExpression;
                         <?= $form->field($model, 'batch_details')->hiddenInput(['id' => 'final_result'])->label(false); ?>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="module2-heading">
-                            Course Description
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="module2-heading">
-                            Skills To Be Learned
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="pf-field no-margin">
-                            <ul class="tags_input skill_tag_list">
-                                <li class="tagAdd taglist">
-                                    <div class="skill_wrapper">
-                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                        <input type="text" id="search-skill" class="skill-input"
-                                               placeholder="Search For Skill">
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+
+
                 <div class="row">
                     <div class="col-md-12">
                         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
@@ -137,6 +139,7 @@ use yii\web\JsExpression;
     </div>
 <?php
 $this->registerCss('
+.fees_method{margin-right:10px;}
 .m-cover {
   z-index: 1;
   position: fixed;
@@ -231,7 +234,7 @@ $this->registerCss('
   border-radius: 0px;
   position: relative;
   top: -0.5em;
-  border: 0.5em solid #c1d0de;
+  border: 1px solid #ddd;
 }
 .contenu .choice_pattern .results {
   margin-bottom: 1em;
@@ -519,10 +522,9 @@ margin-top:12px;
 {
     float: left;
     width: 100%;
-    border: 1px solid #c4c4c4;
-    border-radius: 8px;
-    padding: 8px;
+    padding: 8px 8px 0px 0px;
     list-style: outside none none;
+    border-bottom: 1px solid #ddd;
 }
 
 .addedTag {
@@ -584,7 +586,7 @@ margin-top:12px;
     border: 1px solid #ddd;
     padding: 4px 5px;
     border-radius: 4px;
-    margin:1px;
+    margin:0 20px 0 0;
 }
 .twitter-typeahead{
     float: left;
@@ -615,7 +617,7 @@ $script = <<< JS
                 $(".choice_pattern").hide(200);
             }
         });
-$("#custom-checkboxes input").businessHoursWidget();
+$("#custom-checkboxes input").businessHoursWidget;
 $('#fees').mask("#,#0,#00", {reverse: true});
 $(document).on('keypress','input',function(e)
 {
