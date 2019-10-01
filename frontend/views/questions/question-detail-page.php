@@ -79,10 +79,10 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         <div class="related-divider"></div>
                         <div class="related-quetions">
                             <?php if (!empty($related_questions)){
-                                foreach ($related_questions as $que)
+                                foreach ($related_questions as $que){
                                 ?>
                             <div class="que"><a href="<?= $que['slug'] ?>"><?= $que['question'] ?></a></div>
-                            <?php } else { ?>
+                            <?php } } else { ?>
                             <h3>No More Related Questions</h3>
                             <?php } ?>
                             </div>
@@ -92,14 +92,14 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         <div class="related-divider"></div>
                         <div class="related-videos">
                 <?php if (!empty($related_videos)){
-                     foreach ($related_videos as $vid)
+                     foreach ($related_videos as $vid) {
                           ?>
                             <div class="vid">
                                 <img src="<?= $vid['cover_image']; ?>">
                             </div>
                             <div class="vid-name"><a href="/learning/video/<?= $vid['slug']; ?>"><?= $vid['title']; ?></a></div>
                         </div>
-                        <?php } else { ?>
+                        <?php } } else { ?>
                             <h3>No More Related Videos</h3>
                         <?php } ?>
                     </div>
