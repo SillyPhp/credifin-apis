@@ -5,6 +5,7 @@ use common\models\QuestionsPoolAnswer;
 use common\models\Utilities;
 use Yii;
 use yii\base\Model;
+use yii\db\Expression;
 
 class PostAnswer extends Model {
 
@@ -46,7 +47,7 @@ class PostAnswer extends Model {
             ->alias('a')
             ->where(['a.slug'=>$slug])
             ->andWhere(['a.is_deleted'=>0])
-            ->select(['a.question_pool_enc_id','c.name','question','privacy'])
+            ->select(['a.question_pool_enc_id','c.name','question','privacy','a.topic_enc_id'])
             ->joinWith(['topicEnc b'=>function($b)
             {
                 $b->joinWith(['categoryEnc c'],false);
@@ -79,6 +80,19 @@ class PostAnswer extends Model {
             ->andWhere(['is_deleted' => 0])
             ->asArray()
             ->count();
+    }
+
+    public function relatedQuestion($tid,$id)
+    {
+      $que = QuestionsPool::find()
+              ->select(['question','slug'])
+              ->where(['topic_enc_id'=>$tid,'is_deleted'=>0])
+              ->andWhere(['not', ['question_pool_enc_id' => $id]])
+              ->orderBy(new Expression('rand()'))
+              ->limit(4)
+              ->asArray()
+              ->all();
+      return $que;
     }
 
 }

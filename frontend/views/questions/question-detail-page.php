@@ -25,7 +25,8 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                     <div class="answers">
                         <span><?= $answers_count; ?> Answers</span>
                     </div>
-                    <?php if (!Yii::$app->user->isGuest):
+                    <?php if (!Yii::$app->user->isGuest){
+                      $full_name =  Yii::$app->user->identity->first_name." ".Yii::$app->user->identity->last_name;
                         if (!$is_answer):
                         $form = ActiveForm::begin([
                             'id' => 'post-answer-form',
@@ -34,10 +35,20 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         ?>
                         <div class="client-side">
                             <div class="client-img">
-                                <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                             <?php   if (!empty(Yii::$app->user->identity->image)) {
+                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                ?>
+                                 <img src="<?= $image ?>">
+                               <?php } else { ?>
+                                 <canvas class="user-icon img-circle img-responsive"
+                                         name="<?= $full_name; ?>"
+                                         color="<?= Yii::$app->user->identity->initials_color; ?>"
+                                         width="60" height="60"
+                                         font="28px"></canvas>
+                            <?php } ?>
                             </div>
                             <div class="client">
-                                <div class="client-name">Chanpory rith</div>
+                                <div class="client-name"><?= Yii::$app->user->identity->first_name." ".Yii::$app->user->identity->last_name; ?></div>
                                 <!--                            <div class="client-edit"><a href="#">Edit bio,</a><a href="#"> Make Anonymous</a></div>-->
                             </div>
                         </div>
@@ -48,10 +59,16 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                     <div class="answer_button">
                         <?= Html::submitButton('Post Answer',['class'=>'btn btn-primary post_answer']) ?>
                     </div>
-                    <?php  ActiveForm::end(); endif; endif; ?>
+                    <?php  ActiveForm::end(); endif; } else { ?>
+                        <div class="login_answer">
+                            <label>Please <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Log in</a> To Give Answer To This Question!</label>
+                        </div>
+                      <?php } ?>
                     <div class="divide"></div>
                     <div id="posted_answers">
-
+                     <div class="loader_screen">
+                         <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+                     </div>
                     </div>
                 </div>
             </div>
@@ -61,11 +78,14 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         <div class="related-head">Related Questions</div>
                         <div class="related-divider"></div>
                         <div class="related-quetions">
-                            <div class="que"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                            <div class="que"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                            <div class="que"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                            <div class="que"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                        </div>
+                            <?php if (!empty($related_questions)){
+                                foreach ($related_questions as $que)
+                                ?>
+                            <div class="que"><a href="<?= $que['slug'] ?>"><?= $que['question'] ?></a></div>
+                            <?php } else { ?>
+                            <h3>No More Related Questions</h3>
+                            <?php } ?>
+                            </div>
                     </div>
                     <div class="related-vid">
                         <div class="related-head">Related videos</div>
@@ -205,6 +225,11 @@ body{
 	font-size: 25px;
 	font-weight: bold;
 }
+.loader_screen img
+{
+display:none;
+margin:auto
+}
 .client-edit a{
     font-size: 17px;
     color: #3aa4ff;
@@ -302,7 +327,7 @@ body{
 }
 /*--related-section-ends-here----*/
 .ck-editor__editable {
-   min-height: 80px !important;
+   min-height: 100px !important;
 }
 :host ::ng-deep .ck-editor__editable {
    min-height: 80px !important;
@@ -310,26 +335,37 @@ body{
 .ck.ck-reset_all, .ck.ck-reset_all *  {
 	font-size: 10px !important;
 }
+.login_answer label
+{
+font-size: 16px;
+}
+.login_answer a 
+{
+color: #ff7803;
+}
+#no_found
+{
+font-size: 22px;
+text-align: center;
+}
 ');
 
 $script = <<<JS
 fetch_cards_new_answers(params={'que_id':que_id},template=$('#posted_answers'));
 if (!is_answer){ 
-ClassicEditor
-		   .create(document.querySelector('#comment'), {
-		       removePlugins: ['Heading', 'Link' ],
-		       toolbar: {items: 
-		       	['heading','|','bold','italic','link','bulletedList','numberedList',
-        'blockQuote',]
-    },
-		   }  )
-		   .then( editor => {
-		       // Store it in more "global" context.
-		       appEditor = editor;
-		   } )
-		   .catch( error => {
-		       console.error( error );
-		   } );
+let appEditor;
+ ClassicEditor
+    .create(document.querySelector('#comment'), {
+        removePlugins: [ 'Heading', 'Link' ],
+        toolbar: [ 'bold', 'italic', 'blockQuote' ]
+    }  )
+    .then( editor => {
+        // Store it in more "global" context.
+        appEditor = editor;
+    } )
+    .catch( error => {
+        console.error( error );
+    } );
 $('#post-answer-form').on('beforeValidate', function (event, messages, deferreds) {
     appEditor.updateSourceElement();
     return true;

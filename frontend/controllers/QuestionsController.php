@@ -33,6 +33,7 @@ class QuestionsController extends Controller
         $object = $model->fetchQuestions($slug);
         $is_answer = $model->is_answer($object['question_pool_enc_id']);
         $answers_count = $model->answerCount($object['question_pool_enc_id']);
+        $related_questions = $model->relatedQuestion($object['topic_enc_id'],$object['question_pool_enc_id']);
         if (empty($object))
         {
             return 'Not Found';
@@ -42,6 +43,7 @@ class QuestionsController extends Controller
             'is_answer'=>$is_answer,
             'model'=>$model,
             'answers_count'=>$answers_count,
+            'related_questions'=>$related_questions,
         ]);
     } 
     public function actionPostAnswer()
