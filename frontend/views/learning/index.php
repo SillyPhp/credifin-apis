@@ -1191,12 +1191,9 @@ $script = <<< JS
         async: false,
         success: function(response) {
             if(response.status === 200) {
-                if(response.result.length == 0){
-                    $('#not-found').fadeIn(1000);
-                }else{
+                if(response.result.length > 0){
                     var contributor = $('#video-collaborators').html();
                     $("#contributors").html(Mustache.render(contributor, response.result));
-                    console.log('data');
                 }
             }
         }
@@ -1208,9 +1205,7 @@ $script = <<< JS
         async: false,
         success: function(response) {
             if(response.status === 200) {
-                if(response.result.length == 0){
-                    $('#not-found').fadeIn(1000);
-                }else{
+                if(response.result.length > 0){
                     var contributor = $('#video-categories').html();
                     $("#categories").html(Mustache.render(contributor, response.result));
                 }
