@@ -3,6 +3,7 @@
 namespace account\models\applications;
 
 use common\models\ApplicationOption;
+use common\models\Currencies;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -436,12 +437,12 @@ class ApplicationForm extends Model
 
             $skills_array = array_unique(json_decode($this->skillsArray, true));
             foreach ($skills_array as $skill) {
-                $skills_set = Skills::find()
-                    ->select(['skill_enc_id'])
-                    ->where(['skill' => $skill])
-                    ->asArray()
-                    ->one();
+                $data_skill = Skills::find()
+                    ->alias('a')
+                    ->select(['a.skill_enc_id'])
+                    ->where(['a.skill' => $skill]);
 
+                $skills_set = $data_skill->asArray()->one();
                 if (!empty($skills_set)) {
                     $applicationSkillsModel = new ApplicationSkills();
                     $utilitiesModel = new Utilities();
@@ -451,10 +452,20 @@ class ApplicationForm extends Model
                     $applicationSkillsModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                     $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$applicationSkillsModel->save()) {
+                    if ($applicationSkillsModel->save()) {
+                        $chk_skill = $data_skill
+                            ->innerJoin(AssignedSkills::tableName().'as b','b.skill_enc_id = a.skill_enc_id')
+                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->asArray()
+                            ->one();
+                        if (empty($chk_skill)):
+                            $this->assignedSkill($skills_set['skill_enc_id'], $cat_id,$type);
+                        endif;
+                    }
+                    else
+                    {
                         return false;
                     }
-                    $this->assignedSkill($skills_set['skill_enc_id'], $cat_id);
                 } else {
                     $skillsModel = new Skills();
                     $utilitiesModel = new Utilities();
@@ -476,17 +487,18 @@ class ApplicationForm extends Model
                         if (!$applicationSkillsModel->save()) {
                             return false;
                         }
-                        $this->assignedSkill($skillsModel->skill_enc_id, $cat_id);
+                        $this->assignedSkill($skillsModel->skill_enc_id, $cat_id,$type);
                     }
                 }
             }
             $job_desc_array = array_unique(json_decode($this->checkboxArray, true));
             foreach ($job_desc_array as $jd) {
-                $job_desc = JobDescription::find()
-                    ->select(['job_description_enc_id'])
-                    ->where(['job_description' => $jd])
-                    ->asArray()
-                    ->one();
+                $data_job_desc = JobDescription::find()
+                    ->alias('a')
+                    ->select(['a.job_description_enc_id'])
+                    ->where(['a.job_description' => $jd]);
+
+                $job_desc = $data_job_desc->asArray()->one();
                 if (!empty($job_desc)) {
                     $applicationJobDescriptionModel = new ApplicationJobDescription();
                     $utilitiesModel = new Utilities();
@@ -496,12 +508,20 @@ class ApplicationForm extends Model
                     $applicationJobDescriptionModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                     $applicationJobDescriptionModel->created_on = date('Y-m-d H:i:s');
                     $applicationJobDescriptionModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$applicationJobDescriptionModel->save()) {
+                    if ($applicationJobDescriptionModel->save()) {
+                        $chk_jd_des = $data_job_desc
+                            ->innerJoin(AssignedJobDescription::tableName().'as b','b.job_description_enc_id = a.job_description_enc_id')
+                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->asArray()
+                            ->one();
+                        if (empty($chk_jd_des)):
+                            $this->assignedJob($job_desc['job_description_enc_id'], $cat_id,$type);
+                        endif;
+                    }
+                    else
+                    {
                         return false;
                     }
-
-                    //new code added//
-                    $this->assignedJob($job_desc['job_description_enc_id'], $cat_id);
                     //new code added//
                 } else {
                     $jobDescriptionModel = new JobDescription();
@@ -525,7 +545,7 @@ class ApplicationForm extends Model
                             return false;
                         }
                         //new code added//
-                        $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id);
+                        $this->assignedJob($jobDescriptionModel->job_description_enc_id, $cat_id,$type);
                         //new code added//
                     }
                 }
@@ -533,12 +553,12 @@ class ApplicationForm extends Model
 
             $job_edu_array = array_unique((json_decode($this->qualifications_arr, true)));
             foreach ($job_edu_array as $edu) {
-                $edu_quali = EducationalRequirements::find()
-                    ->select(['educational_requirement_enc_id'])
-                    ->where(['educational_requirement' => $edu])
-                    ->asArray()
-                    ->one();
+                $data_edu_quali = EducationalRequirements::find()
+                    ->alias('a')
+                    ->select(['a.educational_requirement_enc_id'])
+                    ->where(['a.educational_requirement' => $edu]);
 
+                $edu_quali = $data_edu_quali->asArray()->one();
                 if (!empty($edu_quali)) {
                     $applicationEducationalModel = new ApplicationEducationalRequirements();
                     $utilitiesModel = new Utilities();
@@ -548,11 +568,20 @@ class ApplicationForm extends Model
                     $applicationEducationalModel->application_enc_id = $employerApplicationsModel->application_enc_id;
                     $applicationEducationalModel->created_on = date('Y-m-d H:i:s');
                     $applicationEducationalModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if (!$applicationEducationalModel->save()) {
+                    if ($applicationEducationalModel->save()) {
+                        $chk_ed_des = $data_edu_quali
+                            ->innerJoin(AssignedEducationalRequirements::tableName().'as b','b.educational_requirement_enc_id = a.educational_requirement_enc_id')
+                            ->andWhere(['b.assigned_to'=>$type,'category_enc_id'=>$cat_id])
+                            ->asArray()
+                            ->one();
+                        if (empty($chk_ed_des)):
+                            $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id,$type);
+                        endif;
+                    }
+                    else
+                    {
                         return false;
                     }
-                    //new code//
-                    $this->assignedEdu($edu_quali['educational_requirement_enc_id'], $cat_id);
                     //new code//
                 } else {
                     $qualificationsModel = new EducationalRequirements();
@@ -576,7 +605,7 @@ class ApplicationForm extends Model
                             return false;
                         }
                         //new code//
-                        $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id);
+                        $this->assignedEdu($qualificationsModel->educational_requirement_enc_id, $cat_id,$type);
                         //new code//
                     }
                 }
@@ -588,13 +617,14 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedJob($j_id, $cat_id)
+    private function assignedJob($j_id, $cat_id,$type)
     {
         $asignedJobModel = new AssignedJobDescription();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $asignedJobModel->assigned_job_description_enc_id = $utilitiesModel->encrypt();
         $asignedJobModel->job_description_enc_id = $j_id;
+        $asignedJobModel->assigned_to = $type;
         $asignedJobModel->category_enc_id = $cat_id;
         $asignedJobModel->created_on = date('Y-m-d H:i:s');
         $asignedJobModel->created_by = Yii::$app->user->identity->user_enc_id;
@@ -603,7 +633,7 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedEdu($e_id, $cat_id)
+    private function assignedEdu($e_id, $cat_id,$type)
     {
         $asignedEduModel = new AssignedEducationalRequirements();
         $utilitiesModel = new Utilities();
@@ -611,6 +641,7 @@ class ApplicationForm extends Model
         $asignedEduModel->assigned_educational_requirement_enc_id = $utilitiesModel->encrypt();
         $asignedEduModel->educational_requirement_enc_id = $e_id;
         $asignedEduModel->category_enc_id = $cat_id;
+        $asignedEduModel->assigned_to = $type;
         $asignedEduModel->created_on = date('Y-m-d H:i:s');
         $asignedEduModel->created_by = Yii::$app->user->identity->user_enc_id;
         if (!$asignedEduModel->save()) {
@@ -618,13 +649,14 @@ class ApplicationForm extends Model
         }
     }
 
-    private function assignedSkill($s_id, $cat_id)
+    private function assignedSkill($s_id, $cat_id,$type)
     {
         $asignedSkillModel = new AssignedSkills();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $asignedSkillModel->assigned_skill_enc_id = $utilitiesModel->encrypt();
         $asignedSkillModel->skill_enc_id = $s_id;
+        $asignedSkillModel->assigned_to = $type;
         $asignedSkillModel->category_enc_id = $cat_id;
         $asignedSkillModel->created_on = date('Y-m-d H:i:s');
         $asignedSkillModel->created_by = Yii::$app->user->identity->user_enc_id;
@@ -716,7 +748,15 @@ class ApplicationForm extends Model
         $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
         return $que;
     }
-
+    public function getCurrency()
+    {
+        $d = Currencies::find()
+            ->select(['currency_enc_id','CONCAT(code," ",html_code) code'])
+            ->orderBy([new \yii\db\Expression('FIELD (code, "INR") DESC, code ASC')])
+            ->asArray()->all();
+        $d = ArrayHelper::map($d, 'currency_enc_id', 'code');
+        return $d;
+    }
     public function getOrganizationLocations($type = 1)
     {
         $loc_list = OrganizationLocations::find()
@@ -843,6 +883,7 @@ class ApplicationForm extends Model
 
     public function getCloneData($aidk, $application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -862,7 +903,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience', 'b.*'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
@@ -921,6 +962,7 @@ class ApplicationForm extends Model
 
     public function getCloneUnclaimed($aidk,$application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -936,7 +978,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience'])
+                END) as experience','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);

@@ -18,17 +18,16 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($lat, $long, $radius, $num, $keyword, $type, $walkin)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $date = Date('Y-m-d H:i:s');
         $data = EmployerApplications::find()
             ->alias('a')
             ->select([
                 'a.application_enc_id',
                 'a.type',
-                'CONCAT(i.slug, "' . $referral . '") as organization_slug',
+                'CONCAT(i.slug) as organization_slug',
                 'a.experience',
                 'h.name as job_title',
-                'CONCAT(a.slug, "' . $referral . '") as slug',
+                'CONCAT(a.slug) as slug',
                 'a.last_date',
                 'e.name as city_name',
                 'c.location_name',

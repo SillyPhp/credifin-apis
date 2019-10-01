@@ -1,9 +1,6 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
-
 ?>
     <div class="profiles-sidebar">
         <span class="close-profile"><i class="fa fa-close"></i></span>
@@ -42,7 +39,7 @@ use yii\helpers\Url;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
 
@@ -64,7 +61,7 @@ use yii\helpers\Url;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
                     </li>

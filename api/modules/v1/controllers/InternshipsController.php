@@ -79,7 +79,7 @@ class InternshipsController extends ApiBaseController
         if (count($result) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
     }
 
@@ -107,7 +107,7 @@ class InternshipsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -134,7 +134,7 @@ class InternshipsController extends ApiBaseController
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
                 } else {
-                    return $this->response(401);
+                    return $this->response(401,'unauthorized');
                 }
             }
 
@@ -237,7 +237,7 @@ class InternshipsController extends ApiBaseController
 
             return $this->response(200, $result);
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
     }
@@ -288,7 +288,7 @@ class InternshipsController extends ApiBaseController
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not found');
         }
 
     }
@@ -325,7 +325,7 @@ class InternshipsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             $token_holder_id = UserAccessTokens::find()
@@ -365,14 +365,14 @@ class InternshipsController extends ApiBaseController
                 if ($res = $model->saveValues()) {
                     return $this->response(200, $res);
                 } else {
-                    return $this->response(500);
+                    return $this->response(500,'Not Saved');
                 }
             } else {
-                return $this->response(409);
+                return $this->response(409,'conflict');
             }
 
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -383,7 +383,7 @@ class InternshipsController extends ApiBaseController
             $data = $this->getApplication($req['id']);
 
             if (empty($data)) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -417,7 +417,7 @@ class InternshipsController extends ApiBaseController
                     $data["hasReviewed"] = $reviewlist;
 
                 } else {
-                    return $this->response(401);
+                    return $this->response(401,'unauthorized');
                 }
             }
 
@@ -481,7 +481,7 @@ class InternshipsController extends ApiBaseController
 
             return $this->response(200, $data);
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
