@@ -1,5 +1,6 @@
 <?php
 namespace frontend\models\questions;
+use common\models\LearningVideos;
 use common\models\QuestionsPool;
 use common\models\QuestionsPoolAnswer;
 use common\models\Utilities;
@@ -93,6 +94,21 @@ class PostAnswer extends Model {
               ->asArray()
               ->all();
       return $que;
+    }
+
+    public function relatedVideos($tid)
+    {
+        $related_videos = LearningVideos::find()
+            ->alias('a')
+            ->joinWith(['assignedCategoryEnc b'], false)
+            ->where(['b.parent_enc_id' => $tid])
+            ->andWhere(['a.status' => 1]) 
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(new Expression('rand()'))
+            ->limit(4)
+            ->asArray()
+            ->all();
+      return  $related_videos;
     }
 
 }
