@@ -91,29 +91,18 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                         <div class="related-head">Related videos</div>
                         <div class="related-divider"></div>
                         <div class="related-videos">
+                <?php if (!empty($related_videos)){
+                     foreach ($related_videos as $vid)
+                          ?>
                             <div class="vid">
-                                <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                                <img src="<?= $vid['cover_image']; ?>">
                             </div>
-                            <div class="vid-name"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
+                            <div class="vid-name"><a href="/learning/video/<?= $vid['slug']; ?>"><?= $vid['title']; ?></a></div>
                         </div>
-                        <div class="related-videos">
-                            <div class="vid">
-                                <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                            </div>
-                            <div class="vid-name"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                        </div>
-                        <div class="related-videos">
-                            <div class="vid">
-                                <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                            </div>
-                            <div class="vid-name"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                        </div>
-                        <div class="related-videos">
-                            <div class="vid">
-                                <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                            </div>
-                            <div class="vid-name"><a href="">Have you ever been on a cruise, what are some important thing I need to know?</a></div>
-                        </div>
+                        <?php } else { ?>
+                            <h3>No More Related Videos</h3>
+                        <?php } ?>
+                    </div>
                     </div>
                 </div>
             </div>

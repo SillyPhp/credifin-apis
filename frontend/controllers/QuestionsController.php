@@ -34,6 +34,7 @@ class QuestionsController extends Controller
         $is_answer = $model->is_answer($object['question_pool_enc_id']);
         $answers_count = $model->answerCount($object['question_pool_enc_id']);
         $related_questions = $model->relatedQuestion($object['topic_enc_id'],$object['question_pool_enc_id']);
+        $related_videos = $model->relatedVideos($object['topic_enc_id']);
         if (empty($object))
         {
             return 'Not Found';
@@ -44,6 +45,7 @@ class QuestionsController extends Controller
             'model'=>$model,
             'answers_count'=>$answers_count,
             'related_questions'=>$related_questions,
+            'related_videos'=>$related_videos,
         ]);
     } 
     public function actionPostAnswer()
