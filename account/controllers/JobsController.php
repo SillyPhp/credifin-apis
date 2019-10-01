@@ -1327,15 +1327,78 @@ class JobsController extends Controller
     }
 
     public function actionCampusPlacement(){
-        $applications = EmployerApplications::find()
-            ->alias('a')
-            ->joinWith(['applicationTypeEnc b'])
-            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['b.name' => 'Jobs'])
-            ->asArray()
-            ->all();
-        print_r($this->__jobs());
-        return $this->render('campus-placement');
+        if (Yii::$app->user->identity->organization) {
+//        $applications = EmployerApplications::find()
+//            ->alias('a')
+//            ->joinWith(['applicationTypeEnc b'])
+//            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
+//            ->andWhere(['b.name' => 'Jobs'])
+//            ->asArray()
+//            ->all();
+            $colleges = ErexxCollaborators::find()
+                ->alias('a')
+                ->select(['a.college_enc_id', 'b.name'])
+                ->joinWith(['collegeEnc b'], false)
+                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            return $this->render('campus-placement', [
+                'applications' => $this->__jobs(),
+                'colleges' => $colleges,
+            ]);
+        } else{
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+    }
+
+    public function actionSubmitErexxApplications(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            foreach ($data['applications'] as $app){
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errexApplication = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+                    $errexApplication->employer_application_enc_id = $app;
+                    $errexApplication->college_enc_id = $clg;
+                    $errexApplication->created_on = date('Y-m-d H:i:s');
+                    $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errexApplication->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                if(!$this->__updateApplicationFor($app)){
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occured. Please Try again later.',
+                    ];
+                }
+            }
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Application added for Campus Placement',
+            ];
+        }
+    }
+
+    private function __updateApplicationFor($app){
+        $update = Yii::$app->db->createCommand()
+            ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+            ->execute();
+        if ($update) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function actionTestProcess()
