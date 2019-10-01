@@ -1196,7 +1196,6 @@ $script = <<< JS
                 }else{
                     var contributor = $('#video-collaborators').html();
                     $("#contributors").html(Mustache.render(contributor, response.result));
-                    console.log('data');
                 }
             }
         }
