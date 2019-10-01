@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\EducationalLoans;
 use Yii;
 use yii\web\Controller;
 
@@ -12,6 +13,9 @@ class EducationLoansController extends Controller
         return $this->render("index");
     }
     public function actionApply(){
-        return $this->render('apply');
+        $model = new EducationalLoans();
+        return $this->render('apply',[
+            'EducationalLoan' => $model,
+        ]);
     }
 }
