@@ -206,6 +206,10 @@ $this->registercss('
      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
+.search-box1 .twitter-typeahead
+{
+width:auto !important;
+}
 .twitter-typeahead {
     
     width: 100% !important;
@@ -710,6 +714,7 @@ $('#keyword').typeahead(null, {
      $('.skill_wrapper .Typeahead-spinner').css('display','none');
   }).on('typeahead:selected',function(e, datum)
   {
+      window.location.replace('/question/'+datum.slug);
    });
 load_job_titles();
 function load_job_titles()

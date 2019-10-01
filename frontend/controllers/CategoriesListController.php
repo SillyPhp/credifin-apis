@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 use common\models\Categories;
+use common\models\QuestionsPool;
 use common\models\Skills;
 use common\models\Tags;
 use Yii;
@@ -45,8 +46,17 @@ class CategoriesListController extends Controller
     public function actionQuestionData($q=null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $result = Yii::$app->db->createCommand("SELECT question FROM {{%questions_pool}} WHERE MATCH (question) AGAINST ('{$q}' IN NATURAL LANGUAGE MODE);");
-        return $result->queryAll();
+        $result = QuestionsPool::find()
+            ->select(['question','slug'])
+            ->where(['is_deleted'=>0])
+            ->andWhere([
+                'or',
+                ['like', 'question', $q],
+                ['like', 'slug', $q],
+            ])
+            ->asArray()
+            ->all();
+        return $result;
     }
     public function actionLoadTopics($type = 'Videos')
     {
