@@ -2831,4 +2831,12 @@ class Users extends \yii\db\ActiveRecord
     {
         return $this->hasMany(WhatsappInvitations::className(), ['last_updated_by' => 'user_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherInfo()
+    {
+        return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 }

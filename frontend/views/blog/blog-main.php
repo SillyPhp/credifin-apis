@@ -17,8 +17,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -204,7 +204,7 @@ $this->params['seo_tags'] = [
     <section class="bg-black">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-xs-4">
                     <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
                     <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
                 </div>
@@ -222,8 +222,8 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
+                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?>" alt="World Cup 2019 Quiz"
                                  class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -233,8 +233,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
+                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?>"
                                  alt="World Cup 2019 Quiz vol-2" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -244,8 +244,8 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="col-md-4">
                     <div class="q-box">
-                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
+                        <a title="History Quiz" href="/quiz/history-quiz">
+                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?>"
                                  alt="Yuvraj Singh Quiz" class="q-box-img">
                             <div class="q-box-hover">
                                 <div class="text2">Take Quiz</div>
@@ -718,6 +718,7 @@ $this->registerCss('
     width:100%;
     height:100%;
     display:none;
+    object-fit:contain;
 }
 .imgmain-div{
     width:60%;
@@ -870,6 +871,7 @@ hr {
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -887,6 +889,7 @@ hr {
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    
 }
 .type-1 div a span {
     position: relative;

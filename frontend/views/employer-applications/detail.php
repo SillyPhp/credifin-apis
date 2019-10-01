@@ -7,39 +7,75 @@ use frontend\models\applications\CandidateApply;
 $separator = Yii::$app->params->seo_settings->title_separator;
 if ($type=='Job') {
     $smililars = 'jobs';
-    if ($data2['wage_type'] == 'Fixed') {
-        if ($data2['wage_duration'] == 'Monthly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 12;
-        } elseif ($data2['wage_duration'] == 'Hourly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 40 * 52;
-        } elseif ($data2['wage_duration'] == 'Weekly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 52;
-        }
-        setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.a.';
-    } else if ($data2['wage_type'] == 'Negotiable') {
-        if ($data2['wage_duration'] == 'Monthly') {
-            $data2['min_wage'] = $data2['min_wage'] * 12;
-            $data2['max_wage'] = $data2['max_wage'] * 12;
-        } elseif ($data2['wage_duration'] == 'Hourly') {
-            $data2['min_wage'] = $data2['min_wage'] * 40 * 52;
-            $data2['max_wage'] = $data2['max_wage'] * 40 * 52;
-        } elseif ($data2['wage_duration'] == 'Weekly') {
-            $data2['min_wage'] = $data2['min_wage'] * 52;
-            $data2['max_wage'] = $data2['max_wage'] * 52;
-        }
-        setlocale(LC_MONETARY, 'en_IN');
-        if (!empty($data2['min_wage']) && !empty($data2['max_wage'])) {
-            $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-        } elseif (!empty($data2['min_wage'])) {
-            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . 'p.a.';
-        } elseif (!empty($data2['max_wage'])) {
-            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-        } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
-            $amount = 'Negotiable';
+    if (!empty($data2)) {
+        if ($data2['wage_type'] == 'Fixed') {
+            if ($data2['wage_duration'] == 'Monthly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 12;
+            } elseif ($data2['wage_duration'] == 'Hourly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 40 * 52;
+            } elseif ($data2['wage_duration'] == 'Weekly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . ' p.a.';
+        } else if ($data2['wage_type'] == 'Negotiable') {
+            if ($data2['wage_duration'] == 'Monthly') {
+                $data2['min_wage'] = $data2['min_wage'] * 12;
+                $data2['max_wage'] = $data2['max_wage'] * 12;
+            } elseif ($data2['wage_duration'] == 'Hourly') {
+                $data2['min_wage'] = $data2['min_wage'] * 40 * 52;
+                $data2['max_wage'] = $data2['max_wage'] * 40 * 52;
+            } elseif ($data2['wage_duration'] == 'Weekly') {
+                $data2['min_wage'] = $data2['min_wage'] * 52;
+                $data2['max_wage'] = $data2['max_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            if (!empty($data2['min_wage']) && !empty($data2['max_wage'])) {
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
+            } elseif (!empty($data2['min_wage'])) {
+                $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' p.a.';
+            } elseif (!empty($data2['max_wage'])) {
+                $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
+            } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
+                $amount = 'Negotiable';
+            }
         }
     }
-    $this->title = $org['org_name'] . ' is hiring for ' . $data2['cat_name'] . ' with a ' . $amount . ' package.';
+   else{
+       if ($data1['wage_type'] == 'Fixed') {
+           if ($data1['wage_duration'] == 'Monthly') {
+               $data1['fixed_wage'] = $data1['fixed_wage'] * 12;
+           } elseif ($data1['wage_duration'] == 'Hourly') {
+               $data1['fixed_wage'] = $data1['fixed_wage'] * 40 * 52;
+           } elseif ($data1['wage_duration'] == 'Weekly') {
+               $data1['fixed_wage'] = $data1['fixed_wage'] * 52;
+           }
+           setlocale(LC_MONETARY, 'en_IN');
+           $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['fixed_wage'])) . ' p.a.';
+       } else if ($data1['wage_type'] == 'Negotiable') {
+           if ($data1['wage_duration'] == 'Monthly') {
+               $data1['min_wage'] = $data1['min_wage'] * 12;
+               $data1['max_wage'] = $data1['max_wage'] * 12;
+           } elseif ($data1['wage_duration'] == 'Hourly') {
+               $data1['min_wage'] = $data1['min_wage'] * 40 * 52;
+               $data1['max_wage'] = $data1['max_wage'] * 40 * 52;
+           } elseif ($data1['wage_duration'] == 'Weekly') {
+               $data1['min_wage'] = $data1['min_wage'] * 52;
+               $data1['max_wage'] = $data1['max_wage'] * 52;
+           }
+           setlocale(LC_MONETARY, 'en_IN');
+           if (!empty($data1['min_wage']) && !empty($data1['max_wage'])) {
+               $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
+           } elseif (!empty($data1['min_wage'])) {
+               $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' p.a.';
+           } elseif (!empty($data1['max_wage'])) {
+               $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
+           } elseif (empty($data1['min_wage']) && empty($data1['max_wage'])) {
+               $amount = 'Negotiable';
+           }
+       }
+   }
+    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name'])?$data2['cat_name']: $data1['cat_name']) . ' with a ' . $amount . ' package.';
     $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
@@ -50,16 +86,31 @@ if ($type=='Internship') {
             $data2['fixed_wage'] = $data2['fixed_wage'] / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.m.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . ' p.m.';
     } elseif ($data2['wage_type'] == 'Negotiable' || $data2['wage_type'] == 'Performance Based') {
         if ($data2['wage_duration'] == 'Weekly') {
             $data2['min_wage'] = $data2['min_wage'] / 7 * 30;
             $data2['max_wage'] = $data2['max_wage'] / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.m.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.m.';
     }
-    $this->title = $org['org_name'] . ' is looking for ' . $data2['cat_name'] . ' interns with a stipend ' . $amount;
+
+    if ($data1['wage_type'] == 'Fixed') {
+        if ($data1['wage_duration'] == 'Weekly') {
+            $data1['fixed_wage'] = $data1['fixed_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['fixed_wage'])) . ' p.m.';
+    } elseif ($data1['wage_type'] == 'Negotiable' || $data1['wage_type'] == 'Performance Based') {
+        if ($data1['wage_duration'] == 'Weekly') {
+            $data1['min_wage'] = $data1['min_wage'] / 7 * 30;
+            $data1['max_wage'] = $data1['max_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
+    }
+    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name'])?$data2['cat_name']: $data1['cat_name']) . ' interns with a stipend ' . $amount;
     $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
@@ -73,8 +124,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -102,6 +153,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
     'icon_png'=>(($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
     'shortlist'=>$shortlist,
+    'shortlist_btn_display'=>true
 ]);
 ?>
 <section>
@@ -116,24 +168,20 @@ $this->render('/widgets/employer_applications/top-banner', [
                             echo $this->render('/widgets/employer_applications/internship-overview', [
                                 'placement_offer'=>$data2['has_placement_offer'],
                                 'profile_name'=>$data2['name'],
-                                'wage_duration'=>$data2['wage_duration'],
                                 'wage_type'=>$data2['wage_type'],
-                                'max_wage'=>$data2['max_wage'],
-                                'min_wage'=>$data2['min_wage'],
                                 'gender'=>$data2['preferred_gender'],
-                                'fixed_wage'=>$data2['fixed_wage'],
+                                'ammount_value'=>$amount,
                                 'placement_locations'=>$data2['applicationPlacementLocations'],
                             ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview',[
                                     'type'=>$type,
+                                    'ammount_value'=>$amount,
                                     'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
                                     'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
                                     'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
                                     'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
-                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
-                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
-                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
+                                    'wage_duration'=>(($data1['wage_duration'])? $data1['wage_duration'] :  $data2['wage_duration']),
                                     'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
                                 ]);
                                 endif;
@@ -146,25 +194,20 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'industry'=>$data2['industry'],
                                 'designation'=>$data2['designation'],
                                 'job_type'=>$data2['type'],
-                                'wage_duration'=>$data2['wage_duration'],
                                 'wage_type'=>$data2['wage_type'],
-                                'max_wage'=>$data2['max_wage'],
-                                'min_wage'=>$data2['min_wage'],
                                 'gender'=>$data2['preferred_gender'],
-                                'fixed_wage'=>$data2['fixed_wage'],
                                 'experience'=>$data2['experience'],
+                                'ammount_value'=>$amount,
                                 'placement_locations'=>$data2['applicationPlacementLocations'],
                             ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview',[
                                     'type'=>$type,
+                                    'ammount_value'=>$amount,
                                     'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
                                     'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
                                     'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
                                     'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
-                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
-                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
-                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
                                     'experience'=>(($data1['experience']) ? $data1['experience'] : $data2['experience'] ),
                                     'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
                                     'positions'=>(($data1['positions']) ? $data1['positions'] : $data2['positions']),
@@ -256,6 +299,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     'applied'=>$applied,
                     'application_slug'=>$application_details["slug"],
                     'shortlist'=>$shortlist,
+                    'shortlist_btn_display'=>true
                 ]);
                 else:
                     echo $this->render('/widgets/employer_applications/unclaim_org',[
@@ -264,13 +308,16 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'org_name'=>$org['org_name'],
                         'initial_color'=>$org['color'],
                         'slug'=>$org['slug'],
+                        'cid'=>$org['organization_enc_id'],
                         'website'=>$org['website'],
                         'email'=>$org['email'],
                         'job_url'=>$data1['job_url'],
+                        'application_id'=>$data1['application_enc_id'],
                         'type'=>$type,
                         'applied'=>false,
                         'application_slug'=>$application_details["slug"],
                         'shortlist'=>$shortlist,
+                        'shortlist_btn_display'=>true
                     ]);
               endif;
                 ?>
@@ -285,7 +332,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn']);
+        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn','organization_enc_id'=>$org['organization_enc_id']]);
     }
     ?>
 </section>

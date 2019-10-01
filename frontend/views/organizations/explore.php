@@ -1,5 +1,4 @@
 <?php
-$this->title = Yii::t('frontend', 'Companies');
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
@@ -234,7 +233,8 @@ use yii\helpers\Url;
                             <div class="logo-contain">
                                 <div class="logo-1">
                                     <a href="/vincittech">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png') ?>" alt="Vincit Software"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png') ?>"
+                                             alt="Vincit Software"/>
                                     </a>
                                 </div>
                             </div>
@@ -332,7 +332,8 @@ use yii\helpers\Url;
                             <div class="logo-contain">
                                 <div class="logo-1">
                                     <a href="/hamco">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>" alt="Hamco"/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/hamco.png') ?>"
+                                             alt="Hamco"/>
                                     </a>
                                 </div>
                             </div>
@@ -358,7 +359,8 @@ use yii\helpers\Url;
                             <div class="logo-contain">
                                 <div class="logo-1">
                                     <a href="/manojoshempo">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png') ?>" alt="Fame Finders Media "/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png') ?>"
+                                             alt="Fame Finders Media "/>
                                     </a>
                                 </div>
                             </div>
@@ -383,7 +385,8 @@ use yii\helpers\Url;
                             <div class="logo-contain">
                                 <div class="logo-1">
                                     <a href="/agile">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>" alt="Agile Finserv Pvt. Ltd. "/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png') ?>"
+                                             alt="Agile Finserv Pvt. Ltd. "/>
                                     </a>
                                 </div>
                             </div>
@@ -1683,8 +1686,6 @@ body {
 }
 ");
 $script = <<<JS
-     
-        
     var swiper = new Swiper(".blog-slider", {
   spaceBetween: 30,
   effect: "fade",
@@ -1693,7 +1694,6 @@ $script = <<<JS
     invert: false
         
   },
-  // autoHeight: true,
   pagination: {
     el: ".blog-slider__pagination",
     clickable: true
@@ -1701,8 +1701,6 @@ $script = <<<JS
 });    
 JS;
 $this->registerJs($script);
-//$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
-//$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/swiper.min.js');
 $this->registerCssFile('@eyAssets/css/swiper.min.css');

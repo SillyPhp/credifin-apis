@@ -8,7 +8,7 @@
                 <div class="col-md-10 col-md-offset-1">
                     <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/parent-comment">
                         <div class="">
-                            <textarea id="commentArea"></textarea>
+                            <textarea id="commentArea" rows="1"></textarea>
                         </div>
                         <div class="comment-sub">
                             <button type="button" id="sendComment">Comment</button>

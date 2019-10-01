@@ -7,7 +7,7 @@ use yii\helpers\Html;
 echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 ?>
 
-<section class="card card-transparent">
+<section class="card card-transparent nd-shadow">
     <div class="card-body">
         <section class="card card-group">
             <header class="card-header bg-primary">
@@ -166,7 +166,7 @@ ul.widget-todo-list {
     margin: 0;
     position: relative;
     max-height: 600px;
-    min-height:205px;
+    min-height:435px;
     display: block;
     overflow-x: scroll;
 }

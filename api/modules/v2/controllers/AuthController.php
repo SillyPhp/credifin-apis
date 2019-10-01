@@ -5,8 +5,10 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
+use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
+use common\models\Users;
 use frontend\widgets\Login;
 use Yii;
 
@@ -28,12 +30,15 @@ class AuthController extends ApiBaseController{
 
         $model = new IndividualSignup();
         if($model->load(Yii::$app->request->post(), '')){
+//            print_r($model);
+//            die();
             if($model->validate()){
                 if(!$this->usernameValid($model)){
                     return $this->response(409, [
                         'username' => 'Username already taken'
                     ]);
                 }
+
                 if($model->saveUser()){
                     return $this->response(200);
                 }else{
@@ -46,12 +51,39 @@ class AuthController extends ApiBaseController{
         return $this->response(422);
     }
 
+    public function actionUsername(){
+        $username = Yii::$app->request->post('username');
+        $user_names = Usernames::find()
+            ->where(['username'=>$username])
+            ->exists();
+
+        if($user_names){
+            return $this->response(200,['status'=>201,'exists'=>true]);
+        }else{
+            return $this->response(200,['status'=>200,'exists'=>false]);
+        }
+    }
+
     public function actionLogin(){
         $model = new LoginForm();
         if($model->load(Yii::$app->request->post(), '')){
             if($model->login()){
                 $source = Yii::$app->request->post()['source'];
                 $user = $this->findUser($model);
+                if($user->organization_enc_id){
+                    $user_type = Users::find()
+                        ->alias('a')
+                        ->select(['a.user_enc_id','a.organization_enc_id','c.business_activity type'])
+                        ->joinWith(['organizationEnc b'=>function($b){
+                            $b->joinWith(['businessActivityEnc c']);
+                        }],false)
+                        ->where(['a.user_enc_id'=>$user->user_enc_id,'b.is_erexx_registered'=>1,'b.is_deleted'=>0])
+                        ->asArray()
+                        ->one();
+                    if($user_type['type'] != 'College'){
+                        return false;
+                    }
+                }
                 $token = $this->findToken($user, $source);
                 if(empty($token)){
                     if($token=$this->newToken($user->user_enc_id,$source)){
@@ -101,9 +133,25 @@ class AuthController extends ApiBaseController{
     }
 
     private function returnData($user, $source){
+
+        $user_type = Users::find()
+            ->alias('a')
+            ->select(['a.user_enc_id','b.user_type','c.name city_name','e.name org_name'])
+            ->joinWith(['userTypeEnc b'],false)
+            ->joinWith(['cityEnc c'],false)
+            ->joinWith(['userOtherInfo d'=>function($d){
+                $d->joinWith(['organizationEnc e']);
+            }],false)
+            ->where(['a.user_enc_id'=>$source->user_enc_id])
+            ->asArray()
+            ->one();
+
         return [
             'user_id' => $source->user_enc_id,
             'username' => $user->username,
+            'user_type' => $user_type['user_type'],
+            'city' => $user_type['city_name'],
+            'college' => $user_type['org_name'],
             'email' => $user->email,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
@@ -143,5 +191,55 @@ class AuthController extends ApiBaseController{
             return false;
         }
         return true;
+    }
+
+    public function actionFindUser(){
+
+        $access_token = Yii::$app->request->post('access_token');
+        $source = Yii::$app->request->post('source');
+
+        $find_user = UserAccessTokens::find()
+            ->select(['*'])
+            ->where(['access_token'=>$access_token,'source'=>$source])
+            ->asArray()
+            ->one();
+
+        if(!empty($find_user)){
+            $user_type = Users::find()
+                ->where(['!=','organization_enc_id','null'])
+                ->exists();
+
+
+            $user_detail = Users::find()
+                ->alias('a')
+                ->select(['a.first_name','a.last_name','a.username','a.phone','a.email','a.initials_color','b.user_type','c.name city_name','e.name org_name','d.organization_enc_id'])
+                ->joinWith(['userTypeEnc b'],false)
+                ->joinWith(['cityEnc c'],false)
+                ->joinWith(['userOtherInfo d'=>function($d){
+                    $d->joinWith(['organizationEnc e']);
+                }],false)
+                ->where(['a.user_enc_id'=>$find_user['user_enc_id']])
+                ->asArray()
+                ->one();
+
+        }
+
+        return [
+            'user_id' => $find_user['user_enc_id'],
+            'username' => $user_detail['username'],
+            'user_type' => $user_detail['user_type'],
+            'city' => $user_detail['city_name'],
+            'college' => $user_detail['org_name'],
+            'college_enc_id' => $user_detail['organization_enc_id'],
+            'email' => $user_detail['email'],
+            'first_name' => $user_detail['first_name'],
+            'last_name' => $user_detail['last_name'],
+            'phone' => $user_detail['phone'],
+            'initials_color' => $user_detail['initials_color'],
+            'access_token' => $find_user['access_token'],
+            'refresh_token' => $find_user['refresh_token'],
+            'access_token_expiry_time' => $find_user['access_token_expiration'],
+            'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
+        ];
     }
 }

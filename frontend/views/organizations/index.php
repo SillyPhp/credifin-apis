@@ -4,58 +4,59 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 ?>
-<section class="headerbg">
-    <div class="bg-vector"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="main-heading">
-                    <div class="pos-center">
-                        <div class="main-text">Explore All Companies</div>
-                        <div class="search-container">
-                            <form action="">
-                                <div class="load-suggestions Typeahead-spinner city-spin"
-                                     style="display: none;">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-                                </div>
-                                <input id="company_search" type="text" placeholder="Search Companies" name="search">
-                                <button id="search"><i class="fas fa-search"></i></button>
-                            </form>
+    <section class="headerbg">
+        <div class="bg-vector"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="main-heading">
+                        <div class="pos-center">
+                            <div class="main-text">Explore All Companies</div>
+                            <div class="search-container">
+                                <form action="">
+                                    <div class="load-suggestions Typeahead-spinner city-spin"
+                                         style="display: none;">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                    <input id="company_search" type="text" placeholder="Search Companies" name="search">
+                                    <button id="search"><i class="fas fa-search"></i></button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="padd-top-20">
-                <div id="companies-card"></div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="padd-top-20">
+                    <div id="companies-card"></div>
+                </div>
+                <!--            <div class="col-md-4">-->
+                <!--                <div class="com-box">-->
+                <!--                    <a href="">-->
+                <!--                        <div class="com-icon">-->
+                <!--                            <div class="icon"><img src="-->
+                <? //= Url::to('@commonAssets/logos/logo.svg') ?><!--"></div>-->
+                <!--                            <div class="follow">-->
+                <!--                                <button><i class="fa fa-heart-o"></i></button>-->
+                <!--                            </div>-->
+                <!--                            <div class="featured">Featured</div>-->
+                <!--                        </div>-->
+                <!--                        <div class="com-det">-->
+                <!--                            <div class="com-name">Empower Youth Foundation</div>-->
+                <!--                            <div class="com-cate">Information Technology</div>-->
+                <!--                        </div>-->
+                <!--                    </a>-->
+                <!--                </div>-->
+                <!--            </div>-->
             </div>
-            <!--            <div class="col-md-4">-->
-            <!--                <div class="com-box">-->
-            <!--                    <a href="">-->
-            <!--                        <div class="com-icon">-->
-            <!--                            <div class="icon"><img src="--><?//= Url::to('@commonAssets/logos/logo.svg') ?><!--"></div>-->
-            <!--                            <div class="follow">-->
-            <!--                                <button><i class="fa fa-heart-o"></i></button>-->
-            <!--                            </div>-->
-            <!--                            <div class="featured">Featured</div>-->
-            <!--                        </div>-->
-            <!--                        <div class="com-det">-->
-            <!--                            <div class="com-name">Empower Youth Foundation</div>-->
-            <!--                            <div class="com-cate">Information Technology</div>-->
-            <!--                        </div>-->
-            <!--                    </a>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
-    </div>
-</section>
+    </section>
 <?php
 echo $this->render('/widgets/mustache/all-companies-card');
 $this->registerCss('
@@ -384,4 +385,3 @@ JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>
