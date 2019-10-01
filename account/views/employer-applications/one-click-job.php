@@ -640,6 +640,10 @@ let appEditor;
         console.error( error );
     } );
 //appEditor.updateSourceElement();
+$('#description').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true;
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");

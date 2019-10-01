@@ -337,6 +337,10 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
+ $('#description').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true;
+});
  $(document).on("click", ".add_new_org", function (e) {
     e.preventDefault();
     $(".modal-body").load($(this).attr("url"));
