@@ -383,6 +383,7 @@ class JobsController extends Controller
 
     public function actionQuickJob()
     {
+        if (!Yii::$app->user->identity->organization):
         $this->layout = 'main-secondary';
         $model = new QuickJob();
         $typ = 'Jobs';
@@ -398,6 +399,9 @@ class JobsController extends Controller
             return $this->refresh();
         }
         return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else :
+            return $this->redirect('/account/jobs/quick-job');
+        endif;
     }
 
     public function actionTwitterJob()
