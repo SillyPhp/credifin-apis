@@ -10,8 +10,6 @@ use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\States;
-use frontend\models\cities\CitiesSearch;
-use frontend\models\employerApplications\employerApplicationForm;
 use Yii;
 use yii\web\Controller;
 
@@ -19,7 +17,6 @@ class LocationsController extends Controller
 {
     public function actionStates()
     {
-
         $other_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
@@ -27,7 +24,6 @@ class LocationsController extends Controller
                 'a.state_enc_id',
                 'b.country_enc_id',
                 'c.city_enc_id',
-                'a.name',
                 'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
                 'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
             ])
@@ -37,9 +33,10 @@ class LocationsController extends Controller
             ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as g', 'g.assigned_category_enc_id = e.title')
-            ->where(['e.is_deleted' => 0, 'g.is_deleted' => 0, 'b.name' => 'India'])
-            ->groupBy('a.id');
+            ->where(['e.is_deleted' => 0, 'b.name' => 'India']);
 
+        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
 
         $ai_jobs = (new \yii\db\Query())
             ->distinct()
@@ -48,7 +45,6 @@ class LocationsController extends Controller
                 'a.state_enc_id',
                 'b.country_enc_id',
                 'c.city_enc_id',
-                'a.name',
                 'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
                 'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
             ])
@@ -59,19 +55,32 @@ class LocationsController extends Controller
             ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
-            ->where(['j.is_deleted' => 0, 'l.is_deleted' => 0, 'b.name' => 'India'])
-            ->groupBy('a.id');
+            ->where(['j.is_deleted' => 0, 'l.is_deleted' => 0, 'b.name' => 'India']);
 
-        $result = (new \yii\db\Query())
+        $ai_jobs_state_wise = $ai_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+
+        $states = (new \yii\db\Query())
             ->from([
-                $other_jobs->union($ai_jobs),
+                $other_jobs_state_wise->union($ai_jobs_state_wise),
             ])
-            ->select(['name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
+            ->select(['state_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
             ->groupBy('state_enc_id')
+            ->orderBy(['state_name' => SORT_ASC])
+            ->all();
+
+        $cities = (new \yii\db\Query())
+            ->from([
+                $other_jobs_city_wise->union($ai_jobs_city_wise),
+            ])
+            ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
+            ->groupBy('city_enc_id')
+            ->orderBy(['city_name' => SORT_ASC])
             ->all();
 
         return $this->render('states', [
-            'result' => $result
+            'cities' => $cities,
+            'states' => $states,
         ]);
     }
 
