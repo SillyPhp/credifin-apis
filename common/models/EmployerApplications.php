@@ -54,7 +54,7 @@ use Yii;
  * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
  * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+// * @property AssignedCategories $title
  * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc

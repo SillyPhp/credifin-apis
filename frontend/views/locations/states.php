@@ -1,7 +1,25 @@
 <?php
 $this->title = Yii::t('frontend', 'States');
 $this->params['header_dark'] = false;
+
+use common\models\ApplicationOptions;
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\Designations;
+use common\models\EmployerApplications;
+use common\models\Industries;
+use common\models\OrganizationLocations;
+use common\models\Organizations;
+use common\models\States;
+use common\models\UnclaimedOrganizations;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+
 ?>
     <section class="all-state-header">
         <div class="ash-vector"></div>
@@ -36,25 +54,26 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6">
                     <div class="pos-real">
                         <div class="ash-icon1">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i1.png')?>" alt="" class="img-responsive">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i1.png') ?>" alt=""
+                                 class="img-responsive">
                         </div>
                         <div class="ash-icon2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i2.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i2.png') ?>" alt="">
                         </div>
                         <div class="ash-icon3">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i3.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i3.png') ?>" alt="">
                         </div>
                         <div class="ash-icon4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i4.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i4.png') ?>" alt="">
                         </div>
                         <div class="ash-icon5">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i5.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i5.png') ?>" alt="">
                         </div>
                         <div class="ash-icon6">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i6.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i6.png') ?>" alt="">
                         </div>
                         <div class="ash-icon7">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i7.png')?>" alt="">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/i7.png') ?>" alt="">
                         </div>
                     </div>
                 </div>
@@ -71,230 +90,258 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/andhra-pradesh.png')?>" alt="">
+                        <?php
+                        foreach ($result as $app) {
+                            ?>
+                            <div class="col-md-4 col-sm-6">
+                                <a href="">
+                                    <div class="state-box">
+                                        <div class="state-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/locations/andhra-pradesh.png') ?>"
+                                                 alt="">
+                                        </div>
+                                        <div class="state-name"><?= $app['name'] ?></div>
+                                        <div class="state-oppertunities">
+                                            <ul>
+                                                <li><span>Jobs:</span> <?= $app['jobs'] ?></li>
+                                                <li><span>Internships:</span> <?= $app['internships'] ?></li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="state-name">Andhra Pradesh</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/arunachal-pradesh.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Arunachal Pradesh</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/assam.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Assam</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/bihar.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Bihar</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/chhattisgarh.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Chhattisgarh</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/goa.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Goa</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/gujarat.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Gujarat</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/haryana.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Haryana</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/himachal-pradesh.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Himachal Pradesh</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/jammu&kashmir.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Jammu & Kashmir</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/jharkhand.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Jharkhand</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/karnataka.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Karnataka</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/kerala.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Kerala</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4 col-sm-6">
-                            <a href="">
-                                <div class="state-box">
-                                    <div class="state-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/locations/punjab.png')?>" alt="">
-                                    </div>
-                                    <div class="state-name">Punjab</div>
-                                    <div class="state-oppertunities">
-                                        <ul>
-                                            <li><span>Jobs:</span> 10</li>
-                                            <li><span>Internships:</span> 20</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
+                                </a>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/arunachal-pradesh.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Arunachal Pradesh</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/assam.png') ?><!--" alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Assam</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/bihar.png') ?><!--" alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Bihar</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/chhattisgarh.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Chhattisgarh</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/goa.png') ?><!--" alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Goa</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/gujarat.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Gujarat</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/haryana.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Haryana</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/himachal-pradesh.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Himachal Pradesh</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/jammu&kashmir.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Jammu & Kashmir</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/jharkhand.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Jharkhand</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/karnataka.png') ?><!--"-->
+                        <!--                                             alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Karnataka</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/kerala.png') ?><!--" alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Kerala</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="col-md-4 col-sm-6">-->
+                        <!--                            <a href="">-->
+                        <!--                                <div class="state-box">-->
+                        <!--                                    <div class="state-icon">-->
+                        <!--                                        <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/locations/punjab.png') ?><!--" alt="">-->
+                        <!--                                    </div>-->
+                        <!--                                    <div class="state-name">Punjab</div>-->
+                        <!--                                    <div class="state-oppertunities">-->
+                        <!--                                        <ul>-->
+                        <!--                                            <li><span>Jobs:</span> 10</li>-->
+                        <!--                                            <li><span>Internships:</span> 20</li>-->
+                        <!--                                        </ul>-->
+                        <!--                                    </div>-->
+                        <!--                                </div>-->
+                        <!--                            </a>-->
+                        <!--                        </div>-->
                     </div>
                     <div class="row">
                         <div class="col-md-12">
@@ -303,13 +350,13 @@ use yii\helpers\Url;
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
                         </div>
                         <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
                         </div>
                         <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png')?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
                         </div>
                     </div>
 
@@ -323,7 +370,7 @@ use yii\helpers\Url;
                             <a href="">
                                 <div class="city-main">
                                     <div class="city-image">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/ludhiana.png')?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/ludhiana.png') ?>">
                                     </div>
                                     <div class="city-name">Ludhiana</div>
                                     <div class="divider"></div>
@@ -339,7 +386,7 @@ use yii\helpers\Url;
                             <a href="">
                                 <div class="city-main">
                                     <div class="city-image">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/jalandhar.png')?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/jalandhar.png') ?>">
                                     </div>
                                     <div class="city-name">Jalandhar</div>
                                     <div class="divider"></div>
@@ -355,7 +402,7 @@ use yii\helpers\Url;
                             <a href="">
                                 <div class="city-main">
                                     <div class="city-image">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/indore.png')?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/indore.png') ?>">
                                     </div>
                                     <div class="city-name">Indore</div>
                                     <div class="divider"></div>
@@ -371,7 +418,7 @@ use yii\helpers\Url;
                             <a href="">
                                 <div class="city-main">
                                     <div class="city-image">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/chandigarh.png')?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/custom/chandigarh.png') ?>">
                                     </div>
                                     <div class="city-name">Chandigarh</div>
                                     <div class="divider"></div>
@@ -394,17 +441,17 @@ use yii\helpers\Url;
                     <div class="row">
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                     </div>
@@ -416,17 +463,17 @@ use yii\helpers\Url;
                     <div class="row">
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                         <div class="col-md-12 col-sm-6">
                             <div class="job-card">
-                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png')?>" alt="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/jobs/job-card.png') ?>" alt="">
                             </div>
                         </div>
                     </div>
@@ -577,7 +624,7 @@ $this->registerCss('
     overflow:hidden;
 }
 .ash-vector{
-    background-image:url('. url::to("@eyAssets/images/pages/custom/stateshdr1.png").');
+    background-image:url(' . url::to("@eyAssets/images/pages/custom/stateshdr1.png") . ');
     background-repeat: no-repeat;
     background-position: right bottom; 
     width: 100%;
