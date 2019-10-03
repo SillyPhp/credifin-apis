@@ -65,8 +65,8 @@ function fetch_usa_cards(host,userAgent,authKey,template)
       'JobCategoryCode':2210
   },
   headers: {          
-        //"Host": host,          
-        //"User-Agent": userAgent,          
+        "Host": host,          
+        "User-Agent": userAgent,          
         "Authorization-Key": authKey      
     },
   success:function(body) {
