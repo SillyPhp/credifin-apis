@@ -639,10 +639,9 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
-//appEditor.updateSourceElement();
-$('#description').on('beforeValidate', function (event, messages, deferreds) {
+ $('#create_job_form').on('beforeValidate', function (event, messages, deferreds) {
     appEditor.updateSourceElement();
-    return true;
+    return true; 
 });
 JS;
 $this->registerJs($script);

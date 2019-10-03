@@ -136,6 +136,7 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                         <?= $form->field($model, 'city')->widget(Select2::classname(), [
                             'options' => ['placeholder' => 'Select Cities','multiple'=>true, 'class'=>'form-control'],
                             'pluginOptions' => [
+                                'data'=>[1=>''],
                                 'allowClear' => true,
                                 'minimumInputLength' => 1,
                                 'language' => [
@@ -337,7 +338,7 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
- $('#description').on('beforeValidate', function (event, messages, deferreds) {
+ $('#create_job_form').on('beforeValidate', function (event, messages, deferreds) {
     appEditor.updateSourceElement();
     return true;
 });
