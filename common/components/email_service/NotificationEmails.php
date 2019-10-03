@@ -3,20 +3,20 @@
 namespace common\components\email_service;
 
 use common\models\ApplicationUnclaimOptions;
-use common\models\EmployerApplications;
+use common\models\Utilities;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use common\models\Users;
+use dsbedutech\models\AppliedEmailLogs;
 use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
-use common\models\Utilities;
 use Yii;
 
 class NotificationEmails extends Component
 {
 
-    public function userAppliedNotify($user_id = null, $application_id = null, $company_id = null, $unclaim_company_id = null, $type = null)
+    public function userAppliedNotify($user_id = null, $application_id = null, $company_id = null, $unclaim_company_id = null, $type = null,$applied_id=null)
     {
         $object = new \account\models\applications\ApplicationForm();
         $user_info = Users::find()
@@ -123,7 +123,16 @@ class NotificationEmails extends Component
             ->setTo([$email => 'Sneh'])
             ->setSubject(Yii::t('frontend', 'Someone Has Applied On Your Job Via Empower Youth'));
 
+        $appliedMail = new AppliedEmailLogs();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $appliedMail->email_log_enc_id = $utilitiesModel->encrypt();
+        $appliedMail->applied_enc_id = $applied_id;
+        $appliedMail->save();
         if ($mail->send()) {
+            $update = Yii::$app->db->createCommand()
+                ->update(AppliedEmailLogs::tableName(), ['is_sent' => 1], ['applied_enc_id'=>$applied_id])
+                ->execute();
             return true;
         } else {
             return false;

@@ -77,7 +77,7 @@ class JobsController extends Controller
                 $res = $model->saveValues();
                 if ($res['status'])
                 {
-                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$id,$company_id=null,$unclaim_company_id=$c_id,$type="Jobs");
+                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$id,$company_id=null,$unclaim_company_id=$c_id,$type="Jobs",$res['aid']);
                     return $res;
                 }
                 else
@@ -105,7 +105,7 @@ class JobsController extends Controller
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->saveValues();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ,$res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -120,7 +120,7 @@ class JobsController extends Controller
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->upload();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ);
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ,$res['aid']);
                         return $res;
                     } else {
                         return false;
