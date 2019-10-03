@@ -1,9 +1,11 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
+
 ?>
     <div class="container">
         <?php
@@ -20,7 +22,7 @@ use yii\web\JsExpression;
                 </div>";
         else:
             Yii::$app->session->hasFlash('error');
-            echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
+            echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
         endif;
         ?>
         <div class="portlet light nd-shadow" id="form_wizard_1">
@@ -49,7 +51,7 @@ use yii\web\JsExpression;
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration','maxlength'=>2])->label('Training Duration'); ?>
+                        <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration', 'maxlength' => 2])->label('Training Duration'); ?>
                     </div>
                     <div class="col-md-3">
                         <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
@@ -106,19 +108,26 @@ use yii\web\JsExpression;
                                         <option value="3">Anually</option>
                                         <option value="4">One Time</option>
                                     </select>
-                                    <label for="">From </label>
-                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                           value="09:00"/>
-                                    <label for="">to </label>
-                                    <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                           value="05:00"/>
-                                    <input id="toallday" type="checkbox" name="toallday" value="toallday"/>
-                                    <label for="toallday">Apply to all day</label>
+                                    <div class="fromto">
+                                        <label for="">From </label>
+                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                               value="09:00"/>
+                                        <label for="">to </label>
+                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
+                                               value="05:00"/>
+                                    </div>
                                 </div>
                                 <div class="jours">
                                     <div id="custom-checkboxes"></div>
+                                    <div class="row">
+                                        <div class="setting-row">
+                                            <input class="sett-padd" id="toallday" type="checkbox" name="toallday"
+                                                   value="toallday"/>
+                                            <label for="toallday">Apply to all day</label>
+                                        </div>
+                                    </div>
                                     <div class="check-selection">
-                                        <a href="#" class="btn add">Add New Batch</a>
+                                        <a href="#" class="btn add">Add Batch</a>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +139,9 @@ use yii\web\JsExpression;
 
                 <div class="row">
                     <div class="col-md-12">
-                        <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+                        <div class="btn-set">
+                            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+                        </div>
                     </div>
                 </div>
                 <?php ActiveForm::end() ?>
@@ -139,7 +150,38 @@ use yii\web\JsExpression;
     </div>
 <?php
 $this->registerCss('
-.fees_method{margin-right:10px;}
+.selection > .twitter-typeahead{
+    position:none !important;
+}
+.fromto{display:inline-block;}
+@media only screen and (max-width: 1024px) {
+.fromto{
+    padding-top:10px;
+    }
+.selection{
+    text-align:center;
+    }
+.twitter-typeahead{
+    float:none;
+}
+}
+.jours{
+    text-align:center;
+}
+
+.setting-row  {
+    margin-top: 10px;
+}
+.setting-row input {
+    margin: 0px 5px 0 -17px !important;
+}
+.btn-set{
+    text-align:right;
+}
+.sett-padd{
+    margin-left:15px !important;
+    }
+.fees_method{margin-right:15px;}
 .m-cover {
   z-index: 1;
   position: fixed;
@@ -284,7 +326,7 @@ margin-top:12px;
   height: 30px;
   background-color: transparent;
   border: 2px solid #c6c5c4;
-  margin: 0 1em 1em 5px!important;
+  margin: 0px 15px 10px 15px !important;
   padding-left: 15px;
 }
 .contenu .choice_pattern .selection input[type="time"]:hover {
@@ -296,15 +338,13 @@ margin-top:12px;
   outline: none;
 }
 .contenu .jours .check-selection {
-    text-align: center;
-    display: inline-block;
-    margin-top: 12px;
-    margin-left: 30px; 
+    margin-top: 12px; 
 }
 .contenu .jours .check-selection a.btn {
   display: inline-block;
-  font-size: 16px;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: roboto;
   border-radius: 1px;
   height: 34px;
   line-height: 34px;
@@ -336,10 +376,9 @@ margin-top:12px;
     height: 30px;
     margin: 0 0 1.8em 1em;
     display: inline-block;
-    float: left;
 }
 .contenu .jours #custom-checkboxes label {
-  width: 56px;
+  width: 100px;
   margin: 0 3px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked),
@@ -358,9 +397,9 @@ margin-top:12px;
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 56px;
-  height: 30px;
-  background-color: #c6c5c4;
+  width: 100px;
+  height: 32px;
+  background-color: #88837e;
   border-left: 2px solid #eeeeee;
   border-top: 2px solid #eeeeee;
   border-bottom: 2px solid #eeeeee;
@@ -369,14 +408,15 @@ margin-top:12px;
   text-align: center;
   font-size: 14px;
   border-radius: 0px;
+  line-height: 28px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked) + label:after,
 .contenu .jours #custom-checkboxes input[type="checkbox"]:checked + label:after {
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 56px;
-  height: 30px;
+  width: 100px;
+  height: 32px;
   background: #00aeef;
   border: 2px solid #00aeef;
   text-align: center;
@@ -388,6 +428,7 @@ margin-top:12px;
   -moz-transition: all linear 0.2s;
   -o-transition: all linear 0.2s;
   transition: all linear 0.2s;
+  line-height: 28px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked) + label:after {
   opacity: 0;
@@ -589,7 +630,6 @@ margin-top:12px;
     margin:0 20px 0 0;
 }
 .twitter-typeahead{
-    float: left;
     margin-top: 1px;
 }
 .title_wrapper div div > .twitter-typeahead{
