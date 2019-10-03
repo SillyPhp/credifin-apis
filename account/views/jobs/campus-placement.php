@@ -1,3 +1,6 @@
+<?php
+use yii\helpers\Url;
+?>
 <section>
     <div class="container">
         <div class="row">
@@ -26,13 +29,46 @@
                             <div class="step initial active">
                                 <div class="row">
                                     <?php
+//                                    print_r($applications['data']);
+//                                    exit();
                                     foreach ($applications['data'] as $app) {
                                         ?>
-                                        <div class="col-sm-6">
-                                            <div class="form-group app-list-data">
-                                                <input id="<?= $app['application_enc_id']; ?>" type="checkbox" name="applications[]" value="<?= $app['application_enc_id']; ?>">
-                                                <label for="<?= $app['application_enc_id']; ?>"><?= $app['name']; ?></label>
-                                            </div>
+                                        <div class="col-sm-6 app-list-data-main">
+                                            <input id="<?= $app['application_enc_id']; ?>" type="checkbox" name="applications[]" value="<?= $app['application_enc_id']; ?>">
+                                            <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
+                                                <div class="inner-list-main">
+                                                    <div class="job-listing-company-logo">
+                                                        <img class="company_logo" src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>" alt="<?= $app['name']; ?>">
+                                                    </div>
+                                                    <div class="job-details">
+                                                        <div class="job-details-inner">
+<!--                                                            <h3 class="job-listing-loop-job__title">--><?//= $app['name']; ?><!--</h3>-->
+                                                            <div class="job-listing-company company" title="<?= $app['name']; ?>"> <strong><?= $app['name']; ?></strong></div>
+                                                            <div class="job-location location">
+                                                                <i class="fa fa-map-marker"></i>
+                                                                <?php
+                                                                $lc = [];
+                                                                foreach ($app['locations'] as $loc){
+                                                                    array_push($lc, $loc['name']);
+                                                                }
+                                                                echo ' <span title="' . implode(', ',$lc) . '">' . implode(', ',$lc) . '</span>';
+                                                                ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="job-listing-meta meta">
+                                                            <div class="job-location location"> <i class="la la-map-marker"></i>Ukraine</div>
+                                                            <ul class="job-types">
+                                                                <li class="job-type full-time"> <?= $app['type']; ?></li>
+                                                            </ul>
+                                                            <span class="job-published-date date">Last Date To Apply <?= $app['last_date'];?></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+<!--                                            <div class="form-group app-list-data">-->
+<!--                                                <input id="--><?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="--><?//= $app['application_enc_id']; ?><!--">-->
+<!--                                                <label for="--><?//= $app['application_enc_id']; ?><!--">--><?//= $app['name']; ?><!--</label>-->
+<!--                                            </div>-->
                                         </div>
                                         <?php
                                     }
@@ -209,7 +245,7 @@ $this->registerCss('
 .wizard .wizard-footer {
   margin-top: 30px;
 }
-.app-list-data > input {
+.app-list-data > input, .app-list-data-main > input {
   position: absolute;
   left: -9999px;
 }
@@ -228,8 +264,7 @@ $this->registerCss('
   user-select: none;
   transition: background-color .2s, box-shadow .2s;
 }
-
-.app-list-data > label::before {
+.app-list-data > label::before, .app-list-data-main > label::before {
   content: "";
   display: block;
   position: absolute;
@@ -246,6 +281,11 @@ $this->registerCss('
   color: #00a0e3;
   font-size: 22px;
 }
+.app-list-data-main > label::before{
+    border:0px;
+    color:#fff;
+    z-index:9;
+}
 .app-list-data > label:hover, .app-list-data > input:focus + label {
   box-shadow: 0 0 10px rgba(146, 146, 146, 0.6);
 }
@@ -253,10 +293,23 @@ $this->registerCss('
   background-color: #00a0e3;
   color:#fff;
 }
-.app-list-data > input:checked + label::before {
+.app-list-data > input:checked + label::before, .app-list-data-main >input:checked + label::before {
   content:"\f00c";
   background-color: #fff;
   border-color:#fff;
+}
+.app-list-data-main >input:checked + label::before{background-color:transparent;}
+.app-list-data-main >input:checked + label::after{
+    position: absolute;
+    top: -37px;
+    left: -2px;
+    content: "";
+    border-top: 59px solid transparent;
+    border-right: 49px solid #00a0e3;
+    border-bottom: 39px solid transparent;
+    -ms-transform: rotate(20deg);
+    -webkit-transform: rotate(20deg);
+    transform: rotate(51deg);
 }
 .step.initial.off{
   display: none;
@@ -271,7 +324,182 @@ $this->registerCss('
 }
 @keyframes hide_tab {
   from {display: block;}
-  to {display: none;}
+  to {display: none;} 
+}
+.app-list-data-main:first-child > .job_listing > .inner-list-main, .app-list-data-main:nth-child(2) > .job_listing > .inner-list-main {
+    border-top: 1px solid #edeff7;
+}
+.app-list-data-main:nth-child(odd) > .job_listing > .inner-list-main{
+    border-right: 1px solid #edeff7;
+}
+.job_listing>.inner-list-main {
+    padding: 30px 15px;
+    border-bottom: 1px solid #edeff7;
+    margin: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    -webkit-transition: all 0.4s ease 0s;
+    transition: all 0.4s ease 0s;
+}
+.job-listing-company-logo {
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.job-listing-company-logo img {
+    width: 80px;
+    height: 80px;
+}
+.job-details {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    color: #717f86;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+.job-details {
+    -ms-flex-preferred-size: 0;
+    flex-basis: 0%;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    max-width: 100%;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+.job-details-inner {
+    line-height: 1.6;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+.job-details-inner {
+    padding-right: 15px;
+    -webkit-box-flex: inherit;
+    -ms-flex: inherit;
+    flex: inherit;
+}
+.job-listing-loop-job__title {
+    font-size: 16px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+.job-details-inner>*+* {
+    margin-top: 6px;
+}
+.job-listing-company strong {
+    text-transform: capitalize;
+}
+.job-details-inner .job-location {
+    font-size: 13px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.job-listing-meta {
+    text-align: right;
+}
+.job-listing-meta .job-location {
+    display: none;
+}
+.job-types{
+    padding-left: 0;
+    list-style: none;
+}
+.job-type {
+    font-family: "Quicksand",sans-serif;
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 2px solid transparent;
+    -webkit-transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+    transition: color 0.15s ease-in-out,background-color 0.15s ease-in-out,border-color 0.15s ease-in-out,box-shadow 0.15s ease-in-out;
+    padding: .375rem .75rem;
+    font-size: 12px;
+    line-height: 16px;
+    border-radius: 4px;
+    color: #007bff;
+    background-color: transparent;
+    background-image: none;
+    border-color: #007bff;
+    width: 110px;
+}
+.job-type.full-time {
+    color: #00a0e3;
+    background-color: transparent;
+    background-image: none;
+    border-color: #00a0e3;
+}
+.job-type:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+.job-published-date {
+    display: inline-block;
+    color: #888;
+    font-size: 13px;
+    margin-top: 12px;
+}
+.job_listing {
+    padding-left: 0;
+    width: 100%;
+    margin-bottom: 0px;
+}
+.job-listing-company-logo {
+    max-width: 110px;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 110px;
+    flex: 0 0 110px;
+    margin-bottom: 0;
+}
+.job_listing>.inner-list-main:hover, .job_listing>.inner-list-main:focus {
+    color: initial;
+    box-shadow: 0 0 30px rgba(0,0,0,.1);
+}
+.job-type.full-time:hover {
+    color: #fff;
+    background-color: #00a0e3;
+    border-color: #00a0e3;
+}
+.job-details-inner .job-location.location{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-align: inherit;
+    -ms-flex-align: inherit;
+    align-items: inherit;
+}
+.job-details-inner .job-listing-company.company{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 ');
 $script = <<< JS
