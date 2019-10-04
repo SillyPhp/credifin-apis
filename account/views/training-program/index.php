@@ -5,32 +5,14 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
-
+$url = \yii\helpers\Url::to(['/cities/career-city-list']);
 ?>
-    <div class="container">
-        <?php
-        if (Yii::$app->session->hasFlash('success')):
-            echo "<div class='m-cover hidden'></div>
-                <div class='m-modal hidden'>
-                    <div class='m-content'>
-                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
-                        <p>Your Application has successfully submitted.</p>
-                        <div class='m-actions'>
-                            <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
-                        </div>
-                    </div>
-                </div>";
-        else:
-            Yii::$app->session->hasFlash('error');
-            echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
-        endif;
-        ?>
-        <div class="portlet light nd-shadow" id="form_wizard_1">
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class=" icon-layers font-red"></i>
-                    <span class="caption-subject font-red bold uppercase">Training Program
-                </span>
+<div class="container set-width">
+    <div class="portlet light" id="form_wizard_1">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class=" icon-layers font-red"></i>
+                <span class="caption-subject font-red bold uppercase">Training Program</span>
                 </div>
             </div>
             <div class="portlet-body form">
@@ -109,25 +91,26 @@ use yii\web\JsExpression;
                                         <option value="4">One Time</option>
                                     </select>
                                     <div class="fromto">
-                                        <label for="">From </label>
+                                        <label class="set" for="">From </label>
                                         <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
                                                value="09:00"/>
-                                        <label for="">to </label>
+                                        <label class="set" for="">to </label>
                                         <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
                                                value="05:00"/>
                                     </div>
                                 </div>
                                 <div class="jours">
-                                    <div id="custom-checkboxes"></div>
                                     <div class="row">
                                         <div class="setting-row">
                                             <input class="sett-padd" id="toallday" type="checkbox" name="toallday"
                                                    value="toallday"/>
-                                            <label for="toallday">Apply to all day</label>
+                                            <label for="toallday">Select all</label>
                                         </div>
                                     </div>
+                                    <div id="custom-checkboxes"></div>
                                     <div class="check-selection">
-                                        <a href="#" class="btn add">Add Batch</a>
+                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>
+                                        <a href="#" class="btn add">Add New Batch</a>
                                     </div>
                                 </div>
                             </div>
@@ -150,14 +133,40 @@ use yii\web\JsExpression;
     </div>
 <?php
 $this->registerCss('
-.selection > .twitter-typeahead{
-    position:none !important;
+body > .wrapper > .container-fluid{
+    background-image: url("/assets/themes/ey/images/pages/training-program/institutebg.png");
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-position: left bottom;
+    background-attachment: fixed;
 }
-.fromto{display:inline-block;}
-@media only screen and (max-width: 1024px) {
-.fromto{
-    padding-top:10px;
+.page-content{
+    background:transparent !important;
+}
+//.set-width{
+//    width:1000px !important;
+//}
+.selection {
+    text-align: center;
+}
+.fromto input[type="time"] {
+max-width: 120px;
+}
+.ck-content {
+    min-height: 130px !important;
+}
+.check-selection{
+    text-align:center;
+}
+.selection > .twitter-typeahead{
+    display: unset !important;
+    padding: 4px 0 0 0 !important;
+}
+.fromto{    
+    text-align: center;
+    padding-top: 20px;
     }
+@media only screen and (max-width: 1200px) {
 .selection{
     text-align:center;
     }
@@ -165,12 +174,31 @@ $this->registerCss('
     float:none;
 }
 }
+
+@media only screen and (max-width: 550px) {
+.choice_pattern input{
+    margin-bottom:10px !important;
+}
+.contenu .jours #custom-checkboxes{
+    margin:0 !important;
+}
+.contenu .jours .check-selection a.btn{
+    margin-right:0px !important;
+}
+.check-selection{
+    text-align:center;
+}
+.fromto > .set{
+    display:block;
+}
+}
+
 .jours{
     text-align:center;
 }
-
 .setting-row  {
     margin-top: 10px;
+    margin-bottom: -14px;
 }
 .setting-row input {
     margin: 0px 5px 0 -17px !important;
@@ -192,7 +220,6 @@ $this->registerCss('
   left: 0;
   opacity: .9;
 }
-
 .m-modal {
   z-index: 2;
   height: 370px;
@@ -279,7 +306,7 @@ $this->registerCss('
   border: 1px solid #ddd;
 }
 .contenu .choice_pattern .results {
-  margin-bottom: 1em;
+  margin-bottom: 2em;
 }
 .contenu .choice_pattern .results .result-item {
   position: relative;
@@ -367,6 +394,7 @@ margin-top:12px;
 .contenu .jours .check-selection a.btn.add {
   background-color: #00aeef;
   color: white;
+  margin:10px 0;
 }
 .contenu .jours .check-selection a.btn.add:hover {
   background-color: #005375;
@@ -378,8 +406,8 @@ margin-top:12px;
     display: inline-block;
 }
 .contenu .jours #custom-checkboxes label {
-  width: 100px;
-  margin: 0 3px;
+  width: 80px;
+  margin: 16px 3px;
 }
 .contenu .jours #custom-checkboxes input[type="checkbox"]:not(:checked),
 .contenu .jours #custom-checkboxes input[type="checkbox"]:checked {
@@ -397,7 +425,7 @@ margin-top:12px;
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 100px;
+  width: 80px;
   height: 32px;
   background-color: #88837e;
   border-left: 2px solid #eeeeee;
@@ -415,7 +443,7 @@ margin-top:12px;
   position: absolute;
   left: 0px;
   top: 0px;
-  width: 100px;
+  width: 80px;
   height: 32px;
   background: #00aeef;
   border: 2px solid #00aeef;
@@ -642,11 +670,19 @@ margin-top:12px;
 }  
 ');
 $script = <<< JS
+var arrType=new Array("No available time","always open","permanently closed","Open to selected time");
+        for(var x=0; x<arrType.length; x++)
+            $('#type_hours').append(
+                '<label for="' + arrType[x] + '">' +
+                '<input type="radio" '+(x==3?"checked value='show'":"")+' name="choice" id="' + arrType[x] + '"/>' + arrType[x] +
+                '</label>'
+            );
+
         var arrJour=new Array("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
                 '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" data-value="'+(y+1)+'" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
             );
 
         $("input[type='radio']").on("change", function(){
@@ -657,39 +693,7 @@ $script = <<< JS
                 $(".choice_pattern").hide(200);
             }
         });
-$("#custom-checkboxes input").businessHoursWidget;
-$('#fees').mask("#,#0,#00", {reverse: true});
-$(document).on('keypress','input',function(e)
-{
-    if(e.which==13)
-        {
-            return false;
-        }
-});
-$(document).on('keyup','#search-skill',function(e)
-{
-    if(e.which==13)
-        {
-          add_tags($(this),'skill_tag_list','skills');  
-        } 
-});
-function add_tags(thisObj,tag_class,name,duplicates)
-{
-    var duplicates = [];
-    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
-                        {
-                         duplicates.push($.trim($(this).val()).toUpperCase());
-                        });
-    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
-                thisObj.val('');  
-                $('#search-skill').typeahead('val','');
-                    } else {
-                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
-                     thisObj.val('');
-                     $('#search-skill').typeahead('val','');
-                } 
-}
-var locations_val = [];
+        var locations_val = [];
 var location = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -724,7 +728,36 @@ function validation_check() {
            $(this).val("");
        }
 }
-
+$("#custom-checkboxes input").businessHoursWidget();
+$('#fees').mask("#,#0,#00", {reverse: true});
+$(document).on('keypress','input',function(e)
+{
+    if(e.which==13)
+        {
+            return false;
+        }
+});
+$(document).on('keyup','#search-skill',function(e)
+{
+    if(e.which==13)
+        {
+          add_tags($(this),'skill_tag_list','skills');  
+        }
+});
+function add_tags(thisObj,tag_class,name,duplicates)
+{
+    var duplicates = [];
+    $.each($('.'+tag_class+' input[type=hidden]'),function(index,value)
+                        {
+                         duplicates.push($.trim($(this).val()).toUpperCase());
+                        });
+    if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
+                thisObj.val('');
+                    } else {
+                     $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
+                     thisObj.val('');
+                }
+}
 var skills = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
