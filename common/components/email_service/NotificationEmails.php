@@ -7,7 +7,7 @@ use common\models\Utilities;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use common\models\Users;
-use dsbedutech\models\AppliedEmailLogs;
+use common\models\AppliedEmailLogs;
 use yii\helpers\Url;
 use yii\base\Component;
 use yii\base\InvalidParamException;
