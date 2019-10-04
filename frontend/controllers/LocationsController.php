@@ -75,7 +75,8 @@ class LocationsController extends Controller
             ])
             ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
             ->groupBy('city_enc_id')
-            ->orderBy(['city_name' => SORT_ASC])
+            ->orderBy(['jobs' => SORT_DESC])
+            ->limit(4)
             ->all();
 
         return $this->render('states', [

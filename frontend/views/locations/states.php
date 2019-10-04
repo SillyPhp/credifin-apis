@@ -4,7 +4,6 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
-
 ?>
     <section class="all-state-header">
         <div class="ash-vector"></div>
@@ -82,7 +81,7 @@ use yii\helpers\ArrayHelper;
                                 <a href="">
                                     <div class="state-box">
                                         <div class="state-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/locations/'.strtolower($app["state_name"]).'.png') ?>"
+                                            <img src="<?= Url::to('@eyAssets/images/pages/locations/'.preg_replace('/\s+/', '_', strtolower($app["state_name"])).'.png') ?>"
                                                  alt="">
                                         </div>
                                         <div class="state-name"><?= $app['state_name'] ?></div>
