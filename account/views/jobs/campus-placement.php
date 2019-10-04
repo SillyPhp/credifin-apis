@@ -1,217 +1,249 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-md-12 col-lg-12">
-                <div class="wizard card-like">
-                    <form id="add-applications-inErexx">
-                        <div class="wizard-header">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <h1 class="text-center">
-                                        Welcome to an amazing Experience
-                                        <!--                                        <br>-->
-                                        <!--                                        <small>Provide us some details to get you started-->
-                                        <!--                                        </small>-->
-                                    </h1>
-                                    <hr/>
-                                    <!--                                    <div class="steps text-center">-->
-                                    <!--                                        <div class="wizard-step active"></div>-->
-                                    <!--                                        <div class="wizard-step"></div>-->
-                                    <!--                                        <div class="wizard-step"></div>-->
-                                    <!--                                    </div>-->
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <div class="wizard card-like">
+                        <form id="add-applications-inErexx">
+                            <div class="wizard-header">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <h1 class="text-center">
+                                            Welcome to an amazing Experience
+                                            <!--                                        <br>-->
+                                            <!--                                        <small>Provide us some details to get you started-->
+                                            <!--                                        </small>-->
+                                        </h1>
+                                        <hr/>
+                                        <!--                                    <div class="steps text-center">-->
+                                        <!--                                        <div class="wizard-step active"></div>-->
+                                        <!--                                        <div class="wizard-step"></div>-->
+                                        <!--                                        <div class="wizard-step"></div>-->
+                                        <!--                                    </div>-->
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="wizard-body">
-                            <div class="step initial active">
-                                <div class="row">
-                                    <?php
-//                                    print_r($applications['data']);
-//                                    exit();
-                                    foreach ($applications['data'] as $app) {
-                                        ?>
-                                        <div class="col-sm-6 app-list-data-main">
-                                            <input id="<?= $app['application_enc_id']; ?>" type="checkbox" name="applications[]" value="<?= $app['application_enc_id']; ?>">
-                                            <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
-                                                <div class="inner-list-main">
-                                                    <div class="job-listing-company-logo">
-                                                        <img class="company_logo" src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>" alt="<?= $app['name']; ?>">
-                                                    </div>
-                                                    <div class="job-details">
-                                                        <div class="job-details-inner">
-<!--                                                            <h3 class="job-listing-loop-job__title">--><?//= $app['name']; ?><!--</h3>-->
-                                                            <div class="job-listing-company company" title="<?= $app['name']; ?>"> <strong><?= $app['name']; ?></strong></div>
-                                                            <div class="job-location location">
-                                                                <i class="fa fa-map-marker"></i>
-                                                                <?php
-                                                                $lc = [];
-                                                                foreach ($app['locations'] as $loc){
-                                                                    array_push($lc, $loc['name']);
-                                                                }
-                                                                echo ' <span title="' . implode(', ',$lc) . '">' . implode(', ',$lc) . '</span>';
-                                                                ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="job-listing-meta meta">
-                                                            <div class="job-location location"> <i class="la la-map-marker"></i>Ukraine</div>
-                                                            <ul class="job-types">
-                                                                <li class="job-type full-time"> <?= $app['type']; ?></li>
-                                                            </ul>
-                                                            <span class="job-published-date date">Last Date To Apply <?= $app['last_date'];?></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </label>
-<!--                                            <div class="form-group app-list-data">-->
-<!--                                                <input id="--><?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="--><?//= $app['application_enc_id']; ?><!--">-->
-<!--                                                <label for="--><?//= $app['application_enc_id']; ?><!--">--><?//= $app['name']; ?><!--</label>-->
-<!--                                            </div>-->
-                                        </div>
+                            <div class="wizard-body">
+                                <div class="step initial active">
+                                    <div class="row">
                                         <?php
-                                    }
-                                    ?>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <div class="row">
-                                    <?php
-                                    print_r($colleges);
-                                    exit();
-                                    foreach ($colleges as $clg) {
-                                        ?>
-                                        <div class="col-sm-6 app-list-data-main">
-                                            <input id="<?= $clg['college_enc_id']; ?>" type="checkbox" name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
-                                            <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
-                                                <div class="inner-list-main">
-                                                    <div class="job-listing-company-logo">
-<!--                                                        <img class="company_logo" src="--><?//= Url::to('@commonAssets/categories/' . $app['icon']); ?><!--" alt="--><?//= $app['name']; ?><!--">-->
-                                                    </div>
-                                                    <div class="job-details">
-                                                        <div class="job-details-inner">
-                                                            <!--                                                            <h3 class="job-listing-loop-job__title">--><?//= $app['name']; ?><!--</h3>-->
-                                                            <div class="job-listing-company company" title="<?= $clg['name']; ?>"> <strong><?= $clg['name']; ?></strong></div>
-                                                            <div class="job-location location">
-                                                                <i class="fa fa-map-marker"></i>
-<!--                                                                --><?php
-//                                                                $lc = [];
-//                                                                foreach ($app['locations'] as $loc){
-//                                                                    array_push($lc, $loc['name']);
-//                                                                }
-//                                                                echo ' <span title="' . implode(', ',$lc) . '">' . implode(', ',$lc) . '</span>';
-//                                                                ?>
+                                        //                                    print_r($applications['data']);
+                                        //                                    exit();
+                                        foreach ($applications['data'] as $app) {
+                                            ?>
+                                            <div class="col-sm-6 app-list-data-main">
+                                                <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
+                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>">
+                                                <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
+                                                    <div class="inner-list-main">
+                                                        <div class="job-listing-company-logo">
+                                                            <img class="company_logo"
+                                                                 src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>"
+                                                                 alt="<?= $app['name']; ?>">
+                                                        </div>
+                                                        <div class="job-details">
+                                                            <div class="job-details-inner">
+                                                                <!--                                                            <h3 class="job-listing-loop-job__title">-->
+                                                                <?//= $app['name']; ?><!--</h3>-->
+                                                                <div class="job-listing-company company"
+                                                                     title="<?= $app['name']; ?>">
+                                                                    <strong><?= $app['name']; ?></strong></div>
+                                                                <div class="job-location location">
+                                                                    <i class="fa fa-map-marker"></i>
+                                                                    <?php
+                                                                    $lc = [];
+                                                                    foreach ($app['locations'] as $loc) {
+                                                                        array_push($lc, $loc['name']);
+                                                                    }
+                                                                    echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                    ?>
+                                                                </div>
+                                                            </div>
+                                                            <div class="job-listing-meta meta">
+                                                                <div class="job-location location"><i
+                                                                            class="la la-map-marker"></i>Ukraine
+                                                                </div>
+                                                                <ul class="job-types">
+                                                                    <li class="job-type full-time"> <?= $app['type']; ?></li>
+                                                                </ul>
+                                                                <span class="job-published-date date">Last Date To Apply <?= $app['last_date']; ?></span>
                                                             </div>
                                                         </div>
-                                                        <div class="job-listing-meta meta">
-                                                            <div class="job-location location"> <i class="la la-map-marker"></i>Ukraine</div>
-                                                            <ul class="job-types">
-                                                                <li class="job-type full-time">
-<!--                                                                    --><?//= $app['type']; ?>
-                                                                </li>
-                                                            </ul>
-                                                            <span class="job-published-date date">Last Date To Apply</span>
+                                                    </div>
+                                                </label>
+                                                <!--                                            <div class="form-group app-list-data">-->
+                                                <!--                                                <input id="-->
+                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
+                                                <?//= $app['application_enc_id']; ?><!--">-->
+                                                <!--                                                <label for="-->
+                                                <?//= $app['application_enc_id']; ?><!--">-->
+                                                <?//= $app['name']; ?><!--</label>-->
+                                                <!--                                            </div>-->
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="step">
+                                    <div class="row">
+                                        <?php
+                                        foreach ($colleges as $clg) {
+                                            ?>
+                                            <div class="col-sm-6 app-list-data-main">
+                                                <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
+                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
+                                                <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
+                                                    <div class="inner-list-main">
+                                                        <div class="job-listing-company-logo">
+                                                            <img class="company_logo"
+                                                                 src="<?= Url::to($clg['logo']); ?>"
+                                                                 alt="<?= $clg['name']; ?>">
+                                                        </div>
+                                                        <div class="job-details">
+                                                            <div class="job-details-inner">
+                                                                <!--                                                            <h3 class="job-listing-loop-job__title">-->
+                                                                <?//= $app['name']; ?><!--</h3>-->
+                                                                <div class="job-listing-company company"
+                                                                     title="<?= $clg['name']; ?>">
+                                                                    <strong><?= $clg['name']; ?></strong></div>
+                                                                <div class="job-location location">
+                                                                    <?php
+                                                                    if (!empty($clg['collegeEnc']['location'])) {
+                                                                        ?>
+                                                                        <i class="fa fa-map-marker"></i> <?= $clg['collegeEnc']['location']; ?>
+                                                                        <?php
+                                                                    }
+                                                                    ?>
+                                                                </div>
+                                                            </div>
+                                                            <div class="job-listing-meta meta">
+                                                                <div class="job-location location">
+                                                                    <i class="la la-map-marker"></i> <?= $clg['collegeEnc']['location']; ?>
+                                                                </div>
+                                                                <ul class="job-types">
+                                                                    <?php
+                                                                    if (!empty($clg['collegeEnc']['students'])) {
+                                                                        ?>
+                                                                        <li class="job-type full-time">
+                                                                            <?= $clg['collegeEnc']['students']; ?>
+                                                                            Students
+                                                                        </li>
+                                                                        <?php
+                                                                    }
+                                                                    ?>
+                                                                </ul>
+                                                                <!--                                                            <span class="job-published-date date">Last Date To Apply</span>-->
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </label>
+                                                </label>
+                                                <!--                                            <div class="form-group app-list-data">-->
+                                                <!--                                                <input id="-->
+                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
+                                                <?//= $app['application_enc_id']; ?><!--">-->
+                                                <!--                                                <label for="-->
+                                                <?//= $app['application_enc_id']; ?><!--">-->
+                                                <?//= $app['name']; ?><!--</label>-->
+                                                <!--                                            </div>-->
+                                            </div>
+                                            <!--                                        <div class="col-sm-6">-->
                                             <!--                                            <div class="form-group app-list-data">-->
-                                            <!--                                                <input id="--><?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="--><?//= $app['application_enc_id']; ?><!--">-->
-                                            <!--                                                <label for="--><?//= $app['application_enc_id']; ?><!--">--><?//= $app['name']; ?><!--</label>-->
+                                            <!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
+                                            <!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
                                             <!--                                            </div>-->
-                                        </div>
-<!--                                        <div class="col-sm-6">-->
-<!--                                            <div class="form-group app-list-data">-->
-<!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
-<!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-                                        <?php
-                                    }
-                                    ?>
+                                            <!--                                        </div>-->
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <!--                            <div class="step">-->
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="firstname">First Name:</label>-->
+                                <!--                                            <input type="text" class="form-control" id="firstname">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="lastname">Last Name:</label>-->
+                                <!--                                            <input type="text" class="form-control" id="lastname">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="email">Email address:</label>-->
+                                <!--                                            <input type="email" class="form-control" id="email">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="repeatEmail">Repeat Email address:</label>-->
+                                <!--                                            <input type="email" class="form-control" id="repeatEmail">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="password">Password:</label>-->
+                                <!--                                            <input type="password" class="form-control" id="password">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
+                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                                <div class="row">-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="password">Password:</label>-->
+                                <!--                                            <input type="password" class="form-control" id="password">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    <div class="col-sm-6">-->
+                                <!--                                        <div class="form-group">-->
+                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
+                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                </div>-->
+                                <!--                            </div>-->
+                            </div>
+                            <div class="wizard-footer">
+                                <div class="row">
+                                    <div class="col-xs-12 text-right">
+                                        <button id="wizard-prev" style="display:none" type="button"
+                                                class="btn btn-default">
+                                            Previous
+                                        </button>
+                                        <button id="wizard-next" type="button" class="btn btn-primary">
+                                            Next
+                                        </button>
+                                        <button id="wizard-subm" style="display:none" type="submit"
+                                                class="btn btn-primary submit-applications-inErexx">
+                                            Submit
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <!--                            <div class="step">-->
-                            <!--                                <div class="row">-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="firstname">First Name:</label>-->
-                            <!--                                            <input type="text" class="form-control" id="firstname">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="lastname">Last Name:</label>-->
-                            <!--                                            <input type="text" class="form-control" id="lastname">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="row">-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="email">Email address:</label>-->
-                            <!--                                            <input type="email" class="form-control" id="email">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="repeatEmail">Repeat Email address:</label>-->
-                            <!--                                            <input type="email" class="form-control" id="repeatEmail">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="row">-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="password">Password:</label>-->
-                            <!--                                            <input type="password" class="form-control" id="password">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                            <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                                <div class="row">-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="password">Password:</label>-->
-                            <!--                                            <input type="password" class="form-control" id="password">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                    <div class="col-sm-6">-->
-                            <!--                                        <div class="form-group">-->
-                            <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                            <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                            <!--                                        </div>-->
-                            <!--                                    </div>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
-                        </div>
-                        <div class="wizard-footer">
-                            <div class="row">
-                                <div class="col-xs-12 text-right">
-                                    <button id="wizard-prev" style="display:none" type="button" class="btn btn-default">
-                                        Previous
-                                    </button>
-                                    <button id="wizard-next" type="button" class="btn btn-primary">
-                                        Next
-                                    </button>
-                                    <button id="wizard-subm" style="display:none" type="submit" class="btn btn-primary submit-applications-inErexx">
-                                        Submit
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php
 $this->registerCss('
 .card-like {
