@@ -137,6 +137,14 @@ class Organizations extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationOtherDetails()
+    {
+        return $this->hasMany(OrganizationOtherDetails::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getBookmarkedHiringTemplates()
     {
         return $this->hasMany(BookmarkedHiringTemplates::className(), ['organization_enc_id' => 'organization_enc_id']);

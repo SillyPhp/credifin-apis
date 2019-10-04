@@ -543,8 +543,13 @@ class CandProfileController extends ApiBaseController
             $pictureModel = new ProfilePicture();
             $pictureModel->profile_image = UploadedFile::getInstanceByName('profile_image');
             if ($pictureModel->profile_image && $pictureModel->validate()) {
-                if ($pictureModel->update()) {
-                    return $this->response(200);
+                if ($user_id = $pictureModel->update()) {
+                    $user_image = Users::find()
+                        ->select(['CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                        ->where(['user_enc_id'=>$user_id])
+                        ->asArray()
+                        ->one();
+                    return $this->response(200,['status'=>200,'image'=>$user_image['image']]);
                 }
                 return $this->response(500);
             } else {
