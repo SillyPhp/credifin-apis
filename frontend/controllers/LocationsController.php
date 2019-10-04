@@ -6,6 +6,7 @@ use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
+use common\models\Categories;
 use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
@@ -17,6 +18,26 @@ class LocationsController extends Controller
 {
     public function actionStates()
     {
+        $profiles = (new \yii\db\Query())
+            ->distinct()
+            ->from(Categories::tableName() . 'as a')
+            ->select([
+                'a.category_enc_id',
+                'b.parent_enc_id',
+                'a.name as profile_name',
+                'count(CASE WHEN c.application_enc_id IS NOT NULL AND b.assigned_to = "Jobs" AND d.name = "Jobs" Then 1 END)  as jobs',
+                'count(CASE WHEN c.application_enc_id IS NOT NULL AND b.assigned_to = "Internships" AND d.name = "Internships" Then 1 END)  as internships',
+            ])
+            ->leftJoin(AssignedCategories::tableName() . 'as b', 'b.parent_enc_id = a.category_enc_id')
+            ->leftJoin(EmployerApplications::tableName() . 'as c', 'c.title = b.assigned_category_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as d', 'd.application_type_enc_id = c.application_type_enc_id')
+            ->where(['not', ['b.parent_enc_id' => null]])
+            ->andWhere(['c.is_deleted' => 0])
+            ->groupBy('b.parent_enc_id')
+            ->orderBy(['jobs' => SORT_DESC])
+            ->limit(3)
+            ->all();
+
         $other_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
@@ -66,7 +87,7 @@ class LocationsController extends Controller
             ])
             ->select(['state_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
             ->groupBy('state_enc_id')
-            ->orderBy(['state_name' => SORT_ASC])
+            ->orderBy(['jobs' => SORT_DESC])
             ->all();
 
         $cities = (new \yii\db\Query())
@@ -75,12 +96,14 @@ class LocationsController extends Controller
             ])
             ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
             ->groupBy('city_enc_id')
-            ->orderBy(['city_name' => SORT_ASC])
+            ->orderBy(['jobs' => SORT_DESC])
+            ->limit(4)
             ->all();
 
         return $this->render('states', [
             'cities' => $cities,
             'states' => $states,
+            'profiles' => $profiles,
         ]);
     }
 

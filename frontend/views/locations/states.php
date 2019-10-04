@@ -82,7 +82,7 @@ use yii\helpers\ArrayHelper;
                                 <a href="">
                                     <div class="state-box">
                                         <div class="state-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/locations/'.strtolower($app["state_name"]).'.png') ?>"
+                                            <img src="<?= Url::to('@eyAssets/images/pages/locations/' . preg_replace('/\s+/', '_', strtolower($app["state_name"])) . '.png') ?>"
                                                  alt="">
                                         </div>
                                         <div class="state-name"><?= $app['state_name'] ?></div>
@@ -105,15 +105,16 @@ use yii\helpers\ArrayHelper;
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
-                        </div>
-                        <div class="col-md-4">
-                            <img src="<?= Url::to('@eyAssets/images/pages/custom/ey-profile.png') ?>">
-                        </div>
+                        <?php
+                        foreach ($profiles as $profile) {
+                            ?>
+                            <div class="col-md-4">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/' . preg_replace('/\s+/', '_', strtolower($profile["profile_name"])) . '.png') ?>">
+                                <div><?= $profile['profile_name'] ?></div>
+                            </div>
+                            <?php
+                        }
+                        ?>
                     </div>
 
                     <div class="row">
@@ -129,13 +130,15 @@ use yii\helpers\ArrayHelper;
                                 <a href="">
                                     <div class="city-main">
                                         <div class="city-image">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/'.strtolower($app["city_name"]).'.png') ?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
                                         </div>
                                         <div class="city-name"><?= $app['city_name'] ?></div>
                                         <div class="divider"></div>
                                         <div class="city-data">
                                             <div class="openings">10 Total Openings</div>
-                                            <div class="count"><?= $app['jobs'] ?> Jobs, <?= $app['internships'] ?> Internships</div>
+                                            <div class="count"><?= $app['jobs'] ?> Jobs, <?= $app['internships'] ?>
+                                                Internships
+                                            </div>
                                         </div>
                                         <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
                                     </div>
