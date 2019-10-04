@@ -78,14 +78,55 @@ use yii\helpers\Url;
                             <div class="step">
                                 <div class="row">
                                     <?php
+                                    print_r($colleges);
+                                    exit();
                                     foreach ($colleges as $clg) {
                                         ?>
-                                        <div class="col-sm-6">
-                                            <div class="form-group app-list-data">
-                                                <input id="<?= $clg['college_enc_id']; ?>" type="checkbox" name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
-                                                <label for="<?= $clg['college_enc_id']; ?>"><?= $clg['name']; ?></label>
-                                            </div>
+                                        <div class="col-sm-6 app-list-data-main">
+                                            <input id="<?= $clg['college_enc_id']; ?>" type="checkbox" name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
+                                            <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
+                                                <div class="inner-list-main">
+                                                    <div class="job-listing-company-logo">
+<!--                                                        <img class="company_logo" src="--><?//= Url::to('@commonAssets/categories/' . $app['icon']); ?><!--" alt="--><?//= $app['name']; ?><!--">-->
+                                                    </div>
+                                                    <div class="job-details">
+                                                        <div class="job-details-inner">
+                                                            <!--                                                            <h3 class="job-listing-loop-job__title">--><?//= $app['name']; ?><!--</h3>-->
+                                                            <div class="job-listing-company company" title="<?= $clg['name']; ?>"> <strong><?= $clg['name']; ?></strong></div>
+                                                            <div class="job-location location">
+                                                                <i class="fa fa-map-marker"></i>
+<!--                                                                --><?php
+//                                                                $lc = [];
+//                                                                foreach ($app['locations'] as $loc){
+//                                                                    array_push($lc, $loc['name']);
+//                                                                }
+//                                                                echo ' <span title="' . implode(', ',$lc) . '">' . implode(', ',$lc) . '</span>';
+//                                                                ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="job-listing-meta meta">
+                                                            <div class="job-location location"> <i class="la la-map-marker"></i>Ukraine</div>
+                                                            <ul class="job-types">
+                                                                <li class="job-type full-time">
+<!--                                                                    --><?//= $app['type']; ?>
+                                                                </li>
+                                                            </ul>
+                                                            <span class="job-published-date date">Last Date To Apply</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <!--                                            <div class="form-group app-list-data">-->
+                                            <!--                                                <input id="--><?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="--><?//= $app['application_enc_id']; ?><!--">-->
+                                            <!--                                                <label for="--><?//= $app['application_enc_id']; ?><!--">--><?//= $app['name']; ?><!--</label>-->
+                                            <!--                                            </div>-->
                                         </div>
+<!--                                        <div class="col-sm-6">-->
+<!--                                            <div class="form-group app-list-data">-->
+<!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
+<!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
                                         <?php
                                     }
                                     ?>
