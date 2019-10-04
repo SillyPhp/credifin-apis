@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$link = Url::to($org_slug . '/reviews' . $referral, true);
+$link = Url::to($org_slug . '/reviews', true);
 ?>
     <script id="organization-reviews" type="text/template">
         {{#.}}
@@ -258,7 +256,7 @@ $this->registerCss("
     color:#38A1F3; 
     cursor: pointer;
 }
-.ushare i.fa-linkedin-square:hover{
+.ushare i.fa-linkedin:hover{
     color:#0077B5;
     cursor: pointer; 
 }
@@ -447,6 +445,10 @@ border-color: #00a0e3 !important;
 {
     color: #d72a2a !important;;
     border-color: #d72a2a !important;;
+}
+.wa_icon_hover:hover {
+    cursor: pointer;
+    color: #56dc56 !important;
 }
 ");
 

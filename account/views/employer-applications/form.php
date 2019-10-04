@@ -16,7 +16,7 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="container">
-    <div class="portlet light" id="form_wizard_1">
+    <div class="portlet light nd-shadow" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
@@ -232,8 +232,15 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="fader"></div>
+<input type="hidden" id="app_id_main"/>
 <?php
+echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
+    'type' => $type,
+]);
 $this->registerCss("
+.g-pref{
+    display:block;
+    }
 .step {
    -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -437,7 +444,7 @@ textarea{
 }
 .divider{
     border-top:2px solid #eee;
-    margin: 35px -40px 19px;
+    margin: 35px -30px 19px;
 }
 .module2-heading{
     text-transform: uppercase;
@@ -1724,22 +1731,25 @@ window.ChildFunction = ChildFunction;
                        {
                          $('.button-submit').prop('disabled','disabled');
                        },
-                   success: function(data) {
-                   if(data == true)
-                    {
-                    $('.fader').css('display','block');    
-                    $('#loading_img').addClass('show');    
-                    function explode(){
-                     window.location.replace(redirect_url); 
+                   success: function(res) {
+                   if(res['status'] == 200) {
+                        // $('.fader').css('display','block');    
+                        // $('#loading_img').addClass('show');
+                        $('#app_id_main').val(res['app_id']);
+                        setTimeout(function() {
+                            $('.m-modal, .m-cover').removeClass("hidden");
+                            $('.m-modal').addClass("zoom");
+                        }, 500);
+                    // function explode(){
+                    //  window.location.replace(redirect_url); 
+                    //  }
+                    //    setTimeout(explode, 2000);
+                     } else {
+                         $('#loading_img').removeClass('show');
+                         $('.button-submit').prop('disabled','');
+                         $('.fader').css('display','none');
+                         toastr.error('Opps Something went wrong', 'Server Error');
                      }
-                       setTimeout(explode, 2000); 
-                     }
-                     else {
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
-                     $('.fader').css('display','none');
-                     toastr.error('Opps Something went wrong', 'Server Error');
-                       }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');

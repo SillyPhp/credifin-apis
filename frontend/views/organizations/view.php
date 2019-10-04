@@ -16,8 +16,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -64,7 +64,7 @@ if ($organization['cover_image']) {
                                         <?php
                                         if (!empty($image_path)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>">
+                                            <img id="logo-img" src="<?= Url::to($image); ?>" alt="<?= Html::encode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -234,7 +234,7 @@ if ($organization['cover_image']) {
                                                         $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                     }
                                                     ?>
-                                                    <img src="<?= Url::to($benefits['icon']); ?>">
+                                                    <img src="<?= Url::to($benefits['icon']); ?>" alt="<?= Html::encode($benefits['benefit']); ?>"/>
                                                 </div>
                                                 <div class="bb-text">
                                                     <?= Html::encode($benefits['benefit']); ?>
@@ -265,7 +265,7 @@ if ($organization['cover_image']) {
                                             <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
                                                data-fancybox="image">
                                                 <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                     alt="company image 1">
+                                                     alt="Inside <?= Html::encode($organization['name']) ?>">
                                             </a>
                                         </div>
                                     </div>
@@ -290,7 +290,7 @@ if ($organization['cover_image']) {
                                     <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
                                         <div class="p-preview-img">
                                             <a href="" data-fancybox="images">
-                                                <img src="" alt="company image 1">
+                                                <img src="" alt="<?= Html::encode($organization['name']) ?> Products">
                                             </a>
                                         </div>
                                     </div>
@@ -338,7 +338,7 @@ if ($organization['cover_image']) {
                                             <div class="team-container">
                                                 <a href="#">
                                                     <div class="team-icon">
-                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>" alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">

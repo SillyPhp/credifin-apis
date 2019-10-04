@@ -12,7 +12,6 @@ use frontend\assets\AppAssets;
 use frontend\widgets\login;
 
 AppAssets::register($this);
-$referral = Yii::$app->referral->getReferralCode();
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -49,6 +48,20 @@ $referral = Yii::$app->referral->getReferralCode();
     }
     ?>
     <?php $this->head(); ?>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "<?= Yii::$app->params->site_name; ?>",
+            "url": "<?= Url::base("https"); ?>",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "<?= Url::to("/search?keyword={search_term_string}", "https"); ?>",
+                "query-input": "required name=search_term_string"
+            }
+        }
+
+    </script>
 </head>
 <body class="fullwidth-page">
 <?php $this->beginBody(); ?>
@@ -59,93 +72,165 @@ $referral = Yii::$app->referral->getReferralCode();
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
+//            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
+            if (Yii::$app->user->isGuest) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
-                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <span>
+                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                        </span>
+                        <span>
+                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                        </span>
                     </div>
                     <div class="secondary-top-header-right">
-                        <a href="/signup/organization">Signup as Company</a>
+                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/signup/organization" class="org-signup">Signup as Company</a>
                         <a href="/signup/individual">Signup as Candidate</a>
                     </div>
                 </div>
                 <?php
             }
             ?>
-            <div class="container-fluid">
-                <nav id="menuzord-right"
-                     class="menuzord orange <?= ($this->params['header_dark']) ? 'bg-theme-colored pull-left flip menuzord-responsive' : ''; ?>">
-                    <a class="menuzord-brand pull-left flip mt-15"
-                       href="<?= "/" . $referral; ?>">
-                        <?php
-                        if (!Yii::$app->user->isGuest) {
-                            ?>
-                            <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
-                                 src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg'); ?>">
-                            <?php
-                            if (!$this->params['header_dark']) {
-                                ?>
-                                <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
-                                     src="<?= Url::to('@commonAssets/logos/empower_youth_plus_white.svg'); ?>">
-                                <?php
-                            }
-                            ?>
-                            <span class="logo_beta">Beta</span>
-                            <?php
-                        } else {
-                            ?>
-                            <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
-                                 src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                            <?php
-                            if (!$this->params['header_dark']) {
-                                ?>
-                                <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
-                                     src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
-                                <?php
-                            }
-                            ?>
-                            <span class="logo-beta">Beta</span>
-                            <?php
-                        }
-                        ?>
-                    </a>
-                    <?php
-                    if (!Yii::$app->user->isGuest) {
-                        $name = $image = $color = NULL;
-                        if (Yii::$app->user->identity->organization->organization_enc_id) {
-                            if (Yii::$app->user->identity->organization->logo) {
-                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
-                            }
-                            $name = Yii::$app->user->identity->organization->name;
-                            $color = Yii::$app->user->identity->organization->initials_color;
-                        } else {
-                            if (Yii::$app->user->identity->image) {
-                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                            }
-                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                            $color = Yii::$app->user->identity->initials_color;
-                        }
-                        ?>
-                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
-                        <div class="my-profiles-sec">
-                            <?php if ($image): ?>
-                                <span><img src="<?= $image; ?>" title="<?= $name; ?>" alt="<?= $name; ?>"/></span>
-                            <?php else: ?>
-                                <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="40"
-                                              height="40" font="20px"></canvas></span>
-                            <?php endif; ?>
+            <div class="ey-head-main">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <div class="ey-header-main">
+                            <div class="ey-header-logo">
+                                <a class="ey-logo" href="/">
+                                    <img id="logo-black" alt="<?= Yii::$app->params->site_name; ?>"
+                                         src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                    <?php
+                                    if (!$this->params['header_dark']) {
+                                        ?>
+                                        <img id="logo-white" alt="<?= Yii::$app->params->site_name; ?>"
+                                             src="<?= Url::to('@commonAssets/logos/logo_white.svg'); ?>">
+                                        <?php
+                                    }
+                                    ?>
+                                    <span class="logo-beta">Beta</span>
+                                </a>
+                            </div>
+                            <div class="ey-menu-main">
+                                <?= $this->render('/widgets/top-header-beta'); ?>
+                            </div>
+                            <div class="ey-nav-actions">
+                                <div class="ey-menu-login">
+                                    <?php
+                                    if (!Yii::$app->user->isGuest) {
+                                        $name = $image = $color = NULL;
+                                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                            if (Yii::$app->user->identity->organization->logo) {
+                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                            }
+                                            $name = Yii::$app->user->identity->organization->name;
+                                            $color = Yii::$app->user->identity->organization->initials_color;
+                                        } else {
+                                            if (Yii::$app->user->identity->image) {
+                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                            }
+                                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                            $color = Yii::$app->user->identity->initials_color;
+                                        }
+                                        ?>
+                                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
+                                        <div class="my-profiles-sec">
+                                            <?php if ($image): ?>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                           alt="<?= $name; ?>"/></span>
+                                            <?php else: ?>
+                                                <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                              color="<?= $color; ?>" width="40"
+                                                              height="40" font="20px"></canvas></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php Pjax::end(); ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
+                                            Log In
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                         </div>
-                        <?php Pjax::end(); ?>
-                        <?php
-                    }
-
-                    echo $this->render('/widgets/top-header', [
-                        'menu_class' => 'menuzord-menu' . (!$this->params['header_dark']) ? ' dark' : '',
-                        'referral' => $referral,
-                    ]);
-                    ?>
-                </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="ey-mobile-menu">
+                <div class="ey-mob-nav-main">
+                    <div class="container-fluid">
+                        <div class="container">
+                            <div class="ey-mob-nav-items">
+                                <div class="ey-humburger-menu-main">
+                                    <button id="open-mobile-menu" class="ey-humburger-menu" type="button"
+                                            aria-expanded="false">
+                                        <span aria-hidden="true"></span>
+                                        <span aria-hidden="true"></span>
+                                        <span aria-hidden="true"></span>
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="ey-mobile-logo-main">
+                                    <a class="ey-logo" href="/">
+                                        <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>"/>
+                                    </a>
+                                </div>
+                                <div class="ey-mob-actions">
+                                    <?php
+                                    if (!Yii::$app->user->isGuest) {
+                                        $name = $image = $color = NULL;
+                                        if (Yii::$app->user->identity->organization->organization_enc_id) {
+                                            if (Yii::$app->user->identity->organization->logo) {
+                                                $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                                            }
+                                            $name = Yii::$app->user->identity->organization->name;
+                                            $color = Yii::$app->user->identity->organization->initials_color;
+                                        } else {
+                                            if (Yii::$app->user->identity->image) {
+                                                $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                                            }
+                                            $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                            $color = Yii::$app->user->identity->initials_color;
+                                        }
+                                        ?>
+                                        <?php Pjax::begin(['id' => 'pjax_profile_icon']); ?>
+                                        <div class="my-profiles-sec">
+                                            <?php if ($image): ?>
+                                                <span><img src="<?= $image; ?>" title="<?= $name; ?>"
+                                                           alt="<?= $name; ?>"/></span>
+                                            <?php else: ?>
+                                                <span><canvas class="user-icon" name="<?= $name; ?>"
+                                                              color="<?= $color; ?>" width="40"
+                                                              height="40" font="20px"></canvas></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <?php Pjax::end(); ?>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal">
+                                            Log In
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ey-mobile-content">
+                    <div class="ey-mobile-menu-main-content">
+                        <div class="ey-mobile-menu-inner-content">
+                            <?= $this->render('/widgets/top-header-mobile'); ?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
@@ -155,18 +240,74 @@ $referral = Yii::$app->referral->getReferralCode();
             <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
         </div>
         <?php
-        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
-            echo $this->render('/widgets/sub-header', [
-                'data' => $this->params['sub_header'],
-                'referral' => $referral,
-            ]);
-        }
+        //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
+        //            echo $this->render('/widgets/sub-header', [
+        //                'data' => $this->params['sub_header'],
+        //            ]);
+        //        }
         ?>
         <?= $content; ?>
     </div>
     <footer id="footer" class="footer">
         <div class="footer-border"></div>
         <div class="set_container container">
+            <div class="foot-bottom-border">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="foot-heading">Employers</div>
+                        <div class="can-foot-list">
+                            <ul>
+                                <li><a href="<?= "/account/jobs/create"; ?>">Post Job</a></li>
+                                <li><a href="<?= "/account/internships/create"; ?>">Post Internship</a></li>
+                                <li><a href="<?= "/tweets/job/create"; ?>">Post Job Tweet</a></li>
+                                <li><a href="<?= "/tweets/internship/create"; ?>">Post Internship Tweet</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+                        <div class="foot-heading">Candidates</div>
+                        <div class="row footer-border-right">
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/jobs/near-me"; ?>">Jobs Near Me</a></li>
+                                        <li><a href="<?= "/jobs/compare"; ?>">Compare Jobs</a></li>
+                                        <li><a href="<?= "/tweets/jobs"; ?>">Tweet Jobs</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/internships/near-me"; ?>">Internships Near Me</a></li>
+                                        <li><a href="<?= "/internships/compare"; ?>">Compare Internships</a></li>
+                                        <li><a href="<?= "/tweets/internships"; ?>">Tweet Internships</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/reviews/companies"; ?>">Company Reviews</a></li>
+                                        <li><a href="<?= "/reviews/colleges"; ?>">College Reviews</a></li>
+                                        <li><a href="<?= "/reviews/schools"; ?>">School Reviews</a></li>
+                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="foot-heading">Empower Youth</div>
+                        <div class="can-foot-list">
+                            <ul>
+                                <li><a href="<?= "/careers"; ?>">Careers</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="mt-6 col-sm-6 col-xs-12 col-md-3">
 
@@ -178,25 +319,25 @@ $referral = Yii::$app->referral->getReferralCode();
                                     <ul class="styled-icons icon-bordered icon-sm mb-5">
                                         <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
                                                         class="fab fa-facebook-f"></i></a></li>
-                                        <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
+                                        <li><a href="https://twitter.com/EmpowerYouthin" target="_blank" class="overtw"><i
                                                         class="fab fa-twitter"></i></a></li>
                                         <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank"
                                                class="overig"><i
                                                         class="fab fa-instagram"></i></a></li>
-                                        <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
+                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i
                                                         class="fab fa-pinterest"></i></a></li>
                                         <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
                                                class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="quick-btns">
-                                    <ul class="qb">
-                                        <li><a href="<?= "/careers" . $referral; ?>" class="career-btn">Careers</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+<!--                            <div class="col-md-12 col-sm-12">-->
+<!--                                <div class="quick-btns">-->
+<!--                                    <ul class="qb">-->
+<!--                                        <li><a href="--><?//= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -209,7 +350,7 @@ $referral = Yii::$app->referral->getReferralCode();
                 </div>
                 <div class="col-md-6 col-sm-6">
                     <div class="f-logo">
-                        <a href="<?= "/" . $referral; ?>" title='Empower Youth'>
+                        <a href="<?= "/"; ?>" title='Empower Youth'>
                             <img src="<?= Url::to('/assets/common/logos/fg2.png') ?>" title='Empower Youth'
                                  alt="Empower Youth"/>
                         </a>
@@ -238,9 +379,7 @@ $referral = Yii::$app->referral->getReferralCode();
     </footer>
     <?php
     if (!Yii::$app->user->isGuest) {
-        echo $this->render('/widgets/user-profile-sidebar-right', [
-            'referral' => $referral,
-        ]);
+        echo $this->render('/widgets/user-profile-sidebar-right');
     } elseif (Yii::$app->user->isGuest) {
         echo login::widget();
     }
@@ -248,6 +387,38 @@ $referral = Yii::$app->referral->getReferralCode();
 </div>
 <?php
 $this->registerCss('
+.foot-heading{
+    font-family: lora;
+    font-size:20px;
+    color:#fff;
+    text-align:center;
+}
+.can-foot-list ul li a:hover{
+    color:#00a0e3;
+}
+.no-padd{
+    padding-left:0px;
+    padding-right:0px;  
+}
+.footer-border-right{
+    border-right:1px solid rgba(92, 94, 95, .3);
+    border-left:1px solid rgba(92, 94, 95, .3);
+}
+.can-foot-list ul{
+    padding-inline-start: 00px;
+    text-align:center;
+    padding-top:10px;
+}
+.can-foot-list ul li a{
+    color: #cecece;
+    text-align:center;
+}
+.foot-bottom-border{
+    border-bottom: 1px solid rgba(92, 94, 95, .3);
+    padding:20px 0 60px 0;
+    margin-bottom:50px;
+}
+
 .si-icons{
     width:100%;
 }
@@ -308,14 +479,14 @@ $this->registerCss('
 
 .secondary-top-header{
     height:30px;
-    margin-top:-30px;
+    margin-top:-32px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top:0px;
+    margin-top:-2px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -323,10 +494,12 @@ $this->registerCss('
 .secondary-top-header-left, .secondary-top-header-right{
     width:auto;
 }
-.secondary-top-header-left{padding-left:80px;float:left;}
-.secondary-top-header-left a i{font-size:16px;}
-.secondary-top-header-right{padding-right:50px;float:right;}
-.secondary-top-header a{
+.secondary-top-header-left{padding-left:40px;float:left;}
+.secondary-top-header-left a i, .secondary-top-header-left span i{font-size:16px;}
+.secondary-top-header-left a, .secondary-top-header-left span{margin:5px;}
+.secondary-top-header-left span a{font-weight:500;}
+.secondary-top-header-right{padding-right:40px;float:right;}
+.secondary-top-header a, .secondary-top-header span, .secondary-top-header-left *{
     color:#fff;
     transition: all 500ms;
 }
@@ -334,10 +507,10 @@ $this->registerCss('
     float: right;
     height: 30px;
     line-height: 30px;
-    padding: 0px 20px;
+    padding: 0px 10px;
     margin-left: 5px;
 }
-.secondary-top-header a:hover{color:#ff7803;}
+.secondary-top-header a:hover, .secondary-top-header a:hover *{color:#ff7803 !important;}
 @media screen and (max-width: 610px) and (min-width: 0px) {
     .secondary-top-header-left{padding-left: 20px;}
 }
@@ -345,8 +518,12 @@ $this->registerCss('
     .secondary-top-header-right{padding-right:15px;}
     .secondary-top-header-left{padding-left: 10px;}
     .secondary-top-header-right a{padding:0px 5px;}
+    .org-signup{display:none;}
 }
-@media screen and (max-width: 450px) and (min-width: 0px) {
+@media screen and (max-width: 1090px) and (min-width: 0px) {
+    .secondary-top-header-left{padding-left: 0px;}
+}
+@media screen and (max-width: 1015px) and (min-width: 0px) {
     .secondary-top-header-left{display:none;}
 }
 .send_mail{
@@ -452,7 +629,7 @@ $this->registerCss('
 }
 @media screen and (max-width: 900px) and (min-width: 0px) {
     .my-profiles-sec span{
-        margin-top:9.5px !important;
+        margin-top:1px !important;
     }
     .menuzord .showhide em{
         background-color: #777;
@@ -639,14 +816,16 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
 if (Yii::$app->user->isGuest) {
     $this->registerJs('
         window.addEventListener("scroll", header_main);
-        
+        var lastScrollTop = 50;
         function header_main() {
+            var st = $(this).scrollTop();
             var check_h_type = document.getElementById("header-main");
-            if(window.pageYOffset <= 0) {
-                check_h_type.classList.add("header-show");
-            } else if(window.pageYOffset > 5){
+            if(st > lastScrollTop) {
                 check_h_type.classList.remove("header-show");
+            } else {
+                check_h_type.classList.add("header-show");
             }
+            lastScrollTop = st;
         }
         header_main();
     ');
@@ -663,7 +842,17 @@ if (!$this->params['header_dark']) {
                 }
             }); ");
 }
-$this->registerJs('$(".page-loading").fadeOut();');
+$this->registerJs('
+$(".page-loading").fadeOut();
+var thispageurl = window.location.pathname;
+$(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
+    var attr = $(this).attr("href");
+      if (attr === thispageurl) {
+        $(this).next(".ey-sub-menu").addClass("ey-active-menu");
+        $(this).children("i").css("display", "none");
+      }
+});
+');
 $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
 $this->registerJs('
             WebFont.load({

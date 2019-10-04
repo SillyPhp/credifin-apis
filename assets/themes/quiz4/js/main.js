@@ -213,15 +213,13 @@ $(answer).click(function() {
                 return false;
             });
             $('#elem-button-share-quiz-wa').on('click', function() {
-                var path = window.location.pathname.split('/');
-                var u = window.location.href + "/" + path[1] + "/" + path[2] + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
+                var u = window.location.href + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
                 var t = document.title;
                 window.open("https://wa.me/?text=" + u);
                 return false;
             });
             $('#elem-button-share-quiz-wa-mob').on('click', function() {
-                var path = window.location.pathname.split('/');
-                var u = window.location.href + "/" + path[1] + "/" + path[2] + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
+                var u = window.location.href + "/" + $('.breadcrumb.correct').length + "/" + $('.scene').length;
                 var t = document.title;
                 window.open("whatsapp://send?text=" + u);
                 return false;
@@ -419,7 +417,7 @@ function twShare(url, title, winWidth, winHeight) {
 pen_id = $('._pen_id').text();
 
 $('body').on('click', '.share', () => {
-    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouth__ and others.`, 520, 350);
+    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouthin and others.`, 520, 350);
     return false;
 });
 

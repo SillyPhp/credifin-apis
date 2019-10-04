@@ -12,6 +12,7 @@ use Yii;
  * @property string $application_enc_id Foreign Key To Employer Applications Table
  * @property string $email hr email
  * @property string $job_url job_url
+ * @property int $positions no of positions
  * @property string $wage_type wage type
  * @property double $fixed_wage fixed wage
  * @property double $min_wage min wage
@@ -41,7 +42,8 @@ class ApplicationUnclaimOptions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['unclaim_options_enc_id', 'application_enc_id', 'job_url', 'wage_type', 'created_by'], 'required'],
+            [['unclaim_options_enc_id', 'application_enc_id', 'job_url', 'wage_type'], 'required'],
+            [['positions'], 'integer'],
             [['wage_type'], 'string'],
             [['fixed_wage', 'min_wage', 'max_wage'], 'number'],
             [['created_on', 'last_updated_on'], 'safe'],

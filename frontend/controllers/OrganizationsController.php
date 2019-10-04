@@ -1,24 +1,7 @@
 <?php
 
 namespace frontend\controllers;
-use frontend\models\referral\ReferralReviewsTracking;
-use common\models\AssignedCategories;
-use common\models\Categories;
-use common\models\Designations;
-use common\models\EmployerApplications;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationReviewFeedback;
-use common\models\OrganizationReviewLikeDislike;
-use common\models\UnclaimedFollowedOrganizations;
-use common\models\UnclaimedOrganizations;
-use frontend\models\OrganizationProductsForm;
-use frontend\models\organizations\OrgAutoGenrateBlog;
-use frontend\models\OrgAutoBlogForm;
-use frontend\models\reviews\EditUnclaimedCollegeOrg;
-use frontend\models\reviews\EditUnclaimedInstituteOrg;
-use frontend\models\reviews\EditUnclaimedSchoolOrg;
-use frontend\models\reviews\RegistrationForm;
-use frontend\models\reviews\ReviewCards;
+
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -41,9 +24,26 @@ use common\models\States;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
-use common\models\BusinessActivities;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
+use common\models\BusinessActivities;
+use frontend\models\referral\ReferralReviewsTracking;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
+use common\models\NewOrganizationReviews;
+use common\models\OrganizationReviewFeedback;
+use common\models\OrganizationReviewLikeDislike;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
+use frontend\models\OrganizationProductsForm;
+use frontend\models\organizations\OrgAutoGenrateBlog;
+use frontend\models\OrgAutoBlogForm;
+use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
+use frontend\models\reviews\EditUnclaimedSchoolOrg;
+use frontend\models\reviews\RegistrationForm;
+use frontend\models\reviews\ReviewCards;
 
 class OrganizationsController extends Controller
 {
@@ -60,15 +60,20 @@ class OrganizationsController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
             $keyword = Yii::$app->request->post('keyword');
             $organization = Organizations::find()
                 ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'CONCAT(a.slug, "' . $referral . '") as slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug as slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
                 ->joinWith(['businessActivityEnc b'], false)
                 ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
             if (!empty($keyword)) {
@@ -100,10 +105,9 @@ class OrganizationsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
-            $referral = Yii::$app->referral->getReferralCode();
             $organizations = Organizations::find()
                 ->alias('a')
-                ->select(['a.name as text', 'CONCAT(a.slug, "' . $referral . '") as slug'])
+                ->select(['a.name as text', 'a.slug as slug'])
                 ->joinWith(['businessActivityEnc b'], false)
                 ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere([
@@ -759,9 +763,8 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
             $organizations = \common\models\Organizations::find()
-                ->select(['initials_color color', 'CONCAT("/", slug, "' . $referral . '") link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['initials_color color', 'CONCAT("/", slug) link', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->where(['is_sponsored' => 1])
                 ->limit(6)
                 ->asArray()
@@ -845,12 +848,11 @@ class OrganizationsController extends Controller
 
     public function actionReviews($slug)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $editReviewForm = new EditReview;
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'slug as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
             ->where([
                 'slug' => $slug,
                 'is_deleted' => 0
@@ -859,7 +861,7 @@ class OrganizationsController extends Controller
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
@@ -1051,9 +1053,7 @@ class OrganizationsController extends Controller
             } else {
                 if ($request_type == 1) {
                     ReferralReviewsTracking::widget(['claim_review_id' => $companyReview->review_enc_id]);
-                }
-                else
-                {
+                } else {
                     ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
                 }
                 return true;
@@ -1532,6 +1532,11 @@ class OrganizationsController extends Controller
         return $this->generateblog();
     }
 
+    public function actionExplore()
+    {
+        return $this->render('explore');
+    }
+
     private function generateblog()
     {
         $this->layout = 'main-secondary';
@@ -1551,6 +1556,23 @@ class OrganizationsController extends Controller
             return $this->refresh();
         }
         return $this->render('genrate-blog', ['model' => $model, 'data' => $data]);
+    }
+
+    public function actionSearchOrg($q)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $params1 = (new \yii\db\Query())
+            ->select(['organization_enc_id as id', 'name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+                WHEN business_activity IS NULL THEN ""
+                ELSE business_activity
+                END) as business_activity'])
+            ->from(UnclaimedOrganizations::tableName() . 'as a')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->where("replace(name, '.', '') LIKE '%$q%'")
+            ->andWhere(['is_deleted' => 0]);
+        return $params1->limit(20)->all();
+
+
     }
 
 }

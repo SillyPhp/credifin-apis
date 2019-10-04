@@ -64,7 +64,7 @@ class ExploreController extends ApiBaseController
 
             return $this->response(200, $activeProfiles);
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -77,10 +77,10 @@ class ExploreController extends ApiBaseController
                     'CASE WHEN c.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", c.logo_location, "/", c.logo) ELSE NULL END logo',
                     'c.initials_color color'
                 ])
-                ->joinWith(['applicationTypeEnc b'=>function($b) use($req){
+                ->innerJoinWith(['applicationTypeEnc b'=>function($b) use($req){
                     $b->where(['b.name'=>$req['type']]);
                 }],false)
-                ->joinWith(['organizationEnc c'=>function($c){
+                ->innerJoinWith(['organizationEnc c'=>function($c){
                     $c->where([
                         'a.status' => 'Active',
                         'a.is_deleted' => 0,
@@ -97,12 +97,12 @@ class ExploreController extends ApiBaseController
                 ->asArray()
                 ->all();
             if($top_companies == null || $top_companies == ''){
-                return $this->response(404);
+                return $this->response(404,'Not found');
             }else{
                 return $this->response(200,$top_companies);
             }
         }else{
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -154,13 +154,13 @@ class ExploreController extends ApiBaseController
                 ->all();
 
             if($org == null || $org == '' || empty($org)){
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }else{
                 return $this->response(200,$org);
             }
 
         }else{
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 

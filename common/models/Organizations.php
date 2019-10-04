@@ -90,6 +90,7 @@ use Yii;
  * @property UserVerificationTokens[] $userVerificationTokens
  * @property Users[] $users
  */
+
 class Organizations extends \yii\db\ActiveRecord
 {
     /**
@@ -106,7 +107,7 @@ class Organizations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['organization_enc_id', 'business_activity_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_by'], 'required'],
+            [['organization_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
             [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_erexx_registered', 'is_deleted'], 'integer'],

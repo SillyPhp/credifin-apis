@@ -122,7 +122,11 @@ class ReviewsController extends ApiBaseController
         if (isset($parameters['org_enc_id']) && !empty($parameters['org_enc_id'])) {
             $org_enc_id = $parameters['org_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
+        }
+
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
         }
 
         //if parameter not empty then find data of organization claimed
@@ -179,8 +183,11 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
                 ->joinWith(['designationEnc e'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
 
@@ -210,7 +217,7 @@ class ReviewsController extends ApiBaseController
                 ->one();
 
             $data['org_detail'] = $org;
-            $data['reviews'] = $reviews;
+            $data['reviews'] = $result;
             $data['follow'] = $follow->followed;
             $data['hasReviewed'] = $hasReviewed;
 
@@ -219,7 +226,7 @@ class ReviewsController extends ApiBaseController
             if (!empty($data)) {
                 return $this->response(200, $data);
             } else {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
         } elseif (!empty($unclaimed_org)) {
@@ -542,11 +549,11 @@ class ReviewsController extends ApiBaseController
                 if (!empty($data)) {
                     return $this->response(200, $data);
                 } else {
-                    return $this->response(404);
+                    return $this->response(404,'Not Found');
                 }
             }
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
     }
 
@@ -561,7 +568,11 @@ class ReviewsController extends ApiBaseController
         if (isset($parameters['org_enc_id']) && !empty($parameters['org_enc_id'])) {
             $org_enc_id = $parameters['org_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
+        }
+
+        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
+            $limit = $parameters['limit'];
         }
 
         $org = Organizations::find()
@@ -599,16 +610,19 @@ class ReviewsController extends ApiBaseController
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
                 ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')])
-                ->asArray()
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $result = $reviews->asArray()
                 ->all();
 
-            $data['reviews'] = $reviews;
+            $data['reviews'] = $result;
 
             if (!empty($data)) {
                 return $this->response(200, $data);
             } else {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
         } elseif (!empty($unclaimed_org)) {
@@ -758,11 +772,11 @@ class ReviewsController extends ApiBaseController
                 if (!empty($data)) {
                     return $this->response(200, $data);
                 } else {
-                    return $this->response(404);
+                    return $this->response(404,'Not Found');
                 }
             }
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
     }
 
@@ -776,7 +790,7 @@ class ReviewsController extends ApiBaseController
         if (isset($parameters['review_enc_id']) && !empty($parameters['review_enc_id'])) {
             $review_enc_id = $parameters['review_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (isset($parameters['value']) && !empty($parameters['value'])) {
@@ -788,10 +802,10 @@ class ReviewsController extends ApiBaseController
                     $val = 1;
                 }
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         $chk = OrganizationReviewLikeDislike::find()
@@ -811,9 +825,9 @@ class ReviewsController extends ApiBaseController
             $model->created_by = $candidate->user_enc_id;
             $model->created_on = date('Y-m-d H:i:s');
             if ($model->save()) {
-                return $this->response(201);
+                return $this->response(201,'Saved');
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
         } elseif ($chk) {
             $chkk = OrganizationReviewLikeDislike::find()
@@ -826,12 +840,12 @@ class ReviewsController extends ApiBaseController
             $chkk->last_updated_by = $candidate->user_enc_id;
 
             if ($chkk->update()) {
-                return $this->response(201);
+                return $this->response(201,'Saved');
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
         } else {
-            return $this->response(500);
+            return $this->response(500,'Not Saved');
         }
 
     }
@@ -846,7 +860,7 @@ class ReviewsController extends ApiBaseController
         if (isset($parameters['review_enc_id']) && !empty($parameters['review_enc_id'])) {
             $review_enc_id = $parameters['review_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (isset($parameters['value']) && !empty($parameters['value'])) {
@@ -854,10 +868,10 @@ class ReviewsController extends ApiBaseController
             if ($value == 1 || $value == 2 || $value == 3 || $value == 4) {
                 $val = $value;
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         $chk = OrganizationReviewFeedback::find()
@@ -881,9 +895,9 @@ class ReviewsController extends ApiBaseController
             $model->created_by = $candidate->user_enc_id;
 
             if ($model->save()) {
-                return $this->response(201);
+                return $this->response(201,'Saved');
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
         } elseif ($chk) {
 
@@ -897,13 +911,13 @@ class ReviewsController extends ApiBaseController
             $chkk->last_updated_by = $candidate->user_enc_id;
 
             if ($chkk->update()) {
-                return $this->response(201);
+                return $this->response(201,'Saved');
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
 
         } else {
-            return $this->response(500);
+            return $this->response(500,'Not Saved');
         }
 
     }
@@ -919,7 +933,7 @@ class ReviewsController extends ApiBaseController
         if (isset($p['type']) && !empty($p['type'])) {
             $type = $p['type'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         //if employee review then save data if edit-employee-review then update data
@@ -960,9 +974,9 @@ class ReviewsController extends ApiBaseController
                     $chk->last_updated_by = $candidate->user_enc_id;
                     $chk->last_updated_on = date('Y-m-d H:i:s');
                     if ($chk->update()) {
-                        return $this->response(201);
+                        return $this->response(201,'Saved');
                     } else {
-                        return $this->response(500);
+                        return $this->response(500,'Not Saved');
                     }
 
                 } else {
@@ -996,16 +1010,16 @@ class ReviewsController extends ApiBaseController
                     $data->created_on = date('Y-m-d H:i:s');
                     $data->status = 1;
                     if ($data->save()) {
-                        return $this->response(201);
+                        return $this->response(201,'Saved');
                     } else {
-                        return $this->response(500);
+                        return $this->response(500,'Not Saved');
                     }
                 }
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -1039,7 +1053,7 @@ class ReviewsController extends ApiBaseController
             if ($model->save()) {
                 return $model->category_enc_id;
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
         }
     }
@@ -1074,7 +1088,7 @@ class ReviewsController extends ApiBaseController
             if ($model->save()) {
                 return $model->designation_enc_id;
             } else {
-                return $this->response(500);
+                return $this->response(500,'Not Saved');
             }
         }
 
@@ -1105,10 +1119,10 @@ class ReviewsController extends ApiBaseController
             } elseif ($a['type'] == 'edit_institute') {
                 $model = new Reviews(['scenario' => 'edit_edu_institute']);
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
 
@@ -1129,24 +1143,24 @@ class ReviewsController extends ApiBaseController
                 if (!empty($chk)) {
                     $save = $model->__updateData($options);
                     if ($save) {
-                        return $this->response(201);
+                        return $this->response(201,'Saved');
                     } else {
-                        return $this->response(500);
+                        return $this->response(500,'Not Saved');
                     }
                 } else {
                     $save = $model->__saveData($options);
                     if ($save) {
-                        return $this->response(201);
+                        return $this->response(201,'Saved');
                     } else {
-                        return $this->response(500);
+                        return $this->response(500,'Not Saved');
                     }
                 }
 
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -1159,7 +1173,7 @@ class ReviewsController extends ApiBaseController
         if (isset($a['org_enc_id']) && !empty($a['org_enc_id'])) {
             $org_enc_id = $a['org_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing information');
         }
 
         $org = Organizations::find()
@@ -1370,7 +1384,7 @@ class ReviewsController extends ApiBaseController
                     }
                 }
             }else{
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             $sub_array['data'][] = $data;
@@ -1378,12 +1392,12 @@ class ReviewsController extends ApiBaseController
             if (!empty($sub_array)) {
                 return $this->response(200, $sub_array);
             } else {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
 
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
 
     }

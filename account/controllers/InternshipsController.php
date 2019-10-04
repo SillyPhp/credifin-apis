@@ -35,6 +35,12 @@ use account\models\applications\ApplicationForm;
 class InternshipsController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -83,13 +89,18 @@ class InternshipsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -409,7 +420,6 @@ class InternshipsController extends Controller
         }
     }
 
-
     public function actionPendingDelete()
     {
         if (Yii::$app->request->isPost) {
@@ -440,7 +450,6 @@ class InternshipsController extends Controller
             }
         }
     }
-
 
     public function actionShortlistDelete()
     {
@@ -945,6 +954,7 @@ class InternshipsController extends Controller
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__internships(8),
+            'erexx_applications' => $this->__erexxInternships(8),
             'closed_application' => $this->__closedinternships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships', 10),
@@ -981,6 +991,29 @@ class InternshipsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
+                'a.application_for' => 1,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __erexxInternships($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'internships',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 2,
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')

@@ -420,15 +420,13 @@
         return false;
       });
       $('#elem-button-share-quiz-wa').on('click', function() {
-        var path = window.location.pathname.split('/');
-        var u = window.location.href + "/" + path[1] + "/" + path[2] + "/" + config.question.score + "/" + config.question.data.length;
+        var u = window.location.href + "/" + config.question.score + "/" + config.question.data.length;
         var t = document.title;
         window.open("https://wa.me/?text=" + u);
         return false;
       });
       $('#elem-button-share-quiz-wa-mob').on('click', function() {
-        var path = window.location.pathname.split('/');
-        var u = window.location.href + "/" + path[1] + "/" + path[2] + "/" + config.question.score + "/" + config.question.data.length;
+        var u = window.location.href + "/" + config.question.score + "/" + config.question.data.length;
         var t = document.title;
         window.open("whatsapp://send?text=" +  u);
         return false;

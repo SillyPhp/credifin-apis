@@ -13,9 +13,8 @@ class ReviewCards
 
     public function getReviewCards($options = [])
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $q1 = Organizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug, "' . $referral . '") profile_link', 'CONCAT(a.slug,"/reviews", "' . $referral . '") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -70,7 +69,7 @@ class ReviewCards
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug,"/reviews", "'.$referral.'") profile_link', 'CONCAT(a.slug,"/reviews", "'.$referral.'") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
@@ -123,10 +122,9 @@ class ReviewCards
 
     public function getCompaniesCard($options = [])
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $cards = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'CONCAT(a.slug, "'.$referral.'") profile_link', 'CONCAT(a.slug,"/reviews", "'.$referral.'") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.slug as profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -181,10 +179,9 @@ class ReviewCards
 
     public function getReviewUncliamedCards($options = [])
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $card_query = UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CONCAT(a.slug, "'.$referral.'") slug', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating']);
         $cards->where(['a.is_deleted' => 0])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c'], false)

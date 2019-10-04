@@ -2,26 +2,27 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
 
-//$is_email_verified = true;
-//if (Yii::$app->user->identity->organization->organization_enc_id):
-//    if (!Yii::$app->user->identity->organization->is_email_verified):
-//        $is_email_verified = false;
-//    endif;
-//elseif (!Yii::$app->user->identity->is_email_verified) :
-//    $is_email_verified = false;
-//endif;
-//if (!$is_email_verified):
-//    echo $this->render('/widgets/verification/resend-email');
-//endif;
+$is_email_verified = true;
+if (Yii::$app->user->identity->organization->organization_enc_id):
+    if (!Yii::$app->user->identity->organization->is_email_verified):
+        $is_email_verified = false;
+    endif;
+elseif (!Yii::$app->user->identity->is_email_verified) :
+    $is_email_verified = false;
+endif;
+if (!$is_email_verified):
+    echo $this->render('/widgets/verification/resend-email');
+endif;
 ?>
 
     <div class="row">
         <div class="col-md-3">
-            <?= $this->render('/widgets/tasks/taskbar-card',['viewed'=>$viewed]); ?>
+            <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
@@ -31,13 +32,135 @@ echo $this->render('/widgets/header/secondary-header', [
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
+                <div class="widget-row">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 blue" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-comments"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_reviews ?></span>
+                                    </div>
+                                    <div class="desc">Applications Reviewed</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 red" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-bar-chart-o"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_shortlist ?></span>
+                                    </div>
+                                    <div class="desc">Applications Shortlisted</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 green" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_applied ?></span>
+                                    </div>
+                                    <div class="desc"> Applications Applied</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 purple" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_accepted ?></span></div>
+                                    <div class="desc"> Applications Accepted</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 yellow" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_pending ?></span></div>
+                                    <div class="desc">Applications Pending</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <a class="dashboard-stat dashboard-stat-v2 pink" href="javascript:;">
+                                <div class="visual">
+                                    <i class="fa fa-building"></i>
+                                </div>
+                                <div class="details">
+                                    <div class="number">
+                                        <span><?= $total_shortlist_org ?></span></div>
+                                    <div class="desc">Followed Companies</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
-                    'question_list' => $question_list
+                    'question_list' => $question_list,
+                    'shortlist_org' => $shortlist_org
                 ]); ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
-                <div class="portlet light portlet-fit">
+                <div class="row marg">
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Applications'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat"><?= $org_applications['total']?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat"><?= $dropResume;?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="javascript:;">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow">
+                                <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-subtitle"></span>
+                                        <span class="widget-thumb-body-stat"><?= $total_org_applied?></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="portlet light portlet-fit nd-shadow">
                     <div class="portlet-title" style="border-bottom:none;">
                         <div class="check-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
@@ -99,7 +222,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
@@ -131,7 +254,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         ?>
                     </div>
                 </div>
-                <div class="portlet light">
+                <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
@@ -168,6 +291,11 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss("
+@media only screen and (max-width: 950px) {
+.marg{
+    margin-top:20px !important;
+    }
+}
 .posRel{
     position:relative;
 }

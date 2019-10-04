@@ -5,8 +5,12 @@ namespace account\controllers;
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
 use account\models\applications\ExtendsJob;
+use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
+use account\models\campus_placement\CollegePlacementForm;
 use common\models\DropResumeApplications;
+use common\models\ErexxCollaborators;
+use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
@@ -36,16 +40,10 @@ use common\models\WidgetTutorials;
 class JobsController extends Controller
 {
 
-    private function reviewZero()
+    public function beforeAction($action)
     {
-        $update = Yii::$app->db->createCommand()
-            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id])
-            ->execute();
-        if ($update) {
-            return true;
-        } else {
-            return false;
-        }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        return parent::beforeAction($action);
     }
 
     public function actionIndex()
@@ -57,6 +55,278 @@ class JobsController extends Controller
         }
     }
 
+    private function __organizationJobs()
+    {
+        return $this->render('list/organization', [
+            'applications' => $this->__jobs(),
+        ]);
+    }
+
+    private function __jobs($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 1,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __individualDashboard()
+    {
+        $shortlist_jobs = ShortlistedApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->joinWith(['applicationEnc b' => function ($a) {
+                $a->joinWith(['appliedApplications k' => function ($y) {
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
+                }], false);
+            }], false)
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->groupBy(['b.application_enc_id'])
+            ->having(['type' => 'Jobs'])
+            ->limit(8)
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $total_shortlist = ShortlistedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->groupBy(['b.application_enc_id'])
+            ->having(['type' => 'Jobs'])
+            ->count();
+        $applied_applications = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'a.id', 'a.application_enc_id as app_id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->where(['or',
+                ['a.status' => 'Pending'],
+                ['a.status' => 'Accepted']
+            ])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->having(['type' => 'Jobs'])
+            ->groupBy(['b.application_enc_id'])
+            ->limit(8)
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $total_applied = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->where(['or',
+                ['a.status' => 'Pending'],
+                ['a.status' => 'Accepted']
+            ])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->having(['type' => 'Jobs'])
+            ->groupBy(['b.application_enc_id'])
+            ->count();
+
+        $total_pending = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending', 'a.is_deleted' => 0])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
+            ->having(['type' => 'Jobs'])
+            ->groupBy(['b.application_enc_id'])
+            ->count();
+
+        $shortlist_org = FollowedOrganizations::find()
+            ->alias('a')
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
+            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->orderBy(['a.id' => SORT_DESC])
+            ->limit(8)
+            ->asArray()
+            ->all();
+        $total_shortlist_org = FollowedOrganizations::find()
+            ->alias('a')
+            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
+            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->orderBy(['a.id' => SORT_DESC])
+            ->count();
+
+        $review_list = ReviewedApplications::find()
+            ->alias('a')
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->distinct();
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['title d' => function ($c) {
+                    $c->joinWith(['categoryEnc e']);
+                    $c->joinWith(['parentEnc f']);
+                }]);
+                $b->joinWith(['organizationEnc g']);
+                $b->joinWith(['applicationPlacementLocations h']);
+                $b->groupBy(['h.application_enc_id']);
+                $b->joinWith(['appliedApplications k' => function ($y) {
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
+                }], false);
+            }], false)
+            ->having(['type' => 'Jobs'])
+            ->limit(8)
+            ->orderBy(['a.id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $total_reviews = ReviewedApplications::find()
+            ->alias('a')
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'e.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->distinct();
+                $b->onCondition(['b.is_deleted' => 0]);
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['title d' => function ($c) {
+                    $c->joinWith(['categoryEnc e']);
+                    $c->joinWith(['parentEnc f']);
+                }]);
+                $b->joinWith(['organizationEnc g' => function ($d) {
+                    $d->onCondition(['g.is_deleted' => 0]);
+                }]);
+                $b->joinWith(['applicationPlacementLocations h']);
+                $b->groupBy(['h.application_enc_id']);
+            }], false)
+            ->having(['type' => 'Jobs'])
+            ->count();
+
+        $accepted_jobs = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
+            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->having(['type' => 'Jobs'])
+            ->groupBy('a.applied_application_enc_id')
+            ->limit(8)
+            ->asArray()
+            ->all();
+        $total_accepted = AppliedApplications::find()
+            ->alias('a')
+            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
+            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
+            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
+            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
+            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
+            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
+            ->having(['type' => 'Jobs'])
+            ->groupBy('a.applied_application_enc_id')
+            ->count();
+
+        $application_id = DropResumeApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) {
+                $x->joinWith(['title0 c'], false);
+                $x->andWhere(['c.assigned_to' => 'Jobs']);
+            }], false)
+            ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['a.status' => 1])
+            ->asArray()
+            ->all();
+
+
+        $application_enc_id = [];
+        foreach ($application_id as $app) {
+            array_push($application_enc_id, $app['application_enc_id']);
+        }
+
+        $shortlist1 = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
+            ->joinWith(['appliedApplications e' => function ($y) {
+                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
+            }], true)
+            ->where(['IN', 'a.application_enc_id', $application_enc_id])
+            ->joinWith(['title c' => function ($x) {
+                $x->joinWith(['categoryEnc d'], false);
+            }], false)
+            ->joinWith(['organizationEnc b'], false)
+            ->asArray()
+            ->all();
+
+        return $this->render('dashboard/individual', [
+            'shortlisted' => $shortlist_jobs,
+            'applied' => $applied_applications,
+            'shortlist_org' => $shortlist_org,
+            'reviewlist' => $review_list,
+            'total_reviews' => $total_reviews,
+            'total_shortlist_org' => $total_shortlist_org,
+            'total_applied' => $total_applied,
+            'total_shortlist' => $total_shortlist,
+            'total_pending' => $total_pending,
+            'accepted' => $accepted_jobs,
+            'total_accepted' => $total_accepted,
+            'shortlist1' => $shortlist1,
+        ]);
+    }
+
     public function actionDashboard()
     {
         if (Yii::$app->user->identity->organization) {
@@ -64,6 +334,143 @@ class JobsController extends Controller
         } else {
             return $this->__individualDashboard();
         }
+    }
+
+    private function __organizationDashboard()
+    {
+        $coaching_category = new WidgetTutorials();
+        $model = new ExtendsJob();
+        $userApplied = new UserAppliedApplication();
+        $tutorial_cat = $coaching_category->find()
+            ->where(['name' => "organization_jobs_stats"])
+            ->asArray()
+            ->one();
+        $user_viewed = new UserCoachingTutorials();
+        $user_v = $user_viewed->find()
+            ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_viewed' => 1, 'tutorial_enc_id' => $tutorial_cat["tutorial_enc_id"]])
+            ->asArray()
+            ->one();
+        $colleges = Organizations::find()
+            ->alias('a')
+            ->select(['a.organization_enc_id', 'a.name'])
+            ->joinWith(['businessActivityEnc b'], false)
+            ->where(['a.is_erexx_registered' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['b.business_activity' => 'College'])
+            ->asArray()
+            ->all();
+        $addedColleges = ErexxCollaborators::find()
+            ->where(['status' => 'Active', 'is_deleted' => 0])
+            ->asArray()
+            ->all();
+        $saveCollege = new CollegePlacementForm();
+        if (empty($user_v)) {
+            $viewed = 0;
+        } else {
+            $viewed = 1;
+        }
+        return $this->render('dashboard/organization', [
+            'questionnaire' => $this->__questionnaire(4),
+            'applications' => $this->__jobs(8),
+            'erexx_applications' => $this->__erexxJobs(8),
+            'closed_application' => $this->__closedjobs(8),
+            'interview_processes' => $this->__interviewProcess(4),
+            'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
+            'total_applied' => $userApplied->total_applied($type = 'Jobs'),
+            'viewed' => $viewed,
+            'model' => $model,
+            'colleges' => $colleges,
+            'addedColleges' => $addedColleges,
+            'saveCollege' => $saveCollege,
+            'primary_fields' => $this->getCategories()
+        ]);
+    }
+
+    private function __questionnaire($limit = NULL)
+    {
+        $options = [
+            'questionnaireType' => 1,
+            'where' => [
+                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+            ],
+            'orderBy' => [
+                'created_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $questionnaire = new \account\models\questionnaire\OrganizationQuestionnaire();
+        return $questionnaire->getQuestionnaire($options);
+    }
+
+    private function __erexxJobs($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 2,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __closedjobs($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+            ],
+            'having' => [
+                '<', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __interviewProcess($limit = NULL)
+    {
+        $options = [
+            'where' => [
+                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+            ],
+            'orderBy' => [
+                'created_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $processess = new \account\models\processes\OrganizationInterviewProcesses();
+        return $processess->getProcesses($options);
+    }
+
+    private function getCategories()
+    {
+        $primaryfields = Categories::find()
+            ->alias('a')
+            ->select(['a.name', 'a.category_enc_id'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
+            ->asArray()
+            ->all();
+        return $primaryfields;
     }
 
     public function actionCreate()
@@ -79,13 +486,18 @@ class JobsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -103,6 +515,22 @@ class JobsController extends Controller
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionGetColleges()
+    {
+        if (Yii::$app->request->isAjax) {
+            $colleges = ErexxCollaborators::find()
+                ->alias('a')
+                ->select(['a.college_enc_id', 'b.name'])
+                ->joinWith(['collegeEnc b'], false)
+                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+            return $this->renderAjax('/employer-applications/college-list', [
+                'colleges' => $colleges,
+            ]);
         }
     }
 
@@ -214,13 +642,18 @@ class JobsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -319,7 +752,7 @@ class JobsController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id','a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -331,7 +764,7 @@ class JobsController extends Controller
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
             }], false)
@@ -349,13 +782,13 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -477,7 +910,6 @@ class JobsController extends Controller
             }
         }
     }
-
 
     public function actionReviewDelete()
     {
@@ -623,7 +1055,6 @@ class JobsController extends Controller
 
     }
 
-
     public function actionOrgDelete()
     {
         if (Yii::$app->request->isPost) {
@@ -699,249 +1130,6 @@ class JobsController extends Controller
         }
     }
 
-    private function __individualDashboard()
-    {
-        $shortlist_jobs = ShortlistedApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id','k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
-                $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
-                }], false);
-            }],false)
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $total_shortlist = ShortlistedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->groupBy(['b.application_enc_id'])
-            ->having(['type' => 'Jobs'])
-            ->count();
-        $applied_applications = AppliedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.application_enc_id as app_id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->where(['or',
-                ['a.status' => 'Pending'],
-                ['a.status' => 'Accepted']
-            ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->having(['type' => 'Jobs'])
-            ->groupBy(['b.application_enc_id'])
-            ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $total_applied = AppliedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->where(['or',
-                ['a.status' => 'Pending'],
-                ['a.status' => 'Accepted']
-            ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->having(['type' => 'Jobs'])
-            ->groupBy(['b.application_enc_id'])
-            ->count();
-
-        $total_pending = AppliedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions', 'a.is_deleted'])
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Pending', 'a.is_deleted' => 0])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as g', 'g.application_enc_id = b.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = b.application_type_enc_id')
-            ->innerJoin(EmployerApplications::tableName() . 'as k', 'k.application_enc_id = a.application_enc_id')
-            ->having(['type' => 'Jobs'])
-            ->groupBy(['b.application_enc_id'])
-            ->count();
-
-        $shortlist_org = FollowedOrganizations::find()
-            ->alias('a')
-            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
-            ->orderBy(['a.id' => SORT_DESC])
-            ->limit(8)
-            ->asArray()
-            ->all();
-        $total_shortlist_org = FollowedOrganizations::find()
-            ->alias('a')
-            ->select(['b.establishment_year', 'a.followed_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
-            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
-            ->orderBy(['a.id' => SORT_DESC])
-            ->count();
-
-        $review_list = ReviewedApplications::find()
-            ->alias('a')
-            ->select(['a.id', 'a.review_enc_id','k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->joinWith(['applicationEnc b' => function ($b) {
-                $b->distinct();
-                $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function ($c) {
-                    $c->joinWith(['categoryEnc e']);
-                    $c->joinWith(['parentEnc f']);
-                }]);
-                $b->joinWith(['organizationEnc g']);
-                $b->joinWith(['applicationPlacementLocations h']);
-                $b->groupBy(['h.application_enc_id']);
-                $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
-                }], false);
-            }], false)
-            ->having(['type' => 'Jobs'])
-            ->limit(8)
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $total_reviews = ReviewedApplications::find()
-            ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'e.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
-            ->joinWith(['applicationEnc b' => function ($b) {
-                $b->distinct();
-                $b->onCondition(['b.is_deleted' => 0]);
-                $b->joinWith(['applicationTypeEnc c']);
-                $b->joinWith(['title d' => function ($c) {
-                    $c->joinWith(['categoryEnc e']);
-                    $c->joinWith(['parentEnc f']);
-                }]);
-                $b->joinWith(['organizationEnc g' => function ($d) {
-                    $d->onCondition(['g.is_deleted' => 0]);
-                }]);
-                $b->joinWith(['applicationPlacementLocations h']);
-                $b->groupBy(['h.application_enc_id']);
-            }], false)
-            ->having(['type' => 'Jobs'])
-            ->count();
-
-        $accepted_jobs = AppliedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
-            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
-            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
-            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
-            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
-            ->having(['type' => 'Jobs'])
-            ->groupBy('a.applied_application_enc_id')
-            ->limit(8)
-            ->asArray()
-            ->all();
-        $total_accepted = AppliedApplications::find()
-            ->alias('a')
-            ->select(['j.name type', 'g.slug as org_slug', 'h.icon as job_icon', 'c.slug', 'g.name as org_name', 'a.status', 'f.name as title', 'a.applied_application_enc_id app_id, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'c.interview_process_enc_id', 'COUNT(CASE WHEN d.is_completed = 1 THEN 1 END) as active', 'SUM(k.positions) as positions'])
-            ->innerJoin(Users::tableName() . 'as b', 'b.user_enc_id=a.created_by')
-            ->innerJoin(EmployerApplications::tableName() . 'as c', 'c.application_enc_id = a.application_enc_id')
-            ->leftJoin(AppliedApplicationProcess::tableName() . 'as d', 'd.applied_application_enc_id = a.applied_application_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as e', 'e.assigned_category_enc_id = c.title')
-            ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = e.category_enc_id')
-            ->innerJoin(Organizations::tableName() . 'as g', 'g.organization_enc_id = c.organization_enc_id')
-            ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
-            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
-            ->having(['type' => 'Jobs'])
-            ->groupBy('a.applied_application_enc_id')
-            ->count();
-
-        $application_id = DropResumeApplications::find()
-            ->alias('a')
-            ->innerJoinWith(['dropResumeApplicationTitles b' => function ($x) {
-                $x->joinWith(['title0 c'], false);
-                $x->andWhere(['c.assigned_to' => 'Jobs']);
-            }], false)
-            ->where(['a.user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['a.status' => 1])
-            ->asArray()
-            ->all();
-
-
-        $application_enc_id = [];
-        foreach ($application_id as $app) {
-            array_push($application_enc_id, $app['application_enc_id']);
-        }
-
-        $shortlist1 = EmployerApplications::find()
-            ->alias('a')
-            ->select(['a.application_enc_id', 'a.organization_enc_id', 'a.title', 'b.name as org_name', 'a.slug', 'c.category_enc_id', 'd.name', 'd.icon'])
-            ->joinWith(['appliedApplications e' => function ($y) {
-                $y->onCondition(['e.created_by' => Yii::$app->user->identity->user_enc_id, 'e.is_deleted' => 0]);
-            }], true)
-            ->where(['IN', 'a.application_enc_id', $application_enc_id])
-            ->joinWith(['title c' => function ($x) {
-                $x->joinWith(['categoryEnc d'], false);
-            }], false)
-            ->joinWith(['organizationEnc b'], false)
-            ->asArray()
-            ->all();
-
-        return $this->render('dashboard/individual', [
-            'shortlisted' => $shortlist_jobs,
-            'applied' => $applied_applications,
-            'shortlist_org' => $shortlist_org,
-            'reviewlist' => $review_list,
-            'total_reviews' => $total_reviews,
-            'total_shortlist_org' => $total_shortlist_org,
-            'total_applied' => $total_applied,
-            'total_shortlist' => $total_shortlist,
-            'total_pending' => $total_pending,
-            'accepted' => $accepted_jobs,
-            'total_accepted' => $total_accepted,
-            'shortlist1' => $shortlist1,
-        ]);
-    }
-
     public function actionShortlistedResume()
     {
         $application_id = DropResumeApplications::find()
@@ -990,171 +1178,104 @@ class JobsController extends Controller
         }
     }
 
-    private function __organizationDashboard()
+    public function actionSubmitColleges()
     {
-        $coaching_category = new WidgetTutorials();
-        $model = new ExtendsJob();
-        $userApplied = new UserAppliedApplication();
-        $tutorial_cat = $coaching_category->find()
-            ->where(['name' => "organization_jobs_stats"])
-            ->asArray()
-            ->one();
-        $user_viewed = new UserCoachingTutorials();
-        $user_v = $user_viewed->find()
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_viewed' => 1, 'tutorial_enc_id' => $tutorial_cat["tutorial_enc_id"]])
-            ->asArray()
-            ->one();
-        if (empty($user_v)) {
-            $viewed = 0;
-        } else {
-            $viewed = 1;
+        if (Yii::$app->request->isAjax) {
+            $saveCollege = new CollegePlacementForm();
+            if ($saveCollege->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($saveCollege->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Colleges Added.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
         }
-        return $this->render('dashboard/organization', [
-            'questionnaire' => $this->__questionnaire(4),
-            'applications' => $this->__jobs(8),
-            'closed_application' => $this->__closedjobs(8),
-            'interview_processes' => $this->__interviewProcess(4),
-            'applied_applications' => $userApplied->getUserDetails('Jobs', 10),
-            'total_applied' => $userApplied->total_applied($type = 'Jobs'),
-            'viewed' => $viewed,
-            'model' => $model,
-            'primary_fields' => $this->getCategories()
-        ]);
     }
 
-
-    private function getCategories()
+    public function actionApplicationCollegesSubmit()
     {
-        $primaryfields = Categories::find()
-            ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
-            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
-            ->asArray()
-            ->all();
-        return $primaryfields;
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $application = EmployerApplications::find()
+                ->where(['application_enc_id' => $data['app_id']])
+                ->one();
+            $application->application_for = 0;
+            $application->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            if ($data['college'] == 1) {
+                $application->for_all_colleges = 1;
+                if ($application->update()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Application added for Campus Placement',
+                    ];
+                }
+            }
+            if ($data['college'] == 0) {
+                $application->update();
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errex_application = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errex_application->application_enc_id = $utilitiesModel->encrypt();
+                    $errex_application->employer_application_enc_id = $data['app_id'];
+                    $errex_application->college_enc_id = $clg;
+                    $errex_application->created_on = date('Y-m-d H:i:s');
+                    $errex_application->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errex_application->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Application added for Campus Placement',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occured. Please Try again later.',
+                ];
+            }
+        }
     }
 
-
-    private function __organizationJobs()
+    public function actionQuickJob()
     {
-        return $this->render('list/organization', [
-            'applications' => $this->__jobs(),
-        ]);
-    }
-
-    private function __jobs($limit = NULL)
-    {
-        $options = [
-            'applicationType' => 'Jobs',
-            'where' => [
-                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
-            ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
-            'orderBy' => [
-                'a.published_on' => SORT_DESC,
-            ],
-            'limit' => $limit,
-        ];
-
-        $applications = new \account\models\applications\Applications();
-        return $applications->getApplications($options);
-    }
-
-    private function __closedjobs($limit = NULL)
-    {
-        $options = [
-            'applicationType' => 'Jobs',
-            'where' => [
-                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
-            ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
-            'orderBy' => [
-                'a.published_on' => SORT_DESC,
-            ],
-            'limit' => $limit,
-        ];
-
-        $applications = new \account\models\applications\Applications();
-        return $applications->getApplications($options);
-    }
-
-    private function __interviewProcess($limit = NULL)
-    {
-        $options = [
-            'where' => [
-                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-            ],
-            'orderBy' => [
-                'created_on' => SORT_DESC,
-            ],
-            'limit' => $limit,
-        ];
-
-        $processess = new \account\models\processes\OrganizationInterviewProcesses();
-        return $processess->getProcesses($options);
-    }
-
-    private function __questionnaire($limit = NULL)
-    {
-        $options = [
-            'questionnaireType' => 1,
-            'where' => [
-                'organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-            ],
-            'orderBy' => [
-                'created_on' => SORT_DESC,
-            ],
-            'limit' => $limit,
-        ];
-
-        $questionnaire = new \account\models\questionnaire\OrganizationQuestionnaire();
-        return $questionnaire->getQuestionnaire($options);
-    }
-
-    private function __candidateApplications($limit = NULL)
-    {
-        $candidate_applications = AppliedApplications::find()
-            ->alias('a')
-            ->select(['COUNT(CASE WHEN g.is_completed = 1 THEN 1 END) as active', 'COUNT(g.is_completed) as total', 'f.first_name', 'a.applied_application_enc_id', 'a.created_by', 'a.application_enc_id', 'b.title', 'f.username', 'd.name', 'e.icon', 'f.first_name', 'f.last_name', 'f.image', 'f.image_location'])
-            ->joinWith(['applicationEnc b' => function ($b) {
-                $b->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
-                $b->joinWith(['title c' => function ($c) {
-                    $c->joinWith(['categoryEnc d'], false);
-                    $c->joinWith(['parentEnc e'], false);
-                }], false);
-            }], false)
-            ->joinWith(['createdBy f'], false)
-            ->joinWith(['appliedApplicationProcesses g'])
-            ->where(['a.status' => 'Pending', 'a.status' => 'Incomplete'])
-            ->having(['active' => 0])
-            ->groupBy('a.applied_application_enc_id')
-            ->asArray()
-            ->all();
-
-        $total_applications = AppliedApplications::find()
-            ->alias('a')
-            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
-            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = b.application_type_enc_id')
-            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
-            ->andWhere(['b.is_deleted' => 0])
-            ->andWhere(['f.name' => 'Jobs'])
-            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
-            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
-            ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')
-            ->groupBy(['a.applied_application_enc_id'])
-            ->count();
-
-        return [
-            'total' => $total_applications,
-            'list' => $candidate_applications,
-        ];
+        if (Yii::$app->user->identity->organization->organization_enc_id):
+            $model = new ShortJobs();
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields();
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
     }
 
     public function actionImage()
@@ -1203,6 +1324,140 @@ class JobsController extends Controller
         }
 
         return false;
+    }
+
+    public function actionCampusPlacement(){
+        if (Yii::$app->user->identity->organization) {
+//        $applications = EmployerApplications::find()
+//            ->alias('a')
+//            ->joinWith(['applicationTypeEnc b'])
+//            ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
+//            ->andWhere(['b.name' => 'Jobs'])
+//            ->asArray()
+//            ->all();
+            $colleges = ErexxCollaborators::find()
+                ->alias('a')
+//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo'])
+                ->joinWith(['collegeEnc b' => function($b){
+                    $b->joinWith(['userOtherDetails c'], false);
+//                    $b->joinWith(['organizationOtherDetails d']);
+                }])
+                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            return $this->render('campus-placement', [
+                'applications' => $this->__jobs(),
+                'colleges' => $colleges,
+            ]);
+        } else{
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+    }
+
+    public function actionSubmitErexxApplications(){
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            foreach ($data['applications'] as $app){
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errexApplication = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+                    $errexApplication->employer_application_enc_id = $app;
+                    $errexApplication->college_enc_id = $clg;
+                    $errexApplication->created_on = date('Y-m-d H:i:s');
+                    $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errexApplication->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                if(!$this->__updateApplicationFor($app)){
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occured. Please Try again later.',
+                    ];
+                }
+            }
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Application added for Campus Placement',
+            ];
+        }
+    }
+
+    private function __updateApplicationFor($app){
+        $update = Yii::$app->db->createCommand()
+            ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+            ->execute();
+        if ($update) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function actionTestProcess()
+    {
+        return $this->render('test-new');
+    }
+
+    private function reviewZero()
+    {
+        $update = Yii::$app->db->createCommand()
+            ->update(ReviewedApplications::tableName(), ['review' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app_id])
+            ->execute();
+        if ($update) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function __candidateApplications($limit = NULL)
+    {
+        $candidate_applications = AppliedApplications::find()
+            ->alias('a')
+            ->select(['COUNT(CASE WHEN g.is_completed = 1 THEN 1 END) as active', 'COUNT(g.is_completed) as total', 'f.first_name', 'a.applied_application_enc_id', 'a.created_by', 'a.application_enc_id', 'b.title', 'f.username', 'd.name', 'e.icon', 'f.first_name', 'f.last_name', 'f.image', 'f.image_location'])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->andWhere(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]);
+                $b->joinWith(['title c' => function ($c) {
+                    $c->joinWith(['categoryEnc d'], false);
+                    $c->joinWith(['parentEnc e'], false);
+                }], false);
+            }], false)
+            ->joinWith(['createdBy f'], false)
+            ->joinWith(['appliedApplicationProcesses g'])
+            ->where(['a.status' => 'Pending', 'a.status' => 'Incomplete'])
+            ->having(['active' => 0])
+            ->groupBy('a.applied_application_enc_id')
+            ->asArray()
+            ->all();
+
+        $total_applications = AppliedApplications::find()
+            ->alias('a')
+            ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = b.application_type_enc_id')
+            ->where(['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
+            ->andWhere(['b.is_deleted' => 0])
+            ->andWhere(['f.name' => 'Jobs'])
+            ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
+            ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as e', 'e.user_enc_id = a.created_by')
+            ->groupBy(['a.applied_application_enc_id'])
+            ->count();
+
+        return [
+            'total' => $total_applications,
+            'list' => $candidate_applications,
+        ];
     }
 
 }

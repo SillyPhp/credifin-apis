@@ -66,6 +66,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
+            <?php if ($shortlist_btn_display): ?>
                 <div class="sub-actions">
                     <?php
                     if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
@@ -96,6 +97,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
+              <?php endif; ?>
             <?php endif; ?>
         <?php endif; ?>
         <?php
@@ -111,11 +113,14 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <h3 class="text-white">Share</h3>
         <div class="buttons">
             <?php
-            $referral = Yii::$app->referral->getReferralCode();
             if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug . $referral, 'https');
+                $link = Url::to('internship/' . $application_slug, 'https');
             } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug . $referral, 'https');
+                $link = Url::to('job/' . $application_slug, 'https');
+            }
+            else if ($type=='Training')
+            {
+                $link = Url::to('training/' . $application_slug, 'https');
             }
             ?>
             <a href="#"

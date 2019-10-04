@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models\applications;
 
+use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationInterviewQuestionnaire;
 use common\models\InterviewProcessFields;
@@ -13,6 +14,7 @@ use Yii;
 class CandidateApply extends Widget
 {
     public $application_enc_id;
+    public $organization_enc_id;
     public $btn_class;
 
     public function init()
@@ -37,6 +39,17 @@ class CandidateApply extends Widget
             }],false)
             ->asArray()
             ->all();
+        if (empty($locations))
+        {
+            $locations = ApplicationPlacementCities::find()
+                 ->alias('a')
+                ->distinct()
+                ->select(['b.city_enc_id','name'])
+                ->where(['a.application_enc_id'=>$this->application_enc_id])
+                ->joinWith(['cityEnc b'],false)
+                ->asArray()
+                ->all();
+        }
         if (!Yii::$app->user->isGuest) {
 
             $app_que = ApplicationInterviewQuestionnaire::find()
@@ -55,7 +68,13 @@ class CandidateApply extends Widget
                 ->limit(3)
                 ->all();
         }
-        return $this->render('@frontend/views/widgets/employer_applications/job-applied',['model'=>$model,'btn_class'=>$this->btn_class,'application_enc_id'=>$this->application_enc_id,'locations'=>$locations,'que'=>$app_que,'resumes'=>$resumes]);
+        return $this->render('@frontend/views/widgets/employer_applications/job-applied',['model'=>$model,
+            'btn_class'=>$this->btn_class,
+            'application_enc_id'=>$this->application_enc_id,
+            'organization_enc_id'=>$this->organization_enc_id,
+            'locations'=>$locations,
+            'que'=>$app_que,
+            'resumes'=>$resumes]);
     }
 }
 

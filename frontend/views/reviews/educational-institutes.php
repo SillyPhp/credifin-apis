@@ -2,38 +2,6 @@
 
 use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', 'Educational Institute Reviews | Reviews');
-
-$keywords = 'Top Institutes in India,Institute Reviews,Immigration,Reviews,Coaching Centres';
-
-$description = "Here you can get all Indian institute reviews, so you can get help to find the best institute for you and also you can post your review.";
-
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
     <section class="cri-bg">
         <div class="container">
@@ -51,8 +19,8 @@ $this->params['seo_tags'] = [
                                 </div>
                                 <form id="form-search" action="<?= Url::to(['search']) ?>">
                                     <input class='form-control' name="keywords"
-                                           placeholder='Search educational institute' id="search_institute"
-                                           name="search_institute" type='text'>
+                                           placeholder='Search educational institute' id="search_company"
+                                           name="search_company" type='text'>
                                     <button class='btn btn-link search-btn'>
                                         <i class='fas fa-search'></i>
                                     </button>
@@ -67,6 +35,54 @@ $this->params['seo_tags'] = [
                                 <?php endif; ?>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Top Rated Educational Institute</div>
+                    <div id="uncliamed_top">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="share-box">
+        <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
+        <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Post Genuine Review About Your Educational Institute</div>
+                    <div class="col-md-4 set style-set">
+                        <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
+                        <div class="text">Share Your Experience</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo2"><img src="<?= Url::to('@eyAssets/images/pages/review/refer-a-frnd.png')?>"></div>
+                        <div class="text">Refer a Friend</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo3"><img src="<?= Url::to('@eyAssets/images/pages/review/be-a-guide.png')?>"></div>
+                        <div class="text">Be a Guide</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Recent Reviews</div>
+                    <div id="uncliamed_recent">
+
                     </div>
                 </div>
             </div>
@@ -106,30 +122,6 @@ $this->params['seo_tags'] = [
                         <div class="rb-heading">Growth and Development</div>
                         <div class="rb-text">Reviews on the basis of <span>Student Engagement</span>, <span>Coverage Of Subject Matter</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Recent Reviews</div>
-                    <div id="uncliamed_recent">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Rated Educational Institute</div>
-                    <div id="uncliamed_top">
-
                     </div>
                 </div>
             </div>
@@ -413,7 +405,7 @@ review-benifit{
 .rb-text span{
     font-weight:bold;
 }
-#search_institute
+#search_company
 {
     width: 75%;
 }
@@ -614,6 +606,72 @@ display:inline-block;
 {
 float:right;
 }
+.share-box{
+	margin: 30px 0 10px; 
+	border-radius: 5px;
+	padding: 15px 0;
+	position: relative;
+	background-color: rgba(238, 238, 238, .2);
+}
+.back1 img,.back2 img {
+    max-width: 115px;
+}
+.back1{
+	position: absolute;
+	top: 15px;
+	left: 0px;
+}
+.back2{
+	position: absolute;
+	right: 0px;
+	bottom: 20px;
+}
+.new-box-banner{
+	text-align: center;
+	font-size: 35px;
+	font-family: PT Serif;
+	padding-bottom: 30px;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+//.style-set{
+//    padding: 0 0px 0 77px;
+//}
+.logo1 img, .logo2 img, .logo3 img {
+    max-width: 180px;
+}
+//.logo2 img{
+//    max-width: 250px;
+//}
+//.logo3 img{
+//    max-width: 250px;
+//}
+.set{
+    text-align: center;
+}
+.text{
+    padding-top: 20px;
+    padding-bottom: 10px; 
+    font-family: lora;
+    font-size: 19px;
+}
+
+@media only screen and (max-width: 768px) {
+  .back1{top: 150px;}
+  .back2{top: 500px;}
+  .style-set{padding: 0px;}
+  .set{padding-bottom: 20px;}
+}
+@media only screen and (max-width: 450px) {
+	.new-box-banner{
+	    font-size: 25px;
+    }
+	.back1 img, .back2 img{max-width: 60px;}
+	.logo1 img{max-width: 150px;}
+	.logo2 img{max-width: 120px;}
+	.logo3 img{max-width: 130px;}
+}
+
 @keyframes bounce{
   0%, 75%, 100%{
     -webkit-transform: translateY(0);
@@ -635,11 +693,12 @@ echo $this->render('/widgets/mustache/review-cards-unclaimed', [
 ]);
 echo $this->render('/widgets/mustache/latest-reviews');
 echo $this->render('/widgets/mustache/most-reviewed');
+echo $this->render('/widgets/review/review-search-bar');
 echo $this->render('/widgets/mustache/top-user-reviews');
 $script = <<<JS
 $(document).on('click','.add_new_org',function(e) {
   e.preventDefault();
-  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_institute').val());
+  window.location.replace('/reviews/post-unclaimed-reviews?tempname='+$('#search_company').val());
 })
 var template;
 fetch_cards_unclaim_latest(params={'rating':[1,2,3,4,5],'sort':1,business_activity:'Educational Institute','limit':4},template=$('#latest_reviews_card_new'));
@@ -647,45 +706,7 @@ fetch_cards_top_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:
 fetch_cards_most_uncliam_user(params={'rating':[5,4],'limit':4,business_activity:'Educational Institute','most_reviewed':1},template=$('#most_reviews_card_new'));
 fetch_cards_top(params={'rating':[1,2,3,4,5],'sort':1,'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_recent'));
 fetch_cards_top(params={'rating':[4,5],'limit':3,business_activity:'Educational Institute','offset':0},template=$('#uncliamed_top'));
-var companies = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace,
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  remote: {
-    url: '/reviews/search-org?type=Educational Institute&query=%QUERY',
-    wildcard: '%QUERY',
-    cache: true,     
-        filter: function(list) {
-            return list;
-        }
-  },
-});
-$('#search_institute').typeahead(null, {
-  name: 'search_companies',
-  displayKey: "name",
-  limit: 5,      
-  source: companies,
-  templates: {
-suggestion: function(data) {
-var result =  '<div class="suggestion_wrap"><a href="/'+data.review_link+'">'
- +'<div class="logo_wrap">'
- +( data.logo  !== null ?  '<img src = "'+data.logo+'">' : '<canvas class="user-icon" name="'+data.name+'" width="50" height="50" color="'+data.color+'" font="30px"></canvas>')
- +'</div>'
- +'<div class="suggestion">'
- +'<p class="tt_text">'+data.name+'</p><p class="tt_text category">' +data.business_activity+ "</p></div></a></div>"
- return result;
-},
-empty: ['<div class="no_result_display"><div class="no_result_found">Sorry! No results found</div><div class="add_org"><a href="#" class="add_new_org">Add New Organizatons</a></div></div>'],
-},
-}).on('typeahead:asyncrequest', function() {
-    $('.load-suggestions').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    utilities.initials();
-    $('.load-suggestions').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.review_link+'');
-  });
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

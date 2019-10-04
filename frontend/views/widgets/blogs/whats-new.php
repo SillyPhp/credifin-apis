@@ -10,7 +10,7 @@ if(!empty($size)){
     <div class="<?= $col; ?>">
         <div class="whats-new-box">
             <div class="wn-box-icon">
-                <a href="/blog/{{slug}}"><img src="{{image}}"></a>
+                <a href="/blog/{{slug}}"><img src="{{image}}" alt="{{title}}"></a>
 <!--                <div class="middle">-->
 <!--                    <div class=""><a href="/blog/{{slug}}" class="wn-overlay-text">Read More</a></div>-->
 <!--                </div>-->

@@ -2,36 +2,8 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
-$this->title = Yii::t('frontend', 'Internships');
-$keywords = 'Internships, INTERNSHIP, Internshala,Internships in Mumbai,Internship in India,Summer Internships,Internships in Kolkata,Internship in Chennai';
-$description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -64,6 +36,19 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <section>
+    <div class="row">
+        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+            <div class="">
+                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
+            </div>
+        </nav>
+    </div>
+</section>
+<section>
     <div class="container">
         <div class="row">
             <div class="col-md-12 text-center ">
@@ -88,11 +73,22 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-12 col-sm-12">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="<?= Url::to('/internships/profiles'); ?>" class="btn btn-3">
+                            <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-12">
@@ -122,6 +118,26 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<section class="j-tweets">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <h1 class="heading-style">Internship Tweets</h1>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="tweetLinks">
+                    <a href="/tweets/internships" id="tweetAllLink">View All</a>
+                    <a href="/tweets/internship/create" id="tweetPostLink">Post Tweet</a>
+                </div>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
+    </div>
+</section>
 <section>
     <div class="container">
         <div class="row">
@@ -131,6 +147,7 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -154,7 +171,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -168,7 +185,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
@@ -182,7 +199,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
@@ -194,10 +211,40 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.j-tweets{
+    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
+.tweetLinks{
+    text-align: right;
+    margin-top:30px;
+}
+.tweetLinks a{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left:5px;
+    background:#fff;
+}
+.tweetLinks a:hover{
+       background-color: #00a0e3;
+    color: #fff;
+}
 .center-text{
     font-family:lora;
     }
@@ -460,6 +507,7 @@ $this->registerCss('
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    margin-bottom:10px;
 }
 .type-1 div a span {
     position: relative;
@@ -571,7 +619,7 @@ $this->registerCss('
 }
 /* animated menu css starts */
 .nav1{
-    padding:60px 0;
+    padding:60px 0 30px;
     text-align:center;
 }
 .nav1 a {
@@ -657,8 +705,27 @@ $this->registerCss('
     margin: 15px 10px;}
 }
 @media only screen and (max-width: 992px){
-    .nav1 a{font-size: 10px;
-    margin: 15px 10px;}
+    .nav1 a{
+        font-size: 10px;
+        margin: 15px 10px;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
+    }
+}
+@media only screen and (max-width: 768px){
+    .nav1 a {
+        margin: 15px 10px 50px;
+    }
+    .nav1{
+        padding:60px 0 0px;
+        text-align:center;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
+    }
 }
 @media only screen and (max-width: 425px){
     .set-col-2{
