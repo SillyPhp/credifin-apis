@@ -13,6 +13,10 @@ use yii\web\Response;
 
 class TrainingProgramsController extends Controller
 {
+    public function actionIndex()
+    {
+        return $this->render('index');
+    }
     public function actionDetail($eaidk){
         $model = new TrainingAppliedForm();
         $application_details = TrainingProgramApplication::find()
