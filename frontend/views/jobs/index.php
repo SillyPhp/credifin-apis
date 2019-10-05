@@ -72,6 +72,12 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<?=
+    $this->render('/widgets/top-cities',[
+        'cities_jobs' => $cities_jobs,
+        'type' => 'jobs'
+    ])
+?>
 <section class="bg-lighter">
     <div class="container">
         <div class="row">

@@ -515,8 +515,9 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-
-
+<?= $this->render('/widgets/top-cities',[
+        'cities_jobs' => $cities_jobs
+])?>
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
