@@ -90,17 +90,10 @@ $this->registerCss('
             </div>
         </div>
     </section>
-
-
 <?php
-
-echo $this->render('/widgets/mustache/application-card', [
-    'type' => 'Jobs',
+echo $this->render('/widgets/mustache/training_cards/cards', [
 ]);
-
-
 $script = <<<JS
-
 var loading = false;
 var load_more_cards = true;
 $(window).animate({scrollTop:0}, '300');
