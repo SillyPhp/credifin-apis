@@ -398,29 +398,24 @@ class LearningController extends Controller
             return ['status'=>200,'result'=>$contributors];
         }
     }
-
+    
     public function actionHomeCategories(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $categories = AssignedCategories::find()
+                ->select(['COUNT(d.video_enc_id) as total','a.assigned_category_enc_id','a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id','COUNT(distinct b.video_enc_id) AS count', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
-                ->joinWith(['learningVideos b' => function ($b) {
-                    $b->andOnCondition(['b.status' => 1]);
-                    $b->andOnCondition(['b.is_deleted' => 0]);
-                }], false)
+                ->distinct()
+                ->joinWith(['parentEnc b'], false)
                 ->joinWith(['categoryEnc c'], false)
-                ->where(['a.assigned_to' => 'Videos'])
-                ->andWhere(['not', ['a.banner' => null]])
-                ->andWhere(['a.status' => 'Approved'])
-                ->andWhere([
-                    'or',
-                    ['a.parent_enc_id' => ""],
-                    ['a.parent_enc_id' => NULL]
-                ])
-                ->andWhere(['a.is_deleted' => 0])
-                ->groupBy(['a.assigned_category_enc_id'])
-                ->orderBy(['count'=>SORT_DESC])
+                ->joinWith(['learningVideos d'=>function($b)
+                {
+                    $b->andOnCondition(['d.status' => 1]);
+                    $b->andOnCondition(['d.is_deleted' => 0]);
+                }], false)
+                ->groupBy(['a.parent_enc_id'])
+                ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
+                ->orderBy(['total' => SORT_DESC])
                 ->limit(12)
                 ->asArray()
                 ->all();
@@ -923,24 +918,19 @@ class LearningController extends Controller
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $categories = AssignedCategories::find()
+                ->select(['COUNT(d.video_enc_id) as total','a.assigned_category_enc_id','a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id','COUNT(distinct b.video_enc_id) AS count', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
-                ->joinWith(['learningVideos b' => function ($b) {
-                    $b->andOnCondition(['b.status' => 1]);
-                    $b->andOnCondition(['b.is_deleted' => 0]);
-                }], false)
+                ->distinct()
+                ->joinWith(['parentEnc b'], false)
                 ->joinWith(['categoryEnc c'], false)
-                ->where(['a.assigned_to' => 'Videos'])
-                ->andWhere(['not', ['a.banner' => null]])
-                ->andWhere(['a.status' => 'Approved'])
-                ->andWhere([
-                    'or',
-                    ['a.parent_enc_id' => ""],
-                    ['a.parent_enc_id' => NULL]
-                ])
-                ->andWhere(['a.is_deleted' => 0])
-                ->groupBy(['a.assigned_category_enc_id'])
-                ->orderBy(['count'=>SORT_DESC])
+                ->joinWith(['learningVideos d'=>function($b)
+                {
+                    $b->andOnCondition(['d.status' => 1]);
+                    $b->andOnCondition(['d.is_deleted' => 0]);
+                }], false)
+                ->groupBy(['a.parent_enc_id'])
+                ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
+                ->orderBy(['total' => SORT_DESC])
                 ->asArray()
                 ->all();
 
