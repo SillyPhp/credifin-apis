@@ -57,15 +57,15 @@ $this->params['header_dark'] = false;
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div class="type-1">
                         <div>
-                            <a href="#" class="btn btn-3">
+                            <a href="<?=  Url::to('/training-programs/list'); ?>" class="btn btn-3">
                                 <span class="txt">View all</span>
                                 <span class="round"><i class="fas fa-chevron-right"></i></span>
                             </a>
                         </div>
                     </div>
                 </div>
-
             </div>
+
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
                     <div class="application-card-main">
@@ -152,7 +152,6 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-
     <section>
         <div class="container">
             <div class="row">
@@ -197,72 +196,13 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">Blogs</div>
-                        </div>
-                    </div>
-                    <div id="whats-new" class="row">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="search-lists">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 col-sm-4 col-xs-6">
-                    <div class="list-heading">Popular Searches</div>
-                    <ul class="quick-links">
-                        <li class="">
-                            <a href="#">Front-End Developer</a>
-                        </li>
-                        <li class="">
-                            <a href="#">Android Developer</a>
-                        </li>
-                    </ul>
-                    <button type="button" class="showHideBtn">More</button>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-6">
-                    <div class="list-heading">Jobs</div>
-                    <ul class="quick-links">
-                        <li class="">
-                            <a href="#">Information Technology Jobs</a>
-                        </li>
-                        <li class="">
-                            <a href="#">Education Jobs</a>
-                    </ul>
-                    <button type="button" class="showHideBtn">More</button>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-6">
-                    <div class="list-heading">Browse by City</div>
-                    <ul class="quick-links">
-                        <li class="">
-                            <a href="#">Jobs in Ludhiana</a>
-                        </li>
-                        <li class="">
-                            <a href="#">Jobs in Mohali</a>
-                        </li>
-                    </ul>
-                    <button type="button" class="showHideBtn">More</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
 <?php
 echo $this->render('/widgets/mustache/category-card');
 $this->registerCss('
 .marg{margin-left:-3px;}
 .backgrounds{
 //    background-size: 100% 520px;
-    background-image: url("' . Url::to("@eyAssets/images/pages/training-detail-page/instituteh.png") . '");
+    background-image: url("' . Url::to("@eyAssets/images/pages/training-program/institute.png") . '");
     background-repeat: no-repeat;
     min-height: 520px;
     padding-top: 150px;
