@@ -134,6 +134,38 @@ $this->registerCss("
     margin: auto;
     display: block;
 }
+twitter-widget[style]{
+    position: static;
+    visibility: visible;
+    display: block;
+    transform: rotate(0deg);
+    max-width: 100%;
+    width: 100% !important;
+    min-width: 100% !important;
+    margin-top: 69px;
+    margin-bottom: 10px;
+}
+@media only screen and (min-width:992px and max-width:1200px){
+    .tweet-main{
+        width: 100% !important;
+    }
+    twitter-widget[style]{
+        position: static;
+        visibility: visible;
+        display: block;
+        transform: rotate(0deg);
+        max-width: 100%;
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-top: 69px;
+        margin-bottom: 10px;
+    }
+}
+
+.posted-tweet {
+    margin-top: 69px !important;
+}
+
 body{
     background:url('" . Url::to('@eyAssets/images/backgrounds/p6.png') . "');
 }
