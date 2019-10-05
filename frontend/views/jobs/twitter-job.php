@@ -486,6 +486,41 @@ z-index:0;
 {
  display:none;
 }
+.tweet-main{
+     display: inline-block;
+    background: #fff;
+    width: 100%;
+	-webkit-transition:1s ease all;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin-bottom: 20px;
+}
+@media only screen and (min-width:992px and max-width:1200px){
+    .tweet-main{
+        width: auto !important;
+    }
+}
+.posted-tweet {
+    margin-top: 69px !important;
+}
+twitter-widget[style]{
+    position: static;
+    visibility: visible;
+    display: block;
+    transform: rotate(0deg);
+    max-width: 100%;
+    width: 100% !important;
+    min-width: 220px;
+    margin-top: 69px;
+    margin-bottom: 10px;
+}
+.EmbeddedTweet{
+    max-width:100% !important;
+}
+.EmbeddedTweet-tweetContainer{
+    max-width:100% !important;
+}
 .set-overlay{
     background-color: #ffffffd9;
     padding: 30px 30px 40px;
@@ -789,6 +824,28 @@ float:right;
     border-radius: 4px;
     color: #fff;
     background-color: #00a0e3;
+}
+.tweet-org-logo{
+   display: inline-block;
+    height: 50px;
+    width: 50px;
+    float: left;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.tweet-org-logo img, .tweet-org-logo canvas{
+    max-width: 40px;
+    max-height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.tweet-org-logo canvas{
+    max-width: 50px !important;
+    max-height: 50px !important;
 }
 .m-actions a:hover {
     text-decoration:none;

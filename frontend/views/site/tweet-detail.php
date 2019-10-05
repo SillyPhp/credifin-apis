@@ -152,6 +152,9 @@ body{
         width: auto !important;
     }
 }
+.posted-tweet {
+    margin-top: 69px !important;
+}
 .tweet-org-deatail{
     width:100%;
     position:relative;
