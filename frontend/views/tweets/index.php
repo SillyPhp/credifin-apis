@@ -134,6 +134,33 @@ $this->registerCss("
     margin: auto;
     display: block;
 }
+.tweet-org-logo{
+   display: inline-block;
+    height: 50px;
+    width: 50px;
+    float: left;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.tweet-org-description{
+    display:inline-block;
+    width: calc(100% - 52px);
+    padding-left:10px;
+}
+.tweet-org-logo img, .tweet-org-logo canvas{
+    max-width: 40px;
+    max-height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.tweet-org-logo canvas{
+    max-width: 50px !important;
+    max-height: 50px !important;
+}
 twitter-widget[style]{
     position: static;
     visibility: visible;
