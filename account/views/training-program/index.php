@@ -52,7 +52,7 @@ use yii\web\JsExpression;
                         <?= $form->field($model, 'training_duration')->textInput(['id' => 'training_duration','maxlength'=>2])->label('Training Duration'); ?>
                     </div>
                     <div class="col-md-3">
-                        <?= $form->field($model, 'training_duration_type')->dropDownList(['prompt' => 'Training Duration Type', 1 => 'Monthly', 2 => 'Weekly', 3 => 'Annually'])->label(false); ?>
+                        <?= $form->field($model, 'training_duration_type')->dropDownList([1 => 'Months', 2 => 'Weeks', 3 => 'Year'])->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
