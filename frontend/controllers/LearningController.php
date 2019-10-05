@@ -404,7 +404,7 @@ class LearningController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $categories = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
+                ->select(['a.assigned_category_enc_id','COUNT(distinct b.video_enc_id) AS count', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
                 ->joinWith(['learningVideos b' => function ($b) {
                     $b->andOnCondition(['b.status' => 1]);
                     $b->andOnCondition(['b.is_deleted' => 0]);
@@ -420,6 +420,7 @@ class LearningController extends Controller
                 ])
                 ->andWhere(['a.is_deleted' => 0])
                 ->groupBy(['a.assigned_category_enc_id'])
+                ->orderBy(['count'=>SORT_DESC])
                 ->limit(12)
                 ->asArray()
                 ->all();
