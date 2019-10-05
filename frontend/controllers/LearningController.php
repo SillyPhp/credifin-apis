@@ -402,7 +402,7 @@ class LearningController extends Controller
     public function actionHomeCategories(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $categories = AssignedCategories::find()
+            $categories =  AssignedCategories::find()
                 ->select(['COUNT(d.video_enc_id) as total','a.assigned_category_enc_id','a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
                 ->alias('a')
                 ->distinct()
@@ -414,8 +414,13 @@ class LearningController extends Controller
                     $b->andOnCondition(['d.is_deleted' => 0]);
                 }], false)
                 ->groupBy(['a.parent_enc_id'])
-                ->where(['a.is_deleted' => 0])
-                ->andWhere(['assigned_to'=>'Videos'])
+                ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
+                ->andWhere([
+                    'or',
+                    ['not',['a.parent_enc_id'=>NULL]],
+                    ['not',['a.parent_enc_id'=>""]]
+                ])
+                ->andWhere(['a.assigned_to'=>'Videos'])
                 ->orderBy(['total' => SORT_DESC])
                 ->limit(12)
                 ->asArray()
@@ -931,7 +936,12 @@ class LearningController extends Controller
                 }], false)
                 ->groupBy(['a.parent_enc_id'])
                 ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
-                ->andWhere(['assigned_to'=>'Videos'])
+                ->andWhere([
+                    'or',
+                    ['not',['a.parent_enc_id'=>NULL]],
+                    ['not',['a.parent_enc_id'=>""]]
+                ])
+                ->andWhere(['a.assigned_to'=>'Videos'])
                 ->orderBy(['total' => SORT_DESC])
                 ->asArray()
                 ->all();
