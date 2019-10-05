@@ -398,7 +398,7 @@ class LearningController extends Controller
             return ['status'=>200,'result'=>$contributors];
         }
     }
-    
+
     public function actionHomeCategories(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -414,7 +414,8 @@ class LearningController extends Controller
                     $b->andOnCondition(['d.is_deleted' => 0]);
                 }], false)
                 ->groupBy(['a.parent_enc_id'])
-                ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
+                ->where(['a.is_deleted' => 0])
+                ->andWhere(['assigned_to'=>'Videos'])
                 ->orderBy(['total' => SORT_DESC])
                 ->limit(12)
                 ->asArray()
@@ -930,6 +931,7 @@ class LearningController extends Controller
                 }], false)
                 ->groupBy(['a.parent_enc_id'])
                 ->where(['a.is_deleted' => 0,'a.status' => 'Approved'])
+                ->andWhere(['assigned_to'=>'Videos'])
                 ->orderBy(['total' => SORT_DESC])
                 ->asArray()
                 ->all();
