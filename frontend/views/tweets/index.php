@@ -274,15 +274,13 @@ body{
     background: #fff;
     color: #999;
     }
-.search-bar
-{
-box-shadow:4px 6px 20px rgba(73, 72, 72, 0.5);
-border: 1px solid #ddd;
+.search-bar{
+    box-shadow:4px 6px 20px rgba(73, 72, 72, 0.5);
+    border: 1px solid #ddd;
     background: #fff;
 }
-#main_cnt
-{
-margin-top:20px
+#main_cnt{
+    margin-top:20px
 }
 .tweet-org-deatail{
     width:100%;
@@ -301,13 +299,6 @@ margin-top:20px
     display:inline-block;
     width: calc(100% - 52px);
     padding-left:10px;
-}
-.tweet-org-logo img, .tweet-org-logo canvas{
-    width:100%;
-    height:100%;
-    border-radius:50%;
-    border:1px solid #ddd;
-    margin-top: 3px;
 }
 .tweet-org-description *{
     text-overflow: ellipsis;
