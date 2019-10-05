@@ -63,12 +63,11 @@
                 </div>
             </div>
         </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/training-programs/list">
-                Training Courses
-<!--                                <i class="fas fa-caret-down" aria-hidden="true"></i>-->
-            </a>
-        </li>
+<!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
+<!--            <a href="/training-programs/list">-->
+<!--                Training Courses-->
+<!--            </a>-->
+<!--        </li>-->
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
@@ -98,12 +97,11 @@
                 </div>
             </div>
         </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/learning">
-                Learning
-<!--                <i class="fas fa-caret-down" aria-hidden="true"></i>-->
-            </a>
-        </li>
+<!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
+<!--            <a href="/learning">-->
+<!--                Learning-->
+<!--            </a>-->
+<!--        </li>-->
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
                 Blog

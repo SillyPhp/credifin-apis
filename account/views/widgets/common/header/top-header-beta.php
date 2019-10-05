@@ -62,12 +62,11 @@
                 </div>
             </div>
         </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/training-programs/list">
-                Training Courses
-<!--                                <i class="fa fa-caret-down" aria-hidden="true"></i>-->
-            </a>
-        </li>
+<!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
+<!--            <a href="/training-programs/list">-->
+<!--                Training Courses-->
+<!--            </a>-->
+<!--        </li>-->
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
@@ -96,12 +95,11 @@
                 </div>
             </div>
         </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/learning">
-                Learning
-<!--                <i class="fa fa-caret-down" aria-hidden="true"></i>-->
-            </a>
-        </li>
+<!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
+<!--            <a href="/learning">-->
+<!--                Learning-->
+<!--            </a>-->
+<!--        </li>-->
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
                 Blog
@@ -131,7 +129,6 @@
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="/account/dashboard">
                     Dashboard
-<!--                    <i class="fa fa-caret-down" aria-hidden="true"></i>-->
                 </a>
                 <?php
                 if (Yii::$app->user->identity->organization_enc_id) {
