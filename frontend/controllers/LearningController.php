@@ -404,28 +404,6 @@ class LearningController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-//            $categories = AssignedCategories::find()
-//                ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
-//                ->alias('a')
-//                ->distinct()
-//                ->joinWith(['parentEnc b'], false)
-//                ->joinWith(['categoryEnc c'], false)
-//                ->joinWith(['learningVideos d' => function ($b) {
-//                    $b->andOnCondition(['d.status' => 1]);
-//                    $b->andOnCondition(['d.is_deleted' => 0]);
-//                }], false)
-//                ->groupBy(['a.parent_enc_id'])
-//                ->where(['a.is_deleted' => 0, 'a.status' => 'Approved'])
-//                ->andWhere([
-//                    'or',
-//                    ['not', ['a.parent_enc_id' => NULL]],
-//                    ['not', ['a.parent_enc_id' => ""]]
-//                ])
-//                ->andWhere(['a.assigned_to' => 'Videos'])
-//                ->orderBy(['total' => SORT_DESC])
-//                ->limit(12)
-//                ->asArray()
-//                ->all();
             return [
                 'status' => 200,
                 'result' => $this->__getCategories(12)
@@ -929,28 +907,6 @@ class LearningController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-//            $categories = AssignedCategories::find()
-//                ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
-//                ->alias('a')
-//                ->distinct()
-//                ->joinWith(['parentEnc b'], false)
-//                ->joinWith(['categoryEnc c'], false)
-//                ->joinWith(['learningVideos d' => function ($b) {
-//                    $b->andOnCondition(['d.status' => 1]);
-//                    $b->andOnCondition(['d.is_deleted' => 0]);
-//                }], false)
-//                ->groupBy(['a.parent_enc_id'])
-//                ->where(['a.is_deleted' => 0, 'a.status' => 'Approved'])
-//                ->andWhere([
-//                    'or',
-//                    ['not', ['a.parent_enc_id' => NULL]],
-//                    ['not', ['a.parent_enc_id' => ""]]
-//                ])
-//                ->andWhere(['a.assigned_to' => 'Videos'])
-//                ->orderBy(['total' => SORT_DESC])
-//                ->asArray()
-//                ->all();
-
             return [
                 'status' => 200,
                 'result' => $this->__getCategories()
@@ -964,9 +920,10 @@ class LearningController extends Controller
     private function __getCategories($limit = NULL)
     {
         $categories = AssignedCategories::find()
-            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
+            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
             ->alias('a')
             ->distinct()
+            ->joinWith(['parentEnc b'], false)
             ->joinWith(['categoryEnc c'], false)
             ->joinWith(['learningVideos d' => function ($b) {
                 $b->andOnCondition(['d.status' => 1]);
