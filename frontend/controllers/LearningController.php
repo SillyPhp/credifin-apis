@@ -920,10 +920,9 @@ class LearningController extends Controller
     private function __getCategories($limit = NULL)
     {
         $categories = AssignedCategories::find()
-            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https') . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'b.slug', 'b.name'])
+            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon) . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'a.slug', 'a.name'])
             ->alias('a')
             ->distinct()
-            ->joinWith(['parentEnc b'], false)
             ->joinWith(['categoryEnc c'], false)
             ->joinWith(['learningVideos d' => function ($b) {
                 $b->andOnCondition(['d.status' => 1]);
@@ -944,10 +943,6 @@ class LearningController extends Controller
         }
 
         return $categories->asArray()->all();
-    }
-
-    public function actionPath() {
-        return Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https');
     }
 
 }
