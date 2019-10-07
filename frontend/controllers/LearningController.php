@@ -946,4 +946,8 @@ class LearningController extends Controller
         return $categories->asArray()->all();
     }
 
+    public function actionPath() {
+        return Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon, 'https');
+    }
+
 }
