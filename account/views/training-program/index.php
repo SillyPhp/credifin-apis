@@ -109,7 +109,7 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                     </div>
                                     <div id="custom-checkboxes"></div>
                                     <div class="check-selection">
-                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>
+<!--                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>-->
                                         <a href="#" class="btn add">Add New Batch</a>
                                     </div>
                                 </div>
