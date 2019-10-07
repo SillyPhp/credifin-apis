@@ -131,7 +131,7 @@ $(document).on('click','.loading_more', function(e){
     getCards();
 });
 loader = true;
-draggable = true;
-getCards();
+draggable = false;
+getCards("Trainings");
 JS;
 $this->registerJs($script);

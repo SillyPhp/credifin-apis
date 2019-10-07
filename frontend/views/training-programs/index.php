@@ -13,7 +13,7 @@ $this->params['header_dark'] = false;
                     <h2 class="text-white">The Easiest Way to Find Best Institutes</h2>
                     <h4 class="text-white">“Learning never exhausts the mind”</h4>
                     <div class="search-by-type">
-                        <form class="form-inline" action="">
+                        <form class="form-inline" action="<?= Url::to('/training-programs/list?'); ?>">
                             <div class="input-group mb-10 mr-10 col-md-5">
                                 <span class="input-group-addon"><i class="fas fa-user"></i></span>
                                 <input type="text" name="keyword" class="form-control"
@@ -65,88 +65,6 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
-                    <div class="application-card-main">
-                        <span class="application-card-type location"><i
-                                class="fa fa-map-marker"></i>&nbsp;Ludhiana</span>
-                        <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                            <div class="application-card-img">
-                                <a href="#">
-                                    <img src="/assets/common/categories/profile/crm.png">
-                                </a>
-                            </div>
-                            <div class="application-card-description">
-                                <a href="#"><h4 class="application-title">Web Designer</h4></a>
-                                <h5 class="marg"><img src="/assets/themes/ey/images/pages/training-detail-page/time.png">&nbsp 3 Months</h5>
-                                <h5><img src="/assets/themes/ey/images/pages/training-detail-page/skillsicon.png">&nbsp Html, Css, Php</h5>
-                                <h5><i class="fas fa-rupee-sign"></i>&nbsp 8,000/month</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <h4 class="org_name text-right">DSB EDUTECH</h4>
-                        </div>
-                        <div class="application-card-wrapper">
-                            <a href="#" class="application-card-open">View Detail</a>
-                            <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
-                    <div class="application-card-main">
-                        <span class="application-card-type location"><i
-                                class="fa fa-map-marker"></i>&nbsp;Ludhiana</span>
-                        <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                            <div class="application-card-img">
-                                <a href="#">
-                                    <img src="/assets/common/categories/profile/crm.png">
-                                </a>
-                            </div>
-                            <div class="application-card-description">
-                                <a href="#"><h4 class="application-title">Web Designer</h4></a>
-                                <h5 class="marg"><img src="/assets/themes/ey/images/pages/training-detail-page/time.png">&nbsp 3 Months</h5>
-                                <h5><img src="/assets/themes/ey/images/pages/training-detail-page/skillsicon.png">&nbsp Html, Css, Php</h5>
-                                <h5><i class="fas fa-rupee-sign"></i>&nbsp 8,000/month</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <h4 class="org_name text-right">DSB EDUTECH</h4>
-                        </div>
-                        <div class="application-card-wrapper">
-                            <a href="#" class="application-card-open">View Detail</a>
-                            <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
-                    <div class="application-card-main">
-                        <span class="application-card-type location"><i
-                                class="fa fa-map-marker"></i>&nbsp;Ludhiana</span>
-                        <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                            <div class="application-card-img">
-                                <a href="#">
-                                    <img src="/assets/common/categories/profile/crm.png">
-                                </a>
-                            </div>
-                            <div class="application-card-description">
-                                <a href="#"><h4 class="application-title">Web Designer</h4></a>
-                                <h5 class="marg"><img src="/assets/themes/ey/images/pages/training-detail-page/time.png">&nbsp 3 Months</h5>
-                                <h5><img src="/assets/themes/ey/images/pages/training-detail-page/skillsicon.png">&nbsp Html, Css, Php</h5>
-                                <h5><i class="fas fa-rupee-sign"></i>&nbsp 8,000/month</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <h4 class="org_name text-right">DSB EDUTECH</h4>
-                        </div>
-                        <div class="application-card-wrapper">
-                            <a href="#" class="application-card-open">View Detail</a>
-                            <a href="#" class="application-card-add">&nbsp;<i class="fa fa-plus"></i>&nbsp;</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-md-12">
                 <div class="blogbox"></div>
             </div>
@@ -157,40 +75,8 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="heading-style">Featured Institutes</h1>
-                    <div class="companies"></div>
                     <div class="row">
-                        <div class="col-md-2 col-sm-3 col-xs-6">
-                            <a class="company-inner" href="#">
-                                <div class="company-info">
-                                    <img alt="name" title="name" class="company_logo" target="_blank"
-                                         src="/assets/common/categories/profile/crm.png" align="left">
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-3 col-xs-6">
-                            <a class="company-inner" href="#">
-                                <div class="company-info">
-                                    <img alt="name" title="name" class="company_logo" target="_blank"
-                                         src="/assets/common/categories/profile/crm.png" align="left">
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-3 col-xs-6">
-                            <a class="company-inner" href="#">
-                                <div class="company-info">
-                                    <img alt="name" title="name" class="company_logo" target="_blank"
-                                         src="/assets/common/categories/profile/crm.png" align="left">
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-2 col-sm-3 col-xs-6">
-                            <a class="company-inner" href="#">
-                                <div class="company-info">
-                                    <img alt="name" title="name" class="company_logo" target="_blank"
-                                         src="/assets/common/categories/profile/crm.png" align="left">
-                                </div>
-                            </a>
-                        </div>
+                        <div class="institutes_list"></div>
                     </div>
                 </div>
             </div>
@@ -198,6 +84,8 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 echo $this->render('/widgets/mustache/category-card');
+echo $this->render('/widgets/mustache/training_cards/cards');
+echo $this->render('/widgets/mustache/training_cards/institutes_cards');
 $this->registerCss('
 .marg{margin-left:-3px;}
 .backgrounds{
@@ -366,6 +254,10 @@ a.company-inner {
     color: #FFF;
 }
 ');
-$this->registerJs('
-getCategories();
-');
+$script = <<< JS
+loader = false;
+getCards("Trainings");
+getCategories("Trainings");
+getInstitutes();
+JS;
+$this->registerJs($script);
