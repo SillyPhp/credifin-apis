@@ -13,6 +13,15 @@ use yii\web\HttpException;
 
 class TrainingProgramController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+            return parent::beforeAction($action);
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
     public function actionCreate()
     {
         if (Yii::$app->user->identity->organization):

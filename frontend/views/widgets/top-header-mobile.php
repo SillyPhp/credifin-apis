@@ -74,11 +74,11 @@
                 </div>
             </div>
         </div>
-<!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-<!--            <div class="ey-mobile-item-main">-->
-<!--                <a href="/training-programs/list">Training Courses</a>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
+        <!--            <div class="ey-mobile-item-main">-->
+        <!--                <a href="/training-programs/list">Training Courses</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/reviews">Reviews</a>
@@ -111,11 +111,11 @@
                 </div>
             </div>
         </div>
-<!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-<!--            <div class="ey-mobile-item-main">-->
-<!--                <a href="/learning">Learning</a>-->
-<!--            </div>-->
-<!--        </div>-->
+        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
+        <!--            <div class="ey-mobile-item-main">-->
+        <!--                <a href="/learning">Learning</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/blog">Blog</a>
@@ -171,11 +171,17 @@
                                     <a href="/account/internships/dashboard">Manage Internships</a>
                                 </div>
                             </div>
-                            <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                                <div class="ey-mobile-sub-menu-heading">
-                                    <a href="/account/training-program">Manage Training Programs</a>
+                            <?php
+                            if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                ?>
+                                <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                                    <div class="ey-mobile-sub-menu-heading">
+                                        <a href="/account/training-program">Manage Training Programs</a>
+                                    </div>
                                 </div>
-                            </div>
+                                <?php
+                            }
+                            ?>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
                                     <a href="javascript:;">Create Job</a>
@@ -240,26 +246,32 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                                <div class="ey-mobile-sub-menu-heading">
-                                    <a href="javascript:;">Create Training Programs</a>
-                                    <span aria-hidden="true" class="ey-mobile-menu-item-toggler">
+                            <?php
+                            if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                ?>
+                                <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                                    <div class="ey-mobile-sub-menu-heading">
+                                        <a href="javascript:;">Create Training Programs</a>
+                                        <span aria-hidden="true" class="ey-mobile-menu-item-toggler">
                                     <i class="fa fa-arrow-down"></i>
                                 </span>
-                                </div>
-                                <div class="ey-mobile-sub-menu-container">
-                                    <div class="ey-mobile-sub-nav-items">
-                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                            <a href="/account/training-program/create">
-                                                <div>
-                                                    <span class="ey-services-icons ai"></span>
-                                                </div>
-                                                <span>Create AI Training Programs</span>
-                                            </a>
+                                    </div>
+                                    <div class="ey-mobile-sub-menu-container">
+                                        <div class="ey-mobile-sub-nav-items">
+                                            <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                                <a href="/account/training-program/create">
+                                                    <div>
+                                                        <span class="ey-services-icons ai"></span>
+                                                    </div>
+                                                    <span>Create AI Training Programs</span>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                                <?php
+                            }
+                            ?>
                             <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                 <div class="ey-mobile-sub-menu-heading">
                                     <a href="/account/templates">Templates</a>
