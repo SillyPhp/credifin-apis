@@ -12,7 +12,7 @@
                     width="80" height="80" font="35px"></canvas>
             {{/image}}
         </div>
-    </a> 
+    </a>
 </div>
     {{/.}}
 </script>
