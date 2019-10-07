@@ -920,7 +920,7 @@ class LearningController extends Controller
     private function __getCategories($limit = NULL)
     {
         $categories = AssignedCategories::find()
-            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon) . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'a.slug', 'a.name'])
+            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon) . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
             ->alias('a')
             ->distinct()
             ->joinWith(['categoryEnc c'], false)

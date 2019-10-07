@@ -38,12 +38,12 @@ use yii\helpers\Url;
     <div class="cat-padding">
         <div class="row ">
             <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="heading-style">Popular Category</div>
+                <div class="heading-style">Popular Categories</div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="type-1">
                     <div>
-                        <a href="learning/categories" class="btn btn-3">
+                        <a href="/learning/categories" class="btn btn-3">
                             <span class="txt-cate">View all</span>
                             <span class="round"><i class="fas fa-chevron-right"></i></span>
                         </a>
@@ -53,9 +53,7 @@ use yii\helpers\Url;
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="popular-cate" id="categories">
-
-                </div>
+                <div class="popular-cate" id="categories"></div>
             </div>
         </div>
     </div>
