@@ -42,6 +42,11 @@ class LearningController extends Controller
         ];
     }
 
+    public function actionContribute()
+    {
+        return $this->render('contribute');
+    }
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {

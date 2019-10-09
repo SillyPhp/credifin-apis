@@ -239,12 +239,15 @@ use yii\helpers\Url;
             <div class="row" style="margin:20px">
                 <div class="col-md-4">
                     <div class="col-img">
-                        <img src="https://files.slack.com/files-pri/T7WKSJ76D-FNV8QD1NX/contributors.png">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
                     </div>
                 </div>
                 <div class="col-md-8">
                     <div class="col-text">
                         <div class="col-head">Contribute with us</div>
+                        <a href="/learning/contribute">
+                            <button class="btn-primary btn" style="margin-top:20px;">Start</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -269,10 +272,15 @@ use yii\helpers\Url;
 $this->registerCss('
 .col-box{
     border:2px solid #eee;
-    border-radius:5px;
+    border-radius:8px;
+    background: ghostwhite;
+}
+.col-text {
+    text-align: center;
+    padding-top: 35px;
 }
 .col-head {
-    font-size: 30px;
+    font-size: 35px;
     font-weight: 700;
     font-family: roboto;
     text-align: center;
