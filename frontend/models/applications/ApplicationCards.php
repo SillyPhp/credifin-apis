@@ -4,6 +4,7 @@ namespace frontend\models\applications;
 
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationUnclaimOptions;
+use common\models\BusinessActivities;
 use common\models\States;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
@@ -513,7 +514,26 @@ class ApplicationCards
     {
         return self::_getCardsFromTrainings($options);
     }
+    public static function InstitutesCards($options = [])
+    {
+        $cards = (new \yii\db\Query())
+            ->distinct()
+            ->from(Organizations::tableName().'as a')
+            ->select(['name','initials_color','a.slug','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
+            ->innerJoin(BusinessActivities::tableName().'as b','b.business_activity_enc_id = a.business_activity_enc_id')
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
 
+        if (isset($options['limit'])) {
+            $limit = $options['limit'];
+        }
+        if (isset($options['type'])) {
+            $cards->andWhere(['in', 'business_activity', ['Educational Institute']]);
+        }
+        $result = $cards->limit($limit)
+            ->orderBy(new \yii\db\Expression('rand()'))
+            ->all();
+        return $result;
+    }
     private static function _getCardsFromTrainings($options)
     {
         $cards = (new \yii\db\Query())
@@ -525,13 +545,20 @@ class ApplicationCards
                 'c.name as title','i.icon',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city','(CASE
-                WHEN t.fees_methods = "1" THEN CONCAT("Fees: ",t.fees," / Month")
-                WHEN t.fees_methods = "2" THEN CONCAT("Fees: ",t.fees," / Week")
-                WHEN t.fees_methods = "3" THEN CONCAT("Fees: ",t.fees," / Anually")
-                WHEN t.fees_methods = "4" THEN CONCAT("Fees: ",t.fees,"(One Time)")
+                'g.name city',
+                '(CASE
+                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration," - Month")
+                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration," - Weeks")
+                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," - Year")
                 ELSE "N/A"
-               END) as salary'])
+               END) as duration'
+                ,'(CASE
+                WHEN t.fees_methods = "1" THEN CONCAT(t.fees," / Month")
+                WHEN t.fees_methods = "2" THEN CONCAT(t.fees," / Week")
+                WHEN t.fees_methods = "3" THEN CONCAT(t.fees," / Anually")
+                WHEN t.fees_methods = "4" THEN CONCAT(t.fees,"(One Time)")
+                ELSE "N/A"
+               END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -571,7 +598,8 @@ class ApplicationCards
         if (isset($options['location'])) {
             $cards->andWhere([
                 'or',
-                ['g.name' => $options['location']]
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']]
             ]);
         }
         if (isset($options['keyword'])) {
