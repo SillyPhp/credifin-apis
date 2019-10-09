@@ -6,8 +6,25 @@ use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
-?>
+?> 
 <div class="container set-width">
+    <?php
+    if (Yii::$app->session->hasFlash('success')):
+        echo "<div class='m-cover hidden'></div>
+                <div class='m-modal hidden'>
+                    <div class='m-content'>
+                        <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
+                        <p>Your Application has successfully submitted.</p>
+                        <div class='m-actions'>
+                            <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
+                        </div>
+                    </div>
+                </div>";
+    else:
+        Yii::$app->session->hasFlash('error');
+        echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
+    endif;
+    ?>
     <div class="portlet light" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
