@@ -573,12 +573,36 @@ a.wn-overlay-text {
 #not-found{
     display:none;
 }
+.company-name{
+    min-height:80px;
+    font-size:16px;
+    position: relative;
+}
+
+.company-name-span{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 ');
 
 $script = <<< JS
 
+if(!window.location.search){
+    if(window.location.search.replace("?","").split("=")[0] != "keyword"){
+        window.location.replace('/');
+    return false;
+    }
+}
+
 var url_params = (new URL(document.location)).searchParams;
 var search_keyword = url_params.get("keyword");
+
+if(search_keyword == ''){
+    window.location.replace('/');
+    return false;
+}
 
 $('.s-input').val(search_keyword);
 $(document).on('click', '.s-btn', function(e){
@@ -603,6 +627,7 @@ function fillData(){
         },
         success: function(result){
             result = JSON.parse(result);
+            
             if(result["jobs"].length ==0 && result["organizations"].length ==0 && result["internships"].length == 0 && result["posts"].length==0 && result["School"].length ==0 && result["College"].length ==0 && result["Educational Institute"].length ==0 && result["Business"].length ==0 && result["Recruiter"].length ==0 && result["Scholarship Fund"].length ==0 && result["Banking & Finance Company"].length ==0 && result["Others"].length ==0){
                 $('#not-found').fadeIn(1000);
             }
@@ -827,13 +852,17 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         <div class="com-review-box onestar-box">
             <div class="com-logo">
                 {{#logo}}
-                <img src="{{logo}}">
+                <a href="/{{slug}}/reviews"> <img src="{{logo}}"> </a>
                 {{/logo}}
                 {{^logo}}
-                <canvas class="user-icon" name="{{name}}" width="100" height="100"
-                        color="{{color}}" font="55px"></canvas>
+                <a href="/{{slug}}/reviews"> <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        color="{{color}}" font="55px"></canvas></a>
                 {{/logo}}
             </div>
+
+            {{#name}}
+            <a href="/{{slug}}/reviews"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            {{/name}}
 
             {{#employerApplications}}
             {{#applications_cnt}}
@@ -886,7 +915,9 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
                                             color="{{color}}" font="55px"></canvas></a>
                 {{/logo}}
             </div>
-
+            {{#name}}
+            <a href="/{{slug}}"><div class="company-name"><span class="company-name-span">{{name}}</span></div></a>
+            {{/name}}
             {{#employerApplications}}
             {{#applications_cnt}}
             <div class="com-loc"><span>{{applications_cnt}}</span> Openings</div>

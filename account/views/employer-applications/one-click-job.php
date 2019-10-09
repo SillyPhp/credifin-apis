@@ -6,10 +6,18 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
+$url2 = \yii\helpers\Url::to(['/cities/country-list']);
+Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
+$Initscript = <<< JS
+function cities_url(){
+    return "/cities/career-city-list?cid="+cid;
+}
+JS;
+$this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="portlet light portlet-fit portlet-datatable">
+            <div class="portlet light portlet-fit portlet-datatable nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>
@@ -32,6 +40,8 @@ use yii\web\JsExpression;
                         <div class="col-md-12">
                             <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile'])->label(false); ?>
                         </div>
+                    </div>
+                   <div class="row">
                         <div class="col-md-4">
                             <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => 'Job Title'])->label(false); ?>
                         </div>
@@ -57,26 +67,94 @@ use yii\web\JsExpression;
                         </div>
                     </div>
                     <div class="row">
-                        <div  class="col-md-6">
-                            <?= $form->field($model,'wage_type')->inline()->radioList([
+                        <div class="col-md-12">
+                            <?= $form->field($model, 'country')->widget(Select2::classname(), [
+                                'initValueText' => $model->country,
+                                'value' => $model->country, // set the initial display text
+                                'options' => ['placeholder' => 'Search for a Country ...'],
+                                'pluginOptions' => [
+                                    'allowClear' => false,
+                                    'minimumInputLength' => 1,
+                                    'language' => [
+                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                    ],
+                                    'ajax' => [
+                                        'url' => $url2,
+                                        'dataType' => 'json',
+                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
+                                    ],
+                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                                ],
+                                'pluginEvents' => [
+                                    'change' => 'function(results){
+                                           cid = results.target.value;
+                                         }'
+                                ],
+                            ])->label(false); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $form->field($model, 'location')->widget(Select2::classname(), [
+                                'options' => ['placeholder' => 'Select Cities', 'multiple' => true, 'class' => 'form-control'],
+                                'data' => (($list) ? $list : [1=>'']),
+                                'pluginOptions' => [
+                                    'allowClear' => true,
+                                    'minimumInputLength' => 1,
+                                    'language' => [
+                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                    ],
+                                    'ajax' => [
+                                        'url' => new JsExpression('cities_url'),
+                                        'dataType' => 'json',
+                                        'data' => new JsExpression('function(params) { 
+                                       
+                                        return {q:params.term}; 
+                                        
+                                        }')
+                                    ],
+                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                                ],
+                            ])->label(false); ?>
+                        </div>
+                    </div>
+                    <strong>Salary Description</strong>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <?= $form->field($model, 'wage_type')->inline()->radioList([
                                 1 => 'Fixed',
                                 2 => 'Negotiable',
                             ])->label(false); ?>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div id="fixed_stip">
-                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15','placeholder'=>'Fixed Salary (Per Annum)'])->label(false); ?>
+                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15', 'placeholder' => 'Fixed Salary'])->label(false); ?>
                             </div>
                             <div id="min_max">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder'=>'Min (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder' => 'Min'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder'=>'Max (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder' => 'Max'])->label(false) ?>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $form->field($model, 'currency')->inline()->dropDownList($currencies)->label(false); ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $form->field($model, 'wage_duration')->dropDownList([
+                                'Annually' => 'Annually',
+                                'Monthly' => 'Monthly',
+                                'Weekly' => 'Weekly',
+                                'Hourly' => 'Hourly',
+                            ])->label(false); ?>
                         </div>
                     </div>
 
@@ -87,29 +165,22 @@ use yii\web\JsExpression;
                         <div class="col-md-6">
                             <?= $form->field($model, 'positions')->textInput(['placeholder'=>'No Of Openings'])->label(false); ?>
                         </div>
-                        <div class="col-md-12">
-                            <?= $form->field($model, 'location')->widget(Select2::classname(), [
-                                'options' => ['placeholder' => 'Select Cities','multiple'=>true],
-                                'pluginOptions' => [
-                                    'allowClear' => true,
-                                    'minimumInputLength' => 1,
-                                    'language' => [
-                                        'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
-                                    ],
-                                    'ajax' => [
-                                        'url' => '/cities/career-city-list',
-                                        'dataType' => 'json',
-                                        'data' => new JsExpression('function(params) { return {q:params.term}; }')
-                                    ],
-                                    'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
-                                    'templateResult' => new JsExpression('function(city) { return city.text; }'),
-                                    'templateSelection' => new JsExpression('function (city) { return city.text; }'),
-                                ],
-                            ])->label(false); ?>
-                        </div>
+                    </div>
+                    <strong>Required Skills</strong>
+                    <div class="row">
                         <div class="col-md-12">
                             <div class="pf-field no-margin">
                                 <ul class="tags_input skill_tag_list">
+                                    <?php if (isset($skill) && !empty($skill)) {
+                                        foreach ($skill as $s) { ?>
+                                            <li class="addedTag"><?= $s ?><span
+                                                        onclick="$(this).parent().remove();"
+                                                        class="tagRemove">x</span><input type="hidden"
+                                                                                         name="skills[]"
+                                                                                         value="<?= $s ?>">
+                                            </li>
+                                        <?php }
+                                    } ?>
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
                                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -119,15 +190,23 @@ use yii\web\JsExpression;
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                    <strong>Fill Up Job Description Below</strong>
+                    <div class="row">
                         <div class="col-md-12">
-                            <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label('Fill Up Job Description Below'); ?>
+                            <?= $form->field($model, 'description')->textArea(['rows' => 6, 'cols' => 50, 'id' => 'description'])->label(false); ?>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <?= $form->field($model, 'email')->textInput(['class' => 'capitalize form-control', 'id' => 'email', 'placeholder' => 'Contact Email (Optional)'])->label(false); ?>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
                         </div>
+                    </div>
                     </div>
                     <?php ActiveForm::end(); ?>
                 </div>
@@ -560,7 +639,10 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
-//appEditor.updateSourceElement();
+ $('#create_job_form').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true; 
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");

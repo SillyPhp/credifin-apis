@@ -67,4 +67,26 @@ class QuizzesController extends Controller
             ]);
         }
     }
+
+    public function actionAll(){
+        $quizes = Quiz::find()
+            ->alias('a')
+            ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
+            ->joinWith(['quizQuestions b' => function ($x) {
+                $x->onCondition([
+                    'b.is_deleted' => 0
+                ]);
+                $x->groupBy(['b.quiz_enc_id']);
+            }], false)
+            ->where([
+                'a.display' => 1,
+                'a.is_deleted' => 0
+            ])
+            ->asArray()
+            ->all();
+
+        return $this->render('all', [
+            'data' => $quizes
+        ]);
+    }
 }

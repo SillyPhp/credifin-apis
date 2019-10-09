@@ -18,8 +18,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -130,7 +130,7 @@ $this->params['seo_tags'] = [
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
-                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
+                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
                                         <a href="/blog/<?= $related['slug'] ?>">
                                             <div class="video-icon">
@@ -368,6 +368,7 @@ textarea::placeholder{
     position:relative;
     margin-top:20px;
     overflow:hidden;
+    
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -496,6 +497,9 @@ textarea::placeholder{
         max-width:100%;
     }
 }
+
+
+
 /*----blog description preview css start----*/
 #blog-description ul{
     list-style: disc;
@@ -514,3 +518,4 @@ div#blog-description * {
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+

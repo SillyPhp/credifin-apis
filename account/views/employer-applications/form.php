@@ -1,9 +1,27 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_HEAD);
+
+Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
+<!--<div class="row">-->
+<!--    <div class="col-md-5 col-md-offset-7">-->
+<!--        <div class="col-md-4">-->
+<!--            --><?//=
+//            Html::button('new modal', [
+//                'class' => 'btn btn-primary custom-buttons',
+//                'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
+//                'id' => 'select-cmp',
+//                'data-toggle' => 'modal',
+//                'data-target' => '#select-company',
+//            ]);
+//            ?>
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -16,14 +34,14 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="container">
-    <div class="portlet light" id="form_wizard_1">
+    <div class="portlet light nd-shadow" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
                 <span class="caption-subject font-red bold uppercase">
-                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
+                    <?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'): ?>
                         Job Application
-                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
+                    <?php elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'): ?>
                         Internship Application
                     <?php endif; ?>
                     <span class="step-title"> Step 1 of 4</span>
@@ -56,9 +74,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
                                     <i class="fa fa-check"></i>
-                                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
+                                    <?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'): ?>
                                         Job Description
-                                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
+                                    <?php elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'): ?>
                                         Internship Description
                                     <?php endif; ?>
                                 </span>
@@ -93,15 +111,15 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
                             <?php
-                            if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'):
+                            if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'):
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
-                                'form'=>$form,
-                                'model'=>$model,
-                                'primary_cat'=>$primary_cat,
-                                'industry'=>$industry,
-                                'type'=>$type,
-                            ]);
-                            elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'):
+                                    'form' => $form,
+                                    'model' => $model,
+                                    'primary_cat' => $primary_cat,
+                                    'industry' => $industry,
+                                    'type' => $type,
+                                ]);
+                            elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
@@ -114,10 +132,10 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span></span>
                             </div>
                             <div class="placement_location_hide">
-                            <?=
-                      $this->render('/widgets/employer-applications/placement-locations', [
-                                    'form'=>$form,
-                                    'model'=>$model,
+                                <?=
+                                $this->render('/widgets/employer-applications/placement-locations', [
+                                    'form' => $form,
+                                    'model' => $model,
                                     'placement_locations' => $placement_locations,
                                 ]);
                                 ?>
@@ -174,8 +192,8 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 'form' => $form,
                                 'model' => $model,
                                 'questionnaire' => $questionnaire,
-                                ]);
-                                ?>
+                            ]);
+                            ?>
                         </div>
                         <div class="tab-pane" id="tab4">
                             <?=
@@ -232,8 +250,245 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="fader"></div>
+
+<div class="modal fade" id="select-company" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="org-info">Select Organization</span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <input type="text" id="search_text" placeholder="Search Here....." class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <?=
+                        Html::button('Add New Company', [
+                            'class' => 'btn btn-primary custom-buttons',
+                            'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
+                            'id' => 'open-modal',
+                            'data-toggle' => 'modal',
+                            'data-target' => '#add-new',
+                        ]);
+                        ?>
+                    </div>
+                </div>
+                <?php
+                if (!empty($benefit)) { ?>
+                    <div class="cat-sec fix_height">
+                        <div class="row no-gape">
+                            <?php
+                            $BenefitsModel->predefind_benefit = ArrayHelper::getColumn($org_benefits, 'benefit_enc_id');
+                            ?>
+                            <?=
+                            $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
+                                'item' => function ($index, $label, $name, $checked, $value) {
+                                    $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
+                                    $return .= '<div class="p-category search_benefits">';
+                                    $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
+                                    $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
+                                    $return .= '<div class="checkbox-text">';
+                                    $return .= '<span class="checkbox-text--title">';
+                                    $return .= '<img src="' . $label["icon"] . '">';
+                                    $return .= '</span><br/>';
+                                    $return .= '<span class="checkbox-text--description2">';
+                                    $return .= $label['benefit'];
+                                    $return .= '</span>';
+                                    $return .= '</div>';
+                                    $return .= '</label>';
+                                    $return .= '</div>';
+                                    $return .= '</div>';
+                                    return $return;
+                                }
+                            ])->label(false);
+                            ?>
+                        </div>
+                    </div>
+                <?php } else { ?>
+                    <h3>No Company To Display</h3>
+                <?php }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add-new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="org-info">Organization Information</span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="comp-logo">
+                            <img src="/assets/themes/ey/images/pages/hr-recruiters/1job.png">
+                        </div>
+                        <div class="add-photo">
+                            <i class="fa fa-plus" style="position: absolute;bottom: 40px;left: 55px;"></i>
+                            <span style="position: absolute;bottom: 16px;left: 31px;font-size:12px;">Add photo</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <input type="text" class="form-control" placeholder="Organization Name"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <input type="email" class="form-control" placeholder="Organization E-mail"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <input type="text" class="form-control" placeholder="Website"/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <input type="tel" class="form-control" placeholder="Phone No.">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <select class="form-control" id="exampleFormControlSelect1">
+                            <option>Select Business Activity</option>
+                            <option>Banking & Finance</option>
+                            <option>Educational Institute</option>
+                            <option>Schools</option>
+                            <option>Colleges</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 padd">
+                        <div class="form-group form-md-line-input form-md-floating-label">
+                            <textarea id="form7" class="md-textarea form-control" rows="5   "></textarea>
+                            <label for="form7">Description</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 align">
+                        <div class="form-group">
+                            <ul class="ks-cboxtags">
+                                <li class="service-list">
+                                    <input type="checkbox" id="services" class="checkbox-input services"/>
+                                    <label for="services">
+                                        Jobs
+                                    </label>
+                                </li>
+                                <li class="service-list">
+                                    <input type="checkbox" id="services2" class="checkbox-input services"/>
+                                    <label for="services2">
+                                        Internships
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-primary">Save</a>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss("
+ul.ks-cboxtags {
+    list-style: none;
+    padding:0px;
+}
+.service-list{
+  display: inline-block;
+  min-width: 120px;
+}
+.service-list label{
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #333;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
+
+.service-list label {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.service-list label::before {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 12px;
+    padding: 2px 6px 2px 2px;
+    content: '\f067';
+    transition: transform .3s ease-in-out;
+}
+
+.service-list input[type='checkbox']:checked + label::before {
+    content: '\f00c';
+    transform: rotate(-360deg);
+    transition: transform .3s ease-in-out;
+}
+
+.service-list input[type='checkbox']:checked + label, .service-list label:hover {
+    border: 2px solid #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
+    transition: all .2s;
+}
+
+.service-list input[type='checkbox'] {
+  display: absolute;
+}
+.service-list input[type='checkbox'] {
+  position: absolute;
+  opacity: 0;
+}
+.service-list input[type='checkbox']:focus + label {
+  border: 2px solid #00a0e3;
+}
+.align{text-align:center;}
+.padd{padding-top:10px;}
+.comp-logo img{
+    width: 90px;
+    height: 90px;
+    border: 4px solid #fff;    
+}
+.modal-dialog{
+    width:800px !important;    
+}
+.g-pref{
+    display:block;
+    }
 .step {
    -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -437,7 +692,7 @@ textarea{
 }
 .divider{
     border-top:2px solid #eee;
-    margin: 35px -40px 19px;
+    margin: 35px -30px 19px;
 }
 .module2-heading{
     text-transform: uppercase;
@@ -1555,6 +1810,7 @@ height:17px !important;
 /*Load Suggestions loader css ends */
 ");
 $script = <<< JS
+$('#select-company').modal('show');
 var job_titles;
 if(window.location.hash) 
     {

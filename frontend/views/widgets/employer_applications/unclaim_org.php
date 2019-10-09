@@ -4,7 +4,6 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
 ?>
     <div class="job-single-head style2 overlay-top">
     <div class="job-thumb">
-        <a href="/<?= $slug; ?>">
             <?php
             if (!empty($org_logo)) {
                 ?>
@@ -17,10 +16,9 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                 <?php
             }
             ?>
-        </a>
     </div>
     <div class="job-head-info">
-        <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
+        <h4><?= $org_name; ?></h4>
         <div class="organization-details">
             <!--            <h4>Company Detail</h4>-->
             <?php if ($website): ?>
@@ -61,7 +59,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="<?= $job_url ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                <a href="<?= Url::to($job_url,true); ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
                 <div class="sub-actions">
@@ -344,5 +342,23 @@ a.add-or-compare:hover, a.add-or-compare:focus {
     }
 }
 ');
+$script = <<< JS
+ $(document).on('click','.apply-job-btn',function(e)
+            {
+                var data = $(this).attr('value');
+                var cid = $(this).attr('cid');
+                $.ajax({
+                    url:'/jobs/jobs-unclaim-apply',
+                    dataType: 'text',                    
+                    data: {data:data,cid:cid},                         
+                    type: 'post',
+                    success:function(res)
+                    {
+                        console.log(res);
+                    }
+                })
+       });             
+JS;
+$this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

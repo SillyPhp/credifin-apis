@@ -1,18 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Sneh Kant
- * Date: 28-05-2019
- * Time: 10:42
- */
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
+
 $this->title = Yii::t('frontend', 'Reviews');
 $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 ?>
-<div class="col-md-12 set-overlay">
+    <div class="col-md-12 set-overlay">
         <div class="row">
             <div class="f-contain">
                 <div class="form-wrapper">
@@ -21,7 +17,7 @@ $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
                 </div>
             </div>
         </div>
-</div>
+    </div>
 <?php
 $this->registerCss('
 .select2-search__field::placeholder

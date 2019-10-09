@@ -19,8 +19,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -34,10 +34,9 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-
 ?>
 <section class="bg-blue">
-    <div class="container-fluid">
+    <div class="large-container">
         <div class="row">
             <div class="col-md-2 color-bg">
                 <div class="top-categories">
@@ -114,12 +113,12 @@ $this->params['seo_tags'] = [
                                         <?= $video_detail['child_name']; ?></span></li>
                             </ul>
                         </div>
-                        <div class="v-tags">
-                            <ul id="tags-cont">
+                        <div class="v-tagss">
+                            <ul id="tags-cont" class="v-tags">
                                 <?php
                                 foreach ($video_detail['learningVideoTags'] as $v) {
                                     ?>
-                                    <li id="<?= $v['tag_enc_id'] ?>"> <?= $v['name']; ?></li>
+                                    <li id="<?= $v['tag_enc_id'] ?>" class="v-tag"> <?= $v['name']; ?></li>
                                     <?php
                                 }
                                 ?>
@@ -127,7 +126,10 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <div class="views"><i class="far fa-eye"></i> <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span> Views</div>
+                                <div class="views"><i class="far fa-eye"></i>
+                                    <span><?= $video_detail['view_count'] ? $video_detail['view_count'] : 'No' ?></span>
+                                    Views
+                                </div>
                                 <div class="likes"><i class="fas fa-thumbs-up"></i>
                                     <span><?= $like_count ? $like_count : 'No' ?></span> Likes
                                 </div>
@@ -184,11 +186,74 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <div class="sharing-box">
+                    <div class="sharing-pic">
+                        <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
+                    </div>
+                    <!--                        <div class="share-it">Share :-</div>-->
+                    <div class="fb-share">
+                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                    </div>
+                    <div class="tw-share">
+                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                    </div>
+                    <div class="li-share">
+                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                    </div>
+                    <div class="wa-share">
+                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                    </div>
+                    <div class="mail-share">
+                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+                    </div>
+                </div>
+<!--                <div class="rate-video">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h1 class="chan-heading">Rate this Video</h1>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="cntr">-->
+<!--                        <label for="rdo-1" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-1" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Beginner</span>-->
+<!--                        </label>-->
+<!--                        <label for="rdo-2" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-2" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Intermediate</span>-->
+<!--                        </label>-->
+<!--                        <label for="rdo-3" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-3" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Pro</span>-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({
                         google_ad_client: "ca-pub-9111969809145171",
-                    enable_page_level_ads: true
+                        enable_page_level_ads: true
                     });
                 </script>
                 <div class="top-video">
@@ -214,6 +279,15 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.comment-text{
+    word-break: break-all;
+}
+.large-container{
+    max-width: 1500px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin:auto;
+}
 .footer{
 margin-top:0px !important;
 }
@@ -244,7 +318,7 @@ padding-right:0px;
 padding-left:0px;
 }
 .bg-blue{
-background:#ecf5fe;
+//background:#ecf5fe;
 }
 .color-bg{
 padding-top:0px;
@@ -337,24 +411,32 @@ float: left;
 }
 /*----------*/
 .video-frame{
-max-height:480px;
-width:100%;
+    max-height: 480px;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -20px;
+    border-radius: 10px 10px 0px 0px;
 }
 .fluid-width-video-wrapper {
 padding-top: 0px !important;
 height: 400px;
 }
 .white-bg{
-background:#fff;
-border-left:1px solid #eee;
-border-right:1px solid #eee;
-padding:20px 30px 30px 30px;
+    background:#fff;
+    border-left:1px solid #eee;
+    border-right:1px solid #eee;
+    padding:20px 30px 30px 30px;
+    box-shadow: 0px 1px 10px 0px #ddd;
+    margin: 20px 0px;
+    border-radius: 10px;
 }
 .video-options{
-padding:5px 10px;
-border:1px solid #262626;
-border-radius:0 0 5px 5px;
-background:#262626;
+    padding:5px 10px;
+    border:1px solid #262626;
+    background:#262626;
+    width: calc(100% + 30px);
+    margin: 0px -15px;
+    margin-top: -6px;
 }
 .flex-view{
 display:flex;
@@ -376,6 +458,10 @@ font-size:18px
 }
 .views i{
 font-size:15px;
+}
+.views, .likes, .comms{
+    display:inline-block;
+    margin-right:10px;
 }
 .dislikeGray{
 background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislike1.png') . ');
@@ -517,23 +603,74 @@ color:#000;
 .v-category span{
 font-weight:500;
 }
-.v-tags{
-padding:20px 0 20px;
+//.v-tags{
+//padding:20px 0 20px;
+//}
+//.v-tags ul li{
+//display:inline-block;
+//padding:5px 10px;
+//border:1px solid #999;
+//border-radius:8px;
+//margin:3px;
+//}
+//.v-tags ul a li{
+//margin-bottom:10px;
+//}
+.v-tags {
+  list-style: none;
+  margin: 0;
+  overflow: hidden; 
+  padding: 0;
+  margin-top:15px;
 }
-.v-tags ul li{
-display:inline-block;
-padding:5px 10px;
-border:1px solid #999;
-border-radius:8px;
-margin-right:5px;
+.v-tags li {
+  float: left; 
 }
-.v-tags ul a li{
-margin-bottom:10px;
+.v-tag {
+  background: #eee;
+  border-radius: 3px 0 0 3px;
+  color: #777;
+  display: inline-block;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 20px 0 23px;
+  position: relative;
+  margin: 0 10px 10px 0;
+  text-decoration: none;
+  -webkit-transition: color 0.2s;
+}
+.v-tag::before {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  content: \'\';
+  height: 6px;
+  left: 10px;
+  position: absolute;
+  width: 6px;
+  top: 10px;
+}
+.v-tag::after {
+  background: #fff;
+  border-bottom: 13px solid transparent;
+  border-left: 10px solid #eee;
+  border-top: 13px solid transparent;
+  content: \'\';
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.v-tag:hover {
+  background-color: #00a0e3;
+  color: white;
+}
+.v-tag:hover::after {
+   border-left-color: #00a0e3; 
 }
 .video-container{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
     border-radius:10px;
-    height:auto;
+    height:182px;
     position:relative;
     margin-bottom:20px;
 }
@@ -825,6 +962,7 @@ position: relative;
 display:block;
 transition:.3s all;
 text-transform:capitalize;
+    text-align: left;
 }
 .tg-widgetcategories .tg-widgetcontent ul li a:hover{
 padding: 0 0 0 15px;
@@ -850,7 +988,7 @@ visibility: visible;
 border-top: 1px solid #e6e6e6;
 }
 .tg-widgetcontent ul li a span {
-float: left;
+float: none !Important;
 }
 
 .video-container2{
@@ -911,6 +1049,168 @@ left:10px;
 }
 .showReply{
     text-align:center;
+}
+/*---Rate this video css starts---*/
+.cntr {
+  margin: auto;
+}
+.btn-radio {
+  cursor: pointer;
+  display: block;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-bottom:10px;
+}
+.btn-radio svg {
+  fill: none;
+  vertical-align: middle;
+}
+.btn-radio svg circle {
+  stroke-width: 2;
+  stroke: #C8CCD4;
+}
+.btn-radio svg path {
+  stroke: #008FFF;
+}
+.btn-radio svg path.inner {
+  stroke-width: 6;
+  stroke-dasharray: 19;
+  stroke-dashoffset: 19;
+}
+.btn-radio svg path.outer {
+  stroke-width: 2;
+  stroke-dasharray: 57;
+  stroke-dashoffset: 57;
+}
+.btn-radio input {
+  display: none;
+}
+.btn-radio input:checked + svg path {
+  transition: all 0.4s ease;
+}
+.btn-radio input:checked + svg path.inner {
+  stroke-dashoffset: 38;
+  transition-delay: 0.3s;
+}
+.btn-radio input:checked + svg path.outer {
+  stroke-dashoffset: 0;
+}
+.btn-radio span {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left:5px;
+  color:#222;
+}
+.rate-video{
+    background-color: #fff;
+    margin-top: 20px;
+    padding: 20px;
+    padding-top: 0px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 9px 0px #b1b1b1c9;
+}
+/*---Rate this video css ends---*/
+
+.fb-share, .tw-share, .li-share, .wa-share{
+    display:inline-block;
+}
+.marg{
+    margin-right:5px;
+}
+.share-it {
+    text-align: center;
+    font-size: 19px;
+    padding-bottom: 10px;
+    color: #fff;
+    font-weight: bold;
+}
+.sharing-box{
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #eee;
+    width:100%;
+    background-color:#1d759a;
+}
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    padding: 10px 0;
+    width:135px;
+    background: #00a0e3;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.fb-btn:hover {
+    background-color: #fff;
+    color: #1d759a;
+}
+.li-btn:hover {
+    background-color: #fff;
+    color: #0077b5;
+}
+.tw-btn:hover {
+    background-color: #fff;
+    color: #28aae1;
+}
+.wa-btn:hover {
+    background-color: #fff;
+    color: #00e676;
+}
+.mail-btn:hover {
+    background-color: #fff;
+    color:#d4483a;
+}
+.sharing-pic{
+    padding-bottom:10px;
+    text-align:center;
+}
+.sharing-pic img{
+    width:330px;
+    height:180px;
+}
+.mail-share{
+    text-align:center;
+}
+@media only screen and (max-width: 1280px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:127px;
+}
+}
+@media only screen and (max-width: 1024px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:190px;
+}
+}
+@media only screen and (max-width: 768px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:137px;
+}
+.mail-share{
+    display:inline-block;
+}
+}
+@media only screen and (max-width: 450px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:174px;
+}
+.mail-share {
+    display: inherit;
+}
+}
+@media only screen and (max-width: 380px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:154px;
+}
+}
+@media only screen and (max-width: 362px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:147px;
+}
 }
 ');
 
@@ -1069,9 +1369,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     var incrementTime = document.getElementById('video-duration').getAttribute('value') * 60 * 1000;
 
     var dvar;
-    function startTimer(){
+
+    function startTimer() {
         dvar = setTimeout(
-            function(){
+            function () {
                 $.ajax({
                     type: 'POST',
                     url: '/learning/increment-views',
@@ -1084,7 +1385,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         )
     }
 
-    function stopTimer(){
+    function stopTimer() {
         clearTimeout(dvar);
     }
 
@@ -1094,7 +1395,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
             width: '640',
             videoId: video_id,
             events: {
-                'onStateChange': function(event) {
+                'onStateChange': function (event) {
                     if (event.data == YT.PlayerState.PLAYING) {
                         startTimer();
                     }
@@ -1131,8 +1432,10 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                     <ul id="top-categories">
                         {{#.}}
                         <li>
-                            <a href="/learning/videos/category/{{slug}}"><span>{{parent_name}}</span>
-                                {{cnt}} </a></li>
+                            <a href="/learning/videos/category/{{slug}}"><span>{{name}}</span>
+<!--                                {{cnt}}-->
+                            </a>
+                        </li>
                         {{/.}}
                     </ul>
                 </div>

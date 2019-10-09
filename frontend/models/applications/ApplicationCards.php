@@ -4,7 +4,10 @@ namespace frontend\models\applications;
 
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationUnclaimOptions;
+use common\models\BusinessActivities;
 use common\models\States;
+use common\models\TrainingProgramApplication;
+use common\models\TrainingProgramBatches;
 use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\helpers\Url;
@@ -30,13 +33,12 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
+                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -79,8 +81,8 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/job/", a.slug, "' . $referral . '") link',
-                'CONCAT("/job/", a.slug, "' . $referral . '") organization_link',
+                'CONCAT("/job/", a.slug) link',
+                'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
@@ -99,7 +101,7 @@ class ApplicationCards
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
-                new Expression('NULL as salary_duration'),
+                'v.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
@@ -285,27 +287,16 @@ class ApplicationCards
 
     private static function _getCardsFromInternships($options)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
-                'CONCAT("/", d.slug, "' . $referral . '") organization_link',
+                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon','(CASE
-                WHEN a.experience = "0" THEN "No Experience"
-                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN a.experience = "2" THEN "1 Year Experience"
-                WHEN a.experience = "3" THEN "2-3 Years Experience"
-                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                'i.icon','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
@@ -334,27 +325,17 @@ class ApplicationCards
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
             ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") link',
-                'CONCAT("/internship/", a.slug, "' . $referral . '") organization_link',
+                'CONCAT("/internship/", a.slug) link',
+                'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon','(CASE
-                WHEN a.experience = "0" THEN "No Experience"
-                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-                WHEN a.experience = "2" THEN "1 Year Experience"
-                WHEN a.experience = "3" THEN "2-3 Years Experience"
-                WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-                WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-                WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-                ELSE "No Experience"
-               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
+                'i.icon','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
                 'v.min_wage as min_salary',
-                new Expression('NULL as salary_duration'),
+                'v.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
@@ -483,44 +464,44 @@ class ApplicationCards
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] . ' p.m.';
+                    $result[$i]['salary'] = round($val['fixed_salary']) . ' p.m.';
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 730 . ' p.m.';
+                    $result[$i]['salary'] = round($val['fixed_salary'] * 730) . ' p.m.';
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = (int)$val['fixed_salary'] / 7 * 30 . ' p.m.';
+                    $result[$i]['salary'] = round((int)$val['fixed_salary'] / 7 * 30) . ' p.m.';
                 } else {
-                    $result[$i]['salary'] = (int)$val['fixed_salary'] / 12 . ' p.m.';
+                    $result[$i]['salary'] = round((int)$val['fixed_salary'] / 12) . ' p.m.';
                 }
             } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary'] . " - ₹" . (string)$val['max_salary'] . ' p.m.';
+                        $result[$i]['salary'] = round((string)$val['min_salary']) . " - ₹" . round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 730) . " - ₹" . (string)($val['max_salary'] * 730) . ' p.m.';
+                        $result[$i]['salary'] = round((string)($val['min_salary'] * 730)) . " - ₹" . round((string)($val['max_salary'] * 730)) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . " - ₹" . (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['min_salary'] / 7 * 30)) . " - ₹" . round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = (int)($val['min_salary']) / 12 . " - ₹" . (int)($val['max_salary']) / 12 . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['min_salary']) / 12) . " - ₹" . round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary']  . ' p.m.';
+                        $result[$i]['salary'] = round((string)$val['min_salary'])  . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 730) . ' p.m.';
+                        $result[$i]['salary'] = round((string)($val['min_salary'] * 730)) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (int)($val['min_salary'] / 7 * 30) . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['min_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = (int)($val['min_salary']) / 12 . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['min_salary']) / 12) . ' p.m.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['max_salary'] . ' p.m.';
+                        $result[$i]['salary'] = round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['max_salary'] * 730) . ' p.m.';
+                        $result[$i]['salary'] = round((string)($val['max_salary'] * 730)) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (int)($val['max_salary'] / 7 * 30) . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = (int)($val['max_salary']) / 12 . ' p.m.';
+                        $result[$i]['salary'] = round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 }
             }
@@ -528,4 +509,113 @@ class ApplicationCards
         }
         return $result;
     }
+
+    public static function TraininingCards($options = [])
+    {
+        return self::_getCardsFromTrainings($options);
+    }
+    public static function InstitutesCards($options = [])
+    {
+        $cards = (new \yii\db\Query())
+            ->distinct()
+            ->from(Organizations::tableName().'as a')
+            ->select(['name','initials_color','a.slug','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
+            ->innerJoin(BusinessActivities::tableName().'as b','b.business_activity_enc_id = a.business_activity_enc_id')
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+
+        if (isset($options['limit'])) {
+            $limit = $options['limit'];
+        }
+        if (isset($options['type'])) {
+            $cards->andWhere(['in', 'business_activity', ['Educational Institute']]);
+        }
+        $result = $cards->limit($limit)
+            ->orderBy(new \yii\db\Expression('rand()'))
+            ->all();
+        return $result;
+    }
+    private static function _getCardsFromTrainings($options)
+    {
+        $cards = (new \yii\db\Query())
+            ->distinct()
+            ->from(TrainingProgramApplication::tableName() . 'as a')
+            ->select(['a.id','a.application_enc_id application_id','i.name category',
+                'CONCAT("/training/", a.slug) link',
+                'CONCAT("/", d.slug) organization_link','d.initials_color color',
+                'c.name as title','i.icon',
+                'd.name as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
+                'g.name city',
+                '(CASE
+                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration," - Month")
+                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration," - Weeks")
+                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," - Year")
+                ELSE "N/A"
+               END) as duration'
+                ,'(CASE
+                WHEN t.fees_methods = "1" THEN CONCAT(t.fees," / Month")
+                WHEN t.fees_methods = "2" THEN CONCAT(t.fees," / Week")
+                WHEN t.fees_methods = "3" THEN CONCAT(t.fees," / Anually")
+                WHEN t.fees_methods = "4" THEN CONCAT(t.fees,"(One Time)")
+                ELSE "N/A"
+               END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
+            ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
+            ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(TrainingProgramBatches::tableName() . 'as t', 't.application_enc_id = a.application_enc_id')
+            ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = t.city_enc_id')
+            ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->where(['j.name' => 'Trainings','a.is_deleted' => 0]);
+
+        if (isset($options['company'])) {
+            $cards->andWhere([
+                'or',
+                ['like', 'd.name', $options['company']]
+            ]);
+        }
+        if (isset($options['slug'])) {
+            $cards->andWhere([
+                'or',
+                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+            ]);
+        }
+
+        if (isset($options['limit'])) {
+            $limit = $options['limit'];
+            $offset = ($options['page'] - 1) * $options['limit'];
+        }
+
+        if (isset($options['category'])) {
+            $cards->andWhere([
+                'or',
+                ['like', 'd.name', $options['category']],
+                ['like', 'c.name', $options['category']],
+                ['like', 'i.name', $options['category']],
+            ]);
+        }
+        if (isset($options['location'])) {
+            $cards->andWhere([
+                'or',
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']]
+            ]);
+        }
+        if (isset($options['keyword'])) {
+            $cards->andWhere([
+                'or',
+                ['like', 'c.name', $options['keyword']],
+                ['like', 'i.name', $options['keyword']],
+                ['like', 'd.name', $options['keyword']]
+            ]);
+        }
+
+       $result = $cards->limit($limit)
+            ->offset($offset)
+            ->orderBy(['id' => SORT_DESC])
+            ->all();
+        return $result;
+    }
+
 }

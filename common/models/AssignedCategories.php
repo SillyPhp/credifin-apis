@@ -129,6 +129,11 @@ class AssignedCategories extends \yii\db\ActiveRecord
         return $this->hasMany(Quiz::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
     }
 
+    public function getTrainingProgramApplications()
+    {
+        return $this->hasMany(TrainingProgramApplication::className(), ['title' => 'assigned_category_enc_id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
