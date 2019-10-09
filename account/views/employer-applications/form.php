@@ -6,21 +6,6 @@ use yii\helpers\Url;
 
 Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
-<!--<div class="row">-->
-<!--    <div class="col-md-5 col-md-offset-7">-->
-<!--        <div class="col-md-4">-->
-<!--            --><?//=
-//            Html::button('new modal', [
-//                'class' => 'btn btn-primary custom-buttons',
-//                'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-//                'id' => 'select-cmp',
-//                'data-toggle' => 'modal',
-//                'data-target' => '#select-company',
-//            ]);
-//            ?>
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
 
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -250,72 +235,6 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
     </div>
 </div>
 <div class="fader"></div>
-
-<div class="modal fade" id="select-company" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="org-info">Select Organization</span>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <input type="text" id="search_text" placeholder="Search Here....." class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <?=
-                        Html::button('Add New Company', [
-                            'class' => 'btn btn-primary custom-buttons',
-                            'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-                            'id' => 'open-modal',
-                            'data-toggle' => 'modal',
-                            'data-target' => '#add-new',
-                        ]);
-                        ?>
-                    </div>
-                </div>
-                <?php
-                if (!empty($benefit)) { ?>
-                    <div class="cat-sec fix_height">
-                        <div class="row no-gape">
-                            <?php
-                            $BenefitsModel->predefind_benefit = ArrayHelper::getColumn($org_benefits, 'benefit_enc_id');
-                            ?>
-                            <?=
-                            $form->field($BenefitsModel, 'predefind_benefit')->checkBoxList($benefit, [
-                                'item' => function ($index, $label, $name, $checked, $value) {
-                                    $return .= '<div class="col-lg-3 col-md-3 col-sm-6 p-category-main">';
-                                    $return .= '<div class="p-category search_benefits">';
-                                    $return .= '<input type="radio" id="' . $value . '" name="' . $name . '" value="' . $value . '" class="checkbox-input" ' . (($checked) ? 'checked' : '') . '>';
-                                    $return .= '<label for="' . $value . '" class="checkbox-label-v2">';
-                                    $return .= '<div class="checkbox-text">';
-                                    $return .= '<span class="checkbox-text--title">';
-                                    $return .= '<img src="' . $label["icon"] . '">';
-                                    $return .= '</span><br/>';
-                                    $return .= '<span class="checkbox-text--description2">';
-                                    $return .= $label['benefit'];
-                                    $return .= '</span>';
-                                    $return .= '</div>';
-                                    $return .= '</label>';
-                                    $return .= '</div>';
-                                    $return .= '</div>';
-                                    return $return;
-                                }
-                            ])->label(false);
-                            ?>
-                        </div>
-                    </div>
-                <?php } else { ?>
-                    <h3>No Company To Display</h3>
-                <?php }
-                ?>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="add-new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog">
@@ -1810,7 +1729,6 @@ height:17px !important;
 /*Load Suggestions loader css ends */
 ");
 $script = <<< JS
-$('#select-company').modal('show');
 var job_titles;
 if(window.location.hash) 
     {
