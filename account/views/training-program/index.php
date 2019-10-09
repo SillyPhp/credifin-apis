@@ -6,7 +6,7 @@ use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
-?> 
+?>
 <div class="container set-width">
     <?php
     if (Yii::$app->session->hasFlash('success')):
