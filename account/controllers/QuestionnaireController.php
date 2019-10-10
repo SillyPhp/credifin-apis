@@ -9,11 +9,12 @@ use common\models\QuestionnaireFields;
 use common\models\QuestionnaireFieldOptions;
 use common\models\AnsweredQuestionnaire;
 use account\models\questionnaire\QuestionnaireForm;
-use \account\models\questionnaire\QuestionnaireViewForm;
-
+use account\models\questionnaire\QuestionnaireViewForm;
+use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 class QuestionnaireController extends Controller
 {
-
     public function actionIndex()
     {
         $options = [
@@ -36,6 +37,9 @@ class QuestionnaireController extends Controller
     {
         $model = new QuestionnaireForm();
         $type = 'create';
+        if (empty(Yii::$app->user->identity->organization)):
+            return 'Access Denied !!!';
+            endif;
         if ($model->load(Yii::$app->request->post())) {
             if ($model->add()) {
                 return true;
@@ -55,6 +59,9 @@ class QuestionnaireController extends Controller
         $model = new QuestionnaireForm();
         $fields = $model->getCloneData($qidk);
         $type = 'clone';
+        if (empty(Yii::$app->user->identity->organization)):
+            return 'Access Denied !!!';
+        endif;
         if (empty($fields)) {
             return 'Questionnaire not found!!';
         }
@@ -137,7 +144,7 @@ class QuestionnaireController extends Controller
                 'applied_application_enc_id' => $aaidk,
                 'questionnaire_enc_id' => $qidk,
                 'created_by' => Yii::$app->user->identity->user_enc_id,
-                ])
+            ])
             ->asArray()
             ->one();
         $result = OrganizationQuestionnaire::find()

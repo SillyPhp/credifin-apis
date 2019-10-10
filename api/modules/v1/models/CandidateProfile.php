@@ -45,7 +45,7 @@ class CandidateProfile extends Model
     public function rules()
     {
         return [
-            [['exp_month', 'gender', 'exp_year', 'dob', 'languages', 'skills', 'availability', 'description', 'state', 'city'], 'required'],
+            [['exp_month', 'gender', 'exp_year', 'dob', 'availability', 'state', 'city'], 'required'],
             [['facebook', 'twitter', 'google', 'linkedin'], safe],
             ['category', 'safe'],
             ['job_title', 'safe'],
@@ -74,7 +74,6 @@ class CandidateProfile extends Model
         $user->city_enc_id = $this->city;
         $user->is_available = $this->availability;
         $user->experience = json_encode(['' . $this->exp_year . '', '' . $this->exp_month . '']);
-        $user->description = $this->description;
         $user->gender = $this->gender;
 
         if (!empty($this->job_title)) {
@@ -119,169 +118,169 @@ class CandidateProfile extends Model
             $user->job_function = null;
         }
         
-        if($this->skills != ''){
-            $skills_array = explode(",", $this->skills);
-            foreach ($skills_array as $s){
-                trim($s);
-            }
-            $skills_array = array_unique($skills_array);
-        }else{
-            $skills_array = [];
-        }
-        
-        if (!empty($skills_array)) {
-            $skill_set = [];
-            foreach ($skills_array as $val) {
-                $chk_skill = Skills::find()
-                    ->distinct()
-                    ->select(['skill_enc_id'])
-                    ->where(['skill' => $val])
-                    ->asArray()
-                    ->one();
-                if (!empty($chk_skill)) {
-                    $skill_set[] = $chk_skill['skill_enc_id'];
-                } else {
-                    $skillsModel = new Skills();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
-                    $skillsModel->skill = $val;
-                    $skillsModel->created_on = date('Y-m-d H:i:s');
-                    $skillsModel->created_by = $candidate->user_enc_id;
-                    if (!$skillsModel->save()) {
-                        return false;
-                    }
-                    $skill_set[] = $skillsModel->skill_enc_id;
-                }
-            }
-        } else {
-            $skill_set = [];
-        }
-        $userSkills = UserSkills::find()
-            ->where(['created_by' => $candidate->user_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->asArray()
-            ->all();
-        $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
-        $new_skill = array_diff($skill_set, $skillArray);
-        $delete_skill = array_diff($skillArray, $skill_set);
-        if (!empty($new_skill)) {
-            foreach ($new_skill as $val) {
-                $skillsModel = new UserSkills();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $skillsModel->user_skill_enc_id = $utilitiesModel->encrypt();
-                $skillsModel->skill_enc_id = $val;
-                $skillsModel->created_on = date('Y-m-d H:i:s');
-                $skillsModel->created_by = $candidate->user_enc_id;
-                if (!$skillsModel->save()) {
-                    return false;
-                } else {
-                    $flag++;
-                }
-            }
-        }
-        if (!empty($delete_skill)) {
-            foreach ($delete_skill as $val) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(UserSkills::tableName(), [
-                        'is_deleted' => 1,
-                        'last_updated_on' => date('Y-m-d H:i:s'),
-                        'last_updated_by' => $candidate->user_enc_id
-                    ], [
-                        'created_by' => $candidate->user_enc_id,
-                        'skill_enc_id' => $val
-                    ])
-                    ->execute();
-                if (!$update) {
-                    return false;
-                } else {
-                    $flag++;
-                }
-            }
-        }
-        
-        if($this->languages != ''){
-            $languages_array = explode(",", $this->languages);
-            foreach ($languages_array as $t){
-                trim($t);
-            }
-            $languages_array = array_unique($languages_array);
-        }else{
-            $languages_array = [];
-        }
-
-        if (!empty($languages_array)) {
-            $language_set = [];
-            foreach ($languages_array as $val) {
-                $chk_language = SpokenLanguages::find()
-                    ->distinct()
-                    ->select(['language_enc_id'])
-                    ->where(['language' => $val])
-                    ->asArray()
-                    ->one();
-                if (!empty($chk_language)) {
-                    $language_set[] = $chk_language['language_enc_id'];
-                } else {
-                    $languageModel = new SpokenLanguages();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $languageModel->language_enc_id = $utilitiesModel->encrypt();
-                    $languageModel->language = $val;
-                    $languageModel->created_on = date('Y-m-d H:i:s');
-                    $languageModel->created_by = $candidate->user_enc_id;
-                    if (!$languageModel->save()) {
-                        return false;
-                    }
-                    $language_set[] = $languageModel->language_enc_id;
-                }
-            }
-        } else {
-            $language_set = [];
-        }
-        $userLanguage = UserSpokenLanguages::find()
-            ->where(['created_by' => $candidate->user_enc_id])
-            ->andWhere(['is_deleted' => 0])
-            ->asArray()
-            ->all();
-        $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
-        $new_language = array_diff($language_set, $languageArray);
-        $delete_language = array_diff($languageArray, $language_set);
-        if (!empty($new_language)) {
-            foreach ($new_language as $val) {
-                $languageModel = new UserSpokenLanguages();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $languageModel->user_language_enc_id = $utilitiesModel->encrypt();
-                $languageModel->language_enc_id = $val;
-                $languageModel->created_on = date('Y-m-d H:i:s');
-                $languageModel->created_by = $candidate->user_enc_id;
-                if (!$languageModel->save()) {
-                    return false;
-                } else {
-                    $flag++;
-                }
-            }
-        }
-        if (!empty($delete_language)) {
-            foreach ($delete_language as $val) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(UserSpokenLanguages::tableName(), [
-                        'is_deleted' => 1,
-                        'last_updated_on' => date('Y-m-d H:i:s'),
-                        'last_updated_by' => $candidate->user_enc_id
-                    ], [
-                        'created_by' => $candidate->user_enc_id,
-                        'language_enc_id' => $val
-                    ])
-                    ->execute();
-                if (!$update) {
-                    return false;
-                } else {
-                    $flag++;
-                }
-            }
-        }
+//        if($this->skills != ''){
+//            $skills_array = explode(",", $this->skills);
+//            foreach ($skills_array as $s){
+//                trim($s);
+//            }
+//            $skills_array = array_unique($skills_array);
+//        }else{
+//            $skills_array = [];
+//        }
+//
+//        if (!empty($skills_array)) {
+//            $skill_set = [];
+//            foreach ($skills_array as $val) {
+//                $chk_skill = Skills::find()
+//                    ->distinct()
+//                    ->select(['skill_enc_id'])
+//                    ->where(['skill' => $val])
+//                    ->asArray()
+//                    ->one();
+//                if (!empty($chk_skill)) {
+//                    $skill_set[] = $chk_skill['skill_enc_id'];
+//                } else {
+//                    $skillsModel = new Skills();
+//                    $utilitiesModel = new Utilities();
+//                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                    $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
+//                    $skillsModel->skill = $val;
+//                    $skillsModel->created_on = date('Y-m-d H:i:s');
+//                    $skillsModel->created_by = $candidate->user_enc_id;
+//                    if (!$skillsModel->save()) {
+//                        return false;
+//                    }
+//                    $skill_set[] = $skillsModel->skill_enc_id;
+//                }
+//            }
+//        } else {
+//            $skill_set = [];
+//        }
+//        $userSkills = UserSkills::find()
+//            ->where(['created_by' => $candidate->user_enc_id])
+//            ->andWhere(['is_deleted' => 0])
+//            ->asArray()
+//            ->all();
+//        $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
+//        $new_skill = array_diff($skill_set, $skillArray);
+//        $delete_skill = array_diff($skillArray, $skill_set);
+//        if (!empty($new_skill)) {
+//            foreach ($new_skill as $val) {
+//                $skillsModel = new UserSkills();
+//                $utilitiesModel = new Utilities();
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $skillsModel->user_skill_enc_id = $utilitiesModel->encrypt();
+//                $skillsModel->skill_enc_id = $val;
+//                $skillsModel->created_on = date('Y-m-d H:i:s');
+//                $skillsModel->created_by = $candidate->user_enc_id;
+//                if (!$skillsModel->save()) {
+//                    return false;
+//                } else {
+//                    $flag++;
+//                }
+//            }
+//        }
+//        if (!empty($delete_skill)) {
+//            foreach ($delete_skill as $val) {
+//                $update = Yii::$app->db->createCommand()
+//                    ->update(UserSkills::tableName(), [
+//                        'is_deleted' => 1,
+//                        'last_updated_on' => date('Y-m-d H:i:s'),
+//                        'last_updated_by' => $candidate->user_enc_id
+//                    ], [
+//                        'created_by' => $candidate->user_enc_id,
+//                        'skill_enc_id' => $val
+//                    ])
+//                    ->execute();
+//                if (!$update) {
+//                    return false;
+//                } else {
+//                    $flag++;
+//                }
+//            }
+//        }
+//
+//        if($this->languages != ''){
+//            $languages_array = explode(",", $this->languages);
+//            foreach ($languages_array as $t){
+//                trim($t);
+//            }
+//            $languages_array = array_unique($languages_array);
+//        }else{
+//            $languages_array = [];
+//        }
+//
+//        if (!empty($languages_array)) {
+//            $language_set = [];
+//            foreach ($languages_array as $val) {
+//                $chk_language = SpokenLanguages::find()
+//                    ->distinct()
+//                    ->select(['language_enc_id'])
+//                    ->where(['language' => $val])
+//                    ->asArray()
+//                    ->one();
+//                if (!empty($chk_language)) {
+//                    $language_set[] = $chk_language['language_enc_id'];
+//                } else {
+//                    $languageModel = new SpokenLanguages();
+//                    $utilitiesModel = new Utilities();
+//                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                    $languageModel->language_enc_id = $utilitiesModel->encrypt();
+//                    $languageModel->language = $val;
+//                    $languageModel->created_on = date('Y-m-d H:i:s');
+//                    $languageModel->created_by = $candidate->user_enc_id;
+//                    if (!$languageModel->save()) {
+//                        return false;
+//                    }
+//                    $language_set[] = $languageModel->language_enc_id;
+//                }
+//            }
+//        } else {
+//            $language_set = [];
+//        }
+//        $userLanguage = UserSpokenLanguages::find()
+//            ->where(['created_by' => $candidate->user_enc_id])
+//            ->andWhere(['is_deleted' => 0])
+//            ->asArray()
+//            ->all();
+//        $languageArray = ArrayHelper::getColumn($userLanguage, 'language_enc_id');
+//        $new_language = array_diff($language_set, $languageArray);
+//        $delete_language = array_diff($languageArray, $language_set);
+//        if (!empty($new_language)) {
+//            foreach ($new_language as $val) {
+//                $languageModel = new UserSpokenLanguages();
+//                $utilitiesModel = new Utilities();
+//                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                $languageModel->user_language_enc_id = $utilitiesModel->encrypt();
+//                $languageModel->language_enc_id = $val;
+//                $languageModel->created_on = date('Y-m-d H:i:s');
+//                $languageModel->created_by = $candidate->user_enc_id;
+//                if (!$languageModel->save()) {
+//                    return false;
+//                } else {
+//                    $flag++;
+//                }
+//            }
+//        }
+//        if (!empty($delete_language)) {
+//            foreach ($delete_language as $val) {
+//                $update = Yii::$app->db->createCommand()
+//                    ->update(UserSpokenLanguages::tableName(), [
+//                        'is_deleted' => 1,
+//                        'last_updated_on' => date('Y-m-d H:i:s'),
+//                        'last_updated_by' => $candidate->user_enc_id
+//                    ], [
+//                        'created_by' => $candidate->user_enc_id,
+//                        'language_enc_id' => $val
+//                    ])
+//                    ->execute();
+//                if (!$update) {
+//                    return false;
+//                } else {
+//                    $flag++;
+//                }
+//            }
+//        }
         
         if ($user->update())
         {
@@ -481,7 +480,7 @@ class CandidateProfile extends Model
             'user_enc_id' => $token_holder_id->user_enc_id
         ]);
         if(!empty($candidate->image_location)){
-            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, true);
+            return Url::to(Yii::$app->params->upload_directories->users->image . $candidate->image_location . DIRECTORY_SEPARATOR . $candidate->image, 'https');
         }else {
             return '';
         }

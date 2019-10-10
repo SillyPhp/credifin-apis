@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%unclaimed_organizations}}".
  *
@@ -11,15 +13,22 @@ namespace common\models;
  * @property string $name Organization Name
  * @property string $logo Organization Logo
  * @property string $logo_location Location of the Logo
+ * @property string $cover_image cover_image
+ * @property string $cover_image_location cover_image_location
  * @property string $slug Organization Slug
  * @property string $email Organization Email
+ * @property string $phone organization phone no
+ * @property string $description organization description
  * @property string $website Organization Website
  * @property string $initials_color Intials Color
- * @property int $status Organization Status (Active, Inactive, Pending)
+ * @property int $status Organization Status (1 Active, 0 Inactive, 2 Pending)
+ * @property int $is_deleted 1 as false and 0 for true
  * @property string $created_by By which User Organization information was added
  * @property string $created_on On which date Organization information was added to database
  *
+ * @property EmployerApplications[] $employerApplications
  * @property NewOrganizationReviews[] $newOrganizationReviews
+ * @property Reviews[] $reviews
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
  * @property Users[] $userEncs
  * @property Users $createdBy
@@ -41,11 +50,13 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['organization_enc_id', 'name', 'slug', 'initials_color', 'created_by'], 'required'],
-            [['status'], 'integer'],
+            [['organization_enc_id', 'name', 'slug', 'initials_color'], 'required'],
+            [['description'], 'string'],
+            [['status', 'is_deleted'], 'integer'],
             [['created_on'], 'safe'],
-            [['organization_enc_id', 'organization_type_enc_id', 'name', 'logo', 'logo_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
+            [['organization_enc_id', 'organization_type_enc_id', 'name', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
             [['email'], 'string', 'max' => 50],
+            [['phone'], 'string', 'max' => 15],
             [['initials_color'], 'string', 'max' => 7],
             [['slug'], 'unique'],
             [['organization_enc_id'], 'unique'],
@@ -55,11 +66,31 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployerApplications()
+    {
+        return $this->hasMany(EmployerApplications::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getNewOrganizationReviews()
     {
         return $this->hasMany(NewOrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews()
+    {
+        return $this->hasMany(Reviews::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
     }
 
     /**

@@ -554,3 +554,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     -o-border-radius: 6px !important;
     border-radius: 6px !important;
 }
+.btn.green{
+    border-color: #00A0E3 !important;
+    color: #00A0E3 !important;
+}

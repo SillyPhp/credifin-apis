@@ -1,4 +1,4 @@
-<div class="module2-heading">Educational Requirements</div>
+<div class="module2-heading">Education, Experiences And Qualifications</div>
 <div class="row padd-10">
     <div class="col-md-6">
         <div id="manual_questions">

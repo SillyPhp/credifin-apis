@@ -32,7 +32,7 @@ class EditUnclaimedCollegeOrg extends Model {
         return [
             [['identity',
                 'academics','type','faculty_teaching_quality','infrastructure','accomodation_food','placements_internships',
-                'social_life_extracurriculars','culture_diversity'
+                'social_life_extracurriculars','culture_diversity','org_id','likes','dislikes'
             ],'safe'],
         ];
     }
@@ -75,8 +75,10 @@ class EditUnclaimedCollegeOrg extends Model {
         $modal->placements_internships = $this->placements_internships;
         $modal->social_life_extracurriculars = $this->social_life_extracurriculars;
         $modal->culture_diversity = $this->culture_diversity;
-        $modal->category_enc_id = $this->dept;
+        $modal->average_rating = (($this->academics+$this->faculty_teaching_quality+$this->infrastructure+$this->accomodation_food+$this->placements_internships+$this->social_life_extracurriculars+$this->culture_diversity)/7);
         $modal->show_user_details = $this->identity;
+        $modal->likes = $this->likes;
+        $modal->dislikes = $this->dislikes;
         $modal->last_updated_by = Yii::$app->user->identity->user_enc_id;
 
         if ($modal->update())

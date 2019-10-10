@@ -2,6 +2,7 @@
 
 namespace frontend\models\campusAmbassador;
 
+use common\models\ApplicationTypes;
 use common\models\Users;
 use Yii;
 use yii\base\Model;
@@ -48,7 +49,7 @@ class CaApplicationForm extends Model
         ];
     }
 
-    public function save()
+    public function save($type)
     {
         if (!$this->validate()) {
             return $this->getErrors();
@@ -56,6 +57,8 @@ class CaApplicationForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $app_type_id = ApplicationTypes::findOne(['name' => $type])['application_type_enc_id'];
+
             $update = Yii::$app->db->createCommand()
                 ->update(Users::tableName(), ['city_enc_id' => $this->city_id], ['user_enc_id' => Yii::$app->user->identity->user_enc_id])
                 ->execute();
@@ -67,6 +70,7 @@ class CaApplicationForm extends Model
             $applicationsModel->application_id = time();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $applicationsModel->application_enc_id = $utilitiesModel->encrypt();
+            $applicationsModel->application_type_enc_id = $app_type_id;
             $applicationsModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
             $applicationsModel->qualification_enc_id = $this->qualification_id;
             $applicationsModel->college = $this->college;

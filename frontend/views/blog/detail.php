@@ -1,5 +1,5 @@
 <?php
-$this->params['header_dark'] = false;
+$this->params['header_dark'] = true;
 $this->title = $post['title'];
 
 use yii\bootstrap\ActiveForm;
@@ -18,8 +18,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -33,19 +33,18 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
-//print_r($post);
-//exit();
 ?>
     <section class="blog-header">
         <div class="container padd-0">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="pos-rel">
-                    <div class="blog-title"><?= $post['title']; ?></div>
-                    <div class="publish-date"><?= date("d-M-Y", strtotime($post['created_on'])) ?></div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="pos-rel">
+                        <div class="blog-title"><?= $post['title']; ?></div>
+                        <!--                    <div class="publish-date">-->
+                        <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
     <section>
@@ -54,18 +53,15 @@ $this->params['seo_tags'] = [
                 <div class="col-md-9">
                     <div class="blog-division">
                         <div class="blog-cover-image">
-                            <?php
-                            $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image'];
-                            ?>
+                            <?php $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']; ?>
                             <img src="<?= $feature_image; ?>">
                         </div>
-
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
-
-
                     </div>
+                    <!--                    <div class="divider"></div>-->
+                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -94,19 +90,20 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <div class="popular-heading about-heading"> About Blog</div>
-                            <div class="blog-tags">
-                                <span>Category:</span>
-                                <ul>
-                                    <?php
-                                    foreach ($post['postCategories'] as $cat) {
-                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
-<!--                            <div class="blog-pub">-->
-<!--                                <span>Published:</span> --><?//= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
+                            <!--                            <div class="popular-heading about-heading"> About Blog</div>-->
+                            <!--                            <div class="blog-tags">-->
+                            <!--                                <span>Category:</span>-->
+                            <!--                                <ul>-->
+                            <!--                                    --><?php
+                            //                                    foreach ($post['postCategories'] as $cat) {
+                            //                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+                            //                                    }
+                            //                                    ?>
+                            <!--                                </ul>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="blog-pub">-->
+                            <!--                                <span>Published:</span> -->
+                            <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
                                 <span>Tags:</span>
                                 <ul>
@@ -119,31 +116,35 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                         <div class="padd-top"></div>
-                        <div class="col-md-12">
-                            <div class="popular-heading">Related Blogs</div>
-                        </div>
                         <?php
-                        foreach ($similar_posts as $related) {
-                            $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
-                            $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
-                            if (!file_exists($image_path)) {
-                                $image = '//placehold.it/250x200';
-                            }
+                        if (!empty($similar_posts)) {
                             ?>
-                            <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
-                                <div class="video-container">
-                                    <a href="/blog/<?= $related['slug'] ?>">
-                                        <div class="video-icon">
-                                            <img src="<?= $image ?>">
-                                        </div>
-                                        <div class="r-video">
-                                            <div class="r-v-name"><?= $related['title'] ?></div>
-                                            <div class="r-ch-name"><?= $related['excerpt'] ?></div>
-                                        </div>
-                                    </a>
-                                </div>
+                            <div class="col-md-12">
+                                <div class="popular-heading">Related Blogs</div>
                             </div>
                             <?php
+                            foreach ($similar_posts as $related) {
+                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
+                                $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
+                                if (empty($related['featured_image'])) {
+                                    $image = '//placehold.it/250x200';
+                                }
+                                ?>
+                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
+                                    <div class="video-container">
+                                        <a href="/blog/<?= $related['slug'] ?>">
+                                            <div class="video-icon">
+                                                <img src="<?= $image ?>">
+                                            </div>
+                                            <div class="r-video">
+                                                <div class="r-v-name"><?= $related['title'] ?></div>
+                                                <div class="r-ch-name"><?= $related['excerpt'] ?></div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <?php
+                            }
                         }
                         ?>
                     </div>
@@ -154,6 +155,11 @@ $this->params['seo_tags'] = [
 
 <?php
 $this->registerCss('
+.divider{
+border-top:1px solid #eee;
+margin-top:15px;
+}
+
 /*----blog section----*/
 .blog-header{
     min-height:200px;
@@ -168,11 +174,13 @@ $this->registerCss('
 }
 
 .blog-title{
-    font-size: 25px;
+    font-size: 35px;
     color:#000;
+    font-weight: bold;
     position:absolute;
     top:50%;
     transform:translateY(-50%);
+    font-family: lora;
 }
 .publish-date{
     position: absolute;
@@ -283,9 +291,9 @@ textarea::placeholder{
     border-bottom: none;
 }
 .blog-cover-image img{
-    max-height:400px;
+    height:auto;
     width:100%;
-    object-fit:contain;
+    object-fit:fill;
     border-radius:10px;
 }
 .blog-division{
@@ -360,6 +368,7 @@ textarea::placeholder{
     position:relative;
     margin-top:20px;
     overflow:hidden;
+    
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -488,6 +497,9 @@ textarea::placeholder{
         max-width:100%;
     }
 }
+
+
+
 /*----blog description preview css start----*/
 #blog-description ul{
     list-style: disc;
@@ -506,3 +518,4 @@ div#blog-description * {
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+

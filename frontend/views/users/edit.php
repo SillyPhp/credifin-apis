@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\Pjax;
+
 $this->title = Yii::t('frontend', 'My Profile');
 $this->params['header_dark'] = true;
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
@@ -22,10 +23,10 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                            href="<?= Url::to('/' . Yii::$app->user->identity->username); ?>" target="_blank">View
                             Profile</a>
                         <div class="upload-img-bar">
+                            <span>
                             <?php if (!empty(Yii::$app->user->identity->image)) {
                                 $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image; ?>
-                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="200"
-                                           height="150"></span>
+                                <img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150">
                             <?php } else {
                                 $first = Yii::$app->user->identity->first_name;
                                 $last = Yii::$app->user->identity->last_name;
@@ -33,16 +34,20 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                 $color = ltrim(Yii::$app->user->identity->initials_color, '#');
                                 $image = "https://dummyimage.com/150x150/{$color}/fafafa&text={$name}";
                                 ?>
-                                <span><img src="<?= $image ?>" class="preview_img" alt="" width="200"
-                                           height="150"></span>
+                                <img src="<?= $image ?>" class="preview_img" alt="" width="200" height="150">
                             <?php } ?>
+                            <label class="tg-fileuploadlabel" for="tg-photogallery">
+                                <span><i class="fas fa-pencil-alt"></i> </span>
+                                <?= $form->field($userProfilePicture, 'profile_image', ['template' => '{input}{error}', 'options' => []])->fileInput(['id' => 'tg-photogallery', 'class' => 'tg-fileinput', 'accept' => 'image/*'])->label(false) ?>
+                            </label>
+                            </span>
                             <div class="upload-info">
                                 <div class="row">
                                     <div class="col-md-12 col-sm-12 col-xs-12">
-                                        <label class="tg-fileuploadlabel" for="tg-photogallery">
-                                            <span class="tg-btn">Browse File</span>
-                                            <?= $form->field($userProfilePicture, 'profile_image', ['template' => '{input}{error}', 'options' => []])->fileInput(['id' => 'tg-photogallery', 'class' => 'tg-fileinput', 'accept' => 'image/*'])->label(false) ?>
-                                        </label>
+                                        <?php
+                                        $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                                        ?>
+                                        <h3 class="capitalize mt-0"><?= $uname;?></h3>
                                         <?= Html::submitButton('Update Picture', ['class' => 'btn_pink btn_submit_picture', 'id' => 'picture_submit']); ?>
                                     </div>
                                 </div>
@@ -55,10 +60,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <div class="row">
                         <div class="profile-form-edit col-md-12">
                             <div class="row">
-                                <?php
-                                $uname = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-                                ?>
-                                <?= $form->field($basicDetails, 'full_name', ['template' => '<div class="col-lg-3"><span class="pf-title">Full Name</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['disabled' => true, 'placeholder' => 'First Name', 'value' => (($uname) ? ucwords($uname) : '')])->label(false) ?>
                                 <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : ''); ?>
                                 <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
                                     [1 => 'Male', 2 => 'Female', 3 => 'Transgender', 4 => 'Rather not to say'], [
@@ -72,7 +73,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                     'id' => 'category_drp',
                                     'class' => 'chosen'])->label(false); ?>
                                 <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
-                                        <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
+                                        <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
                             </div>
                             <div class="row">
                                 <?= $form->field($basicDetails, 'exp_year', ['template' => '<div class="col-lg-2"><span class="pf-title">Experience(Y)</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->textInput(['placeholder' => 'Year', 'class' => 'valid_input form-control', 'required' => true, 'maxLength' => '2', 'value' => (($getExperience) ? $getExperience[0] : '')])->label(false) ?>
@@ -136,7 +137,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                             } ?>
                                             <li class="tagAdd taglist">
                                                 <div class="language_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                                                     <input type="text" id="search-language"
                                                            class="skill-input lang-input">
                                                 </div>
@@ -162,7 +163,7 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                                             } ?>
                                             <li class="tagAdd taglist">
                                                 <div class="skill_wrapper">
-                                                    <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                                    <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                                                     <input type="text" id="search-skill" class="skill-input">
                                                 </div>
                                             </li>
@@ -211,10 +212,10 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <h3>Social Edit</h3>
                     <?php ActiveForm::begin(['id' => 'socialDetailForm', 'action' => '/users/update-social-detail']) ?>
                     <div class="row">
-                        <?= $form->field($socialDetails, 'facebook', ['template' => '<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fa fa-facebook"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Facebook Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'twitter', ['template' => '<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fa fa-twitter"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Twitter Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'skype', ['template' => '<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fa fa-skype"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Skype Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
-                        <?= $form->field($socialDetails, 'linkedin', ['template' => '<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fa fa-linkedin"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Linkedin Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'facebook', ['template' => '<div class="col-lg-6"><span class="pf-title">Facebook</span><div class="pf-field fb">{input}{error}<i class="fab fa-facebook-f"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Facebook Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->facebook) ? Yii::$app->user->identity->facebook : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'twitter', ['template' => '<div class="col-lg-6"><span class="pf-title">Twitter</span><div class="pf-field twitter">{input}{error}<i class="fab fa-twitter"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Twitter Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->twitter) ? Yii::$app->user->identity->twitter : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'skype', ['template' => '<div class="col-lg-6"><span class="pf-title">Skype</span><div class="pf-field fb">{input}{error}<i class="fab fa-skype"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Skype Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->skype) ? Yii::$app->user->identity->skype : '')])->label(false) ?>
+                        <?= $form->field($socialDetails, 'linkedin', ['template' => '<div class="col-lg-6"><span class="pf-title">Linkedin</span><div class="pf-field linkedin">{input}{error}<i class="fab fa-linkedin-in"></i></div></div>', 'options' => []])->textInput(['placeholder' => 'Linkedin Username', 'maxLength' => 50, 'value' => ((Yii::$app->user->identity->linkedin) ? Yii::$app->user->identity->linkedin : '')])->label(false) ?>
                         <div class="col-lg-12">
                             <?= Html::submitButton('Update', ['class' => 'btn_pink btn_submit_contact', 'id' => 'contact_submit']); ?>
                         </div>
@@ -435,11 +436,24 @@ color:#fff;
 border:none !important;
 }
 .tg-fileuploadlabel{
-    height:50px;
-    float:left;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    padding-top: 150px;
+}
+.tg-fileuploadlabel span i{
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0px 0px 10px 1px #bbb;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
 }
 .tg-btn{
-display: block !important;
+    display: block !important;
     color: #ff7803 !important;
     position: relative;
     text-align: center;
@@ -573,10 +587,37 @@ content: attr(data-text);
     background-color: #FFF;
     border-radius: 8px;
 }
+.upload-img-bar > span{
+    height: 154px;
+    margin-bottom: 45px;
+}
+.tg-fileuploadlabel .field-tg-photogallery{
+    width:300px;
+}
 @media screen and (max-width: 767px){
     .tg-fileuploadlabel, .upload-img-bar{
         padding-left:0px;
     }
+}
+@media screen and (max-width: 425px){
+    .upload-img-bar > span{
+        display:block;
+        margin: auto;
+        margin-bottom: 45px;
+    }
+    .upload-info{
+        display:block;
+    }
+    .upload-info{
+        padding-left:0px;
+        text-align: center;
+    }
+    .tg-fileuploadlabel .field-tg-photogallery {
+        width: 290px;
+        margin-left: -63px;
+        text-align: center;
+    }
+    #picture_submit{float:none;}
 }
 ");
 $script = <<< JS
@@ -725,7 +766,7 @@ function runAjax(thisObj,data,btn) {
      cache:false,
      processData: false,
      beforeSend:function() {
-       btn.append('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+       btn.append('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
        btn.attr("disabled","true");
      },
      success:function(response) {

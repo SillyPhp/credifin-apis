@@ -1,47 +1,3 @@
-
-// var track = (function(){
-//   var ip;
-//   var city;
-//   function load(){
-//       $.ajax({
-//         async: false,
-//         type: "GET",
-//         url: "https://ipapi.co/json/",
-//         dataType: "json",
-//         success : function(data) {  
-//           ip = JSON.stringify(data["ip"]); 
-//           city = JSON.stringify(data["city"]);
-//         }
-//       });
-//   }
-//     return {
-//       load : function() { 
-//           if(ip && city) return;
-//           load();
-//       },
-//       getHtml: function(){
-//           if(!ip || !city) load();
-//           return [ip, city];
-//       }
-//   }
-// })();
-
-// window.onload = function(){
-//   var restrac = track.getHtml();
-//   restrac[0] = restrac[0].replace(/"/g, '');
-//   restrac[1] = restrac[1].replace(/"/g, '');
-//   $.ajax({
-
-//       url: 'http://www.empoweryouth.in/api/v1/quiz-counter/add',
-//       method: 'POST',
-//       data: {
-//           'ip_address': restrac[0],
-//           'location': restrac[1],
-//       },
-//       dataType: "json"
-//   });
-// }
-
 (function() {
   
   'use strict';
@@ -71,7 +27,7 @@
     
     // The end-point in which we gather question and answer data:
     api: {
-      uri: 'http://www.empoweryouth.in/api/v1/quiz/quiz2'
+      uri: window.location.href
     },
     
     // Dictionaries like an alphabet For determining answer letter (based on its index)
@@ -114,7 +70,7 @@
         skipQuestion: 'No answer selected. Skip the question?'
       },
       start: {
-        begin: 'Begin &rarr;'
+        begin: 'Play &rarr;'
       },
       end: {
         answeredCorrectly: 'questions answered correctly',
@@ -130,7 +86,9 @@
         review: 'Review answers',
         reviewYourAnswers: 'Review your answers',
         score: 'Score',
-        share: 'Share on Facebook'
+        share: 'Share on Facebook',
+        sharetweet: 'Share on Twitter',
+        sharewa: 'Share on Whatsapp'
       },
       footer: 'EMPOWER YOUTH'
     },
@@ -256,50 +214,8 @@
         </span>`;
       return `<div class="elem-div-answer-container">${ansFirstWrap}</div>`;
     }
-  };
-  
-  var track = (function(){
-    var ip;
-    var city;
-    function load(){
-        $.ajax({
-          async: false,
-          type: "GET",
-          url: "https://ipapi.co/json/",
-          dataType: "json",
-          success : function(data) {  
-            ip = JSON.stringify(data["ip"]); 
-            city = JSON.stringify(data["city"]);
-          }
-        });
-    }
-      return {
-        load : function() { 
-            if(ip && city) return;
-            load();
-        },
-        getHtml: function(){
-            if(!ip || !city) load();
-            return [ip, city];
-        }
-    }
-  })();
 
-  window.onload = function(){
-    var restrac = track.getHtml();
-    restrac[0] = restrac[0].replace(/"/g, '');
-    restrac[1] = restrac[1].replace(/"/g, '');
-    $.ajax({
-  
-        url: 'http://www.empoweryouth.in/api/v1/quiz-counter/add',
-        method: 'POST',
-        data: {
-            'ip_address': restrac[0],
-            'location': restrac[1],
-        },
-        dataType: "json"
-    });
-  }
+  };
   
   
   /* Question:
@@ -354,23 +270,6 @@
 
     // Go to next question (if there are more) or show the end screen:
     next: function() {
-      if(question.index.get() == 0 || question.index.get()==7){
-        var a = question.index.get();
-        var restrac = track.getHtml();
-        restrac[0] = restrac[0].replace(/"/g, '');
-        restrac[1] = restrac[1].replace(/"/g, '');
-        $.ajax({
-
-            url: 'http://www.empoweryouth.in/api/v1/quiz-tracker/add',
-            method: 'POST',
-            data: {
-                'ip_address': restrac[0],
-                'location': restrac[1],
-                'question' : a
-            },
-            dataType: "json"
-        });
-      }
       question.index.increment();
       question.moreRemaining() ? question.populate() : screen.end();
     },
@@ -480,30 +379,56 @@
       userScore.calculate();
       const scoreAsPercentage = userScore.format.asPercentage();
       let scoreMessage = `
-        <span class="elem-span-score">${config.question.score}</span> of 
-        <span class="elem-span-score">${config.question.data.length}</span>  
-        ${uiLabels.main.end.answeredCorrectly}!`;
+        <span class="elem-span-score font-30">${config.question.score}</span><span class="font-25"> of </span> 
+        <span class="elem-span-score font-30">${config.question.data.length}</span>  
+        <span class="font-25">${uiLabels.main.end.answeredCorrectly}!</span>`;
         elemQuestion.html(`${userScore.getFeedback(scoreAsPercentage)}!`);
-        elemAnswersContainer.html(`${scoreMessage} (
-        <span class="elem-span-score">${scoreAsPercentage}%</span>).</br><br/>
+        elemAnswersContainer.html(`${scoreMessage}.</br><br/>
         <button id="elem-button-retake-quiz" class="elem-button-end-screen">
           ${uiLabels.main.end.retake}
         </button><br/>
         <button id="elem-button-review-answers" class="elem-button-end-screen">
           ${uiLabels.main.end.review}
         </button><br/>
-        <button id="elem-button-share-quiz" class="elem-button-end-screen">
-          ${uiLabels.main.end.share}
-        </button><br/>`);
+        <div class="effect jaques">
+            <div class="buttons">
+                <a href="#" id="elem-button-share-quiz" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a href="#" id="elem-button-share-quiz-twitter" class="tw" target="_blank" title="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a href="#" id="elem-button-share-quiz-wa" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="#" id="elem-button-share-quiz-wa-mob" data-action="share/whatsapp/share" class="whats" target="_blank" title="Share on Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+            </div>
+        </div>
+        <a href="/login" id="" class="login-s" title="Login or Signup to Empoweryouth">Login or Signup</a>
+        `);
       $('#elem-button-review-answers').on('click', function() { screen.reviewAnswers(); });
       $('#elem-button-retake-quiz').on('click', function() {
         gameReset();
         screen.title();
       });
       $('#elem-button-share-quiz').on('click', function() {
-        var u = "http://www.empoweryouth.in/fifa-quiz-2/" + config.question.score + "/" + config.question.data.length;
+        var path = window.location.pathname.split('/');
+        var u = window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + config.question.score + "/" + config.question.data.length;
         var t = document.title;
-        window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent(u) + '&t=' + encodeURIComponent(t), 'sharer', 'toolbar=0,status=0,width=626,height=436');
+        window.open('http://www.facebook.com/sharer.php?u=' + u);
+        return false;
+      });
+      $('#elem-button-share-quiz-twitter').on('click', function() {
+        var path = window.location.pathname.split('/');
+        var u = window.location.hostname + "/" + path[1] + "/" + path[2] + "/" + config.question.score + "/" + config.question.data.length;
+        var t = document.title;
+        window.open("https://twitter.com/intent/tweet?text=" + u);
+        return false;
+      });
+      $('#elem-button-share-quiz-wa').on('click', function() {
+        var u = window.location.href + "/" + config.question.score + "/" + config.question.data.length;
+        var t = document.title;
+        window.open("https://wa.me/?text=" + u);
+        return false;
+      });
+      $('#elem-button-share-quiz-wa-mob').on('click', function() {
+        var u = window.location.href + "/" + config.question.score + "/" + config.question.data.length;
+        var t = document.title;
+        window.open("whatsapp://send?text=" +  u);
         return false;
       });
       ui.mode.game.finished();
@@ -734,13 +659,48 @@
    ***************************************************/
   
   function getData() {
+    var quiz_name = document.getElementById('quest-name').getAttribute('value');
     if (!config.question.retake) {
-      $.getJSON(config.api.uri).then((data) => {
-        question.getAll(data);
-        addBeginQuizListener();
-      }).catch((err) => {
-        console.error(err);
-      });
+      $.ajax({
+        url: config.api.uri,
+        method: 'POST',
+        data: { '_csrf-common' : $('meta[name="csrf-token"]').attr("content")},
+        dataType: 'JSON',
+        success: function (data) {
+
+          var a = [];
+
+          var quesans = [];
+
+          var datares = data['results'];
+
+          a.push({
+            "title" : quiz_name,
+            "footer": "Empower Youth"
+          });
+
+          for(var i = 0; i < datares.length; i++){
+
+            var ind = {};
+            ind['answers'] = [];
+            ind['question'] = datares[i]['question'];
+
+            var dataans = data['results'][i]['quizAnswers'];
+            for(var j = 0; j < dataans.length; j++){
+              ind['answers'].push(dataans[j]['answer']);
+              if(dataans[j]['is_answer'] == "1"){
+                ind['correct'] = j;
+              }
+            }
+
+            quesans.push(ind);
+          }
+          a.push(quesans);
+
+          question.getAll(a);
+          addBeginQuizListener();
+        }
+      })
      } else { 
        question.removeAllUserAnswers();
        addBeginQuizListener();

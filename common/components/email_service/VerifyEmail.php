@@ -10,10 +10,12 @@ use DateTime;
 use Yii;
 use yii\base\Component;
 
-class VerifyEmail extends Component{
+class VerifyEmail extends Component
+{
 
-    public function registerVerification($token){
-        if(empty($token) || !is_string($token)){
+    public function registerVerification($token)
+    {
+        if (empty($token) || !is_string($token)) {
             throw new InvalidParamException('Email Verification Code Cannot be blank');
         }
 
@@ -24,7 +26,7 @@ class VerifyEmail extends Component{
             'is_deleted' => 0
         ]);
 
-        if(!$user_token){
+        if (!$user_token) {
             throw new InvalidParamException('Invalid Verification Code');
         }
 
@@ -32,7 +34,7 @@ class VerifyEmail extends Component{
         $date = new DateTime($date_expire);
         $now = new DateTime();
         $res = $date->diff($now);
-        $year = $res->y * (365 * 60 *  60 * 24);
+        $year = $res->y * (365 * 60 * 60 * 24);
         $month = $res->m * (30 * 60 * 60 * 24);
         $day = $res->d * (60 * 60 * 24);
         $hour = $res->h * (60 * 60);
@@ -40,13 +42,13 @@ class VerifyEmail extends Component{
         $second = $res->s;
         $result = $year + $month + $day + $hour + $minute + $second;
 
-        if($result > Yii::$app->params->expiration_time->email_verification){
+        if ($result > Yii::$app->params->expiration_time->email_verification) {
             throw new InvalidParamException('Verification Link has Expired');
         }
 
         $organization_id = $user_token->organization_enc_id;
 
-        if($organization_id) {
+        if ($organization_id) {
             $organization = Organizations::findOne([
                 'organization_enc_id' => $organization_id,
                 'status' => 'Active',
@@ -57,7 +59,7 @@ class VerifyEmail extends Component{
             if ($organization) {
                 $organization->is_email_verified = 1;
                 $organization->last_updated_on = date('Y-m-d H:i:s');
-                $organization->last_updated_by = $user_token->created;
+                $organization->last_updated_by = $user_token->created_by;
                 if (!$organization->update()) {
                     return false;
                 }
@@ -71,23 +73,23 @@ class VerifyEmail extends Component{
             'is_deleted' => 0
         ]);
 
-        if($user){
+        if ($user) {
             $user->is_email_verified = 1;
             $user->last_updated_on = date('Y-m-d H:i:s');
-            if($user->update()){
+            if ($user->update()) {
                 $user_token->status = 'Verified';
                 $user_token->is_deleted = 1;
                 $user_token->last_updated_on = date('Y-m-d H:i:s');
                 $user_token->last_updated_by = $user_token->created_by;
-                if($user_token->update()){
+                if ($user_token->update()) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
-            }else{
+            } else {
                 return false;
             }
-        }else{
+        } else {
             return false;
         }
     }

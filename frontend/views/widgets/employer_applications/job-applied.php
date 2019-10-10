@@ -7,6 +7,7 @@ use yii\helpers\Url;
 
 $location = ArrayHelper::map($locations, 'city_enc_id', 'name');
 Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->controller->id) . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -20,6 +21,7 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
                     echo $form->field($model, 'location_pref')->inline()->checkBoxList($location)->label('Select Placement Location');
                 } ?>
                 <?= $form->field($model, 'id', ['template' => '{input}'])->hiddenInput(['id' => 'application_id', 'value' => $application_enc_id]); ?>
+                <?= $form->field($model, 'org_id', ['template' => '{input}'])->hiddenInput(['id' => 'organization_id', 'value' => $organization_enc_id]); ?>
                 <?php
                 if ($que) {
                     $ques = 1;
@@ -38,7 +40,7 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
                 <?= $form->field($model, 'check')->inline()->radioList($checkList)->label('Upload Resume') ?>
 
                 <div id="new_resume">
-                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf Format Only'); ?>
+                    <?= $form->field($model, 'resume_file')->fileInput(['id' => 'resume_file'])->label('Upload Your CV In Doc, Docx,Pdf,Jpg,Jpeg,Png Format Only'); ?>
                 </div>
                 <?php if ($resumes) { ?>
                     <div id="use_existing">
@@ -69,41 +71,9 @@ Yii::$app->view->registerJs('var btn_class = "' . $btn_class . '"', \yii\web\Vie
         </div>
     </div>
 </div>
-<div id="message_img">
-    <span id='close_btn'><i class="fa fa-times"></i></span>
-    <div id="msg">
-        <img src="https://i.ibb.co/TmV51CY/done.png">
-        <h1 class="heading_submit">Submitted!</h1>
-        <p class="sub_description_1">Your Application Has been successfully registerd with the recruiter. keep check
-            your Dashboard Regularly for further confirmation from the recruiter side.</p>
-        <p class="sub_description_2">Your Application Has been successfully registerd But There Are Some
-            Questionnaire Pending From Your Side you can fill them now By clicking <a
-                    href="<?= URL::to('/account/dashboard') ?>" target="_blank">Here</a> Or You can fill them Later.
-            <br><b>Please Note:</b>Your Application Would not be process further if your didn't fill them!</p>
-
-    </div>
-</div>
 <?php
+echo $this->render('/widgets/employer_applications/applied-modal');
 $this->registerCss("
- #message_img{
-      display:none;
-    }
-    
-    #message_img.show{
-        display : block;
-        position : fixed;
-        z-index: 100;
-        background-color:#33cdbb;
-        opacity : 1;
-        background-repeat : no-repeat;
-        background-position : center;
-        width:60%;
-        height:60%;
-        left : 20%;
-        bottom : 0;
-        right : 0;
-        top : 20%;
-    }
     .inputGroup {
       background-color: #fff;
       display: block;
@@ -191,20 +161,6 @@ $this->registerCss("
         font-weight: 600;
         margin-bottom: 10px;
     }
-    #msg{
-        color:#fff;
-        padding: 5px 5px;
-        text-align:center;
-     }  
-     
-    #close_btn {
-        float: right;
-        display: inline-block;
-        padding: 0px 6px;
-        color: #fff;
-        font-size: 28px;
-        cursor: pointer;
-    }
 ");
 $script = <<< JS
   $(document).on('click','.'+btn_class+'',function(e)
@@ -255,6 +211,7 @@ $script = <<< JS
                     {
                       var formData = new FormData();
                       var id = $('#application_id').val();
+                      var org_id = $('#organization_id').val();
                       var check = 1;
                        var loc_array = [];
                        $("input[name='JobApplied[location_pref][]']:checked").each(function(){
@@ -264,6 +221,8 @@ $script = <<< JS
                       formData.append('application_enc_id',id);
                       formData.append('resume_enc_id',resume_enc_id);
                       formData.append('check',check);
+                      formData.append('application_type',application_type);
+                      formData.append('org_id',org_id);
                       if($('#question_id').val() == 1)
                         {
                           var status = 'incomplete';
@@ -286,7 +245,7 @@ $script = <<< JS
                  $.each($('#resume_file').prop("files"), function(k,v){
                  var filename = v['name'];    
                  var ext = filename.split('.').pop().toLowerCase();
-                if($.inArray(ext, ['pdf','doc','docx']) == -1) {
+                if($.inArray(ext, ['pdf','doc','docx','png','jpg','jpeg']) == -1||v['size']>2097152) {
                 return false;
               }
           else
@@ -298,6 +257,7 @@ $script = <<< JS
                         });
             var formData = new FormData($('form')[0]);
                  var id = $('#application_id').val();
+                 var org_id = $('#organization_id').val();
                  if($('#question_id').val() == 1)
                         {
                           var status = 'incomplete';
@@ -309,6 +269,8 @@ $script = <<< JS
                           formData.append('status',status);
                         }
                 formData.append('id',id);
+                formData.append('application_type',application_type);    
+                formData.append('org_id',org_id);    
                 var json_loc = JSON.stringify(loc_array);
                 formData.append('json_loc',json_loc);
                 ajax_call(formData);
@@ -327,7 +289,7 @@ $script = <<< JS
         function ajax_call(formData)
         {
             $.ajax({
-                    url:'/account/jobs/jobs-apply',
+                    url:'/jobs/jobs-apply',
                     dataType: 'text',  
                     cache: false,
                     contentType: false,
@@ -336,24 +298,36 @@ $script = <<< JS
                     type: 'post',
                  beforeSend:function()
                  {
-                 $('.sav_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                 $('.sav_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
                  },     
                  success:function(data)
                  {
             var res = JSON.parse(data);
             if(res.status == true && $('#question_id').val() == 1){
                         applied();
-                        $('.sub_description_2').css('display','block');
-                        $('.sub_description_1').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
+                        swal({
+                          title: "Submitted!",
+                          text: "Your Application Has been successfully registered But There Are Some Questionnaire Pending From Your Side you can fill them now By clicking below Fill Questionnaire button!",
+                          type: "success",
+                          showCancelButton: true,
+                          confirmButtonClass: "btn-primary",
+                          confirmButtonText: "Fill Questionnaire!",
+                          cancelButtonText: "Fill Later!",
+                          closeOnConfirm: false,
+                          closeOnCancel: false
+                        },
+                        function(isConfirm) {
+                          if (isConfirm) {
+                            window.location.pathname = "/account/dashboard";
+                          } else {
+                            swal("Please Note!", "Your Application Would not be process further if your don't complete it. To fill it visit your dashboard.", "warning");
+                          }
+                        });
                      }
                     else if(res.status == true)
-                      {
-                        $('.sub_description_1').css('display','block');
-                        $('.sub_description_2').css('display','none');
-                        $('#message_img').addClass('show');
-                        $('.fader').css('display','block');
+                      { 
+                         $('#appliedModal').modal('show');
+                          // swal("Submitted!", "Your Application Has been successfully registered with the recruiter. keep checking your Dashboard Regularly for further confirmation from the recruiter side.", "success");
                         applied();
                       }
                       else
@@ -367,17 +341,14 @@ $script = <<< JS
     function applied()
         {
              $('#modal').modal('toggle');
-                     $('.'+btn_class+'').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                     $('.'+btn_class+'').html('<i class = "fa fa-check"></i>Applied');
+                     $('.'+btn_class+'').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                     $('.'+btn_class+'').html('<i class = "fas fa-check"></i>Applied');
                      $('.'+btn_class+'').attr("disabled","true");
             }
 
- $(document).on('click','#close_btn',function()
- {
-    $('.fader').css('display','none');
-    $(this).parent().removeClass('show');
-});
 JS;
 
-$this->registerJs($script)
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

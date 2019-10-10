@@ -1,17 +1,15 @@
 <?php
-
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 ?>
-<!--<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>-->
-<section>
-    
-    <div class="row">
-        <div class="col-md-5 col-md-offset-7">
-            <div class="col-md-4"> 
-            </div> 
+    <section>
+
+        <div class="row">
+            <div class="col-md-5 col-md-offset-7">
+                <div class="col-md-4">
+                </div>
+            </div>
         </div>
-    </div>
         <div class="row">
             <div class="col-lg-12 col-xs-12 col-sm-12">
                 <div class="portlet light">
@@ -23,85 +21,87 @@ use yii\widgets\Pjax;
                     </div>
                     <div class="portlet-body">
                         <div class="row">
-                            <?php 
-                                Pjax::begin(['id' => 'pjax_shortlist']);
-                                $total_applications = count($shortlisted);
-                                if(!empty($shortlisted)) {
-                                    foreach ($shortlisted as $shortlist) {
-                            ?>
-                                        <div class="col-md-3 hr-j-box">
-                                            <div class="topic-con"> 
-                                                <div class="hr-company-box">
-                                                    <div class="hr-com-icon">
-                                                        <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                            <?php
+                            Pjax::begin(['id' => 'pjax_shortlist']);
+                            $total_applications = count($shortlisted);
+                            if (!empty($shortlisted)) {
+                                foreach ($shortlisted as $shortlist) {
+                                    ?>
+                                    <div class="col-md-3 hr-j-box">
+                                        <div class="topic-con">
+                                            <div class="hr-company-box">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>"
+                                                         class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $shortlist['org_name']; ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $shortlist['name']; ?>
+                                                </div>
+                                                <div class="opening-txt">
+                                                    <?= $shortlist["positions"]; ?> Openings
+                                                </div>
+                                                <div class="overlay2">
+                                                    <div class="text-o">
+<!--                                                        <a class="over-bttn ob2 hover_short" href="/job/--><?//= $shortlist['slug']; ?><!--">Apply</a>-->
+                                                        <?php if($shortlist['applied_application_enc_id']){?>
+                                                            <a class="over-bttn ob2" disabled="disabled">Applied</a>
+                                                        <?php }else{?>
+                                                            <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                        <?php } ?>
                                                     </div>
-                                                    <div class="hr-com-name">
-                                                        <?= $shortlist['org_name']; ?>
-                                                    </div>
-                                                    <div class="hr-com-field">
-                                                        <?= $shortlist['name']; ?>
-                                                    </div>
-                                                    <div class="opening-txt">
-                                                        <?= $shortlist["positions"]; ?> Openings
-                                                    </div>
-                                                    <div class="overlay2">
-                                                        <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
-                                                    </div>
-                                                    <div class="hr-com-jobs">
-                                                        <div class="row ">
-                                                            <div class="col-md-12 col-sm-12 minus-15-pad">
-                                                                <div class=" j-cross">
-                                                                    <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
-                                                                        <i class="fa fa-times"></i>
-                                                                    </button>
-                                                                </div> 
-                                                                <div class=" j-grid"> 
-                                                                    <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
-                                                                </div>
+                                                </div>
+                                                <div class="hr-com-jobs">
+                                                    <div class="row ">
+                                                        <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                            <div class=" j-cross">
+                                                                <button class="rmv_list"
+                                                                        value="<?= $shortlist['application_enc_id']; ?>">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                            <div class=" j-grid">
+                                                                <a href="/job/<?= $shortlist['slug']; ?>" title="">VIEW
+                                                                    JOB</a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> 
-                                        <?php
-                                    }
+                                        </div>
+                                    </div>
+                                    <?php
                                 }
-                                else {
-                                            ?>
-                                                <div class="col-md-12">
-                                                    <div class="tab-empty"> 
-                                                        <div class="tab-empty-icon">
-                                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
-                                                        </div>
-                                                        <div class="tab-empty-text">
-                                                            <div class="">There are no Jobs to show.</div>
-                                                            <div class="">You haven't Select any jobs for review.</div>
-                                                        </div>
-                                                    </div>
-                                                </div>  
-                                   <?php
-                                }
-                                Pjax::end();  
+                            } else {
                                 ?>
+                                <div class="col-md-12">
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>"
+                                                 class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">There are no Jobs to show.</div>
+                                            <div class="">You haven't Select any jobs for review.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                            Pjax::end();
+                            ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-  
 
-</section>                       
+
+    </section>
 <?php
 $this->registerCss('
-//.loader{
-//    display:none;
-//    position:fixed;
-//    top:50%;
-//    left:50%;
-//    padding:2px;
-//    z-index:99999;
-//}
 .tab-empty{
     padding:20px;
 }

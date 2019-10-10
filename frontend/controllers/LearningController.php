@@ -9,15 +9,39 @@ use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
 use common\models\LearningVideoTags;
+use common\models\Roles;
+use common\models\SubmittedVideos;
 use common\models\Tags;
+use common\models\UserPrivileges;
+use common\models\Users;
 use Yii;
+use yii\filters\AccessControl;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 use common\models\Utilities;
+use yii\db\Expression;
 
 class LearningController extends Controller
 {
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['batch-videos'],
+                'rules' => [
+                    [
+                        'actions' => ['batch-videos'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -279,6 +303,8 @@ class LearningController extends Controller
 
             $result = LearningVideos::find()
                 ->alias('a')
+                ->distinct()
+                ->select(['a.video_enc_id', 'a.channel_enc_id', 'a.title', 'a.slug', 'a.cover_image'])
                 ->joinWith(['assignedCategoryEnc b' => function ($x) {
                     $x->joinWith(['categoryEnc d'], false);
                     $x->joinWith(['parentEnc e'], false);
@@ -290,7 +316,7 @@ class LearningController extends Controller
             $result
                 ->andFilterWhere([
                     'or',
-                    ['like', 'a.type', $k],
+                    ['like', 'a.slug', $k],
                     ['like', 'a.title', $k],
                     ['like', 'a.description', $k],
                     ['like', 'c.name', $k],
@@ -299,6 +325,7 @@ class LearningController extends Controller
                 ]);
 
             $output = $result
+                ->limit(40)
                 ->asArray()
                 ->all();
 
@@ -313,36 +340,29 @@ class LearningController extends Controller
 
     public function actionIndex()
     {
-        $categories = AssignedCategories::find()
-            ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name'])
-            ->joinWith(['learningVideos b'])
-            ->joinWith(['categoryEnc c'], false)
-            ->joinWith(['parentEnc d'], false)
-            ->where(['a.assigned_to' => 'Videos'])
-            ->andWhere(['a.status' => 'Approved'])
-            ->andWhere(['!=', 'a.parent_enc_id', 'NULL'])
-            ->andWhere(['a.is_deleted' => 0])
-            ->andWhere(['b.status' => 1])
-            ->andWhere(['b.is_deleted' => 0])
-            ->groupBy(['a.assigned_category_enc_id'])
-            ->limit(8)
-            ->asArray()
-            ->all();
+
         $popular_videos = LearningVideos::find()
 //            ->orderBy(['view_count' => SORT_DESC])
+            ->where([
+                'is_deleted' => 0,
+                'status' => 1
+            ])
+            ->orderBy(new Expression('rand()'))
+            ->limit(6)
             ->asArray()
             ->all();
+
         $topics = Tags::find()
             ->alias('a')
             ->select(['a.tag_enc_id', 'a.name', 'a.slug', 'COUNT(c.video_tag_enc_id) cnt'])
             ->joinWith(['learningVideoTags c' => function ($x) {
                 $x->joinWith(['videoEnc d'], false);
-            }], false)
-            ->joinWith(['assignedTags b'], false)
-            ->where(['b.assigned_to' => 2])
-            ->andWhere(['b.status' => 'Approved'])
-            ->andWhere(['b.is_deleted' => 0])
+            }])
+            ->innerJoinWith(['assignedTags b' => function ($b) {
+                $b->andOnCondition(['b.assigned_to' => 2]);
+                $b->andOnCondition(['b.status' => 'Approved']);
+                $b->andOnCondition(['b.is_deleted' => 0]);
+            }])
             ->andWhere(['d.is_deleted' => 0])
             ->andWhere(['d.status' => 1])
             ->orderBy(['COUNT(c.tag_enc_id)' => SORT_DESC])
@@ -352,10 +372,43 @@ class LearningController extends Controller
             ->all();
 
         return $this->render('index', [
-            'categories' => $categories,
             'popular_videos' => $popular_videos,
             'topics' => $topics,
         ]);
+    }
+
+    public function actionContributors()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $contributors = Users::find()
+                ->alias('a')
+                ->select(['CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
+                ->innerJoinWith(['userTypeEnc b' => function ($b) {
+                    $b->andOnCondition(['b.user_type' => 'Contributor']);
+                }], false)
+                ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['a.organization_enc_id' => ""],
+                    ['a.organization_enc_id' => NULL]
+                ])
+                ->asArray()
+                ->all();
+
+            return ['status' => 200, 'result' => $contributors];
+        }
+    }
+
+    public function actionHomeCategories()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'status' => 200,
+                'result' => $this->__getCategories(12)
+            ];
+        }
     }
 
     private function toMinutes($time)
@@ -372,6 +425,7 @@ class LearningController extends Controller
             ->joinWith(['learningVideoTags b' => function ($y) {
                 $y->select(['b.video_enc_id', 'b.tag_enc_id', 'f.name']);
                 $y->joinWith(['tagEnc f'], false);
+                $y->limit(10);
             }])
             ->joinWith(['assignedCategoryEnc c' => function ($x) {
                 $x->joinWith(['categoryEnc d'], false);
@@ -382,26 +436,6 @@ class LearningController extends Controller
             ->andWhere(['a.is_deleted' => 0])
             ->asArray()
             ->one();
-        $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
-        $likeStatus = LearningVideoLikes::find()
-            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->one();
-        $likeCount = LearningVideoLikes::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['status' => 1])
-            ->count();
-        $dislikeCount = LearningVideoLikes::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->andWhere(['status' => 2])
-            ->count();
-        $commentCount = LearningVideoComments::find()
-            ->where(['video_enc_id' => $video_detail['video_enc_id']])
-            ->andWhere(['is_deleted' => 0])
-            ->count();
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parent_id = Yii::$app->request->post('video_id');
@@ -417,7 +451,10 @@ class LearningController extends Controller
                     ->alias('a')
                     ->joinWith(['learningVideoTags b'], false)
                     ->where(['in', 'b.tag_enc_id', $tags_id])
+                    ->andWhere(['a.status' => 1])
+                    ->andWhere(['a.is_deleted' => 0])
                     ->andWhere(['!=', 'b.video_enc_id', $current_video_id['video_enc_id']])
+                    ->limit(8)
                     ->asArray()
                     ->all();
             }
@@ -428,6 +465,7 @@ class LearningController extends Controller
                 ->andWhere(['a.status' => 1])
                 ->andWhere(['a.is_deleted' => 0])
                 ->andWhere(['!=', 'a.video_enc_id', $current_video_id['video_enc_id']])
+                ->limit(10)
                 ->asArray()
                 ->all();
             $top_videos = LearningVideos::find()
@@ -440,19 +478,23 @@ class LearningController extends Controller
                 ->all();
             $top_category = AssignedCategories::find()
                 ->alias('a')
-                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'd.slug', 'c.name child_name', 'c.icon_png child_icon', 'd.icon_png parent_icon', 'd.name parent_name', 'COUNT(b.video_enc_id) cnt'])
-                ->joinWith(['learningVideos b'])
+                ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'COUNT(a.parent_enc_id) cnt'])
+                ->joinWith(['learningVideos b' => function ($b) {
+                    $b->andOnCondition(['b.status' => 1]);
+                    $b->andOnCondition(['b.is_deleted' => 0]);
+                }], false)
                 ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['parentEnc d'], false)
                 ->where(['a.assigned_to' => 'Videos'])
                 ->andWhere(['a.status' => 'Approved'])
-                ->andWhere(['!=', 'a.parent_enc_id', 'NULL'])
+                ->andWhere([
+                    'or',
+                    ['a.parent_enc_id' => ""],
+                    ['a.parent_enc_id' => NULL]
+                ])
                 ->andWhere(['a.is_deleted' => 0])
-                ->andWhere(['b.status' => 1])
-                ->andWhere(['b.is_deleted' => 0])
-                ->groupBy(['b.assigned_category_enc_id'])
-                ->limit(15)
+                ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
+                ->limit(15)
                 ->all();
             if ($related_videos || $top_videos || $top_category || $interested_videos) {
                 $response = [
@@ -470,13 +512,37 @@ class LearningController extends Controller
             }
             return ($response);
         }
-        return $this->render('video-detail', [
-            'video_detail' => $video_detail,
-            'like_status' => $likeStatus,
-            'like_count' => $likeCount,
-            'dislike_count' => $dislikeCount,
-            'comment_count' => $commentCount,
-        ]);
+        if (!empty($video_detail)) {
+            $video_detail['duration'] = $this->toMinutes($video_detail['duration']);
+            $likeStatus = LearningVideoLikes::find()
+                ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->one();
+            $likeCount = LearningVideoLikes::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->andWhere(['status' => 1])
+                ->count();
+            $dislikeCount = LearningVideoLikes::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->andWhere(['status' => 2])
+                ->count();
+            $commentCount = LearningVideoComments::find()
+                ->where(['video_enc_id' => $video_detail['video_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->count();
+            return $this->render('video-detail', [
+                'video_detail' => $video_detail,
+                'like_status' => $likeStatus,
+                'like_count' => $likeCount,
+                'dislike_count' => $dislikeCount,
+                'comment_count' => $commentCount,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
     }
 
     public function actionVideoLiked()
@@ -581,6 +647,7 @@ class LearningController extends Controller
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.video_enc_id' => $learning_video['video_enc_id']])
                 ->andWhere(['a.is_deleted' => 0])
+                ->orderBy(['a.created_on' => SORT_DESC])
                 ->asArray()
                 ->all();
 
@@ -769,6 +836,113 @@ class LearningController extends Controller
         } else {
             return false;
         }
+    }
+
+    public function actionBatchVideos()
+    {
+        $this->layout = 'main-secondary';
+        return $this->render('batch-videos');
+    }
+
+    public function actionSaveVideoData()
+    {
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $data = Yii::$app->request->post();
+            foreach ($data['data'] as $d) {
+                if (!$this->saveData($d)) {
+                    return false;
+                }
+            }
+            return $response = [
+                'status' => 200,
+                'message' => 'saved successfully'
+            ];
+        }
+
+    }
+
+    private function saveData($data)
+    {
+        $submittedVideosModel = new SubmittedVideos();
+        $utilitiesModel = new Utilities();
+        $submittedVideosModel->channel_id = $data['channel_id'];
+        $submittedVideosModel->channel_name = $data['channel_name'];
+        $submittedVideosModel->name = $data['title'];
+        $submittedVideosModel->link = $data['link'];
+        $submittedVideosModel->cover_image = $data['cover_image'];
+        $submittedVideosModel->description = $data['description'];
+        $submittedVideosModel->video_duration = $this->video_length($data['duration']);
+        if (!empty($data['tags'])) {
+            $submittedVideosModel->tags = implode(',', $data['tags']);
+        }
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $submittedVideosModel->video_enc_id = $utilitiesModel->encrypt();
+        $submittedVideosModel->type = 'Others';
+        $submittedVideosModel->category = 'others';
+        $submittedVideosModel->sub_category = 'others';
+        $submittedVideosModel->created_by = Yii::$app->user->identity->user_enc_id;
+        $submittedVideosModel->created_on = date('Y-m-d H:i:s');
+        $utilitiesModel->variables['name'] = $data['title'];
+        $utilitiesModel->variables['table_name'] = SubmittedVideos::tableName();
+        $utilitiesModel->variables['field_name'] = 'slug';
+        $submittedVideosModel->slug = $utilitiesModel->create_slug();
+        if ($submittedVideosModel->save()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function video_length($youtube_time)
+    {
+        $duration = new \DateInterval($youtube_time);
+        return $duration->h . ':' . $duration->i . ':' . $duration->s;
+    }
+
+    public function actionCategories()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return [
+                'status' => 200,
+                'result' => $this->__getCategories()
+            ];
+
+        }
+
+        return $this->render('category-list-page');
+    }
+
+    private function __getCategories($limit = NULL)
+    {
+        $categories = AssignedCategories::find()
+            ->select(['COUNT(d.video_enc_id) as total', 'a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'CASE WHEN a.icon IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->icon->png->icon) . '", a.icon_location, "/", a.icon) ELSE "/assets/themes/ey/images/pages/learning-corner/othercategory.png" END icon', 'c.slug', 'c.name'])
+            ->alias('a')
+            ->distinct()
+            ->joinWith(['categoryEnc c'], false)
+            ->joinWith(['learningVideos d' => function ($b) {
+                $b->andOnCondition(['d.status' => 1]);
+                $b->andOnCondition(['d.is_deleted' => 0]);
+            }], false)
+            ->groupBy(['a.parent_enc_id'])
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Approved'])
+            ->andWhere([
+                'or',
+                ['not', ['a.parent_enc_id' => NULL]],
+                ['not', ['a.parent_enc_id' => ""]]
+            ])
+            ->andWhere(['a.assigned_to' => 'Videos'])
+            ->orderBy(['total' => SORT_DESC]);
+
+        if ((int)$limit) {
+            $categories->limit($limit);
+        }
+
+        return $categories->asArray()->all();
     }
 
 }

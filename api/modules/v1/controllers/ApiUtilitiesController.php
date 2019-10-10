@@ -7,46 +7,53 @@ use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\Cities;
 use common\models\Countries;
+use common\models\Designations;
+use common\models\Qualifications;
 use common\models\States;
 use yii\helpers\ArrayHelper;
 use Yii;
 use yii\helpers\Url;
 
-class ApiUtilitiesController extends ApiBaseController{
-    public function actionStates(){
+class ApiUtilitiesController extends ApiBaseController
+{
+    public function actionStates()
+    {
         $statesModel = new States();
-        $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name'=>SORT_ASC])->asArray()->all(), 'name', 'state_enc_id');
+        $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'name', 'state_enc_id');
+//        $states = ['select' => 'default'] + $states;
         return $this->response(200, $states);
     }
 
-    public function actionCities($n = null, $id = null){
+    public function actionCities($n = null, $id = null)
+    {
         $cities = Cities::find()
-                  ->alias('a')
-                  ->select(['a.city_enc_id AS id', 'a.name AS name'])
-                  ->innerJoin(States::tableName(). ' as b', 'b.state_enc_id = a.state_enc_id')
-                  ->innerJoin(Countries::tableName(). ' as c', 'c.country_enc_id = b.country_enc_id')
-                  ->where(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
-                  ->andFilterWhere(['like', 'a.name', $n])
-                  ->andFilterWhere(['like', 'a.city_enc_id', $id])
-                  ->asArray()
-                  ->all();
+            ->alias('a')
+            ->select(['a.city_enc_id AS id', 'a.name AS name'])
+            ->innerJoin(States::tableName() . ' as b', 'b.state_enc_id = a.state_enc_id')
+            ->innerJoin(Countries::tableName() . ' as c', 'c.country_enc_id = b.country_enc_id')
+            ->where(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
+            ->andFilterWhere(['like', 'a.name', $n])
+            ->andFilterWhere(['like', 'a.city_enc_id', $id])
+            ->asArray()
+            ->all();
         return $this->response(200, $cities);
     }
 
-    public function actionGetCitiesByState(){
-        if($id = \Yii::$app->request->post('id')){
+    public function actionGetCitiesByState()
+    {
+        if ($id = \Yii::$app->request->post('id')) {
             $cities = Cities::find()
-                      ->select(['city_enc_id AS id', 'name'])
-                      ->where(['state_enc_id' => $id])
-                      ->orderBy(['name' => SORT_ASC])
-                      ->asArray()
-                      ->all();
-            if(count($cities) > 0){
+                ->select(['city_enc_id AS id', 'name'])
+                ->where(['state_enc_id' => $id])
+                ->orderBy(['name' => SORT_ASC])
+                ->asArray()
+                ->all();
+            if (count($cities) > 0) {
                 return $this->response(200, $cities);
             }
-            return $this->response(404);
+            return $this->response(404,'Not found');
         }
-        return $this->response(422);
+        return $this->response(422,'Missing Information');
     }
 
 //    public function actionJobProfiles($n){
@@ -61,7 +68,8 @@ class ApiUtilitiesController extends ApiBaseController{
 //                ->all();
 //    }
 
-    public function actionProfiles(){
+    public function actionProfiles()
+    {
         $fields = Categories::find()
             ->alias('a')
             ->select(['a.name', 'a.category_enc_id'])
@@ -87,5 +95,32 @@ class ApiUtilitiesController extends ApiBaseController{
             ->asArray()
             ->all();
         return $this->response(200, $fields);
+    }
+
+    public function actionDesignation($n = null)
+    {
+
+        $designation = Designations::find()
+            ->select(['designation_enc_id', 'designation'])
+            ->where(['is_deleted' => 0, 'status' => 'Publish'])
+            ->andFilterWhere(['like', 'designation', $n])
+            ->andFilterWhere(['like', 'slug', $n])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, $designation);
+    }
+
+    public function actionEduStream($n = null)
+    {
+
+        $edu_stream = Qualifications::find()
+            ->select(['qualification_enc_id', 'name'])
+            ->andFilterWhere(['like', 'name', $n])
+            ->andFilterWhere(['like', 'slug', $n])
+            ->asArray()
+            ->all();
+
+        return $this->response(200, $edu_stream);
     }
 }

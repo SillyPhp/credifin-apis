@@ -7,6 +7,7 @@ $this->title = $org_details['name'].' '.Yii::$app->params->seo_settings->title_s
 Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD);
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
+$link = Url::to($slug . '/reviews', true);
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
@@ -20,8 +21,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -35,6 +36,7 @@ $this->params['seo_tags'] = [
         'fb:app_id' => '973766889447403'
     ],
 ];
+
 ?>
 <section class="rh-header">
     <div class="container">
@@ -59,10 +61,18 @@ $this->params['seo_tags'] = [
                 <div class="com-name"><?= ucwords($org_details['name']); ?></div>
                 <div class="com-rating-1">
                     <?php for ($i=1;$i<=5;$i++){ ?>
-                        <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                        <i class="fas fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
                     <?php } ?>
                 </div>
                 <div class="com-rate"><?= $round_avg ?>/5 - based on <?= count($reviews); ?> reviews</div>
+                <div class="share-btn">
+                    <button id="sb">Share</button>
+                        <ul class="sd-btns share-hidden">
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in"></i></a> </li>
+                        </ul>
+                </div>
             </div>
             <div class="col-md-4 col-sm-12">
                 <div class="header-bttns">
@@ -71,41 +81,41 @@ $this->params['seo_tags'] = [
                         <?php if (!empty($follow) && $follow['followed'] == 1) {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Following</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Following</button>
                             </div>
                             <?php
                         } else  {
                             ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" class="follow" value="<?= $org_details['organization_enc_id']; ?>"><i class="far fa-heart hvr-icon"></i> Follow</button>
                             </div>
                         <?php }} else { ?>
                             <div class="follow-bttn hvr-icon-pulse">
-                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="fa fa-heart-o hvr-icon"></i> Follow</button>
+                                <button type="button" data-toggle="modal" data-target="#loginModal"><i class="far fa-heart hvr-icon"></i> Follow</button>
                             </div>
                         <?php } ?>
                             <?php if (!Yii::$app->user->isGuest){
                                 if(!empty($edit)){ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Edit Your Review</a>
+                              <a href="javascript:;" data-toggle="modal" data-target="#edit_review" class="btn_review"><i class="far fa-comments hvr-icon"></i> Edit Your Review</a>
                         </div>
                                <?php } else {
                                      if (empty(Yii::$app->user->identity->organization_enc_id)){ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                                    <button type="button" id="wr"><i class="fa fa-comments-o hvr-icon"></i> Write Review</button>
+                                    <button type="button" id="wr"><i class="far fa-comments hvr-icon"></i> Write Review</button>
                         </div>
                             <?php } } } else{ ?>
                         <div class="wr-bttn hvr-icon-pulse">
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="fa fa-comments-o hvr-icon"></i> Write Review</a>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn_review"><i class="far fa-comments hvr-icon"></i> Write Review</a>
                         </div>
                             <?php } ?>
                     </div>
                     <div class="col-md-12 cp-center no-padd">
                         <div class="cp-bttn hvr-icon-pulse">
                             <?php if ($review_type=='unclaimed'):?>
-                                <a href="#" type="button"><i class="fa fa-eye hvr-icon"></i> Claim This Profile</a>
+<!--                                <a href="#" type="button"><i class="far fa-eye hvr-icon"></i> Claim This Profile</a>-->
                             <?php else: ?>
-                                <a href="/<?=$slug;?>" type="button"><i class="fa fa-eye hvr-icon"></i> View Company Profile</a>
+                                <a href="/<?=$slug;?>" type="button"><i class="far fa-eye hvr-icon"></i> View Company Profile</a>
                             <?php endif;?>
                         </div>
                     </div>
@@ -118,7 +128,7 @@ $this->params['seo_tags'] = [
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <h1 class="heading-style"><?= ucwords($org_details['name']); ?> Reviews </h1>
+                <h1 class="heading-style">Reviews </h1>
                 <div id="org-reviews"></div>
                 <div class="col-md-offset-2 load-more-bttn">
                     <button type="button" id="load_more_btn">Load More</button>
@@ -126,14 +136,14 @@ $this->params['seo_tags'] = [
             </div>
             <div class="col-md-4">
                 <div class="review-summary">
-                    <h1 class="heading-style">Overall Reviews</h1>
+                    <h1 class="heading-style">Overall Ratings</h1>
                     <div class="row">
                         <div class="col-md-12 col-sm-4">
                             <div class="rs-main <?= (($reviews) ? '': 'fade_background') ?>">
                                 <div class="rating-large"><?= $round_avg ?>/5</div>
                                 <div class="com-rating-1">
                                     <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fa fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
+                                        <i class="fas fa-star <?=(($round_avg<$i) ?  '': 'active') ?>"></i>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -147,7 +157,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['job_avg']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                        <i class="fa fa-star <?=(($stats['job_avg']<$i) ?  '': 'active') ?>"></i>
+                                        <i class="fas fa-star <?=(($stats['job_avg']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -160,7 +170,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['growth_avg']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['growth_avg']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['growth_avg']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -173,7 +183,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_cult']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['avg_cult']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['avg_cult']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -186,7 +196,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_compensation']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['avg_compensation']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['avg_compensation']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -199,7 +209,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work']; ?> </div>
                                     <div class="threestar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['avg_work']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['avg_work']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -212,7 +222,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_work_life']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['avg_work_life']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['avg_work_life']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -225,7 +235,7 @@ $this->params['seo_tags'] = [
                                     <div class="sr-rating <?= (($reviews) ? '': 'fade_background') ?>"> <?= $stats['avg_skill']; ?> </div>
                                     <div class="fourstar-box com-rating-2 <?= (($reviews) ? '': 'fade_border') ?>">
                                         <?php for ($i=1;$i<=5;$i++){ ?>
-                                            <i class="fa fa-star <?=(($stats['avg_skill']<$i) ?  '': 'active') ?>"></i>
+                                            <i class="fas fa-star <?=(($stats['avg_skill']<$i) ?  '': 'active') ?>"></i>
                                         <?php } ?>
                                     </div>
                                 </div>
@@ -478,14 +488,50 @@ $this->params['seo_tags'] = [
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
+        'org_slug'=>$slug
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
+        'org_slug'=>$slug
     ]);
 }
 
 $this->registerCss('
+.share-btn{
+    display:flex;
+    width:100%;
+}
+.share-hidden{
+    display:none;
+    opacity:0;
+    transition:.5s ease-in;
+}
+.share-btn button{
+    background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 12px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    text-transform: uppercase;
+}
+.share-btn ul{
+    width:100%;
+    margin:10px 0 0 8px;
+}
+.share-btn ul li{
+    display:inline;
+}
+.share-btn ul li a{
+     background: #fff;
+    border: 1px solid #00a0e3;
+    color: #00a0e3;
+    padding: 10px 13px;
+    font-size: 14px;
+    border-radius: 5px;
+}
+
 .i-review-navigation
 {
 display:none;
@@ -587,29 +633,48 @@ background: #cadfe8 !important;
 {
 border: 2px solid #cadfe8 !important;
 }  
-.logo-box{
-    height:150px;
-    width:150px;
+//.logo-box{
+//    height:150px;
+//    width:150px;
 //    padding:0 10px;
-    background:#fff;
-    display:block;
-    line-height:150px; 
-    text-align:center;
-    border-radius:6px;
-}  
-.logo-box img, .logo-box canvas{
+//    background:#fff;
+//    display:block;
+//    line-height:150px; 
+//    text-align:center;
+//    border-radius:6px;
+//}  
+.logo-box{
+    height: 150px;
+    width: 150px;
+    padding: 0 10px;
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+.logo-box canvas{
     border-radius:6px;
 }
-//.logo{
-//    display:table-cell;
-//    vertical-align: middle;  
-//    max-width:150px;   
-//}
+.logo-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: top center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
 .com-name{
-    font-size:40px;
-    font-family:lobster;
+    font-size:38px;
+    font-family: "Lora", serif;
+    font-weight: 700;
     color:#fff;
+    line-height:50px;
     margin-top: -16px;
+}
+.com-rating-1{
+    padding-top:15px;
 }
 .com-rating i{
     font-size:16px;
@@ -1088,19 +1153,35 @@ border: 2px solid #cadfe8 !important;
     }
     
 }
+.i-review-box *{
+    font-family: "Roboto Slab";
+    font-weight:400;
+}
+.i-review-start-end-title, .i-review-question-title{
+    font-weight:700;
+}
+.i-review-star{
+    width: 45px;
+    height: 45px;
+}
 ');
 $script = <<< JS
+$(document).on("click", ".star-rating1 label", function(e){
+    e.preventDefault();
+    var id = "#" + $(this).attr("for");
+    $(id).prop("checked", true);
+});
 $(document).on('click','.load_reviews',function(e){
     e.preventDefault();
     $.ajax({
         url:'/organizations/load-reviews',                         
         method: 'post',
         beforeSend:function(){
-         $('.load_reviews').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.load_reviews').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(res){
             if(res==true){
-                $('.load_reviews').html('<i class="fa fa-heart-o hvr-icon"></i> Load More');
+                $('.load_reviews').html('<i class="far fa-heart hvr-icon"></i> Load More');
                 }
          }
     });        
@@ -1337,8 +1418,10 @@ function review_post_ajax(data) {
 JS;
 $this->registerJs($script);
 $this->registerJs($headScript,yii\web\View::POS_HEAD);
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto+Slab:400,700&subset=latin-ext');
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/ideapopup/ideabox-popup.css');
+$this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerJsFile('@backendAssets/global/scripts/app.min.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -1346,4 +1429,12 @@ $this->registerJsFile('@eyAssets/ideapopup/ideapopup-review.js', ['depends' => [
 ?>
 <script id="review-cards" type="text/template">
 
+</script>
+
+<script>
+    document.getElementById('sb').addEventListener("click", function () {
+        var sharecom = document.querySelector('.sd-btns');
+        sharecom.classList.toggle('share-hidden');
+
+    })
 </script>

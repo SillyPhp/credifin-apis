@@ -26,14 +26,14 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
         <div class="row">
             <div class="col-md-6 input-with-hints">
                 <?= $form->field($applicationFormModel, 'first_name')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('first_name')]); ?>
-                <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your First Name.
                 </div>
             </div>
             <div class="col-md-6 input-with-hints">
                 <?= $form->field($applicationFormModel, 'last_name')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('last_name')]); ?>
-                <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your Last Name.
                 </div>
@@ -42,7 +42,7 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
         <div class="row">
             <div class="col-md-6 i-hint-medium input-with-hints">
                 <?= $form->field($applicationFormModel, 'email', ['enableAjaxValidation' => true])->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('email')]); ?>
-                <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your active Email ID.<br/>
                     Ex. xyz@gmail.com
@@ -58,7 +58,7 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     'options' => ['class' => 'form-control campus-apply'],
                 ]);
                 ?>
-                <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your active Phone Number. Note: WhatsApp Number is Preferred.
                 </div>
@@ -76,7 +76,7 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
             </div>
             <div class="col-md-6 i-hint-medium input-with-hints">
                 <?= $form->field($applicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('college')]); ?>
-                <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                 <div class="i-message">
                     Your Highest Education Institution.
                 </div>
@@ -125,7 +125,7 @@ $states = ArrayHelper::map($statesModel, 'state_id', 'name');
                     <?php
                     echo $form->field($applicationFormModel, 'answers[' . $question['application_question_id'] . ']')->textArea(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'rows' => 5, 'placeholder' => $applicationFormModel->getAttributeLabel($question['question'])]);
                     ?>
-                    <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                    <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
                     <div class="i-message">
                         Answer in about 100 words.
                     </div>
@@ -190,7 +190,7 @@ $this->registerCss('
 }
 .i-hint{
     position: absolute;
-    top: 9px;
+    top: 12px;
     right: 25px;
     font-size: 16px;
     color: #999999b8;
@@ -279,7 +279,7 @@ $(document).on('submit','#ca-application-login-form', function(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     $('.submit-button').attr("disabled", true);
-    $('.submit-button').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+    $('.submit-button').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
     form.secondform = $('#ca-application-login-form :input:not(:hidden)').serialize(); 
     var url = window.location.href;
     var result = form.firstform + '&' + form.secondform;
@@ -318,5 +318,6 @@ $this->registerJs("function drp_down(id, data) {
         }));
     });
 }", View::POS_HEAD);
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

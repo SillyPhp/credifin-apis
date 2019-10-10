@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Url;
 ?>
-<div class="portlet light">
+<div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -35,7 +35,7 @@ use yii\helpers\Url;
                                 <div class="mt-action-row">
                                     <div class="mt-action-info ">
                                         <div class="mt-action-details ">
-                                            <span class="mt-action-author"><a href="/site/candidate-profile"><?= $candiates['fullname']; ?></a></span>
+                                            <span class="mt-action-author"><a href="/<?= $candiates['username'] ?>"><?= $candiates['fullname']; ?></a></span>
                                             <p class="mt-action-desc">Applied For <?= $candiates['job_title']; ?></p>
                                         </div>
                                     </div>

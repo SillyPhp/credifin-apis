@@ -6,7 +6,7 @@ use yii\widgets\Pjax;
 
 ?>
     <div class="profiles-sidebar">
-        <span class="close-profile"><i class="fa fa-close"></i></span>
+        <span class="close-profile"><i class="fas fa-times"></i></span>
         <div class="can-detail-s">
             <?php Pjax::begin(['id' => 'pjax_profile_icon_sidebar']); ?>
             <div class="cst">
@@ -44,49 +44,54 @@ use yii\widgets\Pjax;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
-                                    class="fa fa-file-text-o"></i>My Profile</a>
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
+                                    class="far fa-file-alt"></i>My Profile</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
-                                    class="fa fa-pencil-square-o"></i>Edit Profile</a>
+                                    class="fas fa-edit"></i>Edit Profile</a>
 
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted
+                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Shorlisted
                             Job</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
-                                    class="fa fa-paper-plane-o"></i>Applied Job</a>
+                                    class="far fa-paper-plane"></i>Applied Job</a>
                     </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
-                                    class="fa fa-file-text-o"></i>My Profile</a>
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
+                                    class="far fa-file-alt"></i>My Profile</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs" title="" class="tree-toggler"><i class="fa fa-money"></i>Active Jobs</a>
+                        <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active
+                            Jobs</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active
+                        <a href="/account/internships" title="" class="tree-toggler"><i class="far fa-paper-plane"></i>Active
                             Internships</a>
                     </li>
                     <li class="inner-child">
-                        <a href="/account/jobs/create" title="" class="tree-toggler"><i class="fa fa-money"></i>Create
+                        <a href="/account/jobs/create" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Create
                             Jobs</a>
                     </li>
                     <li class="inner-child">
                         <a href="/account/internships/create" title="" class="tree-toggler"><i
-                                    class="fa fa-paper-plane-o"></i>Create Internships</a>
+                                    class="far fa-paper-plane"></i>Create Internships</a>
                     </li>
                 <?php endif; ?>
                 <li>
                     <a href="#" url="/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
-                       data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
+                       data-backdrop="static" data-keyboard="false"><i class="fas fa-key"></i> Change Password</a>
                     <div class="modal fade" id="myModal2" role="dialog">
                         <div class="modal-dialog modal-md">
                             <div class="modal-content">
@@ -99,7 +104,8 @@ use yii\widgets\Pjax;
                     </div>
                 </li>
                 <li class="inner-child">
-                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
+                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i
+                                class="fas fa-sign-out-alt"></i>Logout</a>
                 </li>
             </ul>
         </div>

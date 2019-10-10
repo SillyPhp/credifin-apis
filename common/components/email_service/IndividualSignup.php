@@ -58,7 +58,7 @@ class IndividualSignup extends Component{
             $mail = Yii::$app->mailer->compose(
                 ['html' => 'verification-email'], ['data' => $user]
             )
-            ->setFrom([Yii::$app->params->contact_email => Yii::$app->params->site_name])
+            ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$data['email'] => $data['name']])
             ->setSubject(Yii::t('frontend', 'Active your ' . Yii::$app->params->site_name . ' account'));
 
