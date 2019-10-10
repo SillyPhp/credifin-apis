@@ -38,10 +38,20 @@ $this->params['header_dark'] = false;
                             <div class="question-main">
                                 <div class="head">
                                     <div class="logo">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                                        <?php if ($obj['privacy']==1){ ?>
+                                            <?php if ($obj['image']){ ?>
+                                                <img src="<?= $obj['image']; ?>" alt="<?= $obj['user_name']; ?>"/>
+                                            <?php } else { ?>
+                                                <canvas class="user-icon img-circle img-responsive" name="<?= $obj['user_name']; ?>"
+                                                        color="<?= $obj['initials_color']; ?>" width="35" height="35"
+                                                        font="20px"></canvas>
+                                            <?php } ?>
+                                       <?php } else { ?>
+                                            <img src="<?= Url::to('/assets/common/images/user1.png');?>">
+                                        <?php } ?>
                                     </div>
                                     <div class="r-details">
-                                        <div class="category-name"><a href=""><?= $obj['name'] ?></a></div>
+                                        <div class="category-name"><a href="<?= $link ?>"><?= $obj['name'] ?></a></div>
                                     </div>
                                 </div>
                                 <div class="box-content">
@@ -50,29 +60,29 @@ $this->params['header_dark'] = false;
                                 <div class="total-answers">
                                     <span class="answers">Answers</span>
                                     <span class="best-answers">
+                                        <?php if (!empty($obj['questionsPoolAnswers'])): ?>
                             <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
+                                <?php  foreach ($obj['questionsPoolAnswers'] as $o){ ?>
+                                    <a href="<?= Url::to($o['username']); ?>" data-toggle="tooltip" title="<?= $o['name'] ?>">
+                                        <?php if ($o['image']){ ?>
+                                            <img src="<?= $o['image']; ?>" alt="<?= $o['name']; ?>"/>
+                                       <?php } else { ?>
+                                            <canvas class="user-icon img-circle img-responsive" name="<?= $o['name']; ?>"
+                                                    color="<?= $o['initials_color']; ?>" width="20" height="20"
+                                                    font="10px"></canvas>
+                                      <?php } ?>
                                 </a>
-                            </span>
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                               <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                        </span>
+                              <?php  } ?>
+                                </span>
+                            <?php endif; ?>
+                                </span>
                                 </div>
                             </div>
                         </div>
                         <div class="lc-item-desciption">
                             <div class="lc-item-user-detail">
                                 <h3 class="lc-item-video-title">
-                                    <a href="#"><?= $obj['name'] ?></a>
+                                    <a href="<?= $link ?>"><?= $obj['name'] ?></a>
                                 </h3>
                             </div>
                             <span class="count"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?> answers</a></span>
