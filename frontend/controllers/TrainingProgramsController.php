@@ -13,6 +13,50 @@ use yii\web\Response;
 
 class TrainingProgramsController extends Controller
 {
+    public function actionIndex()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 6;
+            $options['page'] = 1;
+            $cards = ApplicationCards::TraininingCards($options);
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+        return $this->render('index');
+    }
+    public function actionFetchInstitutes()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $cards = ApplicationCards::InstitutesCards($options);
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
     public function actionDetail($eaidk){
         $model = new TrainingAppliedForm();
         $application_details = TrainingProgramApplication::find()

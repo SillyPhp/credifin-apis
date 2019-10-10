@@ -21,37 +21,30 @@ use Yii;
  * @property string $created_by By which User Work Experience information was added
  * @property string $last_updated_on On which date User Work Experience information was updated
  * @property string $last_updated_by By which User User Work Experience information was updated
- *
- * @property Cities $cityEnc
- * @property Users $createdBy
- * @property Users $lastUpdatedBy
- * @property Users $userEnc
  */
-class UserWorkExperience extends \yii\db\ActiveRecord {
-
+class UserWorkExperience extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%user_work_experience}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['experience_enc_id', 'user_enc_id', 'company', 'city_enc_id', 'description', 'from_date', 'created_on', 'created_by'], 'required'],
+            [['experience_enc_id', 'user_enc_id', 'company', 'description', 'from_date', 'created_by'], 'required'],
             [['description'], 'string'],
             [['from_date', 'to_date', 'created_on', 'last_updated_on'], 'safe'],
             [['is_current'], 'integer'],
             [['experience_enc_id', 'user_enc_id', 'company', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['title'], 'string', 'max' => 50],
             [['experience_enc_id'], 'unique'],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
         ];
     }
 

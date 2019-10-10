@@ -4,6 +4,7 @@ namespace account\controllers;
 use account\models\applications\ApplicationForm;
 use account\models\training_program\TrainingProgram;
 use account\models\training_program\UserAppliedTraining;
+use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use yii\web\Response;
 use Yii;
@@ -12,6 +13,15 @@ use yii\web\HttpException;
 
 class TrainingProgramController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+            return parent::beforeAction($action);
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
     public function actionCreate()
     {
         if (Yii::$app->user->identity->organization):
@@ -90,6 +100,32 @@ class TrainingProgramController extends Controller
             } else {
                 return false;
             }
+        }
+    }
+
+    public function actionCandidates($app_id)
+    {
+        if (Yii::$app->user->identity->organization) {
+            $user_data = AppliedTrainingApplications::find()
+                ->alias('a')
+                ->where(['a.application_enc_id' => $app_id])
+                ->select(['applied_application_enc_id','a.application_enc_id','a.created_by'])
+                ->joinwith(['createdBy b'=>function($b)
+                {
+                    $b->select(['b.user_enc_id','b.username','b.experience','b.job_function','b.first_name', 'b.last_name', 'b.image', 'b.image_location','g.name city_name',]);
+                    $b->joinWith(['jobFunction f'], false);
+                    $b->joinWith(['cityEnc g'], false);
+                    $b->joinWith(['userSkills c'=>function($b)
+                    {
+                        $b->select(['c.created_by','d.skill']);
+                        $b->joinWith(['skillEnc d'],false);
+                        $b->onCondition(['c.is_deleted' => 0]);
+                    }]);
+                }])
+                ->groupBy(['application_enc_id'])
+                ->asArray()
+                ->all();
+            return $this->render('dashboard/candidate-list', ['user_data' => $user_data]);
         }
     }
 }
