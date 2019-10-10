@@ -126,7 +126,9 @@ class SiteController extends Controller
     {
         return $this->render('employers');
     }
-
+    public function actionCareerCompany(){
+        return $this->render('career-company');
+    }
     public function actionAddNewSubscriber()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

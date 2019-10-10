@@ -823,9 +823,14 @@ function random_fn(t){
 
 		if (qno == 0) {
 			that.type = that.values[that.options.data[qno].formName];
+			var url = '';
+			if(result['type'] == 'career'){
+				url = 'ravinder21';
+			}
 			var data = {
 				selected_answer: that.values[that.options.data[qno].formName],
-				company_name: window.location.pathname.split('/')[1]
+				company_name: url,
+                link_type: 'company'
 			};
 			$.ajax({
 				type: 'POST',
@@ -863,6 +868,10 @@ function random_fn(t){
 		}
 
 		if (qno == 1) {
+            var url = '';
+            if(result['type'] == 'career'){
+                url = 'ravinder21';
+            }
 			$.ajax({
 				type: 'POST',
 				async: false,
@@ -870,8 +879,8 @@ function random_fn(t){
 				data: {
 					selected_answer: that.values[that.options.data[qno].formName],
 					type: that.type,
-					company_name: window.location.pathname.split('/')[1]
-
+					company_name: url,
+					link_type: 'company'
 				},
 				success: function (response) {
 					response = JSON.parse(response);
