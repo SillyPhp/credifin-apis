@@ -166,7 +166,7 @@ use yii\helpers\Url;
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <div class="right-heading">
                             <h3>What can to be contribute?</h3>
-                            <p class="paragraph-set">One of the best parts about doing collaboration<span class="text-bold"> is it's completely freel!.</span>
+                            <p class="paragraph-set">One of the best parts about doing collaboration<span class="text-bold"> is it's completely free!</span>
                                 this makes thing more easy.</p>
                             <div class="btn-set">
                                 <a class="btn-1" href="#">LEARN MORE</a>
@@ -525,7 +525,6 @@ textarea{
 }
 }
 @media only screen and (max-width: 834px){
-
 .text-box {
 	padding-top: 15px;
 	margin: 0 auto;
@@ -561,6 +560,4 @@ textarea{
 	 padding: 0;
 }
 }
-
-
 ');
