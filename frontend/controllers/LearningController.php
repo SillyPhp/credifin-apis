@@ -951,4 +951,14 @@ class LearningController extends Controller
         return $categories->asArray()->all();
     }
 
+    public function actionContributorCollabs(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $data = Yii::$app->request->post();
+
+            print_r($data);
+            die();
+
+        }
+    }
+
 }
