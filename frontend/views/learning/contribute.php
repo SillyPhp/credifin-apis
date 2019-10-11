@@ -571,7 +571,7 @@ $script = <<< JS
         e.preventDefault();
         $('.name-error').html('');
         $('.email-error').html('');
-        $('.chanel-error').html('');
+        $('.channel-error').html('');
         var flag = 0;
         if($('#name').val() == ''){
             flag = 1;
@@ -595,8 +595,14 @@ $script = <<< JS
             url : '/learning/contributor-collabs',
             data:data,
             async: false,
-            success: function(response) {
-                console.log(response);
+            success: function(res) {
+                if(res.status == 200){
+                    toastr.success(res.message, 'success');
+                }else if(res.status == 500){
+                    toastr.success(res.message, 'error');
+                }else if(res.status == 201){
+                    $('.email-error').html("Please enter valid email address");
+                }
             }
         });
     });
@@ -604,3 +610,5 @@ $script = <<< JS
 
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

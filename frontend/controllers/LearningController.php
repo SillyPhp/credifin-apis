@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\AssignedTags;
 use common\models\Categories;
+use common\models\ContributerCollaborator;
 use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
@@ -953,10 +954,28 @@ class LearningController extends Controller
 
     public function actionContributorCollabs(){
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
 
-            print_r($data);
-            die();
+            if(filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+
+                $contributer = new ContributerCollaborator();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $contributer->contributer_collaborator_enc_id = $utilitiesModel->encrypt();
+                $contributer->name = $data['name'];
+                $contributer->email = $data['email'];
+                $contributer->youtube_channel = $data['channel'];
+                $contributer->comment = $data['comment'];
+                if ($contributer->save()) {
+                    return ['status' => 200, 'message' => 'Submitted'];
+                } else {
+                    return ['status' => 500, 'message' => 'an error occurred'];
+                }
+            }else{
+                return ['status'=>201];
+            }
+
 
         }
     }
