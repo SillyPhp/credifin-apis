@@ -271,66 +271,106 @@ use yii\helpers\Url;
 <Section>
     <div class="container">
         <div class="row">
+            <div class="heading-style">Popular Questions</div>
+        </div>
+        <div class="row">
             <div class="gallery-view">
                 <div class="col-md-4 col-sm-6 card-box">
-                    <a href="#">
-                        <div class="card">
-                            <div class="card__block card__block--main">
-                                <h3 class="card__title">
-                                    How To Write Cover Letter
-                                </h3>
-                                <p class='card__subtitle'>
-                                    hello
-                                </p>
-                                <p class='card__text'>
-                                    mshdfkjsd
-                                </p>
-                                <div class="view-btn vb-blue">
-                                    <a href="#">View</a>
+                    <div class="card">
+                        <div class="card__block card__block--main">
+                            <div class="head">
+                                <div class="user-img">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                </div>
+                                <div class="user-topic">
+                                    <div class="topic-name">Topics</div>
+                                </div>
+                            </div>
+                            <div class="box-content">
+                                My friend and I were on our first cruise. Little did we know that cruises seem to
+                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to
+                                attract the most “bogan” (Aussie slang for white trash) of patrons.
+                            </div>
+                            <div class="t-answers">
+                                <span class="answers">Answers</span>
+                                <div class="best-answers">
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="col-md-4 col-sm-6 card-box">
-                    <a href="#">
-                        <div class="card">
-                            <div class="card__block card__block--main">
-                                <h3 class="card__title">
-                                    How To Write Cover Letter
-                                </h3>
-                                <p class='card__subtitle'>
-                                    hello
-                                </p>
-                                <p class='card__text'>
-                                    mshdfkjsd
-                                </p>
-                                <div class="view-btn vb-blue">
-                                    <a href="#">View</a>
+                    <div class="card">
+                        <div class="card__block card__block--main">
+                            <div class="head">
+                                <div class="user-img">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                </div>
+                                <div class="user-topic">
+                                    <div class="topic-name">Topics</div>
+                                </div>
+                            </div>
+                            <div class="box-content">
+                                My friend and I were on our first cruise. Little did we know that cruises seem to
+                                attract the most “bogan” (Aussie slang for white trash) of patrons.
+                            </div>
+                            <div class="t-answers">
+                                <span class="answers">Answers</span>
+                                <div class="best-answers">
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
                 <div class="col-md-4 col-sm-6 card-box">
-                    <a href="#">
-                        <div class="card">
-                            <div class="card__block card__block--main">
-                                <h3 class="card__title">
-                                    How To Write Cover Letter
-                                </h3>
-                                <p class='card__subtitle'>
-                                    hello
-                                </p>
-                                <p class='card__text'>
-                                    mshdfkjsd
-                                </p>
-                                <div class="view-btn vb-blue">
-                                    <a href="#">View</a>
+                    <div class="card">
+                        <div class="card__block card__block--main">
+                            <div class="head">
+                                <div class="user-img">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                </div>
+                                <div class="user-topic">
+                                    <div class="topic-name">Topics</div>
+                                </div>
+                            </div>
+                            <div class="box-content">
+                                My friend and I were on our first cruise. Little did we know that cruises seem to
+                                attract the most “bogan” (Aus patrons.
+                            </div>
+                            <div class="t-answers">
+                                <span class="answers">Answers</span>
+                                <div class="best-answers">
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
+                                    <a href="#" data-toggle="tooltip" title="Eddy">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -339,21 +379,51 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
-.layout__wrapper {
-  margin: auto;
-  width: 990px;
+.head{
+    display:flex;
 }
-.section {
-  padding: 40px;
+.user-img {
+    margin: 5px 0 0 0;
 }
-.section__title {
-  color: #000000;
-  font-size: 2.15rem;
-  margin: 0;
-  margin-bottom: 2.5rem;
+.user-img img {
+    border: 1px solid #eee;
+    width: 35px;
+    height: 35px;
+    border-radius: 25px;
 }
-.gallery__item--highlight {
-  grid-column: span 2;
+.user-topic{
+    margin: 8px 0 0 7px;
+}
+.topic-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+.box-content {
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: justify;
+    height: 148px;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+}
+.t-answers {
+    padding-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+.best-answers {
+    float: right;
+}
+.t-answers img {
+    height: 20px;
+    width: 20px;
+    border-radius: 25px;
+    margin-right: 2px;
 }
 .card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
    background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
@@ -380,7 +450,7 @@ $this->registerCss('
     position: relative;
     padding-top: 35px;
     max-width: 90%;
-    margin: 15px auto;
+    margin: 0px auto;
 }
 @media only screen and (max-width: 1200px) and (min-width:992px){
     .card{
@@ -409,57 +479,10 @@ $this->registerCss('
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 2px 5px 25px rgba(0, 0, 0, .15);
-  min-height: 250px;
-  padding: 20px;
-  padding-top: 50px;
+  height: 260px;
+  padding: 16px;
   position: relative;
   z-index: 2;
-}
-.card__element--user-img,
-.card__element--user-img svg {
-//  height:70px;
-//  width:70px;
-  --size: 70px;  
-  background-color: #fff;
-//  border: 2px solid #000;
-  border-radius: 50%;
-  box-shadow:0 0 10px rgba(0,0,0,.1);
-  left: 10px;
-  position: absolute;
-  top: calc(-1 * (var(--size) / 2));
-  width: var(--size);
-  height: var(--size);
-}
-.pos-rel{
-    position: relative;
-    height:70px;
-    width:70px;   
-}
-.card__element--user-img img{
-    max-width:100%;
-    max-height:100%;
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-.card__element--user-img svg {
-  background-color: hsl(35, 92%, 71%);
-  fill: #000;
-}
-.card__title {
-  font-size: 1.40rem;
-  font-weight: bold;
-  line-height: 1.1;
-  margin: 0;
-}
-.card__subtitle {
-  color: hsl(210, 5%, 41%);
-  font-size: 1rem;
-  margin-top: .33rem;
-}
-.card__text {
-  margin-top: .66rem;
 }
 
 .col-box{
@@ -1443,6 +1466,13 @@ $script = <<< JS
    });
 
 JS;
+
+$script = <<<js
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+});
+js;
+
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/candidates-list/modernizr-2.8.3-respond-1.4.2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
