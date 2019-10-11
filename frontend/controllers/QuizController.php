@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\QuizPool;
+use common\models\Quizs;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -83,6 +85,20 @@ class QuizController extends Controller
     }
 
     public function actionTest(){
+        $quiz = QuizPool::find()
+            ->alias('a')
+            ->innerJoinWith(['quizs b' => function($b){
+                $b->andWhere(['b.slug' => 'college-quiz']);
+            }], false)
+            ->innerJoinWith(['quizQuestionsPools c' => function($c){
+                $c->innerJoinWith(['quizAnswersPools d']);
+            }])
+//            ->where(['a.slug' => 'college-quiz'])
+            ->asArray()
+            ->all();
+
+//        print_r($quiz);
+//        exit();
         $this->layout = 'quiz6-main';
         return $this->render('c-quiz');
     }

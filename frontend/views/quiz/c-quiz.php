@@ -1,53 +1,61 @@
 <section class="container">
     <div class="questionBox">
         <div class="questionContainer">
-            <header>
-                <h1 class="title is-6">VueQuiz</h1>
-                <div class="progressContainer">
-                    <progress class="progress is-info is-small" value="80" max="100">80%</progress>
-                    <p>80% complete</p>
+            <form id="c-quiz">
+                <header>
+                    <h1 class="title is-6">VueQuiz</h1>
+                    <div class="progressContainer">
+                        <progress class="progress is-info is-small" value="80" max="100">80%</progress>
+                        <p>80% complete</p>
+                    </div>
+                </header>
+                <div class="quiz-body">
+                    <div id="quiz-data">
+                        <h2 class="titleContainer title">Question</h2>
+                        <div class="optionContainer">
+                            <input type="radio" id="one" name="answer" value="1"/>
+                            <label for="one" class="option">
+                                ans 1
+                            </label>
+                            <input type="radio" id="two" name="answer" value="2"/>
+                            <label for="two" class="option">
+                                ans 2
+                            </label>
+                            <input type="radio" id="three" name="answer" value="3"/>
+                            <label for="three" class="option">
+                                ans 3
+                            </label>
+                            <input type="radio" id="four" name="answer" value="4"/>
+                            <label for="four" class="option">
+                                ans 4
+                            </label>
+                        </div>
+                    </div>
+                    <div class="loading-question">
+                        <svg>
+                            <g>
+                                <path d="M 50,100 A 1,1 0 0 1 50,0"/>
+                            </g>
+                            <g>
+                                <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
+                            </g>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f07704;stop-opacity:1"/>
+                                    <stop offset="100%" style="stop-color:#00a0e3;stop-opacity:1"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
                 </div>
-            </header>
-            <div class="quiz-body">
-                <h2 class="titleContainer title">Question</h2>
-                <div class="optionContainer">
-                    <div class="option">
-                        ans 1
-                    </div>
-                    <div class="option">
-                        ans 2
-                    </div>
-                    <div class="option">
-                        ans 3
-                    </div>
-                    <div class="option">
-                        ans 4
-                    </div>
-                </div>
-                <div class="loading-question">
-                    <svg>
-                        <g>
-                            <path d="M 50,100 A 1,1 0 0 1 50,0"/>
-                        </g>
-                        <g>
-                            <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
-                        </g>
-                        <defs>
-                            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" style="stop-color:#f07704;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#00a0e3;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
-            </div>
-            <footer class="questionFooter">
-                <nav class="pagination" role="navigation" aria-label="pagination">
-                    <a class="button nxxt">
-                        Next
-                    </a>
-                </nav>
-            </footer>
+                <footer class="questionFooter">
+                    <nav class="pagination">
+                        <button type="submit" class="button nxxt">
+                            Next
+                        </button>
+                    </nav>
+                </footer>
+            </form>
         </div>
         <div class="quizCompleted has-text-centered hidden">
 				<span class="icon">
@@ -60,10 +68,33 @@
                 Total score: 7 / 10
             </p>
             <br>
-<!--            <a class="button">restart <i class="fa fa-refresh"></i></a>-->
+            <!--            <a class="button">restart <i class="fa fa-refresh"></i></a>-->
         </div>
     </div>
 </section>
+<script id="c-quiz-options" type="text/template">
+    {{#.}}
+    <h2 class="titleContainer title">{{question}}</h2>
+    <div class="optionContainer">
+        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
+        <label for="one" class="option">
+            {{ans1}}
+        </label>
+        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
+        <label for="two" class="option">
+            {{ans2}}
+        </label>
+        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
+        <label for="three" class="option">
+            {{ans3}}
+        </label>
+        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
+        <label for="{{ans_id}}" class="option">
+            {{ans4}}
+        </label>
+    </div>
+    {{/.}}
+</script>
 <?php
 $this->registerCss('
    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
@@ -195,6 +226,7 @@ body {
   background-color: rgba(0, 0, 0, 0.05);
   color: rgba(0, 0, 0, 0.85);
   border: transparent 1px solid;
+  display:block;
 }
 .questionBox .questionContainer .optionContainer .option.is-selected {
   border-color: rgba(0, 0, 0, 0.25);
@@ -206,6 +238,10 @@ body {
 .questionBox .questionContainer .optionContainer .option:active {
   -webkit-transform: scaleX(0.9);
           transform: scaleX(0.9);
+}
+.optionContainer > input[type="radio"]{
+    position:absolute;
+    left:-9999px;
 }
 .questionBox .questionContainer .questionFooter {
   background: rgba(0, 0, 0, 0.025);
@@ -228,6 +264,7 @@ body {
   margin: 0 0.25rem;
   transition: 0.3s;
   float:right;
+  background-color:#fff;
 }
 .button:hover {
   cursor: pointer;
@@ -324,20 +361,45 @@ svg path {
 }
 ');
 $script = <<<JS
-$(document).on('click', '.option', function(){
+$(document).on('change', '.optionContainer input[type=radio]', function(){
     $('.option').each(function(){
-        $(this).removeClass('is-selected');
+        var id =  $(this).attr('for');
+        if($('#'+id).is(":checked")){
+            $(this).addClass('is-selected');
+        } else {
+            $(this).removeClass('is-selected');
+        }
     });
-    $(this).addClass('is-selected');
 });
 $(document).on('click', '.nxxt', function(){
     $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
     $('.loading-question').fadeIn(500);
-    setTimeout(function() {
-        $('.loading-question').fadeOut(500);
-        $('.nxxt').html('Next');
-        animateShow();
-    }, 1500);
+    var ans_val;
+    $('.option').each(function(){
+        var id =  $(this).attr('for');
+        if($('#'+id).is(":checked")){
+            ans_val = $('#'+id).attr('value');
+        }
+    });
+    alert(ans_val);
+    return false;
+    $.ajax({
+        type: 'POST',
+        url: window.location.href,
+        async: false,
+        data: {ans:ans_val},
+        success: function(data){
+            if(data.status == 200){
+                $('.loading-question').fadeOut(500);
+                $('.nxxt').html('Next');
+                var q_body = $('#c-quiz-options').html();
+                $("#quiz-data").html(Mustache.render(q_body, data.data));
+                animateShow();
+            } else {
+                alert('error');
+            }
+        }
+    });
 });
 function animateShow() {
   $('.quiz-body').addClass('animated');
@@ -355,3 +417,4 @@ function animateShow() {
 }
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
