@@ -33,7 +33,7 @@ class SearchController extends ApiBaseController{
     public function actionCompanies($name = null, $page = null){
         $org = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CONCAT("'. Url::to('/', true). '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
+            ->select(['a.organization_enc_id', 'a.name','a.slug profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
             ->distinct()
             ->joinWith(['employerApplications b' => function ($x) {
                 $x
@@ -103,7 +103,8 @@ class SearchController extends ApiBaseController{
             ->select([
                 'a.last_date',
                 'i.name category',
-                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+                'a.slug',
                 'd.initials_color color',
                 'CONCAT("' . Url::to('/', true) .'", d.slug) organization_link',
                 "g.name as city",
@@ -162,7 +163,8 @@ class SearchController extends ApiBaseController{
             ->select([
                 'a.last_date',
                 'a.type',
-                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+                'a.slug',
                 'i.name category',
                 'l.designation',
                 'd.initials_color color',

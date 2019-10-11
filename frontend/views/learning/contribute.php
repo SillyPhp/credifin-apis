@@ -217,25 +217,29 @@ use yii\helpers\Url;
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12">
+                            <form id="contributer_form">
                             <div class="input-box">
-                                <input type="text" placeholder="Name*">
-                                <input type="text" placeholder="Email*">
-                                <input type="text" placeholder="You Tube Channel*">
-                                <textarea name="comment" placeholder="comment (optional)"></textarea>
-                                <button class="btn-2">Send</button>
-
+                                <input type="text" name="name" id="name" placeholder="Name*" autocomplete="false">
+                                <p class="name-error err"></p>
+                                <input type="text" name="email" id="email" placeholder="Email*" autocomplete="false">
+                                <p class="email-error err"></p>
+                                <input type="text" name="channel" id="channel" placeholder="You Tube Channel*" autocomplete="false">
+                                <p class="channel-error err"></p>
+                                <textarea name="comment" id="comment" placeholder="comment (optional)"></textarea>
+                                <button class="btn-2 form-submit">Send</button>
                             </div>
-
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-
-
     </section>
 <?php
 $this->registercss('
+.err{
+    color:red;
+}
 .main-box{ 
    margin-top: 10px;
 }  
@@ -561,3 +565,50 @@ textarea{
 }
 }
 ');
+$script = <<< JS
+    
+    $(document).on('click','.form-submit',function(e) {
+        e.preventDefault();
+        $('.name-error').html('');
+        $('.email-error').html('');
+        $('.channel-error').html('');
+        var flag = 0;
+        if($('#name').val() == ''){
+            flag = 1;
+            $('.name-error').html("This field can't be empty");
+        }
+        if($('#email').val() == ''){
+            flag = 1;
+            $('.email-error').html("This field can't be empty");
+        }
+        if($('#channel').val() == ''){
+            flag = 1;
+            $('.channel-error').html("This field can't be empty");
+        }
+        if(flag == 1){
+            return false;
+        }
+        var data = $('#contributer_form').serialize();
+        console.log(data);
+        $.ajax({
+            method: "POST",
+            url : '/learning/contributor-collabs',
+            data:data,
+            async: false,
+            success: function(res) {
+                if(res.status == 200){
+                    toastr.success(res.message, 'success');
+                }else if(res.status == 500){
+                    toastr.success(res.message, 'error');
+                }else if(res.status == 201){
+                    $('.email-error').html("Please enter valid email address");
+                }
+            }
+        });
+    });
+
+
+JS;
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

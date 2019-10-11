@@ -36,26 +36,24 @@ use yii\helpers\Url;
 
 <div class="container ">
     <div class="cat-padding">
-        <div class="row col-md-6 col-xs-4">
-            <div class="heading-style col-md-6 col-sm-6">Category</div>
-        </div>
-        <div class="col-md-6 col-sm-12 col-xs-12">
-            <div class="type-1">
-                <div>
-                    <a href="learning/categories" class="btn btn-3">
-                        <span class="txt-cate">View all</span>
-                        <span class="round"><i class="fas fa-chevron-right"></i></span>
-                    </a>
+        <div class="row ">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="heading-style">Popular Categories</div>
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="/learning/categories" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="popular-cate" id="categories">
-
-                    </div>
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="popular-cate" id="categories"></div>
             </div>
         </div>
     </div>
@@ -232,28 +230,6 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php } ?>
-
-<section>
-    <div class="container">
-        <div class="col-box">
-            <div class="row" style="margin:20px">
-                <div class="col-md-4">
-                    <div class="col-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="col-text">
-                        <div class="col-head">Contribute with us</div>
-                        <a href="/learning/contribute">
-                            <button class="btn-primary btn" style="margin-top:20px;">Start</button>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <section>
     <div class="container">

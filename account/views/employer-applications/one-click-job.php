@@ -639,7 +639,10 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
-//appEditor.updateSourceElement();
+ $('#create_job_form').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true; 
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");

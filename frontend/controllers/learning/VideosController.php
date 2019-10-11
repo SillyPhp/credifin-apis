@@ -6,6 +6,7 @@ use common\models\AssignedCategories;
 use common\models\Categories;
 use common\models\EmployerApplications;
 use common\models\LearningVideos;
+use mysql_xdevapi\Exception;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -72,73 +73,76 @@ class VideosController extends Controller
                 ->where(['a.slug' => $slug])
                 ->asArray()
                 ->one();
-        }
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
 
-            $result = null;
-            if ($type === "category") {
-                $result = LearningVideos::find()
-                    ->alias('a')
-                    ->joinWith(['assignedCategoryEnc b' => function ($x) use ($slug) {
-                        $x->andOnCondition(['b.assigned_to' => 'Videos']);
-//                        $x->andOnCondition(['b.status' => 'Approved']);
-                        $x->andOnCondition(['b.is_deleted' => 0]);
-                        $x->innerJoinWith(['parentEnc c' => function ($y) use ($slug) {
-                            $y->andOnCondition(['c.slug' => $slug]);
-                        }]);
-                    }])
-                    ->andWhere(['a.status' => 1])
-                    ->andWhere(['a.is_deleted' => 0])
-                    ->asArray()
-                    ->all();
+            if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
 
-                $categories = AssignedCategories::find()
-                    ->alias('a')
-                    ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'c.icon_png child_icon', 'd.icon_png parent_icon'])
-                    ->joinWith(['learningVideos b' => function ($b) {
-                        $b->andOnCondition(['b.status' => 1]);
-                        $b->andOnCondition(['b.is_deleted' => 0]);
-                    }], false)
-                    ->joinWith(['categoryEnc c'], false)
-                    ->joinWith(['parentEnc d'], false)
-                    ->where(['a.assigned_to' => 'Videos'])
-                    ->andWhere(['a.status' => 'Approved'])
-                    ->andWhere(['a.parent_enc_id' => $parentId['category_enc_id']])
-                    ->andWhere(['a.is_deleted' => 0])
-                    ->groupBy(['a.assigned_category_enc_id'])
-                    ->asArray()
-                    ->all();
+                $result = null;
+                if ($type === "category") {
+                    $result = LearningVideos::find()
+                        ->alias('a')
+                        ->joinWith(['assignedCategoryEnc b' => function ($x) use ($slug) {
+                            $x->andOnCondition(['b.assigned_to' => 'Videos']);
+                            $x->andOnCondition(['b.status' => 'Approved']);
+                            $x->andOnCondition(['b.is_deleted' => 0]);
+                            $x->innerJoinWith(['categoryEnc c' => function ($y) use ($slug) {
+                                $y->andOnCondition(['c.slug' => $slug]);
+                            }]);
+                        }])
+                        ->andWhere(['a.status' => 1])
+                        ->andWhere(['a.is_deleted' => 0])
+                        ->asArray()
+                        ->all();
 
-            } elseif ($type == "topic") {
-                $result = LearningVideos::find()
-                    ->alias('a')
-                    ->joinWith(['tagEncs b'])
-                    ->where(['b.slug' => $slug])
-                    ->andWhere(['a.status' => 1])
-                    ->andWhere(['a.is_deleted' => 0])
-                    ->asArray()
-                    ->all();
+                    $categories = AssignedCategories::find()
+                        ->alias('a')
+                        ->select(['a.assigned_category_enc_id', 'a.category_enc_id', 'a.parent_enc_id', 'c.slug', 'c.name', 'c.icon_png child_icon', 'd.icon_png parent_icon'])
+                        ->joinWith(['learningVideos b' => function ($b) {
+                            $b->andOnCondition(['b.status' => 1]);
+                            $b->andOnCondition(['b.is_deleted' => 0]);
+                        }], false)
+                        ->joinWith(['categoryEnc c'], false)
+                        ->joinWith(['parentEnc d'], false)
+                        ->where(['a.assigned_to' => 'Videos'])
+                        ->andWhere(['a.status' => 'Approved'])
+                        ->andWhere(['a.parent_enc_id' => $parentId['category_enc_id']])
+                        ->andWhere(['a.is_deleted' => 0])
+                        ->groupBy(['a.assigned_category_enc_id'])
+                        ->asArray()
+                        ->all();
+
+                } elseif ($type == "topic") {
+                    $result = LearningVideos::find()
+                        ->alias('a')
+                        ->joinWith(['tagEncs b'])
+                        ->where(['b.slug' => $slug])
+                        ->andWhere(['a.status' => 1])
+                        ->andWhere(['a.is_deleted' => 0])
+                        ->asArray()
+                        ->all();
+
+                }
+                if (!empty($result)) {
+                    $response = [
+                        'status' => 200,
+                        'message' => 'Success',
+                        'video_gallery' => $result,
+                        'categories' => $categories,
+                    ];
+                } else {
+                    $response = [
+                        'status' => 201,
+                    ];
+                }
+                return $response;
 
             }
-            if (!empty($result)) {
-                $response = [
-                    'status' => 200,
-                    'message' => 'Success',
-                    'video_gallery' => $result,
-                    'categories' => $categories,
-                ];
-            } else {
-                $response = [
-                    'status' => 201,
-                ];
-            }
-            return $response;
-
+            return $this->render('video-gallery', [
+                'parentId' => $parentId,
+            ]);
+        } else{
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
-        return $this->render('video-gallery', [
-            'parentId' => $parentId,
-        ]);
     }
 
     public function actionGetCategoryJob()

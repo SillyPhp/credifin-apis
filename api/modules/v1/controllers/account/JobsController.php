@@ -86,58 +86,47 @@ class JobsController extends ApiBaseController
                 ->asArray()
                 ->one();
             $short_status = $chkshort['shortlisted'];
-
             if ($short_status == 1) {
-//                return $this->response(409, 'Can not add, it is already shortlisted.');
-                $shortlisted = ShortlistedApplications::find()
+                return $this->response(409, 'Can not add, it is already shortlisted.');
+            } else {
+                $chkuser = ReviewedApplications::find()
+                    ->select(['review'])
                     ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                    ->asArray()
                     ->one();
-                $shortlisted->shortlisted = 0;
-                $shortlisted->last_updated_on = date('Y-m-d H:i:s');
-                $shortlisted->last_updated_by = $candidate->user_enc_id;
-                if (!$shortlisted->update()) {
-                    return $this->response(500, "did'nt unshortlist");
+                $status = $chkuser['review'];
+                if (empty($chkuser)) {
+                    $model = new ReviewedApplications();
+                    $utilitiesModel = new \common\models\Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $model->review_enc_id = $utilitiesModel->encrypt();
+                    $model->application_enc_id = $id;
+                    $model->review = 1;
+                    $model->created_on = date('Y-m-d H:i:s');
+                    $model->created_by = $candidate->user_enc_id;
+                    if ($model->validate() && $model->save()) {
+                        return $this->response(201, 'Job successfully created in review list.');
+                    } else {
+                        return $this->response(500, 'Job is not created in review list');
+                    }
+                } else if ($status == 0) {
+                    $update_reviewed_applications = ReviewedApplications::find()
+                        ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
+                        ->one();
+                    $update_reviewed_applications->review = 1;
+                    $update_reviewed_applications->last_updated_by = $candidate->user_enc_id;
+                    $update_reviewed_applications->last_updated_on = date('Y-m-d H:i:s');
+                    if ($update_reviewed_applications->update()) {
+                        return $this->response(201, 'Job successfully created in review list.');
+                    } else {
+                        return $this->response(500, 'Job is not created in review list');
+                    }
+                } else if ($status == 1) {
+                    $this->response(409, 'already exists');
                 }
             }
-
-            $chkuser = ReviewedApplications::find()
-                ->select(['review'])
-                ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
-                ->asArray()
-                ->one();
-            $status = $chkuser['review'];
-            if (empty($chkuser)) {
-                $model = new ReviewedApplications();
-                $utilitiesModel = new \common\models\Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $model->review_enc_id = $utilitiesModel->encrypt();
-                $model->application_enc_id = $id;
-                $model->review = 1;
-                $model->created_on = date('Y-m-d H:i:s');
-                $model->created_by = $candidate->user_enc_id;
-                if ($model->validate() && $model->save()) {
-                    return $this->response(201, 'Job successfully created in review list.');
-                } else {
-                    return $this->response(500, 'Job is not created in review list');
-                }
-            } else if ($status == 0) {
-                $update_reviewed_applications = ReviewedApplications::find()
-                    ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
-                    ->one();
-                $update_reviewed_applications->review = 1;
-                $update_reviewed_applications->last_updated_by = $candidate->user_enc_id;
-                $update_reviewed_applications->last_updated_on = date('Y-m-d H:i:s');
-                if ($update_reviewed_applications->update()) {
-                    return $this->response(201, 'Job successfully created in review list.');
-                } else {
-                    return $this->response(500, 'Job is not created in review list');
-                }
-            } else if ($status == 1) {
-                $this->response(409, 'already exists');
-            }
-
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
 
     }
@@ -171,7 +160,7 @@ class JobsController extends ApiBaseController
                 return $this->response(409, 'already deleted or not found');
             }
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
     }
 
@@ -237,13 +226,13 @@ class JobsController extends ApiBaseController
                 ->all();
 
             if ($review_list == null || $review_list == '') {
-                return $this->response(404, 'Not found');
+                return $this->response(404);
             } else {
                 return $this->response(200, $review_list);
             }
 
         } else {
-            return $this->response(422, "Missing information");
+            return $this->response(422);
         }
     }
 
@@ -285,9 +274,7 @@ class JobsController extends ApiBaseController
                         $delete_application->review = 0;
                         $delete_application->last_updated_by = $candidate->user_enc_id;
                         $delete_application->last_updated_on = date('Y-m-d H:i:s');
-                        if(!$delete_application->update()){
-                            return $this->response(500,'not unreviewed');
-                        }
+                        $delete_application->update();
                     }
                     return $this->response(201, 'successfully shortlisted.');
                 } else {
@@ -302,24 +289,6 @@ class JobsController extends ApiBaseController
                 $update_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($update_shortlisted->update()) {
-                    $chkuser = ReviewedApplications::find()
-                        ->select(['review'])
-                        ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
-                        ->asArray()
-                        ->one();
-                    $status = $chkuser['review'];
-
-                    if ($status == 1) {
-                        $delete_application = ReviewedApplications::find()
-                            ->where(['created_by' => $candidate->user_enc_id, 'application_enc_id' => $id])
-                            ->one();
-                        $delete_application->review = 0;
-                        $delete_application->last_updated_by = $candidate->user_enc_id;
-                        $delete_application->last_updated_on = date('Y-m-d H:i:s');
-                        if(!$delete_application->update()){
-                            return $this->response(500,'not unreviewed');
-                        }
-                    }
                     return $this->response(201, 'successfully shortlisted.');
                 } else {
                     return $this->response(500, 'not shorlisted');
@@ -328,7 +297,7 @@ class JobsController extends ApiBaseController
                 return $this->response(409, 'already exists');
             }
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
     }
 
@@ -361,7 +330,7 @@ class JobsController extends ApiBaseController
                 return $this->response(409, 'already deleted or not found');
             }
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
     }
 
@@ -391,13 +360,13 @@ class JobsController extends ApiBaseController
                 ->all();
 
             if ($shortlist_jobs == null || $shortlist_jobs == '') {
-                return $this->response(404, 'Not found');
+                return $this->response(404);
             } else {
                 return $this->response(200, $shortlist_jobs);
             }
 
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
     }
 
@@ -409,7 +378,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['type']) && !empty($parameters['type'])) {
             $type = $parameters['type'];
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
 
         $applied_applications = AppliedApplications::find()
@@ -439,7 +408,7 @@ class JobsController extends ApiBaseController
         if (!empty($applied_applications)) {
             return $this->response(200, $applied_applications);
         } else {
-            return $this->response(404, 'Nor found');
+            return $this->response(404);
         }
 
     }
@@ -452,7 +421,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['type']) && !empty($parameters['type'])) {
             $type = $parameters['type'];
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
 
         $accepted_jobs = AppliedApplications::find()
@@ -479,7 +448,7 @@ class JobsController extends ApiBaseController
         if (!empty($accepted_jobs)) {
             return $this->response(200, $accepted_jobs);
         } else {
-            return $this->response(404, 'Nor found');
+            return $this->response(404);
         }
     }
 
@@ -491,7 +460,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['type']) && !empty($parameters['type'])) {
             $type = $parameters['type'];
         } else {
-            return $this->response(422, 'Missing information');
+            return $this->response(422);
         }
 
         $pending_jobs = AppliedApplications::find()
@@ -518,7 +487,7 @@ class JobsController extends ApiBaseController
         if (!empty($pending_jobs)) {
             return $this->response(200, $pending_jobs);
         } else {
-            return $this->response(404, 'Not found');
+            return $this->response(404);
         }
     }
 
@@ -536,7 +505,7 @@ class JobsController extends ApiBaseController
                 'b.initials_color',
                 'c.industry',
                 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-            ->innerJoinWith(['organizationEnc b' => function ($a) {
+            ->joinWith(['organizationEnc b' => function ($a) {
                 $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);
             }], false)
@@ -547,7 +516,7 @@ class JobsController extends ApiBaseController
         if (!empty($followedCompanies)) {
             return $this->response(200, $followedCompanies);
         } else {
-            return $this->response(404, 'Not found');
+            return $this->response(404);
         }
 
     }
@@ -578,7 +547,7 @@ class JobsController extends ApiBaseController
         if (!empty($question)) {
             return $this->response(200, $question);
         } else {
-            return $this->response(404, 'Not found');
+            return $this->response(404);
         }
 
     }
@@ -592,7 +561,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['type']) && !empty($parameters['type'])) {
             $type = $parameters['type'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         $application_id = DropResumeApplications::find()
@@ -631,7 +600,7 @@ class JobsController extends ApiBaseController
         if (!empty($shortlist1)) {
             return $this->response(200, $shortlist1);
         } else {
-            return $this->response(404, 'Not found');
+            return $this->response(404);
         }
     }
 
@@ -664,20 +633,21 @@ class JobsController extends ApiBaseController
         if (!empty($applied_app)) {
             return $this->response(200, $applied_app);
         } else {
-            return $this->response(404, 'Not found');
+            return $this->response(404);
         }
 
     }
 
     public function actionCancelApplication()
     {
+
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
         if ($parameters['application_enc_id'] && !empty($parameters['application_enc_id'])) {
             $application_enc_id = $parameters['application_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         $cancel_application = AppliedApplications::find()
@@ -689,12 +659,12 @@ class JobsController extends ApiBaseController
             $cancel_application->last_updated_by = $candidate->user_enc_id;
             $cancel_application->last_updated_on = date('Y-m-d H:i:s');
             if ($cancel_application->update()) {
-                return $this->response(200, 'Application Canceled');
+                return $this->response(200, ['status' => 200]);
             } else {
-                return $this->response(500, "Did'nt updated");
+                return $this->response(500);
             }
         } else {
-            return $this->response(500, 'Information cant be processes');
+            return $this->response(500);
         }
 
     }
@@ -708,13 +678,13 @@ class JobsController extends ApiBaseController
         if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
             $q_enc_id = $parameters['questionnaire_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
             $applied_application_enc_id = $parameters['applied_application_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         $chk = AnsweredQuestionnaire::find()
@@ -751,7 +721,7 @@ class JobsController extends ApiBaseController
         if (!empty($fields)) {
             return $this->response(200, $fields);
         } else {
-            return $this->response(404, 'Not Found');
+            return $this->response(404);
         }
     }
 
@@ -763,13 +733,13 @@ class JobsController extends ApiBaseController
         if (isset($parameters['questionnaire_enc_id']) && !empty($parameters['questionnaire_enc_id'])) {
             $questionnaire_id = $parameters['questionnaire_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         if (isset($parameters['applied_application_enc_id']) && !empty($parameters['applied_application_enc_id'])) {
             $applied_application_id = $parameters['applied_application_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         $data = json_decode($parameters['data'], true);
@@ -797,7 +767,7 @@ class JobsController extends ApiBaseController
                     $field_model->created_on = date('Y-m-d H:i:s');
                     $field_model->created_by = $candidate->user_enc_id;
                     if (!$field_model->save()) {
-                        return $this->response(500, "don't saved");
+                        return $this->response(500);
                     }
                 }
 
@@ -812,7 +782,7 @@ class JobsController extends ApiBaseController
                     $field_model->created_on = date('Y-m-d H:i:s');
                     $field_model->created_by = $candidate->user_enc_id;
                     if (!$field_model->save()) {
-                        return $this->response(500, "don't saved");
+                        return $this->response(500);
                     }
                 }
 
@@ -828,7 +798,7 @@ class JobsController extends ApiBaseController
                         $fieldsModel->created_on = date('Y-m-d H:i:s');
                         $fieldsModel->created_by = $candidate->user_enc_id;
                         if (!$fieldsModel->save()) {
-                            return $this->response(500, "don't saved");
+                            return $this->response(500);
                         }
                     }
                 }
@@ -841,7 +811,7 @@ class JobsController extends ApiBaseController
             ->update(AppliedApplications::tableName(), ['status' => 'Pending', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $candidate->user_enc_id], ['applied_application_enc_id' => $applied_application_id])
             ->execute();
         if ($update) {
-            return $this->response(201, 'data saved');
+            return $this->response(201);
         } else {
             return $this->response(500, 'error occured while updating applied applications');
         }
@@ -857,7 +827,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['application_enc_id']) && !empty($parameters['application_enc_id'])) {
             $app_id = $parameters['application_enc_id'];
         } else {
-            return $this->response(422, 'Missing Information');
+            return $this->response(422);
         }
 
         $applied_user = AppliedApplications::find()
@@ -903,7 +873,7 @@ class JobsController extends ApiBaseController
         if (!empty($applied_user)) {
             return $this->response(200, $applied_user);
         } else {
-            return $this->response(404, 'Not Found');
+            return $this->response(404);
         }
 
     }

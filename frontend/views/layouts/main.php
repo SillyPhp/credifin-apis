@@ -794,8 +794,8 @@ if ($this->params['header_dark']) {
                     max-height:80px !important;
                 }
             }
-            #menuzord-right{
-                padding:0px !important;
+            .fullwidth-page > #wrapper.clearfix > .main-content{
+                padding-top:20px;
             }
             ');
 }
