@@ -6,12 +6,22 @@ use yii\helpers\Url;
     <div class="block no-padding">
         <div data-velocity="-.1" style="background: url(http://placehold.it/1600x800) repeat scroll 50% 422.28px transparent;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <div class="">
+
             <div class="row">
                 <div class="col-lg-12">
+
                     <div class="inner-header wform">
+                        <div class="back-btn">
+                            <a href=""><i class="fas fa-long-arrow-alt-left"></i> Back</a>
+                        </div>
+                        <div class="nav-com-logo">
+                            <a href="">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png')?>" alt="">
+                            </a>
+                        </div>
                         <div class="job-search-sec">
                             <div class="job-search">
-                                <h4>Explore Thousand Of Jobs With Just Simple Search...</h4>
+                                <h4>Jobs in Empower Youth</h4>
                                 <form>
                                     <div class="row">
                                         <div class="col-lg-7">
@@ -47,19 +57,19 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-lg-9 column">
+            <div class="col-lg-8 col-md-offset-2 column">
                 <div class="modrn-joblist">
                     <div class="tags-bar">
                         <span>Full Time<i class="close-tag">x</i></span>
                         <span>UX/UI Design<i class="close-tag">x</i></span>
                         <span>Istanbul<i class="close-tag">x</i></span>
                         <div class="action-tags">
-                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>
-                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>
+<!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
+<!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
                         </div>
                     </div><!-- Tags Bar -->
                     <div class="filterbar">
-                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>
+<!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
                         <div class="sortby-sec">
                             <span>Sort by</span>
                             <select data-menu>
@@ -80,150 +90,129 @@ use yii\helpers\Url;
                 </div><!-- MOdern Job LIst -->
                 <div class="job-list-modern">
                     <div class="job-listings-sec">
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png')?>" alt="" />
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png')?>" alt="" />
+                                    </div>
+                                    <h3><a href="#" title="">Web Designer / Developer</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
                                 </div>
-                                <h3><a href="#" title="">Web Designer / Developer</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is ft">Full time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
+                                <div class="job-style-bx">
+                                    <span class="job-is ft">Full time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
                         </div>
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/lavya.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/lavya.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is pt ">Part time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                            <div class="job-style-bx">
-                                <span class="job-is pt ">Part time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/xcel.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">Regional Sales Manager South</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is ft ">Full time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/xcel.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">Regional Sales Manager South</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">Marketing Dairector</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is ft ">Full time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                            <div class="job-style-bx">
-                                <span class="job-is ft ">Full time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/upmoney.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">Application Developer</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is pt ">Part time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">Marketing Dairector</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/ramble.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">Social Media and Public</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is fl ">Freelance</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                            <div class="job-style-bx">
-                                <span class="job-is ft ">Full time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="job-listing wtabs">
+                                <div class="job-title-sec">
+                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>" alt="" /> </div>
+                                    <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
+                                    <span>Massimo Artemisis</span>
+                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
+                                </div>
+                                <div class="job-style-bx">
+                                    <span class="job-is pt ">Part time</span>
+                                    <span class="fav-job"><i class="far fa-heart"></i></span>
+                                    <i>5 months ago</i>
+                                </div>
                             </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/upmoney.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">Application Developer</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is pt ">Part time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/ramble.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">Social Media and Public</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is fl ">Freelance</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>" alt="" /> </div>
-                                <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is pt ">Part time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="http://placehold.it/98x51" alt="" /> </div>
-                                <h3><a href="#" title="">Regional Sales Manager South</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is ft ">Full time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="http://placehold.it/98x51" alt="" /> </div>
-                                <h3><a href="#" title="">Marketing Dairector</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is ft ">Full time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-                        <div class="job-listing wtabs">
-                            <div class="job-title-sec">
-                                <div class="c-logo"> <img src="http://placehold.it/98x51" alt="" /> </div>
-                                <h3><a href="#" title="">Application Developer</a></h3>
-                                <span>Massimo Artemisis</span>
-                                <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                            </div>
-                            <div class="job-style-bx">
-                                <span class="job-is pt ">Part time</span>
-                                <span class="fav-job"><i class="far fa-heart"></i></span>
-                                <i>5 months ago</i>
-                            </div>
-                        </div><!-- Job -->
-
+                        </div>
                     </div>
-                    <div class="viewmore"><span><i></i><i></i><i></i>View More</span></div>
+                    <div class="col-md-12">
+                        <div class="viewmore">
+                            <button type="button">View More</button>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="new-position-widget">
+                            <?=
+                            $this->render('/widgets/new-position');
+                            ?>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-3">
-                <div class="new-position-widget">
-                    <?=
-                    $this->render('/widgets/new-position');
-                    ?>
-                </div>
-            </div>
+
         </div>
     </div>
 </section>
@@ -282,6 +271,58 @@ use yii\helpers\Url;
 <?php
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+.viewmore{
+    text-align:center;
+    margin-top:20px;
+}
+.viewmore button{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left: 5px;
+    background: #fff;
+    border:none;
+}
+.back-btn{
+    position:absolute;
+    top:15px;
+    left:15px;
+    z-index:9;
+}
+.back-btn a{
+    color:#fff;
+    font-size:17px;
+    padding:5px 10px;
+    transition:.5s ease;
+}
+.back-btn a:hover{
+    background:#00a0e3;
+    padding:5px 10px;
+    transition:.3s ease;
+    font-size:15px;
+    border-radius:5px;
+}
+.nav-com-logo{
+    text-align: center;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-height: 60px;
+    max-width: 60px;
+}
+.nav-com-logo img{
+    width:100%;
+    height:100%;
+}
 .new-position-widget{
     margin-top:50px;
 }
@@ -334,7 +375,7 @@ section.overlape {
     float: left;
     width: 100%;
     position: relative;
-    padding-top: 100px;
+    padding-top: 130px;
      padding-bottom: 15px;
     z-index: 0;
 }

@@ -127,7 +127,13 @@ class SiteController extends Controller
         return $this->render('employers');
     }
     public function actionCareerCompany(){
+        $this->layout = 'without-header';
         return $this->render('career-company');
+
+    }
+    public function actionCareerJobDetail(){
+        $this->layout = 'without-header';
+        return $this->render('career-job-detail');
     }
     public function actionAddNewSubscriber()
     {
