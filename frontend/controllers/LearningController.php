@@ -935,7 +935,7 @@ class LearningController extends Controller
                 $b->andOnCondition(['d.status' => 1]);
                 $b->andOnCondition(['d.is_deleted' => 0]);
             }], false)
-            ->groupBy(['a.parent_enc_id'])
+            ->groupBy(['a.assigned_category_enc_id'])
             ->where(['a.is_deleted' => 0, 'a.status' => 'Approved'])
             ->andWhere([
                 'or',
