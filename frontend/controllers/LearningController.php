@@ -936,7 +936,7 @@ class LearningController extends Controller
                 ['not', ['a.parent_enc_id' => ""]]
             ])
             ->andWhere(['a.assigned_to' => 'Videos'])
-            ->orderBy(['total' => SORT_DESC]);
+            ->orderBy(['total' => SORT_DESC, 'c.name' => SORT_ASC]);
 
         if ((int)$limit) {
             $categories->limit($limit);
