@@ -82,4 +82,9 @@ class QuizController extends Controller
         }
     }
 
+    public function actionTest(){
+        $this->layout = 'quiz6-main';
+        return $this->render('c-quiz');
+    }
+
 }
