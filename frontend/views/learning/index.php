@@ -36,17 +36,19 @@ use yii\helpers\Url;
 
 <div class="container ">
     <div class="cat-padding">
-        <div class="row ">
-            <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="heading-style">Popular Categories</div>
-            </div>
-            <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="type-1">
-                    <div>
-                        <a href="/learning/categories" class="btn btn-3">
-                            <span class="txt-cate">View all</span>
-                            <span class="round"><i class="fas fa-chevron-right"></i></span>
-                        </a>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="heading-style">Popular Categories</div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="/learning/categories" class="btn btn-3">
+                                <span class="txt-cate">View all</span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,9 +142,11 @@ use yii\helpers\Url;
 <?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <!-- Example row of columns -->
-        <div class="row col-md-12">
-            <div class="heading-style col-md-6 col-sm-6">Most Popular Videos</div>
+        <!--        <div class="row">-->
+        <div class="col-md-12">
+            <div class="heading-style">Most Popular Videos</div>
         </div>
+        <!--        </div>-->
     </div>
     <div>
         <div class="container">
@@ -233,13 +237,15 @@ use yii\helpers\Url;
 
 <section>
     <div class="container">
-        <div class="row">
+<!--        <div class="row">-->
             <div class="col-md-12">
                 <h2 class="heading-style">Our Collaborators</h2>
             </div>
-        </div>
-        <div class="row" id="contributors">
+<!--        </div>-->
+        <div class="row">
+            <div class="col-md-12" id="contributors">
 
+            </div>
         </div>
     </div>
 </section>

@@ -95,11 +95,11 @@
                 </div>
             </div>
         </li>
-        <!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
-        <!--            <a href="/learning">-->
-        <!--                Learning-->
-        <!--            </a>-->
-        <!--        </li>-->
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/learning">
+                Learning Hub
+            </a>
+        </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
                 Blog

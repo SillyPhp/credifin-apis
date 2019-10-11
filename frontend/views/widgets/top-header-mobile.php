@@ -111,11 +111,11 @@
                 </div>
             </div>
         </div>
-        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-        <!--            <div class="ey-mobile-item-main">-->
-        <!--                <a href="/learning">Learning</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/learning">Learning Hub</a>
+            </div>
+        </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/blog">Blog</a>
