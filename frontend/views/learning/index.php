@@ -38,7 +38,7 @@ use yii\helpers\Url;
     <div class="cat-padding">
         <div class="row ">
             <div class="col-md-6 col-sm-12 col-xs-12">
-                <div class="heading-style">Popular Categories</div>
+                <div class="heading-style">Categories</div>
             </div>
             <div class="col-md-6 col-sm-12 col-xs-12">
                 <div class="type-1">
@@ -230,6 +230,29 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php } ?>
+
+<section>
+    <div class="container">
+        <div class="col-box">
+            <div class="row" style="margin:20px">
+                <div class="col-md-4">
+                    <div class="col-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-text">
+                        <div class="col-head">Join our community of contributers</div>
+                        <div class="col-inner">Help millions of people realize their true potential</div>
+                        <a href="/learning/contribute">
+                            <button class="btn-primary btn" style="margin-top:20px;">Know More</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <section>
     <div class="container">
@@ -468,13 +491,17 @@ $this->registerCss('
 }
 .col-text {
     text-align: center;
-    padding-top: 35px;
-}
+    padding-top: 40px;
+}   
 .col-head {
+    text-transform:capitalize;
     font-size: 35px;
     font-weight: 700;
     font-family: roboto;
     text-align: center;
+}
+.col-inner{
+    font-size:18px;
 }
 .newlogoset{
     max-width:500px;
@@ -1440,14 +1467,12 @@ $script = <<< JS
             }
         }
    });
-
-JS;
-
-$script = <<<js
+    
         $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
 });
-js;
+JS;
+
 
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
