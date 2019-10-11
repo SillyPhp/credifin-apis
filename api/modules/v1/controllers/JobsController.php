@@ -93,7 +93,7 @@ class JobsController extends ApiBaseController
         if (count($result) > 0) {
             return $this->response(200, $result);
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
     }
 
@@ -122,7 +122,7 @@ class JobsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -149,7 +149,7 @@ class JobsController extends ApiBaseController
                         ->exists();
                     $result["hasShortlisted"] = $shortlist;
                 } else {
-                    return $this->response(401);
+                    return $this->response(401,'unauthorized');
                 }
             }
 
@@ -252,7 +252,7 @@ class JobsController extends ApiBaseController
 
             return $this->response(200, $result);
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -292,7 +292,7 @@ class JobsController extends ApiBaseController
         if (sizeof($resume) != 0) {
             return $this->response(200, $resume);
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
 
     }
@@ -328,7 +328,7 @@ class JobsController extends ApiBaseController
                 ->one();
 
             if (!$application_details) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             $token_holder_id = UserAccessTokens::find()
@@ -367,13 +367,13 @@ class JobsController extends ApiBaseController
                 if ($res = $model->saveValues()) {
                     return $this->response(200, $res);
                 } else {
-                    return $this->response(500);
+                    return $this->response(500,'Not Saved');
                 }
             } else {
-                return $this->response(409);
+                return $this->response(409,'conflict');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -385,19 +385,19 @@ class JobsController extends ApiBaseController
         if (!empty($parameters['org_enc_id']) && isset($parameters['org_enc_id'])) {
             $options['org_enc_id'] = $parameters['org_enc_id'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (!empty($parameters['type']) && isset($parameters['type'])) {
             $options['type'] = $parameters['type'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (!empty($parameters['keyword']) && isset($parameters['keyword'])) {
             $options['keyword'] = $parameters['keyword'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         $organization_applications = EmployerApplications::find()
@@ -430,7 +430,7 @@ class JobsController extends ApiBaseController
         $data = $organization_applications->asArray()->all();
 
         if ($data == null || empty($data) || $data == '') {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         } else {
             return $this->response(200, $data);
         }
@@ -470,7 +470,7 @@ class JobsController extends ApiBaseController
         if (isset($parameters['keyword']) && !empty($parameters['keyword'])) {
             $s = $parameters['keyword'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
         $result = [];
 
@@ -802,7 +802,7 @@ class JobsController extends ApiBaseController
         && empty($result['jobs'])
         && empty($result['internships'])
         && empty($result['posts'])){
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }else{
             return $this->response(200, $result);
         }
@@ -815,7 +815,7 @@ class JobsController extends ApiBaseController
             $data = $this->getApplication($req['id']);
 
             if (empty($data)) {
-                return $this->response(404);
+                return $this->response(404,'Not Found');
             }
 
             if (Yii::$app->request->headers->get('Authorization') && Yii::$app->request->headers->get('source')) {
@@ -848,7 +848,7 @@ class JobsController extends ApiBaseController
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
                 } else {
-                    return $this->response(401);
+                    return $this->response(401,'unauthorized');
                 }
             }
 
@@ -928,7 +928,7 @@ class JobsController extends ApiBaseController
 
             return $this->response(200, $data);
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing information');
         }
     }
 
@@ -1053,13 +1053,13 @@ class JobsController extends ApiBaseController
         if (!empty($parameters['latitude']) && isset($parameters['latitude'])) {
             $options['latitude'] = $parameters['latitude'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (!empty($parameters['longitude']) && isset($parameters['longitude'])) {
             $options['longitude'] = $parameters['longitude'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if (!empty($parameters['radius']) && isset($parameters['radius'])) {
@@ -1071,7 +1071,7 @@ class JobsController extends ApiBaseController
         if (!empty($parameters['type']) && isset($parameters['type'])) {
             $options['type'] = $parameters['type'];
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
 
         if ($parameters['page'] && (int)$parameters['page'] >= 1) {
@@ -1095,7 +1095,7 @@ class JobsController extends ApiBaseController
         if (!empty($data)) {
             return $this->response(200, $data);
         } else {
-            return $this->response(404);
+            return $this->response(404,'Not Found');
         }
 
 

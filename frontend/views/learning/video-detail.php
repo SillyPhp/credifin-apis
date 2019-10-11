@@ -186,48 +186,69 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
-                <div class="rate-video">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h1 class="chan-heading">Rate this Video</h1>
-                        </div>
+                <div class="sharing-box">
+                    <div class="sharing-pic">
+                        <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
                     </div>
-                    <div class="cntr">
-                        <label for="rdo-1" class="btn-radio">
-                            <input type="radio" id="rdo-1" name="radio-grp">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20">
-                                <circle cx="10" cy="10" r="9"></circle>
-                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
-                                      class="inner"></path>
-                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
-                                      class="outer"></path>
-                            </svg>
-                            <span>Beginner</span>
-                        </label>
-                        <label for="rdo-2" class="btn-radio">
-                            <input type="radio" id="rdo-2" name="radio-grp">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20">
-                                <circle cx="10" cy="10" r="9"></circle>
-                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
-                                      class="inner"></path>
-                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
-                                      class="outer"></path>
-                            </svg>
-                            <span>Intermediate</span>
-                        </label>
-                        <label for="rdo-3" class="btn-radio">
-                            <input type="radio" id="rdo-3" name="radio-grp">
-                            <svg width="20px" height="20px" viewBox="0 0 20 20">
-                                <circle cx="10" cy="10" r="9"></circle>
-                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"
-                                      class="inner"></path>
-                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"
-                                      class="outer"></path>
-                            </svg>
-                            <span>Pro</span>
-                        </label>
+                    <!--                        <div class="share-it">Share :-</div>-->
+                    <div class="fb-share">
+                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                    </div>
+                    <div class="tw-share">
+                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                    </div>
+                    <div class="li-share">
+                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                    </div>
+                    <div class="wa-share">
+                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                    </div>
+                    <div class="mail-share">
+                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
                     </div>
                 </div>
+<!--                <div class="rate-video">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h1 class="chan-heading">Rate this Video</h1>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="cntr">-->
+<!--                        <label for="rdo-1" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-1" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Beginner</span>-->
+<!--                        </label>-->
+<!--                        <label for="rdo-2" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-2" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Intermediate</span>-->
+<!--                        </label>-->
+<!--                        <label for="rdo-3" class="btn-radio">-->
+<!--                            <input type="radio" id="rdo-3" name="radio-grp">-->
+<!--                            <svg width="20px" height="20px" viewBox="0 0 20 20">-->
+<!--                                <circle cx="10" cy="10" r="9"></circle>-->
+<!--                                <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z"-->
+<!--                                      class="inner"></path>-->
+<!--                                <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z"-->
+<!--                                      class="outer"></path>-->
+<!--                            </svg>-->
+<!--                            <span>Pro</span>-->
+<!--                        </label>-->
+<!--                    </div>-->
+<!--                </div>-->
                 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({
@@ -258,6 +279,9 @@ $this->params['seo_tags'] = [
 <?php
 
 $this->registerCss('
+.comment-text{
+    word-break: break-all;
+}
 .large-container{
     max-width: 1500px !important;
     padding-left: 15px;
@@ -434,6 +458,10 @@ font-size:18px
 }
 .views i{
 font-size:15px;
+}
+.views, .likes, .comms{
+    display:inline-block;
+    margin-right:10px;
 }
 .dislikeGray{
 background:url(' . Url::to('@eyAssets/images/pages/learning-corner/dislike1.png') . ');
@@ -1082,6 +1110,108 @@ left:10px;
     box-shadow: 0px 2px 9px 0px #b1b1b1c9;
 }
 /*---Rate this video css ends---*/
+
+.fb-share, .tw-share, .li-share, .wa-share{
+    display:inline-block;
+}
+.marg{
+    margin-right:5px;
+}
+.share-it {
+    text-align: center;
+    font-size: 19px;
+    padding-bottom: 10px;
+    color: #fff;
+    font-weight: bold;
+}
+.sharing-box{
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #eee;
+    width:100%;
+    background-color:#1d759a;
+}
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    padding: 10px 0;
+    width:135px;
+    background: #00a0e3;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+    color: #fff;
+    margin-bottom: 10px;
+}
+.fb-btn:hover {
+    background-color: #fff;
+    color: #1d759a;
+}
+.li-btn:hover {
+    background-color: #fff;
+    color: #0077b5;
+}
+.tw-btn:hover {
+    background-color: #fff;
+    color: #28aae1;
+}
+.wa-btn:hover {
+    background-color: #fff;
+    color: #00e676;
+}
+.mail-btn:hover {
+    background-color: #fff;
+    color:#d4483a;
+}
+.sharing-pic{
+    padding-bottom:10px;
+    text-align:center;
+}
+.sharing-pic img{
+    width:330px;
+    height:180px;
+}
+.mail-share{
+    text-align:center;
+}
+@media only screen and (max-width: 1280px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:127px;
+}
+}
+@media only screen and (max-width: 1024px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:190px;
+}
+}
+@media only screen and (max-width: 768px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:137px;
+}
+.mail-share{
+    display:inline-block;
+}
+}
+@media only screen and (max-width: 450px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:174px;
+}
+.mail-share {
+    display: inherit;
+}
+}
+@media only screen and (max-width: 380px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:154px;
+}
+}
+@media only screen and (max-width: 362px){
+.fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+    width:147px;
+}
+}
 ');
 
 $script = <<<JS

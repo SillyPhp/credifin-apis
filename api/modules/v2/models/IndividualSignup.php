@@ -41,17 +41,11 @@ class IndividualSignup extends Model
         return [
             [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year'], 'safe'],
 
-            ['first_name', 'required'],
-            ['first_name', 'trim'],
-            ['last_name', 'required'],
-            ['last_name', 'trim'],
+            [['first_name','last_name','phone','username','email'], 'required'],
+            [['first_name','last_name','phone','username','email'], 'trim'],
 
-            ['phone', 'required'],
-            [['phone'], 'required'],
             ['phone', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'phone number already registered'],
 
-            ['username', 'trim'],
-            ['username', 'required'],
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             ['username', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'username already taken'],
@@ -59,8 +53,6 @@ class IndividualSignup extends Model
             ['starting_year', 'safe'],
             ['ending_year', 'safe'],
 
-            ['email', 'trim'],
-            ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'email already taken'],
 
@@ -75,6 +67,7 @@ class IndividualSignup extends Model
 
     public function saveUser()
     {
+
         $user = new Candidates();
         $username = new Usernames();
         $user_other_details = new UserOtherDetails();
@@ -109,6 +102,7 @@ class IndividualSignup extends Model
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
         $user_other_details->organization_enc_id = $this->college;
+        $user_other_details->user_enc_id = $user->user_enc_id;
 
         $d = Departments::find()
             ->where([
@@ -124,7 +118,9 @@ class IndividualSignup extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $department->department_enc_id = $utilitiesModel->encrypt();
             $department->name = $this->department;
-            $department->save();
+            if(!$department->save()){
+                return false;
+            }
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
@@ -144,7 +140,9 @@ class IndividualSignup extends Model
             $eduReq->educational_requirement = $this->course_name;
             $eduReq->created_on = date('Y-m-d H:i:s');
             $eduReq->created_by = $user->user_enc_id;
-            $eduReq->save();
+            if(!$eduReq->save()){
+                return false;
+            }
             $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
         }
 

@@ -505,7 +505,7 @@ class JobsController extends ApiBaseController
                 'b.initials_color',
                 'c.industry',
                 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-            ->innerJoinWith(['organizationEnc b' => function ($a) {
+            ->joinWith(['organizationEnc b' => function ($a) {
                 $a->joinWith(['industryEnc c']);
                 $a->where(['b.is_deleted' => 0, 'b.status' => 'Active']);
             }], false)
@@ -640,6 +640,7 @@ class JobsController extends ApiBaseController
 
     public function actionCancelApplication()
     {
+
         $parameters = \Yii::$app->request->post();
         $candidate = $this->userId();
 
@@ -658,7 +659,7 @@ class JobsController extends ApiBaseController
             $cancel_application->last_updated_by = $candidate->user_enc_id;
             $cancel_application->last_updated_on = date('Y-m-d H:i:s');
             if ($cancel_application->update()) {
-                return $this->response(200);
+                return $this->response(200, ['status' => 200]);
             } else {
                 return $this->response(500);
             }
