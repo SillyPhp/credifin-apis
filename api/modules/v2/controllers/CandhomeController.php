@@ -163,7 +163,7 @@ class CandhomeController extends ApiBaseController
             ->distinct()
             ->select(['a.followed_enc_id', 'a.organization_enc_id'])
             ->innerJoinWith(['organizationEnc b' => function ($x) {
-                $x->select(['b.organization_enc_id', 'b.name organization_name', 'CONCAT("' . Url::to('/', true) . '", b.slug) profile_link', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                 $x->joinWith(['businessActivityEnc e'], false);
                 $x->joinWith(['employerApplications c' => function ($y) {
                     $y->select(['c.organization_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name'])
