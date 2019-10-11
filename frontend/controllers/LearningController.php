@@ -42,6 +42,11 @@ class LearningController extends Controller
         ];
     }
 
+    public function actionContribute()
+    {
+        return $this->render('contribute');
+    }
+
     public function actionAddApproved()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -394,6 +399,7 @@ class LearningController extends Controller
                     ['a.organization_enc_id' => NULL]
                 ])
                 ->asArray()
+                ->Limit(6)
                 ->all();
 
             return ['status' => 200, 'result' => $contributors];
@@ -943,6 +949,16 @@ class LearningController extends Controller
         }
 
         return $categories->asArray()->all();
+    }
+
+    public function actionContributorCollabs(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            $data = Yii::$app->request->post();
+
+            print_r($data);
+            die();
+
+        }
     }
 
 }
