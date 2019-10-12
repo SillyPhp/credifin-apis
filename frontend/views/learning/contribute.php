@@ -219,7 +219,7 @@ use yii\helpers\Url;
                 <div class="col-lg-4 col-md-6">
                     <div class="collaborators-main">
                         <div class="c-detail">
-                            <h4 class="title"><?=$r['name'] .'( '. $z['videos'] .' )' ?></h4>
+                            <h4 class="title"><?=$r['name'] ?></h4>
                             <span class="post">Contributor</span>
                             <ul class="social-icon">
                                 <li><a href="https://www.facebook.com/<?=$r['facebook']?>"

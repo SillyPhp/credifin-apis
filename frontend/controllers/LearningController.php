@@ -47,22 +47,26 @@ class LearningController extends Controller
     {
         $contributors = Users::find()
             ->alias('a')
-//            ->select([
-//                'CONCAT(a.first_name,
-//                 " ", a.last_name) as name',
-//                'a.facebook',
-//                'a.twitter',
-//                'a.linkedin',
-//                'a.instagram',
-////                'count(CASE WHEN c.video_enc_id IS NOT NULL AND c.is_deleted = 0 then 1 END) as videos',
-//                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
-//            ])
+            ->select([
+                'a.user_enc_id',
+                'a.user_type_enc_id',
+                'c.author_enc_id',
+                'CONCAT(a.first_name," ", a.last_name) as name',
+                'a.facebook',
+                'a.twitter',
+                'a.linkedin',
+                'a.instagram',
+                'count(c.id) as videos',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
+            ])
             ->innerJoinWith(['userTypeEnc b' => function ($b) {
                 $b->andOnCondition(['b.user_type' => 'Contributor']);
-            }], false)
+            }],false)
             ->joinWith(['youtubeChannels1 c' => function($c){
-                $c->joinWith(['learningVideos d']);
-            }])
+                $c->joinWith(['learningVideos d' => function($d){
+                    $d->andWhere(['d.is_deleted' => 0]);
+                }]);
+            }],false)
             ->where(['a.user_of' => 'EY',  'a.is_deleted' => 0])
             ->andWhere([
                 'or',
@@ -70,11 +74,10 @@ class LearningController extends Controller
                 ['a.organization_enc_id' => NULL]
             ])
             ->asArray()
+            ->orderBy(['videos' => SORT_DESC])
             ->groupBy('a.id')
-//            ->Limit(6)
+            ->Limit(6)
             ->all();
-        print_r($contributors);
-        exit;
         return $this->render('contribute',['result'=>$contributors]);
     }
 
