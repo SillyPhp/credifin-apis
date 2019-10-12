@@ -8,8 +8,13 @@ use yii\web\Response;
 
 class UsaJobsController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex($keywords=null)
     {
-        return $this->render('index');
+        return $this->render('index',['keywords'=>$keywords]);
+    }
+
+    public function actionTest()
+    {
+        return $this->render('test');
     }
 }
