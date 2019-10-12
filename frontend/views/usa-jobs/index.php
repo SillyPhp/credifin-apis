@@ -181,7 +181,10 @@ body{
     border-radius: 18px;
     overflow: hidden;
 }
-
+#search_company
+{
+width:100%; 
+}
 .masonry { 
     -webkit-column-count: 4;
   -moz-column-count:4;
