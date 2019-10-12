@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\States;
@@ -128,7 +129,65 @@ class SiteController extends Controller
     }
     public function actionCareerCompany(){
         $this->layout = 'without-header';
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $jobDetail = EmployerApplications::find()
+                ->alias('a')
+                ->select([
+                    'a.last_date',
+                    'a.type',
+//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
+                    'a.slug',
+                    'dd.name category',
+                    'l.designation',
+                    'd.initials_color color',
+                    'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
+                    "g.name as city",
+                    'c.name as title',
+                    'dd.icon',
+                    'd.name as organization_name',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
+                https://ui-avatars.com/api/?name=
+                ", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                    '(CASE
+               WHEN a.experience = "0" THEN "No Experience"
+               WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
+               WHEN a.experience = "2" THEN "1 Year Experience"
+               WHEN a.experience = "3" THEN "2-3 Years Experience"
+               WHEN a.experience = "3-5" THEN "3-5 Years Experience"
+               WHEN a.experience = "5-10" THEN "5-10 Years Experience"
+               WHEN a.experience = "10-20" THEN "10-20 Years Experience"
+               WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
+               ELSE "No Experience"
+               END) as experience',
+                ])
+                ->joinWith(['title b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false);
+                    $b->joinWith(['parentEnc dd'], false);
+                }], false)
+                ->joinWith(['organizationEnc d' => function ($a) {
+                    $a->where(['d.is_deleted' => 0]);
+                }], false)
+                ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                    $x->joinWith(['locationEnc f' => function ($x) {
+                        $x->joinWith(['cityEnc g' => function ($x) {
+                            $x->joinWith(['stateEnc s'], false);
+                        }], false);
+                    }], false);
+                }], false)
+                ->joinWith(['preferredIndustry h'], false)
+                ->joinWith(['designationEnc l'], false)
+                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => 'ajayjuneja'])
+               ->limit(10)
+                ->asArray()
+                ->all();
+
+            return ['status'=>200,'result'=>$jobDetail];
+        }
         return $this->render('career-company');
+
 
     }
     public function actionCareerJobDetail(){

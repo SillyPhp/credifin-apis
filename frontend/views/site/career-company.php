@@ -60,14 +60,15 @@ use yii\helpers\Url;
             <div class="col-lg-8 col-md-offset-2 column">
                 <div class="modrn-joblist">
                     <div class="tags-bar">
-                        <span>Full Time<i class="close-tag">x</i></span>
-                        <span>UX/UI Design<i class="close-tag">x</i></span>
-                        <span>Istanbul<i class="close-tag">x</i></span>
-                        <div class="action-tags">
+<!--                        <span>Full Time<i class="close-tag">x</i></span>-->
+<!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
+<!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
+<!--                        <div class="action-tags">-->
 <!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
 <!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
-                        </div>
-                    </div><!-- Tags Bar -->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <!-- Tags Bar -->
                     <div class="filterbar">
 <!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
                         <div class="sortby-sec">
@@ -89,114 +90,8 @@ use yii\helpers\Url;
                     </div>
                 </div><!-- MOdern Job LIst -->
                 <div class="job-list-modern">
-                    <div class="job-listings-sec">
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/fame.png')?>" alt="" />
-                                    </div>
-                                    <h3><a href="#" title="">Web Designer / Developer</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is ft">Full time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/lavya.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is pt ">Part time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/xcel.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">Regional Sales Manager South</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is ft ">Full time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/vsc.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">Marketing Dairector</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is ft ">Full time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/upmoney.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">Application Developer</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is pt ">Part time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/ramble.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">Social Media and Public</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is fl ">Freelance</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="job-listing wtabs">
-                                <div class="job-title-sec">
-                                    <div class="c-logo"> <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/status.png')?>" alt="" /> </div>
-                                    <h3><a href="#" title="">C Developer (Senior) C .Net</a></h3>
-                                    <span>Massimo Artemisis</span>
-                                    <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>Sacramento, California</div>
-                                </div>
-                                <div class="job-style-bx">
-                                    <span class="job-is pt ">Part time</span>
-                                    <span class="fav-job"><i class="far fa-heart"></i></span>
-                                    <i>5 months ago</i>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="job-listings-sec" id="career_job_list">
+
                     </div>
                     <div class="col-md-12">
                         <div class="viewmore">
@@ -268,7 +163,10 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <?php
+echo $this->render('/widgets/mustache/career-job-box');
+
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
 .viewmore{
@@ -1142,6 +1040,17 @@ section.overlape {
 }
 ');
 $script = <<< JS
+$.ajax({
+    url:'/site/career-company',
+    method: 'post',
+    success:function(data){
+        if(data.status == 200){
+            var career = $('#career-job-box').html();
+            $("#career_job_list").html(Mustache.render(career, data.result));
+        }
+    }
+ });
+
  $('.fav-job').on('click', function(){
         $(this).toggleClass('active');
     })
@@ -1218,5 +1127,6 @@ $.ajax({
 });   
 JS;
 $this->registerJs($script);
-$this->registerJsFile('@eyAssets/js/select-chosen.js')
+$this->registerJsFile('@eyAssets/js/select-chosen.js');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
