@@ -215,93 +215,37 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
+                <?php foreach ($result as $r) {?>
                 <div class="col-lg-4 col-md-6">
                     <div class="collaborators-main">
                         <div class="c-detail">
-                            <h4 class="title">Corey Schafer</h4>
+                            <h4 class="title"><?=$r['name'] .'( '. $z['videos'] .' )' ?></h4>
                             <span class="post">Contributor</span>
                             <ul class="social-icon">
-                                <li><a href="https://www.facebook.com/{{facebook}}"
+                                <li><a href="https://www.facebook.com/<?=$r['facebook']?>"
                                        target="_blank">
                                         <i class="fab fa-facebook"></i></a>
                                 </li>
-                                <li><a href="https://www.twitter.com/twitter"
+                                <li><a href="https://www.twitter.com/twitter<?=$r['twitter']?>"
                                        target="_blank">
                                         <i class="fab fa-twitter"></i></a>
                                 </li>
-                                <li><a href="https://www.linkedin.com/in/"
+                                <li><a href="https://www.linkedin.com/in/<?=$r['linkedin']?>"
                                        target="_blank">
                                         <i class="fab fa-linkedin"></i></a>
                                 </li>
-                                <li><a href="https://www.instagram.com/"
+                                <li><a href="https://www.instagram.com/<?=$r['instagram']?>"
                                        target="_blank">
                                         <i class="fab fa-instagram"></i></a>
                                 </li>
                             </ul>
                         </div>
                         <div class="thumb">
-                            <img src="<?= Url::to('http://kulwinder.eygb.me/assets/themes/ey/images/pages/learning-corner/collaborator.png'); ?>"/>
+                            <img src="<?=$r['image']?>"/>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">name</h4>
-                            <span class="post">Contributor</span>
-                            <ul class="social-icon">
-                                <li><a href="https://www.facebook.com/{{facebook}}"
-                                       target="_blank">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="https://www.twitter.com/twitter"
-                                       target="_blank">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="https://www.linkedin.com/in/"
-                                       target="_blank">
-                                        <i class="fab fa-linkedin"></i></a>
-                                </li>
-                                <li><a href="https://www.instagram.com/"
-                                       target="_blank">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="<?= Url::to('http://kulwinder.eygb.me/assets/themes/ey/images/pages/learning-corner/collaborator.png'); ?>"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title">name</h4>
-                            <span class="post">Contributor</span>
-                            <ul class="social-icon">
-                                <li><a href="https://www.facebook.com/{{facebook}}"
-                                       target="_blank">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="https://www.twitter.com/twitter"
-                                       target="_blank">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="https://www.linkedin.com/in/"
-                                       target="_blank">
-                                        <i class="fab fa-linkedin"></i></a>
-                                </li>
-                                <li><a href="https://www.instagram.com/"
-                                       target="_blank">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="<?= Url::to('http://kulwinder.eygb.me/assets/themes/ey/images/pages/learning-corner/collaborator.png'); ?>"/>
-                        </div>
-                    </div>
-                </div>
+                <?php }?>
             </div>
         </div>
     </section>
