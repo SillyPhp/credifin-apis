@@ -243,7 +243,7 @@ use yii\helpers\Url;
                 <div class="col-md-8">
                     <div class="col-text">
                         <div class="col-head">Join our community of contributers</div>
-                        <div class="col-inner">Help millions of people realize their true potential</div>
+                        <div class="col-inner">Help millions of people realize their true potential.</div>
                         <a href="/learning/contribute">
                             <button class="btn-primary btn" style="margin-top:20px;">Know More</button>
                         </a>
@@ -267,114 +267,114 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<Section>
-    <div class="container">
-        <div class="row">
-            <div class="heading-style">Popular Questions</div>
-        </div>
-        <div class="row">
-            <div class="gallery-view">
-                <div class="col-md-4 col-sm-6 card-box">
-                    <div class="card">
-                        <div class="card__block card__block--main">
-                            <div class="head">
-                                <div class="user-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                </div>
-                                <div class="user-topic">
-                                    <div class="topic-name">Topics</div>
-                                </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.
-                            </div>
-                            <div class="t-answers">
-                                <span class="answers">Answers</span>
-                                <div class="best-answers">
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 card-box">
-                    <div class="card">
-                        <div class="card__block card__block--main">
-                            <div class="head">
-                                <div class="user-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                </div>
-                                <div class="user-topic">
-                                    <div class="topic-name">Topics</div>
-                                </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aussie slang for white trash) of patrons.
-                            </div>
-                            <div class="t-answers">
-                                <span class="answers">Answers</span>
-                                <div class="best-answers">
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 card-box">
-                    <div class="card">
-                        <div class="card__block card__block--main">
-                            <div class="head">
-                                <div class="user-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                </div>
-                                <div class="user-topic">
-                                    <div class="topic-name">Topics</div>
-                                </div>
-                            </div>
-                            <div class="box-content">
-                                My friend and I were on our first cruise. Little did we know that cruises seem to
-                                attract the most “bogan” (Aus patrons.
-                            </div>
-                            <div class="t-answers">
-                                <span class="answers">Answers</span>
-                                <div class="best-answers">
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                    <a href="#" data-toggle="tooltip" title="Eddy">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>"/>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</Section>
+<!--<Section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="heading-style">Popular Questions</div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="gallery-view">-->
+<!--                <div class="col-md-4 col-sm-6 card-box">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card__block card__block--main">-->
+<!--                            <div class="head">-->
+<!--                                <div class="user-img">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                </div>-->
+<!--                                <div class="user-topic">-->
+<!--                                    <div class="topic-name">Topics</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="box-content">-->
+<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
+<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to-->
+<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
+<!--                            </div>-->
+<!--                            <div class="t-answers">-->
+<!--                                <span class="answers">Answers</span>-->
+<!--                                <div class="best-answers">-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4 col-sm-6 card-box">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card__block card__block--main">-->
+<!--                            <div class="head">-->
+<!--                                <div class="user-img">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                </div>-->
+<!--                                <div class="user-topic">-->
+<!--                                    <div class="topic-name">Topics</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="box-content">-->
+<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
+<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
+<!--                            </div>-->
+<!--                            <div class="t-answers">-->
+<!--                                <span class="answers">Answers</span>-->
+<!--                                <div class="best-answers">-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4 col-sm-6 card-box">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card__block card__block--main">-->
+<!--                            <div class="head">-->
+<!--                                <div class="user-img">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                </div>-->
+<!--                                <div class="user-topic">-->
+<!--                                    <div class="topic-name">Topics</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="box-content">-->
+<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
+<!--                                attract the most “bogan” (Aus patrons.-->
+<!--                            </div>-->
+<!--                            <div class="t-answers">-->
+<!--                                <span class="answers">Answers</span>-->
+<!--                                <div class="best-answers">-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                    </a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</Section>-->
 
 <?php
 $this->registerCss('

@@ -433,7 +433,6 @@ class LearningController extends Controller
                     ['a.organization_enc_id' => NULL]
                 ])
                 ->asArray()
-                ->Limit(6)
                 ->all();
 
             return ['status' => 200, 'result' => $contributors];
