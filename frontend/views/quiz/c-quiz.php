@@ -11,24 +11,21 @@
                 </header>
                 <div class="quiz-body">
                     <div id="quiz-data">
-                        <h2 class="titleContainer title">Question</h2>
+                        <h2 class="titleContainer title" id="c-question"
+                            data-key="<?= $quiz['quizQuestionsPools'][0]['quiz_question_pool_enc_id']; ?>"><?= $quiz['quizQuestionsPools'][0]['question']; ?></h2>
                         <div class="optionContainer">
-                            <input type="radio" id="one" name="answer" value="1"/>
-                            <label for="one" class="option">
-                                ans 1
-                            </label>
-                            <input type="radio" id="two" name="answer" value="2"/>
-                            <label for="two" class="option">
-                                ans 2
-                            </label>
-                            <input type="radio" id="three" name="answer" value="3"/>
-                            <label for="three" class="option">
-                                ans 3
-                            </label>
-                            <input type="radio" id="four" name="answer" value="4"/>
-                            <label for="four" class="option">
-                                ans 4
-                            </label>
+                            <?php
+                            foreach ($quiz['quizQuestionsPools'][0]['quizAnswersPools'] as $ans) {
+                                ?>
+                                <input type="radio" id="<?= $ans['quiz_answer_pool_enc_id'] ?>"
+                                       name="<?= $ans['quiz_question_pool_enc_id'] ?>"
+                                       value="<?= $ans['quiz_answer_pool_enc_id'] ?>"/>
+                                <label for="<?= $ans['quiz_answer_pool_enc_id'] ?>" class="option">
+                                    <?= $ans['answer'] ?>
+                                </label>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="loading-question">
@@ -57,44 +54,32 @@
                 </footer>
             </form>
         </div>
-        <div class="quizCompleted has-text-centered hidden">
-				<span class="icon">
-                    <i class="fa fa-check-circle-o is-active"></i>
-                </span>
-            <h2 class="title">
-                You did 7 amazing good job!
-            </h2>
-            <p class="subtitle">
-                Total score: 7 / 10
-            </p>
-            <br>
-            <!--            <a class="button">restart <i class="fa fa-refresh"></i></a>-->
-        </div>
     </div>
 </section>
 <script id="c-quiz-options" type="text/template">
-    {{#.}}
-    <h2 class="titleContainer title">{{question}}</h2>
     <div class="optionContainer">
-        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
-        <label for="one" class="option">
-            {{ans1}}
+        {{#.}}
+        <input type="radio" id="{{quiz_answer_pool_enc_id}}" name="{{quiz_question_pool_enc_id}}"
+               value="{{quiz_answer_pool_enc_id}}"/>
+        <label for="{{quiz_answer_pool_enc_id}}" class="option">
+            {{answer}}
         </label>
-        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
-        <label for="two" class="option">
-            {{ans2}}
-        </label>
-        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
-        <label for="three" class="option">
-            {{ans3}}
-        </label>
-        <input type="radio" id="{{ans_id}}" name="answer" value="{{ans_id}}"/>
-        <label for="{{ans_id}}" class="option">
-            {{ans4}}
-        </label>
+        {{/.}}
     </div>
-    {{/.}}
 </script>
+<!--<script id="c-quiz-result" type="text/template">-->
+<!--    <div class="quizCompleted has-text-centered hidden">-->
+<!--        <span class="icon">-->
+<!--            <i class="fa fa-check-circle-o is-active"></i>-->
+<!--        </span>-->
+<!--        <h2 class="title">-->
+<!--            You did {{}} amazing good job!-->
+<!--        </h2>-->
+<!--        <p class="subtitle">-->
+<!--            Total score: {{}} / 40-->
+<!--        </p>-->
+<!--    </div>-->
+<!--</script>-->
 <?php
 $this->registerCss('
    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
@@ -371,9 +356,11 @@ $(document).on('change', '.optionContainer input[type=radio]', function(){
         }
     });
 });
-$(document).on('click', '.nxxt', function(){
-    $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+$(document).on('submit','#c-quiz' , function(e){
+    e.preventDefault();
+    $('.nxxt').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
     $('.loading-question').fadeIn(500);
+    var question_id = $('#c-question').attr('data-key');
     var ans_val;
     $('.option').each(function(){
         var id =  $(this).attr('for');
@@ -381,20 +368,25 @@ $(document).on('click', '.nxxt', function(){
             ans_val = $('#'+id).attr('value');
         }
     });
-    alert(ans_val);
-    return false;
+    
     $.ajax({
         type: 'POST',
         url: window.location.href,
-        async: false,
-        data: {ans:ans_val},
+        data: {question:question_id,ans:ans_val},
         success: function(data){
+            $('.loading-question').fadeOut(500);
             if(data.status == 200){
-                $('.loading-question').fadeOut(500);
                 $('.nxxt').html('Next');
                 var q_body = $('#c-quiz-options').html();
-                $("#quiz-data").html(Mustache.render(q_body, data.data));
+                $(".optionContainer").html(Mustache.render(q_body, data.question.quizQuestionsPools[0].quizAnswersPools));
+                $('#c-question').html(data.question.quizQuestionsPools[0].question);
+                $('#c-question').attr('data-key', data.question.quizQuestionsPools[0].quiz_question_pool_enc_id);
                 animateShow();
+            } else if(data.status == 205) {
+                $('#c-question').fadeOut(1000);
+                $('.nxxt').remove();
+                var result = '<div class="quizCompleted has-text-centered"><span class="icon"><i class="fa fa-check-circle-o is-active"></i></span><h2 class="title">You did '+ data.result +' amazing good job!</h2><p class="subtitle">Total score: '+ data.result +' / 40</p></div>';
+                $(".optionContainer").html(result);
             } else {
                 alert('error');
             }
