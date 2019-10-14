@@ -64,7 +64,8 @@ if ($organization['cover_image']) {
                                         <?php
                                         if (!empty($image_path)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>" alt="<?= Html::encode($organization['name']) ?>"/>
+                                            <img id="logo-img" src="<?= Url::to($image); ?>"
+                                                 alt="<?= Html::encode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -76,14 +77,14 @@ if ($organization['cover_image']) {
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
-<!--                                        <span class="detail-title">Tagline:</span> -->
-                                        <?= Html::encode($organization['tag_line']); ?>
+                                            <!--                                        <span class="detail-title">Tagline:</span> -->
+                                            <?= Html::encode($organization['tag_line']); ?>
                                         </div>
                                     <?php } ?>
                                     <?php if (!empty($industry['industry'])) { ?>
                                         <div class="com-establish">
-<!--                                        <span class="detail-title">Industry:</span> -->
-                                        <?= Html::encode($industry['industry']); ?>
+                                            <!--                                        <span class="detail-title">Industry:</span> -->
+                                            <?= Html::encode($industry['industry']); ?>
                                         </div>
                                     <?php } ?>
                                 </div>
@@ -234,7 +235,8 @@ if ($organization['cover_image']) {
                                                         $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                     }
                                                     ?>
-                                                    <img src="<?= Url::to($benefits['icon']); ?>" alt="<?= Html::encode($benefits['benefit']); ?>"/>
+                                                    <img src="<?= Url::to($benefits['icon']); ?>"
+                                                         alt="<?= Html::encode($benefits['benefit']); ?>"/>
                                                 </div>
                                                 <div class="bb-text">
                                                     <?= Html::encode($benefits['benefit']); ?>
@@ -249,35 +251,35 @@ if ($organization['cover_image']) {
                         </div>
                     <?php }
                     if (!empty($gallery)) {
-                    ?>
-                    <div class="row">
-                        <div class="office-view">
-                            <div class="heading-style">
-                                Inside <?= Html::encode($organization['name']) ?>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="office-pics">
-                                <?php
-                                foreach ($gallery as $g_image) {
-                                    ?>
-                                    <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
-                                        <div class="img1">
-                                            <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                               data-fancybox="image">
-                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                     alt="Inside <?= Html::encode($organization['name']) ?>">
-                                            </a>
-                                        </div>
-                                    </div>
+                        ?>
+                        <div class="row">
+                            <div class="office-view">
+                                <div class="heading-style">
+                                    Inside <?= Html::encode($organization['name']) ?>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="office-pics">
                                     <?php
-                                }
-                                ?>
+                                    foreach ($gallery as $g_image) {
+                                        ?>
+                                        <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
+                                            <div class="img1">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                   data-fancybox="image">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                         alt="Inside <?= Html::encode($organization['name']) ?>">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <?php
+                        <?php
                     }
-                    if(!empty($org_products['organizationProductImages']) || !empty($org_products['description'])){
+                    if (!empty($org_products['organizationProductImages']) || !empty($org_products['description'])) {
                         ?>
                         <div class="row">
                             <div class="office-view">
@@ -285,42 +287,43 @@ if ($organization['cover_image']) {
                                     Products
                                 </div>
                                 <div class="divider"></div>
-                                <?php if(!empty($org_products['organizationProductImages'])){ ?>
-                                <div class="office-pics">
-                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
-                                        <div class="p-preview-img">
-                                            <a href="" data-fancybox="images">
-                                                <img src="" alt="<?= Html::encode($organization['name']) ?> Products">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
-                                        <?php
-                                        foreach ($org_products['organizationProductImages'] as $p_image) {
-                                            ?>
-                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
-                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
-                                                   data-fancybox="images">
-                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
-                                                         alt="<?= $p_image['title'] ?>">
+                                <?php if (!empty($org_products['organizationProductImages'])) { ?>
+                                    <div class="office-pics">
+                                        <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                            <div class="p-preview-img">
+                                                <a href="" data-fancybox="images">
+                                                    <img src=""
+                                                         alt="<?= Html::encode($organization['name']) ?> Products">
                                                 </a>
                                             </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
                                             <?php
-                                        }
-                                        ?>
+                                            foreach ($org_products['organizationProductImages'] as $p_image) {
+                                                ?>
+                                                <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                    <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                       data-fancybox="images">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                             alt="<?= $p_image['title'] ?>">
+                                                    </a>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php
+                                    <?php
                                 }
-                                if(!empty($org_products['description'])){
-                                ?>
-                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                    <h4>Brief Desciption</h4>
-                                    <p>
-                                        <?= $org_products['description']; ?>
-                                    </p>
-                                </div>
-                                    <?php } ?>
+                                if (!empty($org_products['description'])) {
+                                    ?>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                        <h4>Brief Desciption</h4>
+                                        <p>
+                                            <?= $org_products['description']; ?>
+                                        </p>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     <?php }
@@ -338,7 +341,8 @@ if ($organization['cover_image']) {
                                             <div class="team-container">
                                                 <a href="#">
                                                     <div class="team-icon">
-                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>" alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>"
+                                                             alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">
@@ -382,7 +386,8 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>" class="write-review">View
+                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>"
+                                   class="write-review">View
                                     All</a>
                             </div>
                         </div>
@@ -531,7 +536,8 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company'
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
