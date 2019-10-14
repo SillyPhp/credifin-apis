@@ -521,7 +521,8 @@ class ApplicationCards
             ->from(Organizations::tableName().'as a')
             ->select(['name','initials_color','a.slug','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
             ->innerJoin(BusinessActivities::tableName().'as b','b.business_activity_enc_id = a.business_activity_enc_id')
-            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not',['logo'=>null]]);
 
         if (isset($options['limit'])) {
             $limit = $options['limit'];
