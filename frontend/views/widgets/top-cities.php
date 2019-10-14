@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <section class="j-tweets">
         <div class="container">
@@ -15,50 +17,59 @@ use yii\helpers\Url;
                 foreach ($cities_jobs as $app) {
                     ?>
                     <div class="col-md-3 col-sm-6">
-                        <a href="">
-                            <div class="city-main">
-                                <div class="city-image">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
-                                </div>
-                                <div class="city-name"><?= $app['city_name'] ?></div>
-                                <div class="divider"></div>
-                                <div class="city-data">
-                                    <div class="openings">
-                                        <?php
-                                        if($type == 'jobs' || $type == 'internships'){
-                                            ?>
-                                            Total Openings
-                                            <?php
-                                        }else {
-                                            ?>
-                                            <?= $app['jobs'] + $app['internships'] ?>  Total Openings
-                                            <?php
-                                        }
-                                        ?>
 
-                                    </div>
-                                    <div class="count">
-                                        <?php
-                                        if($type == 'jobs'){
-                                            ?>
-                                            <?= $app['jobs'] ?> Jobs
-                                            <?php
-                                        } elseif ($type == 'internships') {
-                                            ?>
-                                            , <?= $app['internships'] ?>
-                                            Internships
-                                            <?php
-                                        } else {
-                                            ?>
-                                            <?= $app['jobs'] ?> Jobs, <?= $app['internships'] ?> Internships
-                                            <?php
-                                        }
-                                        ?>
-                                    </div>
-                                </div>
-                                <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
+                        <div class="city-main">
+                            <div class="city-image">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
                             </div>
-                        </a>
+                            <div class="city-name"><?= $app['city_name'] ?></div>
+                            <div class="divider"></div>
+                            <div class="city-data">
+                                <div class="openings">
+                                    <?php
+                                    if ($type == 'jobs' || $type == 'internships') {
+                                        ?>
+                                        Total Openings
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <?= $app['jobs'] + $app['internships'] ?>  Total Openings
+                                        <?php
+                                    }
+                                    ?>
+
+                                </div>
+                                <div class="count">
+
+                                    <?php
+                                    if ($type == 'jobs') {
+                                        ?>
+                                        <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
+                                            <?= $app['jobs'] ?> Jobs
+                                        </a>
+                                        <?php
+                                    } elseif ($type == 'internships') {
+                                        ?>
+                                        ,<a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
+                                            <?= $app['internships'] ?>
+                                            Internships
+                                        </a>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
+                                            <?= $app['jobs'] ?> Jobs
+                                        </a>,
+                                        <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
+                                            <?= $app['internships'] ?> Internships
+                                        </a>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
+                        </div>
                     </div>
                     <?php
                 }
