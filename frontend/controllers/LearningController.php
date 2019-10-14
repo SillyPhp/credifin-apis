@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\AssignedTags;
 use common\models\Categories;
+use common\models\ContributerCollaborator;
 use common\models\LearningVideoComments;
 use common\models\LearningVideoLikes;
 use common\models\LearningVideos;
@@ -40,6 +41,50 @@ class LearningController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function actionContribute()
+    {
+
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $contributors = Users::find()
+                ->alias('a')
+                ->select([
+                    'a.user_enc_id',
+                    'a.user_type_enc_id',
+                    'c.author_enc_id',
+                    'CONCAT(a.first_name," ", a.last_name) as name',
+                    'a.facebook',
+                    'a.twitter',
+                    'a.linkedin',
+                    'a.instagram',
+                    'count(c.id) as videos',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
+                ])
+                ->innerJoinWith(['userTypeEnc b' => function ($b) {
+                    $b->andOnCondition(['b.user_type' => 'Contributor']);
+                }], false)
+                ->joinWith(['youtubeChannels1 c' => function ($c) {
+                    $c->joinWith(['learningVideos d' => function ($d) {
+                        $d->andWhere(['d.is_deleted' => 0]);
+                    }]);
+                }], false)
+                ->where(['a.user_of' => 'EY', 'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['a.organization_enc_id' => ""],
+                    ['a.organization_enc_id' => NULL]
+                ])
+                ->asArray()
+                ->orderBy(['videos' => SORT_DESC])
+                ->groupBy('a.id')
+                ->Limit(6)
+                ->all();
+
+            return ['status'=>200,'result'=>$contributors];
+        }
+        return $this->render('contribute');
     }
 
     public function actionAddApproved()
@@ -928,7 +973,7 @@ class LearningController extends Controller
                 $b->andOnCondition(['d.status' => 1]);
                 $b->andOnCondition(['d.is_deleted' => 0]);
             }], false)
-            ->groupBy(['a.assigned_category_enc_id', 'a.parent_enc_id'])
+            ->groupBy(['a.assigned_category_enc_id'])
             ->where(['a.is_deleted' => 0, 'a.status' => 'Approved'])
             ->andWhere([
                 'or',
@@ -943,6 +988,34 @@ class LearningController extends Controller
         }
 
         return $categories->asArray()->all();
+    }
+
+    public function actionContributorCollabs(){
+        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+
+            if(filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+
+                $contributer = new ContributerCollaborator();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $contributer->contributer_collaborator_enc_id = $utilitiesModel->encrypt();
+                $contributer->name = $data['name'];
+                $contributer->email = $data['email'];
+                $contributer->youtube_channel = $data['channel'];
+                $contributer->comment = $data['comment'];
+                if ($contributer->save()) {
+                    return ['status' => 200, 'message' => 'Submitted'];
+                } else {
+                    return ['status' => 500, 'message' => 'an error occurred'];
+                }
+            }else{
+                return ['status'=>201];
+            }
+
+
+        }
     }
 
 }
