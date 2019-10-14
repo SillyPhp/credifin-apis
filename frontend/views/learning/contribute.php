@@ -214,38 +214,8 @@ use yii\helpers\Url;
                     <div class="heading-style">Our Contributers</div>
                 </div>
             </div>
-            <div class="row">
-                <?php foreach ($result as $r) {?>
-                <div class="col-lg-4 col-md-6">
-                    <div class="collaborators-main">
-                        <div class="c-detail">
-                            <h4 class="title"><?=$r['name'] ?></h4>
-                            <span class="post">Contributor</span>
-                            <ul class="social-icon">
-                                <li><a href="https://www.facebook.com/<?=$r['facebook']?>"
-                                       target="_blank">
-                                        <i class="fab fa-facebook"></i></a>
-                                </li>
-                                <li><a href="https://www.twitter.com/twitter<?=$r['twitter']?>"
-                                       target="_blank">
-                                        <i class="fab fa-twitter"></i></a>
-                                </li>
-                                <li><a href="https://www.linkedin.com/in/<?=$r['linkedin']?>"
-                                       target="_blank">
-                                        <i class="fab fa-linkedin"></i></a>
-                                </li>
-                                <li><a href="https://www.instagram.com/<?=$r['instagram']?>"
-                                       target="_blank">
-                                        <i class="fab fa-instagram"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="thumb">
-                            <img src="<?=$r['image']?>"/>
-                        </div>
-                    </div>
-                </div>
-                <?php }?>
+            <div class="row" id="contributors">
+
             </div>
         </div>
     </section>
@@ -777,8 +747,76 @@ $script = <<< JS
         });
     });
 
+    $.ajax({
+            method: "POST",
+            url : '/learning/contribute',
+            async: false,
+            success: function(response) {
+                if(response.status === 200) {
+                    if(response.result.length > 0){
+                        var contributor = $('#video-collaborators').html();
+                        $("#contributors").html(Mustache.render(contributor, response.result));
+                    }
+                }
+            }
+       });
+
 
 JS;
+
+
+
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+
+?>
+
+<script id="video-collaborators" type="text/template">
+    {{#.}}
+    <div class="col-lg-4 col-md-6">
+        <div class="collaborators-main">
+            <div class="c-detail">
+                <h4 class="title">{{name}}</h4>
+                <span class="post">Contributor</span>
+                <ul class="social-icon">
+                    {{#facebook}}
+                    <li><a href="https://www.facebook.com/{{facebook}}"
+                           target="_blank">
+                            <i class="fab fa-facebook"></i></a>
+                    </li>
+                    {{/facebook}}
+
+                    {{#twitter}}
+                    <li><a href="https://www.twitter.com/twitter"
+                           target="_blank">
+                            <i class="fab fa-twitter"></i></a>
+                    </li>
+                    {{/twitter}}
+
+
+                    {{#linkedin}}
+                    <li><a href="https://www.linkedin.com/in/"
+                           target="_blank">
+                            <i class="fab fa-linkedin"></i></a>
+                    </li>
+                    {{/linkedin}}
+
+                    {{#instagram}}
+                    <li><a href="https://www.instagram.com/"
+                           target="_blank">
+                            <i class="fab fa-instagram"></i></a>
+                    </li>
+                    {{/instagram}}
+                </ul>
+            </div>
+            <div class="thumb">
+                <img src="{{image}}"
+                     alt="">
+            </div>
+        </div>
+    </div>
+    {{/.}}
+</script>
