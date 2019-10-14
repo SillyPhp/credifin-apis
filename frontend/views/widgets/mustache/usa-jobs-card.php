@@ -54,7 +54,7 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
     beforeSend: function(){
             $('.img_load').css('display','block');
         },
-  success:function(body) { 
+  success:function(body) {   
       $('.img_load').css('display','none');
       localStorage.setItem('jobStorage', JSON.stringify(body));
       var obj = JSON.parse(localStorage.getItem('jobStorage'));
