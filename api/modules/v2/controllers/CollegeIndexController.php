@@ -297,4 +297,8 @@ class CollegeIndexController extends ApiBaseController
             return $this->response(401,['status'=>401]);
         }
     }
+
+    public function actionViewAllCandidates(){
+
+    }
 }
