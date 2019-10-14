@@ -27,6 +27,7 @@ namespace common\models;
  * @property string $last_updated_by
  * @property int $display 1 as true , 0 as False
  * @property int $is_login 1 as true 0 as false
+ * @property int $duration quiz timing in min
  * @property int $status
  * @property int $is_deleted
  *
@@ -52,7 +53,7 @@ class Quizs extends \yii\db\ActiveRecord
     {
         return [
             [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'slug', 'type', 'num_of_ques', 'template', 'created_by'], 'required'],
-            [['type', 'num_of_ques', 'template', 'display', 'is_login', 'status', 'is_deleted'], 'integer'],
+            [['type', 'num_of_ques', 'template', 'display', 'is_login', 'duration', 'status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 160],

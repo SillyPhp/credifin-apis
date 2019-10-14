@@ -88,7 +88,8 @@ class QuizController extends Controller
         }
     }
 
-    public function actionTest(){
+    public function actionTest()
+    {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
@@ -105,23 +106,20 @@ class QuizController extends Controller
                 ->where(['quiz_answer_pool_enc_id' => $data['ans']])
                 ->one();
             $quizSubmittedAnsers->is_correct = $checkAns['is_answer'];
-            if(!$quizSubmittedAnsers->save()){
+            if (!$quizSubmittedAnsers->save()) {
                 return false;
             }
 
             $submittedQuestions = $this->_getPreviousQuestions('college-quiz');
             $newQuestion = $this->_getQuestion($submittedQuestions);
-            if($newQuestion) {
+            if ($newQuestion) {
                 return $response = [
                     'status' => 200,
                     'message' => 'Success',
                     'question' => $newQuestion,
                 ];
-            } else{
-                $result = QuizSubmittedAnswers::find()
-                    ->select(['answer_enc_id'])
-                    ->where(['quiz_slug' => 'college-quiz', 'is_correct' => 1, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                    ->count();
+            } else {
+                $result = $this->_getQuizResult('college-quiz');
                 return $response = [
                     'status' => 205,
                     'message' => 'Success',
@@ -132,31 +130,29 @@ class QuizController extends Controller
         }
 
         $this->layout = 'quiz6-main';
-        return $this->render('c-quiz',[
-            'quiz' => $this->_getQuestion(),
-        ]);
+        $result = QuizSubmittedAnswers::find()
+            ->select(['answer_enc_id'])
+            ->where(['quiz_slug' => 'college-quiz', 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->count();
+        if ($result == 0) {
+            return $this->render('c-quiz', [
+                'quiz' => $this->_getQuestion(),
+            ]);
+        } else {
+            $noOfQuestion = Quizs::find()
+                ->select('num_of_ques')
+                ->where(['slug' => 'college-quiz'])
+                ->asArray()
+                ->one();
+            return $this->render('c-quiz', [
+                'result' => $this->_getQuizResult('college-quiz'),
+                'noOfQuestion' => $noOfQuestion,
+            ]);
+        }
     }
 
-    private function _getQuestion($isSubmitted = []){
-        $question = QuizPool::find()
-            ->alias('a')
-            ->innerJoinWith(['quizs b' => function($b){
-                $b->andWhere(['b.slug' => 'college-quiz']);
-            }], false)
-            ->innerJoinWith(['quizQuestionsPools c' => function($c)  use ($isSubmitted){
-                $c->innerJoinWith(['quizAnswersPools d' => function($d){
-                    $d->select(['d.quiz_answer_pool_enc_id', 'd.quiz_question_pool_enc_id', 'd.answer']);
-                }]);
-                $c->andWhere(['not in','c.quiz_question_pool_enc_id',$isSubmitted]);
-                $c->orderby(new Expression('rand()'));
-                $c->limit(1);
-            }])
-            ->asArray()
-            ->one();
-        return $question;
-    }
-
-    private function _getPreviousQuestions($slug){
+    private function _getPreviousQuestions($slug)
+    {
         $previousQuestions = QuizSubmittedAnswers::find()
             ->select(['quiz_question_pool_enc_id'])
             ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
@@ -166,4 +162,45 @@ class QuizController extends Controller
         return $r;
     }
 
+    private function _getQuestion($isSubmitted = [])
+    {
+        $question = Quizs::find()
+            ->alias('z')
+            ->innerJoinWith(['quizPoolEnc a' => function ($a) use ($isSubmitted) {
+                $a->innerJoinWith(['quizQuestionsPools c' => function ($c) use ($isSubmitted) {
+                    $c->innerJoinWith(['quizAnswersPools d' => function ($d) {
+                        $d->select(['d.quiz_answer_pool_enc_id', 'd.quiz_question_pool_enc_id', 'd.answer']);
+                    }]);
+                    $c->andWhere(['not in', 'c.quiz_question_pool_enc_id', $isSubmitted]);
+                    $c->orderby(new Expression('rand()'));
+                    $c->limit(1);
+                }]);
+            }])
+            ->where(['z.slug' => 'college-quiz'])
+            ->asArray()
+            ->one();
+        return $question;
+    }
+
+    private function _getQuizResult($slug)
+    {
+        $result = QuizSubmittedAnswers::find()
+            ->select(['answer_enc_id'])
+            ->where(['quiz_slug' => $slug, 'is_correct' => 1, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->count();
+        return $result;
+    }
+
+    public function actionGetResult()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $result = $this->_getQuizResult('college-quiz');
+            return $response = [
+                'status' => 205,
+                'message' => 'Success',
+                'result' => $result,
+            ];
+        }
+    }
 }

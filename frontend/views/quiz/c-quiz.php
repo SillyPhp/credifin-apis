@@ -1,85 +1,129 @@
-<section class="container">
-    <div class="questionBox">
-        <div class="questionContainer">
-            <form id="c-quiz">
-                <header>
-                    <h1 class="title is-6">VueQuiz</h1>
-                    <div class="progressContainer">
-                        <progress class="progress is-info is-small" value="80" max="100">80%</progress>
-                        <p>80% complete</p>
-                    </div>
-                </header>
-                <div class="quiz-body">
-                    <div id="quiz-data">
-                        <h2 class="titleContainer title" id="c-question"
-                            data-key="<?= $quiz['quizQuestionsPools'][0]['quiz_question_pool_enc_id']; ?>"><?= $quiz['quizQuestionsPools'][0]['question']; ?></h2>
-                        <div class="optionContainer">
-                            <?php
-                            foreach ($quiz['quizQuestionsPools'][0]['quizAnswersPools'] as $ans) {
-                                ?>
-                                <input type="radio" id="<?= $ans['quiz_answer_pool_enc_id'] ?>"
-                                       name="<?= $ans['quiz_question_pool_enc_id'] ?>"
-                                       value="<?= $ans['quiz_answer_pool_enc_id'] ?>"/>
-                                <label for="<?= $ans['quiz_answer_pool_enc_id'] ?>" class="option">
-                                    <?= $ans['answer'] ?>
-                                </label>
-                                <?php
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="loading-question">
-                        <svg>
-                            <g>
-                                <path d="M 50,100 A 1,1 0 0 1 50,0"/>
-                            </g>
-                            <g>
-                                <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
-                            </g>
-                            <defs>
-                                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#f07704;stop-opacity:1"/>
-                                    <stop offset="100%" style="stop-color:#00a0e3;stop-opacity:1"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                </div>
-                <footer class="questionFooter">
-                    <nav class="pagination">
-                        <button type="submit" class="button nxxt">
-                            Next
-                        </button>
-                    </nav>
-                </footer>
-            </form>
+<?php
+
+use yii\helpers\Url;
+
+if (empty($result)) {
+    ?>
+    <div class='m-cover'></div>
+    <div class='m-modal'>
+        <div class='m-content'>
+            <img src='<?= Url::to("@commonAssets/logos/logo.svg"); ?>'>
+            <h3><?= $quiz['name'] ?></h3>
+            <hr/>
+            <div class="detail-body">
+                <h4>Before you begin</h4>
+                <p>Quiz must be completed in one session, make sure you have a stable internet connection & you have
+                    finished before exiting.</p>
+                <p>Your results will be displayed at the end of the quiz.</p>
+                <p><i class="fa fa-clock-o"></i> Quiz must be completed in 20 minutes.</p>
+            </div>
+            <hr/>
+            <div class='m-actions'>
+                <?php if (!Yii::$app->user->isGuest): ?>
+                    <a href='javascript:;' class='close-m-mo'>Start Quiz</a>
+                <?php else: ?>
+                    <a href='/login' target="_blank">Please login to play this quiz.</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-</section>
-<script id="c-quiz-options" type="text/template">
-    <div class="optionContainer">
-        {{#.}}
-        <input type="radio" id="{{quiz_answer_pool_enc_id}}" name="{{quiz_question_pool_enc_id}}"
-               value="{{quiz_answer_pool_enc_id}}"/>
-        <label for="{{quiz_answer_pool_enc_id}}" class="option">
-            {{answer}}
-        </label>
-        {{/.}}
-    </div>
-</script>
-<!--<script id="c-quiz-result" type="text/template">-->
-<!--    <div class="quizCompleted has-text-centered hidden">-->
-<!--        <span class="icon">-->
-<!--            <i class="fa fa-check-circle-o is-active"></i>-->
-<!--        </span>-->
-<!--        <h2 class="title">-->
-<!--            You did {{}} amazing good job!-->
-<!--        </h2>-->
-<!--        <p class="subtitle">-->
-<!--            Total score: {{}} / 40-->
-<!--        </p>-->
-<!--    </div>-->
-<!--</script>-->
+    <?php
+}
+?>
+    <section class="container">
+        <div class="col-md-3">
+            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
+                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>
+        </div>
+        <div class="col-md-6">
+            <div class="questionBox">
+                <div class="questionContainer">
+                    <?php
+                    if (empty($result)) {
+                        ?>
+                        <form id="c-quiz">
+                            <header>
+                                <h1 class="title is-6"><?= $quiz['name'] ?></h1>
+                                <div class="row">
+                                    <div class="col-md-12 time-limit">
+                                        <h4>Time Left</h4>
+                                        <h2 id="timer"></h2>
+                                    </div>
+                                </div>
+                            </header>
+                            <div class="quiz-body">
+                                <div id="quiz-data" class="hidden">
+                                    <h2 class="titleContainer title" id="c-question"
+                                        data-key="<?= $quiz['quizPoolEnc']['quizQuestionsPools'][0]['quiz_question_pool_enc_id']; ?>"><?= $quiz['quizPoolEnc']['quizQuestionsPools'][0]['question']; ?></h2>
+                                    <div class="optionContainer">
+                                        <?php
+                                        foreach ($quiz['quizPoolEnc']['quizQuestionsPools'][0]['quizAnswersPools'] as $ans) {
+                                            ?>
+                                            <input type="radio" id="<?= $ans['quiz_answer_pool_enc_id'] ?>"
+                                                   name="<?= $ans['quiz_question_pool_enc_id'] ?>"
+                                                   value="<?= $ans['quiz_answer_pool_enc_id'] ?>"/>
+                                            <label for="<?= $ans['quiz_answer_pool_enc_id'] ?>" class="option">
+                                                <?= $ans['answer'] ?>
+                                            </label>
+                                            <?php
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="loading-question">
+                                    <svg>
+                                        <g>
+                                            <path d="M 50,100 A 1,1 0 0 1 50,0"/>
+                                        </g>
+                                        <g>
+                                            <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
+                                        </g>
+                                        <defs>
+                                            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#f07704;stop-opacity:1"/>
+                                                <stop offset="100%" style="stop-color:#00a0e3;stop-opacity:1"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+                        </form>
+                        <?php
+                    } else {
+                        ?>
+                        <div class="quiz-body">
+                            <div class="optionContainer">
+                                <div class="quizCompleted has-text-centered">
+                                <span class="icon">
+                                    <i class="fa fa-check-circle-o is-active"></i>
+                                </span>
+                                    <h2 class="title">You already play this quiz!</h2>
+                                    <p class="subtitle">Total score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px"
+                 data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
+        </div>
+    </section>
+    <script id="c-quiz-options" type="text/template">
+        <div class="optionContainer">
+            {{#.}}
+            <input type="radio" id="{{quiz_answer_pool_enc_id}}" name="{{quiz_question_pool_enc_id}}"
+                   value="{{quiz_answer_pool_enc_id}}"/>
+            <label for="{{quiz_answer_pool_enc_id}}" class="option">
+                {{answer}}
+            </label>
+            {{/.}}
+        </div>
+    </script>
 <?php
 $this->registerCss('
    @import url("https://fonts.googleapis.com/css?family=Montserrat:400,400i,700");
@@ -117,6 +161,9 @@ body {
 .container {
   margin: 0 0.5rem;
 }
+.time-limit h4, .time-limit h2{
+    margin:0px;
+}
 
 .questionBox {
   max-width: 530px;
@@ -141,7 +188,7 @@ body {
   margin-bottom: 1rem !important;
 }
 .questionBox header .progressContainer {
-  width: 60%;
+  width: 100%;
   margin: 0 auto;
 }
 .questionBox header .progressContainer > progress {
@@ -213,12 +260,14 @@ body {
   border: transparent 1px solid;
   display:block;
 }
-.questionBox .questionContainer .optionContainer .option.is-selected {
-  border-color: rgba(0, 0, 0, 0.25);
-  background-color: white;
+.questionBox .questionContainer .optionContainer input:checked + .option {
+  border-color: #00a0e3;
+  background-color: #00a0e3;
+  color:#fff;
 }
-.questionBox .questionContainer .optionContainer .option:hover {
-  background-color: rgba(0, 0, 0, 0.1);
+.questionBox .questionContainer .optionContainer .option:hover, .questionBox .questionContainer .optionContainer .option:focus {
+  background-color: #00a0e3;
+  color:#fff;
 }
 .questionBox .questionContainer .optionContainer .option:active {
   -webkit-transform: scaleX(0.9);
@@ -227,42 +276,6 @@ body {
 .optionContainer > input[type="radio"]{
     position:absolute;
     left:-9999px;
-}
-.questionBox .questionContainer .questionFooter {
-  background: rgba(0, 0, 0, 0.025);
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  width: 100%;
-  align-self: flex-end;
-}
-.questionBox .questionContainer .questionFooter .pagination {
-  margin: 15px 25px;
-}
-
-.pagination {
-  display: block !Important;
-}
-
-.button {
-  padding: 0.5rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.25);
-  border-radius: 5rem;
-  margin: 0 0.25rem;
-  transition: 0.3s;
-  float:right;
-  background-color:#fff;
-}
-.button:hover {
-  cursor: pointer;
-  background: #ECEFF1;
-  border-color: rgba(0, 0, 0, 0.25);
-}
-.button.is-active {
-  background: #3D5AFE;
-  color: white;
-  border-color: transparent;
-}
-.button.is-active:hover {
-  background: #0a2ffe;
 }
 .quiz-body{position:relative}
 .loading-question{
@@ -303,6 +316,90 @@ svg path {
   stroke-dasharray: 0 157px;
   stroke-dashoffset: 0;
   animation: escalade 2s cubic-bezier(0.8, 0, 0.2, 1) infinite;
+}
+.m-cover {
+  z-index: 1;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  opacity: .9;
+}
+.m-modal {
+  z-index: 2;
+  height: 370px;
+  width: 600px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  text-align: center;
+  border-top: solid 3px #ababab;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.detail-body{
+    text-align:left;
+    padding:0px 20px;
+}
+.detail-body h4{
+    color: #111;
+}
+.m-modal .m-content p {
+  font-size: 1em;
+  color: #333;
+}
+.m-content img{
+    max-width: 175px;
+    display: block;
+    margin: 20px auto;
+}
+.zoom {
+  display: block;
+  animation: zoom 0.7s;
+  animation-fill-mode: forwards;
+  box-shadow:0px 2px 10px 2px #dcdcdcc7;
+}
+.m-actions a {
+  display: inline-block;
+    border: 1px solid #ddd;
+    padding: 10px 15px;
+    box-shadow: 0px 2px 10px 1px #eee;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #00a0e3;
+}
+.m-actions a:hover {
+    text-decoration:none;
+}
+@keyframes zoom {
+  0% {
+    opacity: 0;
+    transform: scale(0, 0);
+  }
+  30% {
+    opacity: 0;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+.hidden {
+  display: none;
+}
+.reverse {
+  animation-direction: reverse;
+}
+@media screen and (max-width: 600px) {
+    .m-content img{max-width: 290px;}
+    .m-modal{
+        height: 430px;
+        width: 300px;
+    }
 }
 
 @keyframes slide {
@@ -345,54 +442,87 @@ svg path {
   }
 }
 ');
+$noOfQuestion = $quiz["num_of_ques"];
+$duration = $quiz["duration"];
 $script = <<<JS
-$(document).on('change', '.optionContainer input[type=radio]', function(){
-    $('.option').each(function(){
-        var id =  $(this).attr('for');
-        if($('#'+id).is(":checked")){
-            $(this).addClass('is-selected');
-        } else {
-            $(this).removeClass('is-selected');
-        }
-    });
-});
-$(document).on('submit','#c-quiz' , function(e){
-    e.preventDefault();
-    $('.nxxt').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-    $('.loading-question').fadeIn(500);
-    var question_id = $('#c-question').attr('data-key');
-    var ans_val;
-    $('.option').each(function(){
-        var id =  $(this).attr('for');
-        if($('#'+id).is(":checked")){
-            ans_val = $('#'+id).attr('value');
-        }
-    });
-    
-    $.ajax({
-        type: 'POST',
-        url: window.location.href,
-        data: {question:question_id,ans:ans_val},
-        success: function(data){
-            $('.loading-question').fadeOut(500);
-            if(data.status == 200){
-                $('.nxxt').html('Next');
-                var q_body = $('#c-quiz-options').html();
-                $(".optionContainer").html(Mustache.render(q_body, data.question.quizQuestionsPools[0].quizAnswersPools));
-                $('#c-question').html(data.question.quizQuestionsPools[0].question);
-                $('#c-question').attr('data-key', data.question.quizQuestionsPools[0].quiz_question_pool_enc_id);
-                animateShow();
-            } else if(data.status == 205) {
-                $('#c-question').fadeOut(1000);
-                $('.nxxt').remove();
-                var result = '<div class="quizCompleted has-text-centered"><span class="icon"><i class="fa fa-check-circle-o is-active"></i></span><h2 class="title">You did '+ data.result +' amazing good job!</h2><p class="subtitle">Total score: '+ data.result +' / 40</p></div>';
-                $(".optionContainer").html(result);
-            } else {
-                alert('error');
+$('.m-modal').addClass("zoom");
+var timeLimit = new Date();
+var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + $duration);
+var validate = false;
+var x;
+function startInterval() {
+    validate = true;
+    x = setInterval(function() {
+      var now = new Date().getTime();
+      var distance = countDownDate - now;   
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      document.getElementById("timer").innerHTML = minutes + ":" + seconds;
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("timer").innerHTML = "Time Up";
+        $('.loading-question').fadeIn(500);
+        $.ajax({
+            type: 'POST',
+            url: '/quiz/get-result',
+            success: function(data){
+                $('.loading-question').fadeOut(500);
+                if(data.status == 205) {
+                    showResult(data);                
+                } else {
+                    alert('Error has Occured, Please try again Later.');
+                }
             }
-        }
-    });
+        });
+      }
+    }, 1000);
+}
+$(".close-m-mo").on("click", function() {
+  $('.m-modal').attr('class', 'm-modal');
+  $('.m-modal, .m-cover').addClass("hidden");
+  $('#quiz-data').removeClass('hidden');
+  startInterval();
 });
+$(document).on('change', '.optionContainer input[type=radio]', function(){
+    if(validate){
+        $('.loading-question').fadeIn(500);
+        var question_id = $('#c-question').attr('data-key');
+        var ans_val;
+        $('.option').each(function(){
+            var id =  $(this).attr('for');
+            if($('#'+id).is(":checked")){
+                ans_val = $('#'+id).attr('value');
+            }
+        });
+        
+        $.ajax({
+            type: 'POST',
+            url: window.location.href,
+            data: {question:question_id,ans:ans_val},
+            success: function(data){
+                $('.loading-question').fadeOut(500);
+                if(data.status == 200){
+                    var q_body = $('#c-quiz-options').html();
+                    $(".optionContainer").html(Mustache.render(q_body, data.question.quizPoolEnc.quizQuestionsPools[0].quizAnswersPools));
+                    $('#c-question').html(data.question.quizPoolEnc.quizQuestionsPools[0].question);
+                    $('#c-question').attr('data-key', data.question.quizPoolEnc.quizQuestionsPools[0].quiz_question_pool_enc_id);
+                    animateShow();
+                } else if(data.status == 205) {
+                    clearInterval(x);
+                    // $('.time-limit').css('visibility','hidden');
+                    showResult(data);                
+                } else {
+                    alert('Error has Occured, Please try again Later.');
+                }
+            }
+        });
+    }
+});
+function showResult(data) {
+    $('#c-question').fadeOut(1000);
+    var result = '<div class="quizCompleted has-text-centered"><span class="icon"><i class="fa fa-check-circle-o is-active"></i></span><h2 class="title">You did '+ data.result +' amazing good job!</h2><p class="subtitle">Total score: '+ data.result +' / $noOfQuestion</p></div>';
+    $(".optionContainer").html(result);
+}
 function animateShow() {
   $('.quiz-body').addClass('animated');
     $('.quiz-body').addClass('zoomOut');
