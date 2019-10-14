@@ -816,6 +816,10 @@ let appEditor;
     .catch( error => {
         console.error( error );
     } );
+  $('#training_form').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true; 
+});
 var prime_id = null;
 var titles_url = '/account/categories-list/load-titles?type=Training&id=';
 $('#profile').on('change',function()
