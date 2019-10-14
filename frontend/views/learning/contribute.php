@@ -263,7 +263,7 @@ use yii\helpers\Url;
                                 <input type="text" name="name" id="name" placeholder="Name*" autocomplete="false">
                                 <p class="name-error err"></p>
                                 <input type="text" name="email" id="email" placeholder="Email*"
-                                       autocomplete="false">
+                                       autocomplete="off">
                                 <p class="email-error err"></p>
                                 <input type="text" name="channel" id="channel" placeholder="You Tube Channel*"
                                        autocomplete="false">
@@ -279,6 +279,12 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registercss('
+textarea:focus{
+    box-shadow:none !important;
+}
+.input-box input:focus{
+    box-shadow:none !important;
+}
 .err{
     color:red;
 }
@@ -458,9 +464,10 @@ $this->registercss('
  
 .input-box input{
     width: 93%;
-    padding: 20px 0 7px 0;
+    padding: 7px 0 5px 5px;
     border: none;
     border-bottom: 1px solid lightgray;
+    margin-top:10px;
 }
 
 textarea{
