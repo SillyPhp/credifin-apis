@@ -8,7 +8,6 @@ namespace common\models;
  * @property int $id Primary Key
  * @property string $quiz_question_pool_enc_id Quiz Question Encrypted ID
  * @property string $quiz_pool_enc_id Quiz Encrypted Id
- * @property string $category Quiz Category
  * @property string $type Quiz Type
  * @property string $difficulty Quiz Difficulty
  * @property string $question Quiz Question
@@ -47,7 +46,6 @@ class QuizQuestionsPool extends \yii\db\ActiveRecord
             [['created_on', 'last_updated_on'], 'safe'],
             [['status', 'is_deleted'], 'integer'],
             [['quiz_question_pool_enc_id', 'quiz_pool_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['category'], 'string', 'max' => 50],
             [['quiz_question_pool_enc_id'], 'unique'],
             [['quiz_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizPool::className(), 'targetAttribute' => ['quiz_pool_enc_id' => 'quiz_pool_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
