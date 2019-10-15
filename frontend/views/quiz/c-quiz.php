@@ -2,7 +2,7 @@
 
 use yii\helpers\Url;
 
-if (empty($result)) {
+if ($result == Null) {
     ?>
     <div class='m-cover'></div>
     <div class='m-modal'>
@@ -12,10 +12,10 @@ if (empty($result)) {
             <hr/>
             <div class="detail-body">
                 <h4>Before you begin</h4>
-                <p>Quiz must be completed in one session, make sure you have a stable internet connection & you have
-                    finished before exiting.</p>
+                <p>Quiz must be completed in one session, make sure that you have a stable internet connection & you must
+                    finish the quiz.</p>
                 <p>Your results will be displayed at the end of the quiz.</p>
-                <p><i class="fa fa-clock-o"></i> Quiz must be completed in 20 minutes.</p>
+                <p><i class="fa fa-clock-o"></i> Quiz must be completed in <?= $quiz["duration"];?> minutes.</p>
             </div>
             <hr/>
             <div class='m-actions'>
@@ -39,7 +39,7 @@ if (empty($result)) {
             <div class="questionBox">
                 <div class="questionContainer">
                     <?php
-                    if (empty($result)) {
+                    if ($result == Null) {
                         ?>
                         <form id="c-quiz">
                             <header>
@@ -71,20 +71,7 @@ if (empty($result)) {
                                     </div>
                                 </div>
                                 <div class="loading-question">
-                                    <svg>
-                                        <g>
-                                            <path d="M 50,100 A 1,1 0 0 1 50,0"/>
-                                        </g>
-                                        <g>
-                                            <path d="M 50,75 A 1,1 0 0 0 50,-25"/>
-                                        </g>
-                                        <defs>
-                                            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" style="stop-color:#f07704;stop-opacity:1"/>
-                                                <stop offset="100%" style="stop-color:#00a0e3;stop-opacity:1"/>
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
+                                    <img src="<?= Url::to('/assets/themes/quiz/loading.gif');?>"/>
                                 </div>
                             </div>
                         </form>
@@ -97,7 +84,7 @@ if (empty($result)) {
                                 <span class="icon">
                                     <i class="fa fa-check-circle-o is-active"></i>
                                 </span>
-                                    <h2 class="title">You already play this quiz!</h2>
+                                    <h2 class="title">You have already taken this quiz!</h2>
                                     <p class="subtitle">Total score: <?= $result; ?> / <?= $noOfQuestion['num_of_ques'];?></p>
                                 </div>
                             </div>
@@ -285,9 +272,9 @@ body {
     height:100%;
     top:0;
     left:0;
-    background-color:#54545473;
+    background-color:#dcdcdc73;
 }
-svg {
+.loading-question > img {
     overflow: visible !important;
     width: 150px;
     height: 150px;
@@ -296,26 +283,6 @@ svg {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -40%);
-}
-svg g {
-  animation: slide 2s linear infinite;
-}
-svg g:nth-child(2) {
-  animation-delay: 0.5s;
-}
-svg g:nth-child(2) path {
-  animation-delay: 0.5s;
-  stroke-dasharray: 0px 158px;
-  stroke-dashoffset: 1px;
-}
-svg path {
-  stroke: url(#gradient);
-  stroke-width: 20px;
-  stroke-linecap: round;
-  fill: none;
-  stroke-dasharray: 0 157px;
-  stroke-dashoffset: 0;
-  animation: escalade 2s cubic-bezier(0.8, 0, 0.2, 1) infinite;
 }
 .m-cover {
   z-index: 1;
@@ -446,12 +413,12 @@ $noOfQuestion = $quiz["num_of_ques"];
 $duration = $quiz["duration"];
 $script = <<<JS
 $('.m-modal').addClass("zoom");
-var timeLimit = new Date();
-var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + $duration);
 var validate = false;
 var x;
 function startInterval() {
     validate = true;
+    var timeLimit = new Date();
+    var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + $duration);
     x = setInterval(function() {
       var now = new Date().getTime();
       var distance = countDownDate - now;   
@@ -509,12 +476,15 @@ $(document).on('change', '.optionContainer input[type=radio]', function(){
                     animateShow();
                 } else if(data.status == 205) {
                     clearInterval(x);
-                    // $('.time-limit').css('visibility','hidden');
                     showResult(data);                
                 } else {
                     alert('Error has Occured, Please try again Later.');
                 }
-            }
+            },
+            error: function (jqXHR, exception) {
+                $('.loading-question').fadeOut(500);
+                alert('Error has Occured, Please try again.');
+            },
         });
     }
 });
