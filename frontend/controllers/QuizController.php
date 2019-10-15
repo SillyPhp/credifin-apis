@@ -88,7 +88,7 @@ class QuizController extends Controller
         }
     }
 
-    public function actionTest()
+    public function actionTest($slug = 'college-quiz')
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -100,7 +100,7 @@ class QuizController extends Controller
             $quizSubmittedAnsers->quiz_question_pool_enc_id = $data['question'];
             $quizSubmittedAnsers->answer_enc_id = $data['ans'];
             $quizSubmittedAnsers->user_enc_id = Yii::$app->user->identity->user_enc_id;
-            $quizSubmittedAnsers->quiz_slug = 'college-quiz';
+            $quizSubmittedAnsers->quiz_slug = $slug;
             $checkAns = QuizAnswersPool::find()
                 ->select(['is_answer'])
                 ->where(['quiz_answer_pool_enc_id' => $data['ans']])
@@ -110,8 +110,8 @@ class QuizController extends Controller
                 return false;
             }
 
-            $submittedQuestions = $this->_getPreviousQuestions('college-quiz');
-            $newQuestion = $this->_getQuestion($submittedQuestions);
+            $submittedQuestions = $this->_getPreviousQuestions($slug);
+            $newQuestion = $this->_getQuestion($submittedQuestions, $slug);
             if ($newQuestion) {
                 return $response = [
                     'status' => 200,
@@ -119,7 +119,7 @@ class QuizController extends Controller
                     'question' => $newQuestion,
                 ];
             } else {
-                $result = $this->_getQuizResult('college-quiz');
+                $result = $this->_getQuizResult($slug);
                 return $response = [
                     'status' => 205,
                     'message' => 'Success',
@@ -132,20 +132,20 @@ class QuizController extends Controller
         $this->layout = 'quiz6-main';
         $result = QuizSubmittedAnswers::find()
             ->select(['answer_enc_id'])
-            ->where(['quiz_slug' => 'college-quiz', 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+            ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
             ->count();
         if ($result == 0) {
             return $this->render('c-quiz', [
-                'quiz' => $this->_getQuestion(),
+                'quiz' => $this->_getQuestion([],$slug),
             ]);
         } else {
             $noOfQuestion = Quizs::find()
                 ->select('num_of_ques')
-                ->where(['slug' => 'college-quiz'])
+                ->where(['slug' => $slug])
                 ->asArray()
                 ->one();
             return $this->render('c-quiz', [
-                'result' => $this->_getQuizResult('college-quiz'),
+                'result' => $this->_getQuizResult($slug),
                 'noOfQuestion' => $noOfQuestion,
             ]);
         }
@@ -162,7 +162,7 @@ class QuizController extends Controller
         return $r;
     }
 
-    private function _getQuestion($isSubmitted = [])
+    private function _getQuestion($isSubmitted = [], $slug)
     {
         $question = Quizs::find()
             ->alias('z')
@@ -176,7 +176,7 @@ class QuizController extends Controller
                     $c->limit(1);
                 }]);
             }])
-            ->where(['z.slug' => 'college-quiz'])
+            ->where(['z.slug' => $slug])
             ->asArray()
             ->one();
         return $question;
@@ -191,11 +191,11 @@ class QuizController extends Controller
         return $result;
     }
 
-    public function actionGetResult()
+    public function actionGetResult($slug = 'college-quiz')
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $result = $this->_getQuizResult('college-quiz');
+            $result = $this->_getQuizResult($slug);
             return $response = [
                 'status' => 205,
                 'message' => 'Success',
