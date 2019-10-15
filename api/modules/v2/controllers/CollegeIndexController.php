@@ -117,7 +117,7 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                ->select(['a.user_other_details_enc_id','a.user_enc_id','b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
@@ -300,5 +300,39 @@ class CollegeIndexController extends ApiBaseController
 
     public function actionViewAllCandidates(){
 
+        if($user = $this->isAuthorized()) {
+
+            $data = Yii::$app->request->post();
+            $organizations = Users::find()
+                ->alias('a')
+                ->select(['b.organization_enc_id college_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            $req = [];
+            $req['college_id'] = $organizations['college_id'];
+
+            $candidate = UserOtherDetails::find()
+                ->alias('a')
+                ->select(['b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                ->joinWith(['userEnc b'], false)
+                ->joinWith(['departmentEnc c'], false)
+                ->where(['a.organization_enc_id' => $req['college_id'],'a.user_enc_id'=>$data['user_id']])
+                ->asArray()
+                ->one();
+
+            $candidates = UserOtherDetails::find()
+                ->alias('a')
+                ->select(['a.user_other_details_enc_id','a.user_enc_id','b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
+                ->joinWith(['userEnc b'], false)
+                ->joinWith(['departmentEnc c'], false)
+                ->where(['a.organization_enc_id' => $req['college_id']])
+                ->asArray()
+                ->all();
+
+            return $this->response(200,['status'=>200,'data'=>$candidate,'all_candidates'=>$candidates]);
+        }
     }
 }
