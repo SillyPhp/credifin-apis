@@ -71,6 +71,11 @@ class VideosController extends Controller
                 ->select(['a.category_enc_id', 'a.name', 'CASE WHEN b.banner IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->background->image, 'https') . '", b.banner_location, "/", b.banner) ELSE "/assets/themes/ey/images/pages/learning-corner/othercover.png" END banner'])
                 ->joinWith(['assignedCategories b'], false)
                 ->where(['a.slug' => $slug])
+                ->andWhere([
+                    'or',
+                    ['not', ['b.parent_enc_id' => NULL]],
+                    ['not', ['b.parent_enc_id' => ""]]
+                ])
                 ->asArray()
                 ->one();
 
