@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\controllers;
+use common\models\JsonMachine\JsonMachine;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -39,7 +40,18 @@ class UsaJobsController extends Controller
         $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
         $v = fgets($e);
         $v = json_decode($v,true);
-        return $this->render('detail');
+        $flag = false;
+        foreach ($v['SearchResult']['SearchResultItems'] as $key => $val)
+        {
+            if ($val['MatchedObjectId']==$objectid)
+            {
+                $flag = true;
+                $get = $val;
+            }
+        }
+        if (!$flag)
+            return 'not found';
+        return $this->render('detail',['get'=>$get]);
     }
     public function actionGetData($min=null,$max=null)
     {
@@ -69,4 +81,5 @@ class UsaJobsController extends Controller
            return json_encode($get);
         }
     }
+
 }
