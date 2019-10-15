@@ -70,7 +70,10 @@ class VideosController extends Controller
                 ->alias('a')
                 ->select(['a.category_enc_id', 'a.name', 'CASE WHEN b.banner IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->categories->background->image, 'https') . '", b.banner_location, "/", b.banner) ELSE "/assets/themes/ey/images/pages/learning-corner/othercover.png" END banner'])
                 ->joinWith(['assignedCategories b'], false)
-                ->where(['a.slug' => $slug])
+                ->where([
+                    'a.slug' => $slug,
+                    'b.assigned_to' => 'Videos',
+                ])
                 ->andWhere([
                     'or',
                     ['not', ['b.parent_enc_id' => NULL]],
@@ -145,7 +148,7 @@ class VideosController extends Controller
             return $this->render('video-gallery', [
                 'parentId' => $parentId,
             ]);
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
