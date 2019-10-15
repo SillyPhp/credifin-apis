@@ -520,7 +520,7 @@ var x;
 function startInterval() {
     validate = true;
     var timeLimit = new Date();
-    var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + $duration);
+    var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + 1);
     x = setInterval(function() {
       var now = new Date().getTime();
       var distance = countDownDate - now;   
@@ -531,9 +531,11 @@ function startInterval() {
         clearInterval(x);
         document.getElementById("timer").innerHTML = "Time Up";
         $('.loading-question').fadeIn(500);
+        var path = window.location.pathname.split('/');
+        var link = '/quizzes/get-result?slug=' + path[2];
         $.ajax({
             type: 'POST',
-            url: '/quiz/get-result',
+            url: link,
             success: function(data){
                 $('.loading-question').fadeOut(500);
                 if(data.status == 205) {
@@ -616,18 +618,21 @@ $(document).on('click', '#elem-button-share-quiz', function(e) {
     window.open('http://www.facebook.com/sharer.php?u=' + u);
     return false;
 });
-$('#elem-button-share-quiz-twitter').on('click', function() {
+$(document).on('click', '#elem-button-share-quiz-twitter', function(e) {
+    e.preventDefault();
     var path = window.location.pathname.split('/');
     var u = window.location.hostname + "/" + path[1] + "/" + path[2];
     window.open("https://twitter.com/intent/tweet?text=" + u);
     return false;
 });
-$('#elem-button-share-quiz-wa').on('click', function() {
+$(document).on('click', '#elem-button-share-quiz-wa', function(e) {
+    e.preventDefault();
     var u = window.location.href;
     window.open("https://wa.me/?text=" + u);
     return false;
 });
-$('#elem-button-share-quiz-wa-mob').on('click', function() {
+$(document).on('click', '#elem-button-share-quiz-wa-mob', function(e) {
+    e.preventDefault();
     var u = window.location.href;
     window.open("whatsapp://send?text=" + u);
     return false;
