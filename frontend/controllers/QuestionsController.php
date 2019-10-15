@@ -77,7 +77,7 @@ class QuestionsController extends Controller
             ->joinWith(['questionsPoolAnswers d'=>function($b)
             {
                 $b->joinWith(['createdBy e'],false);
-                $b->select(['d.question_pool_enc_id','CONCAT(e.first_name," ","e.last_name") name','CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image','e.username','e.initials_color']);
+                $b->select(['d.question_pool_enc_id','CONCAT(e.first_name," ",e.last_name) name','CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image','e.username','e.initials_color']);
                 $b->limit(3);
             }])
             ->limit(3)
