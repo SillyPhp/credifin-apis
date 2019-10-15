@@ -23,7 +23,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
             </div>
         </div>
         <div class="overlay-image i-2"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/top-header.png');?>"/></div>
-        <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header.png');?>"/></div>
+        <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header-1.png');?>"/></div>
 <!--        <div class="overlay-image i-4"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?><!--"/></div>-->
     </div>
 </section>
@@ -34,6 +34,9 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                 <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
             </div>
             <div id="cards">
+            </div>
+            <div class="align_btn">
+                <button id="loader" class="btn btn-success">Load More</button>
             </div>
         </div>
     </div>
@@ -423,9 +426,13 @@ float:right;
     right: 0%;
     bottom: 0%;
 }
-.overlay-image.i-4 {
+.overlay-image.i-4 {  
     bottom: 0px;
     left: 20%;
+}
+#loader
+{
+display:none;
 }
 @media only screen and (max-width: 550px){
     .overlay-image {
@@ -435,15 +442,22 @@ float:right;
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
 $script = <<< JS
+$(document).on('click','#loader',function(e) {
+  e.preventDefault();
+  fetchLocalData(template=$('#cards'),min+8,max+8,loader=false,loader_btn=true);
+})
 var host = 'data.usajobs.gov';  
 var userAgent = 'snehkant93@gmail.com';  
 var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM='; 
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
+  //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
 })
-fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
+var min =0;
+var max = 8;
+fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
+//fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
 JS;
 $this->registerJs($script);
 ?>
