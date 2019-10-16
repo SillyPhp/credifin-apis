@@ -114,11 +114,18 @@
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/learning">Learning Hub</a>
+                <span aria-hidden="true" class="ey-mobile-menu-toggler">
+                    <i class="fas fa-arrow-down"></i>
+                </span>
             </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/questions">QnA</a>
+            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/questions">QnA</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">

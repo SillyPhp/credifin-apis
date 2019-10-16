@@ -98,12 +98,21 @@
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/learning">
                 Learning Hub
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
             </a>
-        </li>
-        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-            <a href="/questions">
-                QnA
-            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <a href="/questions">
+                                    QnA
+                                </a>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
