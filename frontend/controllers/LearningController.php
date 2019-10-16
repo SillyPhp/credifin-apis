@@ -23,7 +23,7 @@ use yii\web\Response;
 use yii\web\HttpException;
 use common\models\Utilities;
 use yii\db\Expression;
-
+use common\models\QuestionsPool;
 class LearningController extends Controller
 {
     public function behaviors()
@@ -410,9 +410,28 @@ class LearningController extends Controller
             ->asArray()
             ->all();
 
+        $object = QuestionsPool::find()
+            ->alias('a')
+            ->andWhere(['a.is_deleted'=>0])
+            ->select(['a.question_pool_enc_id','c.name','question','privacy','a.slug','CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image','f.username','f.initials_color','CONCAT(f.first_name," ","f.last_name") user_name'])
+            ->joinWith(['createdBy f'],false)
+            ->joinWith(['topicEnc b'=>function($b)
+            {
+                $b->joinWith(['categoryEnc c'],false);
+            }],false)
+            ->joinWith(['questionsPoolAnswers d'=>function($b)
+            {
+                $b->joinWith(['createdBy e'],false);
+                $b->select(['d.question_pool_enc_id','CONCAT(e.first_name," ",e.last_name) name','CASE WHEN e.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", e.image_location, "/", e.image) ELSE NULL END image','e.username','e.initials_color']);
+                $b->limit(3);
+            }])
+            ->limit(3)
+            ->asArray()
+            ->all();
         return $this->render('index', [
             'popular_videos' => $popular_videos,
             'topics' => $topics,
+            'object' => $object,
         ]);
     }
 
@@ -432,6 +451,7 @@ class LearningController extends Controller
                     ['a.organization_enc_id' => ""],
                     ['a.organization_enc_id' => NULL]
                 ])
+                ->limit(15)
                 ->asArray()
                 ->all();
 
