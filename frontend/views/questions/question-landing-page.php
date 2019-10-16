@@ -18,9 +18,15 @@ $this->params['header_dark'] = false;
                         </form>
                     </div>
                     <div class="set-btn-pos">
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal"
+                                data-target="#loginModal">Ask Question
+                        </button>
+                    <?php else: ?>
                         <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal"
                                 data-target="#postQuestion">Ask Question
                         </button>
+                    <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -42,7 +48,6 @@ $this->params['header_dark'] = false;
                             ?>
                             <div class="col-md-4 col-sm-6 card-box">
                                 <div class="card">
-
                                     <div class="card__block card__block--main">
                                         <div class="head">
                                             <div class="user-img">
