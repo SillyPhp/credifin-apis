@@ -548,17 +548,17 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
                 '(CASE
-                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration," - Month")
-                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration," - Weeks")
-                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," - Year")
+                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration,"  Month")
+                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration,"  Weeks")
+                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration,"  Year")
                 ELSE "N/A"
                END) as duration'
                 ,'(CASE
-                WHEN t.fees_methods = "1" THEN CONCAT(t.fees," / Month")
-                WHEN t.fees_methods = "2" THEN CONCAT(t.fees," / Week")
-                WHEN t.fees_methods = "3" THEN CONCAT(t.fees," / Anually")
-                WHEN t.fees_methods = "4" THEN CONCAT(t.fees,"(One Time)")
-                ELSE "N/A"
+                WHEN t.fees_methods = "1" AND t.fees >0 THEN CONCAT(t.fees," / Month")
+                WHEN t.fees_methods = "2" AND t.fees >0 THEN CONCAT(t.fees," / Week")
+                WHEN t.fees_methods = "3" AND t.fees >0 THEN CONCAT(t.fees," / Anually")
+                WHEN t.fees_methods = "4" AND t.fees >0 THEN CONCAT(t.fees,"(One Time)")
+                ELSE "No Fees" 
                END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
