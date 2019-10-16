@@ -127,30 +127,62 @@ class SiteController extends Controller
     {
         return $this->render('employers');
     }
-    public function actionCareerCompany(){
+    public function actionCareerCompany($slug = null){
         $this->layout = 'without-header';
-
+        $org = Organizations::find()
+            ->select([
+                'name',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
+                ])
+            ->where([
+                'slug' => $slug
+            ])
+            ->asArray()
+            ->one();
         if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $jobDetail = EmployerApplications::find()
-                ->alias('a')
-                ->select([
-                    'a.last_date',
-                    'a.type',
+            $options = Yii::$app->request->post();
+            if(isset($options['type'])=='jobs'){
+                $jobs = $this->getCareerInfo('Jobs', $options);
+            }elseif (isset($options['type'])=='internships'){
+                $internships = $this->getCareerInfo('Internships', $options);
+            }else{
+                $jobs = $this->getCareerInfo('Jobs', $options);
+                $internships = $this->getCareerInfo('Internships', $options);
+                $count = $jobs['count'] + $internships['count'];
+            }
+            return ['status'=>200,'jobs'=>$jobs['result'], 'internships'=>$internships['result'], 'count'=>$count];
+
+        }
+        return $this->render('career-company',[
+            'org' => $org
+        ]);
+    }
+
+    private function getCareerInfo($type, $options){
+        if($options['limit']){
+            $limit= $options['limit'];
+            $offset= ($options['page'] -1)* $options['limit'];
+        }
+        $jobDetail = EmployerApplications::find()
+            ->alias('a')
+            ->select([
+                'a.last_date',
+                'a.type',
 //                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
-                    'a.slug',
-                    'dd.name category',
-                    'l.designation',
-                    'd.initials_color color',
-                    'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
-                    "g.name as city",
-                    'c.name as title',
-                    'dd.icon',
-                    'd.name as organization_name',
-                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
+                'a.slug',
+                'dd.name category',
+                'l.designation',
+                'd.initials_color color',
+                'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
+                "g.name as city",
+                'c.name as title',
+                'dd.icon',
+                'd.name as organization_name',
+                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
                 https://ui-avatars.com/api/?name=
                 ", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                    '(CASE
+                '(CASE
                WHEN a.experience = "0" THEN "No Experience"
                WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                WHEN a.experience = "2" THEN "1 Year Experience"
@@ -161,39 +193,54 @@ class SiteController extends Controller
                WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                ELSE "No Experience"
                END) as experience',
-                ])
-                ->joinWith(['title b' => function ($b) {
-                    $b->joinWith(['categoryEnc c'], false);
-                    $b->joinWith(['parentEnc dd'], false);
-                }], false)
-                ->joinWith(['organizationEnc d' => function ($a) {
-                    $a->where(['d.is_deleted' => 0]);
-                }], false)
-                ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                    $x->joinWith(['locationEnc f' => function ($x) {
-                        $x->joinWith(['cityEnc g' => function ($x) {
-                            $x->joinWith(['stateEnc s'], false);
-                        }], false);
+            ])
+            ->joinWith(['title b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+                $b->joinWith(['parentEnc dd'], false);
+            }], false)
+            ->joinWith(['organizationEnc d' => function ($a) {
+                $a->where(['d.is_deleted' => 0]);
+            }], false)
+            ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                $x->joinWith(['locationEnc f' => function ($x) {
+                    $x->joinWith(['cityEnc g' => function ($x) {
+                        $x->joinWith(['stateEnc s'], false);
                     }], false);
-                }], false)
-                ->joinWith(['preferredIndustry h'], false)
-                ->joinWith(['designationEnc l'], false)
-                ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-                ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => 'ajayjuneja'])
-               ->limit(10)
-                ->asArray()
-                ->all();
-
-            return ['status'=>200,'result'=>$jobDetail];
-        }
-        return $this->render('career-company');
-
-
+                }], false);
+            }], false)
+            ->joinWith(['preferredIndustry h'], false)
+            ->joinWith(['designationEnc l'], false)
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => 'ajayjuneja']);
+            $count = $jobDetail->count();
+            $result = $jobDetail
+            ->limit($limit)
+            ->offset($offset)
+            ->asArray()
+            ->all();
+            return ['count'=> $count, 'result' => $result];
     }
-    public function actionCareerJobDetail(){
+
+
+    public function actionCareerJobDetail($slug = null){
         $this->layout = 'without-header';
-        return $this->render('career-job-detail');
+        $org = Organizations::find()
+            ->select([
+                'name',
+                'email',
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
+            ])
+            ->where([
+                'slug'=> $slug
+            ])
+            ->asArray()
+            ->one();
+        return $this->render('career-job-detail',[
+           'org' => $org
+        ]);
     }
+
+
     public function actionAddNewSubscriber()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;

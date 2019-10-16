@@ -16,12 +16,12 @@ use yii\helpers\Url;
                         </div>
                         <div class="nav-com-logo">
                             <a href="">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/agile.png')?>" alt="">
+                                <img src="<?= $org['logo']?>" alt="">
                             </a>
                         </div>
                         <div class="job-search-sec">
                             <div class="job-search">
-                                <h4>Jobs in Empower Youth</h4>
+                                <h4>Jobs in <?= $org['name']?></h4>
                                 <form>
                                     <div class="row">
                                         <div class="col-lg-7">
@@ -59,7 +59,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-lg-8 col-md-offset-2 column">
                 <div class="modrn-joblist">
-                    <div class="tags-bar">
+<!--                    <div class="tags-bar">-->
 <!--                        <span>Full Time<i class="close-tag">x</i></span>-->
 <!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
 <!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                                 <option>Most Recent</option>
                             </select>
                         </div>
-                        <h5>98 Jobs & Vacancies</h5>
+                        <h5><span id="count"></span> Jobs & Vacancies</h5>
                     </div>
                 </div><!-- MOdern Job LIst -->
                 <div class="job-list-modern">
@@ -95,7 +95,16 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-12">
                         <div class="viewmore">
-                            <button type="button">View More</button>
+                            <button type="button" id="jobMore">View More</button>
+                        </div>
+                    </div>
+                    <h1 class="heading-style">Internships</h1>
+                    <div class="job-listings-sec" id="career_internship_list">
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="viewmore">
+                            <button type="button" id="jobMoreIntern">View More</button>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -1040,17 +1049,81 @@ section.overlape {
 }
 ');
 $script = <<< JS
+let page = 1;
+let limit = 10;
+var loadmore=false;
+var jobPage = 0;
+var internPage = 0;
 $.ajax({
-    url:'/site/career-company',
+    url:'/organizations/careers/career-company',
     method: 'post',
+    data:{page: page, limit: limit},
     success:function(data){
         if(data.status == 200){
             var career = $('#career-job-box').html();
-            $("#career_job_list").html(Mustache.render(career, data.result));
+            $("#career_job_list").html(Mustache.render(career, data.jobs));
+            var intern = $('#career-job-box').html();
+            $("#career_internship_list").html(Mustache.render(intern, data.internships));
+            $('#count').text(data.count);
+            if(data['jobs'].length >= 10){
+                jobPage = 2;
+            }else{
+                $('#jobMore').hide();
+            }
+             if(data['internships'].length >= 10){
+                intenPage = 2;
+            }else{
+                $('#jobMoreIntern').hide();
+            }
         }
     }
  });
-
+$('#jobMore').on('click',function(e) {
+  e.preventDefault();
+  $.ajax({
+    url:'/organizations/careers/career-company',
+    method: 'post',
+    data:{page: jobPage, limit: limit, type: 'jobs'},
+    success:function(data){
+        if(data.status == 200){
+            if(data['jobs'].length > 0){
+                var career = $('#career-job-box').html();
+                $("#career_job_list").append(Mustache.render(career, data.jobs));
+                if(data['jobs'].length >= 10){
+                    jobPage++;
+                }else{
+                    $('#jobMore').hide()
+                }
+            } else {
+                $('#jobMore').hide()
+            }
+        }
+    }
+ });
+})
+$('#jobMoreIntern').on('click',function(e) {
+  e.preventDefault();
+  $.ajax({
+    url:'/organizations/careers/career-company',
+    method: 'post',
+    data:{page: internPage, limit: limit, type: 'internships'},
+    success:function(data){
+        if(data.status == 200){
+            if(data['internships'].length > 0){
+                var intern = $('#career-job-box').html();
+                $("#career_internship_list").html(Mustache.render(intern, data.internships));
+                if(data['internships'].length >= 10){
+                    internPage++;
+                }else{
+                    $('#jobMoreIntern').hide()
+                }
+            }else {
+                $('#jobMoreIntern').hide()
+            }
+        }
+    }
+ });
+})
  $('.fav-job').on('click', function(){
         $(this).toggleClass('active');
     })
@@ -1117,6 +1190,7 @@ $(document).click(e => {
 })
 var slugg = 'ravinder21'  
 var data = {slug: slugg};
+
 $.ajax({
    type: 'POST',
    url: '/drop-resume/check-resume',
@@ -1130,3 +1204,7 @@ $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/select-chosen.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script>
+
+
+</script>
