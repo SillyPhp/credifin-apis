@@ -988,7 +988,7 @@ class LearningController extends Controller
                     $d->andWhere(['d.is_deleted' => 0]);
                 }]);
             }], false)
-            ->where(['status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere([
                 'or',
                 ['a.organization_enc_id' => ""],
