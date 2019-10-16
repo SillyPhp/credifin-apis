@@ -554,11 +554,11 @@ class ApplicationCards
                 ELSE "N/A"
                END) as duration'
                 ,'(CASE
-                WHEN t.fees_methods = "1" THEN CONCAT(t.fees," / Month")
-                WHEN t.fees_methods = "2" THEN CONCAT(t.fees," / Week")
-                WHEN t.fees_methods = "3" THEN CONCAT(t.fees," / Annually")
-                WHEN t.fees_methods = "4" THEN CONCAT(t.fees,"(One Time)")
-                ELSE "N/A"
+                WHEN t.fees_methods = "1" AND t.fees >0 THEN CONCAT(t.fees," / Month")
+                WHEN t.fees_methods = "2" AND t.fees >0 THEN CONCAT(t.fees," / Week")
+                WHEN t.fees_methods = "3" AND t.fees >0 THEN CONCAT(t.fees," / Annually")
+                WHEN t.fees_methods = "4" AND t.fees >0 THEN CONCAT(t.fees,"(One Time)")
+                ELSE "No Fees" 
                END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
