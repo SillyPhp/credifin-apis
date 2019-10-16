@@ -46,12 +46,13 @@ class UsaJobsController extends Controller
             if ($val['MatchedObjectId']==$objectid)
             {
                 $flag = true;
-                $get = $val;
+                $get = $val['MatchedObjectDescriptor'];
             }
         }
+
         if (!$flag)
             return 'not found';
-        return $this->render('detail',['get'=>$get]);
+        return $this->render('detail',['get'=>$get,'objectid'=>$objectid]);
     }
     public function actionGetData($min=null,$max=null)
     {
