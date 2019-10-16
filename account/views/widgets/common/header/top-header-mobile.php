@@ -115,7 +115,7 @@
             <div class="ey-mobile-item-main">
                 <a href="/learning">Learning Hub</a>
                 <span aria-hidden="true" class="ey-mobile-menu-toggler">
-                    <i class="fas fa-arrow-down"></i>
+                    <i class="fa fa-arrow-down"></i>
                 </span>
             </div>
             <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">

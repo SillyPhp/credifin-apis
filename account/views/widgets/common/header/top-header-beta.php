@@ -105,9 +105,11 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <a href="/questions">
-                                    Questions
-                                </a>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/questions">
+                                        Questions
+                                    </a>
+                                </li>
                             </ul>
                         </nav>
                     </div>
