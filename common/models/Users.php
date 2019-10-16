@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -45,10 +47,18 @@ namespace common\models;
  * @property string $status User Status (Active, Inactive, Pending)
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  *
+ * @property AccessRoutes[] $accessRoutes
+ * @property AccessRoutes[] $accessRoutes0
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires0
  * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields
  * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields0
+ * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates
+ * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates0
+ * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates
+ * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates0
+ * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates
+ * @property ApplicationEduReqTemplate[] $applicationEduReqTemplates0
  * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements
  * @property ApplicationEducationalRequirements[] $applicationEducationalRequirements0
  * @property ApplicationEmployeeBenefits[] $applicationEmployeeBenefits
@@ -61,16 +71,22 @@ namespace common\models;
  * @property ApplicationJobDescription[] $applicationJobDescriptions0
  * @property ApplicationOptions[] $applicationOptions
  * @property ApplicationOptions[] $applicationOptions0
+ * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates
+ * @property ApplicationOptionsTemplate[] $applicationOptionsTemplates0
+ * @property ApplicationPlacementCities[] $applicationPlacementCities
+ * @property ApplicationPlacementCities[] $applicationPlacementCities0
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations0
  * @property ApplicationSkills[] $applicationSkills
  * @property ApplicationSkills[] $applicationSkills0
+ * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates
+ * @property ApplicationSkillsTemplate[] $applicationSkillsTemplates0
  * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions
  * @property ApplicationTemplateJobDescription[] $applicationTemplateJobDescriptions0
- * @property ApplicationTemplateOptions[] $applicationTemplateOptions
- * @property ApplicationTemplateOptions[] $applicationTemplateOptions0
  * @property ApplicationTemplates[] $applicationTemplates
  * @property ApplicationTemplates[] $applicationTemplates0
+ * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions
+ * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions0
  * @property Applications[] $applications
  * @property Applications[] $applications0
  * @property Applications[] $applications1
@@ -96,10 +112,17 @@ namespace common\models;
  * @property BookmarkedHiringTemplates[] $bookmarkedHiringTemplates0
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates0
+ * @property CandidateJobTitle[] $candidateJobTitles
+ * @property CandidateRecords[] $candidateRecords
  * @property Categories[] $categories
  * @property Categories[] $categories0
  * @property CategoriesList[] $categoriesLists
  * @property CategoriesList[] $categoriesLists0
+ * @property CitiesPriority[] $citiesPriorities
+ * @property CitiesPriority[] $citiesPriorities0
+ * @property CollegeStudentsReview[] $collegeStudentsReviews
+ * @property CollegeStudentsReview[] $collegeStudentsReviews0
+ * @property Contacts[] $contacts
  * @property ConversationMessages[] $conversationMessages
  * @property ConversationMessages[] $conversationMessages0
  * @property ConversationParticipants[] $conversationParticipants
@@ -123,10 +146,14 @@ namespace common\models;
  * @property DropResumeApplications[] $dropResumeApplications1
  * @property EducationalRequirements[] $educationalRequirements
  * @property EducationalRequirements[] $educationalRequirements0
+ * @property EducationalStreams[] $educationalStreams
+ * @property EducationalStreams[] $educationalStreams0
  * @property EmployeeBenefits[] $employeeBenefits
  * @property EmployeeBenefits[] $employeeBenefits0
  * @property EmployerApplications[] $employerApplications
  * @property EmployerApplications[] $employerApplications0
+ * @property EmployerReviews[] $employerReviews
+ * @property EmployerReviews[] $employerReviews0
  * @property Feedback[] $feedbacks
  * @property Feedback[] $feedbacks0
  * @property FollowedOrganizations[] $followedOrganizations
@@ -137,10 +164,14 @@ namespace common\models;
  * @property HiringProcessTemplateFields[] $hiringProcessTemplateFields0
  * @property HiringProcessTemplates[] $hiringProcessTemplates
  * @property HiringProcessTemplates[] $hiringProcessTemplates0
+ * @property InstituteStudentsReview[] $instituteStudentsReviews
+ * @property InstituteStudentsReview[] $instituteStudentsReviews0
  * @property InterviewProcessFields[] $interviewProcessFields
  * @property InterviewProcessFields[] $interviewProcessFields0
  * @property InterviewScheduler[] $interviewSchedulers
  * @property InterviewScheduler[] $interviewSchedulers0
+ * @property InterviewerRecords[] $interviewerRecords
+ * @property InterviewerRecords[] $interviewerRecords0
  * @property JobDescription[] $jobDescriptions
  * @property JobDescription[] $jobDescriptions0
  * @property LearningCornerResourceDiscussion[] $learningCornerResourceDiscussions
@@ -151,10 +182,14 @@ namespace common\models;
  * @property LearningVideoTags[] $learningVideoTags0
  * @property LearningVideos[] $learningVideos
  * @property LearningVideos[] $learningVideos0
+ * @property MisEmailLogs[] $misEmailLogs
  * @property NewOrganizationReviews[] $newOrganizationReviews
  * @property NewOrganizationReviews[] $newOrganizationReviews0
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories
  * @property OrganizationAssignedCategories[] $organizationAssignedCategories0
+ * @property OrganizationBlogInfoLocations[] $organizationBlogInfoLocations
+ * @property OrganizationBlogInformation[] $organizationBlogInformations
+ * @property OrganizationBlogInformationImages[] $organizationBlogInformationImages
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits
  * @property OrganizationEmployeeBenefits[] $organizationEmployeeBenefits0
  * @property OrganizationEmployees[] $organizationEmployees
@@ -174,7 +209,8 @@ namespace common\models;
  * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks
  * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks0
  * @property OrganizationReviewFeedback[] $organizationReviewFeedbacks1
- * @property OrganizationReviews[] $reviewEncs
+ * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes
+ * @property OrganizationReviewLikeDislike[] $organizationReviewLikeDislikes0
  * @property OrganizationReviews[] $organizationReviews
  * @property OrganizationReviews[] $organizationReviews0
  * @property OrganizationVideos[] $organizationVideos
@@ -183,6 +219,7 @@ namespace common\models;
  * @property Organizations[] $organizations0
  * @property PostCategories[] $postCategories
  * @property PostCategories[] $postCategories0
+ * @property PostComments[] $postComments
  * @property PostEmbeddedImages[] $postEmbeddedImages
  * @property PostEmbeddedImages[] $postEmbeddedImages0
  * @property PostMedia[] $postMedia
@@ -201,8 +238,24 @@ namespace common\models;
  * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields0
  * @property QuestionnaireTemplates[] $questionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnaireTemplates0
+ * @property Quiz[] $quizzes
+ * @property Quiz[] $quizzes0
+ * @property QuizQuestions[] $quizQuestions
+ * @property QuizQuestions[] $quizQuestions0
+ * @property Referral[] $referrals
+ * @property Referral[] $referrals0
+ * @property Organizations[] $organizationEncs0
+ * @property ReferralSignUpTracking[] $referralSignUpTrackings
  * @property ReviewedApplications[] $reviewedApplications
  * @property ReviewedApplications[] $reviewedApplications0
+ * @property Reviews[] $reviews
+ * @property ReviewsType[] $reviewsTypes
+ * @property RolePrivileges[] $rolePrivileges
+ * @property Roles[] $roles
+ * @property ScheduledInterview[] $scheduledInterviews
+ * @property ScheduledInterview[] $scheduledInterviews0
+ * @property SchoolStudentsReview[] $schoolStudentsReviews
+ * @property SchoolStudentsReview[] $schoolStudentsReviews0
  * @property SelectedServices[] $selectedServices
  * @property SelectedServices[] $selectedServices0
  * @property Seo[] $seos
@@ -233,6 +286,8 @@ namespace common\models;
  * @property SubmittedVideos[] $submittedVideos0
  * @property Tags[] $tags
  * @property Tags[] $tags0
+ * @property TopOrganizationsBlogs[] $topOrganizationsBlogs
+ * @property TopOrganizationsBlogsList[] $topOrganizationsBlogsLists
  * @property TrainingApplications[] $trainingApplications
  * @property TrainingProgramBatches[] $trainingProgramBatches
  * @property TrainingProgramBatches[] $trainingProgramBatches0
@@ -242,7 +297,7 @@ namespace common\models;
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations0
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations1
- * @property UnclaimedOrganizations[] $organizationEncs0
+ * @property UnclaimedOrganizations[] $organizationEncs1
  * @property UnclaimedOrganizations[] $unclaimedOrganizations
  * @property UserAccessTokens[] $userAccessTokens
  * @property UserAchievements[] $userAchievements
@@ -269,6 +324,10 @@ namespace common\models;
  * @property UserPreferredLocations[] $userPreferredLocations0
  * @property UserPreferredSkills[] $userPreferredSkills
  * @property UserPreferredSkills[] $userPreferredSkills0
+ * @property UserPrivileges[] $userPrivileges
+ * @property UserPrivileges[] $userPrivileges0
+ * @property UserPrivileges[] $userPrivileges1
+ * @property Roles[] $roleEncs
  * @property UserResume[] $userResumes
  * @property UserResume[] $userResumes0
  * @property UserResume[] $userResumes1
@@ -289,6 +348,10 @@ namespace common\models;
  * @property UserTypes $userTypeEnc
  * @property Categories $jobFunction
  * @property AssignedCategories $asignedJobFunction
+ * @property WhatsappInvitationMessages[] $whatsappInvitationMessages
+ * @property WhatsappInvitationMessages[] $whatsappInvitationMessages0
+ * @property WhatsappInvitations[] $whatsappInvitations
+ * @property WhatsappInvitations[] $whatsappInvitations0
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -332,6 +395,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getAccessRoutes()
+    {
+        return $this->hasMany(AccessRoutes::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAccessRoutes0()
+    {
+        return $this->hasMany(AccessRoutes::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAnsweredQuestionnaires()
     {
         return $this->hasMany(AnsweredQuestionnaire::className(), ['created_by' => 'user_enc_id']);
@@ -359,6 +438,54 @@ class Users extends \yii\db\ActiveRecord
     public function getAnsweredQuestionnaireFields0()
     {
         return $this->hasMany(AnsweredQuestionnaireFields::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppEmpBenefitTemplates()
+    {
+        return $this->hasMany(AppEmpBenefitTemplate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppEmpBenefitTemplates0()
+    {
+        return $this->hasMany(AppEmpBenefitTemplate::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppInterviewQuestionnaireTemplates()
+    {
+        return $this->hasMany(AppInterviewQuestionnaireTemplate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAppInterviewQuestionnaireTemplates0()
+    {
+        return $this->hasMany(AppInterviewQuestionnaireTemplate::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationEduReqTemplates()
+    {
+        return $this->hasMany(ApplicationEduReqTemplate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationEduReqTemplates0()
+    {
+        return $this->hasMany(ApplicationEduReqTemplate::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -460,6 +587,38 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApplicationOptionsTemplates()
+    {
+        return $this->hasMany(ApplicationOptionsTemplate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationOptionsTemplates0()
+    {
+        return $this->hasMany(ApplicationOptionsTemplate::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationPlacementCities()
+    {
+        return $this->hasMany(ApplicationPlacementCities::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationPlacementCities0()
+    {
+        return $this->hasMany(ApplicationPlacementCities::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getApplicationPlacementLocations()
     {
         return $this->hasMany(ApplicationPlacementLocations::className(), ['created_by' => 'user_enc_id']);
@@ -492,6 +651,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApplicationSkillsTemplates()
+    {
+        return $this->hasMany(ApplicationSkillsTemplate::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationSkillsTemplates0()
+    {
+        return $this->hasMany(ApplicationSkillsTemplate::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getApplicationTemplateJobDescriptions()
     {
         return $this->hasMany(ApplicationTemplateJobDescription::className(), ['created_by' => 'user_enc_id']);
@@ -508,22 +683,6 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationTemplateOptions()
-    {
-        return $this->hasMany(ApplicationTemplateOptions::className(), ['created_by' => 'user_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getApplicationTemplateOptions0()
-    {
-        return $this->hasMany(ApplicationTemplateOptions::className(), ['last_updated_by' => 'user_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getApplicationTemplates()
     {
         return $this->hasMany(ApplicationTemplates::className(), ['created_by' => 'user_enc_id']);
@@ -535,6 +694,22 @@ class Users extends \yii\db\ActiveRecord
     public function getApplicationTemplates0()
     {
         return $this->hasMany(ApplicationTemplates::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationUnclaimOptions()
+    {
+        return $this->hasMany(ApplicationUnclaimOptions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getApplicationUnclaimOptions0()
+    {
+        return $this->hasMany(ApplicationUnclaimOptions::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -740,6 +915,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getCandidateJobTitles()
+    {
+        return $this->hasMany(CandidateJobTitle::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCandidateRecords()
+    {
+        return $this->hasMany(CandidateRecords::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCategories()
     {
         return $this->hasMany(Categories::className(), ['created_by' => 'user_enc_id']);
@@ -767,6 +958,46 @@ class Users extends \yii\db\ActiveRecord
     public function getCategoriesLists0()
     {
         return $this->hasMany(CategoriesList::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCitiesPriorities()
+    {
+        return $this->hasMany(CitiesPriority::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCitiesPriorities0()
+    {
+        return $this->hasMany(CitiesPriority::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeStudentsReviews()
+    {
+        return $this->hasMany(CollegeStudentsReview::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeStudentsReviews0()
+    {
+        return $this->hasMany(CollegeStudentsReview::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getContacts()
+    {
+        return $this->hasMany(Contacts::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -956,6 +1187,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getEducationalStreams()
+    {
+        return $this->hasMany(EducationalStreams::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEducationalStreams0()
+    {
+        return $this->hasMany(EducationalStreams::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEmployeeBenefits()
     {
         return $this->hasMany(EmployeeBenefits::className(), ['created_by' => 'user_enc_id']);
@@ -983,6 +1230,22 @@ class Users extends \yii\db\ActiveRecord
     public function getEmployerApplications0()
     {
         return $this->hasMany(EmployerApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployerReviews()
+    {
+        return $this->hasMany(EmployerReviews::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getEmployerReviews0()
+    {
+        return $this->hasMany(EmployerReviews::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1068,6 +1331,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getInstituteStudentsReviews()
+    {
+        return $this->hasMany(InstituteStudentsReview::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInstituteStudentsReviews0()
+    {
+        return $this->hasMany(InstituteStudentsReview::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getInterviewProcessFields()
     {
         return $this->hasMany(InterviewProcessFields::className(), ['created_by' => 'user_enc_id']);
@@ -1095,6 +1374,22 @@ class Users extends \yii\db\ActiveRecord
     public function getInterviewSchedulers0()
     {
         return $this->hasMany(InterviewScheduler::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewerRecords()
+    {
+        return $this->hasMany(InterviewerRecords::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInterviewerRecords0()
+    {
+        return $this->hasMany(InterviewerRecords::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -1180,6 +1475,14 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getMisEmailLogs()
+    {
+        return $this->hasMany(MisEmailLogs::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getNewOrganizationReviews()
     {
         return $this->hasMany(NewOrganizationReviews::className(), ['created_by' => 'user_enc_id']);
@@ -1207,6 +1510,30 @@ class Users extends \yii\db\ActiveRecord
     public function getOrganizationAssignedCategories0()
     {
         return $this->hasMany(OrganizationAssignedCategories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationBlogInfoLocations()
+    {
+        return $this->hasMany(OrganizationBlogInfoLocations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationBlogInformations()
+    {
+        return $this->hasMany(OrganizationBlogInformation::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationBlogInformationImages()
+    {
+        return $this->hasMany(OrganizationBlogInformationImages::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -1364,9 +1691,17 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getReviewEncs()
+    public function getOrganizationReviewLikeDislikes()
     {
-        return $this->hasMany(OrganizationReviews::className(), ['review_enc_id' => 'review_enc_id'])->viaTable('{{%organization_review_feedback}}', ['user_enc_id' => 'user_enc_id']);
+        return $this->hasMany(OrganizationReviewLikeDislike::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationReviewLikeDislikes0()
+    {
+        return $this->hasMany(OrganizationReviewLikeDislike::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1374,7 +1709,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getOrganizationReviews()
     {
-        return $this->hasMany(OrganizationReviews::className(), ['last_updated_by' => 'user_enc_id']);
+        return $this->hasMany(OrganizationReviews::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -1382,7 +1717,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getOrganizationReviews0()
     {
-        return $this->hasMany(OrganizationReviews::className(), ['created_by' => 'user_enc_id']);
+        return $this->hasMany(OrganizationReviews::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1431,6 +1766,14 @@ class Users extends \yii\db\ActiveRecord
     public function getPostCategories0()
     {
         return $this->hasMany(PostCategories::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPostComments()
+    {
+        return $this->hasMany(PostComments::className(), ['user_enc_id' => 'user_enc_id']);
     }
 
     /**
@@ -1580,6 +1923,70 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getQuizzes()
+    {
+        return $this->hasMany(Quiz::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizzes0()
+    {
+        return $this->hasMany(Quiz::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizQuestions()
+    {
+        return $this->hasMany(QuizQuestions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizQuestions0()
+    {
+        return $this->hasMany(QuizQuestions::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferrals()
+    {
+        return $this->hasMany(Referral::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferrals0()
+    {
+        return $this->hasMany(Referral::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationEncs0()
+    {
+        return $this->hasMany(Organizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%referral}}', ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReferralSignUpTrackings()
+    {
+        return $this->hasMany(ReferralSignUpTracking::className(), ['sign_up_user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getReviewedApplications()
     {
         return $this->hasMany(ReviewedApplications::className(), ['created_by' => 'user_enc_id']);
@@ -1591,6 +1998,70 @@ class Users extends \yii\db\ActiveRecord
     public function getReviewedApplications0()
     {
         return $this->hasMany(ReviewedApplications::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviews()
+    {
+        return $this->hasMany(Reviews::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReviewsTypes()
+    {
+        return $this->hasMany(ReviewsType::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRolePrivileges()
+    {
+        return $this->hasMany(RolePrivileges::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoles()
+    {
+        return $this->hasMany(Roles::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScheduledInterviews()
+    {
+        return $this->hasMany(ScheduledInterview::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScheduledInterviews0()
+    {
+        return $this->hasMany(ScheduledInterview::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSchoolStudentsReviews()
+    {
+        return $this->hasMany(SchoolStudentsReview::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSchoolStudentsReviews0()
+    {
+        return $this->hasMany(SchoolStudentsReview::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1836,6 +2307,22 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTopOrganizationsBlogs()
+    {
+        return $this->hasMany(TopOrganizationsBlogs::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTopOrganizationsBlogsLists()
+    {
+        return $this->hasMany(TopOrganizationsBlogsList::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTrainingApplications()
     {
         return $this->hasMany(TrainingApplications::className(), ['user_enc_id' => 'user_enc_id']);
@@ -1908,7 +2395,7 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrganizationEncs0()
+    public function getOrganizationEncs1()
     {
         return $this->hasMany(UnclaimedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id'])->viaTable('{{%unclaimed_followed_organizations}}', ['user_enc_id' => 'user_enc_id']);
     }
@@ -2124,6 +2611,38 @@ class Users extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getUserPrivileges()
+    {
+        return $this->hasMany(UserPrivileges::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserPrivileges0()
+    {
+        return $this->hasMany(UserPrivileges::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserPrivileges1()
+    {
+        return $this->hasMany(UserPrivileges::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRoleEncs()
+    {
+        return $this->hasMany(Roles::className(), ['role_enc_id' => 'role_enc_id'])->viaTable('{{%user_privileges}}', ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getUserResumes()
     {
         return $this->hasMany(UserResume::className(), ['user_enc_id' => 'user_enc_id']);
@@ -2279,5 +2798,45 @@ class Users extends \yii\db\ActiveRecord
     public function getAsignedJobFunction()
     {
         return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'asigned_job_function']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWhatsappInvitationMessages()
+    {
+        return $this->hasMany(WhatsappInvitationMessages::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWhatsappInvitationMessages0()
+    {
+        return $this->hasMany(WhatsappInvitationMessages::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWhatsappInvitations()
+    {
+        return $this->hasMany(WhatsappInvitations::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWhatsappInvitations0()
+    {
+        return $this->hasMany(WhatsappInvitations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherInfo()
+    {
+        return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
     }
 }

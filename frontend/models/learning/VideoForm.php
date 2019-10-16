@@ -32,8 +32,14 @@ class VideoForm extends Model
             [['video_id', 'video_title', 'video_type', 'video_url', 'cover_image', 'description', 'tags', 'category', 'sub_category', 'video_duration'], 'required'],
             [['video_title', 'video_type', 'category', 'video_url', 'cover_image', 'sub_category', 'description', 'tags'], 'trim'],
             [['description'], 'string'],
-            ['video_id', 'unique', 'targetClass' => SubmittedVideos::className(), 'targetAttribute' => ['video_id' => 'link'], 'message' => 'Video Already added'],
+//            ['video_id', 'unique', 'targetClass' => SubmittedVideos::className(), 'targetAttribute' => ['video_id' => 'link'], 'message' => 'Video Already added'],
             [['video_url', 'cover_image'], 'url', 'defaultScheme' => 'http'],
+            ['video_id', function ($attribute) {
+                $video = SubmittedVideos::find()->where(['link' => $this->$attribute])->exists();
+                if($video) {
+                    $this->addError('video_url', 'Video already added.');
+                }
+            }],
             [['video_type', 'category', 'sub_category'], 'string', 'max' => 30],
             [['video_title', 'cover_image'], 'string', 'max' => 100],
             [

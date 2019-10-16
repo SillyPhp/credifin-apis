@@ -2,6 +2,8 @@
 
 namespace account\controllers;
 
+use common\models\EmployerApplications;
+use common\models\Organizations;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -257,6 +259,21 @@ class ResumeController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $selected_answer = Yii::$app->request->post('selected_answer');
             $company_name = Yii::$app->request->post('company_name');
+            $link_type = Yii::$app->request->post('link_type');
+
+            if ($link_type === 'company') {
+                $company_name = Yii::$app->request->post('company_name');
+            } else if($link_type === 'application'){
+                $org = EmployerApplications::find()
+                    ->alias('a')
+                    ->select(['b.slug'])
+                    ->joinWith(['organizationEnc b'])
+                    ->where(['a.slug' => $company_name])
+                    ->asArray()
+                    ->one();
+
+                $company_name = $org['slug'];
+            }
 
             $data = OrganizationAssignedCategories::find()
                 ->alias('a')
@@ -269,6 +286,8 @@ class ResumeController extends Controller
                 ->andWhere(['a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
+
             return json_encode($data);
         }
     }
@@ -279,6 +298,22 @@ class ResumeController extends Controller
             $selected_answer = Yii::$app->request->post('selected_answer');
             $type = Yii::$app->request->post('type');
             $company_name = Yii::$app->request->post('company_name');
+            $link_type = Yii::$app->request->post('link_type');
+
+            if ($link_type === 'company') {
+                $company_name = Yii::$app->request->post('company_name');
+            } else if($link_type === 'application'){
+                $org = EmployerApplications::find()
+                    ->alias('a')
+                    ->select(['b.slug'])
+                    ->joinWith(['organizationEnc b'])
+                    ->where(['a.slug' => $company_name])
+                    ->asArray()
+                    ->one();
+
+                $company_name = $org['slug'];
+            }
+
             $assigned_categories = OrganizationAssignedCategories::find()
                 ->alias('a')
                 ->select(['a.assigned_category_enc_id', 'c.name'])

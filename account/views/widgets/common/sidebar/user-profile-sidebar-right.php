@@ -1,7 +1,6 @@
 <?php
 
 use yii\helpers\Url;
-
 ?>
     <div class="profiles-sidebar">
         <span class="close-profile"><i class="fa fa-close"></i></span>
@@ -40,7 +39,8 @@ use yii\helpers\Url;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username; ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
 
                     </li>
@@ -61,7 +61,8 @@ use yii\helpers\Url;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
                     </li>
                     <li class="inner-child">
@@ -313,6 +314,7 @@ $this->registerCss('
     font-size: 22px;
     color: #202020;
     font-weight: bold;
+    text-transform: capitalize;
     margin: 0;
 }
 .can-detail-s span {

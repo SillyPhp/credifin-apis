@@ -633,7 +633,7 @@ class JobDetail extends Model
     }
     private function _createSharingImage($category)
     {
-        $client = new \yii\httpclient\Client(['baseUrl' => Url::base(true)]);
+        $client = new \yii\httpclient\Client(['baseUrl' => Url::base('https')]);
         $response = $client->createRequest()
             ->setUrl('jobs/job-card/' . $category)
             ->addHeaders(['content-type' => 'application/json'])

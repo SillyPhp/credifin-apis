@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%organization_review_like_dislike}}".
  *
@@ -15,8 +17,8 @@ namespace common\models;
  * @property string $last_updated_by By which User Organization Review Like Dislike  information was updated
  *
  * @property Users $createdBy
- * @property OrganizationReviews $reviewEnc
  * @property Users $lastUpdatedBy
+ * @property OrganizationReviews $reviewEnc
  */
 class OrganizationReviewLikeDislike extends \yii\db\ActiveRecord
 {
@@ -40,10 +42,15 @@ class OrganizationReviewLikeDislike extends \yii\db\ActiveRecord
             [['feedback_enc_id', 'review_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['feedback_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['review_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationReviews::className(), 'targetAttribute' => ['review_enc_id' => 'review_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['review_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationReviews::className(), 'targetAttribute' => ['review_enc_id' => 'review_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -56,16 +63,16 @@ class OrganizationReviewLikeDislike extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getReviewEnc()
+    public function getLastUpdatedBy()
     {
-        return $this->hasOne(OrganizationReviews::className(), ['review_enc_id' => 'review_enc_id']);
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy()
+    public function getReviewEnc()
     {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+        return $this->hasOne(OrganizationReviews::className(), ['review_enc_id' => 'review_enc_id']);
     }
 }

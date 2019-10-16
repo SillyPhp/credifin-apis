@@ -11,6 +11,7 @@ use common\models\UnclaimedOrganizations;
 use common\models\Usernames;
 use common\models\Utilities;
 use common\models\RandomColors;
+use frontend\models\referral\ReferralReviewsTracking;
 use Yii;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -40,7 +41,7 @@ class RegistrationForm extends Model {
     {
       $data =   BusinessActivities::find()->select(['business_activity_enc_id',
           '(CASE
-                WHEN business_activity = "College" THEN "Colege/Universities"
+                WHEN business_activity = "College" THEN "College/Universities"
                 WHEN business_activity = "Educational Institute" THEN "Educational Institute/Tution Centers"
                 WHEN business_activity = "School" THEN "School"
                 WHEN business_activity = "Others" THEN "Others"
@@ -102,8 +103,14 @@ class RegistrationForm extends Model {
         $arr = Yii::$app->request->post('data');
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -196,6 +203,7 @@ class RegistrationForm extends Model {
         if (!$companyReview->save()) {
             return false;
         } else {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         }
     }
@@ -206,8 +214,14 @@ class RegistrationForm extends Model {
         $avg =  ($arr['academics']+$arr['faculity']+$arr['infrastructure']+$arr['accomodation_food']+$arr['placement']+$arr['social_life']+$arr['culture'])/7;
         $f_time = strtotime($arr['from']);
         $from_time = date('Y-m-d', $f_time);
-        $t_time = strtotime($arr['to']);
-        $to_time = date('Y-m-d', $t_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
         $companyReview = new NewOrganizationReviews();
         $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 3 : 2);
         $data = Qualifications::find()
@@ -260,6 +274,152 @@ class RegistrationForm extends Model {
         $companyReview->status = 1;
         $companyReview->created_on = date('Y-m-d H:i:s');
         if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function postSchoolReviews($org_id)
+    {
+        $arr = Yii::$app->request->post('data');
+        $avg =  ($arr['student_engagement']+$arr['infrastructure']+$arr['faculty']+$arr['accessibility_of_faculty']+$arr['co_curricular_activitie']+$arr['leadership_development']+$arr['sports'])/7;
+        $f_time = strtotime($arr['from']);
+        $from_time = date('Y-m-d', $f_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
+        $companyReview = new NewOrganizationReviews();
+        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 5 : 4);
+        $data = Qualifications::find()
+            ->where(['name'=>$arr['stream']])
+            ->asArray()
+            ->one();
+        if (!empty($data))
+        {
+            $companyReview->educational_stream_enc_id = $data['qualification_enc_id'];
+        }
+        else{
+            $model = new Qualifications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->qualification_enc_id = $utilitiesModel->encrypt();
+            $model->name = $arr['stream'];
+            $utilitiesModel->variables['name'] = $arr['stream'];
+            $utilitiesModel->variables['table_name'] = Qualifications::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $model->slug = $utilitiesModel->create_slug();
+            if ($model->save())
+            {
+                $companyReview->educational_stream_enc_id = $model->qualification_enc_id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $companyReview->review_enc_id = $utilitiesModel->encrypt();
+        $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
+        $companyReview->organization_enc_id = $org_id;
+        $companyReview->from_date = $from_time;
+        $companyReview->to_date = $to_time;
+        $companyReview->city_enc_id = $arr['college_city'];
+        $companyReview->student_engagement = $arr['student_engagement'];
+        $companyReview->school_infrastructure = $arr['infrastructure'];
+        $companyReview->faculty = $arr['faculty'];
+        $companyReview->accessibility_of_faculty = $arr['accessibility_of_faculty'];
+        $companyReview->co_curricular_activities = $arr['co_curricular_activitie'];
+        $companyReview->leadership_development = $arr['leadership_development'];
+        $companyReview->sports = $arr['sports'];
+        $companyReview->average_rating = ceil($avg);
+        $companyReview->likes = $arr['likes'];
+        $companyReview->dislikes = $arr['dislikes'];
+        $companyReview->created_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->status = 1;
+        $companyReview->created_on = date('Y-m-d H:i:s');
+        if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function postInstituteReviews($org_id)
+    {
+        $arr = Yii::$app->request->post('data');
+        $avg =  ($arr['student_engagement']+$arr['infrastructure']+$arr['faculty']+$arr['value_for_money']+$arr['teaching_style']+$arr['coverage_of_subject_matter']+$arr['accessibility_of_faculty'])/7;
+        $f_time = strtotime($arr['from']);
+        $from_time = date('Y-m-d', $f_time);
+        if (!empty($arr['to'])) {
+            $t_time = strtotime($arr['to']);
+            $to_time = date('Y-m-d', $t_time);
+        }
+        else
+        {
+            $to_time = NULL;
+        }
+        $companyReview = new NewOrganizationReviews();
+        $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 7 : 6);
+        $data = Qualifications::find()
+            ->where(['name'=>$arr['stream']])
+            ->asArray()
+            ->one();
+        if (!empty($data))
+        {
+            $companyReview->educational_stream_enc_id = $data['qualification_enc_id'];
+        }
+        else{
+            $model = new Qualifications();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->qualification_enc_id = $utilitiesModel->encrypt();
+            $model->name = $arr['stream'];
+            $utilitiesModel->variables['name'] = $arr['stream'];
+            $utilitiesModel->variables['table_name'] = Qualifications::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $model->slug = $utilitiesModel->create_slug();
+            if ($model->save())
+            {
+                $companyReview->educational_stream_enc_id = $model->qualification_enc_id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $companyReview->review_enc_id = $utilitiesModel->encrypt();
+        $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
+        $companyReview->organization_enc_id = $org_id;
+        $companyReview->from_date = $from_time;
+        $companyReview->to_date = $to_time;
+        $companyReview->city_enc_id = $arr['college_city'];
+        $companyReview->student_engagement = $arr['student_engagement'];
+        $companyReview->school_infrastructure = $arr['infrastructure'];
+        $companyReview->faculty = $arr['faculty'];
+        $companyReview->value_for_money = $arr['value_for_money'];
+        $companyReview->teaching_style = $arr['teaching_style'];
+        $companyReview->coverage_of_subject_matter = $arr['coverage_of_subject_matter'];
+        $companyReview->accessibility_of_faculty = $arr['accessibility_of_faculty'];
+        $companyReview->average_rating = ceil($avg);
+        $companyReview->likes = $arr['likes'];
+        $companyReview->dislikes = $arr['dislikes'];
+        $companyReview->created_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
+        $companyReview->status = 1;
+        $companyReview->created_on = date('Y-m-d H:i:s');
+        if ($companyReview->save()) {
+            ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
             return true;
         } else {
             return false;

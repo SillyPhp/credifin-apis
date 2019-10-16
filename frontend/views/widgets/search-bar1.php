@@ -8,33 +8,21 @@ use yii\helpers\Url;
             <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
-                        <div class="col-md-4 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <span style="width: 40px;" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
-                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword')?>" class="form-control">
+                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword'); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="Job Title or Keywords" class="form-control">
+                                        <input type="text" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-12 col-sm-6">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
-                                <?php
-                                if(Yii::$app->request->get('company')){
-                                    ?>
-                                    <input type="text" name="company" value="<?=Yii::$app->request->get('company')?>" class="form-control">
-                                <?php }else{ ?>
-                                    <input type="text" name="company" placeholder="Company" class="form-control">
-                                <?php }?>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-xs-12 col-sm-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
-                                <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
+                                <span class="input-group-addon set-heights"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
@@ -42,7 +30,7 @@ use yii\helpers\Url;
                                 <?php }else{ ?>
                                     <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
-                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                             </div>
                         </div>
                         <div class="col-md-2 col-xs-12 col-sm-6 text-center">
@@ -68,6 +56,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.twitter-typeahead input{
+    width:100% !important;
+}
 #header-search{height:55px;}
 .input-group{
     width: 100%;
@@ -256,7 +247,7 @@ var getParams = function (url) {
                 if(!($.trim(value)==="")){
                     results.push(value);
        
-                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fa fa-close'></i></a></span>");
+                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fas fa-times'></i></a></span>");
                 }
             });
         }
@@ -290,7 +281,7 @@ $('#cities').typeahead(null, {
         
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
-        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"50px"}, 1000);
+        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);
     } else if ($(window).scrollTop() == 0){
         $('.set-scroll-fixed').removeClass('stickyheader').css({"top":"-100%"});
     }

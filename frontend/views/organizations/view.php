@@ -3,7 +3,34 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->params['disablefacebookMessenger'] = true;
+$this->title = Yii::t('frontend', $organization['name']);
+$keywords = $industry['industry'] . "," . $organization['tag_line'];
+$description = $organization['description'];
+$image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 
 if ($organization['logo']) {
     $image_path = Yii::$app->params->upload_directories->organizations->logo_path . $organization['logo_location'] . DIRECTORY_SEPARATOR . $organization['logo'];
@@ -37,7 +64,8 @@ if ($organization['cover_image']) {
                                         <?php
                                         if (!empty($image_path)):
                                             ?>
-                                            <img id="logo-img" src="<?= Url::to($image); ?>">
+                                            <img id="logo-img" src="<?= Url::to($image); ?>"
+                                                 alt="<?= Html::encode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -49,14 +77,14 @@ if ($organization['cover_image']) {
                                     <div class="com-name"><?= Html::encode($organization['name']) ?></div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
-<!--                                        <span class="detail-title">Tagline:</span> -->
-                                        <?= Html::encode($organization['tag_line']); ?>
+                                            <!--                                        <span class="detail-title">Tagline:</span> -->
+                                            <?= Html::encode($organization['tag_line']); ?>
                                         </div>
                                     <?php } ?>
                                     <?php if (!empty($industry['industry'])) { ?>
                                         <div class="com-establish">
-<!--                                        <span class="detail-title">Industry:</span> -->
-                                        <?= Html::encode($industry['industry']); ?>
+                                            <!--                                        <span class="detail-title">Industry:</span> -->
+                                            <?= Html::encode($industry['industry']); ?>
                                         </div>
                                     <?php } ?>
                                 </div>
@@ -93,16 +121,16 @@ if ($organization['cover_image']) {
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
                             href="<?= Html::encode($organization['facebook']) ?>" class="facebook" target="_blank"><i
-                                        class="fa fa-facebook"></i> </a><?php } ?>
+                                        class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
                             href="<?= Html::encode($organization['twitter']) ?>" class="twitter" target="_blank"><i
-                                        class="fa fa-twitter"></i> </a><?php } ?>
+                                        class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
                             href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
-                                        class="fa fa-linkedin"></i> </a><?php } ?>
+                                        class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
                             href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i
-                                        class="fa fa-link"></i> </a><?php } ?>
+                                        class="fas fa-link"></i> </a><?php } ?>
                     </div>
                 </div>
             </div>
@@ -207,7 +235,8 @@ if ($organization['cover_image']) {
                                                         $benefit_icon = Url::to('@commonAssets/employee-benefits/plus-icon.svg');
                                                     }
                                                     ?>
-                                                    <img src="<?= Url::to($benefits['icon']); ?>">
+                                                    <img src="<?= Url::to($benefits['icon']); ?>"
+                                                         alt="<?= Html::encode($benefits['benefit']); ?>"/>
                                                 </div>
                                                 <div class="bb-text">
                                                     <?= Html::encode($benefits['benefit']); ?>
@@ -222,35 +251,35 @@ if ($organization['cover_image']) {
                         </div>
                     <?php }
                     if (!empty($gallery)) {
-                    ?>
-                    <div class="row">
-                        <div class="office-view">
-                            <div class="heading-style">
-                                Inside <?= Html::encode($organization['name']) ?>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="office-pics">
-                                <?php
-                                foreach ($gallery as $g_image) {
-                                    ?>
-                                    <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
-                                        <div class="img1">
-                                            <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                               data-fancybox="image">
-                                                <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                     alt="company image 1">
-                                            </a>
-                                        </div>
-                                    </div>
+                        ?>
+                        <div class="row">
+                            <div class="office-view">
+                                <div class="heading-style">
+                                    Inside <?= Html::encode($organization['name']) ?>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="office-pics">
                                     <?php
-                                }
-                                ?>
+                                    foreach ($gallery as $g_image) {
+                                        ?>
+                                        <div class="col-md-3 col-sm-3 col-xs-12 no-padd">
+                                            <div class="img1">
+                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                   data-fancybox="image">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
+                                                         alt="Inside <?= Html::encode($organization['name']) ?>">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <?php
+                        <?php
                     }
-                    if(!empty($org_products['organizationProductImages']) || !empty($org_products['description'])){
+                    if (!empty($org_products['organizationProductImages']) || !empty($org_products['description'])) {
                         ?>
                         <div class="row">
                             <div class="office-view">
@@ -258,42 +287,43 @@ if ($organization['cover_image']) {
                                     Products
                                 </div>
                                 <div class="divider"></div>
-                                <?php if(!empty($org_products['organizationProductImages'])){ ?>
-                                <div class="office-pics">
-                                    <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
-                                        <div class="p-preview-img">
-                                            <a href="" data-fancybox="images">
-                                                <img src="" alt="company image 1">
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
-                                        <?php
-                                        foreach ($org_products['organizationProductImages'] as $p_image) {
-                                            ?>
-                                            <div class="p-img-thumbnail" style="float: none;display: inline-block;">
-                                                <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
-                                                   data-fancybox="images">
-                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
-                                                         alt="<?= $p_image['title'] ?>">
+                                <?php if (!empty($org_products['organizationProductImages'])) { ?>
+                                    <div class="office-pics">
+                                        <div class="col-md-10 col-md-offset-1 col-sm-6 col-xs-12 no-padd">
+                                            <div class="p-preview-img">
+                                                <a href="" data-fancybox="images">
+                                                    <img src=""
+                                                         alt="<?= Html::encode($organization['name']) ?> Products">
                                                 </a>
                                             </div>
+                                        </div>
+                                        <div class="col-md-12 col-sm-6 col-xs-12 no-padd text-center">
                                             <?php
-                                        }
-                                        ?>
+                                            foreach ($org_products['organizationProductImages'] as $p_image) {
+                                                ?>
+                                                <div class="p-img-thumbnail" style="float: none;display: inline-block;">
+                                                    <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                       data-fancybox="images">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $p_image['image_location'] . DIRECTORY_SEPARATOR . $p_image['image']) ?>"
+                                                             alt="<?= $p_image['title'] ?>">
+                                                    </a>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php
+                                    <?php
                                 }
-                                if(!empty($org_products['description'])){
-                                ?>
-                                <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
-                                    <h4>Brief Desciption</h4>
-                                    <p>
-                                        <?= $org_products['description']; ?>
-                                    </p>
-                                </div>
-                                    <?php } ?>
+                                if (!empty($org_products['description'])) {
+                                    ?>
+                                    <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
+                                        <h4>Brief Desciption</h4>
+                                        <p>
+                                            <?= $org_products['description']; ?>
+                                        </p>
+                                    </div>
+                                <?php } ?>
                             </div>
                         </div>
                     <?php }
@@ -311,7 +341,8 @@ if ($organization['cover_image']) {
                                             <div class="team-container">
                                                 <a href="#">
                                                     <div class="team-icon">
-                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>">
+                                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>"
+                                                             alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">
@@ -319,17 +350,17 @@ if ($organization['cover_image']) {
                                                                     <?php if (!empty($team['facebook'])) { ?><a
                                                                         href="<?= Html::encode($team['facebook']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-facebook t-fb"></i>
+                                                                                    class="fab fa-facebook-f t-fb"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['linkedin'])) { ?><a
                                                                         href="<?= Html::encode($team['linkedin']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-linkedin t-ln"></i>
+                                                                                    class="fab fa-linkedin-in t-ln"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['twitter'])) { ?><a
                                                                         href="<?= Html::encode($team['twitter']); ?>"
                                                                         target="_blank"><i
-                                                                                    class="fa fa-twitter t-tw"></i>
+                                                                                    class="fab fa-twitter t-tw"></i>
                                                                         </a><?php } ?>
                                                                 </div>
                                                             </div>
@@ -355,7 +386,8 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= $organization['slug'] ?>" class="write-review">View
+                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>"
+                                   class="write-review">View
                                     All</a>
                             </div>
                         </div>
@@ -372,7 +404,7 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/internships/list?company=<?= $organization['slug'] ?>"
+                                    <a href="/internships/list?company=<?= Html::encode($organization['name']) ?>"
                                        class="write-review">View All</a>
                                 </div>
                             </div>
@@ -504,7 +536,8 @@ echo $this->render('/widgets/mustache/organization_locations', [
 ]);
 echo $this->render('/widgets/mustache/application-card');
 echo $this->render('/widgets/drop_resume', [
-    'username' => Yii::$app->user->identity->username
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'company'
 ]);
 echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
@@ -995,7 +1028,7 @@ $(document).on('click','.follow',function(e){
         data: {org_id:org_id},                         
         method: 'post',
         beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.follow').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){  
             if(data.message == 'Following'){

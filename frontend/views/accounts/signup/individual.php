@@ -5,7 +5,6 @@ use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
 
-$this->title = Yii::t('frontend', 'Individual Signup');
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 ?>
 <?php if (Yii::$app->session->hasFlash('success')): ?>
@@ -60,7 +59,7 @@ $form = ActiveForm::begin([
             $form->field($model, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
                 'jsOptions' => [
                     'allowExtensions' => false,
-                    'onlyCountries' => ['in'],
+                    'preferredCountries' => ['in'],
                     'nationalMode' => false,
                 ]
             ]);
@@ -69,7 +68,7 @@ $form = ActiveForm::begin([
     </div>
     <div class="row">
         <div class="col-md-12">
-            <?= $form->field($model, 'username', ['enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
+            <?= $form->field($model, 'username', ['template' => '<div class="input-group"><span class="input-group-addon">https://empoweryouth.com/</span>{input}</div>{error}', 'enableAjaxValidation' => true])->textInput(['class' => 'lowercase form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('username')]); ?>
         </div>
     </div>
     <div class="row">
@@ -96,4 +95,10 @@ $form = ActiveForm::begin([
 $this->registerCss('
 .intl-tel-input {
     width: 100%;
-}');
+}
+.input-group-addon{
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
+.country-list{z-index:99 !important;}
+');

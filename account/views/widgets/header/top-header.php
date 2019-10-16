@@ -20,19 +20,37 @@ if (!empty(Yii::$app->user->identity->organization)) {
     ];
     array_push($result, $template);
 }
+
+if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+    $institute = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Manage Candidates'),
+        'url' => Url::toRoute('/institutes/manage-candidates'),
+    ];
+    array_push($result, $institute);
+}
+
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
     'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);
-if(Yii::$app->user->identity->type->user_type == 'Individual') {
+if (Yii::$app->user->identity->type->user_type == 'Individual') {
     $preferences = [
         'label' => '<i class=""></i>' . Yii::t('account', 'My Preferences'),
         'url' => Url::to('/account/preferences'),
         'template' => '<a href="{url}">{label}</a>',
     ];
     array_push($result, $preferences);
+}
+
+if (Yii::$app->user->identity->type->user_type == 'Individual') {
+    $resume = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Build Resume'),
+        'url' => Url::to('/account/resume-builder'),
+        'template' => '<a href="{url}">{label}</a>',
+    ];
+    array_push($result, $resume);
 }
 
 echo Menu::widget([

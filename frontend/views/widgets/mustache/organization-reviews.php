@@ -32,15 +32,15 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="com-rating">
                             <div class="average-star" data-score="{{average}}"></div>
-                            <div class="num-rate">{{average}}/5.00</div>
+                            <div class="num-rate">{{average}}/5</div>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                                            <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
-                                                <button type="button"  data-toggle="modal" data-target="#report">
-                                                    <i class="fa fa-flag"></i> Report
-                                                </button>
-                                            </div>
+                        <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
+                            <button type="button" data-toggle="modal" data-target="#report">
+                                <i class="fas fa-flag"></i> Report
+                            </button>
+                        </div>
                         <div class="publish-date">{{created_on}}</div>
                         {{#is_current_employee}}
                         <div class="emp-duration">Current Employee</div>
@@ -99,34 +99,36 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-6 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
-                            <i class="fa fa-facebook-square"
+                            <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-twitter-square"
+                            <i class="fab fa-twitter-square"
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-linkedin-square"
+                            <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
-                            <i class="fa fa-whatsapp wa_icon_hover"
+                            <i class="fab fa-whatsapp wa_icon_hover"
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                                  <div class="usefull-bttn pull-right">
-                                  <div class="use-bttn">
-                                  <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i class="fa fa-thumbs-up"></i> Usefull
-                                 </button>
-                                 </div>
-                                 <div class="notuse-bttn">
-                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i class="fa fa-thumbs-down"></i> Not Usefull
+                        <div class="usefull-bttn pull-right">
+                            <div class="use-bttn">
+                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
+                                            class="fas fa-thumbs-up"></i> Usefull
                                 </button>
-                               </div>
-                       </div>
+                            </div>
+                            <div class="notuse-bttn">
+                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
+                                            class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         {{/.}}
     </script>
-  <input type="hidden" name="review_enc_id" id="review_enc_id">
+    <input type="hidden" name="review_enc_id" id="review_enc_id">
     <div id="report" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -139,39 +141,43 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="form-group form-md-radios">
                         <label></label>
                         <form id="report_form">
-                        <div class="md-radio-list">
-                            <div class="md-radio">
-                                <input type="radio" id="radio1" name="reporting_radio" value="1" class="md-radiobtn">
-                                <label for="radio1">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains hateful, violent, or inappropriate content </label>
+                            <div class="md-radio-list">
+                                <div class="md-radio">
+                                    <input type="radio" id="radio1" name="reporting_radio" value="1"
+                                           class="md-radiobtn">
+                                    <label for="radio1">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains hateful, violent, or inappropriate content </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio2" name="reporting_radio" value="2"
+                                           class="md-radiobtn">
+                                    <label for="radio2">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains advertising or spam</label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio3" name="reporting_radio" value="3"
+                                           class="md-radiobtn">
+                                    <label for="radio3">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span> Off-topic </label>
+                                </div>
+                                <div class="md-radio">
+                                    <input type="radio" id="radio4" name="reporting_radio" value="4"
+                                           class="md-radiobtn">
+                                    <label for="radio4">
+                                        <span class="inc"></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        This post contains conflicts of interest </label>
+                                </div>
                             </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio2" name="reporting_radio" value="2" class="md-radiobtn">
-                                <label for="radio2">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains advertising or spam</label>
-                            </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio3" name="reporting_radio" value="3" class="md-radiobtn">
-                                <label for="radio3">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span> Off-topic </label>
-                            </div>
-                            <div class="md-radio">
-                                <input type="radio" id="radio4" name="reporting_radio" value="4" class="md-radiobtn">
-                                <label for="radio4">
-                                    <span class="inc"></span>
-                                    <span class="check"></span>
-                                    <span class="box"></span>
-                                    This post contains conflicts of interest </label>
-                            </div>
-                        </div>
                         </form>
                     </div>
                 </div>
@@ -250,7 +256,7 @@ $this->registerCss("
     color:#38A1F3; 
     cursor: pointer;
 }
-.ushare i.fa-linkedin-square:hover{
+.ushare i.fa-linkedin:hover{
     color:#0077B5;
     cursor: pointer; 
 }
@@ -440,6 +446,10 @@ border-color: #00a0e3 !important;
     color: #d72a2a !important;;
     border-color: #d72a2a !important;;
 }
+.wa_icon_hover:hover {
+    cursor: pointer;
+    color: #56dc56 !important;
+}
 ");
 
 $script = <<<JS
@@ -451,15 +461,15 @@ $(document).on('click','.follow',function(e){
         data: {org_id:org_id},                         
         method: 'post',
         beforeSend:function(){
-         $('.follow').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+         $('.follow').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){  
             if(data.message == 'Following'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Following');
+                $('.follow').html('<i class="far fa-heart hvr-icon"></i> Following');
                 $('.follow').addClass('followed');
             }
             else if(data.message == 'Unfollow'){
-                $('.follow').html('<i class="fa fa-heart-o hvr-icon"></i> Follow');
+                $('.follow').html('<i class="far fa-heart hvr-icon"></i> Follow');
                 $('.follow').removeClass('followed');
             }
         }
@@ -474,7 +484,7 @@ function getReviews(limit=null,offset=null) {
         url : '/organizations/get-reviews?slug='+slug+'&limit='+limit+'&offset='+offset,
          beforeSend:function()
         {
-            $('#load_more_btn').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('#load_more_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success: function(response) {
             if(response.status === 200) {

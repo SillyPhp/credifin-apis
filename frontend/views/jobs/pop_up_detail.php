@@ -70,7 +70,7 @@ if ($type == 'Internships') {
         <div class="modal-bg">
             <div class="col-md-12">
                 <div class="row">
-                    <h3 class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
+                    <div class="modal-main col-md-offset-1  col-sm-offset-1 col-xs-offset-1  col-md-10 col-sm-10 col-xs-10">
                         <a href="javascript:;" title="Close" class="jd-close">✕</a>
                         <div class="row bottom-line">
                             <div class="com-initials col-md-2 col-sm-2">
@@ -101,27 +101,27 @@ if ($type == 'Internships') {
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-fb">
-                                        <i class="fa fa-facebook"></i>
+                                        <i class="fab fa-facebook-f"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-twitter">
-                                        <i class="fa fa-twitter"></i>
+                                        <i class="fab fa-twitter"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-linkedin">
-                                        <i class="fa fa-linkedin"></i>
+                                        <i class="fab fa-linkedin-in"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-whatsapp">
-                                        <i class="fa fa-whatsapp"></i>
+                                        <i class="fab fa-whatsapp"></i>
                                     </a>
                                     <a href="javascript:;"
                                        onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                        class="share-google">
-                                        <i class="fa fa-envelope"></i>
+                                        <i class="fas fa-envelope"></i>
                                     </a>
                                 </div>
                             </div>
@@ -130,12 +130,12 @@ if ($type == 'Internships') {
                         <div class="j-details col-md-4">
                             <ul class="job-overviews">
                                 <li>
-                                    <i class="fa fa-clock-o"></i>
+                                    <i class="far fa-clock"></i>
                                     <h3>Experience</h3>
                                     <span><?= $data['experience'] ?></span>
                                 </li>
                                 <li>
-                                    <i class="fa fa-map-marker "></i>
+                                    <i class="fas fa-map-marker-alt"></i>
                                     <h3>Location</h3>
                                     <span><?= (($str) ? rtrim($str, ',') : 'Work From Home'); ?></span>
                                 </li>
@@ -161,7 +161,7 @@ if ($type == 'Internships') {
                                     }
                                     ?>
                                     <li>
-                                        <i class="fa fa-money"></i>
+                                        <i class="far fa-money-bill-alt"></i>
                                         <h3>Salary</h3>
                                         <span><?= $amount; ?></span>
                                     </li>
@@ -170,7 +170,7 @@ if ($type == 'Internships') {
                                 if (!empty($data['industry'])) {
                                     ?>
                                     <li>
-                                        <i class="fa fa-puzzle-piece"></i>
+                                        <i class="fas fa-puzzle-piece"></i>
                                         <h3>Preferred Industry</h3>
                                         <span><?= $data['industry'] ?></span>
                                     </li>
@@ -179,7 +179,7 @@ if ($type == 'Internships') {
                                 if (!empty($data['designation'])) {
                                     ?>
                                     <li>
-                                        <i class="fa fa-thumb-tack"></i>
+                                        <i class="fas fa-thumbtack"></i>
                                         <h3>Designation</h3>
                                         <span><?= $data['designation'] ?></span>
                                     </li>
@@ -188,7 +188,7 @@ if ($type == 'Internships') {
                                 if ($type == '"internships"') {
                                     if (!empty($data['min_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Minimum stipend</h3>
                                             <span><?= (($data['min_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['min_wage'])) . ' p.m.' : 'N/A'); ?></span>
                                         </li>
@@ -196,7 +196,7 @@ if ($type == 'Internships') {
                                     }
                                     if (!empty($data['max_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Maximum Stipend</h3>
                                             <span><?= (($data['max_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['max_wage'])) . ' p.m.' : 'N/A'); ?></span>
                                         </li>
@@ -204,7 +204,7 @@ if ($type == 'Internships') {
                                     }
                                     if (!empty($data['fixed_wage'])) {
                                         ?>
-                                        <li><i class="fa fa-money"></i>
+                                        <li><i class="far fa-money-bill-alt"></i>
                                             <h3>Fixed Stipend</h3>
                                             <span><?= (($data['fixed_wage']) ? '&#8377 ' . utf8_encode(money_format('%!.0n', $data['fixed_wage'])) . 'p.m.' : 'N/A') ?></span>
                                         </li>
@@ -213,12 +213,12 @@ if ($type == 'Internships') {
                                 }
                                 ?>
                                 <li>
-                                    <i class="fa fa-suitcase"></i>
+                                    <i class="fas fa-suitcase"></i>
                                     <h3>Type</h3>
                                     <span><?= $application_details['type'] ?></span>
                                 </li>
                                 <li>
-                                    <i class="fa fa-line-chart "></i>
+                                    <i class="fas fa-chart-line"></i>
                                     <h3>Total Vacancies</h3>
                                     <span><?= (($total_vac) ? $total_vac : 'Not Applicable'); ?></span>
                                 </li>
@@ -263,14 +263,14 @@ if ($type == 'Internships') {
                                 </p>
                             </div>
                             <div class="b-apply foo">
-                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fa fa-paper-plane"></i>View
+                                <a href="<?= $link ?>" class="apply-job-btn apply-btn"><i class="fas fa-paper-plane"></i>View
                                     Detail</a>
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 <?php
 $this->registerCss('

@@ -12,17 +12,7 @@ class Applications extends EmployerApplications
     private $_pageNumber;
     private $_where = [];
     private $_orderBy = [];
-
-    private function __setOptions($options = [])
-    {
-        if ($options) {
-            $this->_limit = ((int)$options['limit']) ? $options['limit'] : NULL;
-            $this->_pageNumber = ((int)$options['pageNumber']) ? $options['pageNumber'] : 1;
-            $this->_where = ($options['where']) ? $options['where'] : [];
-            $this->_orderBy = ($options['orderBy']) ? $options['orderBy'] : [];
-            $this->_applicationType = ($options['applicationType']) ? $options['applicationType'] : NULL;
-        }
-    }
+    private $_having = [];
 
     public function getApplications($options = [])
     {
@@ -31,7 +21,8 @@ class Applications extends EmployerApplications
         $applications = self::find()
             ->alias('a')
             ->distinct()
-            ->select(['a.application_enc_id', 'a.title', 'CONCAT("/", "' . $slug . '", "/", a.slug) link', 'c.name', 'd.icon', 'LOWER(f.name) application_type'])
+            ->select(['a.application_enc_id', 'interview_process_enc_id', 'g.positions', 'a.type', 'a.last_date', 'a.title', 'CONCAT("/", "' . $slug . '", "/", a.slug) link', 'c.name', 'd.icon', 'LOWER(f.name) application_type'])
+            ->joinWith(['applicationOptions g'], false)
             ->joinWith(['title b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
                 $b->joinWith(['parentEnc d'], false);
@@ -43,14 +34,17 @@ class Applications extends EmployerApplications
             ->where(['a.is_deleted' => 0])
             ->groupBy(['a.application_enc_id']);
 
-        if ($this->_applicationType) {
-            $applications->joinWith(['applicationTypeEnc f' => function ($d) {
+        $applications->joinWith(['applicationTypeEnc f' => function ($d) {
+            if ($this->_applicationType) {
                 $d->andWhere(['f.name' => $this->_applicationType]);
-            }], false);
-        }
+            }
+        }], false);
 
         if ($this->_where) {
             $applications->andWhere($this->_where);
+        }
+        if ($this->_having) {
+            $applications->having($this->_having);
         }
 
         $total = $applications->count();
@@ -69,6 +63,18 @@ class Applications extends EmployerApplications
             'total' => $total,
             'data' => $applications->asArray()->all(),
         ];
+    }
+
+    private function __setOptions($options = [])
+    {
+        if ($options) {
+            $this->_limit = ((int)$options['limit']) ? $options['limit'] : NULL;
+            $this->_pageNumber = ((int)$options['pageNumber']) ? $options['pageNumber'] : 1;
+            $this->_where = ($options['where']) ? $options['where'] : [];
+            $this->_orderBy = ($options['orderBy']) ? $options['orderBy'] : [];
+            $this->_having = ($options['having']) ? $options['having'] : [];
+            $this->_applicationType = ($options['applicationType']) ? $options['applicationType'] : NULL;
+        }
     }
 
 }

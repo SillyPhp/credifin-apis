@@ -13,23 +13,25 @@ use yii\helpers\Url;
                             <img src="/assets/common/categories/profile/<?= $icon_png; ?>"/>
                         </div>
                         <h3><?= $job_title; ?></h3>
+                    <?php if ($shortlist_btn_display): ?>
                         <div class="job-statistic">
                             <?php
                             if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
                                 if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
                                     ?>
                                     <span class="hover-change col_pink"><a href="#" class="shortlist_job"><i
-                                                    class="fa fa-heart-o"></i> Shortlisted</a></span>
+                                                    class="far fa-heart"></i> Shortlisted</a></span>
                                     <?php
                                 } else {
                                     ?>
                                     <span class="hover-change"><a href="#" class="shortlist_job"><i
-                                                    class="fa fa-heart-o"></i> Shortlist</a></span>
+                                                    class="far fa-heart"></i> Shortlist</a></span>
                                     <?php
                                 }
                             }
                             ?>
                         </div>
+            <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -47,14 +49,14 @@ $(document).on('click','.shortlist_job',function(e){
         data: {app_id:app_id},                         
         method: 'post',
         beforeSend:function(){
-            $('.shortlist_job').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('.shortlist_job').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
         },
         success:function(data){
             if(data.message =='Shortlisted'){
-                $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlisted');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlisted');
                 $('.hover-change').addClass('col_pink');
             } else if(data.message =='unshort'){
-                $('.shortlist_job').html('<i class="fa fa-heart-o"></i> Shortlist');
+                $('.shortlist_job').html('<i class="far fa-heart"></i> Shortlist');
                 $('.hover-change').removeClass('col_pink');
             }
         }

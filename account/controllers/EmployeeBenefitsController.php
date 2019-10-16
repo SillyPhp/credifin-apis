@@ -6,7 +6,6 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use account\models\benefits\Benefits;
-use common\models\EmployeeBenefits;
 use account\models\jobs\JobApplicationForm;
 use yii\helpers\ArrayHelper;
 
@@ -44,8 +43,7 @@ class EmployeeBenefitsController extends Controller
         $model = new JobApplicationForm();
         $benefits = $BenefitsModel->getAllBenefits();
         $org_benefits = $model->getBenefits();
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $BenefitsModel->benefit = Yii::$app->request->post('str');
             $BenefitsModel->predefind_benefit = Yii::$app->request->post('predefind_benefit');
@@ -62,17 +60,14 @@ class EmployeeBenefitsController extends Controller
                     'message' => 'Benefit Already Added or Something Went Wrong..'
                 ];
             }
+        } else {
+            return $this->renderAjax('add-benefit', [
+                'BenefitsModel' => $BenefitsModel,
+                'benefits' => $benefits,
+                'org_benefits' => $org_benefits,
+            ]);
         }
-       else
-       {
-           return $this->renderAjax('add-benefit', [
-               'BenefitsModel' => $BenefitsModel,
-               'benefits' => $benefits,
-               'org_benefits' => $org_benefits,
-           ]);
-       }
     }
-
 
 
 }

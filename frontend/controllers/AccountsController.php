@@ -16,7 +16,6 @@ use frontend\models\accounts\ForgotPasswordForm;
 use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
-use frontend\models\accounts\UserEmails;
 use frontend\models\ChangePasswordForm;
 use common\models\Utilities;
 
@@ -51,6 +50,12 @@ class AccountsController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
@@ -66,7 +71,7 @@ class AccountsController extends Controller
                     'title' => 'Success',
                     'message' => 'Successfully Login',
                 ];
-            } else{
+            } else {
                 return $response = [
                     'status' => 201,
                     'title' => 'Error',
@@ -78,6 +83,9 @@ class AccountsController extends Controller
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+            if ($loginFormModel->isMaster) {
+                Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
+            }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
 
@@ -129,12 +137,6 @@ class AccountsController extends Controller
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();
-            $business_activities = \common\models\extended\BusinessActivities::find()
-                ->select(['business_activity_enc_id', 'business_activity'])
-                ->where(['!=', 'business_activity', 'Business'])
-                ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
-                ->asArray()
-                ->all();
 
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -157,7 +159,6 @@ class AccountsController extends Controller
             }
             return $this->render('signup/organization', [
                 'model' => $model,
-                'business_activities' => $business_activities,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
@@ -185,15 +186,15 @@ class AccountsController extends Controller
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $is_organization = true;
             $id = Yii::$app->user->identity->organization->organization_enc_id;
+            $response = false;
             if (!$id) {
-                $id = Yii::$app->user->identity->user_enc_id;
-                $is_organization = false;
+                $response = Yii::$app->individualSignup->registrationEmail(Yii::$app->user->identity->user_enc_id);
+            } else {
+                $response = Yii::$app->organizationSignup->registrationEmail($id);
             }
 
-            $userEmailsModel = new UserEmails();
-            if ($userEmailsModel->verificationEmail($id, $is_organization)) {
+            if ($response) {
                 return [
                     'status' => 200,
                     'title' => 'Success',
@@ -288,7 +289,8 @@ class AccountsController extends Controller
         ]);
     }
 
-    public function actionChangePassword() {
+    public function actionChangePassword()
+    {
         if (Yii::$app->request->isAjax) {
             $changePasswordForm = new ChangePasswordForm();
             if ($changePasswordForm->load(Yii::$app->request->post())) {

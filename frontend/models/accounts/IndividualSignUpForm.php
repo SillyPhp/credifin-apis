@@ -2,9 +2,6 @@
 
 namespace frontend\models\accounts;
 
-use common\models\User;
-use frontend\models\events\SignupEvent;
-use frontend\models\events\UserModel;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -14,6 +11,9 @@ use common\models\Users;
 use common\models\Usernames;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
+use frontend\models\events\SignupEvent;
+use frontend\models\events\UserModel;
+use frontend\models\referral\Referral;
 
 class IndividualSignUpForm extends Model
 {
@@ -54,7 +54,7 @@ class IndividualSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
+            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email'], 'email'],
             [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
@@ -98,8 +98,9 @@ class IndividualSignUpForm extends Model
             $usernamesModel->username = $this->username;
             $usernamesModel->assigned_to = 1;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
-                $transaction->rollBack();
                 $this->_flag = false;
+                $transaction->rollBack();
+                return false;
             } else {
                 $this->_flag = true;
             }
@@ -121,26 +122,36 @@ class IndividualSignUpForm extends Model
                 $usersModel->auth_key = Yii::$app->security->generateRandomString();
                 $usersModel->status = 'Active';
                 if (!$usersModel->validate() || !$usersModel->save()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollBack();
+                    return false;
+                }
+            }
+
+            if ($this->_flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+                if (!$referralModel->create()) {
+                    $this->_flag = false;
+                    $transaction->rollBack();
+                    return false;
                 } else {
                     $this->_flag = true;
                 }
             }
 
             if ($this->_flag) {
-                if(Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id)){
-                    $transaction->commit();
-                }
+                Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id);
+                Referral::widget(['user_id' => $usersModel->user_enc_id]);
+                $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+                return false;
             }
         } catch (Exception $e) {
             $transaction->rollBack();
-            return false;
-        }
-
-        if ($this->_flag) {
-            return true;
-        } else {
             return false;
         }
     }

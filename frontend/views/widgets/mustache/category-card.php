@@ -3,15 +3,19 @@
     <div class="col-md-3 col-sm-6 col-xs-6 category">
         <a href="{{link}}">
             <div class="grids">
-                <img class="grids-image" src="{{icon}}">
+                <img class="grids-image" src="{{icon}}" alt="{{name}}">
             </div>
-            <h4>{{name}}</h4>
+            <h4 class="name">{{name}}</h4>
         </a>
     </div>
     {{/.}}
 </script>
 <?php
 $this->registerCss("
+.name{
+    font-family:Roboto;
+    font-weight:300;
+    }
 .category{
     text-align: center;
     min-height: 150px;
@@ -55,6 +59,11 @@ $this->registerCss("
     border: 2px solid #f08440;
     -webkit-transform: scale(.9);
     transform: scale(.9);
+}
+@media only screen and (max-width: 460px){
+    .category{
+        min-height: 240px;
+    }
 }
 @media only screen and (max-width: 425px){
     .category{

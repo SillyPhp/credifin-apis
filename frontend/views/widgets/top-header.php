@@ -3,14 +3,20 @@
 use yii\helpers\Url;
 
 ?>
-    <ul class="menuzord-menu">
-        <li><a href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a></li>
-        <li><a href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
-        <li><a href="<?= Url::to('/reviews'); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+    <ul class="menuzord-menu" itemscope itemtype="https://www.schema.org/SiteNavigationElement">
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/jobs'); ?>"><?= Yii::t('frontend', 'Jobs'); ?></a>
+        </li>
+        <li itemprop="name"><a itemprop="url"
+                               href="<?= Url::to('/internships'); ?>"><?= Yii::t('frontend', 'Internships'); ?></a></li>
+        <li itemprop="name"><a itemprop="url"
+                               href="<?= Url::to('/reviews'); ?>"><?= Yii::t('frontend', 'Reviews'); ?></a></li>
+        <li itemprop="name"><a itemprop="url" href="<?= Url::to('/blog'); ?>"><?= Yii::t('frontend', 'Blog'); ?></a>
+        </li>
         <?php if (!Yii::$app->user->isGuest): ?>
             <li><a href="<?= Url::to('/account/dashboard'); ?>"><?= Yii::t('frontend', 'Dashboard'); ?></a></li>
         <?php else: ?>
-            <li><a href="javascript:;" data-toggle="modal" data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
+            <li><a href="javascript:;" data-toggle="modal"
+                   data-target="#loginModal"><?= Yii::t('frontend', 'Login'); ?></a></li>
         <?php endif; ?>
     </ul>
 <?php
@@ -22,7 +28,7 @@ $this->registerCss('
     border-bottom: 1px solid #ddd !important;
 }
 .menuzord-menu li{
-    padding: 6px 0px !important;
+    padding: 7px 0px !important;
 }
 .menuzord-menu li a{
     font-size: 19px !important;
@@ -30,8 +36,8 @@ $this->registerCss('
     font-family: Georgia;
 }
 .menuzord-menu > li > a {
-    padding: 6px 15px !important;
-    border-radius: 10px !important;
+    padding: 5px 15px !important;
+    border-radius: 4px !important;
 }
 .menuzord-brand{
     margin-top: 7px !important;
@@ -41,8 +47,6 @@ $this->registerCss('
     color:#fff !important;
 }
 .menuzord.orange .menuzord-menu > li.active > a, .menuzord.orange .menuzord-menu > li:hover > a, .menuzord.orange .menuzord-menu ul.dropdown li:hover > a {
-    /*    background: url("../../../asset/images/hover1.png");
-        background-size: 100%;*/
     color:#f08440;
 }
 @media only screen and (max-width: 901px) and (min-width: 451px) {

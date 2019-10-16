@@ -81,7 +81,7 @@ use frontend\models\applications\CandidateApply;
                 <div class="details">
                     <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
-                    <div class="desc">Companies Shortlisted</div>
+                    <div class="desc">Followed Companies</div>
                 </div>
             </a>
         </div>
@@ -116,7 +116,7 @@ use frontend\models\applications\CandidateApply;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line text-center">
                 <div class="caption col-lg-11">
                     <ul class="tabs" id="head-tabs">
@@ -128,7 +128,7 @@ use frontend\models\applications\CandidateApply;
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
                         |
-                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shorlisted Resume</li>
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shortlisted Resume</li>
 
                     </ul>
                 </div>
@@ -162,7 +162,13 @@ use frontend\models\applications\CandidateApply;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-5"><a class="over-bttn ob1">Apply</a></div>
+                                                                <div class="text-o col-md-5">
+                                                                    <?php if($review['applied_application_enc_id']){?>
+                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
+                                                                    <?php }else{?>
+                                                                        <a href="/job/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
+                                                                    <?php } ?>
+                                                                </div>
                                                                 <div class="text-o col-md-7">
                                                                     <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
                                                                             <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
@@ -229,7 +235,14 @@ use frontend\models\applications\CandidateApply;
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                            <div class="text-o">
+                                                                <?php if($shortlist['applied_application_enc_id']){?>
+                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                        <i class="fa fa-check"></i>Applied</a>
+                                                                <?php }else{?>
+                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                <?php } ?>
+                                                            </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">
@@ -339,7 +352,7 @@ use frontend\models\applications\CandidateApply;
                                                             <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a href="/account/process-applications/<?= $accept['app_id']; ?>" class="over-bttn ob2">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
@@ -436,11 +449,11 @@ use frontend\models\applications\CandidateApply;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Shortlisted Companies</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>

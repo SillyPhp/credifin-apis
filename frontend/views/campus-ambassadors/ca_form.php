@@ -51,7 +51,7 @@ $form = ActiveForm::begin([
         </div>
         <div class="col-md-6 i-hint-medium input-with-hints">
             <?= $form->field($applicationFormModel, 'college')->textInput(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'placeholder' => $applicationFormModel->getAttributeLabel('college')]); ?>
-            <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+            <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
             <div class="i-message">
                 Your Highest Education Institution.
             </div>
@@ -100,7 +100,7 @@ foreach ($applicationQuestionsModel as $question) {
             <?php
             echo $form->field($applicationFormModel, 'answers[' . $question['application_question_id'] . ']')->textArea(['autocomplete' => 'off', 'class' => 'form-control campus-apply', 'rows' => 5, 'placeholder' => $applicationFormModel->getAttributeLabel($question['question'])]);
             ?>
-            <a class="i-hint" href="javascript:;"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+            <a class="i-hint" href="javascript:;"><i class="fas fa-info-circle" aria-hidden="true"></i></a>
             <div class="i-message">
                 Answer in about 100 words.
             </div>
@@ -125,7 +125,7 @@ $this->registerCss('
 }
 .i-hint{
     position: absolute;
-    top: 9px;
+    top: 12px;
     right: 25px;
     font-size: 16px;
     color: #999999b8;
@@ -205,3 +205,4 @@ $this->registerJs("function drp_down(id, data) {
         }));
     });
 }", View::POS_HEAD);
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');

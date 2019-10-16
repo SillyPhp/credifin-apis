@@ -1,3 +1,10 @@
+<?php
+$column = 'col-md-4';
+if(isset($size)){
+    $column = $size;
+}
+?>
+
 <div class="loader-main">
     <?php
     for ($i = 0; $i < 3; $i++) {
@@ -6,7 +13,7 @@
             <?php
             for ($j = 0; $j < 3; $j++) {
                 ?>
-                <div class="col-md-4">
+                <div class="<?= $column ?>">
                     <div class="product shadow iconbox-border iconbox-theme-colored">
                                 <span class="tag-load">
                                     <div class="loader anim"></div>

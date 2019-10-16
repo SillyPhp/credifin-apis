@@ -20,7 +20,7 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
     <div class="row">
         <div class="col-lg-12 col-xs-12 col-sm-12">
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -53,7 +53,7 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
     <div class="row">
         <div class="col-lg-6 col-xs-12 col-sm-12">
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -87,7 +87,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                 </div>
             </div>
-            <div class="portlet light">
+            <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
@@ -135,6 +135,37 @@ echo $this->render('/widgets/header/secondary-header', [
                 'data' => $primary_fields
             ]); ?>
         </div>
+            <div class="col-lg-6 col-xs-12 col-sm-12">
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Jobs'); ?></span>
+                        </div>
+                        <div class="actions">
+                            <a href="<?= Url::toRoute('/jobs/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                            <?php if ($applications['total'] > 8): ?>
+                                <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                                   class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <?php
+                        if ($closed_application['total'] > 0) {
+                            echo $this->render('/widgets/applications/closed-jobs-cards', [
+                                'applications' => $closed_application['data'],
+                                'model' => $model,
+                            ]);
+                        } else {
+                            ?>
+                            <h3>No Closed Jobs</h3>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
     </div>
 <?php
 $this->registerCss('

@@ -17,8 +17,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -98,7 +98,7 @@ echo $this->render('/widgets/breadcrumbs', [
                     <?php if (Yii::$app->session->hasFlash('success')): ?>
                         <div class="alert alert-success alert-dismissable">
                             <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
-                            <h4><i class="fa fa-check-circle-o"></i> Thank you :)</h4>
+                            <h4><i class="far fa-check-circle"></i> Thank you :)</h4>
                             <?= Yii::$app->session->getFlash('success'); ?>
                         </div>
                     <?php endif; ?>
