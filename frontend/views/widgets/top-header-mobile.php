@@ -122,7 +122,7 @@
                 <div class="ey-mob-sub-items">
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
-                            <a href="/questions">QnA</a>
+                            <a href="/questions">Questions</a>
                         </div>
                     </div>
                 </div>

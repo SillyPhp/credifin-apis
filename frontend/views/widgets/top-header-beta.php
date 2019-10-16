@@ -106,7 +106,7 @@
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
                                 <a href="/questions">
-                                    QnA
+                                    Questions
                                 </a>
                             </ul>
                         </nav>
