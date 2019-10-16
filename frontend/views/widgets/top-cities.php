@@ -20,7 +20,7 @@ use yii\helpers\Url;
 
                         <div class="city-main">
                             <div class="city-image">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
+                                <img src="<?= Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($app["city_name"])) . '.png') ?>">
                             </div>
                             <div class="city-name"><?= $app['city_name'] ?></div>
                             <div class="divider"></div>
