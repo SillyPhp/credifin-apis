@@ -201,7 +201,6 @@ class OrganizationSignUpForm extends Model
             if ($this->_flag) {
                 Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
                 Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
-                $transaction->commit();
                 $mail = Yii::$app->mail;
                 $mail->receivers = [];
                 $mail->receivers[] = [
@@ -223,6 +222,7 @@ class OrganizationSignUpForm extends Model
                     $mail_log->created_on = date('Y-m-d H:i:s');
                     $mail_log->save();
                 }
+                $transaction->commit();
                 return true;
             } else {
                 $transaction->rollBack();
