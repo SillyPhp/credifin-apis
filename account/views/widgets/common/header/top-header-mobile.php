@@ -74,11 +74,11 @@
                 </div>
             </div>
         </div>
-        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-        <!--            <div class="ey-mobile-item-main">-->
-        <!--                <a href="/training-programs/list">Training Courses</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/training-programs">Training Courses</a>
+            </div>
+        </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/reviews">Reviews</a>
@@ -114,6 +114,11 @@
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/learning">Learning Hub</a>
+            </div>
+        </div>
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/questions">QnA</a>
             </div>
         </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">

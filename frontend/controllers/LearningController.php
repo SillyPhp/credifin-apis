@@ -46,43 +46,21 @@ class LearningController extends Controller
     public function actionContribute()
     {
 
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $contributors = Users::find()
-                ->alias('a')
-                ->select([
-                    'a.user_enc_id',
-                    'a.user_type_enc_id',
-                    'c.author_enc_id',
-                    'CONCAT(a.first_name," ", a.last_name) as name',
-                    'a.facebook',
-                    'a.twitter',
-                    'a.linkedin',
-                    'a.instagram',
-                    'count(c.id) as videos',
-                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
-                ])
-                ->innerJoinWith(['userTypeEnc b' => function ($b) {
-                    $b->andOnCondition(['b.user_type' => 'Contributor']);
-                }], false)
-                ->joinWith(['youtubeChannels1 c' => function ($c) {
-                    $c->joinWith(['learningVideos d' => function ($d) {
-                        $d->andWhere(['d.is_deleted' => 0]);
-                    }]);
-                }], false)
-                ->where(['a.user_of' => 'EY', 'a.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    ['a.organization_enc_id' => ""],
-                    ['a.organization_enc_id' => NULL]
-                ])
-                ->asArray()
-                ->orderBy(['videos' => SORT_DESC])
-                ->groupBy('a.id')
-                ->Limit(6)
-                ->all();
 
-            return ['status'=>200,'result'=>$contributors];
+            $contributors = $this->__getContributors(6);
+
+            if ($contributors) {
+                return [
+                    'status' => 200,
+                    'result' => $contributors
+                ];
+            } else {
+                return [
+                    "status" => 201,
+                ];
+            }
         }
         return $this->render('contribute');
     }
@@ -387,7 +365,6 @@ class LearningController extends Controller
     {
 
         $popular_videos = LearningVideos::find()
-//            ->orderBy(['view_count' => SORT_DESC])
             ->where([
                 'is_deleted' => 0,
                 'status' => 1
@@ -426,22 +403,19 @@ class LearningController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $contributors = Users::find()
-                ->alias('a')
-                ->select(['CONCAT(a.first_name, " ", a.last_name) as name', 'a.facebook', 'a.twitter', 'a.linkedin', 'a.instagram', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'])
-                ->innerJoinWith(['userTypeEnc b' => function ($b) {
-                    $b->andOnCondition(['b.user_type' => 'Contributor']);
-                }], false)
-                ->where(['a.user_of' => 'EY', 'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->andWhere([
-                    'or',
-                    ['a.organization_enc_id' => ""],
-                    ['a.organization_enc_id' => NULL]
-                ])
-                ->asArray()
-                ->all();
 
-            return ['status' => 200, 'result' => $contributors];
+            $contributors = $this->__getContributors(15);
+
+            if ($contributors) {
+                return [
+                    'status' => 200,
+                    'result' => $contributors
+                ];
+            } else {
+                return [
+                    "status" => 201,
+                ];
+            }
         }
     }
 
@@ -990,13 +964,53 @@ class LearningController extends Controller
         return $categories->asArray()->all();
     }
 
-    public function actionContributorCollabs(){
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost){
+    private function __getContributors($limit = null)
+    {
+        $contributors = Users::find()
+            ->alias('a')
+            ->select([
+                'a.user_enc_id',
+                'a.user_type_enc_id',
+                'c.author_enc_id',
+                'CONCAT(a.first_name," ", a.last_name) as name',
+                'a.facebook',
+                'a.twitter',
+                'a.linkedin',
+                'a.instagram',
+                'count(c.id) as videos',
+                'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE "/assets/themes/ey/images/pages/learning-corner/collaborator.png" END image'
+            ])
+            ->innerJoinWith(['userTypeEnc b' => function ($b) {
+                $b->andOnCondition(['b.user_type' => 'Contributor']);
+            }], false)
+            ->innerJoinWith(['youtubeChannels1 c' => function ($c) {
+                $c->innerJoinWith(['learningVideos d' => function ($d) {
+                    $d->andWhere(['d.is_deleted' => 0]);
+                }]);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere([
+                'or',
+                ['a.organization_enc_id' => ""],
+                ['a.organization_enc_id' => NULL]
+            ])
+            ->asArray()
+            ->orderBy(['videos' => SORT_DESC])
+            ->groupBy('a.id');
+
+        if ((int)$limit) {
+            $contributors->limit($limit);
+        }
+
+        return $contributors->asArray()->all();
+    }
+
+    public function actionContributorCollabs()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
-
-            if(filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-
+            if (filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $contributer = new ContributerCollaborator();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -1010,11 +1024,9 @@ class LearningController extends Controller
                 } else {
                     return ['status' => 500, 'message' => 'an error occurred'];
                 }
-            }else{
-                return ['status'=>201];
+            } else {
+                return ['status' => 201];
             }
-
-
         }
     }
 

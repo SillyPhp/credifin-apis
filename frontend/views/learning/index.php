@@ -235,6 +235,57 @@ use yii\helpers\Url;
     </div>
 <?php } ?>
 
+<!--<Section>-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="heading-style">Popular Questions</div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="gallery-view">-->
+<!--                <div class="col-md-4 col-sm-6 card-box">-->
+<!--                    <div class="card">-->
+<!--                        <div class="card__block card__block--main">-->
+<!--                            <div class="head">-->
+<!--                                <div class="user-img">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
+<!--                                </div>-->
+<!--                                <div class="user-topic">-->
+<!--                                    <div class="topic-name">Topics</div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="sharing-links" id="share">-->
+<!--                                <i class="fa fa-share-alt"></i>-->
+<!--                                <div class="set">-->
+<!--                                    <div class="wts-app"><a href=""><i class="fab fa-whatsapp"></i></a></div>-->
+<!--                                    <div class="fb"><a href=""><i class="fab fa-facebook-f"></i></a></div>-->
+<!--                                    <div class="tw"><a href=""><i class="fab fa-twitter"></i></a></div>-->
+<!--                                    <div class="male"><a href=""><i class="far fa-envelope"></i></a></div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="box-content">-->
+<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
+<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to-->
+<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
+<!--                            </div>-->
+<!--                            <div class="t-answers">-->
+<!--                                <span class="answers">Answers</span>-->
+<!--                                <div class="best-answers">-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/></a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/></a>-->
+<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
+<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/></a>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</Section>-->
+
 <section>
     <div class="container">
         <div class="col-box">
@@ -273,117 +324,51 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<!--<Section>-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="heading-style">Popular Questions</div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--            <div class="gallery-view">-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aus patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</Section>-->
 
 <?php
 $this->registerCss('
+.wts-app, .fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.wts-app{ background-color: #25D366;}
+.male{  background-color: #d3252b;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+    position: absolute;
+    top: 100%;
+    right: -13px;
+    background-color: #eee;
+    padding: 0px;
+    border-radius: 10px;
+    height:0px;
+    overflow:hidden;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.sharing-links{
+    float: right;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 20px;
+    text-align: right;
+    height: 25px;
+}
+.sharing-links:hover .set{
+    height:146px;
+    padding: 5px;
+}
 .head{
     display:flex;
 }
@@ -494,6 +479,7 @@ $this->registerCss('
     border:2px solid #eee;
     border-radius:8px;
     background: ghostwhite;
+    margin-top: 40px;
 }
 .col-text {
     text-align: center;
@@ -1398,6 +1384,7 @@ button.lc-item-video-menu {
 }
 /*Video slider css ends*/
 
+
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
@@ -1477,6 +1464,11 @@ $script = <<< JS
         $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
 });
+        
+  // $("#share").hover(function(){
+  //   $(".set").show(1000);
+  // });
+
 JS;
 
 

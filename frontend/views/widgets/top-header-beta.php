@@ -58,16 +58,15 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
         </li>
-        <!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
-        <!--            <a href="/training-programs/list">-->
-        <!--                Training Courses-->
-        <!--            </a>-->
-        <!--        </li>-->
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/training-programs">
+                Training Courses
+            </a>
+        </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
@@ -92,7 +91,6 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
@@ -100,6 +98,11 @@
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/learning">
                 Learning Hub
+            </a>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/questions">
+                QnA
             </a>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
