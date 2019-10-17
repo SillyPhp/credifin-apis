@@ -50,7 +50,7 @@ use yii\helpers\Url;
                                         <?php
                                     } elseif ($type == 'internships') {
                                         ?>
-                                        ,<a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
+                                        <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
                                             <?= $app['internships'] ?>
                                             Internships
                                         </a>
@@ -59,7 +59,7 @@ use yii\helpers\Url;
                                         ?>
                                         <a href="<?= Url::to('/jobs/list?location=' . $app['city_name']); ?>">
                                             <?= $app['jobs'] ?> Jobs
-                                        </a>,
+                                        </a>
                                         <a href="<?= Url::to('/internships/list?location=' . $app['city_name']); ?>">
                                             <?= $app['internships'] ?> Internships
                                         </a>
@@ -103,6 +103,17 @@ $this->registerCss('
 	font-weight: bold;
 	padding: 10px 0 10px 0;
 }
+.city-main .city-data .count a {
+    padding: 4px 6px;
+    font-size: 13px;
+    border-radius:4px;
+    margin: 0px 4px;
+    transition: all ease-out .3s;
+}
+.city-main:hover .city-data .count a {
+    color: #fff;
+    background-color: #00a0e3;
+}
 .divider{
 	border-bottom: 1px solid #e2dddd;
 	width: 70%;
@@ -117,6 +128,7 @@ $this->registerCss('
 }
 .count{
 	color: #bdbdbd;
+	padding-top:5px;
 }
 //.btn-info{
 //	background-color:#eeeeee33 !important;
