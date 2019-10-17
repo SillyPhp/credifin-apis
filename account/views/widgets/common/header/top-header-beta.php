@@ -105,9 +105,19 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li class="ey-head-sub-menu-has-child">
+                                <li>
+                                    <a href="/learning/categories">
+                                        Popular Topics
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="/questions">
                                         Questions
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/learning/contribute">
+                                        Collaborate With Us
                                     </a>
                                 </li>
                             </ul>
@@ -131,9 +141,6 @@
                                 </li>
                                 <li>
                                     <a href="/blog/category/infographics">Infographics</a>
-                                </li>
-                                <li>
-                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>

@@ -106,8 +106,18 @@
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
                                 <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/categories">
+                                        Popular Topics
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/questions">
                                         Questions
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/contribute">
+                                        Collaborate With Us
                                     </a>
                                 </li>
                             </ul>
@@ -131,9 +141,6 @@
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/blog/category/infographics">Infographics</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>
