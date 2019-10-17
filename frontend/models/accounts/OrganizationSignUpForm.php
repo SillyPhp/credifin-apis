@@ -2,6 +2,7 @@
 
 namespace frontend\models\accounts;
 
+use common\models\EmailLogs;
 use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
