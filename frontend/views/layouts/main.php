@@ -251,6 +251,63 @@ AppAssets::register($this);
     <footer id="footer" class="footer">
         <div class="footer-border"></div>
         <div class="set_container container">
+            <div class="foot-bottom-border">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="foot-heading">Employers</div>
+                        <div class="can-foot-list">
+                            <ul>
+                                <li><a href="<?= "/account/jobs/create"; ?>">Post Job</a></li>
+                                <li><a href="<?= "/account/internships/create"; ?>">Post Internship</a></li>
+                                <li><a href="<?= "/tweets/job/create"; ?>">Post Job Tweet</a></li>
+                                <li><a href="<?= "/tweets/internship/create"; ?>">Post Internship Tweet</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+                        <div class="foot-heading">Candidates</div>
+                        <div class="row footer-border-right">
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/jobs/near-me"; ?>">Jobs Near Me</a></li>
+                                        <li><a href="<?= "/jobs/compare"; ?>">Compare Jobs</a></li>
+                                        <li><a href="<?= "/tweets/jobs"; ?>">Tweet Jobs</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/internships/near-me"; ?>">Internships Near Me</a></li>
+                                        <li><a href="<?= "/internships/compare"; ?>">Compare Internships</a></li>
+                                        <li><a href="<?= "/tweets/internships"; ?>">Tweet Internships</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-4 ">
+                                <div class="can-foot-list">
+                                    <ul>
+                                        <li><a href="<?= "/reviews/companies"; ?>">Company Reviews</a></li>
+                                        <li><a href="<?= "/reviews/colleges"; ?>">College Reviews</a></li>
+                                        <li><a href="<?= "/reviews/schools"; ?>">School Reviews</a></li>
+                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="foot-heading">Empower Youth</div>
+                        <div class="can-foot-list">
+                            <ul>
+                                <li><a href="<?= "/careers"; ?>">Careers</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="mt-6 col-sm-6 col-xs-12 col-md-3">
 
@@ -262,25 +319,25 @@ AppAssets::register($this);
                                     <ul class="styled-icons icon-bordered icon-sm mb-5">
                                         <li><a href="https://www.facebook.com/empower" target="_blank" class="overfb"><i
                                                         class="fab fa-facebook-f"></i></a></li>
-                                        <li><a href="https://twitter.com/EmpowerYouth__" target="_blank" class="overtw"><i
+                                        <li><a href="https://twitter.com/EmpowerYouthin" target="_blank" class="overtw"><i
                                                         class="fab fa-twitter"></i></a></li>
                                         <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank"
                                                class="overig"><i
                                                         class="fab fa-instagram"></i></a></li>
-                                        <li><a href="https://www.pinterest.com/dedutech" target="_blank" class="overpt"><i
+                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i
                                                         class="fab fa-pinterest"></i></a></li>
                                         <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
                                                class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-12">
-                                <div class="quick-btns">
-                                    <ul class="qb">
-                                        <li><a href="<?= "/careers"; ?>" class="career-btn">Careers</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+<!--                            <div class="col-md-12 col-sm-12">-->
+<!--                                <div class="quick-btns">-->
+<!--                                    <ul class="qb">-->
+<!--                                        <li><a href="--><?//= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
+<!--                                    </ul>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -330,6 +387,38 @@ AppAssets::register($this);
 </div>
 <?php
 $this->registerCss('
+.foot-heading{
+    font-family: lora;
+    font-size:20px;
+    color:#fff;
+    text-align:center;
+}
+.can-foot-list ul li a:hover{
+    color:#00a0e3;
+}
+.no-padd{
+    padding-left:0px;
+    padding-right:0px;  
+}
+.footer-border-right{
+    border-right:1px solid rgba(92, 94, 95, .3);
+    border-left:1px solid rgba(92, 94, 95, .3);
+}
+.can-foot-list ul{
+    padding-inline-start: 00px;
+    text-align:center;
+    padding-top:10px;
+}
+.can-foot-list ul li a{
+    color: #cecece;
+    text-align:center;
+}
+.foot-bottom-border{
+    border-bottom: 1px solid rgba(92, 94, 95, .3);
+    padding:20px 0 60px 0;
+    margin-bottom:50px;
+}
+
 .si-icons{
     width:100%;
 }
@@ -705,8 +794,8 @@ if ($this->params['header_dark']) {
                     max-height:80px !important;
                 }
             }
-            #menuzord-right{
-                padding:0px !important;
+            .fullwidth-page > #wrapper.clearfix > .main-content{
+                padding-top:20px;
             }
             ');
 }

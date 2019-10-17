@@ -293,61 +293,61 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section class="bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
-                                <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
-                                <span class="round"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
-                                 class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
-                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
-                                 alt="Yuvraj Singh Quiz" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="bg-black">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
+<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--                </div>-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <div class="type-1">-->
+<!--                        <div>-->
+<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+<!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
+<!--                                 class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
+<!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
+<!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
     <section>
         <div class="container">

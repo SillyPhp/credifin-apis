@@ -58,10 +58,14 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/training-programs">
+                Training Courses
+            </a>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
@@ -87,7 +91,27 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/learning">
+                Learning Hub
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/questions">
+                                        Questions
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -140,6 +164,15 @@
                                         <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li>
+                                                <a href="/account/training-program">Manage Training Programs</a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li class="ey-head-sub-menu-has-child">
                                             <a href="javascript:;">Create Job</a>
                                             <div class="ey-sub-sec">
@@ -194,6 +227,27 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li class="ey-head-sub-menu-has-child">
+                                                <a href="javascript:;">Create Training Programs</a>
+                                                <div class="ey-sub-sec">
+                                                    <ul class="ey-head-sub-menu-items">
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="/account/training-program/create">
+                                                                <div>
+                                                                    <span class="ey-services-icons ai"></span>
+                                                                </div>
+                                                                <span>Create AI Training Programs</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li>
                                             <a href="/account/templates">Templates</a>
                                         </li>
@@ -406,7 +460,7 @@ $this->registerCss('
 }
 
 .ey-sub-sec .ey-head-sub-menu-icon {
-    max-width: 164px;
+    max-width: 180px;
     width: 100%;
     text-align: center;
 }
@@ -653,6 +707,8 @@ $this->registerCss('
     list-style: none;
     margin: 0 0 20px;
     padding: 0;
+    max-height: 90vh;
+    overflow: scroll;
 }
 .ey-head-main .ey-header-item-is-menu:hover>a {
     color: #286efa;

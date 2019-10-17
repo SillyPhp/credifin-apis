@@ -49,7 +49,8 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
-                        <a href="<?= $link ?>">
+                        <a href="<?= Url::to('/account/training-program/candidates?app_id=' . $applications[$next]['application_enc_id'], false) ?>"
+                           target="_blank">
                             <div class="hr-com-icon">
                                 <img src="<?= Url::to('@commonAssets/categories/' . $applications[$next]["icon"]); ?>"
                                      class="img-responsive ">
@@ -59,8 +60,8 @@ if (!empty($total_applications)) {
                             </div>
                             <div class="hr-com-field">
                                 <?php
-                                if (!empty($applications[$next]['total_seats'])):
-                                    echo $applications[$next]['total_seats'].' Seats';
+                                if (!empty($applications[$next]['totalSeats'])):
+                                    echo $applications[$next]['totalSeats'][0]['total'] . ' Seats';
                                 else:
                                     echo 'No Seats Avialable';
                                 endif;
@@ -68,11 +69,11 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedApplications']); ?>
+                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedTrainingApplications']); ?>
                                 Applications
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a
-                                    href="<?= $link ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
+                                        href="<?= $link ?>"><?= Yii::t('account', 'VIEW COURSE'); ?></a>
                             </div>
                         </div>
                     </div>

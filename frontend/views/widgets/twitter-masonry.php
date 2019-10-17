@@ -366,6 +366,7 @@ twitter-widget[style]{
             modal.style.display = "block";
             let target = e.target || e.rootElement;
             let cl = target.closest('.tweet-org-deatail').nextElementSibling.querySelector('twitter-widget').getAttribute('data-tweet-id');
+            console.log(cl)
             twttr.widgets.createTweet(
                 cl,
                 document.getElementById('clickedTweet'),

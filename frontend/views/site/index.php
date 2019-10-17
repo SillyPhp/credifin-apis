@@ -228,7 +228,7 @@ $this->params['header_dark'] = false;
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/dsbedutech">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>"
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.jpg') ?>"
                                                              alt="DSB EduTech" title="DSB EduTech"/>
                                                     </a>
                                                 </div>
@@ -516,7 +516,9 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-
+<?= $this->render('/widgets/top-cities',[
+    'cities_jobs' => $cities_jobs
+])?>
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
