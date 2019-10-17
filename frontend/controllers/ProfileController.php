@@ -48,6 +48,12 @@ class ProfileController extends Controller
                 ]);
             }
 
+            if (isset($type) && !empty($type) && $type === 'careers') {
+                return Yii::$app->runAction('organizations/careers/index', [
+                    'slug' => $user->username,
+                ]);
+            }
+
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }

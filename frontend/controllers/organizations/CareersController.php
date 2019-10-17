@@ -14,7 +14,7 @@ use yii\helpers\Url;
 
 class CareersController extends Controller
 {
-    public function actionCareerCompany($slug = 'ajayjuneja')
+    public function actionIndex($slug)
     {
         $this->layout = 'without-header';
         $org = Organizations::find()
@@ -32,12 +32,12 @@ class CareersController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post();
             if (isset($options['type']) == 'jobs') {
-                $jobs = $this->getCareerInfo('Jobs', $options);
+                $jobs = $this->getCareerInfo('Jobs', $options, $slug);
             } elseif (isset($options['type']) == 'internships') {
-                $internships = $this->getCareerInfo('Internships', $options);
+                $internships = $this->getCareerInfo('Internships', $options, $slug);
             } else {
-                $jobs = $this->getCareerInfo('Jobs', $options);
-                $internships = $this->getCareerInfo('Internships', $options);
+                $jobs = $this->getCareerInfo('Jobs', $options, $slug);
+                $internships = $this->getCareerInfo('Internships', $options, $slug);
                 $count = $jobs['count'] + $internships['count'];
             }
             return ['status' => 200, 'jobs' => $jobs['result'], 'internships' => $internships['result'], 'count' => $count];
@@ -51,7 +51,7 @@ class CareersController extends Controller
     }
 
 
-    private function getCareerInfo($type, $options)
+    private function getCareerInfo($type, $options, $slug)
     {
         if ($options['limit']) {
             $limit = $options['limit'];
@@ -62,7 +62,6 @@ class CareersController extends Controller
             ->select([
                 'a.last_date',
                 'a.type',
-//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
                 'a.slug',
                 'dd.name category',
                 'l.designation',
@@ -104,7 +103,7 @@ class CareersController extends Controller
             ->joinWith(['preferredIndustry h'], false)
             ->joinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => 'ajayjuneja']);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => $slug]);
         $count = $jobDetail->count();
         $result = $jobDetail
             ->limit($limit)

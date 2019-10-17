@@ -294,7 +294,7 @@ section.overlape {
     width: 100%;
     height: 100%;
     content: "";
-    background-image: url(\'../images/lines.png\');
+    background-image: url("/assets/themes/ey/images/pages/index2/lines.png");
     z-index: 0;
     opacity: 0.14;
 }
@@ -1075,7 +1075,7 @@ var loadmore=false;
 var jobPage = 0;
 var internPage = 0;
 $.ajax({
-    url:'/organizations/careers/career-company',
+    url:window.location.href,
     method: 'post',
     data:{page: page, limit: limit},
     success:function(data){
@@ -1101,7 +1101,7 @@ $.ajax({
 $('#jobMore').on('click',function(e) {
   e.preventDefault();
   $.ajax({
-    url:'/organizations/careers/career-company',
+    url:window.location.href,
     method: 'post',
     data:{page: jobPage, limit: limit, type: 'jobs'},
     success:function(data){
@@ -1124,7 +1124,7 @@ $('#jobMore').on('click',function(e) {
 $('#jobMoreIntern').on('click',function(e) {
   e.preventDefault();
   $.ajax({
-    url:'/organizations/careers/career-company',
+    url:window.location.href,
     method: 'post',
     data:{page: internPage, limit: limit, type: 'internships'},
     success:function(data){
