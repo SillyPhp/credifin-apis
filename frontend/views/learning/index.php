@@ -408,7 +408,7 @@ $this->registerCss('
     height: 25px;
 }
 .sharing-links:hover .set{
-    height:146px;
+    height:110px;
     padding: 5px;
 }
 .head{
@@ -483,6 +483,7 @@ $this->registerCss('
     padding-top: 35px;
     max-width: 90%;
     margin: 0px auto;
+    margin-bottom: 10px;
 }
 @media only screen and (max-width: 1200px) and (min-width:992px){
     .card{
