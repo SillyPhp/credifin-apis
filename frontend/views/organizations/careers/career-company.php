@@ -1,7 +1,14 @@
 <?php
 $this->params['header_dark'] = false;
+$this->params['url'] = $org['website'];
 use yii\helpers\Url;
+
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application'
+]);
 ?>
+
 <section class="overlape">
     <div class="block no-padding">
         <div data-velocity="-.1" style="background: url(http://placehold.it/1600x800) repeat scroll 50% 422.28px transparent;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
@@ -11,16 +18,14 @@ use yii\helpers\Url;
                 <div class="col-lg-12">
 
                     <div class="inner-header wform">
-                        <div class="back-btn">
-                            <a href=""><i class="fas fa-long-arrow-alt-left"></i> Back</a>
-                        </div>
                         <div class="nav-com-logo">
-                            <a href="">
+                            <a href="<?= $org['website']?>">
                                 <img src="<?= $org['logo']?>" alt="">
                             </a>
                         </div>
                         <div class="job-search-sec">
                             <div class="job-search">
+
                                 <h4>Jobs in <?= $org['name']?></h4>
                                 <form>
                                     <div class="row">
@@ -33,6 +38,7 @@ use yii\helpers\Url;
                                         <div class="col-lg-4">
                                             <div class="job-field">
                                                 <select data-placeholder="City, province or region" class="chosen-city">
+
                                                     <option>Istanbul</option>
                                                     <option>New York</option>
                                                     <option>London</option>
@@ -71,22 +77,22 @@ use yii\helpers\Url;
                     <!-- Tags Bar -->
                     <div class="filterbar">
 <!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
-                        <div class="sortby-sec">
-                            <span>Sort by</span>
-                            <select data-menu>
-                                <option>Most Recent</option>
-                                <option selected>Most Recent</option>
-                                <option>Most Recent</option>
-                                <option>Most Recent</option>
-                            </select>
-                            <select data-menu>
-                                <option>Most Recent</option>
-                                <option selected>Most Recent</option>
-                                <option>Most Recent</option>
-                                <option>Most Recent</option>
-                            </select>
-                        </div>
-                        <h5><span id="count"></span> Jobs & Vacancies</h5>
+<!--                        <div class="sortby-sec">-->
+<!--                            <span>Sort by</span>-->
+<!--                            <select data-menu>-->
+<!--                                <option>Most Recent</option>-->
+<!--                                <option selected>Most Recent</option>-->
+<!--                                <option>Most Recent</option>-->
+<!--                                <option>Most Recent</option>-->
+<!--                            </select>-->
+<!--                            <select data-menu>-->
+<!--                                <option>Most Recent</option>-->
+<!--                                <option selected>Most Recent</option>-->
+<!--                                <option>Most Recent</option>-->
+<!--                                <option>Most Recent</option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+                        <h5><span id="count"></span> Jobs & Internships</h5>
                     </div>
                 </div><!-- MOdern Job LIst -->
                 <div class="job-list-modern">
@@ -223,12 +229,26 @@ $this->registerCss('
     top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    max-height: 60px;
-    max-width: 60px;
+    height: 80px;
+    width: 80px;
+    background: rgba(255,255,255,1);
+    border-radius:50%;
+    z-index:9;
+}
+.nav-com-logo a{
+    height:80px;
+    width:80px;
 }
 .nav-com-logo img{
-    width:100%;
-    height:100%;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width: 100%;
+    height: 100%;
+    max-width: 55px;
+    max-height: 55px;
+
 }
 .new-position-widget{
     margin-top:50px;
@@ -890,7 +910,7 @@ section.overlape {
   --list-text: rgba(0, 0, 0, 1);
   --list-text-hover: #00a0e3;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   height:40px;
   font-weight: 500;
   font-size: 14px;

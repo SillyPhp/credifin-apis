@@ -1,11 +1,13 @@
 <script id="career-job-box" type="text/template">
     {{#.}}
     <div class="career-job-box">
+    <div class="row">
     <div class="col-md-12">
+
         <div class="job-listing wtabs">
         <div class="job-title-sec">
         <div class="c-logo"> <img src="{{icon}}" alt="" /> </div>
-        <h3><a href="{{slug}}" >{{title}}</a></h3>
+        <h3><a href="career-job-detail?slug={{slug}}" >{{title}}</a></h3>
         <span>{{organization_name}}</span>
             <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>{{city}}</div>
         </div>
@@ -15,6 +17,7 @@
         <i>5 months ago</i>
         </div>
         </div>
+    </div>
     </div>
     </div>
     {{/.}}

@@ -20,6 +20,7 @@ class CareersController extends Controller
         $org = Organizations::find()
             ->select([
                 'name',
+                'website',
                 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
             ])
             ->where([
@@ -45,6 +46,7 @@ class CareersController extends Controller
 
         return $this->render('career-company', [
             'org' => $org
+
         ]);
     }
 
@@ -127,8 +129,13 @@ class CareersController extends Controller
         }
         $type = 'Job';
         $object = new \account\models\applications\ApplicationForm();
-        $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-
+        if (!empty($application_details->unclaimed_organization_enc_id)) {
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
+        } else {
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
+        }
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
                 ->where(['application_enc_id' => $application_details->application_enc_id])
@@ -142,15 +149,21 @@ class CareersController extends Controller
                 ->asArray()
                 ->one();
         }
-        $model = new JobApplied();
+        $model = new \frontend\models\applications\JobApplied();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
-            'data' => $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs'),
+            'data1' => $data1,
+            'data2' => $data2,
             'org' => $org_details,
             'applied' => $applied_jobs,
             'type' => $type,
+
             'model' => $model,
             'shortlist' => $shortlist,
+            'settings' => [
+                "showRelatedOpportunities" => false,
+                "showNewPositionsWidget" => true,
+            ]
         ]);
     }
 
