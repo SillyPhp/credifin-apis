@@ -30,7 +30,7 @@
                 <h4 class="org_name text-right">{{DepartmentName}}</h4>
             </div>
             <div class="application-card-wrapper">
-                <a href="/usa-jobs/detail?jobfamily={{JobCategory}}&objectid={{MatchedObjectId}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
+                <a href="/usa-jobs/detail/{{JobCategory}}/{{MatchedObjectId}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
             </div>
         </div>
     </div>

@@ -35,7 +35,7 @@ class UsaJobsController extends Controller
         fwrite($fp,$result);
         fclose($fp);
     }
-    public function actionDetail($jobfamily=null,$objectid=null)
+    public function actionDetail($familyid=null,$objectid=null)
     {
         $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
         $v = fgets($e);
@@ -52,7 +52,10 @@ class UsaJobsController extends Controller
 
         if (!$flag)
             return 'not found';
-        return $this->render('detail',['get'=>$get,'objectid'=>$objectid]);
+        return $this->render('detail',['get'=>$get,
+            'familyid'=>$familyid,
+            'objectid'=>$objectid
+        ]);
     }
     public function actionGetData($min=null,$max=null)
     {
@@ -81,6 +84,21 @@ class UsaJobsController extends Controller
            fclose($e);
            return json_encode($get);
         }
+    }
+
+    public function actionTest()
+    {
+        $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
+        $v = fgets($e);
+        $v = json_decode($v,true);
+        fclose($e);
+        foreach ($v['SearchResult']['SearchResultItems'] as $key => $val)
+        {
+            if ($key>=0 && $key<=20) {
+                $v[] = $val;
+            }
+        }
+        print_r($v);
     }
 
 }

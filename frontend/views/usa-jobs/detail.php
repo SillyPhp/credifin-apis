@@ -1,9 +1,37 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-$this->params['header_dark'] = true;
+$link = Url::to('detail/'.$familyid.'/'.$objectid,'https');
+$this->params['header_dark'] = false;
+$separator = Yii::$app->params->seo_settings->title_separator;
+$this->title =  $get['DepartmentName']. ' is hiring for ' .$get['PositionTitle'];
+$keywords = 'Jobs,Jobs in Usa';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <section>
     <div class="header-bg" style='
@@ -14,7 +42,7 @@ $this->params['header_dark'] = true;
                 <div class="col-md-12">
                     <div class="inner-header">
                         <div class="agency-name-top">
-                            <h1><?= $get['OrganizationName'] ?></h1>
+                            <h1><?= $get['DepartmentName'] ?></h1>
                         </div>
                         <div class="job-title"><?= $get['PositionTitle'] ?></div>
                         <div class="job-statistic">
@@ -48,8 +76,8 @@ $this->params['header_dark'] = true;
                 <ul>
                     <li><a href="#overview">Overview</a></li>
                     <li><a href="#duties">Duties</a></li>
-                    <li><a href="#requirements">Requirements</a></li>
-                    <li><a href="#requireddocuments">Required documents</a></li>
+                    <li><a href="#requirements">Qualification And Other Details</a></li>
+                    <li><a href="#requireddocuments">Agency Overview</a></li>
                 </ul>
             </div>
         </div>
@@ -76,7 +104,7 @@ $this->params['header_dark'] = true;
                                     ?>
                                 </span></li>
                             <li><i class="fas fa-money-bill-alt"></i>
-                                <h3>Salary</h3><span><i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MinimumRange'] ?> to <i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MaximumRange'] ?></span></li>
+                                <h3>Salary</h3><span><i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MinimumRange'] ?> to <i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MaximumRange']." ".$get['PositionRemuneration'][0]['RateIntervalCode'] ?></span></li>
                             <li><i class="fas fa-suitcase"></i>
                                 <h3>Service</h3><span>Excepted</span></li>
                             <li><i class="fas fa-mars-double"></i>
@@ -89,86 +117,38 @@ $this->params['header_dark'] = true;
                 <div class="d-head" id="duties">Duties</div>
                 <div class="duties-tab">
                     <div class="summary">Summary</div>
-                    <div class="d-content">This position is located in the Government Accountability Office (GAO),
-                        Information Systems and Technology Services (ISTS), Operational Readiness Group (ORG). The
-                        Information Systems and Technology Services (ISTS) provides GAO's technology support.
-                    </div>
-                    <!--                        <button type="button" class="btn btn-light">Learn more about this agency</button>-->
-                    <div class="summary">Responsibilities</div>
-                    <div class="d-content">This position is located in the Government Accountability Office (GAO),
-                        Information Systems and Technology Services (ISTS), Operational Readiness Group (ORG).
-                        The ORG group is responsible for managing the IT service Transition function, including
-                        change management, and the Project Management Office.
-                        ORG’s primary focus is on service transition, particularly technical change management and
-                        quality control, project management, and process/capability improvement.
-                        The purpose of this position is to lead major IT projects and to help lead the ISTS Project
-                        Management Office in its mission to improve the delivery of ISTS projects.
-                    </div>
-                    <div class="d-points">
-                        <h4>Duties for the position include, but are not limited to, the following:</h4>
-                        <ul>
-                            <li>Duties for the position include, but are not limited to, the following:
-                                Duties for the position include, but are not limited to, the following:
-                                Duties for the position include, but are not limited to, the following:
-                            </li>
-                            <li>Duties for the position include, but are not limited to, the following:</li>
-                            <li>Duties for the position include, but are not limited to, the following:</li>
-                            <li>Duties for the position include, but are not limited to, the following:</li>
-                            <li>Duties for the position include, but are not limited to, the following:</li>
-                        </ul>
+                    <div class="d-content"><?= $get['UserArea']['Details']['JobSummary'] ?>
                     </div>
                 </div>
-                <div class="d-head" id="requirements">Requirements</div>
+                <div class="d-head" id="requirements">Qualification And Other Details</div>
                 <div class="requirements-tab">
-                    <div class="summary">Conditions of Employment</div>
-                    <div class="condition">
-                        <ul>
-                            <li>Applicant must be a current, permanent GAO employee.</li>
-                        </ul>
-                    </div>
-                    <h4>All qualification requirements must be met by the closing date of the announcement.</h4>
-                    <div class="summary">Qualifications</div>
                     <div class="d-content">
-                        Applicants must have at least 1 year (52 weeks) of specialized experience at the next lower
-                        band/grade, equivalent to the PT-II, PE-IIA
+                        <?= $get['QualificationSummary'] ?>
                     </div>
-                    <div class="summary">Education</div>
-                    <div class="d-content">There is no education requirement for this position.</div>
                 </div>
-                <div class="d-head" id="requireddocuments">Required Documents</div>
+                <div class="d-head" id="requireddocuments">Agency Overview</div>
                 <div class="required-doc-tab">
-                    <div class="required-package">You must provide a complete application package which includes:
-                    </div>
-                    <div class="required">
-                        <ul>
-                            <li>Resume: must be created using the USAJOBS resume builder and show relevant work
-                                experience.
-                            </li>
-                            <li>Current GAO employees must submit their most recent Notification of Personnel Action
-                                (SF-50 or equivalent) showing tenure, type of service (competitive/excepted), as
-                                well as the highest grade/band held. The SF-50 must show that you are currently a
-                                GAO employee.
-                            </li>
-                        </ul>
+                    <div class="d-content">
+                       <?= $get['UserArea']['Details']['AgencyMarketingStatement']; ?>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="agency-info">
-                    <div class="agency">Agency contact information</div>
-                    <div class="agency-name"><i class="fas fa-user user-set"></i>Spencer</div>
-                    <div class="phone">
-                        <div class="agency-num"><i class="fas fa-mobile-alt user-set"></i>Phone</div>
-                        <span class="d-content">+984616161</span>
-                    </div>
-                    <div class="email">
-                        <div class="agency-email"><i class="fas fa-envelope user-set"></i>E-mail</div>
-                        <span class="d-content">abc@gmail.com</span>
-                    </div>
-                    <div class="adress">
-                        <div class="agency-adress"><i class="fas fa-map-marker-alt user-set"></i>Address</div>
-                        <span class="d-content">Government Office, 441 street nw, room no.145, washington, united states</span>
-                    </div>
+                    <div class="agency">Agency Information</div>
+                    <div class="agency-name"><i class="fas fa-user user-set"></i><?= $get['OrganizationName'] ?></div>
+<!--                    <div class="phone">-->
+<!--                        <div class="agency-num"><i class="fas fa-mobile-alt user-set"></i>Phone</div>-->
+<!--                        <span class="d-content">+984616161</span>-->
+<!--                    </div>-->
+<!--                    <div class="email">-->
+<!--                        <div class="agency-email"><i class="fas fa-envelope user-set"></i>E-mail</div>-->
+<!--                        <span class="d-content">abc@gmail.com</span>-->
+<!--                    </div>-->
+<!--                    <div class="adress">-->
+<!--                        <div class="agency-adress"><i class="fas fa-map-marker-alt user-set"></i>Address</div>-->
+<!--                        <span class="d-content">Government Office, 441 street nw, room no.145, washington, united states</span>-->
+<!--                    </div>-->
                     <div class="a-divider"></div>
                     <div class="announcement">
                         <span class="announcement-name">Announcement number</span>
@@ -179,7 +159,7 @@ $this->params['header_dark'] = true;
                         <span class="annousncement-num"><?= $objectid; ?></span>
                     </div>
                     <div class="follow-btn">
-                        <a class="follow app_btn" href="<?= $get['ApplyURI'][0] ?>" target="_blank">Apply</a>
+                        <a class="follow app_btn" href="<?= $get['ApplyURI'][0] ?>" target="_blank">Apply On Website</a>
                     </div>
                 </div>
                 <div class="sharing-box">
@@ -188,19 +168,19 @@ $this->params['header_dark'] = true;
                     </div>
                     <!--                        <div class="share-it">Share :-</div>-->
                     <div class="fb-share">
-                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                        <button class="fb-btn" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f marg"></i>Facebook</button>
                     </div>
                     <div class="tw-share">
-                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                        <button class="tw-btn" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter marg"></i>Twitter</button>
                     </div>
                     <div class="li-share">
-                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                        <button class="li-btn" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
                     </div>
                     <div class="wa-share">
-                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                        <button class="wa-btn" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
                     </div>
                     <div class="mail-share">
-                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+                        <button class="mail-btn" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fas fa-envelope marg"></i>Mail</button>
                     </div>
                 </div>
             </div>
@@ -520,6 +500,10 @@ $this->registerCss('
     padding-top:10px;
     font-family:roboto;
 }
+.tomato
+{
+color:red;
+}
 .sticky {
   position: fixed;
   top: 52px;
@@ -647,7 +631,14 @@ function myFunction() {
     header.classList.remove("sticky");
   }
 }
-
+var mapObj = {
+    grade:"grade",
+    grades:"grades",
+}
+var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+var test = $('.requirements-tab .d-content').html();
+test = test.replace(re, '<span class="tomato">texts</span>');
+$('.requirements-tab .d-content').html(test);
 JS;
 $this->registerJs($script);
 ?>
