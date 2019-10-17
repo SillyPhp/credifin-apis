@@ -270,7 +270,22 @@ use yii\helpers\Html;
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
-
+<?php if (!empty($object)): ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Related Questions</div>
+                </div>
+            </div>
+            <div class="question-list">
+                <?= $this->render('/widgets/questions_gallery_view', [
+                    'object'=>$object
+                ]); ?>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
     <section>
         <div class="container">
             <div class="row">
@@ -292,22 +307,6 @@ use yii\helpers\Html;
             <div class="internships-list"></div>
         </div>
     </section>
-<?php if (!empty($object)): ?>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Related Questions</div>
-                </div>
-            </div>
-            <div class="question-list">
-                <?= $this->render('/widgets/questions_gallery_view', [
-                    'object'=>$object
-                ]); ?>
-            </div>
-        </div>
-    </section>
-<?php endif; ?>
 
 <!--    <section class="bg-black">-->
 <!--        <div class="container">-->
