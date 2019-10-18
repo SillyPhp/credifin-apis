@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 use common\models\JsonMachine\JsonMachine;
+use common\models\UsaProfileCodes;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -15,29 +16,9 @@ class UsaJobsController extends Controller
         return $this->render('index',['keywords'=>$keywords]);
     }
 
-    public function actionGetJobs()
-    {
-        $url = "https://data.usajobs.gov/api/search?JobCategoryCode=2210&ResultsPerPage=100";
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        $header = [
-            'Accept: application/json',
-            'Content-Type: application/x-www-form-urlencoded',
-            'Authorization-Key: ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM='
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-
-        $result = curl_exec($ch);
-        $fp = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json', 'w');
-        fwrite($fp,$result);
-        fclose($fp);
-    }
     public function actionDetail($familyid=null,$objectid=null)
     {
-        $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
+        $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.$familyid.'.json','r');
         $v = fgets($e);
         $v = json_decode($v,true);
         $flag = false;
@@ -61,7 +42,7 @@ class UsaJobsController extends Controller
     {
         if (Yii::$app->request->isAjax){
            //$v = file_get_contents('results.json');
-           $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
+           $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'updated.json','r');
            $v = fgets($e);
            $v = json_decode($v,true);
            $min = Yii::$app->request->post('min');
@@ -75,9 +56,11 @@ class UsaJobsController extends Controller
                   $get[$i]['MinimumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MinimumRange'];
                   $get[$i]['MaximumRange'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['MaximumRange'];
                   $get[$i]['ApplicationCloseDate'] = date("d-m-Y", strtotime($val['MatchedObjectDescriptor']['ApplicationCloseDate']));
-                  $get[$i]['PositionLocation'] = $val['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName'];
+                  $get[$i]['PositionLocation'] = $this->getCityName($val['MatchedObjectDescriptor']['PositionLocationDisplay']);
+                  $get[$i]['Location'] = $val['MatchedObjectDescriptor']['PositionLocationDisplay'];
                   $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
                   $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
+                  $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
                    $i++;
                }
            }
@@ -86,19 +69,12 @@ class UsaJobsController extends Controller
         }
     }
 
-    public function actionTest()
+    private function getCityName($string)
     {
-        $e = fopen(Yii::$app->params->upload_directories->resume->file_path.DIRECTORY_SEPARATOR.'results.json','r');
-        $v = fgets($e);
-        $v = json_decode($v,true);
-        fclose($e);
-        foreach ($v['SearchResult']['SearchResultItems'] as $key => $val)
-        {
-            if ($key>=0 && $key<=20) {
-                $v[] = $val;
-            }
-        }
-        print_r($v);
+        //Get the first occurrence of a character.
+        $strpos = strpos($string, ',');
+        $stringSplit1 = substr($string, 0, $strpos);
+        return trim($stringSplit1);
     }
 
 }

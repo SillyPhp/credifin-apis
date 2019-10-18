@@ -447,6 +447,8 @@ $this->registerCss('
     text-align: justify;
     float:left;
     box-shadow: 0 0 10px 0px #eee;
+    width: 100%;
+    clear: both;
 }
 .d-head {
     font-size: 22px;
@@ -631,14 +633,6 @@ function myFunction() {
     header.classList.remove("sticky");
   }
 }
-var mapObj = {
-    grade:"grade",
-    grades:"grades",
-}
-var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
-var test = $('.requirements-tab .d-content').html();
-test = test.replace(re, '<span class="tomato">texts</span>');
-$('.requirements-tab .d-content').html(test);
 JS;
 $this->registerJs($script);
 ?>

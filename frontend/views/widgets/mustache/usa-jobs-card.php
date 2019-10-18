@@ -5,7 +5,8 @@
              class="application-card-main">
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;USA
+                <i class="fas fa-map-marker-alt"></i>
+                &nbsp;{{PositionLocation}}
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
@@ -21,9 +22,9 @@
                 </div>
                 <div class="application-card-description">
                     <a href="{{link}}" title="{{PositionTitle}}"><h4 class="application-title">{{PositionTitle}}</h4></a>
-                    <h5><i class="fas fa-dollar-sign"></i>{{MinimumRange}} - <i class="fas fa-dollar-sign"></i>{{MaximumRange}}</h5>
+                    <h5><i class="fas fa-dollar-sign"></i>{{MinimumRange}} - <i class="fas fa-dollar-sign"></i>{{MaximumRange}} {{Duration}}</h5>
                     <h5><i class="far fa-calendar-alt"></i>&nbsp;Last Date: {{ApplicationCloseDate}}</h5>
-                    <h5><i class="fas fa-map-marker-alt"></i>{{PositionLocation}}</h5>
+                    <h5><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
