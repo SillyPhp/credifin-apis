@@ -7,7 +7,7 @@ use yii\console\Controller;
 
 class UsaJobsController extends Controller
 {
-    public function actionGetJobs($offset=680,$code_limit=10,$result_limit=200)
+    public function actionGetJobs($offset=0,$code_limit=10,$result_limit=500)
     {
         $path = '/home2/cds73inc/public_html/Employees/Sneh/EYGBME/files/users/resume/STVzyMfVOnGfaDtdbtAVCvW4s6ohZAiz/';
         $model = UsaProfileCodes::find()
@@ -67,8 +67,4 @@ class UsaJobsController extends Controller
         echo $flag;
     }
 
-    public function actionIndex()
-    {
-        echo 'my new ';
-    }
 }

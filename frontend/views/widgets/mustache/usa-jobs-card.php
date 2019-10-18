@@ -42,28 +42,21 @@ $script = <<< JS
 function fetch_usa_cards(host,userAgent,authKey,template,keywords)
 {
   $.ajax({
-  url:'https://data.usajobs.gov/api/search',
-  method:'GET',
+  url:'/usa-jobs/get-keywords',
+  method:'POST',
   data:{
-      'JobCategoryCode':2210,
-      'ResultsPerPage':300
+      'Keyword':keywords
   },
   datatype:"jsonp",
-  headers: {           
-        //"Host": host,          
-        //"User-Agent": userAgent,          
-        "Authorization-Key": authKey      
-    },
     beforeSend: function(){
             $('.img_load').css('display','block');
         },
   success:function(body) {   
       $('.img_load').css('display','none');
-      //localStorage.setItem('jobStorage', JSON.stringify(body));
-      //var obj = JSON.parse(localStorage.getItem('jobStorage'));
-      //template.html(''); 
-     // template.append(Mustache.render($('#usa-jobs-card').html(),body.SearchResult.SearchResultItems));
-      //utilities.initials();
+      body = JSON.parse(body);
+      template.html(''); 
+      template.append(Mustache.render($('#usa-jobs-card').html(),body));
+      utilities.initials();
   }   
   })
 }
@@ -90,7 +83,6 @@ function fetchLocalData(template,min,max,loader,loader_btn) {
       $('#loader').html('Load More');
       $('#loader').css('display','initial');
       body = JSON.parse(body);
-      console.log(body); 
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
   }   

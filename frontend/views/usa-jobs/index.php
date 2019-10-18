@@ -452,7 +452,7 @@ var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
+  fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
 })
 var min =0;
 var max = 8;

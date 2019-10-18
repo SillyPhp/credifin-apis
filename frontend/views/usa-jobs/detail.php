@@ -46,8 +46,8 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="job-title"><?= $get['PositionTitle'] ?></div>
                         <div class="job-statistic">
-                            <!--                                <div class="job-time">PART TIME</div>-->
-<!--                            <div class="job-location"><i class="fa fa-map-marker marg"></i> Ajax, Ontario</div>-->
+                            <div class="job-time"><?= $get['PositionSchedule'][0]['Name'] ?></div>
+                            <div class="job-location"><i class="fa fa-map-marker marg"></i> <?= $get['PositionLocationDisplay'] ?></div>
                             <div class="job-valid"><i class="fas fa-suitcase marg"></i><?= $get['UserArea']['Details']['TotalOpenings'] ?> vacancy</div>
                         </div>
                     </div>
@@ -77,6 +77,7 @@ $this->params['seo_tags'] = [
                     <li><a href="#overview">Overview</a></li>
                     <li><a href="#duties">Duties</a></li>
                     <li><a href="#requirements">Qualification And Other Details</a></li>
+                    <li><a href="#locations">Locations</a></li>
                     <li><a href="#requireddocuments">Agency Overview</a></li>
                 </ul>
             </div>
@@ -90,8 +91,8 @@ $this->params['seo_tags'] = [
             <div class="col-md-8">
                 <div class="job-single-head2">
                     <div class="job-overview">
-                        <div class="d-head" id="overview">Overview</div>
-                        <ul>
+                        <div class="d-head " id="overview">Overview</div>
+                        <ul class="set-sticky">
                             <li><i class="fas fa-calendar-alt"></i></i>
                                 <h3>opening & closing dates</h3><span><?= date("d-m-Y", strtotime($get['PositionStartDate'])) ?> to <?= date("d-m-Y", strtotime($get['PositionEndDate'])) ?></span></li>
                             <li><i class="fas fa-puzzle-piece"></i>
@@ -115,7 +116,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
                 <div class="d-head" id="duties">Duties</div>
-                <div class="duties-tab">
+                <div class="duties-tab set-sticky">
                     <div class="summary">Summary</div>
                     <div class="d-content"><?= $get['UserArea']['Details']['JobSummary'] ?>
                     </div>
@@ -126,8 +127,28 @@ $this->params['seo_tags'] = [
                         <?= $get['QualificationSummary'] ?>
                     </div>
                 </div>
+                <div class="d-head" id="locations">Locations</div>
+                <div class="location-tab set-sticky">
+                    <div class="location-set">
+                        <div style="margin-bottom: 8px;">
+                            <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
+                            <span><?= $get['PositionLocation'][0]['LocationName'] ?></span>
+                        </div>
+                        <?php if (count($get['PositionLocation'])>1): ?>
+                        <div id="show-more">
+                            <?php foreach ($get['PositionLocation'] as $location){ ?>
+                            <div style="margin-bottom: 8px;">
+                                <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
+                                <span><?= $location['LocationName'] ?></span>
+                            </div>
+                            <?php } ?>
+                        </div>
+                            <div class="set-clr" id="toggle">Read More</div>
+                        <?php endif; ?>
+                    </div>
+                </div>
                 <div class="d-head" id="requireddocuments">Agency Overview</div>
-                <div class="required-doc-tab">
+                <div class="required-doc-tab set-sticky">
                     <div class="d-content">
                        <?= $get['UserArea']['Details']['AgencyMarketingStatement']; ?>
                     </div>
@@ -189,12 +210,29 @@ $this->params['seo_tags'] = [
 </section>
 <?php
 $this->registerCss('
+.app_btn
+{
+display:block;
+}
 .custm
 {
     position: unset !important;
     left: unset !important;
     top: unset !important;
     font-size: unset !important;
+}
+.set-clr {
+    font-size: 15px;
+    padding-left: 22px;
+    color: #005aff;
+    cursor: pointer;
+}
+#show-more{
+    display:none;
+}
+.location-set {
+    font-size: 18px;
+    text-transform: capitalize;
 }
 .fb-share, .tw-share, .li-share, .wa-share{
     display:inline-block;
@@ -204,16 +242,24 @@ $this->registerCss('
 }
 .nav-bar {
     background-color: #eee;
-    padding: 8px 0 8px 0px;
     text-align:center;
+}
+.nav-bar > ul *{
+    transition: all ease-out .3s;
 }
 .nav-bar > ul > li {
     display: inline-block;
-    margin-right: 35px;
-    font-size: 17px;
+    margin-right: 20px;
+    font-size: 16px;
     font-weight:500;
     font-family:roboto;
+    padding:10px 0px;
 }
+.nav-bar > ul > li a{padding:10px;}
+.nav-bar > ul > li.active {
+    border-bottom: 5px solid orange;
+}
+.nav-bar > ul > li.active a{color:#000;}
 @media only screen and (max-width: 550px) {
     .nav-bar{
         display:none;
@@ -279,11 +325,6 @@ $this->registerCss('
     text-align:center;
     margin-top:10px;
     }
- .app_btn
- {
- display:block;
- width:100%;
- }   
 .follow{
     padding:10px 0px;
     width:290px;
@@ -347,7 +388,6 @@ $this->registerCss('
     float: left;
     width: 100%;
 }
-
 .job-overview > h3 {
     float: left;
     width: 100%;
@@ -355,7 +395,6 @@ $this->registerCss('
     color: #202020;
     font-weight: 400;
 }
-
 .job-overview ul {
     float: left;
     width: 100%;
@@ -365,7 +404,6 @@ $this->registerCss('
     padding-left: 15px !important;
     box-shadow: 0 0 10px 0px #eee;
 }
-
 .job-overview ul > li {
     float: left;
     width: 49.9%;
@@ -387,7 +425,6 @@ $this->registerCss('
     font-size: 30px;
     color: #4aa1e3;
 }
-
 .job-overview ul > li h3 {
     float: left;
     width: 100%;
@@ -396,7 +433,6 @@ $this->registerCss('
     color: #1e1e1e;
     font-weight: 600;
 }
-
 .job-overview ul > li span {
     float: left;
     width: 100%;
@@ -404,22 +440,18 @@ $this->registerCss('
     color: #545454;
     margin-top: 4px;
 }
-
 .job-single-sec .job-overview ul {
     padding: 0;
     margin-bottom: 20px;
 }
-
 .job-single-sec .job-overview ul li {
     float: left;
     width: 33.334%;
     padding-left: 50px;
 }
-
 .job-single-sec .job-overview ul li i {
     left: 0;
 }
-
 .job-overview > a {
     float: left;
     width: 100%;
@@ -436,19 +468,18 @@ $this->registerCss('
     border-radius: 8px;
     margin-bottom: 20px;
 }
-
 .job-overview ul > li:hover i {
     color: #ef7706;
 }
-.duties-tab, .requirements-tab, .required-doc-tab {
+.duties-tab, .requirements-tab, .required-doc-tab, .location-tab {
     border: 1px solid #eee;
     padding: 15px;
     border-radius: 5px;
     text-align: justify;
     float:left;
     box-shadow: 0 0 10px 0px #eee;
-    width: 100%;
-    clear: both;
+    clear:both;
+    width:100%;
 }
 .d-head {
     font-size: 22px;
@@ -502,15 +533,19 @@ $this->registerCss('
     padding-top:10px;
     font-family:roboto;
 }
-.tomato
-{
-color:red;
-}
 .sticky {
-  position: fixed;
-  top: 52px;
-  width: 100%;
-  z-index:1;
+    position: fixed;
+    top: 65px;
+    width: 100%;
+    z-index:1;
+    
+  &:hover {
+    background-color: #aaa;
+    }
+  &.active {
+    color: white;
+    background-color: rgba(0,0,0,0.1);
+    }
 }
 .share-it {
     text-align: center;
@@ -601,19 +636,16 @@ $script = <<<JS
 $(document).ready(function(){
   // Add smooth scrolling to all links
   $(".nav-bar > ul > li > a").on('click', function(event) {
-
     // Make sure this.hash has a value before overriding default behavior
     if (this.hash !== "") {
       // Prevent default anchor click behavior
       event.preventDefault();
-
       // Store hash
       var hash = this.hash;
-
       // Using jQuery's animate() method to add smooth page scroll
       // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
       $('html, body').animate({
-        scrollTop: $(hash).offset().top - 70
+        scrollTop: $(hash).offset().top - 80
       }, 800, function(){
    
         // Add hash (#) to URL when done scrolling (default click behavior)
@@ -622,17 +654,45 @@ $(document).ready(function(){
     } // End if
   });
 });
-
 window.onscroll = function() {myFunction()};
-
 var header = document.getElementById("s-header");
 function myFunction() {
-  if (window.pageYOffset > 410) {
+  if (window.pageYOffset > 420) {
     header.classList.add("sticky");
   } else {
     header.classList.remove("sticky");
   }
 }
+$(document).on('click', "#toggle", function() {
+    var elem = $("#toggle").text();
+    if (elem == "Read More") {
+      //Stuff to do when btn is in the read more state
+      $("#toggle").text("Read Less");
+      $("#show-more").slideDown();
+    } else {
+      //Stuff to do when btn is in the read less state
+      $("#toggle").text("Read More");
+      $("#show-more").slideUp();
+    }
+});
+$(window).scroll(function() {
+		var scrollDistance = $(window).scrollTop();
+		// Show/hide menu on scroll
+		//if (scrollDistance >= 850) {
+		//		$('nav').fadeIn("fast");
+		//} else {
+		//		$('nav').fadeOut("fast");
+		//}
+	
+		// Assign active class to nav links while scolling
+		$('.set-sticky').each(function(i) {
+		    console.log(i,scrollDistance,$(this).position().top)
+            if ($(this).position().top <= scrollDistance) {
+                    $('.nav-bar > ul > li.active').removeClass('active');
+                    $('.nav-bar > ul > li').eq(i).addClass('active');
+            }
+		});
+}).scroll();
 JS;
 $this->registerJs($script);
 ?>
