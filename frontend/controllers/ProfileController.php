@@ -10,7 +10,7 @@ use common\models\Usernames;
 class ProfileController extends Controller
 {
 
-    public function actionIndex($username, $type = '')
+    public function actionIndex($username, $type = '', $slug = '')
     {
         $user = Usernames::find()
             ->where(['username' => $username])
@@ -41,17 +41,26 @@ class ProfileController extends Controller
                     'slug' => $user->username,
                 ]);
             }
+            if(isset($type) && !empty($type)) {
+                if ($type === 'reviews') {
+                    return Yii::$app->runAction('organizations/reviews', [
+                        'slug' => $user->username,
+                    ]);
+                }
 
-            if (isset($type) && !empty($type) && $type === 'reviews') {
-                return Yii::$app->runAction('organizations/reviews', [
-                    'slug' => $user->username,
-                ]);
-            }
+                if ($type === 'careers') {
+                    return Yii::$app->runAction('organizations/careers/index', [
+                        'slug' => $user->username,
+                    ]);
+                }
 
-            if (isset($type) && !empty($type) && $type === 'careers') {
-                return Yii::$app->runAction('organizations/careers/index', [
-                    'slug' => $user->username,
-                ]);
+                if ($type === 'job' || $type === 'internship' && isset($slug) && !empty($slug)) {
+                    return Yii::$app->runAction('organizations/careers/detail', [
+                        'username' => $user->username,
+                        'type' => $type,
+                        'slug' => $slug,
+                    ]);
+                }
             }
 
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));

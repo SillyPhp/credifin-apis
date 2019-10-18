@@ -6,15 +6,23 @@
 
         <div class="job-listing wtabs">
         <div class="job-title-sec">
-        <div class="c-logo"> <img src="{{icon}}" alt="" /> </div>
-        <h3><a href="career-job-detail?slug={{slug}}" >{{title}}</a></h3>
+        <div class="c-logo"> <img src="{{icon}}" alt="{{title}}" /> </div>
+        <h3><a href="{{slug}}" >{{title}}</a></h3>
         <span>{{organization_name}}</span>
-            <div class="job-lctn"><i class="fas fa-map-marker-alt"></i>{{city}}</div>
+            <div class="job-lctn">
+                <i class="fas fa-map-marker-alt"></i>
+                {{#city}}
+                    {{city}}
+                {{/city}}
+                {{^city}}
+                    Work From Home
+                {{/city}}
+            </div>
         </div>
         <div class="job-style-bx">
             <span class="job-is ft ">{{type}}</span>
-        <span class="fav-job"><i class="far fa-heart"></i></span>
-        <i>5 months ago</i>
+<!--        <span class="fav-job"><i class="far fa-heart"></i></span>-->
+<!--        <i>5 months ago</i>-->
         </div>
         </div>
     </div>

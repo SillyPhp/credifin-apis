@@ -13,10 +13,8 @@ echo $this->render('/widgets/drop_resume', [
     <div class="block no-padding">
         <div data-velocity="-.1" style="background: url(http://placehold.it/1600x800) repeat scroll 50% 422.28px transparent;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <div class="">
-
             <div class="row">
                 <div class="col-lg-12">
-
                     <div class="inner-header wform">
                         <div class="nav-com-logo">
                             <a href="<?= $org['website']?>">
@@ -25,8 +23,7 @@ echo $this->render('/widgets/drop_resume', [
                         </div>
                         <div class="job-search-sec">
                             <div class="job-search">
-
-                                <h4>Jobs in <?= $org['name']?></h4>
+                                <h4>Opportunities in <?= $org['name']?></h4>
                                 <form>
                                     <div class="row">
                                         <div class="col-lg-7">
@@ -92,7 +89,8 @@ echo $this->render('/widgets/drop_resume', [
 <!--                                <option>Most Recent</option>-->
 <!--                            </select>-->
 <!--                        </div>-->
-                        <h5><span id="count"></span> Jobs & Internships</h5>
+                        <h5><span id="count"></span> Opportunities</h5>
+                        <h1 class="heading-style">Jobs</h1>
                     </div>
                 </div><!-- MOdern Job LIst -->
                 <div class="job-list-modern">

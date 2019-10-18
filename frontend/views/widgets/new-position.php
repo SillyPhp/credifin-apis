@@ -12,7 +12,7 @@ use yii\helper\url;
                     Empower Youth is always looking for great talent. Go ahead and send an application!
                 </div>
                 <div class="npb-btn">
-                    <button type="button" id="fab-message-open">Apply</button>
+                    <button type="button" class="fab-message-open">Apply</button>
                 </div>
             </div>
         </div>
@@ -89,7 +89,11 @@ $r = [
 $result = json_encode($r);
 
 \Yii::$app->view->registerJs('var result = '. $result ,  \yii\web\View::POS_HEAD);
-
+$script = <<< JS
+$(document).on('click', '.fab-message-open', function() {
+    $('#fab-message-open').trigger('click');
+});
+JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');

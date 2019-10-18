@@ -50,7 +50,6 @@ class CareersController extends Controller
         ]);
     }
 
-
     private function getCareerInfo($type, $options, $slug)
     {
         if ($options['limit']) {
@@ -62,7 +61,7 @@ class CareersController extends Controller
             ->select([
                 'a.last_date',
                 'a.type',
-                'a.slug',
+                'CONCAT("/",d.slug,"/",LOWER(LEFT(j.name,LENGTH(j.name) -1)),"/",a.slug) as slug',
                 'dd.name category',
                 'l.designation',
                 'd.initials_color color',
@@ -113,7 +112,7 @@ class CareersController extends Controller
         return ['count' => $count, 'result' => $result];
     }
 
-    public function actionCareerJobDetail($slug)
+    public function actionDetail($username, $type, $slug)
     {
         $this->layout = 'without-header';
         $application_details = EmployerApplications::find()
@@ -126,14 +125,14 @@ class CareersController extends Controller
         if (!$application_details) {
             return 'Not Found';
         }
-        $type = 'Job';
+        $type = ucfirst($type);
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = $type . 's');
         } else {
             $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = $type . 's');
         }
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()
@@ -156,7 +155,6 @@ class CareersController extends Controller
             'org' => $org_details,
             'applied' => $applied_jobs,
             'type' => $type,
-
             'model' => $model,
             'shortlist' => $shortlist,
             'settings' => [
