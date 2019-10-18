@@ -8,6 +8,8 @@ use frontend\models\applications\CandidateApply;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
+$this->params['url'] = '/organizations/careers/career-company';
+
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -385,12 +387,14 @@ $this->render('/widgets/employer_applications/top-banner', [
                 ?>
             </div>
         </div>
+        <?php if($settings["showRelatedOpportunities"]):?>
         <div class="row m-0">
             <div class="col-md-12">
                 <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
                 <div class="similar-application"></div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
@@ -398,6 +402,17 @@ $this->render('/widgets/employer_applications/top-banner', [
     }
     ?>
 </section>
+<?php
+    if($settings["showNewPositionsWidget"]):
+?>
+<section>
+    <div class="container">
+        <?=
+            $this->render('/widgets/new-position');
+        ?>
+    </div>
+</section>
+<?php endif; ?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
