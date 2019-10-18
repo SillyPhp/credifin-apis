@@ -11,6 +11,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\web\HttpException;
 
 class CareersController extends Controller
 {
@@ -26,8 +27,12 @@ class CareersController extends Controller
             ->where([
                 'slug' => $slug
             ])
+            ->andWhere(['or',['!=', 'website', null],['!=', 'website', ""]])
             ->asArray()
             ->one();
+        if (!$org) {
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post();
@@ -115,24 +120,30 @@ class CareersController extends Controller
     public function actionDetail($username, $type, $slug)
     {
         $this->layout = 'without-header';
+        $type = ucfirst($type . 's');
         $application_details = EmployerApplications::find()
+            ->alias('a')
+            ->innerJoinWith(['organizationEnc b'], false)
+            ->innerJoinWith(['applicationTypeEnc c'], false)
             ->where([
-                'slug' => $slug,
-                'is_deleted' => 0
+                'a.slug' => $slug,
+                'b.slug' => $username,
+                'c.name' => $type,
+                'a.is_deleted' => 0
             ])
+            ->andWhere(['or',['!=', 'b.website', null],['!=', 'b.website', ""]])
             ->one();
 
         if (!$application_details) {
-            return 'Not Found';
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
-        $type = ucfirst($type);
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = $type . 's');
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = $type);
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = $type . 's');
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = $type);
         }
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()

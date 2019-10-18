@@ -8,7 +8,7 @@ use frontend\models\applications\CandidateApply;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
-$this->params['url'] = '/organizations/careers/career-company';
+$this->params['url'] = $org['website'];
 
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
