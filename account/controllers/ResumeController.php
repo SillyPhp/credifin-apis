@@ -327,6 +327,7 @@ class ResumeController extends Controller
                 ->all();
             $location = OrganizationLocations::find()
                 ->alias('a')
+                ->distinct()
                 ->select(['c.name', 'c.city_enc_id'])
                 ->joinWith(['organizationEnc b'], false)
                 ->joinWith(['cityEnc c'])
