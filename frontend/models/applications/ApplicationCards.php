@@ -521,7 +521,8 @@ class ApplicationCards
             ->from(Organizations::tableName().'as a')
             ->select(['name','initials_color','a.slug','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
             ->innerJoin(BusinessActivities::tableName().'as b','b.business_activity_enc_id = a.business_activity_enc_id')
-            ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not',['logo'=>null]]);
 
         if (isset($options['limit'])) {
             $limit = $options['limit'];
@@ -547,17 +548,17 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
                 '(CASE
-                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration," - Month")
-                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration," - Weeks")
-                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," - Year")
+                WHEN a.training_duration_type = "1" THEN CONCAT(a.training_duration,"  Month(s)")
+                WHEN a.training_duration_type = "2" THEN CONCAT(a.training_duration," Week(s)")
+                WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," Year(s)")
                 ELSE "N/A"
                END) as duration'
                 ,'(CASE
-                WHEN t.fees_methods = "1" THEN CONCAT(t.fees," / Month")
-                WHEN t.fees_methods = "2" THEN CONCAT(t.fees," / Week")
-                WHEN t.fees_methods = "3" THEN CONCAT(t.fees," / Anually")
-                WHEN t.fees_methods = "4" THEN CONCAT(t.fees,"(One Time)")
-                ELSE "N/A"
+                WHEN t.fees_methods = "1" AND t.fees >0 THEN CONCAT(t.fees," / Month")
+                WHEN t.fees_methods = "2" AND t.fees >0 THEN CONCAT(t.fees," / Week")
+                WHEN t.fees_methods = "3" AND t.fees >0 THEN CONCAT(t.fees," / Annually")
+                WHEN t.fees_methods = "4" AND t.fees >0 THEN CONCAT(t.fees,"(One Time)")
+                ELSE "No Fees" 
                END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')

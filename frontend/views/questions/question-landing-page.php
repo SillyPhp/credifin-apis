@@ -1,7 +1,9 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+
 $this->params['header_dark'] = false;
 ?>
     <section class="bg-imgg">
@@ -15,84 +17,36 @@ $this->params['header_dark'] = false;
                             <button type="submit"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
-                    <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal" data-target="#postQuestion">Ask Question
-                    </button>
+                    <div class="set-btn-pos">
+                    <?php if (Yii::$app->user->isGuest): ?>
+                        <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal"
+                                data-target="#loginModal">Ask Question
+                        </button>
+                    <?php else: ?>
+                        <button type="button" class="btn btn-info btn-lg btn-ask-question" data-toggle="modal"
+                                data-target="#postQuestion">Ask Question
+                        </button>
+                    <?php endif; ?>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
-    <section>
+
+    <Section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading-style">Popular Questions</div>
                 </div>
             </div>
-            <div class="lc-items-grids">
-                <?php if (!empty($object)){
-                    foreach ($object as $obj){
-                        $link = Url::to('question/'.$obj['slug'], true);
-                    ?>
-                    <div class="lc-single-item-main">
-                        <div class="lc-item-img">
-                            <div class="question-main">
-                                <div class="head">
-                                    <div class="logo">
-                                        <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                    </div>
-                                    <div class="r-details">
-                                        <div class="category-name"><a href=""><?= $obj['name'] ?></a></div>
-                                    </div>
-                                </div>
-                                <div class="box-content">
-                                    <?= $obj['question']; ?>
-                                </div>
-                                <div class="total-answers">
-                                    <span class="answers">Answers</span>
-                                    <span class="best-answers">
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                                <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                            <span class="best-images">
-                               <a href="#" data-toggle="tooltip" title="Eddy">
-                                    <img src="<?= Url::to('/assets/themes/ey/images/pages/question-answers/hdr2.png');?>">
-                                </a>
-                            </span>
-                        </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="lc-item-desciption">
-                            <div class="lc-item-user-detail">
-                                <h3 class="lc-item-video-title">
-                                    <a href="#"><?= $obj['name'] ?></a>
-                                </h3>
-                            </div>
-                            <span class="count"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?> answers</a></span>
-                            <span class="lc-item-video-stat marg">
-                            <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
-                               target="blank">
-                                            <span><i class="fab fa-facebook-f"></i></span></a>
-                                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-twitter"></i></span></a>
-                                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
-                                           target="blank">
-                                            <span><i class="fab fa-linkedin"></i></span></a>
-                                </span>
-                        </div>
-                    </div>
-                <?php } } ?>
+            <div class="row">
+              <?= $this->render('/widgets/questions_gallery_view', [
+                      'object'=>$object
+                ]); ?>
             </div>
         </div>
-    </section>
+    </Section>
 
     <!---- modal starts here---->
     <section>
@@ -118,18 +72,18 @@ $this->params['header_dark'] = false;
                                         <h4>Ask Question As:</h4>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model,'privacy')->dropDownList([1=>'Public',0=>'Anonymous'])->label(false); ?>
+                                        <?= $form->field($model, 'privacy')->dropDownList([1 => 'Public', 0 => 'Anonymous'])->label(false); ?>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <?= $form->field($model,'question')->textInput(['id'=>'question','placeholder'=>'Ask Your Question Here (Max 200 Characters)'])->label(false); ?>
+                                    <?= $form->field($model, 'question')->textInput(['id' => 'question', 'placeholder' => 'Ask Your Question Here (Max 200 Characters)'])->label(false); ?>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <?= $form->field($model,'topic')->textInput(['id'=>'topic','placeholder'=>'Enter Topic For The Question'])->label(false); ?>
+                                    <?= $form->field($model, 'topic')->textInput(['id' => 'topic', 'placeholder' => 'Enter Topic For The Question'])->label(false); ?>
                                 </div>
                             </div>
                             <div class="row">
@@ -140,7 +94,8 @@ $this->params['header_dark'] = false;
                                             <li class="tagAdd taglist">
                                                 <div class="skill_wrapper">
                                                     <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                                    <input type="text" id="search-skill" class="skill-input" placeholder="Search Or Add Tags..">
+                                                    <input type="text" id="search-skill" class="skill-input"
+                                                           placeholder="Search Or Add Tags..">
                                                 </div>
                                             </li>
                                         </ul>
@@ -160,6 +115,162 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registercss('
+.modal-content{
+    margin-top:100px;
+}
+@media only screen and (max-width: 600px) {
+.modal-content{
+    margin-top:0px;
+}
+}
+.fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.male{  background-color: #0077b5;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+    position: absolute;
+    top: 100%;
+    right: -13px;
+    background-color: #eee;
+    padding: 0px;
+    border-radius: 10px;
+    height:0px;
+    overflow:hidden;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.sharing-links{
+    float: right;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 20px;
+    text-align: right;
+    height: 25px;
+}
+.sharing-links:hover .set{
+    height:110px;
+    padding: 5px;
+}
+.head{
+    display:flex;
+}
+.user-img {
+    margin: 5px 0 0 0;
+}
+.user-img img {
+    border: 1px solid #eee;
+    width: 35px;
+    height: 35px;
+    border-radius: 25px;
+}
+.user-topic{
+    margin: 8px 0 0 7px;
+}
+.topic-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+.box-content {
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: justify;
+    height: 148px;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+}
+.t-answers {
+    padding-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+.best-answers {
+    float: right;
+}
+.t-answers img {
+    height: 20px;
+    width: 20px;
+    border-radius: 25px;
+    margin-right: 2px;
+}
+.card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
+   background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
+}
+.card-box:nth-child(2n) .card::before, .card-box:nth-child(11n) .card::before{
+   background-image:linear-gradient( 135deg, #ffa3b8 10%, #ff6386 100%); /*pink*/
+}
+.card-box:nth-child(3n) .card::before {
+    background-image:linear-gradient( 135deg, #FFD3A5 10%, #FD6585 100%); 
+}
+.card-box:nth-child(4n) .card::before {
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card-box:nth-child(6n) .card::before,.card-box:nth-child(12n) .card::before  {
+   background-image:linear-gradient( 135deg, #8bf4bb 10%, #4f9b94 100%); /*Green*/
+}
+.card-box:nth-child(5n) .card::before, .card-box:nth-child(8n) .card::before {
+   background-image:linear-gradient( 135deg, #e85b56 10%, #6f2347 100%); 
+}
+ .card-box:nth-child(10n) .card::before{
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card {
+    position: relative;
+    padding-top: 35px;
+    max-width: 90%;
+    margin: 0px auto;
+    margin-bottom:10px;
+}
+@media only screen and (max-width: 1200px) and (min-width:992px){
+    .card{
+        margin: 0 auto;
+    }
+} 
+.card:hover::before{
+    right: -15px;
+    bottom: -15px;
+    curser: pointer;
+    transition: .5s ease;
+}
+.card::before {
+  background-image: var(--gradient-1);
+  border-radius: 15px;
+  box-shadow: 2px 0px 20px rgba(0, 0, 0, .1);
+  bottom: 30px;
+  left: -15px;
+  position: absolute;
+  right: 35px;
+  content:"";
+  top: 20px; 
+  transition: .5s ease;
+}
+.card__block--main {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 2px 5px 25px rgba(0, 0, 0, .15);
+  height: 260px;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
 #privacy
 {
   border-radius: 13px;
@@ -319,9 +430,12 @@ z-index: 9;
     padding: 4px 8px;
     list-style: outside none none;
 }
+.set-btn-pos {
+    text-align: right;
+    width: 80%;
+}
 .btn-ask-question
 {
-    margin-left: 319px;
     margin-top: 11px;
 }
 .topp-pad{padding-top:190px;}
@@ -392,237 +506,6 @@ z-index: 9;
     background-repeat: no-repeat;
     background-size:cover;
     }
-.lc-items-grids {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    -webkit-box-align: start;
-    -webkit-align-items: start;
-    -ms-flex-align: start;
-    align-items: start;
-    justify-items: center;
-    grid-gap: 4rem 3rem;
-}
-.lc-single-item-main {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    color: #9ca0b1;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-}
-.lc-item-img{
-    position: relative;
-    border-radius: 6px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid;
-}
-.lc-single-item-main .lc-item-video-link {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    border: 0 !important;
-    z-index: 1;
-}
-.lc-single-item-main .lc-item-desciption {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    margin-top: 1rem;
-    -webkit-box-ordinal-group: 4;
-    -webkit-order: 3;
-    -ms-flex-order: 3;
-    order: 3;
-}
-.lc-single-item-main .lc-item-user-icon {
-    display: block;
-    margin-right: 0.75rem;
-    position: relative;
-    z-index: 1;
-}
-.lc-single-item-main .lc-item-user-icon>img {
-    display: block;
-    width: 40px;
-    height: 40px;
-    background: #444857;
-    overflow: hidden;
-    font: 10px/1 monospace;
-    border-radius: 4px;
-}
-.lc-single-item-main .lc-item-user-detail {
-    -webkit-box-flex: 1;
-    -webkit-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    margin: 0 1rem 0 0;
-}
-.lc-single-item-main .lc-item-user-detail, .lc-single-item-main .lc-item-user-detail .lc-item-video-title {
-    width: 95%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.lc-single-item-main .lc-item-video-title {
-    font-weight: 900;
-    font-size: 17px;
-    margin: 0 0 0.25rem 25px;
-    display: block;
-}
-.lc-single-item-main .lc-item-video-title a {
-    color: white;
-}
-.lc-single-item-main .lc-item-user-sub-main {
-    color: #c0c3d0;
-    font: inherit;
-    font-size: 14px;
-    line-height: 1.2;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-}
-.lc-single-item-main .lc-item-user-sub-detail {
-    color: inherit;
-    display: inline-block;
-    position: relative;
-    z-index: 1;
-    -webkit-transition: 0.2s ease all;
-    transition: 0.2s ease all;
-}
-.lc-single-item-main{
-    position: relative;
-}
-.lc-single-item-main::after {
-    position: absolute;
-    content: \'\';
-    right: -1rem;
-    bottom: -1rem;
-    left: 1rem;
-    top: 1rem;
-    background: #202229;
-    border-radius: 10px;
-    z-index: -1;
-    -webkit-transition: 0.3s ease;
-    transition: 0.3s ease;
-}
-.lc-single-item-main:hover::after, .lc-single-item-main:focus::after, .lc-single-item-main:active::after {
-    left: -1rem;
-    right: -1rem;
-    top: -1rem;
-    bottom: -27px; 
-}
-.lc-item-video-stats {
-    padding: 0 0 0 7px;
-    height: 45px;
-    z-index: 1;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    justify-content: flex-end;
-    -webkit-box-align: center;  
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    font-size: 12px;
-    overflow: hidden;
-}
-.lc-item-video-stats .lc-item-video-stat {
-    font: inherit;
-    margin-right: 5px;
-    background: rgba(0,0,0,0.9);
-    border-radius: 4px;
-    padding: 2px 5px;
-    color: white;
-    cursor: pointer;
-}
-.lc-single-item-main:not(.hide-owner) .lc-item-video-stat {
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    opacity: 0;
-    -webkit-transition: all 0.2s ease;
-    transition: all 0.2s ease;
-    -webkit-transition-property: opacity, -webkit-transform;
-    transition-property: opacity, -webkit-transform;
-    transition-property: transform, opacity;
-    transition-property: transform, opacity, -webkit-transform;
-    -webkit-transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
-    transition-timing-function: cubic-bezier(1, 0, 0.65, 0.75),linear;
-}
-.lc-single-item-main:not(.hide-owner):hover .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):active .lc-item-video-stat, .lc-single-item-main:not(.hide-owner):focus .lc-item-video-stat {
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-    opacity: 1;
-    -webkit-transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
-    transition-timing-function: cubic-bezier(0.2, 0.15, 0.1, 1),ease;
-    -webkit-transition-delay: 0.2s;
-    transition-delay: 0.2s;
-}
-.marg{
-    margin-bottom: -44px;
-    background: none !important;
-}
-.marg img{
-    width: 22px;
-}
-.lc-item-video-stat.marg a {
-    color: #c1c1c1;
-    margin: 0 5px 0 0px;
-}
-.count{
-        margin: 0 -55px 0px 0px;
-}
-/*---text-box----*/
-.question-main{
-    padding: 10px 15px 10px 15px;;
-    width: 100%;
-    float:left;
-    height: 230px;
-}
-.question-main:hover{box-shadow: 0px 1px 9px 2px #eee; }
-.head, .bottom{display: flex;}
-.logo{margin: 5px 0 0 0;}
-.logo img{
-    border: 1px solid #eee;
-    width: 35px;
-    height: 35px;
-    border-radius: 25px;
-}
-.r-details{margin: 11px 0 0 7px;}
-.category-name a{font-size: 15px;text-decoration: none;color: #000000;font-weight: bold; }
-.box-content {
-    padding:10px 0;
-    font-size: 16px;
-    text-align: justify;
-}
-.total-answers {
-    padding-top: 10px;
-    font-size: 15px;
-    font-weight: bold;
-    border-top: 1px solid #eee;
-    margin-top: 10px;
-}
-.best-answers{
-    float: right;
-}
 .best-images img{
     height: 20px; 
     width: 20px;

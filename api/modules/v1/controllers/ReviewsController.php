@@ -153,8 +153,23 @@ class ReviewsController extends ApiBaseController
             $review_type = 'claimed';
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->select([])
-                ->select([
+                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
+                ->joinWith(['createdBy b'],false)
+                ->joinWith(['categoryEnc c'], false)
+                ->joinWith(['organizationReviewLikeDislikes d'], false)
+                ->joinWith(['designationEnc e'], false)
+                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                if($limit){
+                    $reviews->limit($limit);
+                }
+                $rating = $reviews->addSelect(['a.job_security',
+                    'a.growth career_growth',
+                    'a.organization_culture company_culture',
+                    'a.compensation salary_and_benefits',
+                    'a.work work_satisfaction',
+                    'a.work_life work_life_balance',
+                    'a.skill_development',])->asArray()->all();
+                $result = $reviews->addSelect([
                     'a.show_user_details',
                     'a.review_enc_id',
                     'ROUND(a.average_rating) average_rating',
@@ -163,32 +178,21 @@ class ReviewsController extends ApiBaseController
                     'd.feedback_type',
                     'a.created_on',
                     'a.is_current_employee reviewer_type',
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
                     'a.likes',
                     'a.dislikes',
                     'a.from_date',
                     'a.to_date',
+                    'a.created_by',
                     'b.first_name',
                     'b.last_name',
                     'b.initials_color',
-                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
-                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
-                ->joinWith(['createdBy b'], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->joinWith(['designationEnc e'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
-                if($limit){
-                    $reviews->limit($limit);
-                }
-                $result = $reviews->asArray()
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])->asArray()
                 ->all();
+
+
+                for($i=0;$i<count($result);$i++){
+                    $result[$i]['rating'] = $rating[$i];
+                }
 
 
             if ($candidate->user_enc_id) {
@@ -260,13 +264,6 @@ class ReviewsController extends ApiBaseController
                 'selections' => [
                     'a.review_enc_id',
                     'a.average_rating',
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
                     'a.likes',
                     'a.dislikes',
                     'c.name profile',
@@ -302,6 +299,26 @@ class ReviewsController extends ApiBaseController
 
             $emp_reviews = $this->__unclaimedReviews($options);
 
+            $options['main'] = [
+                'alias' => 'a',
+                'selections' => [
+                    'a.job_security',
+                    'a.growth career_growth',
+                    'a.organization_culture company_culture',
+                    'a.compensation salary_and_benefits',
+                    'a.work work_satisfaction',
+                    'a.work_life work_life_balance',
+                    'a.skill_development',
+                ]
+            ];
+
+            $emp_rating = $this->__unclaimedReviews($options);
+
+            for($i=0;$i<count($emp_reviews);$i++){
+                $emp_reviews[$i]['rating'] = $emp_rating[$i];
+            }
+
+
             if ($unclaimed_org['business_activity'] == 'College') {
 
                 $options = [];
@@ -332,13 +349,6 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.average_rating',
-                        'a.academics',
-                        'a.faculty_teaching_quality',
-                        'a.infrastructure',
-                        'a.accomodation_food',
-                        'a.placements_internships',
-                        'a.social_life_extracurriculars',
-                        'a.culture_diversity',
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
@@ -368,6 +378,24 @@ class ReviewsController extends ApiBaseController
 
                 $reviews_students = $this->__unclaimedReviews($options);
 
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.academics',
+                        'a.faculty_teaching_quality',
+                        'a.infrastructure',
+                        'a.accomodation_food',
+                        'a.placements_internships',
+                        'a.social_life_extracurriculars',
+                        'a.culture_diversity',
+                    ]
+                ];
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for($i=0;$i<count($reviews_students);$i++){
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
 
             } elseif ($unclaimed_org['business_activity'] == 'School') {
 
@@ -399,13 +427,6 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.average_rating',
-                        'a.student_engagement',
-                        'a.school_infrastructure infrastructure',
-                        'a.faculty',
-                        'a.accessibility_of_faculty',
-                        'a.co_curricular_activities',
-                        'a.leadership_development',
-                        'a.sports',
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
@@ -434,6 +455,24 @@ class ReviewsController extends ApiBaseController
 
                 $reviews_students = $this->__unclaimedReviews($options);
 
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.student_engagement',
+                        'a.school_infrastructure infrastructure',
+                        'a.faculty',
+                        'a.accessibility_of_faculty',
+                        'a.co_curricular_activities',
+                        'a.leadership_development',
+                        'a.sports',
+                    ]
+                ];
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for($i=0;$i<count($reviews_students);$i++){
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
 
             } elseif ($unclaimed_org['business_activity'] == 'Educational Institute') {
 
@@ -464,13 +503,6 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.average_rating',
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.value_for_money',
-                        'a.teaching_style',
-                        'a.coverage_of_subject_matter',
-                        'a.accessibility_of_faculty',
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
@@ -499,6 +531,25 @@ class ReviewsController extends ApiBaseController
                 $options['quant'] = 'all';
 
                 $reviews_students = $this->__unclaimedReviews($options);
+
+                $options['main'] = [
+                    'alias' => 'a',
+                    'selections' => [
+                        'a.student_engagement',
+                        'a.school_infrastructure',
+                        'a.faculty',
+                        'a.value_for_money',
+                        'a.teaching_style',
+                        'a.coverage_of_subject_matter',
+                        'a.accessibility_of_faculty',
+                    ]
+                ];
+
+                $rating_students = $this->__unclaimedReviews($options);
+
+                for($i=0;$i<count($reviews_students);$i++){
+                    $reviews_students[$i]['rating'] = $rating_students[$i];
+                }
 
             }
             if ($candidate->user_enc_id) {
@@ -864,7 +915,7 @@ class ReviewsController extends ApiBaseController
         }
 
         if (isset($parameters['value']) && !empty($parameters['value'])) {
-            $value = (int)$parameters['value'];
+            $value = $parameters['value'];
             if ($value == 1 || $value == 2 || $value == 3 || $value == 4) {
                 $val = $value;
             } else {
@@ -949,7 +1000,7 @@ class ReviewsController extends ApiBaseController
             if ($model->validate()) {
                 $avg_rating = null;
 
-                $rating = [$model->skill_development + $model->work_life_balance + $model->salary_benefits + $model->company_culture + $model->job_security + $model->career_growth + $model->work_satisfaction];
+                $rating = [$model->skill_development_and_learning + $model->work_life_balance + $model->compensation_and_benefits + $model->company_culture + $model->job_security + $model->growth_and_opportunities + $model->work_satisfaction];
                 $avg_rating = array_sum($rating) / 7;
                 $avg_rating = number_format($avg_rating, 2);
 
@@ -961,12 +1012,12 @@ class ReviewsController extends ApiBaseController
                 //check if review already exists else save new record
                 if (!empty($chk)) {
                     $chk->average_rating = $avg_rating;
-                    $chk->skill_development = $model->skill_development;
+                    $chk->skill_development = $model->skill_development_and_learning;
                     $chk->work_life = $model->work_life_balance;
-                    $chk->compensation = $model->salary_benefits;
+                    $chk->compensation = $model->compensation_and_benefits;
                     $chk->organization_culture = $model->company_culture;
                     $chk->job_security = $model->job_security;
-                    $chk->growth = $model->career_growth;
+                    $chk->growth = $model->growth_and_opportunities;
                     $chk->work = $model->work_satisfaction;
                     $chk->likes = $model->like;
                     $chk->dislikes = $model->dislike;
@@ -976,7 +1027,7 @@ class ReviewsController extends ApiBaseController
                     if ($chk->update()) {
                         return $this->response(201,'Saved');
                     } else {
-                        return $this->response(500,'Not Saved');
+                        return $this->response(500,'not saved');
                     }
 
                 } else {
@@ -989,12 +1040,12 @@ class ReviewsController extends ApiBaseController
                     $data->organization_enc_id = $model->org_enc_id;
                     $data->average_rating = $avg_rating;
                     $data->is_current_employee = $model->current_employee;
-                    $data->skill_development = $model->skill_development;
+                    $data->skill_development = $model->skill_development_and_learning;
                     $data->work_life = $model->work_life_balance;
-                    $data->compensation = $model->salary_benefits;
+                    $data->compensation = $model->compensation_and_benefits;
                     $data->organization_culture = $model->company_culture;
                     $data->job_security = $model->job_security;
-                    $data->growth = $model->career_growth;
+                    $data->growth = $model->growth_and_opportunities;
                     $data->work = $model->work_satisfaction;
                     $data->city_enc_id = $model->location;
                     $data->category_enc_id = $this->__addCategory($model->department);

@@ -2,11 +2,14 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
-use common\models\States;
+use common\models\OrganizationLocations;
 use common\models\Quiz;
+use common\models\States;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -146,6 +149,55 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $other_jobs = (new \yii\db\Query())
+            ->distinct()
+            ->from(States::tableName() . 'as a')
+            ->select([
+                'a.state_enc_id',
+                'b.country_enc_id',
+                'c.city_enc_id',
+                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
+                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
+            ])
+            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
+            ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as g', 'g.assigned_category_enc_id = e.title')
+            ->where(['e.is_deleted' => 0, 'b.name' => 'India']);
+        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
+        $ai_jobs = (new \yii\db\Query())
+            ->distinct()
+            ->from(States::tableName() . 'as a')
+            ->select([
+                'a.state_enc_id',
+                'b.country_enc_id',
+                'c.city_enc_id',
+                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
+                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
+            ])
+            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+            ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
+            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
+            ->where(['j.is_deleted' => 0, 'l.is_deleted' => 0, 'b.name' => 'India']);
+        $ai_jobs_state_wise = $ai_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+        $cities_jobs = (new \yii\db\Query())
+            ->from([
+                $other_jobs_city_wise->union($ai_jobs_city_wise),
+            ])
+            ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
+            ->groupBy('city_enc_id')
+            ->orderBy(['jobs' => SORT_DESC])
+            ->limit(4)
+            ->all();
+
         $a = $this->_getTweets(null, null,"Jobs", 4 , "");
         $b = $this->_getTweets(null, null,"Internships", 4 , "");
         $tweets = array_merge($a, $b);
@@ -157,7 +209,8 @@ class SiteController extends Controller
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
-            'tweets' => $tweets
+            'tweets' => $tweets,
+            'cities_jobs' => $cities_jobs
         ]);
     }
 
@@ -251,119 +304,6 @@ class SiteController extends Controller
             'data' => $quizes
         ]);
     }
-    public function actionCareerCompany($slug = null){
-        $this->layout = 'without-header';
-        $org = Organizations::find()
-            ->select([
-                'name',
-                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
-                ])
-            ->where([
-                'slug' => $slug
-            ])
-            ->asArray()
-            ->one();
-        if(Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $options = Yii::$app->request->post();
-            if(isset($options['type'])=='jobs'){
-                $jobs = $this->getCareerInfo('Jobs', $options);
-            }elseif (isset($options['type'])=='internships'){
-                $internships = $this->getCareerInfo('Internships', $options);
-            }else{
-                $jobs = $this->getCareerInfo('Jobs', $options);
-                $internships = $this->getCareerInfo('Internships', $options);
-                $count = $jobs['count'] + $internships['count'];
-            }
-            return ['status'=>200,'jobs'=>$jobs['result'], 'internships'=>$internships['result'], 'count'=>$count];
-
-        }
-        return $this->render('career-company',[
-            'org' => $org
-        ]);
-    }
-
-    private function getCareerInfo($type, $options){
-        if($options['limit']){
-            $limit= $options['limit'];
-            $offset= ($options['page'] -1)* $options['limit'];
-        }
-        $jobDetail = EmployerApplications::find()
-            ->alias('a')
-            ->select([
-                'a.last_date',
-                'a.type',
-//                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
-                'a.slug',
-                'dd.name category',
-                'l.designation',
-                'd.initials_color color',
-                'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
-                "g.name as city",
-                'c.name as title',
-                'dd.icon',
-                'd.name as organization_name',
-                'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)
-                https://ui-avatars.com/api/?name=
-                ", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                '(CASE
-               WHEN a.experience = "0" THEN "No Experience"
-               WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
-               WHEN a.experience = "2" THEN "1 Year Experience"
-               WHEN a.experience = "3" THEN "2-3 Years Experience"
-               WHEN a.experience = "3-5" THEN "3-5 Years Experience"
-               WHEN a.experience = "5-10" THEN "5-10 Years Experience"
-               WHEN a.experience = "10-20" THEN "10-20 Years Experience"
-               WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
-               ELSE "No Experience"
-               END) as experience',
-            ])
-            ->joinWith(['title b' => function ($b) {
-                $b->joinWith(['categoryEnc c'], false);
-                $b->joinWith(['parentEnc dd'], false);
-            }], false)
-            ->joinWith(['organizationEnc d' => function ($a) {
-                $a->where(['d.is_deleted' => 0]);
-            }], false)
-            ->joinWith(['applicationPlacementLocations e' => function ($x) {
-                $x->joinWith(['locationEnc f' => function ($x) {
-                    $x->joinWith(['cityEnc g' => function ($x) {
-                        $x->joinWith(['stateEnc s'], false);
-                    }], false);
-                }], false);
-            }], false)
-            ->joinWith(['preferredIndustry h'], false)
-            ->joinWith(['designationEnc l'], false)
-            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => 'ajayjuneja']);
-            $count = $jobDetail->count();
-            $result = $jobDetail
-            ->limit($limit)
-            ->offset($offset)
-            ->asArray()
-            ->all();
-            return ['count'=> $count, 'result' => $result];
-    }
-
-
-    public function actionCareerJobDetail($slug = null){
-        $this->layout = 'without-header';
-        $org = Organizations::find()
-            ->select([
-                'name',
-                'email',
-                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
-            ])
-            ->where([
-                'slug'=> $slug
-            ])
-            ->asArray()
-            ->one();
-        return $this->render('career-job-detail',[
-           'org' => $org
-        ]);
-    }
-
 
     public function actionAddNewSubscriber()
     {
