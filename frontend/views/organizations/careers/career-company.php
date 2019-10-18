@@ -24,31 +24,31 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="job-search-sec">
                             <div class="job-search">
                                 <h4>Opportunities in <?= $org['name']?></h4>
-                                <form>
-                                    <div class="row">
-                                        <div class="col-lg-7">
-                                            <div class="job-field">
-                                                <input type="text" placeholder="Job title, keywords or company name" />
-                                                <i class="far fa-keyboard"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="job-field">
-                                                <select data-placeholder="City, province or region" class="chosen-city">
-
-                                                    <option>Istanbul</option>
-                                                    <option>New York</option>
-                                                    <option>London</option>
-                                                    <option>Russia</option>
-                                                </select>
-                                                <i class="fas fa-map-marker-alt"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <button type="submit"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
+<!--                                <form>-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-lg-7">-->
+<!--                                            <div class="job-field">-->
+<!--                                                <input type="text" placeholder="Job title, keywords or company name" />-->
+<!--                                                <i class="far fa-keyboard"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-lg-4">-->
+<!--                                            <div class="job-field">-->
+<!--                                                <select data-placeholder="City, province or region" class="chosen-city">-->
+<!---->
+<!--                                                    <option>Istanbul</option>-->
+<!--                                                    <option>New York</option>-->
+<!--                                                    <option>London</option>-->
+<!--                                                    <option>Russia</option>-->
+<!--                                                </select>-->
+<!--                                                <i class="fas fa-map-marker-alt"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-lg-1">-->
+<!--                                            <button type="submit"><i class="fas fa-search"></i></button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
                             </div>
                         </div>
                     </div>

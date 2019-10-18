@@ -53,9 +53,7 @@ AppAssets::register($this);
 <div class="body-overlay"></div>
 <div id="wrapper" class="clearfix">
     <div class="back-btn">
-        <a href="<?=
-            $this->params['url']
-        ?>"><i class="fas fa-long-arrow-alt-left"></i></a>
+        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i></a>
     </div>
 
     <div class="main-content">
@@ -66,7 +64,7 @@ AppAssets::register($this);
     </div>
     <footer id="footer" class="footer">
         <div class="footer-border">
-<!--            <a href="/"><img src="--><?//= Url::to('/assets/common/logos/footer-logo.png'); ?><!--"> </a>-->
+
         </div>
 
         <div class="footer-bottom">
