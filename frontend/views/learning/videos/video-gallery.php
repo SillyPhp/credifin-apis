@@ -1114,13 +1114,12 @@ $this->registerCss('
 
 $script = <<< JS
 function fillData(){
+    var path = window.location.pathname.split('/');
     $.ajax({
         type: 'POST',
         async: false,
         url: '/learning/videos/get-category-job',
-        data: {
-            'keyword' : 'it'
-        },
+        data: {'keyword' : path['4']},
         success: function(result){
                 var application_card = $('#application-card').html();
                 var jobs_render = Mustache.render(application_card, result.jobs);

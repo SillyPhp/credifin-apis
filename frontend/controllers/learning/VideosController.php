@@ -235,11 +235,6 @@ class VideosController extends Controller
                     'or',
                     ['like', 'a.slug', $s],
                     ['like', 'a.description', $s],
-                    ['like', 'b.name', $s],
-                    ['like', 'a.type', $s],
-                    ['like', 'c.name', $s],
-                    ['like', 'c.slug', $s],
-                    ['like', 'c.website', $s],
                     ['like', 'g.name', $s],
                     ['like', 'h.name', $s],
                     ['like', 'g.slug', $s],
@@ -247,11 +242,6 @@ class VideosController extends Controller
                     ['like', 'e.slug', $s],
                     ['like', 'f.industry', $s],
                     ['like', 'f.slug', $s],
-                    ['like', 'l.wage_type', $s],
-                    ['like', 'l.wage_duration', $s],
-                    ['like', 'j.location_name', $s],
-                    ['like', 'j.address', $s],
-                    ['like', 'k.name', $s],
                 ])
                 ->groupBy(['a.application_enc_id'])
                 ->limit(6);
