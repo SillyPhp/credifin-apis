@@ -430,39 +430,6 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
             gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
 }
-//if (Yii::$app->user->isGuest) {
-//    $this->registerJs('
-//        window.addEventListener("scroll", header_main);
-//
-//        function header_main() {
-//            var check_h_type = document.getElementById("header-main");
-//            if(window.pageYOffset <= 0) {
-//                check_h_type.classList.add("header-show");
-//            } else if(window.pageYOffset > 5){
-//                check_h_type.classList.remove("header-show");
-//            }
-//        }
-//        header_main();
-//    ');
-//}
-if (!$this->params['disablefacebookMessenger']) {
-    $this->registerJs('
-            window.fbAsyncInit = function() {
-               FB.init({
-                 xfbml            : true,
-                 version          : "v3.2"
-               });
-             };
-            
-             (function(d, s, id) {
-             var js, fjs = d.getElementsByTagName(s)[0];
-             if (d.getElementById(id)) return;
-             js = d.createElement(s); js.id = id;
-             js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-             fjs.parentNode.insertBefore(js, fjs);
-            }(document, "script", "facebook-jssdk"));
-        ');
-}
 if (!$this->params['header_dark']) {
     $this->registerJs(" $(document).on('scroll', function () {
                 var header = $('#main-header');
@@ -487,12 +454,6 @@ $this->registerJs('
                     }
             });
        ', View::POS_HEAD);
-if (!$this->params['disablefacebookMessenger']) {
-    ?>
-    <div id="fb-root"></div>
-    <div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
-    <?php
-}
 ?>
 <?php $this->endBody(); ?>
 </body>
