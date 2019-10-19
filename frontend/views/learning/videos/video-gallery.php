@@ -8,7 +8,7 @@ use yii\helpers\Html;
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h2 class="heading-style h-spacing"><?= $parentId['name'];?></h2>
+                    <h2 class="h-spacing"><?= $parentId['name'];?></h2>
                 </div>
             </div>
         </div>
@@ -240,9 +240,9 @@ use yii\helpers\Html;
                 <div class="col-md-12 row1 v-padding">
 
                     <div id="gallery-video"></div>
-
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -406,6 +406,18 @@ $this->registerCss('
   top: 20px; 
   transition: .5s ease;
 }
+
+.show{
+	padding: 10px;
+	border: none;
+	display: block;
+	margin: auto;
+	font-size: 15px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: white;
+	border-radius: 5px;
+}
 .card__block--main {
   background-color: #fff;
   border-radius: 15px;
@@ -541,8 +553,10 @@ $this->registerCss('
 } 
 .h-spacing{
     letter-spacing: 4px;
-    word-spacing: 10px;
     text-transform: uppercase;
+    font-size: 30pt;
+    font-family: roboto;
+   
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {
