@@ -63,6 +63,7 @@ class CareersController extends Controller
         }
         $jobDetail = EmployerApplications::find()
             ->alias('a')
+            ->distinct()
             ->select([
                 'a.application_enc_id',
                 'a.last_date',
