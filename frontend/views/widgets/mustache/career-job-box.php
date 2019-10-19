@@ -11,12 +11,18 @@
         <span>{{organization_name}}</span>
             <div class="job-lctn">
                 <i class="fas fa-map-marker-alt"></i>
-                {{#city}}
-                    {{city}}
-                {{/city}}
-                {{^city}}
+                {{#applicationPlacementLocations}}
+                    {{#.}}
+                        {{#name}}
+                        <span>
+                            {{name}}
+                        </span>
+                        {{/name}}
+                    {{/.}}
+                {{/applicationPlacementLocations}}
+                {{^applicationPlacementLocations}}
                     Work From Home
-                {{/city}}
+                {{/applicationPlacementLocations}}
             </div>
         </div>
         <div class="job-style-bx">
@@ -117,6 +123,19 @@ $this->registerCss('
 .job-listing.wtabs .job-lctn i {
     float: none;
     font-size: 15px;
+}
+.job-listing.wtabs .job-lctn > span{
+    float: none;
+    margin-right: 8px;
+    position: relative;
+}
+.job-listing.wtabs .job-lctn > span:before{
+    position:absolute;
+    content:",";
+    right:-2px;
+}
+.job-listing.wtabs .job-lctn > span:last-child:before{
+    content:"";
 }
 .job-listings-sec.style2 .job-listing .job-title-sec span {
     color: #26ae61;
