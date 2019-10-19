@@ -36,9 +36,9 @@ class CareersController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post();
-            if (isset($options['type']) == 'jobs') {
+            if (isset($options['type']) == 'jobs' && $options['type'] == 'jobs') {
                 $jobs = $this->getCareerInfo('Jobs', $options, $slug);
-            } elseif (isset($options['type']) == 'internships') {
+            } elseif (isset($options['type']) == 'internships' && $options['type'] == 'internships') {
                 $internships = $this->getCareerInfo('Internships', $options, $slug);
             } else {
                 $jobs = $this->getCareerInfo('Jobs', $options, $slug);
@@ -120,7 +120,7 @@ class CareersController extends Controller
     public function actionDetail($username, $type, $slug)
     {
         $this->layout = 'without-header';
-        $type = ucfirst($type . 's');
+        $type = ucfirst($type);
         $application_details = EmployerApplications::find()
             ->alias('a')
             ->innerJoinWith(['organizationEnc b'], false)
@@ -128,7 +128,7 @@ class CareersController extends Controller
             ->where([
                 'a.slug' => $slug,
                 'b.slug' => $username,
-                'c.name' => $type,
+                'c.name' => $type . 's',
                 'a.is_deleted' => 0
             ])
             ->andWhere(['or',['!=', 'b.website', null],['!=', 'b.website', ""]])
@@ -140,10 +140,10 @@ class CareersController extends Controller
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
             $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = $type);
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = $type . 's');
         } else {
             $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = $type);
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = $type . 's');
         }
         if (!Yii::$app->user->isGuest) {
             $applied_jobs = AppliedApplications::find()

@@ -11,13 +11,13 @@ echo $this->render('/widgets/drop_resume', [
 
 <section class="overlape">
     <div class="block no-padding">
-        <div data-velocity="-.1" style="background: url(http://placehold.it/1600x800) repeat scroll 50% 422.28px transparent;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
+        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <div class="">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="inner-header wform">
                         <div class="nav-com-logo">
-                            <a href="<?= $org['website']?>">
+                            <a href="<?= Url::to($org['website'])?>">
                                 <img src="<?= $org['logo']?>" alt="">
                             </a>
                         </div>
@@ -1089,7 +1089,7 @@ $.ajax({
                 $('#jobMore').hide();
             }
              if(data['internships'].length >= 10){
-                intenPage = 2;
+                internPage = 2;
             }else{
                 $('#jobMoreIntern').hide();
             }
@@ -1129,7 +1129,7 @@ $('#jobMoreIntern').on('click',function(e) {
         if(data.status == 200){
             if(data['internships'].length > 0){
                 var intern = $('#career-job-box').html();
-                $("#career_internship_list").html(Mustache.render(intern, data.internships));
+                $("#career_internship_list").append(Mustache.render(intern, data.internships));
                 if(data['internships'].length >= 10){
                     internPage++;
                 }else{
