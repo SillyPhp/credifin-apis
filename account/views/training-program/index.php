@@ -99,8 +99,8 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                 <div class="results"></div>
                                 <div class="selection">
                                     <input type="text" data-value="" class="city_select" placeholder="Search city">
-                                    <input type="number" class="total_seat" placeholder="Seats">
-                                    <input type="number" class="fees_select" placeholder="Fees">
+                                    <input type="text" class="total_seat" placeholder="Seats">
+                                    <input type="text" class="fees_select" placeholder="Fees">
                                     <select class="fees_method" name="fees_method">
                                         <option value="1">Monthly</option>
                                         <option value="2">Weekly</option>
@@ -874,8 +874,11 @@ $(".close-m-mo").on("click", function() {
   $('.m-modal').attr('class', 'm-modal');
   $('.m-modal, .m-cover').addClass("hidden");
 });
+$('.fees_select').mask("#,#0,#00", {reverse: true});
+$('.total_seat').mask("#", {reverse: true});
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/hours-widget.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
