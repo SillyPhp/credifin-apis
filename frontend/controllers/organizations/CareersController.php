@@ -64,6 +64,7 @@ class CareersController extends Controller
         $jobDetail = EmployerApplications::find()
             ->alias('a')
             ->select([
+                'a.application_enc_id',
                 'a.last_date',
                 'a.type',
                 'CONCAT("/",d.slug,"/",LOWER(LEFT(j.name,LENGTH(j.name) -1)),"/",a.slug) as slug',
@@ -71,7 +72,7 @@ class CareersController extends Controller
                 'l.designation',
                 'd.initials_color color',
                 'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
-                "g.name as city",
+//                "g.name as city",
                 'c.name as title',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', "https") . '", dd.icon) icon',
                 'd.name as organization_name',
@@ -98,12 +99,14 @@ class CareersController extends Controller
                 $a->where(['d.is_deleted' => 0]);
             }], false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                $x->select(['e.application_enc_id','g.name','e.placement_location_enc_id']);
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g' => function ($x) {
+//                        $x->select(['g.name city']);
                         $x->joinWith(['stateEnc s'], false);
                     }], false);
                 }], false);
-            }], false)
+            }], true)
             ->joinWith(['preferredIndustry h'], false)
             ->joinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
