@@ -222,7 +222,11 @@ class ReviewsController extends ApiBaseController
 
             $data['org_detail'] = $org;
             $data['reviews'] = $result;
-            $data['follow'] = $follow->followed;
+            if($follow->followed == 1){
+                $data['follow'] = true;
+            }else {
+                $data['follow'] = false;
+            }
             $data['hasReviewed'] = $hasReviewed;
 
             $data['overall_rating'] = $stats;
