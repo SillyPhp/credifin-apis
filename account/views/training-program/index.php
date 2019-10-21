@@ -1,35 +1,35 @@
 <?php
 
+use kartik\widgets\TimePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\select2\Select2;
-use yii\web\JsExpression;
+
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
 ?>
-<div class="container set-width">
-    <?php
-    if (Yii::$app->session->hasFlash('success')):
-        echo "<div class='m-cover hidden'></div>
+    <div class="container set-width">
+        <?php
+        if (Yii::$app->session->hasFlash('success')):
+            echo "<div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
                         <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
-                        <p>Yii::$app->session->getFlash('success')</p>
+                        <p>".Yii::$app->session->getFlash('success')."</p>
                         <div class='m-actions'>
                             <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
                         </div>
                     </div>
                 </div>";
-    else:
-        Yii::$app->session->hasFlash('error');
-        echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
-    endif;
-    ?>
-    <div class="portlet light" id="form_wizard_1">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Training Program</span>
+        else:
+            Yii::$app->session->hasFlash('error');
+            echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
+        endif;
+        ?>
+        <div class="portlet light" id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-layers font-red"></i>
+                    <span class="caption-subject font-red bold uppercase">Training Program</span>
                 </div>
             </div>
             <div class="portlet-body form">
@@ -108,12 +108,16 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                         <option value="4">One Time</option>
                                     </select>
                                     <div class="fromto">
-                                        <label class="set" for="">From </label>
-                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                               value="09:00"/>
-                                        <label class="set" for="">to </label>
-                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                               value="05:00"/>
+                                        <div class="row">
+                                            <div class="col-md-3 col-md-offset-3">
+                                                <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Batch Timing From');
+                                                ?>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
+                                                ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="jours">
@@ -126,8 +130,8 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                     </div>
                                     <div id="custom-checkboxes"></div>
                                     <div class="check-selection">
-<!--                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>-->
-                                        <a href="#" class="btn add">Add New Batch</a>
+                                        <!--                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>-->
+                                        <a href="#" class="btn add">Create Batch</a>
                                     </div>
                                 </div>
                             </div>
@@ -150,6 +154,10 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
     </div>
 <?php
 $this->registerCss('
+.result-item
+{
+margin: auto !important;
+}
 body > .wrapper > .container-fluid{
     background-image: url("/assets/themes/ey/images/pages/training-program/institutebg.png");
     background-repeat: no-repeat;
@@ -699,7 +707,7 @@ var arrType=new Array("No available time","always open","permanently closed","Op
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
                 '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+                '<input type="checkbox" data-value = "'+(y+1)+'" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
             );
 
         $("input[type='radio']").on("change", function(){
@@ -770,9 +778,11 @@ function add_tags(thisObj,tag_class,name,duplicates)
                         });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
                 thisObj.val('');
+                $('#search-skill').typeahead('val','');
                     } else {
                      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
                      thisObj.val('');
+                     $('#search-skill').typeahead('val','');
                 }
 }
 var skills = new Bloodhound({

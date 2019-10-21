@@ -138,7 +138,7 @@ class TrainingProgramController extends Controller
             $primary_cat = $object->getPrimaryFields();
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->save()) {
-                    Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+                    Yii::$app->session->setFlash('success', 'Your Application Has Been Submitted Successfully..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
                 }
