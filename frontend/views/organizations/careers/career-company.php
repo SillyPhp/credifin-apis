@@ -89,7 +89,7 @@ echo $this->render('/widgets/drop_resume', [
 <!--                                <option>Most Recent</option>-->
 <!--                            </select>-->
 <!--                        </div>-->
-                        <h5><span id="count"></span> Opportunities</h5>
+                        <h5>Total <span id="count"></span> Opportunities</h5>
                         <h1 class="heading-style">Jobs</h1>
                     </div>
                 </div><!-- MOdern Job LIst -->
@@ -182,6 +182,10 @@ echo $this->render('/widgets/mustache/career-job-box');
 
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+#myModal{
+    top: 50%;
+    transform: translateY(-50%);
+}
 .viewmore{
     text-align:center;
     margin-top:20px;
@@ -201,25 +205,6 @@ $this->registerCss('
     margin-left: 5px;
     background: #fff;
     border:none;
-}
-.back-btn{
-    position:absolute;
-    top:15px;
-    left:15px;
-    z-index:9;
-}
-.back-btn a{
-    color:#fff;
-    font-size:17px;
-    padding:5px 10px;
-    transition:.5s ease;
-}
-.back-btn a:hover{
-    background:#00a0e3;
-    padding:5px 10px;
-    transition:.3s ease;
-    font-size:15px;
-    border-radius:5px;
 }
 .nav-com-logo{
     text-align: center;
@@ -500,7 +485,6 @@ section.overlape {
 .modrn-joblist {
     float: left;
     width: 100%;
-    padding-left: 30px;
     border-bottom: 1px solid #edeff7;
 }
 .tags-bar > span {
@@ -639,8 +623,10 @@ section.overlape {
     float: left;
     width: 100%;
     margin: 0;
-        margin-top: 0px;
-    margin-top: 25px;
+    margin-bottom: 20px;
+    color: #383838;
+    text-align: right;
+    font-size: 17px;
 }
 .job-style-bx > i {
     position: absolute;
@@ -822,10 +808,7 @@ section.overlape {
     display: table;
     font-size: 18px;
     color: #232323;
-    margin: 0;
-        margin-bottom: 0px;
-    margin-bottom: 7px;
-    margin-top: 3px;
+    margin: 10px 0px;
 }
 .job-title-sec span {
     float: left;
