@@ -13,6 +13,7 @@ use common\models\TrainingProgramSkills;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use common\models\Utilities;
 
 class TrainingProgram extends Model
@@ -24,11 +25,14 @@ class TrainingProgram extends Model
     public $batch_details;
     public $description;
     public $skills;
+    public $from;
+    public $to;
 
     public function rules()
     {
         return [
             [['title','skills','batch_details','training_duration','training_duration_type','profile','description'],'required'],
+            [['from','to'],'safe'],
             [['title'],'string','max'=>50],
             [['training_duration'],'integer','max'=>12],
             [['title'],'trim'],
@@ -42,7 +46,6 @@ class TrainingProgram extends Model
         if (!$this->validate()) {
             return $this->getErrors();
         }
-
         $utilitiesModel = new Utilities();
         $trainingProgramApplication = new TrainingProgramApplication();
         $type = ApplicationTypes::findOne(['name' => 'Trainings'])->application_type_enc_id;
@@ -163,8 +166,8 @@ class TrainingProgram extends Model
                     $trainingProgramBatches->fees = $a['fees'];
                     $trainingProgramBatches->city_enc_id = $a['city'];
                     $trainingProgramBatches->seats = $a['seat'];
-                    $trainingProgramBatches->start_time = $a['from'];
-                    $trainingProgramBatches->end_time = $a['to'];
+                    $trainingProgramBatches->start_time = date("H:i:s", strtotime($a['from']));
+                    $trainingProgramBatches->end_time = date("H:i:s", strtotime($a['to']));
                     $trainingProgramBatches->days = json_encode($a['days']);
                     if (!$trainingProgramBatches->save())
                     {
@@ -215,5 +218,41 @@ class TrainingProgram extends Model
         } else {
             return false;
         }
+    }
+
+    public function setData($aidk)
+    {
+        $modalData = TrainingProgramApplication::find()
+                      ->alias('a')
+                      ->select(['a.application_enc_id','e.name title_name','profile_enc_id','title','a.description','training_duration','training_duration_type'])
+                      ->where(['a.application_enc_id'=>$aidk])
+                      ->joinWith(['trainingProgramBatches b'=>function($b)
+                      {
+                          $b->joinWith(['cityEnc c'],false);
+                          $b->select(['b.application_enc_id','b.city_enc_id','c.name','b.fees','b.fees_methods','seats','days','start_time','end_time']);
+                      }])
+                      ->joinWith(['title0 d'=>function($b)
+                      {
+                          $b->joinWith(['categoryEnc e'],false);
+                      }],false)
+                      ->joinWith(['trainingProgramSkills f'=>function($b)
+                      {
+                          $b->select(['f.application_enc_id','g.skill']);
+                          $b->joinWith(['skillEnc g'],false);
+                      }])
+                      ->asArray()->one();
+        $this->profile = $modalData['profile_enc_id'];
+        $this->title = $modalData['title_name'];
+        $this->training_duration = $modalData['training_duration'];
+        $this->training_duration_type = $modalData['training_duration_type'];
+        $this->description = $modalData['description'];
+        if (!empty($modalData['trainingProgramSkills'])):
+            $skill_list = ArrayHelper::getColumn($modalData['trainingProgramSkills'], 'skill');
+        endif;
+        return [
+            'model'=>$this,
+            'skill_list'=>$skill_list,
+            'batch_data'=>$modalData['trainingProgramBatches']
+        ];
     }
 }
