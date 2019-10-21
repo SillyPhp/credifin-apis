@@ -440,7 +440,7 @@ class ReviewsController extends ApiBaseController
                         'b.last_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
-                        'c.name'
+                        'c.name profile'
                     ]
                 ];
 
@@ -516,7 +516,7 @@ class ReviewsController extends ApiBaseController
                         'b.last_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
-                        'c.name'
+                        'c.name profile'
                     ]
                 ];
 
