@@ -450,6 +450,7 @@ $this->registerCss('
 }
 .best-answers {
     float: right;
+    display:flex;
 }
 .t-answers img {
     height: 20px;
