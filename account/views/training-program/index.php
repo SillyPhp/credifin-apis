@@ -14,7 +14,7 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                 <div class='m-modal hidden'>
                     <div class='m-content'>
                         <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
-                        <p>Your Application has successfully submitted.</p>
+                        <p>Yii::$app->session->getFlash('success')</p>
                         <div class='m-actions'>
                             <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
                         </div>
@@ -875,7 +875,7 @@ $(".close-m-mo").on("click", function() {
   $('.m-modal, .m-cover').addClass("hidden");
 });
 $('.fees_select').mask("#,#0,#00", {reverse: true});
-$('.total_seat').mask("#", {reverse: true});
+$('.total_seat, #training_duration').mask("#", {reverse: true});
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -30,7 +30,7 @@ class TrainingProgramController extends Controller
         $primary_cat = $object->getPrimaryFields();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+                Yii::$app->session->setFlash('success', 'Your Application Has Been Submitted Successfully..');
             } else {
                 Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
             }
@@ -127,5 +127,25 @@ class TrainingProgramController extends Controller
                 ->all();
             return $this->render('dashboard/candidate-list', ['user_data' => $user_data]);
         }
+    }
+
+    public function actionClone($aidk)
+    {
+        if (Yii::$app->user->identity->organization):
+            $model = new TrainingProgram();
+            $type = 'Clone';
+            $object = new ApplicationForm();
+            $primary_cat = $object->getPrimaryFields();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+                }
+                return $this->refresh();
+            }
+            return $this->render('index',['model'=>$model,'primary_cat'=>$primary_cat]);
+            endif;
+
     }
 }
