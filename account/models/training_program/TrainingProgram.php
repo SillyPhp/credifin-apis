@@ -24,11 +24,14 @@ class TrainingProgram extends Model
     public $batch_details;
     public $description;
     public $skills;
+    public $from;
+    public $to;
 
     public function rules()
     {
         return [
             [['title','skills','batch_details','training_duration','training_duration_type','profile','description'],'required'],
+            [['from','to'],'safe'],
             [['title'],'string','max'=>50],
             [['training_duration'],'integer','max'=>12],
             [['title'],'trim'],
@@ -42,7 +45,6 @@ class TrainingProgram extends Model
         if (!$this->validate()) {
             return $this->getErrors();
         }
-
         $utilitiesModel = new Utilities();
         $trainingProgramApplication = new TrainingProgramApplication();
         $type = ApplicationTypes::findOne(['name' => 'Trainings'])->application_type_enc_id;
@@ -163,8 +165,8 @@ class TrainingProgram extends Model
                     $trainingProgramBatches->fees = $a['fees'];
                     $trainingProgramBatches->city_enc_id = $a['city'];
                     $trainingProgramBatches->seats = $a['seat'];
-                    $trainingProgramBatches->start_time = $a['from'];
-                    $trainingProgramBatches->end_time = $a['to'];
+                    $trainingProgramBatches->start_time = date("H:i:s", strtotime($a['from']));
+                    $trainingProgramBatches->end_time = date("H:i:s", strtotime($a['to']));
                     $trainingProgramBatches->days = json_encode($a['days']);
                     if (!$trainingProgramBatches->save())
                     {
