@@ -65,6 +65,16 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="pf-field no-margin">
                             <ul class="tags_input skill_tag_list">
+                                <?php if (!empty($skill)) {
+                                    foreach ($skill as $s) { ?>
+                                        <li class="addedTag"><?= $s ?><span
+                                                    onclick="$(this).parent().remove();"
+                                                    class="tagRemove">x</span><input type="hidden"
+                                                                                     name="skills[]"
+                                                                                     value="<?= $s ?>">
+                                        </li>
+                                    <?php }
+                                } ?>
                                 <li class="tagAdd taglist">
                                     <div class="skill_wrapper">
                                         <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -96,7 +106,12 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="contenu">
                             <div class="choice_pattern">
-                                <div class="results"></div>
+                                <div class="results">
+                                    <?php if (!empty($batch_data)): ?>
+                                    <div class="result-item"><div class="result-data"><span></span><span>Mon,</span> : from <strong>09:00 AM</strong> to <strong>05:00 PM</strong> <i class="fa fa-times cancelCurrent" onclick="removeIt($(this));"></i></div><div class="result-data"><b>Fees: </b><span>121</span></div><div class="result-data"><b>City: </b><span>Ludhiana</span></div><div class="result-data"><b>Seat: </b> <span>12121</span></div></div>
+                                    <input type="hidden" class="hours_class" name"business_hours[]"="" value="Mon, : from 09:00 AM to 05:00 PM Fees: 121City: LudhianaSeat:  12121">
+                                    <?php endif; ?>
+                                </div>
                                 <div class="selection">
                                     <input type="text" data-value="" class="city_select" placeholder="Search city">
                                     <input type="text" class="total_seat" placeholder="Seats">
