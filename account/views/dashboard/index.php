@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
+echo $this->render('/widgets/training/invitation_form');
 
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):

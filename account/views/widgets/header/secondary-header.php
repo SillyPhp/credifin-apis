@@ -21,6 +21,11 @@ use yii\helpers\Url;
                         <?= Yii::t('account', 'Create Quick Job'); ?>
                     </a>
                 </div>
+                <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                    <a class="btn btn-primary custom-buttons" href="javascript:;" data-toggle="modal" data-target="#invite-candidates">
+                        <?= Yii::t('account', 'Invite Candidates'); ?>
+                    </a>
+                </div>
             <?php elseif ($for == 'Jobs'): ?>
                 <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                     <a class="btn btn-primary custom-buttons" href="<?= Url::to('/account/questionnaire/create'); ?>">
