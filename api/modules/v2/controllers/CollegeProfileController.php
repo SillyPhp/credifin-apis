@@ -105,7 +105,7 @@ class CollegeProfileController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'detail' => $organizations,'courses'=>$courses]);
+            return $this->response(200, ['status' => 200, 'detail' => $organizations, 'courses' => $courses]);
         } else {
             return $this->response(401);
         }
@@ -285,27 +285,27 @@ class CollegeProfileController extends ApiBaseController
                     'b.slug',
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb'],false);
-                    $b->select(['b.application_enc_id','b.slug']);
+                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->select(['b.application_enc_id', 'b.slug']);
                     $b->joinWith(['title d' => function ($d) {
                         $d->joinWith(['parentEnc e']);
-                    }],false);
+                    }], false);
                     $b->joinWith(['applicationPlacementLocations f' => function ($f) {
-                        $f->select(['f.application_enc_id','g.name','f.placement_location_enc_id','f.positions']);
+                        $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
                         $f->groupBy(['f.placement_location_enc_id']);
-                    }],true);
-                }],true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                    }], true);
+                }], true)
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
 
 
             $result = [];
-            foreach ($jobs as $j){
+            foreach ($jobs as $j) {
                 $data = [];
                 $locations = [];
                 $positions = 0;
@@ -314,17 +314,17 @@ class CollegeProfileController extends ApiBaseController
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
-                foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l){
-                    array_push($locations,$l['name']);
+                foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                    array_push($locations, $l['name']);
                     $positions += $l['positions'];
                 }
-                $data['location'] = implode(',',$locations);
+                $data['location'] = implode(',', $locations);
                 $data['positions'] = $positions;
-                array_push($result,$data);
+                array_push($result, $data);
             }
 
-            return $this->response(200,['status'=>200,'jobs'=>$result]);
-        }else{
+            return $this->response(200, ['status' => 200, 'jobs' => $result]);
+        } else {
             return $this->response(401);
         }
     }

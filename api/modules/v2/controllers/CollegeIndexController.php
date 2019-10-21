@@ -4,6 +4,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
+use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\ReviewsType;
@@ -43,6 +44,22 @@ class CollegeIndexController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    private function getOrgId()
+    {
+        if ($user = $this->isAuthorized()) {
+            $organizations = Users::find()
+                ->alias('a')
+                ->select(['b.organization_enc_id college_id'])
+                ->joinWith(['organizationEnc b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+            return $organizations['college_id'];
+        } else {
+            return $this->response(401);
+        }
     }
 
     public function actionCounts()
@@ -117,8 +134,16 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id','a.user_enc_id','b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE CONCAT("https://ui-avatars.com/api/?name=", name, "&size=200&rounded=false&background=", REPLACE(initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'], false)
+                ->distinct()
+                ->select(['a.user_other_details_enc_id','a.user_enc_id','b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->joinWith(['userEnc b'=>function($b){
+                    $b->select(['b.user_enc_id','e.name']);
+                    $b->joinWith(['appliedApplications f'=>function($f){
+                        $f->joinWith(['applicationEnc d'=>function($d){
+                            $d->joinWith(['organizationEnc e']);
+                        }],false);
+                    }],false);
+                }], true)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
                 ->asArray()
@@ -194,7 +219,7 @@ class CollegeIndexController extends ApiBaseController
             $req = Yii::$app->request->post();
 
             $approve = ErexxCollaborators::find()
-                ->where(['collaboration_enc_id'=>$req['collaboration_enc_id'],'college_approvel'=>0])
+                ->where(['collaboration_enc_id'=>$req['collaborator_enc_id'],'college_approvel'=>0])
                 ->one();
 
             if(!empty($approve)){
@@ -222,6 +247,7 @@ class CollegeIndexController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->select([
+                    'a.application_enc_id',
                     'bb.name',
                     'bb.slug org_slug',
                     'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
@@ -333,6 +359,18 @@ class CollegeIndexController extends ApiBaseController
                 ->all();
 
             return $this->response(200,['status'=>200,'data'=>$candidate,'all_candidates'=>$candidates]);
+        }
+    }
+
+    public function actionCourses(){
+        if($this->isAuthorized()){
+            $college_id = $this->getOrgId();
+
+            $courses = CollegeCourses::find()
+                ->select(['college_course_enc_id','course_name','course_duration'])
+                ->where(['organization_enc_id'=>$college_id])
+                ->asArray()
+                ->all();
         }
     }
 }
