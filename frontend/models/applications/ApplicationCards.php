@@ -559,7 +559,7 @@ class ApplicationCards
                 WHEN t.fees_methods = "3" AND t.fees >0 THEN CONCAT(t.fees," / Annually")
                 WHEN t.fees_methods = "4" AND t.fees >0 THEN CONCAT(t.fees,"(One Time)")
                 ELSE "No Fees" 
-               END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
+               END) as fees','CONCAT(TIME_FORMAT(t.start_time,"%h:%i:%p"),"-",TIME_FORMAT(t.end_time,"%h:%i:%p")) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')

@@ -48,7 +48,7 @@ class ProfileController extends Controller
                     ]);
                 }
 
-                if ($type === 'careers') {
+                if ($type === 'careers' || $type === "jobs" || $type === "internships") {
                     return Yii::$app->runAction('organizations/careers/index', [
                         'slug' => $user->username,
                     ]);

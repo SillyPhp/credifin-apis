@@ -222,7 +222,11 @@ class ReviewsController extends ApiBaseController
 
             $data['org_detail'] = $org;
             $data['reviews'] = $result;
-            $data['follow'] = $follow->followed;
+            if($follow->followed == 1){
+                $data['follow'] = true;
+            }else {
+                $data['follow'] = false;
+            }
             $data['hasReviewed'] = $hasReviewed;
 
             $data['overall_rating'] = $stats;
@@ -436,7 +440,7 @@ class ReviewsController extends ApiBaseController
                         'b.last_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
-                        'c.name'
+                        'c.name profile'
                     ]
                 ];
 
@@ -512,7 +516,7 @@ class ReviewsController extends ApiBaseController
                         'b.last_name',
                         'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", image) ELSE NULL END image',
                         'b.initials_color',
-                        'c.name'
+                        'c.name profile'
                     ]
                 ];
 

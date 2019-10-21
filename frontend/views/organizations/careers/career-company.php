@@ -11,44 +11,44 @@ echo $this->render('/widgets/drop_resume', [
 
 <section class="overlape">
     <div class="block no-padding">
-        <div data-velocity="-.1" style="background: url(http://placehold.it/1600x800) repeat scroll 50% 422.28px transparent;" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
+        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
         <div class="">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="inner-header wform">
                         <div class="nav-com-logo">
-                            <a href="<?= $org['website']?>">
+                            <a href="<?= Url::to($org['website'])?>">
                                 <img src="<?= $org['logo']?>" alt="">
                             </a>
                         </div>
                         <div class="job-search-sec">
                             <div class="job-search">
                                 <h4>Opportunities in <?= $org['name']?></h4>
-                                <form>
-                                    <div class="row">
-                                        <div class="col-lg-7">
-                                            <div class="job-field">
-                                                <input type="text" placeholder="Job title, keywords or company name" />
-                                                <i class="far fa-keyboard"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="job-field">
-                                                <select data-placeholder="City, province or region" class="chosen-city">
-
-                                                    <option>Istanbul</option>
-                                                    <option>New York</option>
-                                                    <option>London</option>
-                                                    <option>Russia</option>
-                                                </select>
-                                                <i class="fas fa-map-marker-alt"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1">
-                                            <button type="submit"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </form>
+<!--                                <form>-->
+<!--                                    <div class="row">-->
+<!--                                        <div class="col-lg-7">-->
+<!--                                            <div class="job-field">-->
+<!--                                                <input type="text" placeholder="Job title, keywords or company name" />-->
+<!--                                                <i class="far fa-keyboard"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-lg-4">-->
+<!--                                            <div class="job-field">-->
+<!--                                                <select data-placeholder="City, province or region" class="chosen-city">-->
+<!---->
+<!--                                                    <option>Istanbul</option>-->
+<!--                                                    <option>New York</option>-->
+<!--                                                    <option>London</option>-->
+<!--                                                    <option>Russia</option>-->
+<!--                                                </select>-->
+<!--                                                <i class="fas fa-map-marker-alt"></i>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                        <div class="col-lg-1">-->
+<!--                                            <button type="submit"><i class="fas fa-search"></i></button>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </form>-->
                             </div>
                         </div>
                     </div>
@@ -89,7 +89,7 @@ echo $this->render('/widgets/drop_resume', [
 <!--                                <option>Most Recent</option>-->
 <!--                            </select>-->
 <!--                        </div>-->
-                        <h5><span id="count"></span> Opportunities</h5>
+                        <h5>Total <span id="count"></span> Opportunities</h5>
                         <h1 class="heading-style">Jobs</h1>
                     </div>
                 </div><!-- MOdern Job LIst -->
@@ -182,6 +182,10 @@ echo $this->render('/widgets/mustache/career-job-box');
 
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+#myModal{
+    top: 50%;
+    transform: translateY(-50%);
+}
 .viewmore{
     text-align:center;
     margin-top:20px;
@@ -201,25 +205,6 @@ $this->registerCss('
     margin-left: 5px;
     background: #fff;
     border:none;
-}
-.back-btn{
-    position:absolute;
-    top:15px;
-    left:15px;
-    z-index:9;
-}
-.back-btn a{
-    color:#fff;
-    font-size:17px;
-    padding:5px 10px;
-    transition:.5s ease;
-}
-.back-btn a:hover{
-    background:#00a0e3;
-    padding:5px 10px;
-    transition:.3s ease;
-    font-size:15px;
-    border-radius:5px;
 }
 .nav-com-logo{
     text-align: center;
@@ -500,7 +485,6 @@ section.overlape {
 .modrn-joblist {
     float: left;
     width: 100%;
-    padding-left: 30px;
     border-bottom: 1px solid #edeff7;
 }
 .tags-bar > span {
@@ -639,8 +623,10 @@ section.overlape {
     float: left;
     width: 100%;
     margin: 0;
-        margin-top: 0px;
-    margin-top: 25px;
+    margin-bottom: 20px;
+    color: #383838;
+    text-align: right;
+    font-size: 17px;
 }
 .job-style-bx > i {
     position: absolute;
@@ -822,10 +808,7 @@ section.overlape {
     display: table;
     font-size: 18px;
     color: #232323;
-    margin: 0;
-        margin-bottom: 0px;
-    margin-bottom: 7px;
-    margin-top: 3px;
+    margin: 10px 0px;
 }
 .job-title-sec span {
     float: left;
@@ -1089,7 +1072,7 @@ $.ajax({
                 $('#jobMore').hide();
             }
              if(data['internships'].length >= 10){
-                intenPage = 2;
+                internPage = 2;
             }else{
                 $('#jobMoreIntern').hide();
             }
@@ -1129,7 +1112,7 @@ $('#jobMoreIntern').on('click',function(e) {
         if(data.status == 200){
             if(data['internships'].length > 0){
                 var intern = $('#career-job-box').html();
-                $("#career_internship_list").html(Mustache.render(intern, data.internships));
+                $("#career_internship_list").append(Mustache.render(intern, data.internships));
                 if(data['internships'].length >= 10){
                     internPage++;
                 }else{
