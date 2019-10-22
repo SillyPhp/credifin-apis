@@ -362,13 +362,6 @@ class ReviewsController extends ApiBaseController
             return $this->response(422, 'Missing Information');
         }
 
-        if (isset($parameters['type']) && !empty($parameters['type'])) {
-            $type = $parameters['type'];
-        } else {
-            return $this->response(422, 'Missing Information');
-        }
-
-
         if (isset($parameters['limit']) && !empty($parameters['limit'])) {
             $limit = $parameters['limit'];
         }
@@ -448,6 +441,12 @@ class ReviewsController extends ApiBaseController
 
 
         } elseif (!empty($unclaimed_org)) {
+
+            if (isset($parameters['type']) && !empty($parameters['type'])) {
+                $type = $parameters['type'];
+            } else {
+                return $this->response(422, 'Missing Information');
+            }
 
             if($type == 'employee') {
                 $options = [];
