@@ -1,6 +1,8 @@
 <?php
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+
 ?>
 <section class="csb-header">
     <div class="container">
@@ -16,93 +18,93 @@ use yii\helpers\Url;
 <section>
     <div class="container">
         <?php
-        if(empty($careerBlog)){
-        ?>
-        <div class="noResult">No result found</div>
-        <?php
-        }else{
-        ?>
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="heading-style">Related Blogs</h2>
-            </div>
-            <?php
-            $count = 0;
-            foreach($careerBlog as $c){
+        if (empty($careerBlog)) {
             ?>
-            <div class="col-md-<?php if($count==1 || $count==4){
-                echo 6;
-            } else{
-                echo 3;
-            }?>  col-sm-12">
-                <div class="row">
-                    <div class="col-md-12 col-sm-4">
-                        <div class="tp-box">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="img-box">
-                                        <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+            <div class="noResult">No result found</div>
+            <?php
+        } else {
+            ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Related Blogs</h2>
+                </div>
+                <?php
+                $count = 0;
+                foreach ($careerBlog as $c) {
+                    ?>
+                    <div class="col-md-<?php if ($count == 1 || $count == 4) {
+                        echo 6;
+                    } else {
+                        echo 3;
+                    } ?>  col-sm-12">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-4">
+                                <div class="tp-box">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="img-box">
+                                                <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="cs-blog-detail">
+                                                <div class="heading-text">
+                                                    <?= $c['title'] ?>
+                                                </div>
+                                                <div class="box-des">
+                                                    <?= $c['description'] ?>
+                                                </div>
+                                                <div class="cs-read-btn">
+                                                    <a href="<?= $c['link'] ?>">Read</a>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="cs-blog-detail">
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                    $count++;
+                }
+                ?>
+            </div>
+            <div class="divider"></div>
+            <div class="row">
+                <div class="col-md-8">
+                    <?php
+                    $count = 0;
+                    for ($i = 0; $i < 3; $i++) {
+                        $count++
+                        ?>
+                        <div class="vertical-blog">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="ca-vb-icon">
+                                        <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="ca-vd-details">
                                         <div class="heading-text">
-                                            <?= $c['title']?>
+                                            <?= $careerBlog[$i]['title'] ?>
                                         </div>
                                         <div class="box-des">
-                                            <?= $c['description'] ?>
+                                            <?= $careerBlog[$i]['description'] ?>
                                         </div>
-                                        <div class="cs-read-btn">
-                                            <a href="<?= $c['link'] ?>">Read</a>
+                                        <div class="cs-vd-btn">
+                                            <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <?php
+                    }
+                    ?>
                 </div>
             </div>
             <?php
-                $count++;
-            }
-            ?>
-        </div>
-        <div class="divider"></div>
-        <div class="row">
-            <div class="col-md-8">
-                <?php
-                    $count = 0;
-                    for ($i=0; $i<3; $i++ ){
-                        $count++
-                ?>
-                <div class="vertical-blog">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="ca-vb-icon">
-                                <img src="<?= $careerBlog[$i]['image']?>" alt="">
-                            </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="ca-vd-details">
-                                <div class="heading-text">
-                                    <?= $careerBlog[$i]['title'] ?>
-                                </div>
-                                <div class="box-des">
-                                    <?= $careerBlog[$i]['description'] ?>
-                                </div>
-                                <div class="cs-vd-btn">
-                                    <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <?php
-                    }
-                ?>
-            </div>
-        </div>
-        <?php
         }
         ?>
     </div>
@@ -151,7 +153,7 @@ $this->registerCss('
     margin:20px 0 40px;
 }
 .csb-header{
-    background:url('. Url::to('@eyAssets/images/pages/custom/cabloghdr.png').');
+    background:url(' . Url::to('@eyAssets/images/pages/custom/cabloghdr.png') . ');
     background-size:cover;
     min-height:400px;
     min-width:100%;
