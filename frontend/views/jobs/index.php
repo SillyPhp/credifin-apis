@@ -70,6 +70,9 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
+        <?=
+            $this->render('/widgets/preloaders/active-profiles');
+        ?>
     </div>
 </section>
 <?=
@@ -78,6 +81,13 @@ $this->render('/widgets/top-cities',[
     'type' => 'jobs'
 ])
 ?>
+<section>
+    <div class="container">
+        <?=
+        $this->render('/widgets/preloaders/top-cities-preloader');
+        ?>
+    </div>
+</section>
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -127,6 +137,9 @@ $this->render('/widgets/top-cities',[
             <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
+            <?=
+            $this->render('/widgets/preloaders/featured-employers');
+            ?>
         </div>
     </div>
 </section>
