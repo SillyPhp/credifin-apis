@@ -98,7 +98,7 @@ $careerAdviceCategories = [
             <div class="gallery-view">
                 <?php foreach ($careerAdviceCategories as $category): ?>
                     <div class="col-md-4 col-sm-6 card-box">
-                        <a href="<?= Url::to("/career-advice/" . $careerAdviceCategories["slug"]); ?>">
+                        <a href="<?= Url::to("/career-advice/" . $category["slug"]); ?>">
                             <div class="card">
                                 <div class="card__block card__block--main">
                                     <h3 class="card__title">
