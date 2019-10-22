@@ -620,6 +620,9 @@ $this->params['header_dark'] = false;
             'tweets' => $tweets
         ]);
         ?>
+        <?=
+            $this->render('/widgets/preloaders/tweet-job-preloader');
+        ?>
     </div>
 </section>
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [

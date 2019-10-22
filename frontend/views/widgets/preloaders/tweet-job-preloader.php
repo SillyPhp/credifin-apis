@@ -7,7 +7,7 @@ if (isset($size)) {
 <div class="loading-main">
     <div class="row">
 <?php
-for ($i = 0; $i < 4; $i++) {
+    for ($i = 0; $i < 4; $i++) {
     ?>
     <div class="<?= $column ?>">
         <div class="tweet-org-deatail">
@@ -28,10 +28,31 @@ for ($i = 0; $i < 4; $i++) {
         </div>
     </div>
     <?php
-}
+    }
    ?>
     </div>
 </div>
 <?php
-
+$this->registerCss('
+.loading-main .tweet-org-logo .loader{
+    height:50px;
+    width: 50px;
+}
+.loading-main .tweet-org-description .loader{
+    margin-top:5px;
+    width:130px;
+}
+.loading-main .tweet-org-description .loader:nth-child(1){
+    height:15px;
+    width:100%;
+}
+.loading-main .posted-tweet{
+    background:#fff;
+    padding:20px 15px;
+    border-radius:0 0 10px 10px; 
+}
+.loading-main .tweet-org-descriptio .loader{
+    text-align:center
+}
+')
 ?>
