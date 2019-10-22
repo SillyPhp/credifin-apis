@@ -102,7 +102,7 @@ $careerAdviceCategories = [
                             <div class="card">
                                 <div class="card__block card__block--main">
                                     <h3 class="card__title">
-                                        Entrepreneurship
+                                        <?= $category["name"]; ?>
                                     </h3>
                                     <div class='card__element card__element--user-img'>
                                         <div class="pos-rel">

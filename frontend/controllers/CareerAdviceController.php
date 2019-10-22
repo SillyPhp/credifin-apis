@@ -30,9 +30,14 @@ class CareerAdviceController extends Controller
             ->limit(6)
             ->asArray()
             ->all();
-        return $this->render("detail", [
-            'careerBlog' => $careerBlog
-        ]);
+
+        if ($careerBlog) {
+            return $this->render("detail", [
+                'careerBlog' => $careerBlog
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
     }
 
 }
