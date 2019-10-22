@@ -74,6 +74,14 @@ class SiteController extends Controller
         $feedbackFormModel = new FeedbackForm();
         $partnerWithUsModel = new PartnerWithUsForm();
 
+//        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+//            Yii::$app->response->format = Response::FORMAT_JSON;
+//
+//            return $response = [
+//                'status' => 200,
+//
+//            ];
+//        }
         $job_profiles = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
@@ -198,8 +206,8 @@ class SiteController extends Controller
             ->limit(4)
             ->all();
 
-        $a = $this->_getTweets(null, null,"Jobs", 4 , "");
-        $b = $this->_getTweets(null, null,"Internships", 4 , "");
+        $a = $this->_getTweets(null, null, "Jobs", 4, "");
+        $b = $this->_getTweets(null, null, "Internships", 4, "");
         $tweets = array_merge($a, $b);
 
         return $this->render('index', [
@@ -207,8 +215,8 @@ class SiteController extends Controller
             'partnerWithUsModel' => $partnerWithUsModel,
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
-            'search_words' => $search_words,
             'cities' => $cities,
+            'search_words' => $search_words,
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs
         ]);
@@ -280,9 +288,12 @@ class SiteController extends Controller
             'contactFormModel' => $contactFormModel,
         ]);
     }
-    public function actionTweetDetail(){
+
+    public function actionTweetDetail()
+    {
         return $this->render('tweet-detail');
     }
+
     public function actionAllQuiz()
     {
         $quizes = Quiz::find()
@@ -682,7 +693,7 @@ class SiteController extends Controller
     {
         $tweets1 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on','j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
@@ -705,7 +716,7 @@ class SiteController extends Controller
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type','c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
             ->from(\common\models\TwitterJobs::tableName() . 'as a')
             ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
             ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')

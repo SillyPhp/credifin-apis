@@ -519,6 +519,11 @@ $this->params['header_dark'] = false;
 <?= $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs
 ])?>
+<section>
+    <div class="container">
+    <?= $this->render('/widgets/top-cities-preloader');?>
+    </div>
+</section>
 <!---------------how it works-------------->
 <section class="how-it-works">
     <div class="container">
@@ -656,7 +661,7 @@ $this->params['header_dark'] = false;
 </section>
 <section class="search-lists">
     <div class="container">
-        <div class="row">
+        <div id="quick-links-c">
             <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
                 <ul class="quick-links" id="searches">
@@ -713,6 +718,11 @@ $this->params['header_dark'] = false;
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
+    </div>
+</section>
+<section class="search-lists">
+    <div class="container">
+        <?= $this->render('/widgets/quick-links-preloader');?>
     </div>
 </section>
 
