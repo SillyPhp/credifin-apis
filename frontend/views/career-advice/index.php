@@ -122,20 +122,23 @@ $careerAdviceCategories = [
     </div>
     <section class="ca-coming-soon-sec">
         <div class="row">
-            <div class="col-md-5 col-md-offset-1">
-                <div class="ca-coming-pos-rel">
-                    <div class="max-500">
-                        <div class="ca-coming-text">Hey There,</div>
-                        <div class="ca-soon-text">
-                            We are launching a detailed space for you to understand the in and out of each profession.
+            <div class="col-md-12">
+                <div class="col-md-5 col-md-offset-1">
+                    <div class="ca-coming-pos-rel">
+                        <div class="max-500">
+                            <div class="ca-coming-text">Hey There,</div>
+                            <div class="ca-soon-text">
+                                We are launching a detailed space for you to understand the in and out of each
+                                profession.
+                            </div>
+                            <div class="ca-coming-text">Be exited</div>
                         </div>
-                        <div class="ca-coming-text">Be exited</div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="ca-comming-soon-icon">
-                    <img src="<?= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?>" alt="">
+                <div class="col-md-6">
+                    <div class="ca-comming-soon-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?>" alt="">
+                    </div>
                 </div>
             </div>
         </div>
