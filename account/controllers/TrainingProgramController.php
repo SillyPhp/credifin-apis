@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 use account\models\applications\ApplicationForm;
+use account\models\training_program\InviteCandidatesForm;
 use account\models\training_program\TrainingProgram;
 use account\models\training_program\UserAppliedTraining;
 use common\models\AppliedTrainingApplications;
@@ -148,5 +149,15 @@ class TrainingProgramController extends Controller
             return $this->render('index',['model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
             endif;
 
+    }
+
+    public function actionInviteCandidates(){
+        if (Yii::$app->request->isAjax) {
+            $inviteForm = new InviteCandidatesForm();
+
+            return $this->renderAjax('invitation_form',[
+                'inviteForm' => $inviteForm,
+            ]);
+        }
     }
 }
