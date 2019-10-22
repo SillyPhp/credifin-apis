@@ -199,7 +199,7 @@ use yii\widgets\Pjax;
                                         <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
@@ -264,7 +264,7 @@ use yii\widgets\Pjax;
                                         <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
@@ -314,7 +314,7 @@ use yii\widgets\Pjax;
                                         <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
@@ -362,7 +362,7 @@ use yii\widgets\Pjax;
                                         <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
@@ -419,7 +419,7 @@ use yii\widgets\Pjax;
                                         <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>

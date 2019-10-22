@@ -44,7 +44,16 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                        <h3>No Active Internships</h3>
+                        <div class="col-md-12">
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No active Internships</div>
+                                </div>
+                            </div>
+                        </div>
                     <?php }
                     ?>
                 </div>
@@ -78,7 +87,16 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                <h3>No Questionnaire To Display</h3>
+                                <div class="col-md-12">
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">No Questionnaires to display</div>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php }
                             ?>
                         </div>
@@ -110,7 +128,16 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                <h3>No Processes To Display</h3>
+                                <div class="col-md-12">
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">No process to display</div>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php }
                             ?>
                         </div>
@@ -157,7 +184,16 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                        <h3>No Closed Jobs</h3>
+                        <div class="col-md-12">
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No closed jobs</div>
+                                </div>
+                            </div>
+                        </div>
                     <?php }
                     ?>
                 </div>
