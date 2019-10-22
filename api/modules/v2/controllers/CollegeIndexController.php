@@ -137,12 +137,15 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->select(['a.user_other_details_enc_id','a.user_enc_id','b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b'=>function($b){
-                    $b->select(['b.user_enc_id','e.name']);
+                    $b->select(['b.user_enc_id']);
                     $b->joinWith(['appliedApplications f'=>function($f){
+                        $f->select(['f.created_by','e.name']);
                         $f->joinWith(['applicationEnc d'=>function($d){
-                            $d->joinWith(['organizationEnc e']);
+                            $d->joinWith(['organizationEnc e'=>function($e){
+                                $e->groupBy('e.organization_enc_id');
+                            }],false);
                         }],false);
-                    }],false);
+                    }],true);
                 }], true)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
