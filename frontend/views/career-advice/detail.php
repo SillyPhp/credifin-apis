@@ -74,7 +74,7 @@ use yii\helpers\Url;
                 <div class="col-md-8">
                     <?php
                     $count = 0;
-                    for ($i = 0; $i < 3; $i++) {
+                    for ($i = 0; $i < count($careerBlog); $i++) {
                         $count++
                         ?>
                         <div class="vertical-blog">
