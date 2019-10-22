@@ -109,8 +109,8 @@ $careerAdviceCategories = [
                                             <img src="<?= $category["icon"]; ?>" alt="<?= $category["name"]; ?>"/>
                                         </div>
                                     </div>
-                                    <div class="view-btn <?= $category["name"]; ?>">
-                                        <a href="<?= Url::to("/career-advice/" . $careerAdviceCategories["buttonColor"]); ?>">View</a>
+                                    <div class="view-btn <?= $category["buttonColor"]; ?>">
+                                        <a href="<?= Url::to("/career-advice/" . $category["slug"]); ?>">View</a>
                                     </div>
                                 </div>
                             </div>
