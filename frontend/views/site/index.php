@@ -521,7 +521,7 @@ $this->params['header_dark'] = false;
 ])?>
 <section>
     <div class="container">
-    <?= $this->render('/widgets/top-cities-preloader');?>
+    <?= $this->render('/widgets/preloaders/top-cities-preloader');?>
     </div>
 </section>
 <!---------------how it works-------------->
@@ -725,7 +725,7 @@ $this->params['header_dark'] = false;
 </section>
 <section class="search-lists">
     <div class="container">
-        <?= $this->render('/widgets/quick-links-preloader');?>
+        <?= $this->render('/widgets/preloaders/quick-links-preloader');?>
     </div>
 </section>
 
