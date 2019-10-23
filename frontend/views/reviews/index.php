@@ -102,6 +102,11 @@ use yii\bootstrap\ActiveForm;
                 <div id="review_container_compnay">
                 </div>
             </div>
+            <div>
+                <?=
+                $this->render('/widgets/preloaders/review-box-preloader');
+                ?>
+            </div>
         </div>
     </section>
     <section class="top-com-bg">
