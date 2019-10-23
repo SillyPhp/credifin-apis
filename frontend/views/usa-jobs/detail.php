@@ -1,10 +1,12 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
-$link = Url::to('detail/'.$familyid.'/'.$objectid,'https');
+
+$link = Url::to('detail/' . $familyid . '/' . $objectid, 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title =  $get['DepartmentName']. ' is hiring for ' .$get['PositionTitle'];
+$this->title = $get['DepartmentName'] . ' is hiring for ' . $get['PositionTitle'];
 $keywords = 'Jobs,Jobs in Usa';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
@@ -47,8 +49,13 @@ $this->params['seo_tags'] = [
                         <div class="job-title"><?= $get['PositionTitle'] ?></div>
                         <div class="job-statistic">
                             <div class="job-time"><?= $get['PositionSchedule'][0]['Name'] ?></div>
-                            <div class="job-location"><i class="fa fa-map-marker marg"></i> <?= $get['PositionLocationDisplay'] ?></div>
-                            <div class="job-valid"><i class="fas fa-suitcase marg"></i><?= $get['UserArea']['Details']['TotalOpenings'] ?> vacancy</div>
+                            <div class="job-location"><i
+                                        class="fas fa-map-marker-alt marg"></i> <?= $get['PositionLocationDisplay'] ?>
+                            </div>
+                            <div class="job-valid"><i
+                                        class="fas fa-suitcase marg"></i><?= $get['UserArea']['Details']['TotalOpenings'] ?>
+                                vacancy
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,7 +76,7 @@ $this->params['seo_tags'] = [
 <!--        </div>-->
 <!--    </section>-->
 
-<section>
+<section id="us-sub-header">
     <div class="row">
         <div class="col-md-12">
             <div id="s-header" class="nav-bar">
@@ -78,7 +85,13 @@ $this->params['seo_tags'] = [
                     <li><a href="#duties">Duties</a></li>
                     <li><a href="#requirements">Qualification And Other Details</a></li>
                     <li><a href="#locations">Locations</a></li>
-                    <li><a href="#requireddocuments">Agency Overview</a></li>
+                    <?php
+                    if ($get['UserArea']['Details']['AgencyMarketingStatement']) {
+                        ?>
+                        <li><a href="#requireddocuments">Agency Overview</a></li>
+                        <?php
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -94,22 +107,28 @@ $this->params['seo_tags'] = [
                         <div class="d-head " id="overview">Overview</div>
                         <ul class="set-sticky">
                             <li><i class="fas fa-calendar-alt"></i></i>
-                                <h3>opening & closing dates</h3><span><?= date("d-m-Y", strtotime($get['PositionStartDate'])) ?> to <?= date("d-m-Y", strtotime($get['PositionEndDate'])) ?></span></li>
+                                <h3>Opening & Closing Dates</h3>
+                                <span><?= date("d-m-Y", strtotime($get['PositionStartDate'])) ?> to <?= date("d-m-Y", strtotime($get['PositionEndDate'])) ?></span>
+                            </li>
                             <li><i class="fas fa-puzzle-piece"></i>
                                 <h3>Pay scale & Grade</h3><span>
-                                    <?php if ($get['UserArea']['Details']['LowGrade']!=$get['UserArea']['Details']['HighGrade']):
-                                    echo $get['JobGrade'][0]['Code']." ".$get['UserArea']['Details']['LowGrade']."-".$get['UserArea']['Details']['HighGrade'];
+                                    <?php if ($get['UserArea']['Details']['LowGrade'] != $get['UserArea']['Details']['HighGrade']):
+                                        echo $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['LowGrade'] . "-" . $get['UserArea']['Details']['HighGrade'];
                                     else:
-                                        echo $get['JobGrade'][0]['Code']." ".$get['UserArea']['Details']['HighGrade'];
+                                        echo $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['HighGrade'];
                                     endif;
                                     ?>
                                 </span></li>
                             <li><i class="fas fa-money-bill-alt"></i>
-                                <h3>Salary</h3><span><i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MinimumRange'] ?> to <i class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MaximumRange']." ".$get['PositionRemuneration'][0]['RateIntervalCode'] ?></span></li>
+                                <h3>Salary</h3><span><i
+                                            class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MinimumRange'] ?> to <i
+                                            class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MaximumRange'] . " " . $get['PositionRemuneration'][0]['RateIntervalCode'] ?></span>
+                            </li>
                             <li><i class="fas fa-suitcase"></i>
                                 <h3>Service</h3><span>Excepted</span></li>
                             <li><i class="fas fa-mars-double"></i>
-                                <h3>Appointment type</h3><span><?= $get['PositionOfferingType'][0]['Name'] ?></span></li>
+                                <h3>Appointment Type</h3><span><?= $get['PositionOfferingType'][0]['Name'] ?></span>
+                            </li>
                             <li><i class="fas fa-network-wired"></i></i>
                                 <h3>Work Schedule</h3><span><?= $get['PositionSchedule'][0]['Name'] ?></span></li>
                         </ul>
@@ -122,7 +141,7 @@ $this->params['seo_tags'] = [
                     </div>
                 </div>
                 <div class="d-head" id="requirements">Qualification And Other Details</div>
-                <div class="requirements-tab">
+                <div class="requirements-tab set-sticky">
                     <div class="d-content">
                         <?= $get['QualificationSummary'] ?>
                     </div>
@@ -134,42 +153,48 @@ $this->params['seo_tags'] = [
                             <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
                             <span><?= $get['PositionLocation'][0]['LocationName'] ?></span>
                         </div>
-                        <?php if (count($get['PositionLocation'])>1): ?>
-                        <div id="show-more">
-                            <?php foreach ($get['PositionLocation'] as $location){ ?>
-                            <div style="margin-bottom: 8px;">
-                                <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
-                                <span><?= $location['LocationName'] ?></span>
+                        <?php if (count($get['PositionLocation']) > 1): ?>
+                            <div id="show-more">
+                                <?php foreach ($get['PositionLocation'] as $location) { ?>
+                                    <div style="margin-bottom: 8px;">
+                                        <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
+                                        <span><?= $location['LocationName'] ?></span>
+                                    </div>
+                                <?php } ?>
                             </div>
-                            <?php } ?>
-                        </div>
                             <div class="set-clr" id="toggle">Read More</div>
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="d-head" id="requireddocuments">Agency Overview</div>
-                <div class="required-doc-tab set-sticky">
-                    <div class="d-content">
-                       <?= $get['UserArea']['Details']['AgencyMarketingStatement']; ?>
+                <?php
+                if ($get['UserArea']['Details']['AgencyMarketingStatement']) {
+                    ?>
+                    <div class="d-head" id="requireddocuments">Agency Overview</div>
+                    <div class="required-doc-tab set-sticky">
+                        <div class="d-content">
+                            <?= $get['UserArea']['Details']['AgencyMarketingStatement']; ?>
+                        </div>
                     </div>
-                </div>
+                    <?php
+                }
+                ?>
             </div>
             <div class="col-md-4">
                 <div class="agency-info">
                     <div class="agency">Agency Information</div>
                     <div class="agency-name"><i class="fas fa-user user-set"></i><?= $get['OrganizationName'] ?></div>
-<!--                    <div class="phone">-->
-<!--                        <div class="agency-num"><i class="fas fa-mobile-alt user-set"></i>Phone</div>-->
-<!--                        <span class="d-content">+984616161</span>-->
-<!--                    </div>-->
-<!--                    <div class="email">-->
-<!--                        <div class="agency-email"><i class="fas fa-envelope user-set"></i>E-mail</div>-->
-<!--                        <span class="d-content">abc@gmail.com</span>-->
-<!--                    </div>-->
-<!--                    <div class="adress">-->
-<!--                        <div class="agency-adress"><i class="fas fa-map-marker-alt user-set"></i>Address</div>-->
-<!--                        <span class="d-content">Government Office, 441 street nw, room no.145, washington, united states</span>-->
-<!--                    </div>-->
+                    <!--                    <div class="phone">-->
+                    <!--                        <div class="agency-num"><i class="fas fa-mobile-alt user-set"></i>Phone</div>-->
+                    <!--                        <span class="d-content">+984616161</span>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="email">-->
+                    <!--                        <div class="agency-email"><i class="fas fa-envelope user-set"></i>E-mail</div>-->
+                    <!--                        <span class="d-content">abc@gmail.com</span>-->
+                    <!--                    </div>-->
+                    <!--                    <div class="adress">-->
+                    <!--                        <div class="agency-adress"><i class="fas fa-map-marker-alt user-set"></i>Address</div>-->
+                    <!--                        <span class="d-content">Government Office, 441 street nw, room no.145, washington, united states</span>-->
+                    <!--                    </div>-->
                     <div class="a-divider"></div>
                     <div class="announcement">
                         <span class="announcement-name">Announcement number</span>
@@ -185,23 +210,38 @@ $this->params['seo_tags'] = [
                 </div>
                 <div class="sharing-box">
                     <div class="sharing-pic">
-                        <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
+                        <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png'); ?>">
                     </div>
                     <!--                        <div class="share-it">Share :-</div>-->
                     <div class="fb-share">
-                        <button class="fb-btn" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                        <button class="fb-btn"
+                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-facebook-f marg"></i>Facebook
+                        </button>
                     </div>
                     <div class="tw-share">
-                        <button class="tw-btn" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter marg"></i>Twitter</button>
+                        <button class="tw-btn"
+                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-twitter marg"></i>Twitter
+                        </button>
                     </div>
                     <div class="li-share">
-                        <button class="li-btn" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                        <button class="li-btn"
+                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-linkedin-in marg"></i>LinkedIn
+                        </button>
                     </div>
                     <div class="wa-share">
-                        <button class="wa-btn" onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                        <button class="wa-btn"
+                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fab fa-whatsapp marg"></i>Whatsapp
+                        </button>
                     </div>
                     <div class="mail-share">
-                        <button class="mail-btn" onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fas fa-envelope marg"></i>Mail</button>
+                        <button class="mail-btn"
+                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                            <i class="fas fa-envelope marg"></i>Mail
+                        </button>
                     </div>
                 </div>
             </div>
@@ -213,6 +253,7 @@ $this->registerCss('
 .app_btn
 {
 display:block;
+margin:auto;
 }
 .custm
 {
@@ -285,18 +326,19 @@ display:block;
     }
 .inner-header{
 	text-align: center;
-	padding-top: 50px;
+	padding-top: 125px;
 	padding-bottom: 50px;
 	color: #fff;
 }
 .agency-name-top > h1{
     color:white;
     font-family:roboto;
+    font-size: 36px;
 }
 .job-title {
-    font-size: 35px;
+    font-size: 26px;
     font-weight: bold;
-    padding-top:100px;
+    padding-top:60px;
     font-family:roboto;
 }
 .job-statistic{
@@ -533,19 +575,11 @@ display:block;
     padding-top:10px;
     font-family:roboto;
 }
-.sticky {
+#s-header.sticky {
     position: fixed;
     top: 65px;
     width: 100%;
     z-index:1;
-    
-  &:hover {
-    background-color: #aaa;
-    }
-  &.active {
-    color: white;
-    background-color: rgba(0,0,0,0.1);
-    }
 }
 .share-it {
     text-align: center;
@@ -604,6 +638,9 @@ display:block;
     width:330px;
     height:180px;
 }
+#us-sub-header{
+    height:52px;
+}
 @media only screen and (max-width: 768px){
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     width:134px;
@@ -634,30 +671,26 @@ display:block;
 
 $script = <<<JS
 $(document).ready(function(){
-  // Add smooth scrolling to all links
   $(".nav-bar > ul > li > a").on('click', function(event) {
-    // Make sure this.hash has a value before overriding default behavior
     if (this.hash !== "") {
-      // Prevent default anchor click behavior
       event.preventDefault();
-      // Store hash
       var hash = this.hash;
-      // Using jQuery's animate() method to add smooth page scroll
-      // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
       $('html, body').animate({
         scrollTop: $(hash).offset().top - 80
       }, 800, function(){
-   
-        // Add hash (#) to URL when done scrolling (default click behavior)
-        // window.location.hash = hash;
       });
-    } // End if
+    } 
   });
 });
 window.onscroll = function() {myFunction()};
 var header = document.getElementById("s-header");
 function myFunction() {
-  if (window.pageYOffset > 420) {
+    var h_height = $('#main-header').height();
+    var header_offset = document.getElementById("us-sub-header").offsetTop;
+    if($('#s-header.sticky').length){
+        $('#s-header.sticky').css('top',h_height);
+    }
+  if (window.pageYOffset > (header_offset - h_height)) {
     header.classList.add("sticky");
   } else {
     header.classList.remove("sticky");
@@ -676,22 +709,13 @@ $(document).on('click', "#toggle", function() {
     }
 });
 $(window).scroll(function() {
-		var scrollDistance = $(window).scrollTop();
-		// Show/hide menu on scroll
-		//if (scrollDistance >= 850) {
-		//		$('nav').fadeIn("fast");
-		//} else {
-		//		$('nav').fadeOut("fast");
-		//}
-	
-		// Assign active class to nav links while scolling
-		$('.set-sticky').each(function(i) {
-		    console.log(i,scrollDistance,$(this).position().top)
-            if ($(this).position().top <= scrollDistance) {
-                    $('.nav-bar > ul > li.active').removeClass('active');
-                    $('.nav-bar > ul > li').eq(i).addClass('active');
-            }
-		});
+    var scrollDistance = $(window).scrollTop();
+    $('.set-sticky').each(function(i) {
+        if ($(this).position().top <= (scrollDistance - 350)) {
+            $('.nav-bar > ul > li.active').removeClass('active');
+            $('.nav-bar > ul > li').eq(i).addClass('active');
+        }
+    });
 }).scroll();
 JS;
 $this->registerJs($script);

@@ -57,6 +57,11 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
       template.html(''); 
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
+      $('#loader').hide();
+      if(body == null){
+          $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
   }   
   })
 }
@@ -85,6 +90,9 @@ function fetchLocalData(template,min,max,loader,loader_btn) {
       body = JSON.parse(body);
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
+      if(body == null){
+          $('#loader').hide();
+      }
   }   
   })
 }
@@ -93,6 +101,7 @@ $this->registerCss("
 .align_btn
 {
 text-align:center;
+clear:both;
 }
 ");
 $this->registerJs($script);
