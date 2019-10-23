@@ -1,5 +1,8 @@
 <?php
 $column = 'col-md-3 col-sm-3 col-xs-6';
+if (!isset($f_loop)) {
+    $f_loop = 4;
+}
 if (isset($size)) {
     $column = $size;
 }
@@ -8,7 +11,7 @@ if (isset($size)) {
     <div class="loading-main">
         <div class="row">
             <?php
-            for ($i = 0; $i < 4; $i++) {
+            for ($i = 0; $i < $f_loop; $i++) {
                 ?>
                 <div class="<?= $column; ?>">
                     <div class="list-heading">

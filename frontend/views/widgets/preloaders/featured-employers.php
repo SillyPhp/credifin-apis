@@ -24,11 +24,13 @@ $this->registerCss('
 .loader-padding{
     margin-bottom:20px;
 }
+.loading-main .company-info{
+    box-shadow: none !important;
+}
 .loading-main .company-info .loader{
     height:136px;
     width: 160px;
     margin:0 auto;
-    box-shadow: 0 2px 5px 0 rgba(32,32,32,.1);
 }
 ')
 ?>

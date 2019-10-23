@@ -129,6 +129,9 @@ $this->render('/widgets/top-cities',[
             'tweets' => $tweets,
         ]);
         ?>
+        <?=
+            $this->render('/widgets/preloaders/tweet-job-preloader')
+        ?>
     </div>
 </section>
 <section>
@@ -156,6 +159,9 @@ $this->render('/widgets/top-cities',[
                 </div>
             </div>
         </div>
+        <?=
+            $this->render('/widgets/preloaders/blog-preloader');
+        ?>
     </div>
 </section>
 
@@ -205,6 +211,12 @@ $this->render('/widgets/top-cities',[
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
+        <?=
+            $this->render('/widgets/preloaders/quick-links-preloader',[
+                    'size'=> 'col-md-4 col-sm-4 col-xs-6',
+                    'f_loop' => 3
+            ])
+        ?>
     </div>
 </section>
 
