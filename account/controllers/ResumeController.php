@@ -29,8 +29,12 @@ class ResumeController extends Controller
                 ->alias('a')
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
-                ->andWhere(['a.is_deleted' => 0,'a.created_by'=>Yii::$app->user->identity->user_enc_id])
+                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id,'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['=', 'a.status', 'Approved'],
+                    ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+                ])
                 ->asArray()
                 ->all();
 
