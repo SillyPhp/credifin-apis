@@ -132,21 +132,41 @@ class TrainingProgramController extends Controller
     public function actionClone($aidk)
     {
         if (Yii::$app->user->identity->organization):
-            $object = new TrainingProgram();
-            $model = $object->setData($aidk);
+            $obj = new TrainingProgram();
+            $model = $obj->setData($aidk);
             $type = 'Clone';
             $object = new ApplicationForm();
             $primary_cat = $object->getPrimaryFields();
-            if ($object->load(Yii::$app->request->post())) {
-                if ($object->save()) {
+            if ($obj->load(Yii::$app->request->post())) {
+                if ($obj->save()) {
                     Yii::$app->session->setFlash('success', 'Your Application Has Been Submitted Successfully..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
                 }
                 return $this->refresh();
             }
-            return $this->render('index',['model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
+            return $this->render('index',['type'=>$type,'model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
             endif;
 
+    }
+
+    public function actionEdit($aidk)
+    {
+        if (Yii::$app->user->identity->organization):
+            $obj = new TrainingProgram();
+            $model = $obj->setData($aidk);
+            $type = 'Edit';
+            $object = new ApplicationForm();
+            $primary_cat = $object->getPrimaryFields();
+            if ($obj->load(Yii::$app->request->post())) {
+                if ($obj->update($aidk)) {
+                    Yii::$app->session->setFlash('success', 'Your Application Has Been Updated Successfully..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+                }
+                return $this->refresh();
+            }
+            return $this->render('index',['type'=>$type,'model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
+        endif;
     }
 }
