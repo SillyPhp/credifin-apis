@@ -126,7 +126,7 @@ endif;
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
                                     <div class="widget-thumb-body">
-                                        <span class="widget-thumb-body-stat"><?= $org_applications['total']?></span>
+                                        <span class="widget-thumb-body-stat"><?= $org_applications['total'] ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@ endif;
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-red fa fa-users"></i>
                                     <div class="widget-thumb-body">
-                                        <span class="widget-thumb-body-stat"><?= $dropResume;?></span>
+                                        <span class="widget-thumb-body-stat"><?= $dropResume; ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@ endif;
                                     <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-subtitle"></span>
-                                        <span class="widget-thumb-body-stat"><?= $total_org_applied?></span>
+                                        <span class="widget-thumb-body-stat"><?= $total_org_applied ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -240,7 +240,7 @@ endif;
                     <div class="portlet-body">
                         <?php
                         Pjax::begin(['id' => 'pjax_active_jobs']);
-                        if ($applications['jobs']['total'] > 0) {
+                        if (false) {
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['jobs']['data'],
                                 'per_row' => 3,
@@ -248,7 +248,14 @@ endif;
                             ]);
                         } else {
                             ?>
-                            <h3>No Active Jobs</h3>
+                                <div class="tab-empty">
+                                    <div class="tab-empty-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                    </div>
+                                    <div class="tab-empty-text">
+                                        <div class="">No Active Jobs</div>
+                                    </div>
+                                </div>
                         <?php }
                         Pjax::end();
                         ?>
@@ -272,7 +279,7 @@ endif;
                     <div class="portlet-body">
                         <?php
                         Pjax::begin(['id' => 'pjax_active_internships']);
-                        if ($applications['internships']['total'] > 0) {
+                        if (false) {
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['internships']['data'],
                                 'per_row' => 3,
@@ -280,17 +287,174 @@ endif;
                             ]);
                         } else {
                             ?>
-                            <h3>No Active Internships</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/internship.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No Active Internship</div>
+                                </div>
+                            </div>
                         <?php }
                         Pjax::end();
                         ?>
                     </div>
                 </div>
             <?php endif; ?>
+            <div class="portlet light portlet-fit nd-shadow">
+                <div class="portlet-title" style="border-bottom:none;">
+                    <div class="car-main row">
+                        <div class="c-head">Careers</div>
+                        <div class="career-descripption">It is a long established fact that a reader will be distracted
+                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum
+                            is that it has a more-or-less normal distribution of letters, as opposed to using 'Content
+                            here, content here', making it look like readable English. Many desktop publishing packages
+                            and web page editors now use Lorem Ipsum as their default model text,
+                        </div>
+                    </div>
+                    <div class="works-main row">
+                        <div class="works">
+                            <div class="w-head">How It Works</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="step-main">
+                                <div class="s-logo">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+                                </div>
+                                <div class="s-text">Put Your Website address Here</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="step-main">
+                                <div class="s-logo">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+                                </div>
+                                <div class="s-text">copy Link</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="step-main">
+                                <div class="s-logo">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/check.png') ?>">
+                                </div>
+                                <div class="s-text">Paste On your website</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row m-0">
+                        <div class="col-md-2 col-md-offset-5">
+                            <div class="pf-field">
+                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
+                                       class="form-control" value="<?= $link ?>" readonly>
+                                <i class="fa fa-copy"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+<script>
+    function copyToClipboard() {
+    var copyText = document.getElementById("share_manually");
+    copyText.select();
+    document.execCommand("copy");
+    // toastr.success("", "Copied");
+    alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->registerCss("
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+.topic-con{
+    position:relative;
+}
+.pf-field {
+    float: left;
+    width: 100%;
+    position: relative;
+    }
+.pf-field > input {
+    height: 56px;
+    float: left;
+    width: 100%;
+    border: 2px solid #e8ecec;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    padding: 14px 45px 14px 15px;
+    background: #ffffff !important;
+    font-family: Open Sans;
+    font-size: 13px;
+    font-weight: 400;
+    color: #101010;
+    line-height: 24px;
+    cursor: pointer;
+}
+.pf-field > i {
+    position: absolute;
+    right: 44px;
+    top: 20px;
+    font-size: 30px;
+    color: #848484;
+    line-height: 56px;
+    cursor: pointer;
+    }
+.car-main{
+    text-align:center;
+    padding-bottom:20px;
+    border-bottom: 1px solid #eee;
+}
+.c-head, .b-head, .w-head{
+    font-size: 16px;
+    font-weight: 700;
+    font-family: \"Open Sans\",sans-serif;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+.career-descripption{
+    font-size: 13px;
+    text-align: justify;
+    color: #9eacb4;
+}
+.works-main{
+    padding-bottom:35px;
+    padding-top:35px;
+}
+.works{
+    text-align:center;
+    padding-bottom:35px;
+}
+.step-main{
+    text-align:center;
+}
+.s-logo{
+    padding-bottom:20px;
+}
+.s-logo img{
+    height:100px;
+    width:100px;
+}
+.s-text{
+    font-size: 14px;
+    color: #9eacb4;
+}
 @media only screen and (max-width: 950px) {
 .marg{
     margin-top:20px !important;
