@@ -19,4 +19,15 @@ class InviteCandidatesForm extends Model
             [['email', 'name'],'trim'],
         ];
     }
+
+    public function formName(){
+        return '';
+    }
+
+    public function send()
+    {
+//        $mail = Yii::$app->mail;
+//        $mail->
+    }
+
 }

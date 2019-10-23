@@ -41,7 +41,7 @@ use yii\helpers\Html;
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <?= Html::submitButton('Invite', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Invite', ['class' => 'btn btn-primary submit-invitations']) ?>
     </div>
 <?php ActiveForm::end() ?>
 <?php
@@ -76,11 +76,17 @@ $(document).on('click','.add-field', function(){
 });
 $(document).on('blur', '.invitation_email', function() {
     if($(this).val() !== null && $(this).val() !== "" && !validateEmail($(this).val())){
-        $(this).parent().append('<p class="i-error">Invalid Email</p>');
+        if(!$(this).parent().children('.i-error').length){
+            $(this).parent().append('<p class="i-error">Invalid Email</p>');
+        }
+        $(this).addClass('has-e-error');
     } else {
         var temp_elem = $(this).parent().children('.i-error');
         if(temp_elem){
             temp_elem.remove();
+        }
+        if($(this).hasClass('has-e-error')){
+            $(this).removeClass('has-e-error');
         }
     }
 });
@@ -91,39 +97,42 @@ function validateEmail(emailField){
     }
     return true;
 }
-$(document).on('submit', '#job_for_colleges', function (event) {
+$(document).on('submit', '#invitation_form', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if(valdidate_form){
-        var me = $('#submit-cl');
-        if ( me.data('requestRunning') ) {
+    $('.invitation_email').each(function() {
+        if($(this).hasClass('has-e-error')){
             return false;
         }
-        me.data('requestRunning', true);
-        var url = '/account/jobs/application-colleges-submit';
-        var data = $('#job_for_colleges').serialize();
-        $.ajax({
-            url: url,
-            type: 'post',
-            data: data,
-            beforeSend: function (){
-                $('#submit-cl').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-                $('#submit-cl').prop('disabled', true);
-            },
-            success: function (response) {
-                if (response.status == 200) {
-                    toastr.success(response.message, response.title);
-                } else {
-                    toastr.error(response.message, response.title);
-                    $('#submit-cl').prop('disabled', false);
-                }
-                $('#submit-cl').html('Submit');
-            },
-            complete: function() {
-            me.data('requestRunning', false);
-          }
-        });
+    });
+    var me = $('.submit-invitations');
+    if ( me.data('requestRunning') ) {
+        return false;
     }
+    me.data('requestRunning', true);
+    var url = '/account/training-program/submit-invitations';
+    var data = $('#invitation_form').serialize();
+    $.ajax({
+        url: url,
+        type: 'post',
+        data: data,
+        beforeSend: function (){
+            $('#submit-invitations').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('#submit-invitations').prop('disabled', true);
+        },
+        success: function (response) {
+            if (response.status == 200) {
+                toastr.success(response.message, response.title);
+            } else {
+                toastr.error(response.message, response.title);
+                $('#submit-invitations').prop('disabled', false);
+            }
+            $('#submit-invitations').html('Invite');
+        },
+        complete: function() {
+        me.data('requestRunning', false);
+      }
+    });
 });
 JS;
 

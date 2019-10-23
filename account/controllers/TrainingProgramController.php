@@ -160,4 +160,26 @@ class TrainingProgramController extends Controller
             ]);
         }
     }
+
+    public function actionSubmitInvitations(){
+        if (Yii::$app->request->isAjax) {
+            $inviteForm = new InviteCandidatesForm();
+            if ($inviteForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($inviteForm->send()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Invitations has been Send.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+        }
+    }
 }
