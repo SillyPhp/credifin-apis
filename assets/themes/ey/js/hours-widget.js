@@ -3,11 +3,17 @@ function removeIt(thisObj) {
      result_array.splice(index, 1);
      thisObj.parent().parent().next('.hours_class').remove();
      thisObj.parent().parent().remove();
+     if (result_array.length === 0){
+         $('#final_result').val(null);
+     }
+     else
+     {
+         $('#final_result').val(JSON.stringify(result_array));
+     }
 }
 var result_array = [];
 (function ( $, window, document, undefined ) {
     "use strict";
-
     // Create the defaults once
     var pluginName = "businessHoursWidget",
         defaults = {
@@ -93,7 +99,13 @@ var result_array = [];
                 this.$results[i].appendTo(this.settings.container);
                 $('<input type="hidden" class="hours_class" name"business_hours[]" value="'+(this.$results[i].text())+'" />').appendTo(this.settings.container);
             }
-            $('#final_result').val(JSON.stringify(result_array));
+            if (result_array.length === 0){
+                $('#final_result').val(null);
+            }
+            else
+            {
+                $('#final_result').val(JSON.stringify(result_array));
+            }
         },
         removeInputsFromRanges : function ($inputsToRemoveFromRange) {
             $.each($inputsToRemoveFromRange,function (i,$input) {

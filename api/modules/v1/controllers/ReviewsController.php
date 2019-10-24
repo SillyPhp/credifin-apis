@@ -125,9 +125,6 @@ class ReviewsController extends ApiBaseController
             return $this->response(422, 'Missing Information');
         }
 
-        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
-            $limit = $parameters['limit'];
-        }
 
         //if parameter not empty then find data of organization claimed
         $org = Organizations::find()
@@ -391,12 +388,18 @@ class ReviewsController extends ApiBaseController
 
             $reviews = OrganizationReviews::find()
                 ->alias('a')
+                ->distinct()
                 ->where(['a.organization_enc_id' => $org_enc_id, 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->joinWith(['designationEnc e'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+                ->joinWith(['organizationReviewLikeDislikes d' => function ($d) use($candidate) {
+                    $d->onCondition(['d.created_by' => $candidate->user_enc_id]);
+                }], false)
+                ->joinWith(['organizationReviewFeedbacks f'=>function($f) use($candidate){
+                    $f->onCondition(['f.created_by' => $candidate->user_enc_id]);
+                }],false)
+                ->joinWith(['designationEnc e'], false);
+            $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
             if ($limit) {
                 $reviews->limit($limit);
             }
@@ -413,6 +416,7 @@ class ReviewsController extends ApiBaseController
                 'ROUND(a.average_rating) average_rating',
                 'c.name profile',
                 'e.designation',
+                'f.feedback report',
                 'd.feedback_type',
                 'a.created_on',
                 'a.is_current_employee reviewer_type',
@@ -427,16 +431,15 @@ class ReviewsController extends ApiBaseController
                 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])->asArray()
                 ->all();
 
-
             for ($i = 0; $i < count($result); $i++) {
                 $result[$i]['rating'] = $rating[$i];
             }
 
             $data['reviews'] = $result;
-            if(!empty($data)) {
+            if (!empty($data)) {
                 return $this->response(200, $data);
-            }else{
-                return $this->response(404,'not found');
+            } else {
+                return $this->response(404, 'not found');
             }
 
 
@@ -448,7 +451,7 @@ class ReviewsController extends ApiBaseController
                 return $this->response(422, 'Missing Information');
             }
 
-            if($type == 'employee') {
+            if ($type == 'employee') {
                 $options = [];
                 $options['main'] = [
                     'alias' => 'a',
@@ -511,10 +514,10 @@ class ReviewsController extends ApiBaseController
 
                 $data['reviews'] = $emp_reviews;
 
-                if(!empty($data)){
-                    return $this->response(200,$data);
-                }else{
-                    return $this->response(404,'Not Found');
+                if (!empty($data)) {
+                    return $this->response(200, $data);
+                } else {
+                    return $this->response(404, 'Not Found');
                 }
             }
 
@@ -690,10 +693,10 @@ class ReviewsController extends ApiBaseController
 
             $data['reviews'] = $reviews_students;
 
-            if(!empty($data)){
-                return $this->response(200,$data);
-            }else{
-                return $this->response(404,'Not Found');
+            if (!empty($data)) {
+                return $this->response(200, $data);
+            } else {
+                return $this->response(404, 'Not Found');
             }
 
 
@@ -1344,12 +1347,12 @@ class ReviewsController extends ApiBaseController
                     'a.review_enc_id',
                     'a.organization_enc_id',
                     'a.show_user_details',
-                    'a.skill_development Skill_Development',
+                    'a.skill_development Skill_Development_And_Learning',
                     'a.work_life Work_Life_Balance',
-                    'a.compensation Salary_And_Benefits',
+                    'a.compensation Compensation_And_Benefits',
                     'a.organization_culture Company_Culture',
                     'a.job_security Job_Security',
-                    'a.growth Career_Growth',
+                    'a.growth Growth_And_Opportunities',
                     'a.work Work_Satisfaction',
                     'a.likes',
                     'a.dislikes',
@@ -1373,7 +1376,7 @@ class ReviewsController extends ApiBaseController
                 }
             }
 
-            $sub_array['data'][] = $data;
+            $sub_array['rating'] = $data;
 
             if (!empty($sub_array)) {
                 return $this->response(200, $sub_array);
@@ -1386,13 +1389,13 @@ class ReviewsController extends ApiBaseController
                 'selections' => [
                     'a.review_enc_id',
                     'a.organization_enc_id',
-                    'a.job_security',
-                    'a.growth career_growth',
-                    'a.organization_culture company_culture',
-                    'a.compensation salary_and_benefits',
-                    'a.work work_satisfaction',
-                    'a.work_life work_life_balance',
-                    'a.skill_development',
+                    'a.job_security Job_Security',
+                    'a.growth Growth_And_Opportunities',
+                    'a.organization_culture Company_Culture',
+                    'a.compensation Compensation_And_Benefits',
+                    'a.work Work_Satisfaction',
+                    'a.work_life Work_Life_Balance',
+                    'a.skill_development Skill_Development_And_Learning',
                     'a.likes',
                     'a.dislikes',
                     'a.show_user_details',
@@ -1420,13 +1423,13 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.organization_enc_id',
-                        'a.academics',
-                        'a.faculty_teaching_quality',
-                        'a.infrastructure',
-                        'a.accomodation_food',
-                        'a.placements_internships',
-                        'a.social_life_extracurriculars',
-                        'a.culture_diversity',
+                        'a.academics Academics',
+                        'a.faculty_teaching_quality Faculty_And_Teaching_Quality',
+                        'a.infrastructure Infrastructure',
+                        'a.accomodation_food Accomodation_And_Food',
+                        'a.placements_internships Placements_Internships',
+                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
+                        'a.culture_diversity Culture_And_Diversity',
                         'a.likes',
                         'a.dislikes',
                         'a.show_user_details',
@@ -1455,13 +1458,13 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.organization_enc_id',
-                        'a.student_engagement',
-                        'a.school_infrastructure infrastructure',
-                        'a.faculty',
-                        'a.accessibility_of_faculty',
-                        'a.co_curricular_activities',
-                        'a.leadership_development',
-                        'a.sports',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure Infrastructure',
+                        'a.faculty Faculty',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                        'a.co_curricular_activities Co_Curricular_Activities',
+                        'a.leadership_development Leadership_Development',
+                        'a.sports Sports',
                         'a.likes',
                         'a.dislikes',
                         'a.show_user_details',
@@ -1490,13 +1493,13 @@ class ReviewsController extends ApiBaseController
                     'selections' => [
                         'a.review_enc_id',
                         'a.organization_enc_id',
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.value_for_money',
-                        'a.teaching_style',
-                        'a.coverage_of_subject_matter',
-                        'a.accessibility_of_faculty',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure Infrastructure',
+                        'a.faculty Faculty',
+                        'a.value_for_money Value_For_Money',
+                        'a.teaching_style Teaching_Style',
+                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
                         'a.likes',
                         'a.dislikes',
                         'a.show_user_details',
@@ -1532,7 +1535,7 @@ class ReviewsController extends ApiBaseController
                 return $this->response(404, 'Not Found');
             }
 
-            $sub_array['data'][] = $data;
+            $sub_array['rating'] = $data;
 
             if (!empty($sub_array)) {
                 return $this->response(200, $sub_array);
