@@ -251,8 +251,10 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->select([
                     'a.application_enc_id',
+                    'a.college_enc_id',
                     'bb.name',
                     'bb.slug org_slug',
+                    'bb.organization_enc_id',
                     'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name title',
                     'a.employer_application_enc_id',
@@ -288,6 +290,7 @@ class CollegeIndexController extends ApiBaseController
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
+                $data['org_enc_id'] = $j['organization_enc_id'];
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l){
                     array_push($locations,$l['name']);
                     $positions += $l['positions'];
@@ -306,9 +309,23 @@ class CollegeIndexController extends ApiBaseController
     public function actionJobApprove(){
         if($user = $this->isAuthorized()){
             $req = Yii::$app->request->post();
+
             $data = ErexxEmployerApplications::find()
                 ->where(['application_enc_id'=>$req['application_enc_id']])
                 ->one();
+
+            $collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id'=>$req['org_enc_id'],'college_enc_id'=>$req['college_enc_id']])
+                ->one();
+
+            if($collab->college_approvel == 0){
+                $collab->college_approvel = 1;
+                $collab->last_updated_by = $user->user_enc_id;
+                $collab->last_updated_on = date('Y-m-d H:i:s');
+                if($collab->update()){
+
+                }
+            }
 
             if(!empty($data)){
                 $data->is_college_approved = 1;
