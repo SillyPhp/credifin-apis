@@ -5,7 +5,7 @@
         <div class="new-job-box">
             <div class="row">
                 <div class="col-md-3">
-                    <div class="img-main">
+                    <div class="application-card-img img-main">
                         <a href="{{organization_link}}" title="{{organization_name}}">
                             {{#logo}}
                             <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
@@ -19,44 +19,42 @@
                 </div>
                 <div class="col-md-9">
                     <div class="comps-name-1">
-                <span class="skill">
-                    <a href="{{title}}" title="{{title}}">{{title}}</a></span>
-                        <a href="{{organization_link}}" title="{{organization_name}}" style=" text-decoration:none;">
-                            <h4 class="comp-name">{{organization_name}}</h4>
-                        </a>
+                            <span class="skill">
+                                <a href="{{title}}" title="{{title}}" class="application-title">
+                                    {{title}}
+                                </a>
+                            </span>
+                            <a href="{{organization_link}}" title="{{organization_name}}" style=" text-decoration:none;">
+                                <h4 class="org_name comp-name">{{organization_name}}</h4>
+                            </a>
                     </div>
-                    <span class="job-fill">
-                {{#city}}
-                        <span class="city" data-lat="{{latitude}}" data-long="{{longitude}}"
-                              data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
-                </span>
+
+                        {{#city}}
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}" data-long="{{longitude}}" data-locations="">
+                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                        </span>
                         {{/city}}
                         {{^city}}
-                        <span class="city" data-lat="{{latitude}}" data-long="{{longitude}}"
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}" data-long="{{longitude}}"
                               data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
                         {{/city}}
-
-            </span>
+                        </span>
                     <div class="detail-loc">
-                        <div class="job-loc">
-                            <div class="salary">
-                                {{#salary}}
-                                <h5><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                                {{/salary}}
-                                {{^salary}}
-                                <h5>Negotiable</h5>
-                                {{/salary}}
-                            </div>
-                            <div class="city-box">
-                                {{#type}}
-                                <h5>{{type}}</h5>
-                                {{/type}}
-                                <!--                        <i class="fas fa-map-marker-alt"></i>-->
-                                <!--                        <span class="city">Ahmedabad</span>-->
-                            </div>
+                        <div class="application-card-description job-loc">
+                            {{#salary}}
+                            <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                            {{/salary}}
+                            {{^salary}}
+                            <h5 class="salary">Negotiable</h5>
+                            {{/salary}}
+                            {{#type}}
+                            <h5>{{type}}</h5>
+                            {{/type}}
+                            {{#experience}}
+                            <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                            {{/experience}}
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -227,6 +225,14 @@ function getReviewList(sidebarpage){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.application-card-description{
+    margin:0 0 0 14px !important;
+    width:100% !important;
+}
+.application-card-description h5{
+    margin-top:0px !important;
+    margin-bottom: 8px !important;
+}
 .application-card-main {
     position: relative;
     overflow: hidden; 
@@ -246,7 +252,7 @@ $this->registerCss('
     padding: 10px;
     margin-top: 25px;
     border-radius: 10px;
-    box-shadow: 1px 2px 5px 2px lightgray;
+//    box-shadow: 1px 2px 5px 2px lightgray;
     position:relative;
     background:#fff;
 }
@@ -296,15 +302,15 @@ $this->registerCss('
 }
 
 .job-fill{
-    padding: 0px 10px 4px;
-    margin: 3px;
-    background-color:#ff7803;
-    color: white;
-    border-radius: 0px 10px 0px 10px;
-    float: right;
-    position:absolute;
-    right: 2px;
-    top: -13px;
+    padding: 5px 10px 4px !important;
+    margin: 3px !important;
+    background-color:#ff7803 !important;
+    color: #fff !important;
+    border-radius: 0px 10px 0px 10px !important;
+    float: right !important;
+    position:absolute !important;
+    right: 2px !important;
+    top: -13px !important;
 }
 
 .clear{
@@ -316,9 +322,8 @@ $this->registerCss('
 }
 
 .salary{
-    color:gray;
+
     font-family:roboto;
-    padding-left:12px;
 }
 
 .tag-box{
@@ -362,8 +367,8 @@ $this->registerCss('
     top: 0;
 }
 .city-box{
-    padding-bottom:10px;
-    padding-left:12px;
+    padding-bottom:5px;
+//    padding-left:12px;
 }
 .ADD-more{
     background-color: #eeeeee;
@@ -372,8 +377,8 @@ $this->registerCss('
 }
 .img-main{
     display: inline-block;
-    padding-left: 10px;
-    padding-top: 20px;
+//    padding-left: 10px;
+//    padding-top: 20px;
 }
 @media only screen and (max-width: 360px){
     .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
