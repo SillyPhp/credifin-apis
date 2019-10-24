@@ -1,5 +1,5 @@
 <?php
-$this->params['header_dark'] = true;
+$this->params['header_dark'] = false;
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::POS_HEAD);
 ?>
@@ -9,11 +9,11 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
     <div class="container">
         <div class="row">
             <div class="col-md-12 z-index-9">
-                <div class="search-box">
-
+                <div class="search-box text-center">
+                    <h2 class="text-white font-23">Looking for a <b>Career In US Govt</b>. Find Your <b>Dream Job</b> Today.</h2>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
-                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search Usa Jobs,Job title,Dept." name="keywords" value="<?= $keywords ?>">
+                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search Usa Jobs, Job title, Department." name="keywords" value="<?= $keywords ?>">
                             <div class="input-group-btn">
                                 <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                             </div>
@@ -22,8 +22,8 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                 </div>
             </div>
         </div>
-        <div class="overlay-image i-2"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/top-header.png');?>"/></div>
-        <div class="overlay-image i-3"><img src="<?= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header-1.png');?>"/></div>
+<!--        <div class="overlay-image i-2"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/top-header.png');?><!--"/></div>-->
+<!--        <div class="overlay-image i-3"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header-1.png');?><!--"/></div>-->
 <!--        <div class="overlay-image i-4"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?><!--"/></div>-->
     </div>
 </section>
@@ -163,10 +163,11 @@ body{
 }
 .posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
-    background-color:#C1E8F1; 
-    //background:url('" . Url::to('@eyAssets/images/pages/tw-jobs/usa.png') . "');
-    padding: 85px 0px;
-    height: 300px;
+    background:url('" . Url::to('@eyAssets/images/pages/jobs/usa-jobs-bg.png') . "');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 105px 0px;
+    height: 350px;
 }
 .search-box{
     width: 100%;

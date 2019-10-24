@@ -6,7 +6,7 @@
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
                 <i class="fas fa-map-marker-alt"></i>
-                &nbsp;{{PositionLocation}}
+                &nbsp;{{Location}}
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
@@ -102,6 +102,13 @@ $this->registerCss("
 {
 text-align:center;
 clear:both;
+}
+.application-card-type
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
 }
 ");
 $this->registerJs($script);
