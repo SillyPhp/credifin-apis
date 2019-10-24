@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
+use common\models\CareerAdvisePosts;
 use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
@@ -410,7 +411,6 @@ class SiteController extends Controller
             'posts' => $posts,
         ]);
     }
-
     public function actionFreelancers()
     {
         $this->layout = 'main-secondary';
