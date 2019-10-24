@@ -387,8 +387,20 @@ class TrainingProgram extends Model
                     }
                 }
             }
-
+//            if (!empty($this->batch_details)) {
+//                $batch = json_decode($this->batch_details, true);
+//                $batch_d = TrainingProgramBatches::find()
+//                           ->select(['fees','fees_methods','seats','days','TIME_FORMAT(start_time, "%h:%i %p" ) as start_time','TIME_FORMAT(end_time, "%h:%i %p") as end_time'])
+//                           ->where(['application_enc_id'=>$aidk])
+//                           ->asArray()
+//                           ->all();
+//                return $batch_d;
+//            }
+            return true;
         }
-        return true;
+        else
+        {
+            return true;
+        }
     }
 }
