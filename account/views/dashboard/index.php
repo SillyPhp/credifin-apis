@@ -240,7 +240,7 @@ endif;
                     <div class="portlet-body">
                         <?php
                         Pjax::begin(['id' => 'pjax_active_jobs']);
-                        if (false) {
+                        if ($applications['jobs']['total'] > 0) {
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['jobs']['data'],
                                 'per_row' => 3,
@@ -279,7 +279,7 @@ endif;
                     <div class="portlet-body">
                         <?php
                         Pjax::begin(['id' => 'pjax_active_internships']);
-                        if (false) {
+                        if ($applications['internships']['total'] > 0) {
                             echo $this->render('/widgets/applications/card', [
                                 'applications' => $applications['internships']['data'],
                                 'per_row' => 3,
@@ -342,9 +342,9 @@ endif;
                             </div>
                         </div>
                     </div>
-                    <div class="row m-0">
-                        <div class="col-md-2 col-md-offset-5">
-                            <div class="pf-field">
+                    <div class="row">
+                        <div class="main-btn">
+                            <div class="inner-btn">
                                 <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"
                                        class="form-control" value="<?= $link ?>" readonly>
                                 <i class="fa fa-copy"></i>
@@ -383,39 +383,28 @@ $this->registerCss("
 .topic-con{
     position:relative;
 }
-.pf-field {
-    float: left;
-    width: 100%;
+.main-btn {
+    width: 85px;
+    margin: 0 auto;
     position: relative;
-    }
-.pf-field > input {
-    height: 56px;
-    float: left;
-    width: 100%;
-    border: 2px solid #e8ecec;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-    padding: 14px 45px 14px 15px;
-    background: #ffffff !important;
-    font-family: Open Sans;
-    font-size: 13px;
-    font-weight: 400;
-    color: #101010;
-    line-height: 24px;
     cursor: pointer;
 }
-.pf-field > i {
-    position: absolute;
-    right: 44px;
-    top: 20px;
-    font-size: 30px;
-    color: #848484;
-    line-height: 56px;
+.inner-btn .form-control {
     cursor: pointer;
-    }
+    background: #00a0e3;
+    border: 2px solid #00a0e3;
+}
+.inner-btn .form-control:hover{
+    box-shadow: 0px 1px 10px 4px #eee !important;
+}
+.inner-btn > i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color:#fff;
+}
 .car-main{
     text-align:center;
     padding-bottom:20px;
