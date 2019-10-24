@@ -147,6 +147,6 @@ class TrainingProgramController extends Controller
             }
             return $this->render('index',['model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
             endif;
-
+ 
     }
 }
