@@ -1091,7 +1091,7 @@ class ReviewsController extends ApiBaseController
         }
     }
 
-    //show perticular review data to edit
+    //show particular review data to edit
     public function actionShowReview()
     {
         $a = \Yii::$app->request->post();
@@ -1166,6 +1166,7 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
+                    'a.reviewer_type',
                     'a.review_enc_id',
                     'a.organization_enc_id',
                     'a.job_security Job_Security',
@@ -1192,7 +1193,7 @@ class ReviewsController extends ApiBaseController
 
             $options['quant'] = 'one';
 
-            $reviews = $this->__unclaimedReviews($options);
+            $emp_reviews = $this->__unclaimedReviews($options);
 
             if ($unclaimed_org['business_activity'] == 'College') {
 
@@ -1302,8 +1303,17 @@ class ReviewsController extends ApiBaseController
 
             $sub_array = [];
             $data = [];
+
             if (!empty($reviews)) {
                 foreach ($reviews as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }elseif (!empty($emp_reviews)){
+                foreach ($emp_reviews as $key => $value) {
                     if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
                         $sub_array[$key] = $value;
                     } else {
