@@ -34,7 +34,7 @@ class Reviews extends Model
     public $to;
     public $reviewer_type;
     public $academics;
-    public $faculity_and_teaching_quality;
+    public $faculty_and_teaching_quality;
     public $infrastructure;
     public $accomodation_and_food;
     public $placements_internships;
@@ -61,13 +61,13 @@ class Reviews extends Model
             [['org_enc_id', 'user_detail', 'job_security', 'growth_and_opportunities', 'company_culture', 'compensation_and_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development_and_learning', 'like', 'dislike'], 'required', 'on' => 'edit-employee-review'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'job_security', 'growth_and_opportunities', 'company_culture', 'compensation_and_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development_and_learning', 'location', 'department', 'designation', 'like', 'dislike', 'from'], 'required', 'on' => 'unclaimed_employee_review'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'job_security', 'growth_and_opportunities', 'company_culture', 'compensation_and_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development_and_learning', 'like', 'dislike'], 'required', 'on' => 'edit_unclaimed_employee_review'],
-            [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculity_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'college'],
-            [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculity_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'like', 'dislike'], 'required', 'on' => 'edit_college'],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculty_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'college'],
+            [['org_enc_id', 'user_detail', 'reviewer_type', 'academics', 'faculty_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'like', 'dislike'], 'required', 'on' => 'edit_college'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'school'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'like', 'dislike'], 'required', 'on' => 'edit_school'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'location', 'educational_stream', 'like', 'dislike', 'from'], 'required', 'on' => 'edu_institute'],
             [['org_enc_id', 'user_detail', 'reviewer_type', 'student_engagement', 'infrastructure', 'faculty', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter', 'accessibility_of_faculty', 'like', 'dislike'], 'required', 'on' => 'edit_edu_institute'],
-            [['job_security', 'growth_and_opportunities', 'company_culture', 'compensation_and_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development_and_learning', 'academics', 'faculity_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'student_engagement', 'infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'string', 'min' => 1, 'max' => 5],
+            [['job_security', 'growth_and_opportunities', 'company_culture', 'compensation_and_benefits', 'work_satisfaction', 'work_life_balance', 'skill_development_and_learning', 'academics', 'faculty_and_teaching_quality', 'infrastructure', 'accomodation_and_food', 'placements_internships', 'social_life_extracurriculars', 'culture_and_diversity', 'student_engagement', 'infrastructure', 'faculty', 'accessibility_of_faculty', 'co_curricular_activities', 'leadership_development', 'sports', 'value_for_money', 'teaching_style', 'coverage_of_subject_matter'], 'string', 'min' => 1, 'max' => 5],
             [['reviewer_type'], 'string', 'min' => 0, 'max' => 7],
             [['user_detail'], 'string', 'min' => 0, 'max' => 1],
             [['current_employee'], 'string', 'min' => 0, 'max' => 1],
@@ -109,11 +109,11 @@ class Reviews extends Model
             $data->work_life = $this->work_life_balance;
             $data->skill_development = $this->skill_development_and_learning;
         } elseif ($this->reviewer_type == 2 || $this->reviewer_type == 3) {
-            $rating = [$this->academics, $this->faculity_and_teaching_quality, $this->infrastructure, $this->accomodation_and_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_and_diversity];
+            $rating = [$this->academics, $this->faculty_and_teaching_quality, $this->infrastructure, $this->accomodation_and_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_and_diversity];
             $data->average_rating = $this->findAvg($rating);
             $data->educational_stream_enc_id = $this->__eduStream($this->educational_stream);
             $data->academics = $this->academics;
-            $data->faculty_teaching_quality = $this->faculity_and_teaching_quality;
+            $data->faculty_teaching_quality = $this->faculty_and_teaching_quality;
             $data->infrastructure = $this->infrastructure;
             $data->accomodation_food = $this->accomodation_and_food;
             $data->placements_internships = $this->placements_internships;
@@ -138,7 +138,7 @@ class Reviews extends Model
             $data->school_infrastructure = $this->infrastructure;
             $data->faculty = $this->faculty;
             $data->value_for_money = $this->value_for_money;
-            $data->teacihng_style = $this->teaching_style;
+            $data->teaching_style = $this->teaching_style;
             $data->coverage_of_subject_matter = $this->coverage_of_subject_matter;
             $data->accessibility_of_faculty = $this->accessibility_of_faculty;
         }
@@ -176,10 +176,10 @@ class Reviews extends Model
             $data->work_life = $this->work_life_balance;
             $data->skill_development = $this->skill_development_and_learning;
         } elseif ($this->reviewer_type == 2 || $this->reviewer_type == 3) {
-            $rating = [$this->academics, $this->faculity_and_teaching_quality, $this->infrastructure, $this->accomodation_and_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_and_diversity];
+            $rating = [$this->academics, $this->faculty_and_teaching_quality, $this->infrastructure, $this->accomodation_and_food, $this->placements_internships, $this->social_life_extracurriculars, $this->culture_and_diversity];
             $data->average_rating = $this->findAvg($rating);
             $data->academics = $this->academics;
-            $data->faculty_teaching_quality = $this->faculity_and_teaching_quality;
+            $data->faculty_teaching_quality = $this->faculty_and_teaching_quality;
             $data->infrastructure = $this->infrastructure;
             $data->accomodation_food = $this->accomodation_and_food;
             $data->placements_internships = $this->placements_internships;
@@ -202,7 +202,7 @@ class Reviews extends Model
             $data->school_infrastructure = $this->infrastructure;
             $data->faculty = $this->faculty;
             $data->value_for_money = $this->value_for_money;
-            $data->teacihng_style = $this->teaching_style;
+            $data->teaching_style = $this->teaching_style;
             $data->coverage_of_subject_matter = $this->coverage_of_subject_matter;
             $data->accessibility_of_faculty = $this->accessibility_of_faculty;
         }
