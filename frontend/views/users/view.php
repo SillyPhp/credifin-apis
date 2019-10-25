@@ -54,7 +54,8 @@ $this->params['header_dark'] = false;
             <div class="col-md-4 col-sm-4 bl-1 br-gary">
                 <div class="right-side-detail">
                     <ul>
-                        <li><span class="detail-info">Availability</span><?= $user['availability'] ?>
+                        <li><span class="detail-info">Availability</span><span
+                                    class="set-color"><?= $user['availability'] ?></span></li>
                         <li><span class="detail-info">Location</span><?php echo($user['city'] ? $user['city'] : '--') ?>
                         </li>
                         <li>
@@ -167,78 +168,198 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
                 </div>
-            </div>
-            <!-- Sidebar Start-->
-            <div class="col-md-4 col-sm-4">
-                <!-- Make An Offer -->
-                <div class="sidebar-container">
-                    <div class="sidebar-box">
-                        <span class="sidebar-status"><?= $user['availability'] ?></span>
-                        <div class="sidebar-inner-box">
-                            <div class="sidebar-box-thumb">
-                                <?php
-                                if ($image):
-                                    ?>
-                                    <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle "/>
-                                <?php else: ?>
-                                    <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
-                                            color="<?= $user['initials_color']; ?>" width="140" height="140"
-                                            font="70px"></canvas>
-                                <?php endif; ?>
+                <div class="container-detail-box">
+                    <div class="education-detail">
+                        <div class="education-head">Education</div>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
                             </div>
-                            <div class="sidebar-box-detail">
-                                <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
-                                <span class="desination"><?= $user['job_profile'] ?></span>
-                            </div>
+                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>BCA</div>
+                            <div class="s-time s-text"><i class="fas fa-clock"></i>2013 - 2016</div>
                         </div>
-                        <div class="sidebar-box-extra">
-                            <ul>
-                                <?php
-                                $i = 0;
-                                foreach ($skills as $sk) {
-                                    ?>
-                                    <li>
-                                        <?php
-                                        echo $sk['skills'];
-                                        $i++;
-                                        if ($i == 3) break;
-                                        ?>
-                                    </li>
-                                <?php }
-                                if (count($skills) >= 4) {
-                                    ?>
-                                    <li class="more-skill bg-primary">+<?= count($skills) - 3 ?></li>
-                                <?php } ?>
-                            </ul>
-                            <ul class="status-detail">
-                                <li class="br-1">
-                                    <strong>
-                                        <?php
-                                        if ($user['experience']) {
-                                            if ($strToArr[1] != 0) {
-                                                echo $strToArr[1] . ' Year(s) ';
-                                            }
-                                            if ($strToArr[3] != 0) {
-                                                echo $strToArr[3] . ' Month(s)';
-                                            }
-                                        } else {
-                                            echo '--';
-                                        }
-                                        ?>
-                                    </strong>
-                                    Experience
-                                </li>
-                            </ul>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
+                            </div>
+                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>MCA</div>
+                            <div class="s-time s-text"><i class="fas fa-clock"></i>2016 - 2018</div>
                         </div>
                     </div>
+                    <div class="experience-detail">
+                        <div class="education-head">Work Experience</div>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-hotel"></i>Infosis, chd</div>
+                            <div class="quelification s-text"><i class="fas fa-briefcase"></i>Backend Developer</div>
+                            <div class="s-time s-text"><i class="fas fa-calendar-alt"></i>12/2/2017 to 12/5/2019</div>
+                        </div>
+                    </div>
+                    <div class="achievements-detail set-li">
+                        <div class="education-head">Achievements</div>
+                        <ul>
+                            <li>Hackathon Winner</li>
+                            <li>Coding Challenge Winner</li>
+                        </ul>
+                    </div>
+                    <div class="hobbies-detail set-li">
+                        <div class="education-head">Hobbies</div>
+                        <ul>
+                            <li>Playing Games</li>
+                            <li>Watching movies</li>
+                            <li>Listening songs</li>
+                        </ul>
+                    </div>
+                    <div class="Interests-detail set-li">
+                        <div class="education-head">Interests</div>
+                        <ul>
+                            <li>coding</li>
+                            <li>Designing</li>
+                        </ul>
+                    </div>
                 </div>
-
             </div>
-            <!-- End Sidebar -->
+            <!--Sidebar Start-->
+            <div class="col-md-4 col-sm-4">
+                <!-- Make An Offer-->
+                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
+                    <div class="prefer-detail">
+                        <ul>
+                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
+                            </li>
+                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
+                            <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>
+                            </li>
+                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
+                            </li>
+                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
+                            </li>
+                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
+                    <div class="prefer-detail">
+                        <ul>
+                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
+                            </li>
+                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
+                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
+                            </li>
+                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
+                            </li>
+                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--End Sidebar-->
         </div>
     </section>
 <?php
 $this->registerCss('
+.education-head {
+    font-size: 18px;
+    font-weight: 500;
+    font-family: roboto;
+    padding-bottom: 3px;
+    letter-spacing: 1px;
+}
+.education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
+    padding-bottom: 20px;
+}
+.set {
+    margin-bottom: -1px;
+    padding: 10px 0;
+    border-bottom: 1px solid #dddddd;
+}
+.s-text {
+    font-size: 14px;
+    font-family: roboto;
+}
+.s-text > i{
+    margin-right:7px;
+}
+.set-li > ul > li {
+    display: inline-block;
+    list-style: none;
+    padding: 3px 15px;
+    border: 1px solid #b9c5ce;
+    border-radius: 6px;
+    margin: 0 5px 0 0;
+    font-weight: 500;
+    color: #657180;
+}
+.skillss > ul > li {
+    display: inline-block;
+    list-style: none;
+    padding: 0px 5px;
+    border: 1px solid #b9c5ce;
+    border-radius: 6px;
+    margin-right: 5px;
+    font-weight: 500;
+    color: #657180;
+    margin-bottom:5px;
+}
+.working-days > ul > li {
+    display: inline-block;
+    border-radius: 14px;
+    background: #ff7803;
+    height: 25px;
+    width: 25px;
+    margin-right: 3px;
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+    color:#fff;
+    margin-bottom:5px;
+}
+.working-days2 > ul > li {
+    display: inline-block;
+    border-radius: 14px;
+    background: #00a0e3;
+    height: 25px;
+    width: 25px;
+    margin-right: 3px;
+    line-height: 25px;
+    text-align: center;
+    cursor: pointer;
+    color:#fff;
+    margin-bottom:5px;
+}
+.prefer-detail{
+    padding-top:50px;
+}
+.prefer-detail > ul > li{
+    font-size: 14px;
+    font-family: sans-serif;
+    padding-bottom:10px;
+}
+.set-width {
+    width: 40%;
+    display: inline-block;
+}
+.position {
+    width: 60%;
+    display: inline-flex;
+}
+.prefer {
+    font-size: 20px;
+    font-family: sans-serif;
+    text-align: center;
+    background: #eee;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+}
+.set-color{
+    background: #ff7803;
+    padding: 5px 15px;
+    margin-left: -15px;
+    color: #fff;
+}
 .edit-profile-btn{
     text-align: center;
     background-color: #00a0e3;
@@ -521,13 +642,13 @@ img.img-responsive.payment-img {
 /*--------------- Sidebar: Detail For Freelancer ----------------*/
 .sidebar-container{
     background: #ffffff;
-    border-radius: 6px;
     overflow: hidden;
-	text-align:center;
     margin-bottom:30px;
 	position:relative;
 	transition: .4s;
-    border:1px solid #eaeff5;
+    padding: 0px 15px 10px 15px;
+    border: 1px solid #eee;
+    border-radius:5px;
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
