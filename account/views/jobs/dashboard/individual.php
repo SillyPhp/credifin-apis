@@ -197,8 +197,7 @@ use frontend\models\applications\CandidateApply;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
-                                            <div class="tab-empty">
+                                        <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
@@ -207,7 +206,6 @@ use frontend\models\applications\CandidateApply;
                                                     <div class="">You haven't Select any jobs for review.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
@@ -265,7 +263,6 @@ use frontend\models\applications\CandidateApply;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
@@ -275,7 +272,6 @@ use frontend\models\applications\CandidateApply;
                                                     <div class="">You haven't Shortlisted any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
@@ -318,7 +314,6 @@ use frontend\models\applications\CandidateApply;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
@@ -328,7 +323,6 @@ use frontend\models\applications\CandidateApply;
                                                     <div class="">You haven't Applied any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                     <?php } ?>
                                 </div>
                                 <div id="tab-4" class="tab-con" >
@@ -366,7 +360,6 @@ use frontend\models\applications\CandidateApply;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
@@ -376,7 +369,6 @@ use frontend\models\applications\CandidateApply;
                                                     <div class="">You haven't Applied any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                     <?php } ?>
                                 </div>
                                 <div id="tab-5" class="tab-con">
@@ -423,7 +415,6 @@ use frontend\models\applications\CandidateApply;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
@@ -433,11 +424,8 @@ use frontend\models\applications\CandidateApply;
                                                     <div class="">You haven't Shortlisted any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     } ?>
-
-
                                 </div>
                             </div>
                         </div>

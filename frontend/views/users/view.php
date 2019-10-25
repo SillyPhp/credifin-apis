@@ -169,20 +169,49 @@ $this->params['header_dark'] = false;
                     </div>
                 </div>
                 <div class="container-detail-box">
-                    <div class="prefer">My Preferences</div>
-                    <div class="prefer-detail">
+                    <div class="education-detail">
+                        <div class="education-head">Education</div>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
+                            </div>
+                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>BCA</div>
+                            <div class="s-time s-text"><i class="fas fa-clock"></i>2013 - 2016</div>
+                        </div>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
+                            </div>
+                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>MCA</div>
+                            <div class="s-time s-text"><i class="fas fa-clock"></i>2016 - 2018</div>
+                        </div>
+                    </div>
+                    <div class="experience-detail">
+                        <div class="education-head">Work Experience</div>
+                        <div class="set">
+                            <div class="uni-name s-text"><i class="fas fa-hotel"></i>Infosis, chd</div>
+                            <div class="quelification s-text"><i class="fas fa-briefcase"></i>Backend Developer</div>
+                            <div class="s-time s-text"><i class="fas fa-calendar-alt"></i>12/2/2017 to 12/5/2019</div>
+                        </div>
+                    </div>
+                    <div class="achievements-detail set-li">
+                        <div class="education-head">Achievements</div>
                         <ul>
-                            <li><span class="set-width">Job Profile</span><span class="position">Web Developement</span>
-                            </li>
-                            <li><span class="set-width">Job Type</span><span class="position">Full Time</span></li>
-                            <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>
-                            </li>
-                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
-                            </li>
-                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
-                            </li>
-                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
-                            </li>
+                            <li>Hackathon Winner</li>
+                            <li>Coding Challenge Winner</li>
+                        </ul>
+                    </div>
+                    <div class="hobbies-detail set-li">
+                        <div class="education-head">Hobbies</div>
+                        <ul>
+                            <li>Playing Games</li>
+                            <li>Watching movies</li>
+                            <li>Listening songs</li>
+                        </ul>
+                    </div>
+                    <div class="Interests-detail set-li">
+                        <div class="education-head">Interests</div>
+                        <ul>
+                            <li>coding</li>
+                            <li>Designing</li>
                         </ul>
                     </div>
                 </div>
@@ -190,13 +219,13 @@ $this->params['header_dark'] = false;
             <!--Sidebar Start-->
             <div class="col-md-4 col-sm-4">
                 <!-- Make An Offer-->
-                <div class="sidebar-container">
-                    <div class="prefer">My Preferences</div>
+                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
+                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
                     <div class="prefer-detail">
                         <ul>
-                            <li><span class="set-width">Job Profile</span><span class="position">Web Developement</span>
+                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
                             </li>
-                            <li><span class="set-width">Job Type</span><span class="position">Full Time</span></li>
+                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
                             <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>
                             </li>
                             <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
@@ -208,41 +237,20 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
                 </div>
-                <div class="sidebar-container">
-                    <div class="job-prefer-box">
-                        <div class="main-job">Job Preferences</div>
-                        <div class="profile">Web Development</div>
-                        <div class="job-type">Full Time</div>
-                        <div class="salary">10k - 15k</div>
-                        <div class="city">Ludhiana, Chandigarh</div>
-                        <div class="working-days">
-                            <ul>
-                                <li>M</li>
-                                <li>T</li>
-                                <li>W</li>
-                                <li>T</li>
-                                <li>F</li>
-                                <li>S</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="sidebar-container">
-                    <div class="intern-prefer-box">
-                        <div class="main-intern">Internship Preferences</div>
-                        <div class="profile">Web Development</div>
-                        <div class="job-type">Full Time</div>
-                        <div class="city">10:00am to 12:00pm</div>
-                        <div class="working-days2">
-                            <ul>
-                                <li>M</li>
-                                <li>T</li>
-                                <li>W</li>
-                                <li>T</li>
-                                <li>F</li>
-                                <li>S</li>
-                            </ul>
-                        </div>
+                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
+                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
+                    <div class="prefer-detail">
+                        <ul>
+                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
+                            </li>
+                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
+                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
+                            </li>
+                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
+                            </li>
+                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -251,47 +259,37 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
-.job-prefer-box {
-    border: 1px solid #ff7803;
-    padding: 0px 0px 10px 0;
-    box-shadow: 0px 0px 9px 0px #eee;
-    border-bottom: 2px solid #ff7803;
-    border-radius:8px;
-    text-align:center;
-}
-.intern-prefer-box {
-    border: 1px solid #00a0e3;
-    padding: 0px 0px 10px 0;
-    box-shadow: 0px 0px 9px 0px #eee;
-    border-bottom: 2px solid #00a0e3;
-    border-radius:8px;
-    text-align:center;
-}
-.main-job {
-    background: #ff7803;
-    padding: 5px 5px;
-    color: #fff;
+.education-head {
+    font-size: 18px;
     font-weight: 500;
     font-family: roboto;
-    border-radius: 7px 7px 0 0;
+    padding-bottom: 3px;
+    letter-spacing: 1px;
 }
-.main-intern {
-    background: #00a0e3;
-    padding: 5px 5px;
-    color: #fff;
+.education-detail, .experience-detail, .achievements-detail, .Interests-detail, .hobbies-detail {
+    padding-bottom: 20px;
+}
+.set {
+    margin-bottom: -1px;
+    padding: 10px 0;
+    border-bottom: 1px solid #dddddd;
+}
+.s-text {
+    font-size: 14px;
+    font-family: roboto;
+}
+.s-text > i{
+    margin-right:7px;
+}
+.set-li > ul > li {
+    display: inline-block;
+    list-style: none;
+    padding: 3px 15px;
+    border: 1px solid #b9c5ce;
+    border-radius: 6px;
+    margin: 0 5px 0 0;
     font-weight: 500;
-    font-family: roboto;
-    border-radius: 7px 7px 0 0;
-}
-.profile {
-    font-size: 20px;
-    font-family: sans-serif;
-    padding-top: 8px;
-}
-.experience, .job-type, .salary, .city {
-    font-size: 16px;
-    font-family: roboto;
-    padding-bottom: 5px;
+    color: #657180;
 }
 .skillss > ul > li {
     display: inline-block;
@@ -334,20 +332,27 @@ $this->registerCss('
     padding-top:50px;
 }
 .prefer-detail > ul > li{
-    font-size: 16px;
+    font-size: 14px;
     font-family: sans-serif;
     padding-bottom:10px;
 }
 .set-width {
-    width: 150px;
+    width: 40%;
     display: inline-block;
 }
+.position {
+    width: 60%;
+    display: inline-flex;
+}
 .prefer {
-    font-size: 22px;
+    font-size: 20px;
     font-family: sans-serif;
     text-align: center;
     background: #eee;
-    margin: -30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
 }
 .set-color{
     background: #ff7803;
@@ -641,6 +646,9 @@ img.img-responsive.payment-img {
     margin-bottom:30px;
 	position:relative;
 	transition: .4s;
+    padding: 0px 15px 10px 15px;
+    border: 1px solid #eee;
+    border-radius:5px;
 }
 .sidebar-container:hover, .sidebar-container:focus{
     transform: translateY(-5px);
