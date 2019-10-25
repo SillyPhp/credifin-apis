@@ -516,11 +516,11 @@ if($duration == Null){
 $script = <<<JS
 $('.m-modal').addClass("zoom");
 var validate = false;
-var x;
+var x, ct;
 function startInterval() {
     validate = true;
     var timeLimit = new Date();
-    var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + 1);
+    var countDownDate = timeLimit.setMinutes(timeLimit.getMinutes() + $duration);
     x = setInterval(function() {
       var now = new Date().getTime();
       var distance = countDownDate - now;   
@@ -548,11 +548,19 @@ function startInterval() {
       }
     }, 1000);
 }
+var c_time = 0
+function c_interval(){
+    ct = setInterval(function() {
+      c_time += 1;
+      console.log(c_time);
+    }, 1000);
+}
 $(".close-m-mo").on("click", function() {
   $('.m-modal').attr('class', 'm-modal');
   $('.m-modal, .m-cover').addClass("hidden");
   $('#quiz-data').removeClass('hidden');
   startInterval();
+  c_interval();
 });
 $(document).on('change', '.optionContainer input[type=radio]', function(){
     if(validate){
@@ -569,15 +577,20 @@ $(document).on('change', '.optionContainer input[type=radio]', function(){
         $.ajax({
             type: 'POST',
             url: window.location.href,
-            data: {question:question_id,ans:ans_val},
+            data: {question:question_id,ans:ans_val, ct:c_time},
+            beforeSend:function(){
+                clearInterval(ct);  
+            },
             success: function(data){
                 $('.loading-question').fadeOut(500);
                 if(data.status == 200){
+                    c_time = 0;
                     var q_body = $('#c-quiz-options').html();
                     $(".optionContainer").html(Mustache.render(q_body, data.question.quizPoolEnc.quizQuestionsPools[0].quizAnswersPools));
                     $('#c-question').html(data.question.quizPoolEnc.quizQuestionsPools[0].question);
                     $('#c-question').attr('data-key', data.question.quizPoolEnc.quizQuestionsPools[0].quiz_question_pool_enc_id);
                     animateShow();
+                    c_interval();
                 } else if(data.status == 205) {
                     clearInterval(x);
                     showResult(data);                

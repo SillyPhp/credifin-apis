@@ -118,6 +118,7 @@ class QuizzesController extends Controller
                 $quizSubmittedAnsers->quiz_submitted_answers_enc_id = $utilitiesModel->encrypt();
                 $quizSubmittedAnsers->quiz_question_pool_enc_id = $data['question'];
                 $quizSubmittedAnsers->answer_enc_id = $data['ans'];
+                $quizSubmittedAnsers->consumed_time = $data['ct'];
                 $quizSubmittedAnsers->user_enc_id = Yii::$app->user->identity->user_enc_id;
                 $quizSubmittedAnsers->quiz_slug = $slug;
                 $checkAns = QuizAnswersPool::find()

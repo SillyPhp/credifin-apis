@@ -235,6 +235,122 @@ use yii\helpers\Url;
     </div>
 <?php } ?>
 
+<Section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Popular Questions</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="gallery-view">
+                <?php if (!empty($object)) {
+                    foreach ($object as $obj) {
+                        $link = Url::to('question/' . $obj['slug'], true);
+                        ?>
+                        <div class="col-md-4 col-sm-6 card-box">
+                            <div class="card">
+                                <div class="card__block card__block--main">
+                                    <div class="head">
+                                        <div class="user-img">
+                                            <?php if ($obj['privacy'] == 1) { ?>
+                                                <?php if ($obj['image']) { ?>
+                                                    <img src="<?= $obj['image']; ?>"
+                                                         alt="<?= $obj['user_name']; ?>"/>
+                                                <?php } else { ?>
+                                                    <canvas class="user-icon img-circle img-responsive"
+                                                            name="<?= $obj['user_name']; ?>"
+                                                            color="<?= $obj['initials_color']; ?>" width="35"
+                                                            height="35"
+                                                            font="20px"></canvas>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>">
+                                            <?php } ?>
+                                        </div>
+                                        <div class="user-topic">
+                                            <div class="topic-name"><a href="<?= $link ?>"><?= $obj['name'] ?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sharing-links" id="share">
+                                        <i class="fa fa-share-alt"></i>
+                                        <div class="set">
+                                            <div class="fb">
+                                                <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-facebook-f"></i></span></a>
+                                            </div>
+                                            <div class="tw">
+                                                <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-twitter"></i></span></a>
+                                            </div>
+                                            <div class="male">
+                                                <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-linkedin"></i></span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box-content">
+                                        <?= $obj['question']; ?>
+                                    </div>
+                                    <div class="t-answers">
+                                        <span class="answers"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
+                                        <div class="best-answers">
+                                            <?php if (!empty($obj['questionsPoolAnswers'])): ?>
+                                                <span class="best-images">
+                                          <?php foreach ($obj['questionsPoolAnswers'] as $o) { ?>
+                                              <a href="<?= Url::to($o['username']); ?>" data-toggle="tooltip"
+                                                 title="<?= $o['name'] ?>">
+                                            <?php if ($o['image']) { ?>
+                                                <img src="<?= $o['image']; ?>" alt="<?= $o['name']; ?>"/>
+                                            <?php } else { ?>
+                                                <canvas class="user-icon img-circle img-responsive"
+                                                        name="<?= $o['name']; ?>"
+                                                        color="<?= $o['initials_color']; ?>" width="20" height="20"
+                                                        font="10px"></canvas>
+                                            <?php } ?>
+                                        </a>
+                                          <?php } ?>
+                                    </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php }
+                } ?>
+            </div>
+        </div>
+    </div>
+</Section>
+
+<section>
+    <div class="container">
+        <div class="col-box">
+            <div class="row" style="margin:20px">
+                <div class="col-md-4">
+                    <div class="col-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-text">
+                        <div class="col-head">Join our community of contributers</div>
+                        <div class="col-inner">Help millions of people realize their true potential.</div>
+                        <a href="/learning/contribute">
+                            <button class="btn-primary btn" style="margin-top:20px;">Know More</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section>
     <div class="container">
 <!--        <div class="row">-->
@@ -250,8 +366,179 @@ use yii\helpers\Url;
     </div>
 </section>
 
+
 <?php
 $this->registerCss('
+.wts-app, .fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.wts-app{ background-color: #25D366;}
+.male{  background-color: #d3252b;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+    position: absolute;
+    top: 100%;
+    right: -13px;
+    background-color: #eee;
+    padding: 0px;
+    border-radius: 10px;
+    height:0px;
+    overflow:hidden;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.sharing-links{
+    float: right;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 20px;
+    text-align: right;
+    height: 25px;
+}
+.sharing-links:hover .set{
+    height:110px;
+    padding: 5px;
+}
+.head{
+    display:flex;
+}
+.user-img {
+    margin: 5px 0 0 0;
+}
+.user-img img {
+    border: 1px solid #eee;
+    width: 35px;
+    height: 35px;
+    border-radius: 25px;
+}
+.user-topic{
+    margin: 8px 0 0 7px;
+}
+.topic-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+.box-content {
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: justify;
+    height: 148px;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+}
+.t-answers {
+    padding-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+}
+.best-answers {
+    float: right;
+    display:flex;
+}
+.t-answers img {
+    height: 20px;
+    width: 20px;
+    border-radius: 25px;
+    margin-right: 2px;
+}
+.card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
+   background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
+}
+.card-box:nth-child(2n) .card::before, .card-box:nth-child(11n) .card::before{
+   background-image:linear-gradient( 135deg, #ffa3b8 10%, #ff6386 100%); /*pink*/
+}
+.card-box:nth-child(3n) .card::before {
+    background-image:linear-gradient( 135deg, #FFD3A5 10%, #FD6585 100%); 
+}
+.card-box:nth-child(4n) .card::before {
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card-box:nth-child(6n) .card::before,.card-box:nth-child(12n) .card::before  {
+   background-image:linear-gradient( 135deg, #8bf4bb 10%, #4f9b94 100%); /*Green*/
+}
+.card-box:nth-child(5n) .card::before, .card-box:nth-child(8n) .card::before {
+   background-image:linear-gradient( 135deg, #e85b56 10%, #6f2347 100%); 
+}
+ .card-box:nth-child(10n) .card::before{
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card {
+    position: relative;
+    padding-top: 35px;
+    max-width: 90%;
+    margin: 0px auto;
+    margin-bottom: 10px;
+}
+@media only screen and (max-width: 1200px) and (min-width:992px){
+    .card{
+        margin: 0 auto;
+    }
+} 
+.card:hover::before{
+    right: -15px;
+    bottom: -15px;
+    curser: pointer;
+    transition: .5s ease;
+}
+.card::before {
+  background-image: var(--gradient-1);
+  border-radius: 15px;
+  box-shadow: 2px 0px 20px rgba(0, 0, 0, .1);
+  bottom: 30px;
+  left: -15px;
+  position: absolute;
+  right: 35px;
+  content:"";
+  top: 20px; 
+  transition: .5s ease;
+}
+.card__block--main {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 2px 5px 25px rgba(0, 0, 0, .15);
+  height: 260px;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.col-box{
+    border:2px solid #eee;
+    border-radius:8px;
+    background: ghostwhite;
+    margin-top: 40px;
+}
+.col-text {
+    text-align: center;
+    padding-top: 40px;
+}   
+.col-head {
+    text-transform:capitalize;
+    font-size: 35px;
+    font-weight: 700;
+    font-family: roboto;
+    text-align: center;
+}
+.col-inner{
+    font-size:18px;
+}
 .newlogoset{
     max-width:500px;
     margin: 0 auto;
@@ -1141,6 +1428,7 @@ button.lc-item-video-menu {
 }
 /*Video slider css ends*/
 
+
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
@@ -1216,8 +1504,18 @@ $script = <<< JS
             }
         }
    });
+    
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+});
+        
+  // $("#share").hover(function(){
+  //   $(".set").show(1000);
+  // });
 
 JS;
+
+
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/candidates-list/modernizr-2.8.3-respond-1.4.2.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

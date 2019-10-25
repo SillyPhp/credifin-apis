@@ -52,7 +52,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
-                    <h1 class="heading-style">Featured courses</h1>
+                    <h1 class="heading-style">Featured Courses</h1>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div class="type-1">
@@ -89,7 +89,6 @@ echo $this->render('/widgets/mustache/training_cards/institutes_cards');
 $this->registerCss('
 .marg{margin-left:-3px;}
 .backgrounds{
-//    background-size: 100% 520px;
     background-image: url("' . Url::to("@eyAssets/images/pages/training-program/institute.png") . '");
     background-repeat: no-repeat;
     min-height: 520px;
