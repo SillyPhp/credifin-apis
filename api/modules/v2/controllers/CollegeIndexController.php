@@ -229,11 +229,16 @@ class CollegeIndexController extends ApiBaseController
                 $approve->college_approvel = 1;
                 $approve->last_updated_by = $user->user_enc_id;
                 $approve->last_updated_on = date('Y-m-d H:i:s');
-                if($approve->update()){
-                    return $this->response(200,['status'=>200,'message'=>'Successfully updated']);
+                if($req['action'] == 'Accept'){
+                    if($approve->update()){
+                        return $this->response(200,['status'=>200,'message'=>'Successfully updated']);
+                    }else{
+                        return $this->response(500,['status'=>500,'message'=>'An error occured']);
+                    }
                 }else{
-                    return $this->response(500,['status'=>500,'message'=>'An error occured']);
+                    $approve->delete();
                 }
+
             }else{
                 return $this->response(404,['status'=>404,'message'=>'not found']);
             }
@@ -291,6 +296,8 @@ class CollegeIndexController extends ApiBaseController
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
                 $data['org_enc_id'] = $j['organization_enc_id'];
+                $data['application_enc_id'] = $j['application_enc_id'];
+                $data['college_enc_id'] = $j['college_enc_id'];
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l){
                     array_push($locations,$l['name']);
                     $positions += $l['positions'];
@@ -322,8 +329,8 @@ class CollegeIndexController extends ApiBaseController
                 $collab->college_approvel = 1;
                 $collab->last_updated_by = $user->user_enc_id;
                 $collab->last_updated_on = date('Y-m-d H:i:s');
-                if($collab->update()){
-
+                if(!$collab->update()){
+                    return false;
                 }
             }
 
