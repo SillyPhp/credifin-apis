@@ -186,8 +186,6 @@ class TrainingProgramController extends Controller
             $inviteForm = new InviteCandidatesForm();
             if ($inviteForm->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
-                print_r($inviteForm->send());
-                exit();
                 if ($inviteForm->send()) {
                     return $response = [
                         'status' => 200,

@@ -145,7 +145,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -194,8 +193,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
-
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
