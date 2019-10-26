@@ -73,7 +73,7 @@ use yii\helpers\Url;
     </div>
 </section>
 <?=
-$this->render('/widgets/top-cities',[
+$this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ])
@@ -102,10 +102,13 @@ $this->render('/widgets/top-cities',[
     </div>
 </section>
 <section class="us-background">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-6">
-            <div class="post-bttn">
-                <a href="#" class="hvr-float-shadow">Apply</a>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-6 text-center">
+                <h2>Looking for a Career In US Govt</h2>
+                <div class="post-bttn">
+                    <a href="#" class="hvr-float-shadow">Apply</a>
+                </div>
             </div>
         </div>
     </div>
@@ -212,6 +215,10 @@ echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .us-background{
     background:url(' . Url::to('@eyAssets/images/pages/jobs/usa-jobs-section.png') . ');
+    padding:130px 0px;
+    margin:50px 0px;
+    background-repeat:no-repeat;
+    background-position:center;
 }
 .post-bttn a {
     display:block;
