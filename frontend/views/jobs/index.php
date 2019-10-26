@@ -101,6 +101,15 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
+<section class="us-background">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-6">
+            <div class="post-bttn">
+                <a href="#" class="hvr-float-shadow">Apply</a>
+            </div>
+        </div>
+    </div>
+</section>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -145,7 +154,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -194,8 +202,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
-
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -204,8 +210,28 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
+.us-background{
+    background:url(' . Url::to('@eyAssets/images/pages/jobs/usa-jobs-section.png') . ');
+}
+.post-bttn a {
+    display:block;
+    background: #00a0e3;
+    color: #fff;
+    border-radius: 5px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    font-size: 18px;
+    box-shadow: 0 0 10px rgba(66, 63, 63, .5);
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 225px;
+    font-weight: 400;
+    font-family: Roboto;
+}
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -931,7 +957,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (ll < listElementsLength) {
-            if(document.getElementById(elem).children[ll]) {
+            if (document.getElementById(elem).children[ll]) {
                 if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
                     document.getElementById(elem).children[ll].classList.remove('hide');
                     zz += 1;
@@ -940,7 +966,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             }
             ll += 1;
         }
-        if(f) {
+        if (f) {
             document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
             document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
         }
