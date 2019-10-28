@@ -101,18 +101,7 @@ $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<section class="us-background">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-6 text-center">
-                <h2>Looking for a Career In US Govt</h2>
-                <div class="post-bttn">
-                    <a href="#" class="hvr-float-shadow">Apply</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/usa-jobs');?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -213,30 +202,6 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.us-background{
-    background:url(' . Url::to('@eyAssets/images/pages/jobs/usa-jobs-section.png') . ');
-    padding:130px 0px;
-    margin:50px 0px;
-    background-repeat:no-repeat;
-    background-position:center;
-}
-.post-bttn a {
-    display:block;
-    background: #00a0e3;
-    color: #fff;
-    border-radius: 5px;
-    text-transform: uppercase;
-    padding: 10px 20px;
-    font-size: 18px;
-    box-shadow: 0 0 10px rgba(66, 63, 63, .5);
-    -webkit-transition: .3s all;
-    transition: .3s all;
-    text-align: center;
-    margin: 0 auto;
-    max-width: 225px;
-    font-weight: 400;
-    font-family: Roboto;
-}
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
@@ -265,20 +230,19 @@ $this->registerCss('
        background-color: #00a0e3;
     color: #fff;
 }
-
 .text-white1{
     color:white;
     font-family:Roboto;
-    }
+}
 .text-white2{
     color:white;
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .form-control{
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -312,8 +276,6 @@ $this->registerCss('
     padding:0;
     font-size:14px;
 }
-
-
 .wn-box-details{
     min-height:100px !important;
 }
