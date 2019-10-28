@@ -18,7 +18,7 @@
 </script>
 <?php
 $script = <<< JS
- function getInstitutes(type="institute",limit=4) {
+ function getInstitutes(type="institute",limit=6) {
     let data = {};
     const url = '/training-programs/fetch-institutes';
     data['type'] = type;
