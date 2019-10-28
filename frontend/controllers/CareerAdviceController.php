@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -29,6 +30,12 @@ class CareerAdviceController extends Controller
             ->all();
         return $this->render('career-advice-blog',[
             'careerBlog' => $careerBlog
+        ]);
+    }
+    public function actionCareerBlogDetail(){
+        $newsletterForm = new SubscribeNewsletterForm();
+        return $this->render('career-blog-detail',[
+            'newsletterForm' =>  $newsletterForm
         ]);
     }
 }
