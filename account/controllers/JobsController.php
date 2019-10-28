@@ -39,7 +39,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
         return parent::beforeAction($action);
     }
 
@@ -326,7 +326,7 @@ class JobsController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id','a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -338,7 +338,7 @@ class JobsController extends Controller
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
             }], false)
@@ -356,13 +356,13 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -710,13 +710,13 @@ class JobsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -824,7 +824,7 @@ class JobsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id','k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -837,7 +837,7 @@ class JobsController extends Controller
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
             }], false)
             ->having(['type' => 'Jobs'])
@@ -1036,7 +1036,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select(['a.name', 'a.category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL,'b.status'=>'Approved'])
+            ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL, 'b.status' => 'Approved'])
             ->asArray()
             ->all();
         return $primaryfields;
@@ -1045,29 +1045,26 @@ class JobsController extends Controller
     public function actionQuickJob()
     {
         if (Yii::$app->user->identity->organization->organization_enc_id):
-        $model = new ShortJobs();
-        $data = new ApplicationForm();
-        $primary_cat = $data->getPrimaryFields();
-        $job_type = $data->getApplicationTypes();
-        $placement_locations = $data->PlacementLocations();
-        $currencies = $data->getCurrency();
-        if ($model->load(Yii::$app->request->post()))
-        {
-            if ($model->save())
-            {
-                Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+            $model = new ShortJobs();
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields();
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
             }
-            else
-            {
-                Yii::$app->session->setFlash('error', 'Something Went Wrong..');
-            }
-            return $this->refresh();
-        }
-        return $this->render('/employer-applications/one-click-job',['currencies'=>$currencies,'placement_locations'=>$placement_locations,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
     private function __organizationJobs()
     {
         return $this->render('list/organization', [
@@ -1237,8 +1234,50 @@ class JobsController extends Controller
         return false;
     }
 
-    public function actionTestProcess(){
-        return $this->render('test-new');
+    public function actionQuickJobClone($editid)
+    {
+        if (Yii::$app->user->identity->organization) {
+            $typ = 'Jobs';
+            $obj = new ShortJobs();
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields();
+            $model = $obj->setData($editid, $typ);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($obj->load(Yii::$app->request->post())) {
+                if ($obj->save()) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['skill' => $model['skill'], 'typ' => $typ, 'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model['mod'], 'list' => $model['list'], 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        }
+    }
+
+    public function actionQuickJobEdit($editid)
+    {
+        if (Yii::$app->user->identity->organization) {
+            $typ = 'Jobs';
+            $obj = new ShortJobs();
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields();
+            $model = $obj->setData($editid, $typ);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($obj->load(Yii::$app->request->post())) {
+                if ($obj->update($editid, $typ)) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Updated Successfully');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['skill' => $model['skill'], 'typ' => $typ, 'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model['mod'], 'list' => $model['list'], 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        }
     }
 
 }
