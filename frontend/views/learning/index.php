@@ -235,6 +235,99 @@ use yii\helpers\Url;
     </div>
 <?php } ?>
 
+<Section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Popular Questions</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="gallery-view">
+                <?php if (!empty($object)) {
+                    foreach ($object as $obj) {
+                        $link = Url::to('question/' . $obj['slug'], true);
+                        ?>
+                        <div class="col-md-4 col-sm-6 card-box">
+                            <div class="card">
+                                <div class="card__block card__block--main">
+                                    <div class="head">
+                                        <div class="user-img">
+                                            <?php if ($obj['privacy'] == 1) { ?>
+                                                <?php if ($obj['image']) { ?>
+                                                    <img src="<?= $obj['image']; ?>"
+                                                         alt="<?= $obj['user_name']; ?>"/>
+                                                <?php } else { ?>
+                                                    <canvas class="user-icon img-circle img-responsive"
+                                                            name="<?= $obj['user_name']; ?>"
+                                                            color="<?= $obj['initials_color']; ?>" width="35"
+                                                            height="35"
+                                                            font="20px"></canvas>
+                                                <?php } ?>
+                                            <?php } else { ?>
+                                                <img src="<?= Url::to('/assets/common/images/user1.png'); ?>">
+                                            <?php } ?>
+                                        </div>
+                                        <div class="user-topic">
+                                            <div class="topic-name"><a href="<?= $link ?>"><?= $obj['name'] ?></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="sharing-links" id="share">
+                                        <i class="fa fa-share-alt"></i>
+                                        <div class="set">
+                                            <div class="fb">
+                                                <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-facebook-f"></i></span></a>
+                                            </div>
+                                            <div class="tw">
+                                                <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-twitter"></i></span></a>
+                                            </div>
+                                            <div class="male">
+                                                <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                                                   target="blank">
+                                                    <span><i class="fab fa-linkedin"></i></span></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box-content">
+                                        <?= $obj['question']; ?>
+                                    </div>
+                                    <div class="t-answers">
+                                        <span class="answers"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
+                                        <div class="best-answers">
+                                            <?php if (!empty($obj['questionsPoolAnswers'])): ?>
+                                                <span class="best-images">
+                                          <?php foreach ($obj['questionsPoolAnswers'] as $o) { ?>
+                                              <a href="<?= Url::to($o['username']); ?>" data-toggle="tooltip"
+                                                 title="<?= $o['name'] ?>">
+                                            <?php if ($o['image']) { ?>
+                                                <img src="<?= $o['image']; ?>" alt="<?= $o['name']; ?>"/>
+                                            <?php } else { ?>
+                                                <canvas class="user-icon img-circle img-responsive"
+                                                        name="<?= $o['name']; ?>"
+                                                        color="<?= $o['initials_color']; ?>" width="20" height="20"
+                                                        font="10px"></canvas>
+                                            <?php } ?>
+                                        </a>
+                                          <?php } ?>
+                                    </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php }
+                } ?>
+            </div>
+        </div>
+    </div>
+</Section>
+
 <section>
     <div class="container">
         <div class="col-box">
@@ -273,117 +366,51 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<!--<Section>-->
-<!--    <div class="container">-->
-<!--        <div class="row">-->
-<!--            <div class="heading-style">Popular Questions</div>-->
-<!--        </div>-->
-<!--        <div class="row">-->
-<!--            <div class="gallery-view">-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aussie slang for white trash) of patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-4 col-sm-6 card-box">-->
-<!--                    <div class="card">-->
-<!--                        <div class="card__block card__block--main">-->
-<!--                            <div class="head">-->
-<!--                                <div class="user-img">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                </div>-->
-<!--                                <div class="user-topic">-->
-<!--                                    <div class="topic-name">Topics</div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="box-content">-->
-<!--                                My friend and I were on our first cruise. Little did we know that cruises seem to-->
-<!--                                attract the most “bogan” (Aus patrons.-->
-<!--                            </div>-->
-<!--                            <div class="t-answers">-->
-<!--                                <span class="answers">Answers</span>-->
-<!--                                <div class="best-answers">-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                    <a href="#" data-toggle="tooltip" title="Eddy">-->
-<!--                                        <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?><!--"/>-->
-<!--                                    </a>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</Section>-->
 
 <?php
 $this->registerCss('
+.wts-app, .fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.wts-app{ background-color: #25D366;}
+.male{  background-color: #d3252b;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+    position: absolute;
+    top: 100%;
+    right: -13px;
+    background-color: #eee;
+    padding: 0px;
+    border-radius: 10px;
+    height:0px;
+    overflow:hidden;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.sharing-links{
+    float: right;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 20px;
+    text-align: right;
+    height: 25px;
+}
+.sharing-links:hover .set{
+    height:110px;
+    padding: 5px;
+}
 .head{
     display:flex;
 }
@@ -423,6 +450,7 @@ $this->registerCss('
 }
 .best-answers {
     float: right;
+    display:flex;
 }
 .t-answers img {
     height: 20px;
@@ -456,6 +484,7 @@ $this->registerCss('
     padding-top: 35px;
     max-width: 90%;
     margin: 0px auto;
+    margin-bottom: 10px;
 }
 @media only screen and (max-width: 1200px) and (min-width:992px){
     .card{
@@ -494,6 +523,7 @@ $this->registerCss('
     border:2px solid #eee;
     border-radius:8px;
     background: ghostwhite;
+    margin-top: 40px;
 }
 .col-text {
     text-align: center;
@@ -1398,6 +1428,7 @@ button.lc-item-video-menu {
 }
 /*Video slider css ends*/
 
+
 @media only screen and (max-width: 992px){
     .b-padding{
         padding-top: 0px;
@@ -1477,6 +1508,11 @@ $script = <<< JS
         $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
 });
+        
+  // $("#share").hover(function(){
+  //   $(".set").show(1000);
+  // });
+
 JS;
 
 

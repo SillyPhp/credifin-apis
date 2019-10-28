@@ -10,8 +10,26 @@ use yii\helpers\Url;
                 <div class="row">
                     <!--- col 6 start from here-->
                     <div class="col-md-6  col-sm-6 col-xs-12">
+                        <div class="animation-img">
+
+                             <div class="animation-img2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/box1.png'); ?>"/>
+                             </div>
+                             <div class="animation-img3">
+                                <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/shape3.png'); ?>"/>
+                             </div>
+                             <div class="animation-img4">
+                                <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/shape4.png'); ?>"/>
+                             </div>
+                              <div class="animation-img5">
+                                <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/shape5.png'); ?>"/>
+                              </div>
+                               <div class="animation-img6">
+                                  <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/shape6.png'); ?>"/>
+                               </div>
+                        </div>
                         <div class="text-box">
-                            <h3 class="text-here">Amplify your creative talent</h3>
+                            <h3 class="text-here">Amplify your Creative Talent</h3>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -31,7 +49,7 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h3 class="header">Why collaborate with us?</h3>
+                    <h3 class="header">Why Collaborate With Us?</h3>
                     <div class="card-main-box">
                         <div class="col-md-3 col-sm-6 col-xs-12">
                             <div class="card-box">
@@ -144,7 +162,7 @@ use yii\helpers\Url;
                             <li><span class="clr">Your content may just help someone learn new skills. </span></li>
                             <li><span class="clr">Your Content Never Dies.</span></li>
                             <li>
-                                <span class="clr">you help us in our mission of making education free for all.</span>
+                                <span class="clr">You help us in our mission of making education free for all.</span>
                             </li>
                             <li><span class="clr">We aim to target the wdly segment of the society.</span></li>
                         </ul>
@@ -165,9 +183,7 @@ use yii\helpers\Url;
                         <p class="paragraph-set">One of the best parts about doing collaboration<span
                                     class="text-bold"> is it's completely free!</span>
                             this makes thing more easy.</p>
-                        <div class="btn-set">
-                            <a class="btn-1" href="#">LEARN MORE</a>
-                        </div>
+
                     </div>
                 </div>
 
@@ -189,7 +205,7 @@ use yii\helpers\Url;
                         <div class="Col-md-6 col-sm-6 col-xs-12">
                             <div class="img-circle">
                                 <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/videos.png'); ?>"/>
-                                <h4>videos</h4>
+                                <h4>Videos</h4>
                             </div>
                         </div>
 
@@ -238,7 +254,7 @@ use yii\helpers\Url;
                                 <input type="text" name="channel" id="channel" placeholder="You Tube Channel*"
                                        autocomplete="false">
                                 <p class="channel-error err"></p>
-                                <textarea name="comment" id="comment" placeholder="comment (optional)"></textarea>
+                                <textarea name="comment" id="comment" placeholder="Comment (optional)"></textarea>
                                 <button class="btn-2 form-submit">Send</button>
                             </div>
                         </form>
@@ -255,6 +271,82 @@ textarea:focus{
 .input-box input:focus{
     box-shadow:none !important;
 }
+
+.animation-img{
+	position: relative;
+	
+}
+
+.animation-img1 img,.animation-img5 img,.animation-img6 img{
+	max-width: 55%;
+}
+
+.animation-img2{
+	position: absolute;
+	left: 475px;
+	top: 257px;
+}
+
+.animation-img3 {
+	position: absolute;
+	left: 450px;
+	top: 91px;
+}
+
+.animation-img4 {
+	position: absolute;
+	top: 282px;
+    left: 138px;
+}
+
+
+.animation-img5 {
+	position: absolute;
+	top: 336px;
+	left: 78px;
+	-webkit-animation-name: animation; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 4s; /* Safari 4.0 - 8.0 */
+     animation-name: animation;
+     animation-duration: 25s;
+     animation-iteration-count:infinite;
+     animation-timing-function:linear;
+}
+
+.animation-img6 {
+	position: absolute;
+	top: 104px;
+    left: 63px;
+}
+
+.animation-img1 img,.animation-img3 img,.animation-img4 img,.animation-img6 img{
+    animation-duration:5s;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+    animation-name:example;
+}
+
+@keyframes example {
+	from{ transform: rotate(0deg);}
+    to{transform: rotate(360deg);}  
+}
+
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes animation {
+      0% { left:0px; top:0px;}
+      25%{ left:500px; top:0px; }
+      100% {left:0px; top:0px;}
+}
+
+/* Standard syntax */
+@keyframes animation {
+      0% { left:0px; top:330px;  }
+      25% { left:500px; top:330px;}
+      100% { left:0px; top:330px;}
+      from{ transform: rotate(360deg);}
+      to{transform: rotate(360deg);}    
+}
+
 .err{
     color:red;
 }
@@ -339,7 +431,7 @@ textarea:focus{
   }  
 .h2-head{
     font-weight: 700;
-    padding: 25px;
+    padding: 25px 25px 0px 10px;
     font-family: Quicksand;  
 }
 @media only screen and (max-width: 1024px){
@@ -359,8 +451,8 @@ textarea:focus{
 }
 .list-1{
     font-size: 20px;
-    padding-left: 16px;
-    list-style: disclosure-closed !important;
+    padding-left: 30px;
+    list-style: disc !important;
     font-family: roboto;
     color:#ff7803;
 }
@@ -482,6 +574,31 @@ textarea{
     font-size: 23px;
     padding:0;
 }
+
+.animation-img2 {
+	left: 300px;
+	top: 15px;
+}
+
+.animation-img6 {
+	top: 76px;
+	left: 6px;
+}
+
+.animation-img4 {
+	top: 145px;
+	left: 211px;
+}
+
+.animation-img3 {
+	left: 333px;
+	top: 100px;
+}
+
+.animation-img5{
+    display:none;
+ }
+ 
 .heading {
     font-size: 20px; 
 }
@@ -545,6 +662,9 @@ textarea{
     margin: 0 auto;
     max-width: 55%;
     padding: 0;
+}
+.animation-img{
+    display:none;
 }
 }
 @media only screen and (max-width: 834px){

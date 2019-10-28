@@ -66,7 +66,20 @@ use yii\helpers\Url;
 
                                 </div>
                             <?php } ?>
-                        <?php } ?>
+                        <?php } else {
+                                ?>
+                        <div class="col-md-12">
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapp.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">You haven't applied yet on any application</div>
+                                </div>
+                            </div>
+                        </div>
+                       <?php
+                             }?>
                     </div>
                 </div>
             </div>
@@ -77,7 +90,7 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Pending Questionnaire</span>
+            <span class="caption-subject font-dark bold uppercase">Questionnaires</span>
         </div>
     </div>
     <div class="portlet-body">
@@ -100,7 +113,16 @@ use yii\helpers\Url;
                             <?php } ?>
                         </table>
                     <?php }  } else { ?>
-                    <h1>No Questionnaires Pending..!</h1>
+                    <div class="col-md-12">
+                        <div class="tab-empty">
+                            <div class="tab-empty-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
+                            </div>
+                            <div class="tab-empty-text">
+                                <div class="">No Questionnaires</div>
+                            </div>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
@@ -191,6 +213,20 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss("
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
 .hired_btn
 {
  color: #fdfbfb;
