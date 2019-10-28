@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Url;
+use yii\helpers\Html;
 $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -58,8 +59,12 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
-            <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="<?= Url::to($job_url,true); ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+            <?php elseif (!Yii::$app->user->identity->organization):
+                if (strpos($job_url,'http://') || strpos($job_url,'https://') === false){
+                    $job_url = 'http://'.$job_url;
+                }
+                ?>
+                <a href="<?= Url::to($job_url) ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
                 <div class="sub-actions">
