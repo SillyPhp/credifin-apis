@@ -141,17 +141,19 @@ $(document).on('submit', '#invitation_form', function (event) {
         type: 'post',
         data: data,
         beforeSend: function (){
-            $('#submit-invitations').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-            $('#submit-invitations').prop('disabled', true);
+            $('.submit-invitations').html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            $('.submit-invitations').prop('disabled', true);
         },
         success: function (response) {
             if (response.status == 200) {
                 toastr.success(response.message, response.title);
+                $("#invitation_form")[0].reset();
+                $('#modal-load').modal('hide');
             } else {
                 toastr.error(response.message, response.title);
-                $('#submit-invitations').prop('disabled', false);
+                $('.submit-invitations').prop('disabled', false);
             }
-            $('#submit-invitations').html('Invite');
+            $('.submit-invitations').html('Invite');
         },
         complete: function() {
         me.data('requestRunning', false);
