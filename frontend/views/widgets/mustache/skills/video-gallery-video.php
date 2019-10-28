@@ -84,10 +84,12 @@ $script = <<<JS
                 //     $(".popular-cate").html(Mustache.render(cats, response.categories));
                 // }
                 if(response.video_gallery.length == 0){
-                    $("#videos-main").remove();
+                    $(".videos-main").remove();
                 } else {
                     $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
                 }
+            } else {
+                $(".videos-main").remove();
             }
         }
     });

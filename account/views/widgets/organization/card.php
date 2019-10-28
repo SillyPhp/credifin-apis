@@ -8,7 +8,7 @@ if ($organization_data) {
     foreach ($organization_data as $shortlist) {
         $logo = $shortlist['logo'];
         ?>
-        <div class="col-md-3 hr-j-box">
+        <div class="col-md-4 hr-j-box">
             <div class="topic-con">
                 <div class="hr-company-box">
                     <a href="/<?= $shortlist['slug']; ?>">

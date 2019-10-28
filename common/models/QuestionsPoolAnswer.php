@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-
 /**
  * This is the model class for table "{{%questions_pool_answer}}".
  *
@@ -49,10 +48,6 @@ class QuestionsPoolAnswer extends \yii\db\ActiveRecord
             [['question_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuestionsPool::className(), 'targetAttribute' => ['question_pool_enc_id' => 'question_pool_enc_id']],
         ];
     }
-
-    /**
-     * @inheritdoc
-     */
 
     /**
      * @return \yii\db\ActiveQuery

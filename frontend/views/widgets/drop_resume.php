@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <div id="fab-message-open" class="fab-message" style="">
         <img src="<?= Url::to('@eyAssets/images/pages/company-profile/CVbox2.png') ?>">
@@ -107,11 +109,12 @@ $this->registerCss('
 
 
 $r = [
-        'username' => $username
+    'username' => $username,
+    'type' => $type
 ];
 $result = json_encode($r);
 
-\Yii::$app->view->registerJs('var result = '. $result ,  \yii\web\View::POS_HEAD);
+\Yii::$app->view->registerJs('var result = ' . $result, \yii\web\View::POS_HEAD);
 
 $this->registerJsFile('@eyAssets/ideapopup/ideabox-popup_add_resume.js');
 $this->registerJsFile('/assets/themes/dropresume/main.js');
