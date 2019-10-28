@@ -60,7 +60,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization):
-                if (strpos($job_url,'http://') === false){
+                if (strpos($job_url,'http://') || strpos($job_url,'https://') === false){
                     $job_url = 'http://'.$job_url;
                 }
                 ?>
