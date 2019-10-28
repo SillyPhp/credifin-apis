@@ -59,7 +59,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <?php endif; ?>
                 </div>
             <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="<?= Url::to($job_url,'https'); ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                <a href="<?= Url::to($job_url); ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" value="<?= $application_id ?>" cid="<?=$cid ?>"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                     for
                     <?= $type ?></a>
                 <div class="sub-actions">
