@@ -61,7 +61,7 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <!--                    <div class="divider"></div>-->
-                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -152,6 +152,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 $this->registerCss('
@@ -330,6 +332,7 @@ textarea::placeholder{
 }
 .channel-icon img, .channel-icon canvas, .comment-icon img{
     width:100%;
+    height:100%;
     line-height:0px;
 }
 .popular-heading, .about-heading{
