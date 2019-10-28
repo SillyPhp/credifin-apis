@@ -1337,6 +1337,7 @@ class JobsController extends Controller
 //            ->all();
             $colleges = ErexxCollaborators::find()
                 ->alias('a')
+                ->distinct()
                 ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
                 ->joinWith(['collegeEnc b' => function($b){
                     $b->select(['b.organization_enc_id','e.name as location', 'COUNT(c.user_enc_id) as students']);
@@ -1348,6 +1349,9 @@ class JobsController extends Controller
                 ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->asArray()
                 ->all();
+
+//            print_r($colleges);
+//            exit();
 
             return $this->render('campus-placement', [
                 'applications' => $this->__jobs(),
