@@ -12,23 +12,23 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div class="cb-blog-box">
                             <div class="cb-blog-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/cb-photo.jpg') ?>" alt="">
+                                <img src="<?= $careerDetail['image'] ?>" alt="">
                             </div>
                             <div class="cb-blog-title">
-                                NPCI To Take UPI International, Will Start From UAE and Singapore
+                                <?= $careerDetail['title']?>
                             </div>
                             <div class="cb-blob-web-name">
-                                Source: <a href="">inc42.com</a>
+                                <a href="<?= $careerDetail['link']?>">View Source</a>
                             </div>
-                            <div class="cb-blog-time">1 hour ago</div>
+                            <div class="cb-blog-time"><?= $careerDetail['created_on']?></div>
                             <div class="cb-quick-sum-heading">
                                 Quick Summary
                             </div>
                             <div class="cb-quick-summery">
-                                Happier employees = greater customer loyalty. As the provider of that service, employees are essential to the success or failure of keeping customers happy. So to prevent high turnover and retain familiar, productive employees for your customers, employee happiness must be a priority. To keep your employees happy, explore insights from employee success experts and, above all, focus on meeting their needs. Happy employees mean greater customer loyalty, higher productivity and revenue, less turnover, and overall customer satisfaction.
+                                <?= $careerDetail['description']?>
                             </div>
                             <div class="cb-ori-artical-link">
-                                <a href="">Read orignal Article</a>
+                                <a href="<?= $careerDetail['link']?>">Read orignal Article</a>
                             </div>
                         </div>
                     </div>
@@ -46,48 +46,28 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div class="related-heading">Related Articles</div>
                     </div>
+                    <?php
+                        foreach ($relatedArticles as $r){
+                    ?>
+
                     <div class="col-md-12">
                         <div class="cb-blog-box cb-blog-box-small">
                             <div class="cb-blog-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/cb-photo.jpg') ?>" alt="">
                             </div>
                             <div class="cb-blog-title cb-blog-title-small">
-                                NPCI To Take UPI International, Will Start From UAE and Singapore
+                                <?= $r['title'] ?>
                             </div>
+                            <div class="cb-blog-time"><?= $r['created_on']?></div>
                             <div class="cb-blob-web-name cb-blob-web-name-small">
-                                Source: <a href="">inc42.com</a>
+                                <a href="">Read Article</a>
                             </div>
-                            <div class="cb-blog-time">1 hour ago</div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="cb-blog-box cb-blog-box-small">
-                            <div class="cb-blog-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/cb-photo.jpg') ?>" alt="">
-                            </div>
-                            <div class="cb-blog-title cb-blog-title-small">
-                                NPCI To Take UPI International, Will Start From UAE and Singapore
-                            </div>
-                            <div class="cb-blob-web-name cb-blob-web-name-small">
-                                Source: <a href="">inc42.com</a>
-                            </div>
-                            <div class="cb-blog-time">1 hour ago</div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="cb-blog-box cb-blog-box-small">
-                            <div class="cb-blog-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/cb-photo.jpg') ?>" alt="">
-                            </div>
-                            <div class="cb-blog-title cb-blog-title-small">
-                                NPCI To Take UPI International, Will Start From UAE and Singapore
-                            </div>
-                            <div class="cb-blob-web-name cb-blob-web-name-small">
-                                Source: <a href="">inc42.com</a>
-                            </div>
-                            <div class="cb-blog-time">1 hour ago</div>
-                        </div>
-                    </div>
+
+                    <?php
+                        }
+                    ?>
                 </div>
             </div>
         </div>

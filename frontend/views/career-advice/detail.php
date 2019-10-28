@@ -55,7 +55,7 @@ use yii\helpers\Url;
                                                     <?= $c['description'] ?>
                                                 </div>
                                                 <div class="cs-read-btn">
-                                                    <a href="<?= $c['link'] ?>">Read</a>
+                                                    <a href="/career-advice/<?= $c['category']?>/<?= $c['slug'] ?>">Read</a>
                                                 </div>
                                             </div>
                                         </div>

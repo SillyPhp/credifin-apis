@@ -1,7 +1,9 @@
 <?php
 
-namespace frontend\controllers\blog;
+namespace frontend\controllers\careerAdvice;
 
+use common\models\CareerAdvicePostComments;
+use common\models\CareerAdvisePosts;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -99,7 +101,7 @@ class CommentsController extends Controller
             $comment = Yii::$app->request->post('comment');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
@@ -139,7 +141,7 @@ class CommentsController extends Controller
             $reply_id = Yii::$app->request->post('parent_id');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
@@ -170,7 +172,7 @@ class CommentsController extends Controller
 
     private function saveComment($comment, $post_enc_id, $current_user, $reply_id = NULL)
     {
-        $commentModel = new PostComments();
+        $commentModel = new CareerAdvicePostComments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $commentModel->comment_enc_id = $utilitiesModel->encrypt();
