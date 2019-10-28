@@ -16,6 +16,7 @@ class InviteCandidatesForm extends Model
         return [
             [['email'],'required'],
             [['name', 'phone'],'safe'],
+//            [['email', 'phone', 'name'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['phone'],'string','max'=>15],
             [['name'],'string','max'=>30],
             [['email', 'name', 'phone'],'trim'],
