@@ -1,6 +1,7 @@
 <?php
 $this->params['header_dark'] = false;
 $this->params['url'] = $org['website'];
+
 use yii\helpers\Url;
 
 echo $this->render('/widgets/drop_resume', [
@@ -11,45 +12,43 @@ echo $this->render('/widgets/drop_resume', [
 
 <section class="overlape">
     <div class="block no-padding">
-        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
-        <div class="">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="inner-header wform">
-                        <div class="nav-com-logo">
-                            <a href="<?= Url::to($org['website'])?>">
-                                <img src="<?= $org['logo']?>" alt="">
-                            </a>
-                        </div>
-                        <div class="job-search-sec">
-                            <div class="job-search">
-                                <h4>Opportunities in <?= $org['name']?></h4>
-<!--                                <form>-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="col-lg-7">-->
-<!--                                            <div class="job-field">-->
-<!--                                                <input type="text" placeholder="Job title, keywords or company name" />-->
-<!--                                                <i class="far fa-keyboard"></i>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-lg-4">-->
-<!--                                            <div class="job-field">-->
-<!--                                                <select data-placeholder="City, province or region" class="chosen-city">-->
-<!---->
-<!--                                                    <option>Istanbul</option>-->
-<!--                                                    <option>New York</option>-->
-<!--                                                    <option>London</option>-->
-<!--                                                    <option>Russia</option>-->
-<!--                                                </select>-->
-<!--                                                <i class="fas fa-map-marker-alt"></i>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-lg-1">-->
-<!--                                            <button type="submit"><i class="fas fa-search"></i></button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </form>-->
-                            </div>
+        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div>
+        <!-- PARALLAX BACKGROUND IMAGE -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="inner-header wform">
+                    <div class="nav-com-logo">
+                        <a href="<?= Url::to($org['website']) ?>">
+                            <img src="<?= $org['logo'] ?>" alt="">
+                        </a>
+                    </div>
+                    <div class="job-search-sec">
+                        <div class="job-search">
+                            <h4>Opportunities in <?= $org['name'] ?></h4>
+                            <form>
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <div class="job-field">
+                                            <input type="text" placeholder="Job title, keywords or company name"/>
+                                            <i class="far fa-keyboard"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="job-field">
+                                            <select data-placeholder="City, province or region" class="chosen-city">
+                                                <option>Istanbul</option>
+                                                <option>New York</option>
+                                                <option>London</option>
+                                                <option>Russia</option>
+                                            </select>
+                                            <i class="la la-map-marker"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <button type="submit"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -60,35 +59,179 @@ echo $this->render('/widgets/drop_resume', [
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-offset-2 column">
+            <div class="col-lg-3 col-md-3 column">
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Date Posted</h3>
+                            <div class="posted_widget">
+                                <input type="radio" name="choose" id="232"><label for="232">Last Hour</label><br/>
+                                <input type="radio" name="choose" id="wwqe"><label for="wwqe">Last 24 hours</label><br/>
+                                <input type="radio" name="choose" id="erewr"><label for="erewr">Last 7 days</label><br/>
+                                <input type="radio" name="choose" id="qwe"><label for="qwe">Last 14 days</label><br/>
+                                <input type="radio" name="choose" id="wqe"><label for="wqe">Last 30 days</label><br/>
+                                <input type="radio" name="choose" id="qweqw"><label class="nm"
+                                                                                    for="qweqw">All</label><br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Job Type</h3>
+                            <div class="type_widget">
+                                <p class="flchek"><input type="checkbox" name="choosetype" id="33r"><label for="33r">Freelance
+                                        (9)</label></p>
+                                <p class="ftchek"><input type="checkbox" name="choosetype" id="dsf"><label for="dsf">Full
+                                        Time (8)</label></p>
+                                <p class="ischek"><input type="checkbox" name="choosetype" id="sdd"><label for="sdd">Internship
+                                        (8)</label></p>
+                                <p class="ptchek"><input type="checkbox" name="choosetype" id="sadd"><label for="sadd">Part
+                                        Time (5)</label></p>
+                                <p class="tpchek"><input type="checkbox" name="choosetype" id="assa"><label for="assa">Temporary
+                                        (5)</label></p>
+                                <p class="vtchek"><input type="checkbox" name="choosetype" id="ghgf"><label for="ghgf">Volunteer
+                                        (8)</label></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Offerd Salary</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="1"><label for="1">10k - 20k</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="2"><label for="2">20k - 30k</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="3"><label for="3">30k - 40k</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="4"><label for="4">40k - 50k</label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Career Level</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Experince</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to
+                                            2Year</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to
+                                            3Year</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to
+                                            4Year</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to
+                                            5Year</label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Gender</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="13"><label for="13">Male</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="14"><label for="14">Female</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="15"><label for="15">Others</label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Industry</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize
+                                            Jobs</label>
+                                    </p>
+                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business
+                                            Jobs</label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Qualification</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk" id="19"><label
+                                                for="19">Matriculation</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="20"><label
+                                                for="20">Intermidiate</label></p>
+                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-9 column">
                 <div class="modrn-joblist">
-<!--                    <div class="tags-bar">-->
-<!--                        <span>Full Time<i class="close-tag">x</i></span>-->
-<!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
-<!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
-<!--                        <div class="action-tags">-->
-<!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
-<!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
+                    <!--                    <div class="tags-bar">-->
+                    <!--                        <span>Full Time<i class="close-tag">x</i></span>-->
+                    <!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
+                    <!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
+                    <!--                        <div class="action-tags">-->
+                    <!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
+                    <!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
                     <!-- Tags Bar -->
                     <div class="filterbar">
-<!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
-<!--                        <div class="sortby-sec">-->
-<!--                            <span>Sort by</span>-->
-<!--                            <select data-menu>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option selected>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                            </select>-->
-<!--                            <select data-menu>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option selected>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                            </select>-->
-<!--                        </div>-->
+                        <!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
+                        <!--                        <div class="sortby-sec">-->
+                        <!--                            <span>Sort by</span>-->
+                        <!--                            <select data-menu>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option selected>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                            </select>-->
+                        <!--                            <select data-menu>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option selected>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                            </select>-->
+                        <!--                        </div>-->
                         <h5>Total <span id="count"></span> Opportunities</h5>
                         <h1 class="heading-style">Jobs</h1>
                     </div>
@@ -294,7 +437,7 @@ section.overlape {
     float: left;
     z-index: 4;
     top: 0;
-    
+    padding:0 15px;
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
@@ -306,7 +449,7 @@ section.overlape {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 1180px;
+    max-width: 1180px;
     content: "";
     
     -webkit-transform: translateY(-50%) translateX(-50%);
@@ -1048,8 +1191,279 @@ section.overlape {
 .chosen-container{
     border:none !important; 
 }
+/*--- filters----*/
+.widget.border {
+    border: 2px solid #e6e7ef;
+    padding: 18px 20px;
+    
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+
+}
+.widget.border:first-child {
+    margin-top: 30px;
+}
+.sb-title {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #111111;
+    margin: 0;
+    position: relative;
+    padding-right: 30px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.sb-title::before {
+    position: absolute;
+    right: 0;
+    top: 11px;
+    width: 20px;
+    height: 1px;
+    background: #222222;
+    content: "";
+}
+.posted_widget {
+    float: left;
+    width: 100%;
+}
+.posted_widget label {
+    float: left;
+    width: 100%;
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 16px;
+    padding-left: 30px;
+}
+.type_widget {
+    float: left;
+    width: 100%;
+}
+.type_widget p {
+    float: left;
+    width: 100%;
+    margin: 0;
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 4px;
+}
+.type_widget p label {
+    padding-left: 31px;
+}
+.flchek label::before {
+    border-color: #fb236a !important;
+}
+.ftchek label::before {
+    border-color: #8b91dd !important;
+}
+.ischek label::before {
+    border-color: #f831e3 !important;
+}
+.ptchek label::before {
+    border-color: #7dc246 !important;
+}
+.tpchek label::before {
+    border-color: #26ae61 !important;
+}
+.vtchek label::before {
+    border-color: #18f0f8 !important;
+}
+.sb-title::after {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    width: 1px;
+    height: 0px;
+    background: #222222;
+    content: "";
+}
+.sb-title.open.active::before {
+    width: 17px;
+}
+.sb-title::after {
+    height: 0px;
+}
+.sb-title.open.active::after {
+    height: 15px;
+}
+
+.sb-title.open.active {
+    margin-bottom: 0;
+}
+.specialism_widget {
+    float: left;
+    width: 100%;
+}
+.simple-checkbox p {
+    float: left;
+    width: 100%;
+    margin: 0;
+        margin-bottom: 0px;
+    font-family: Open Sans;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.simple-checkbox p label {
+    padding-left: 31px;
+}
+.simple-checkbox p input[type="checkbox"]:checked + label::before, .simple-checkbox p input[type="radio"]:checked + label::before {
+    background: #2c7dfa;
+    border-color: #2c7dfa;
+}
+.simple-checkbox p input[type="checkbox"] + label::after {
+    color: #ffffff;
+}
+.simple-checkbox {
+    float: left;
+    width: 100% !important;
+}
+.simple-checkbox.scrollbar {
+    height: 232px;
+}
+.sb-title.closed::after {
+    height: 15px;
+}
+.sb-title.closed::before {
+    width: 17px;
+}
+.subscribe_widget > h3 {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #111111;
+    margin: 0;
+        margin-bottom: 0px;
+    position: relative;
+    padding-right: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+ .subscribe_widget form input {
+    border: 2px solid #e8ecec;
+    color: #333333;
+}
+ .subscribe_widget form button {
+    background: #fb236a;
+}
+
+/*---form elements----*/
+input[type="checkbox"],
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+  margin: 0;
+}
+label {
+  position: relative;
+  display: inline-block;
+  padding: 0 0 0 2em;
+  margin-right: 10px;
+  height: 1.5em;
+  line-height: 1.5;
+  cursor: pointer;
+}
+label::before,
+label::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 20px !important;
+  height: 20px !important;
+}
+label::before {
+  content: " ";
+  border: 2px solid #e6e7ef;
+  
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+
+}
+/* Checkbox */
+input[type="checkbox"] + label::after {
+  content: "\2714";
+  color: #2c3e50;
+  line-height: 1.5;
+  text-align: center;
+  border: none !important;
+}
+/* Radio */
+input[type="radio"] + label::before {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+
+}
+input[type=radio] + label::after {
+  content: " ";
+  top: 7px;
+  left: 7px;
+  width: 6px !important;
+  height: 6px !important;
+  background: #fff;
+  border: 3px solid #fb236a;
+  
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+
+}
+/* :checked */
+input[type="checkbox"]:checked + label::before,
+input[type="radio"]:checked + label::before {
+  background: #ffffff;
+  border-color: #e6e7ef;
+}
+input[type="checkbox"] + label::after,
+input[type=radio] + label::after {
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -ms-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0);
+}
+input[type="checkbox"]:checked + label::after,
+input[type=radio]:checked + label::after {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+}
+/* Transition */
+label::before,
+label::after {
+  -webkit-transition: .25s all ease;
+  -moz-transition: .25s all ease;
+  -ms-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+
+
 ');
 $script = <<< JS
+$('.sb-title.open').next().slideDown();
+$('.sb-title.closed').next().slideUp();
+$('.sb-title').on('click', function(){
+    $(this).next().slideToggle();
+    $(this).toggleClass('active');
+    $(this).toggleClass('closed');
+});
+
 let page = 1;
 let limit = 10;
 var loadmore=false;
@@ -1202,6 +1616,7 @@ $.ajax({
 });   
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerJsFile('@eyAssets/js/select-chosen.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
