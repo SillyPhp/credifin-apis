@@ -233,25 +233,31 @@ echo $this->render('/widgets/drop_resume', [
                         <!--                            </select>-->
                         <!--                        </div>-->
                         <h5>Total <span id="count"></span> Opportunities</h5>
-                        <h1 class="heading-style">Jobs</h1>
+                        <ul class="nav nav-tabs nav-padd-20 set-fonts">
+                            <li class="active"><a data-toggle="tab" href="#jobs_list">Jobs</a></li>
+                            <li><a data-toggle="tab" href="#internships_list">Internships</a></li>
+                        </ul>
                     </div>
                 </div><!-- MOdern Job LIst -->
-                <div class="job-list-modern">
-                    <div class="job-listings-sec" id="career_job_list">
+                <div class="job-list-modern tab-content">
+                    <div id="jobs_list" class="tab-pane fade in active">
+                        <div class="job-listings-sec" id="career_job_list">
 
-                    </div>
-                    <div class="col-md-12">
-                        <div class="viewmore">
-                            <button type="button" id="jobMore">View More</button>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="viewmore">
+                                <button type="button" id="jobMore">View More</button>
+                            </div>
                         </div>
                     </div>
-                    <h1 class="heading-style">Internships</h1>
-                    <div class="job-listings-sec" id="career_internship_list">
+                    <div id="internships_list" class="tab-pane fade">
+                        <div class="job-listings-sec" id="career_internship_list">
 
-                    </div>
-                    <div class="col-md-12">
-                        <div class="viewmore">
-                            <button type="button" id="jobMoreIntern">View More</button>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="viewmore">
+                                <button type="button" id="jobMoreIntern">View More</button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -325,6 +331,17 @@ echo $this->render('/widgets/mustache/career-job-box');
 
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+.nav-tabs > li > a{
+    font-family: roboto !important;
+    font-size: 14px !important;
+    border:none;
+}
+.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
+    color: #fff !important;
+    background-color: #00a0e3 !important;
+    font-weight: 500 !important;
+    font-family: roboto !important;
+}
 #myModal{
     top: 50%;
     transform: translateY(-50%);
@@ -626,8 +643,8 @@ section.overlape {
     margin: 0;
 }
 .modrn-joblist {
-    float: left;
     width: 100%;
+    display:flex;
     border-bottom: 1px solid #edeff7;
 }
 .tags-bar > span {
