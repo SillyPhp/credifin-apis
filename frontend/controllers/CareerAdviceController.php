@@ -79,12 +79,10 @@ class CareerAdviceController extends Controller
             ->all();
 
         $newsletterForm = new SubscribeNewsletterForm();
-        $subscribersForm = new Subscribers();
         return $this->render('blog-detail', [
             'newsletterForm' => $newsletterForm,
             'careerDetail' => $careerDetail,
             'relatedArticles' => $relatedArticles,
-            'subscribersForm' => $subscribersForm
         ]);
     }
 

@@ -39,7 +39,7 @@ use yii\helpers\Url;
             <div class="col-md-4">
                 <?=
                 $this->render('/widgets/subscribe-newsletter',[
-                    'subscribersForm' => $subscribersForm
+                    'subscribersForm' => $newsletterForm
                 ]);
                 ?>
                 <div class="row">
