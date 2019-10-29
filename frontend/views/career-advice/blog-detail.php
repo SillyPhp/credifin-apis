@@ -33,7 +33,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-<!--                --><?//= $this->render('/widgets/career-pole-widget') ?>
+<!--                <//= $this->render('/widgets/career-pole-widget') >-->
                 <?=
                 $this->render('/widgets/mustache/discussion/discussion-box', [
                     "controllerId" => Yii::$app->controller->id . "/comments"
