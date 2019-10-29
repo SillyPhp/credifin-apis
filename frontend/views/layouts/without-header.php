@@ -53,9 +53,7 @@ AppAssets::register($this);
 <div class="body-overlay"></div>
 <div id="wrapper" class="clearfix">
     <div class="back-btn">
-        <a href="<?=
-            $this->params['url']
-        ?>"><i class="fas fa-long-arrow-alt-left"></i></a>
+        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i></a>
     </div>
 
     <div class="main-content">
@@ -66,14 +64,14 @@ AppAssets::register($this);
     </div>
     <footer id="footer" class="footer">
         <div class="footer-border">
-<!--            <a href="/"><img src="--><?//= Url::to('/assets/common/logos/footer-logo.png'); ?><!--"> </a>-->
+
         </div>
 
         <div class="footer-bottom">
             <div class="container pt-20 pb-20">
                 <div class="col-md-12">
                     <div class="powered-by">
-                    <p class="">Powered by <img src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg')?>"></p>
+                    <p class="">Powered by <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>"></p>
                     </div>
                 </div>
                 <div class="col-md-12 col-sm-12 text-center">
@@ -97,24 +95,26 @@ $this->registerCss('
 }
 .back-btn a:hover{
     background:#00a0e3;
-    padding:5px 10px;
+//    padding:5px 10px;
     transition:.3s ease;
     font-size:17px;
-    border-radius:5px;
+//    border-radius:5px;
     color:#fff;
 }
 .back-btn a{
-    color:#fff;
-    font-size:17px;
-    padding:5px 10px;
-    transition:.5s ease;  
+    color: #fff;
+    font-size: 17px;
+    padding: 6px 15px;
+    display: block;
+    transition: .5s ease;
+    background-color: #00000040; 
 }
 .back-btn{
    position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 0px;
+    left: 0px;
     z-index: 9;
-    padding: 10px 0 0 0;
+//    padding: 10px 0 0 0;
 }
 .powered-by{
     text-align:center;
@@ -432,39 +432,6 @@ if (!empty(Yii::$app->params->google->analytics->id)) {
             gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
 }
-//if (Yii::$app->user->isGuest) {
-//    $this->registerJs('
-//        window.addEventListener("scroll", header_main);
-//
-//        function header_main() {
-//            var check_h_type = document.getElementById("header-main");
-//            if(window.pageYOffset <= 0) {
-//                check_h_type.classList.add("header-show");
-//            } else if(window.pageYOffset > 5){
-//                check_h_type.classList.remove("header-show");
-//            }
-//        }
-//        header_main();
-//    ');
-//}
-if (!$this->params['disablefacebookMessenger']) {
-    $this->registerJs('
-            window.fbAsyncInit = function() {
-               FB.init({
-                 xfbml            : true,
-                 version          : "v3.2"
-               });
-             };
-            
-             (function(d, s, id) {
-             var js, fjs = d.getElementsByTagName(s)[0];
-             if (d.getElementById(id)) return;
-             js = d.createElement(s); js.id = id;
-             js.src = "https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js";
-             fjs.parentNode.insertBefore(js, fjs);
-            }(document, "script", "facebook-jssdk"));
-        ');
-}
 if (!$this->params['header_dark']) {
     $this->registerJs(" $(document).on('scroll', function () {
                 var header = $('#main-header');
@@ -489,12 +456,6 @@ $this->registerJs('
                     }
             });
        ', View::POS_HEAD);
-if (!$this->params['disablefacebookMessenger']) {
-    ?>
-    <div id="fb-root"></div>
-    <div class="fb-customerchat" attribution=setup_tool page_id="383925102019276" theme_color="#00a0e3"></div>
-    <?php
-}
 ?>
 <?php $this->endBody(); ?>
 </body>

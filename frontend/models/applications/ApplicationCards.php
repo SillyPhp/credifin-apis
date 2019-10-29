@@ -3,10 +3,8 @@
 namespace frontend\models\applications;
 
 use common\models\ApplicationPlacementCities;
-use common\models\ApplicationSkills;
 use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
-use common\models\Skills;
 use common\models\States;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
@@ -38,13 +36,13 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.id', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon', '(CASE
+                'i.icon','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN a.experience = "2" THEN "1 Year Experience"
@@ -54,7 +52,7 @@ class ApplicationCards
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
-               END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
+               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'm.fixed_wage as fixed_salary',
                 'm.wage_type salary_type',
                 'm.max_wage as max_salary',
@@ -62,8 +60,8 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city',
-            ])
+                'g.name city'
+                ])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -82,13 +80,13 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.id', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon', '(CASE
+                'i.icon','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year Experience"
                 WHEN a.experience = "2" THEN "1 Year Experience"
@@ -98,7 +96,7 @@ class ApplicationCards
                 WHEN a.experience = "10-20" THEN "10-20 Years Experience"
                 WHEN a.experience = "20+" THEN "More Than 20 Years Experience"
                 ELSE "No Experience"
-               END) as experience', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
+               END) as experience','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
@@ -207,12 +205,12 @@ class ApplicationCards
             $offset = ($options['page'] - 1) * $options['limit'];
         }
         $result = null;
-        if (isset($options['similar_jobs'])) {
+        if(isset($options['similar_jobs'])){
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'i.name', $options['similar_jobs']]);
-            $result = (new \yii\db\Query())
+            $result  = (new \yii\db\Query())
                 ->from([
                     $cards1->union($cards2),
                 ])
@@ -220,8 +218,8 @@ class ApplicationCards
                 ->offset($offset)
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
-        } else {
-            $result = (new \yii\db\Query())
+        }else {
+            $result =  (new \yii\db\Query())
                 ->from([
                     $cards1->union($cards2),
                 ])
@@ -326,13 +324,13 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.id', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.id','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
                 'c.name as title',
                 'a.last_date',
-                'i.icon', 'a.organization_enc_id', 'a.unclaimed_organization_enc_id',
+                'i.icon','a.organization_enc_id','a.unclaimed_organization_enc_id',
                 'v.fixed_wage as fixed_salary',
                 'v.wage_type salary_type',
                 'v.max_wage as max_salary',
@@ -432,18 +430,18 @@ class ApplicationCards
                 ['like', 'd.name', $options['keyword']]
             ]);
         }
-        if (isset($options['limit'])) {
-            $limit = $options['limit'];
-            $offset = ($options['page'] - 1) * $options['limit'];
-        }
+            if (isset($options['limit'])) {
+                $limit = $options['limit'];
+                $offset = ($options['page'] - 1) * $options['limit'];
+            }
 
         $result = null;
-        if (isset($options['similar_jobs'])) {
+        if(isset($options['similar_jobs'])){
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'c.name', $options['similar_jobs']]);
             $cards1->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'i.name', $options['similar_jobs']]);
-            $result = (new \yii\db\Query())
+            $result  = (new \yii\db\Query())
                 ->from([
                     $cards1->union($cards2),
                 ])
@@ -451,8 +449,8 @@ class ApplicationCards
                 ->offset($offset)
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
-        } else {
-            $result = (new \yii\db\Query())
+        }else {
+            $result =  (new \yii\db\Query())
                 ->from([
                     $cards1->union($cards2),
                 ])
@@ -487,7 +485,7 @@ class ApplicationCards
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = round((string)$val['min_salary']) . ' p.m.';
+                        $result[$i]['salary'] = round((string)$val['min_salary'])  . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
                         $result[$i]['salary'] = round((string)($val['min_salary'] * 730)) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Weekly") {
@@ -516,16 +514,15 @@ class ApplicationCards
     {
         return self::_getCardsFromTrainings($options);
     }
-
     public static function InstitutesCards($options = [])
     {
         $cards = (new \yii\db\Query())
             ->distinct()
-            ->from(Organizations::tableName() . 'as a')
-            ->select(['name', 'initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
-            ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
+            ->from(Organizations::tableName().'as a')
+            ->select(['name','initials_color','a.slug','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image', 'b.business_activity'])
+            ->innerJoin(BusinessActivities::tableName().'as b','b.business_activity_enc_id = a.business_activity_enc_id')
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['not', ['logo' => null]]);
+            ->andWhere(['not',['logo'=>null]]);
 
         if (isset($options['limit'])) {
             $limit = $options['limit'];
@@ -538,16 +535,15 @@ class ApplicationCards
             ->all();
         return $result;
     }
-
     private static function _getCardsFromTrainings($options)
     {
         $cards = (new \yii\db\Query())
             ->distinct()
             ->from(TrainingProgramApplication::tableName() . 'as a')
-            ->select(['a.id', 'a.application_enc_id application_id', 'i.name category',
+            ->select(['a.id','a.application_enc_id application_id','i.name category',
                 'CONCAT("/training/", a.slug) link',
-                'CONCAT("/", d.slug) organization_link', 'd.initials_color color',
-                'c.name as title', 'i.icon',
+                'CONCAT("/", d.slug) organization_link','d.initials_color color',
+                'c.name as title','i.icon',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city',
@@ -557,13 +553,16 @@ class ApplicationCards
                 WHEN a.training_duration_type = "3" THEN CONCAT(a.training_duration," Year(s)")
                 ELSE "N/A"
                END) as duration'
-                , '(CASE
+                ,'(CASE
                 WHEN t.fees_methods = "1" AND t.fees >0 THEN CONCAT(t.fees," / Month")
                 WHEN t.fees_methods = "2" AND t.fees >0 THEN CONCAT(t.fees," / Week")
                 WHEN t.fees_methods = "3" AND t.fees >0 THEN CONCAT(t.fees," / Annually")
                 WHEN t.fees_methods = "4" AND t.fees >0 THEN CONCAT(t.fees,"(One Time)")
                 ELSE "No Fees" 
-               END) as fees', 'CONCAT(TIME_FORMAT(t.start_time,"%H:%i"),"-",TIME_FORMAT(t.end_time,"%H:%i")) as timings'])
+               END) as fees','(CASE
+                WHEN COUNT(t.start_time) > 1 THEN "Multiple Timings"
+                ELSE CONCAT(TIME_FORMAT(t.start_time,"%h:%i:%p"),"-",TIME_FORMAT(t.end_time,"%h:%i:%p")) 
+               END) as timings'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -572,7 +571,8 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = t.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => 'Trainings', 'a.is_deleted' => 0]);
+            ->where(['j.name' => 'Trainings','a.is_deleted' => 0])
+            ->groupBy(['a.application_enc_id','t.city_enc_id']);
 
         if (isset($options['company'])) {
             $cards->andWhere([
@@ -616,7 +616,7 @@ class ApplicationCards
             ]);
         }
 
-        $result = $cards->limit($limit)
+       $result = $cards->limit($limit)
             ->offset($offset)
             ->orderBy(['id' => SORT_DESC])
             ->all();

@@ -14,6 +14,9 @@
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                 </li>
                                 <li>
+                                    <a href="/usa-jobs">USA Jobs</a>
+                                </li>
+                                <li>
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
                                 <li>

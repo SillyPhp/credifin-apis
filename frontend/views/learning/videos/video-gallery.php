@@ -286,7 +286,7 @@ use yii\helpers\Html;
         </div>
     </section>
 <?php endif; ?>
-    <section>
+    <section id="r-jobs-main">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -297,7 +297,7 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section>
+    <section id="r-internships-main">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -386,7 +386,7 @@ echo $this->render('/widgets/blogs/whats-new', [
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
-
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .card:hover::before{
     right: -15px;
@@ -1114,29 +1114,60 @@ $this->registerCss('
 
 $script = <<< JS
 function fillData(){
+    var path = window.location.pathname.split('/');
     $.ajax({
         type: 'POST',
         async: false,
         url: '/learning/videos/get-category-job',
-        data: {
-            'keyword' : 'it'
-        },
+        data: {'keyword' : path['4']},
         success: function(result){
-                var application_card = $('#application-card').html();
-                var jobs_render = Mustache.render(application_card, result.jobs);
-                $('.jobs-list').html(jobs_render);
-            
-                var application_card = $('#application-card').html();
-                var internships_render = Mustache.render(application_card, result.internships);
-                $('.internships-list').html(internships_render);
-            
+            var application_card = $('#application-card').html();
+            var jobs_render = Mustache.render(application_card, result.jobs);
+            $('.jobs-list').html(jobs_render);
+            var application_card = $('#application-card').html();
+            var internships_render = Mustache.render(application_card, result.internships);
+            $('.internships-list').html(internships_render);
+            if(result.jobs.length == 0){
+                $('#r-jobs-main').hide();
+            } 
+            if(result.internships.length == 0){
+                $('#r-internships-main').hide();
+            }
             utilities.initials();
         }
     })
 }
 fillData();
+$(document).on('click','.application-card-add', function(event){
+    event.preventDefault();
+    var c_user = "$c_user"
+    if(c_user == ""){
+        $('#loginModal').modal('show');
+        return false;
+    }
+    var itemid = $(this).closest('.application-card-main').attr('data-id');
+    $.ajax({
+        url: "/jobs/item-id",
+        method: "POST",
+        data: {'itemid': itemid},
+        beforeSend:function(){
+//            $('.loader-aj-main').fadeIn(1000);  
+        },
+        success: function (response) {
+            if (response.status == '200' || response.status == 'short') {
+                toastr.success('Added to your Review list', 'Success');
+            } else if (response.status == 'unshort') {
+                toastr.success('Delete from your Review list', 'Success');
+            } else {
+                toastr.error('Please try again Later', 'Error');
+            }
+        }
+    });
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="application-card" type="text/template">
     {{#.}}
