@@ -28,7 +28,11 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                           class="viewall-jobs"><?= Yii::t('account', 'Create AI Job'); ?></a>
+                        <a href="<?= Url::toRoute('/jobs/quick-job'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Create Quick Job'); ?></a>
+                        <a href="<?= Url::to('/tweets/job/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Post Job Tweet'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
                             <a href="<?= Url::toRoute('/jobs'); ?>" title=""
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
