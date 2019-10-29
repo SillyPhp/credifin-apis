@@ -1035,12 +1035,17 @@ $this->registerCss('
 @media screen and (max-width: 900px) and (min-width: 0px) {
     #header-main{
         padding:6px 0px;
+        padding-top:0px;
     }
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
 }
-.ey-mobile-menu{
+.ey-mobile-menu {
+    padding: 17px 5px 3px 0px;
+    transition: margin 500ms;
+}
+.header-show > .ey-mobile-menu{
     padding: 10px 5px 3px 0px;
 }
 ');
