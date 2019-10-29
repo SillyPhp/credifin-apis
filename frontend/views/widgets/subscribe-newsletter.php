@@ -15,21 +15,21 @@ use yii\helpers\Html;
         ?>
         <div class="sub-newletter">Sign up to our newsletter</div>
         <?=
-        $form->field($newsletterForm,'first_name')->textInput([
+        $form->field($subscribersForm,'first_name')->textInput([
             'autocomplete' => 'off',
-            'placeholder' => $newsletterForm->getAttributeLabel('first_name')
+            'placeholder' => $subscribersForm->getAttributeLabel('first_name')
         ])
         ?>
         <?=
-        $form->field($newsletterForm,'last_name')->textInput([
+        $form->field($subscribersForm,'last_name')->textInput([
             'autocomplete' => 'off',
-            'placeholder' => $newsletterForm->getAttributeLabel('last_name')
+            'placeholder' => $subscribersForm->getAttributeLabel('last_name')
         ])
         ?>
         <?=
-        $form->field($newsletterForm,'email')->textInput([
+        $form->field($subscribersForm,'email')->textInput([
             'autocomplete' => 'off',
-            'placeholder' => $newsletterForm->getAttributeLabel('email')
+            'placeholder' => $subscribersForm->getAttributeLabel('email')
         ])
         ?>
         <?=
