@@ -53,4 +53,13 @@ class CareerAdvicePostComments extends \yii\db\ActiveRecord
     {
         return $this->hasOne(CareerAdvisePosts::className(), ['post_enc_id' => 'post_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEnc()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
 }

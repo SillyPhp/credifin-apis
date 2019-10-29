@@ -2,12 +2,16 @@
 
 namespace frontend\controllers;
 
+use common\models\CareerAdvicePostComments;
+use common\models\PostComments;
+use common\models\Posts;
 use frontend\models\SubscribeNewsletterForm;
 use yii\web\Response;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\HttpException;
+use common\models\Utilities;
 use common\models\CareerAdvisePosts;
 
 class CareerAdviceController extends Controller
@@ -93,13 +97,13 @@ class CareerAdviceController extends Controller
 
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
                 ->one();
 
-            $result = PostComments::find()
+            $result = CareerAdvicePostComments::find()
                 ->alias('a')
                 ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
@@ -112,9 +116,9 @@ class CareerAdviceController extends Controller
 
             $i = 0;
             foreach ($result as $r) {
-                $a = PostComments::find()
+                $a = CareerAdvicePostComments::find()
                     ->where(['reply_to' => $r['comment_enc_id']])
-                    ->andWhere(['post_enc_id' => $r['post_enc_id']])
+                    ->andWhere(['post_enc_id' => $post['post_enc_id']])
                     ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if ($a) {
@@ -140,13 +144,13 @@ class CareerAdviceController extends Controller
             $q = Yii::$app->request->post('param');
             $parent = Yii::$app->request->post('parent');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
                 ->one();
 
-            $result = PostComments::find()
+            $result = CareerAdvicePostComments::find()
                 ->alias('a')
                 ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
@@ -172,9 +176,9 @@ class CareerAdviceController extends Controller
             $comment = Yii::$app->request->post('comment');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
                 ->one();
 
@@ -212,9 +216,9 @@ class CareerAdviceController extends Controller
             $reply_id = Yii::$app->request->post('parent_id');
             $q = Yii::$app->request->post('param');
 
-            $post = Posts::find()
+            $post = CareerAdvisePosts::find()
                 ->where(['slug' => $q])
-                ->andWhere(['status' => 'Active'])
+                ->andWhere(['status' => 1])
                 ->andWhere(['is_deleted' => 0])
                 ->one();
 
@@ -243,7 +247,7 @@ class CareerAdviceController extends Controller
 
     private function saveComment($comment, $post_enc_id, $current_user, $reply_id = NULL)
     {
-        $commentModel = new PostComments();
+        $commentModel = new CareerAdvicePostComments();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $commentModel->comment_enc_id = $utilitiesModel->encrypt();
