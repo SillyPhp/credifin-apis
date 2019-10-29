@@ -355,6 +355,7 @@ $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseleave(funct
 });
 $(document).on("click", "#open-mobile-menu", function(e){
     e.preventDefault();
+    $(this).toggleClass("text-black");
     $(".ey-mobile-content").toggleClass("ey-mobile-show");
     var h_main_header = $("#header-main");
     if(h_main_header.hasClass("header-show")){

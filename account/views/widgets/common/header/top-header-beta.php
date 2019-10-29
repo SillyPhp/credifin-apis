@@ -902,8 +902,10 @@ $this->registerCss('
     padding: 0 0 19px;
 }
 .ey-mobile-menu .ey-mobile-menu-toggler, .ey-mobile-menu .ey-mobile-menu-item-toggler {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1em;
+    padding: 22px 30px;
+    margin-top: -25px;
     position: absolute;
     right: 0;
     top: 7px;
