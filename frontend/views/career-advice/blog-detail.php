@@ -20,7 +20,7 @@ use yii\helpers\Url;
                             <div class="cb-blob-web-name">
                                 <a href="<?= $careerDetail['link'] ?>">View Source</a>
                             </div>
-                            <div class="cb-blog-time"><?= $careerDetail['created_on'] ?></div>
+                            <div class="cb-blog-time"><?= date('d-M-Y',strtotime($careerDetail['created_on'])) ?></div>
                             <div class="cb-quick-sum-heading">
                                 Quick Summary
                             </div>
@@ -57,12 +57,12 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="cb-blog-box cb-blog-box-small">
                                 <div class="cb-blog-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/custom/cb-photo.jpg') ?>" alt="">
+                                    <img src="<?= $r['image'] ?>" alt="">
                                 </div>
                                 <div class="cb-blog-title cb-blog-title-small">
                                     <?= $r['title'] ?>
                                 </div>
-                                <div class="cb-blog-time"><?= $r['created_on'] ?></div>
+                                <div class="cb-blog-time"><?= date('d-M-Y',strtotime($r['created_on'])) ?></div>
                                 <div class="cb-blob-web-name cb-blob-web-name-small">
                                     <a href="">Read Article</a>
                                 </div>

@@ -32,7 +32,7 @@ class CareerAdviceController extends Controller
     {
         $careerBlog = CareerAdvisePosts::find()
             ->alias('a')
-            ->select(['a.title', 'a.slug', 'a.description', 'a.link','c.slug category', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+            ->select(['a.title', 'a.slug', 'a.description', 'a.link', 'c.slug category','c.name cat', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
             ->joinWith(['assignedCategoryEnc b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
             }
@@ -41,13 +41,13 @@ class CareerAdviceController extends Controller
                 'a.status' => 1,
                 'c.slug' => $category
             ])
-            ->limit(6)
+            ->limit(12)
             ->asArray()
             ->all();
 
         if ($careerBlog) {
             return $this->render("detail", [
-                'careerBlog' => $careerBlog
+                'careerBlog' => $careerBlog,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
@@ -58,10 +58,10 @@ class CareerAdviceController extends Controller
     {
         $careerDetail = CareerAdvisePosts::find()
             ->alias('a')
-            ->select(['a.title', 'a.slug','a.created_on','c.category_enc_id', 'a.description', 'a.link', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+            ->select(['a.title', 'a.slug', 'a.created_on', 'c.category_enc_id', 'a.assigned_category_enc_id', 'a.description', 'a.link', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
             ->joinWith(['assignedCategoryEnc b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
-            } ], false)
+            }], false)
             ->where([
                 'a.slug' => $slug
             ])
@@ -70,14 +70,15 @@ class CareerAdviceController extends Controller
 
         $relatedArticles = CareerAdvisePosts::find()
             ->alias('a')
-            ->select(['a.title', 'a.slug','a.created_on','a.link','CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+            ->select(['a.title', 'a.slug', 'a.created_on', 'a.link', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image) . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
             ->joinWith(['assignedCategoryEnc b' => function ($b) {
                 $b->joinWith(['categoryEnc c'], false);
-            } ], false)
+            }], false)
             ->where([
                 'a.status' => 1,
                 'c.category_enc_id' => $careerDetail['category_enc_id']
             ])
+            ->andwhere(['<>', 'a.assigned_category_enc_id', $careerDetail['assigned_category_enc_id']])
             ->limit(3)
             ->asArray()
             ->all();
