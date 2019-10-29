@@ -86,7 +86,7 @@ class CareerAdviceController extends Controller
         return $this->render('blog-detail', [
             'newsletterForm' => $newsletterForm,
             'careerDetail' => $careerDetail,
-            'relatedArticles' => $relatedArticles
+            'relatedArticles' => $relatedArticles,
         ]);
     }
 

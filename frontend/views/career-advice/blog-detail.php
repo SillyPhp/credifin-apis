@@ -42,8 +42,8 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-4">
                 <?=
-                $this->render('/widgets/subscribe-newsletter', [
-                    'newsletterForm' => $newsletterForm,
+                $this->render('/widgets/subscribe-newsletter',[
+                    'subscribersForm' => $newsletterForm
                 ]);
                 ?>
                 <div class="row">
