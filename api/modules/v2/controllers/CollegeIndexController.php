@@ -139,18 +139,22 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                     $b->joinWith(['appliedApplications f' => function ($f) {
-                        $f->select(['f.created_by', 'e.name']);
+                        $f->select(['f.created_by', 'e.name','e.slug']);
                         $f->joinWith(['applicationEnc d' => function ($d) {
                             $d->joinWith(['organizationEnc e' => function ($e) {
-                                $e->groupBy('e.organization_enc_id');
+//                                $e->groupBy('e.organization_enc_id');
                             }], false);
                         }], false);
                     }], true);
                 }], true)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
+//                $raw = $candidates->createCommand()->sql;
+//            print_r($raw);
                 ->asArray()
                 ->all();
+
+//            print_r($req['college_id']);
 
             $result = [];
             $result['company_count'] = $company_count['company_count'];
