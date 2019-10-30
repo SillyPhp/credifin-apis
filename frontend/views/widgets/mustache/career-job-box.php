@@ -1,38 +1,38 @@
 <script id="career-job-box" type="text/template">
     {{#.}}
     <div class="career-job-box">
-    <div class="row">
-    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
 
-        <div class="job-listing wtabs">
-        <div class="job-title-sec">
-        <div class="c-logo"> <img src="{{icon}}" alt="{{title}}" /> </div>
-        <h3><a href="{{slug}}" >{{title}}</a></h3>
-        <span>{{organization_name}}</span>
-            <div class="job-lctn">
-                <i class="fas fa-map-marker-alt"></i>
-                {{#applicationPlacementLocations}}
-                    {{#.}}
-                        {{#name}}
-                        <span>
+                <a href="{{slug}}" class="job-listing wtabs">
+                    <div class="job-title-sec">
+                        <div class="c-logo"><img src="{{icon}}" alt="{{title}}"/></div>
+                        <h3>{{title}}</h3>
+                        <!--        <span>{{organization_name}}</span>-->
+                        <div class="job-lctn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            {{#applicationPlacementLocations}}
+                            {{#.}}
+                            {{#name}}
+                            <span>
                             {{name}}
                         </span>
-                        {{/name}}
-                    {{/.}}
-                {{/applicationPlacementLocations}}
-                {{^applicationPlacementLocations}}
-                    Work From Home
-                {{/applicationPlacementLocations}}
+                            {{/name}}
+                            {{/.}}
+                            {{/applicationPlacementLocations}}
+                            {{^applicationPlacementLocations}}
+                            Work From Home
+                            {{/applicationPlacementLocations}}
+                        </div>
+                    </div>
+                    <div class="job-style-bx">
+                        <span class="job-is ft ">{{type}}</span>
+                        <!--        <span class="fav-job"><i class="far fa-heart"></i></span>-->
+                        <!--        <i>5 months ago</i>-->
+                    </div>
+                </a>
             </div>
         </div>
-        <div class="job-style-bx">
-            <span class="job-is ft ">{{type}}</span>
-<!--        <span class="fav-job"><i class="far fa-heart"></i></span>-->
-<!--        <i>5 months ago</i>-->
-        </div>
-        </div>
-    </div>
-    </div>
     </div>
     {{/.}}
 </script>

@@ -71,7 +71,7 @@ AppAssets::register($this);
             <div class="container pt-20 pb-20">
                 <div class="col-md-12">
                     <div class="powered-by">
-                    <p class="">Powered by <img src="<?= Url::to('@commonAssets/logos/empower_youth_plus.svg')?>"></p>
+                    <p class="">Powered by <img src="<?= Url::to('@commonAssets/logos/logo.svg')?>"></p>
                     </div>
                 </div>
                 <div class="col-md-12 col-sm-12 text-center">
@@ -95,24 +95,26 @@ $this->registerCss('
 }
 .back-btn a:hover{
     background:#00a0e3;
-    padding:5px 10px;
+//    padding:5px 10px;
     transition:.3s ease;
     font-size:17px;
-    border-radius:5px;
+//    border-radius:5px;
     color:#fff;
 }
 .back-btn a{
-    color:#fff;
-    font-size:17px;
-    padding:5px 10px;
-    transition:.5s ease;  
+    color: #fff;
+    font-size: 17px;
+    padding: 6px 15px;
+    display: block;
+    transition: .5s ease;
+    background-color: #00000040; 
 }
 .back-btn{
    position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 0px;
+    left: 0px;
     z-index: 9;
-    padding: 10px 0 0 0;
+//    padding: 10px 0 0 0;
 }
 .powered-by{
     text-align:center;
