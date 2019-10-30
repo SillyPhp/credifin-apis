@@ -53,7 +53,7 @@ AppAssets::register($this);
 <div class="body-overlay"></div>
 <div id="wrapper" class="clearfix">
     <div class="back-btn">
-        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i></a>
+        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i> Go Back To Website </a>
     </div>
 
     <div class="main-content">
