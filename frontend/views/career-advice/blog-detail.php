@@ -46,33 +46,39 @@ use yii\helpers\Url;
                     'subscribersForm' => $newsletterForm
                 ]);
                 ?>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="related-heading">Related Articles</div>
-                    </div>
-                    <?php
-                    foreach ($relatedArticles as $r) {
-                        ?>
-
+                <?php
+                if(!empty($relatedArticles)) {
+                    ?>
+                    <div class="row">
                         <div class="col-md-12">
-                            <div class="cb-blog-box cb-blog-box-small">
-                                <div class="cb-blog-icon">
-                                    <img src="<?= $r['image'] ?>" alt="">
-                                </div>
-                                <div class="cb-blog-title cb-blog-title-small">
-                                    <?= $r['title'] ?>
-                                </div>
-                                <div class="cb-blog-time"><?= date('d-M-Y',strtotime($r['created_on'])) ?></div>
-                                <div class="cb-blob-web-name cb-blob-web-name-small">
-                                    <a href="">Read Article</a>
+                            <div class="related-heading">Related Articles</div>
+                        </div>
+                        <?php
+                        foreach ($relatedArticles as $r) {
+                            ?>
+
+                            <div class="col-md-12">
+                                <div class="cb-blog-box cb-blog-box-small">
+                                    <div class="cb-blog-icon">
+                                        <img src="<?= $r['image'] ?>" alt="">
+                                    </div>
+                                    <div class="cb-blog-title cb-blog-title-small">
+                                        <?= $r['title'] ?>
+                                    </div>
+                                    <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r['created_on'])) ?></div>
+                                    <div class="cb-blob-web-name cb-blob-web-name-small">
+                                        <a href="">Read Article</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <?php
-                    }
-                    ?>
-                </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </div>
