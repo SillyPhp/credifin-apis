@@ -19,6 +19,9 @@ use Yii;
  * @property int $is_deleted Is Comment Deleted (0 as False, 1 as True)
  *
  * @property CareerAdvisePosts $postEnc
+ * @property Users $userEnc
+ * @property CareerAdvicePostComments $replyTo
+ * @property CareerAdvicePostComments[] $careerAdvicePostComments
  */
 class CareerAdvicePostComments extends \yii\db\ActiveRecord
 {
@@ -43,8 +46,11 @@ class CareerAdvicePostComments extends \yii\db\ActiveRecord
             [['comment_enc_id', 'reply_to', 'post_enc_id', 'user_enc_id'], 'string', 'max' => 100],
             [['comment_enc_id'], 'unique'],
             [['post_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CareerAdvisePosts::className(), 'targetAttribute' => ['post_enc_id' => 'post_enc_id']],
+            [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],
+            [['reply_to'], 'exist', 'skipOnError' => true, 'targetClass' => CareerAdvicePostComments::className(), 'targetAttribute' => ['reply_to' => 'comment_enc_id']],
         ];
     }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -62,4 +68,19 @@ class CareerAdvicePostComments extends \yii\db\ActiveRecord
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReplyTo()
+    {
+        return $this->hasOne(CareerAdvicePostComments::className(), ['comment_enc_id' => 'reply_to']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvicePostComments()
+    {
+        return $this->hasMany(CareerAdvicePostComments::className(), ['reply_to' => 'comment_enc_id']);
+    }
 }
