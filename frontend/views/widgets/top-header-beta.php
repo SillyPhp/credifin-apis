@@ -188,6 +188,14 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Job</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/jobs/quick-job">
                                                             <div>
                                                                 <span class="ey-services-icons quick"></span>
@@ -203,14 +211,6 @@
                                                             <span>Post Job Tweet</span>
                                                         </a>
                                                     </li>
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <a href="/account/jobs/create">
-                                                            <div>
-                                                                <span class="ey-services-icons ai"></span>
-                                                            </div>
-                                                            <span>Create AI Job</span>
-                                                        </a>
-                                                    </li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -219,19 +219,19 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/tweets/internship/create">
-                                                            <div>
-                                                                <span class="ey-services-icons tweet"></span>
-                                                            </div>
-                                                            <span>Post Internship Tweet</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/internships/create">
                                                             <div>
                                                                 <span class="ey-services-icons ai"></span>
                                                             </div>
                                                             <span>Create AI Internship</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/internship/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Internship Tweet</span>
                                                         </a>
                                                     </li>
                                                 </ul>
