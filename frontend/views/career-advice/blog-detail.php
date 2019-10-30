@@ -11,7 +11,7 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-md-12">
                         <div class="cb-blog-box">
-                            <div class="cb-blog-icon">
+                            <div class="cb-blog-icon header-banner">
                                 <img src="<?= $careerDetail['image'] ?>" alt="">
                             </div>
                             <div class="cb-blog-title">
@@ -104,6 +104,13 @@ $this->registerCss('
 .cb-blog-box-small{
     padding-bottom: 30px;
 }
+.cb-blog-box.cb-blog-box-small .cb-blog-icon{
+    text-align:center;
+}
+.cb-blog-box.cb-blog-box-small .cb-blog-icon img{
+    max-height: 300px;
+    margin: auto;
+}
 .cb-blog-title{
     font-size: 25px;
     color: #000;
@@ -115,7 +122,7 @@ $this->registerCss('
     padding-top: 10px; 
 }
 .cb-blob-web-name {
-    font-size:18px;
+    font-size:14px;
     padding-top:14px;
      color: #999;
      text-transform:capitalize;
@@ -243,6 +250,14 @@ textarea::placeholder{
 }
 .reply-comm .comment{
     margin-left:15px;
+}
+.header-banner{
+    text-align:center;
+}
+.header-banner img{
+    max-height:460px;
+    width:auto;
+    margin:auto;
 }
 ');
 ?>

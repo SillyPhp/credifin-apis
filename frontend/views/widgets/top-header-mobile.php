@@ -149,6 +149,11 @@
         </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
+                <a href="/career-advice">Career Advice</a>
+            </div>
+        </div>
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
                 <a href="/blog">Blog</a>
                 <span aria-hidden="true" class="ey-mobile-menu-toggler">
                     <i class="fa fa-arrow-down"></i>
