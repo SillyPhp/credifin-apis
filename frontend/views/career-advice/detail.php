@@ -192,7 +192,7 @@ text-align:right;
    
 .blog-img{
     width: 100%;
-	height: 430px;
+	max-height: 430px;
 	border-radius: 5px 5px 0px 0px;
 }
 .heading{
