@@ -640,7 +640,6 @@ margin:auto;
 }
 #us-sub-header{
     height:52px;
-    overflow: hidden;
 }
 @media only screen and (max-width: 768px){
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
