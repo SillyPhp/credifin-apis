@@ -39,7 +39,7 @@
                             <input type="radio" data-id="<?= $p['category_enc_id']?>" id="<?= $p['category_enc_id']?>" class="category-input"/>
                             <label class="work-profile-box parent_category" data-id ="<?= $p['category_enc_id']?>">
                                 <div class="work-profile">
-                                        <div class="rb-cat-icon"><img src="<?= $p['icon']?>"></div>
+                                    <div class="rb-cat-icon"><img src="<?= $p['icon']?>"></div>
                                     <p><?php echo $p['name'] ?></p>
                                 </div>
                             </label>
@@ -149,7 +149,6 @@ $this->registerCss('
     height:70px !important;
 }
 ');
-
 $script = <<<JS
 $(document).ready(function(){
   $("#text").on("keyup", function() {
@@ -159,7 +158,6 @@ $(document).ready(function(){
     });
   });
 });
-
 $(document).on('click', '.parent_category', function(){
         var data = {
             parent_id:$(this).attr('data-id'),
@@ -215,15 +213,12 @@ function showSelectedCategories(){
         
     })
 }
-
-
 $(document).on('click', '#save', function(e){
        e.preventDefault();
         var checks = document.getElementsByClassName('checks');
         var lengthh = document.getElementsByClassName('checks').length;
         var parent_id = $('#parent_enc_id').val();
         var check = [];
-
         for(var i=0;i<lengthh;i++){
             if(checks[i].checked === true){
                 check.push(checks[i].value);
@@ -260,12 +255,10 @@ $(document).on('click', '#save', function(e){
         
     
 });
-
 $(document).on('click', '#previous, .close-modal', function(){
     $('#titles').remove();
     $('#profiles').show();
 });
-
 function addNew(){
       var new_to_add = document.getElementById('add_new').value;
       var parent_id = $('#parent_enc_id').val();
@@ -299,18 +292,14 @@ function addNew(){
          toastr.error("please write something",'Error'); 
       }
 }
-
 $(document).on('click','#add_new_btn', function() {
     addNew();
 });
-
 $(document).on("keypress", "#add_new",function(event){
     if(event.which == '13'){
         addNew();
     }
 });
-
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
@@ -322,11 +311,11 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
         <label for="{{category_enc_id}}" class="work-profile-box unique2 wp2">
 
-        <div class="work-profile">
-            {{name}}
-        </div>
+            <div class="work-profile">
+                {{name}}
+            </div>
 
-    </label>
+        </label>
     </div>
 </script>
 <script id="modal-two" type="text/template">

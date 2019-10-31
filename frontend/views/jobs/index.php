@@ -73,7 +73,7 @@ use yii\helpers\Url;
     </div>
 </section>
 <?=
-$this->render('/widgets/top-cities',[
+$this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ])
@@ -101,6 +101,7 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/usa-jobs');?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -145,7 +146,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -194,8 +194,6 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
-
-
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -205,7 +203,7 @@ echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -232,20 +230,19 @@ $this->registerCss('
        background-color: #00a0e3;
     color: #fff;
 }
-
 .text-white1{
     color:white;
     font-family:Roboto;
-    }
+}
 .text-white2{
     color:white;
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .form-control{
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -279,8 +276,6 @@ $this->registerCss('
     padding:0;
     font-size:14px;
 }
-
-
 .wn-box-details{
     min-height:100px !important;
 }
@@ -931,7 +926,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (ll < listElementsLength) {
-            if(document.getElementById(elem).children[ll]) {
+            if (document.getElementById(elem).children[ll]) {
                 if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
                     document.getElementById(elem).children[ll].classList.remove('hide');
                     zz += 1;
@@ -940,7 +935,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             }
             ll += 1;
         }
-        if(f) {
+        if (f) {
             document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
             document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
         }

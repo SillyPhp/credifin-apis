@@ -10,7 +10,8 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
         <div class="row">
             <div class="col-md-12 z-index-9">
                 <div class="search-box text-center">
-                    <h2 class="text-white font-23">Looking for a <b>Career In US Govt</b>. Find Your <b>Dream Job</b> Today.</h2>
+                    <h2 class="text-white mb-5 font-weight-700">Looking for a Career In US Government.</h2>
+                    <h4 class="text-white font-20 mt-0">Find Your Dream Job Today.</h4>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
                             <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search Usa Jobs, Job title, Department." name="keywords" value="<?= $keywords ?>">
@@ -167,7 +168,7 @@ body{
     background-repeat: no-repeat;
     background-size: 100% 100%;
     padding: 105px 0px;
-    height: 350px;
+    height: 400px;
 }
 .search-box{
     width: 100%;
