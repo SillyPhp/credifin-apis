@@ -1191,7 +1191,6 @@ $(document).click(e => {
 })
 
 var slugg =  window.location.pathname.split('/')[1];
-console.log(slugg);
 var data = {slug: slugg};
 
 $.ajax({
