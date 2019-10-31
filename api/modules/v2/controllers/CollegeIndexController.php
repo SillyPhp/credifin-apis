@@ -7,6 +7,7 @@ use common\models\AppliedApplications;
 use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\Organizations;
 use common\models\ReviewsType;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -287,7 +288,7 @@ class CollegeIndexController extends ApiBaseController
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active','a.is_college_approved'=>0])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -329,19 +330,6 @@ class CollegeIndexController extends ApiBaseController
             $data = ErexxEmployerApplications::find()
                 ->where(['application_enc_id' => $req['application_enc_id']])
                 ->one();
-
-//            $collab = ErexxCollaborators::find()
-//                ->where(['organization_enc_id' => $req['org_enc_id'], 'college_enc_id' => $req['college_enc_id']])
-//                ->one();
-//
-//            if ($collab->college_approvel == 0) {
-//                $collab->college_approvel = 1;
-//                $collab->last_updated_by = $user->user_enc_id;
-//                $collab->last_updated_on = date('Y-m-d H:i:s');
-//                if (!$collab->update()) {
-//                    return false;
-//                }
-//            }
 
             if (!empty($data)) {
                 if($req['action'] == 'Accept') {
@@ -413,6 +401,58 @@ class CollegeIndexController extends ApiBaseController
                 ->where(['organization_enc_id' => $college_id])
                 ->asArray()
                 ->all();
+        }
+    }
+
+    public function actionCompanies(){
+        if($user = $this->isAuthorized()){
+
+            $req = [];
+            $req['college_id'] = $this->getOrgId();
+
+            $erexx_collab_company = ErexxCollaborators::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id'])
+                ->where(['a.college_enc_id' => $req['college_id'],'a.college_approvel' => 1, 'a.is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $org_ids = [];
+            foreach ($erexx_collab_company as $e){
+                array_push($org_ids,$e['organization_enc_id']);
+            }
+
+            $companies = Organizations::find()
+                ->alias('a')
+                ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.website','a.description','CONCAT("' . Url::to('/', true) . '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
+                ->distinct()
+                ->joinWith(['employerApplications b' => function ($x) {
+                    $x
+                        ->select(['b.organization_enc_id', 'COUNT(b.application_enc_id) application_type', 'c.name'])
+                        ->joinWith(['applicationTypeEnc c'], false)
+                        ->onCondition([
+                            'b.status' => 'Active',
+                            'b.is_deleted' => 0,
+                            'b.application_for' => 0
+                        ])
+                        ->orOnCondition([
+                            'b.status' => 'Active',
+                            'b.is_deleted' => 0,
+                            'b.application_for' => 2
+                        ])
+                        ->groupBy(['b.application_type_enc_id']);
+                }])
+                ->joinWith(['businessActivityEnc d'], false)
+                ->groupBy(['a.organization_enc_id'])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'a.is_erexx_registered' => 1
+                ])
+//                ->andWhere(['not in','a.organization_enc_id',$org_ids])
+                ->asArray()
+                ->all();
+
+            return $this->response(200,['status'=>200,'companies'=>$companies]);
         }
     }
 }
