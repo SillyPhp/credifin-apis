@@ -37,33 +37,29 @@ use yii\helpers\Url;
                     } else {
                         echo 3;
                     } ?>  col-sm-12">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-4">
-                                <div class="tp-box">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="img-box">
-                                                <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
-                                            </div>
+                            <div class="tp-box">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="img-box">
+                                            <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="cs-blog-detail">
-                                                <div class="heading-text">
-                                                    <?= $c['title'] ?>
-                                                </div>
-                                                <div class="box-des">
-                                                    <?= $c['description'] ?>
-                                                </div>
-                                                <div class="cs-read-btn">
-                                                    <a href="/career-advice/<?= $c['category']?>/<?= $c['slug'] ?>">Read</a>
-                                                </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="cs-blog-detail">
+                                            <div class="heading-text">
+                                                <?= $c['title'] ?>
+                                            </div>
+                                            <div class="box-des">
+                                                <?= substr($c['description'], 0, 160) ?>
+                                            </div>
+                                            <div class="cs-read-btn">
+                                                <a href="/career-advice/<?= $c['category']?>/<?= $c['slug'] ?>">Read</a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     <?php
                     $count++;
                 }
@@ -91,7 +87,7 @@ use yii\helpers\Url;
                                                 <?= $careerBlog[$i]['title'] ?>
                                             </div>
                                             <div class="box-des">
-                                                <?= $careerBlog[$i]['description'] ?>
+                                                <?= substr($careerBlog[$i]['description'], 0,160) ?>
                                             </div>
                                             <div class="cs-vd-btn">
                                                 <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
@@ -227,6 +223,7 @@ text-align:right;
     border-radius: 5px;
     transition:0.5s;
     margin-bottom: 20px;
+    height:200px;
 }
 .tp-box:hover, .vertical-blog:hover, .pop-box:hover{
 	border-radius: 5px;
