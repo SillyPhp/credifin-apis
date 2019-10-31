@@ -20,6 +20,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use common\models\PasswordResetRequestForm;
 use common\models\ResetPasswordForm;
+use frontend\models\applications\ApplicationCards;
 use common\models\AppliedApplications;
 use frontend\models\ContactForm;
 use frontend\models\CareerForm;
@@ -150,6 +151,11 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $featured_jobs = ApplicationCards::jobs([
+            "page" => 1,
+            "limit" => 6
+        ]);
+
         $other_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
@@ -211,7 +217,8 @@ class SiteController extends Controller
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'featured_jobs' => $featured_jobs
         ]);
     }
 

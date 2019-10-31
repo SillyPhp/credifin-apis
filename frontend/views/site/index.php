@@ -517,7 +517,15 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-
+<section>
+    <div class="container">
+        <?=
+        $this->render('/widgets/featured-jobs',[
+            'featured_jobs' => $featured_jobs
+        ])
+        ?>
+    </div>
+</section>
 <?= $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs
 ])?>
