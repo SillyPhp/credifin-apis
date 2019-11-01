@@ -2,12 +2,16 @@
 use yii\helpers\Url;
 ?>
  <div class="row">
-        <div class="col-md-12">
-            <div class="widget-heading">Developer Jobs
-                <span></span>
-            </div>
+    <div class="col-md-12">
+        <div class="widget-heading">
+            <span><img src="" alt=""></span>
+            <span>Developer Jobs</span>
+            <span class="fj-wa" data-toggle="tooltip" title="Join Us on WhatsApp">
+                <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi"><i class="fab fa-whatsapp-square"></i></a>
+            </span>
         </div>
     </div>
+</div>
     <div class="row">
         <?=
             $this->render('/widgets/new-jobs-box',[
@@ -25,7 +29,7 @@ use yii\helpers\Url;
                     <form id="subs_news">
                         <div class="row">
                             <div class="col-md-9">
-                                <input type="text" class="fj-input" placeholder="Your Email">
+                                <input type="text" name="email" class="fj-input" placeholder="Your Email">
                             </div>
                             <div class="col-md-3">
                                 <button type="submit" class="fj-btn">Notify Me</button>
@@ -40,6 +44,27 @@ use yii\helpers\Url;
 $this->registerCss('
 .widget-heading{
     text-align:center;
+    font-size:25px;
+    color:#333;
+    font-family: roboto;
+    position:relative;
+    width: fit-content;
+}
+.fj-wa-wa{
+    font-size: 30px;
+    text-align: right;
+    padding: 20px 0px 0 0;
+    color:#333
+}
+.fj-tw, .fj-wa{
+    font-size:25px;
+    padding-left:5px;
+}
+.fj-tw:hover{
+    color:#00acee;
+}
+.fj-wa:hover{
+    color: #25D366;
 }
 .fj-sub-heading{
     font-size: 18px;
@@ -73,8 +98,11 @@ $this->registerCss('
 $script = <<<JS
 $('#subs_news').submit(function(event) {
     event.preventDefault();
+     var formData = $(this).serialize();
   $.ajax({
-    url: ''
+    url: '/site/add-new-subscriber',
+    data: formData,
+    method: 'POST',
   })
 })
 JS;

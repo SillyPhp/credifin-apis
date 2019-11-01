@@ -99,7 +99,7 @@ $this->registerCss('
 .new-job-box {
     text-align: left;
     padding: 10px;
-    margin-top: 25px;
+    margin-bottom: 25px;
     border-radius: 10px;
     box-shadow: 1px 2px 5px 2px lightgray;
     position:relative;
