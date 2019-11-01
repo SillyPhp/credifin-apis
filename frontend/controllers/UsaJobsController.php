@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\EmployerApplications;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -115,5 +116,4 @@ class UsaJobsController extends Controller
         $stringSplit1 = substr($string, 0, $strpos);
         return trim($stringSplit1);
     }
-
 }
