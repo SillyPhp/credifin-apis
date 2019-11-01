@@ -16,6 +16,11 @@
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
+                            <a href="/usa-jobs">USA Jobs</a>
+                        </div>
+                    </div>
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
                             <a href="/organizations">Explore Companies</a>
                         </div>
                     </div>
@@ -74,11 +79,11 @@
                 </div>
             </div>
         </div>
-        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-        <!--            <div class="ey-mobile-item-main">-->
-        <!--                <a href="/training-programs/list">Training Courses</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/training-programs">Training Courses</a>
+            </div>
+        </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/reviews">Reviews</a>
@@ -111,11 +116,37 @@
                 </div>
             </div>
         </div>
-        <!--        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">-->
-        <!--            <div class="ey-mobile-item-main">-->
-        <!--                <a href="/learning">Learning</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/learning">Learning Hub</a>
+                <span aria-hidden="true" class="ey-mobile-menu-toggler">
+                    <i class="fas fa-arrow-down"></i>
+                </span>
+            </div>
+            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/learning/categories">Popular Topics</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/questions">Questions</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/learning/contribute">Collaborate With Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
             <div class="ey-mobile-item-main">
                 <a href="/blog">Blog</a>
@@ -133,11 +164,6 @@
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
                             <a href="/blog/category/infographics">Infographics</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/quizzes/all">Quizzes</a>
                         </div>
                     </div>
                 </div>
@@ -336,7 +362,6 @@ $(document).on("click", ".ey-mob-menu-inner-item.ey-mob-menu-has-sub .ey-mobile-
     $(this).parent().next(".ey-mob-sub-menu-has-container").toggleClass("ey-mobile-sub-menu-show");
 });
 $(document).on("click", ".ey-mob-sub-item.ey-mobile-sub-has-container .ey-mobile-sub-menu-heading", function(e){
-    e.preventDefault();
     $(this).next(".ey-mobile-sub-menu-container").toggleClass("ey-mobile-sub-nav-show");
 });
 ');

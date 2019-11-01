@@ -20,6 +20,16 @@ if (!empty($total_applications)) {
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
+                            <a href="<?= Url::toRoute('/training-program/edit/' . $applications[$next]["application_enc_id"]); ?>"
+                               target="_blank"
+                               class="j-edit">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>
+                            <a href="<?= Url::toRoute('/training-program/clone/' . $applications[$next]["application_enc_id"]); ?>"
+                               target="_blank"
+                               class="j-clone share_btn">
+                                <i class="fa fa-clone"></i>
+                            </a>
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>

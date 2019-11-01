@@ -6,7 +6,7 @@
             <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
                   data-locations="">
                 <i class="fas fa-map-marker-alt"></i>
-                &nbsp;{{PositionLocation}}
+                &nbsp;{{Location}}
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
@@ -57,6 +57,11 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
       template.html(''); 
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
+      $('#loader').hide();
+      if(body == null){
+          $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
   }   
   })
 }
@@ -85,6 +90,9 @@ function fetchLocalData(template,min,max,loader,loader_btn) {
       body = JSON.parse(body);
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
+      if(body == null){
+          $('#loader').hide();
+      }
   }   
   })
 }
@@ -93,6 +101,14 @@ $this->registerCss("
 .align_btn
 {
 text-align:center;
+clear:both;
+}
+.application-card-type
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
 }
 ");
 $this->registerJs($script);

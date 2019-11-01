@@ -14,6 +14,9 @@
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
+                                    <a href="/usa-jobs">USA Jobs</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
@@ -58,16 +61,15 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
         </li>
-        <!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
-        <!--            <a href="/training-programs/list">-->
-        <!--                Training Courses-->
-        <!--            </a>-->
-        <!--        </li>-->
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/training-programs">
+                Training Courses
+            </a>
+        </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
@@ -92,16 +94,41 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
         </li>
-        <!--        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">-->
-        <!--            <a href="/learning">-->
-        <!--                Learning-->
-        <!--            </a>-->
-        <!--        </li>-->
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/learning">
+                Learning Hub
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/categories">
+                                        Popular Topics
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/questions">
+                                        Questions
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/contribute">
+                                        Collaborate With Us
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
                 Blog
@@ -117,9 +144,6 @@
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/blog/category/infographics">Infographics</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>
