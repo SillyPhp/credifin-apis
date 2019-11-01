@@ -28,7 +28,8 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
+                        <a href="<?= Url::to('/tweets/internship/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
                             <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>

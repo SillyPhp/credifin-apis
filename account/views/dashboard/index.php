@@ -230,7 +230,11 @@ endif;
                         </div>
                         <div class="actions">
                             <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Job'); ?></a>
+                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Create Quick Job'); ?></a>
+                            <a href="<?= Url::to('/tweets/job/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Post Job Tweet'); ?></a>
                             <?php if ($applications['jobs']['total'] > 8): ?>
                                 <a href="<?= Url::toRoute('/jobs'); ?>" title=""
                                    class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
@@ -269,7 +273,9 @@ endif;
                         </div>
                         <div class="actions">
                             <a href="<?= Url::toRoute('/internships/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
+                            <a href="<?= Url::toRoute('/internships/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
                             <?php if ($applications['internships']['total'] > 8): ?>
                                 <a href="<?= Url::toRoute('/internships'); ?>" title=""
                                    class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
@@ -430,8 +436,10 @@ $this->registerCss("
     text-align:center;
     padding-bottom:35px;
 }
-.step-main{
-    text-align:center;
+.step-main {
+    text-align: center;
+    border: 1px solid #eee;
+    padding: 25px 10px;
 }
 .s-logo{
     padding-bottom:20px;
@@ -440,9 +448,11 @@ $this->registerCss("
     height:100px;
     width:100px;
 }
-.s-text{
+.s-text {
     font-size: 14px;
-    color: #9eacb4;
+    font-weight: bold;
+    text-transform: uppercase;
+    color:#9eacb4;
 }
 @media only screen and (max-width: 950px) {
 .marg{
