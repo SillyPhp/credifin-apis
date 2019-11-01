@@ -15,6 +15,64 @@ class UsaJobsController extends Controller
     {
         return $this->render('index',['keywords'=>$keywords]);
     }
+
+    Public function actionProfile(){
+
+        return $this->render('profile');
+    }
+
+    Public function actionProfile2(){
+
+        return $this->render('profile2');
+    }
+
+    Public function actionProfile3(){
+
+        return $this->render('profile3');
+    }
+
+    Public function actionProfile4(){
+
+        return $this->render('profile4');
+    }
+
+    Public function actionProfile5(){
+
+        return $this->render('profile5');
+    }
+
+    Public function actionProfile6(){
+
+        return $this->render('profile6');
+    }
+
+    Public function actionProfile7(){
+
+        return $this->render('profile7');
+    }
+
+    Public function actionProfile8(){
+
+        return $this->render('profile8');
+    }
+    Public function actionProfile9(){
+
+        return $this->render('profile9');
+    }
+
+    Public function actionProfile10(){
+
+        return $this->render('profile10');
+    }
+    Public function actionProfile11(){
+
+        return $this->render('profile11');
+    }
+    Public function actionProfile12(){
+
+        return $this->render('profile12');
+    }
+
     public function actionGetKeywords()
     {
         if (Yii::$app->request->isAjax){

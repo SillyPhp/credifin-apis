@@ -1,0 +1,324 @@
+<?php
+$this->params['header_dark'] = false;
+use yii\helpers\Url;
+Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::POS_HEAD);
+?>
+<div class="main" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+    <div class="bg-img">
+        <img src="<?= Url::to('@eyAssets/images/usajobs/veteran.png'); ?>" class="img_load">
+    </div>
+    <div class="row" id="back-color">
+        <div class="col-md-12">
+            <div class="container">
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="bg-color">
+                        <img src="<?= Url::to('@eyAssets/images/usajobs/Veterans1.png'); ?>" class="img_load">
+                        <h3>Veterans</h3>
+                    </div>
+
+                </div>
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="paragraph">If you’re a Veteran who served on active duty in the U.S. Armed Forces and were separated under honorable conditions, you may be eligible for veterans’ preference, as well as other veteran specific hiring options.  </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="feature-box">
+    <div class="container">
+        <ul class="list-option">
+            <li><a href="#">Help</a> /</li>
+            <li><a href="#">Working in Government</a> /</li>
+            <li><a href="#">Unique Hiring Path</a> /</li>
+            <li> Veterans </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="row" id="main-mg">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="heading-box">
+                <h3>Veterans' preference</h3>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-12">
+
+            <div class="para">
+                <P>With veterans’ preference, you may receive preference over non-veteran applicants in the hiring process. Veterans' preference can be used when applying to permanent and temporary positions in both the competitive and excepted service (of the executive branch). </P>
+                <p>There are three types of veterans' preferences: </p>
+
+               <p> <a href="#"  ><button class="buton" >Disabled (10 point preference eligible) </button></a></p>
+               <p> <a href="#"  ><button class="buton" >Non-disabled (5 point preference eligible) </button></a></p>
+               <p> <a href="#"  ><button class="buton" > Sole survivorship (0 point preference eligible)  </button></a></p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="heading-box">
+                <h3>How do I know a job is open to Veterans? </h3>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="paragraph">
+                <p>In the job announcement look for the This job is open to section. When a job is open to Veterans you’ll see this icon: There may be other groups listed that can also apply. </p>
+                <p>You can also select the<strong> Veterans </strong> filter in search. Your results will display all jobs open to family of overseas employees. </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="heading-box">
+                <h3>Documents you may need  </h3>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-12">
+            <div class="paragraph">
+                <h4>Claiming veterans' preference</h4>
+                <p>When claiming veterans’ preference, you must provide a copy of your DD-214, Certificate of Release or Discharge from Active Duty, or other acceptable documentation. Applicants claiming 10-point preference will need to submit Form SF-15, or other acceptable documentation. </p>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <p><a href="#"> <i class="far fa-file-pdf"></i> DD-214 <br>Certificate of Release or Discharge from Active Duty </a> </p>
+                </div>
+                <p>The DD-214 is issued to military members upon separation from active service. It contains information about the veteran's dates of military service and separation. Most veterans and their next-of-kin can obtain free copies of their DD Form 214 Report of Separation and other military and medical records through the<a href="#"> National Archives Veterans’ Records Service.</a> </p>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <p><a href="#"> <i class="far fa-file-pdf"></i> SF-15<br> Application for 10-point Veterans' Preference  </a> </p>
+                </div>
+                <p>The<strong> SF-15 </strong>is used by Federal agencies and OPM examining offices to adjudicate individuals' claims for veterans' preference.  </p>
+                <p>Note that a letter from the VA that contains the following may be sufficient instead of a SF-15: </p>
+                <ul class="list-2">
+                    <li>Dates of service</li>
+                    <li>Discharge status</li>
+                    <li>Disability rating</li>
+                </ul>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="heading-job">
+                    <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
+                    <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you can submit these forms with your job application as needed. <a href="#">Sign into USAJOBS or learn how to upload documents.</a> </P>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="main-mg">
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="heading-box">
+                <h3>Veteran's Recruitment Appointment and other hiring options </h3>
+            </div>
+        </div>
+        <div class="col-md-8 col-sm-8 col-xs-12">
+
+            <div class="para">
+               <p>If you’re a veteran, you may also be eligible for one of these special hiring authorities:  </p>
+
+                <p> <a href="#"  ><button class="buton" >Veterans Recruitment Appointment (VRA)  </button></a></p>
+                <p> <a href="#"  ><button class="buton" >30% or More Disabled Veteran  </button></a></p>
+                <p> <a href="#"  ><button class="buton" >Veterans Employment Opportunity Act of 1998 (VEOA)  </button></a></p>
+                <p> <a href="#"  ><button class="buton" >Disabled Veterans Enrolled in a VA Training Program   </button></a></p>
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+<?php
+$this->registerCss("
+body{
+ 	margin:0;
+ }	
+
+.row{
+	margin: 0;
+}
+ .bg-img  img{
+	display: block;
+	width: 100%;
+ }
+
+.st-btn{
+	padding: 10px 158px 10px 5px;
+	font-size: 15px;
+	font-family: roboto;
+	font-weight: 501;
+	word-spacing: 0.3em;
+	border: none;
+	background-color: #ffb63a;
+	color: white;
+	margin-top: 20px;
+}
+
+ #back-color{
+ 	background-color: #57b952;
+ 	padding-top: 4.5rem;
+    padding-bottom: 4.5rem; 	
+ }
+
+.fa-file-alt{
+   font-size:30px;
+ }
+
+ .bg-color img {
+	position: relative;
+	margin-top: -12rem;
+	max-width: 45%;
+}
+
+.content1{
+	font-size: 17px;
+	font-family: roboto;
+	margin-bottom: 20px;
+	margin-top: 20px;
+	color: black;
+	padding: 10px;
+}
+
+.fa-file-pdf{
+	font-size: 40px;
+	color: #cd2026;
+}
+
+.chg-c{
+	color: #19197b;
+}
+
+.heading-2{
+	font-size: 16px;
+	font-weight: bold;
+	color: #401277;
+}
+
+.buton{
+	background-color: transparent;
+	border: 3px solid #154899;
+	padding: 10px;
+	border-radius: 5px;
+	font-size: 15px;
+	font-weight: 700;
+	color: #19588e;
+	width: 50%;
+}
+
+h3 {
+	font-family: Roboto;
+	font-weight: 700;
+	line-height: 1.3;
+	margin-bottom: .5rem;
+	margin-top: 1.5rem;
+	font-size: 2.1rem;
+	color: #fff;
+	margin-top: 0;
+}
+
+.paragraph{
+	margin-bottom: .5rem;
+	margin-top: 1.5rem;
+	font-size: 1.4rem;
+	font-family: roboto;
+	font-weight: 400;
+	line-height: 1.7;
+	color:white;
+}
+
+
+.para {
+	line-height: 2.1;
+	margin-bottom: 4em;
+	margin-top: 1em;
+	font-size: 17px;
+	font-family: roboto;
+	color: #4a4a4a;
+}
+
+.feature-box{
+	 border-bottom: 1px solid lightgray;
+	  margin-bottom: 10px;
+}
+
+a{
+ color: #6d2bcc; 
+}
+
+.list-2 {
+	list-style: disc;
+	padding-left: 23px;
+	color: #4a4a65;
+	font-size: 18px;
+}
+
+.list-option{
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+	margin: 1rem auto;
+}
+
+.list-option li{
+	display: inline-block;
+}
+
+h4{
+	font-weight: 700;
+	color: #401260;
+}
+
+.heading-box h3{
+	font-family:Roboto;
+	font-weight: 700;
+	line-height: 1.3;
+	margin-bottom: .5rem;
+	margin-top: 1.5rem;
+	font-size: 20px;
+    color: #0e1c66;
+}
+
+
+.paragraph p{
+	font-size: 17px;
+	font-family: roboto;
+	margin-bottom: 20px;
+    margin-top: 20px;
+    color: black;
+    padding: 10px;
+}
+
+#main-mg {
+	margin-bottom: 40PX;
+}
+
+h2 {
+	font-family: Roboto;
+	font-weight: 700;
+	line-height: 1.3;
+	margin-bottom: 2.5rem;
+	margin-top: 1.5rem;
+	font-size: 1.7rem;
+	color: #112e51;
+}
+
+.fa-times{
+	color: red;
+}
+.fa-check{
+	color:green;
+}
+#bg-color{
+	background-color: #f9dede;
+}
+
+@media only screen and (max-width: 360px){
+.bg-color{text-align: center;}
+     .heading-box h3 {padding-left: 0; font-size: 2.6rem; }
+     .text {padding: 1.5rem;background-color: aliceblue; min-height: 0rem; }
+     .text h5{font-size: 2.1rem;}
+     .paragraph{ font-size: 2.4rem;}
+     h3{ font-size: 2.5rem;}
+     .para{ font-size: 18px;}
+}
+@media (min-width:768px) and (max-width:1024px){
+    .text {padding: 1.5rem;background-color: aliceblue; min-height: 0rem; }
+     .heading-box h3{font-size: 2.6rem; padding-left: 0px; }
+}
+
+");
+
+
