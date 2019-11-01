@@ -327,6 +327,18 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
 </div>
 <?php
 $this->registerCss("
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/ai-header.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.page-container-bg-solid .page-content{
+    background: transparent !important;
+}
+.portlet.light {
+    background-color: #ffffffe3 !important;
+}
 ul.ks-cboxtags {
     list-style: none;
     padding:0px;
