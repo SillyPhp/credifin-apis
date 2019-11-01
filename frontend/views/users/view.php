@@ -168,91 +168,152 @@ $this->params['header_dark'] = false;
                         </ul>
                     </div>
                 </div>
-                <div class="container-detail-box">
-                    <div class="education-detail">
-                        <div class="education-head">Education</div>
-                        <div class="set">
-                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
-                            </div>
-                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>BCA</div>
-                            <div class="s-time s-text"><i class="fas fa-clock"></i>2013 - 2016</div>
-                        </div>
-                        <div class="set">
-                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University
-                            </div>
-                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>MCA</div>
-                            <div class="s-time s-text"><i class="fas fa-clock"></i>2016 - 2018</div>
-                        </div>
-                    </div>
-                    <div class="experience-detail">
-                        <div class="education-head">Work Experience</div>
-                        <div class="set">
-                            <div class="uni-name s-text"><i class="fas fa-hotel"></i>Infosis, chd</div>
-                            <div class="quelification s-text"><i class="fas fa-briefcase"></i>Backend Developer</div>
-                            <div class="s-time s-text"><i class="fas fa-calendar-alt"></i>12/2/2017 to 12/5/2019</div>
-                        </div>
-                    </div>
-                    <div class="achievements-detail set-li">
-                        <div class="education-head">Achievements</div>
-                        <ul>
-                            <li>Hackathon Winner</li>
-                            <li>Coding Challenge Winner</li>
-                        </ul>
-                    </div>
-                    <div class="hobbies-detail set-li">
-                        <div class="education-head">Hobbies</div>
-                        <ul>
-                            <li>Playing Games</li>
-                            <li>Watching movies</li>
-                            <li>Listening songs</li>
-                        </ul>
-                    </div>
-                    <div class="Interests-detail set-li">
-                        <div class="education-head">Interests</div>
-                        <ul>
-                            <li>coding</li>
-                            <li>Designing</li>
-                        </ul>
-                    </div>
-                </div>
+<!--                <div class="container-detail-box">-->
+<!--                    <div class="education-detail">-->
+<!--                        <div class="education-head">Education</div>-->
+<!--                        <div class="set">-->
+<!--                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University-->
+<!--                            </div>-->
+<!--                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>BCA</div>-->
+<!--                            <div class="s-time s-text"><i class="fas fa-clock"></i>2013 - 2016</div>-->
+<!--                        </div>-->
+<!--                        <div class="set">-->
+<!--                            <div class="uni-name s-text"><i class="fas fa-university"></i>Lovely Professional University-->
+<!--                            </div>-->
+<!--                            <div class="quelification s-text"><i class="fas fa-user-graduate"></i>MCA</div>-->
+<!--                            <div class="s-time s-text"><i class="fas fa-clock"></i>2016 - 2018</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="experience-detail">-->
+<!--                        <div class="education-head">Work Experience</div>-->
+<!--                        <div class="set">-->
+<!--                            <div class="uni-name s-text"><i class="fas fa-hotel"></i>Infosis, chd</div>-->
+<!--                            <div class="quelification s-text"><i class="fas fa-briefcase"></i>Backend Developer</div>-->
+<!--                            <div class="s-time s-text"><i class="fas fa-calendar-alt"></i>12/2/2017 to 12/5/2019</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="achievements-detail set-li">-->
+<!--                        <div class="education-head">Achievements</div>-->
+<!--                        <ul>-->
+<!--                            <li>Hackathon Winner</li>-->
+<!--                            <li>Coding Challenge Winner</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <div class="hobbies-detail set-li">-->
+<!--                        <div class="education-head">Hobbies</div>-->
+<!--                        <ul>-->
+<!--                            <li>Playing Games</li>-->
+<!--                            <li>Watching movies</li>-->
+<!--                            <li>Listening songs</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                    <div class="Interests-detail set-li">-->
+<!--                        <div class="education-head">Interests</div>-->
+<!--                        <ul>-->
+<!--                            <li>coding</li>-->
+<!--                            <li>Designing</li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <!--Sidebar Start-->
             <div class="col-md-4 col-sm-4">
+                <div class="sidebar-container">
+                    <div class="sidebar-box">
+                        <span class="sidebar-status"><?= $user['availability'] ?></span>
+                        <div class="sidebar-inner-box">
+                            <div class="sidebar-box-thumb">
+                                <?php
+                                if ($image):
+                                    ?>
+                                    <img src="<?= $image; ?>" alt="<?= $name; ?>" class="img-circle "/>
+                                <?php else: ?>
+                                    <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
+                                            color="<?= $user['initials_color']; ?>" width="140" height="140"
+                                            font="70px"></canvas>
+                                <?php endif; ?>
+                            </div>
+                            <div class="sidebar-box-detail">
+                                <h4 class="capitalize"><?= $user['first_name'] . " " . $user['last_name'] ?></h4>
+                                <span class="desination"><?= $user['job_profile'] ?></span>
+                            </div>
+                        </div>
+                        <div class="sidebar-box-extra">
+                            <ul>
+                                <?php
+                                $i = 0;
+                                foreach ($skills as $sk) {
+                                    ?>
+                                    <li>
+                                        <?php
+                                        echo $sk['skills'];
+                                        $i++;
+                                        if ($i == 3) break;
+                                        ?>
+                                    </li>
+                                <?php }
+                                if (count($skills) >= 4) {
+                                    ?>
+                                    <li class="more-skill bg-primary">+<?= count($skills) - 3 ?></li>
+                                <?php } ?>
+                            </ul>
+                            <ul class="status-detail">
+                                <li class="br-1">
+                                    <strong>
+                                        <?php
+                                        if ($user['experience']) {
+                                            if ($strToArr[1] != 0) {
+                                                echo $strToArr[1] . ' Year(s) ';
+                                            }
+                                            if ($strToArr[3] != 0) {
+                                                echo $strToArr[3] . ' Month(s)';
+                                            }
+                                        } else {
+                                            echo '--';
+                                        }
+                                        ?>
+                                    </strong>
+                                    Experience
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <!-- Make An Offer-->
-                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
-                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
-                    <div class="prefer-detail">
-                        <ul>
-                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
-                            </li>
-                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
-                            <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>
-                            </li>
-                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
-                            </li>
-                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
-                            </li>
-                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
-                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
-                    <div class="prefer-detail">
-                        <ul>
-                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>
-                            </li>
-                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>
-                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>
-                            </li>
-                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>
-                            </li>
-                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+<!--                <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">-->
+<!--                    <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>-->
+<!--                    <div class="prefer-detail">-->
+<!--                        <ul>-->
+<!--                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>-->
+<!--                            <li><span class="set-width">Salary</span><span class="position">10k - 15k (Monthly)</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">-->
+<!--                    <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>-->
+<!--                    <div class="prefer-detail">-->
+<!--                        <ul>-->
+<!--                            <li><span class="set-width">Profile</span><span class="position">Web Developement</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Type</span><span class="position">Full Time</span></li>-->
+<!--                            <li><span class="set-width">City</span><span class="position">Ludhiana, Chandigarh</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Working Days</span><span class="position">Sun, Mon, Tue, Wed, Thurs, Friday</span>-->
+<!--                            </li>-->
+<!--                            <li><span class="set-width">Timings</span><span class="position">9:00Am to 6:00Pm</span>-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             <!--End Sidebar-->
         </div>

@@ -61,7 +61,11 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <!--                    <div class="divider"></div>-->
-                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <?=
+                    $this->render('/widgets/mustache/discussion/discussion-box', [
+                    "controllerId" => Yii::$app->controller->id . "/comments"
+                    ]);
+                    ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -440,6 +444,9 @@ textarea::placeholder{
 }
 .reply button:hover{
     color:#00a0e3;
+}
+.reply-comm .comment{
+    margin-left:15px;
 }
 
 /*----blog section ends----*/

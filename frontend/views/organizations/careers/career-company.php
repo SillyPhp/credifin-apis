@@ -1620,7 +1620,8 @@ $(document).click(e => {
         $('.select-menu').removeClass('open');
     }
 })
-var slugg = 'ravinder21'  
+
+var slugg =  window.location.pathname.split('/')[1];
 var data = {slug: slugg};
 
 $.ajax({
