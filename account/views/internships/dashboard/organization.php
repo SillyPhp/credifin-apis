@@ -195,6 +195,20 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss('
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
 .loader
 {
     display:none;
