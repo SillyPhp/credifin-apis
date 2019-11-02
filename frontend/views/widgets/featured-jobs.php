@@ -6,8 +6,10 @@ use yii\helpers\Url;
         <div class="widget-heading">
             <span><img src="" alt=""></span>
             <span>Developer Jobs</span>
-            <span class="fj-wa" data-toggle="tooltip" title="Join Us on WhatsApp">
-                <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi"><i class="fab fa-whatsapp-square"></i></a>
+            <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
+                <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
+                    <i class="fab fa-whatsapp-square"></i> Join Us
+                </a>
             </span>
         </div>
     </div>
@@ -45,26 +47,14 @@ $this->registerCss('
 .widget-heading{
     text-align:center;
     font-size:25px;
+    padding-bottom:20px;
     color:#333;
     font-family: roboto;
-    position:relative;
-    width: fit-content;
 }
-.fj-wa-wa{
-    font-size: 30px;
-    text-align: right;
-    padding: 20px 0px 0 0;
-    color:#333
-}
-.fj-tw, .fj-wa{
-    font-size:25px;
+.fj-wa a{
+    font-size:18px;
     padding-left:5px;
-}
-.fj-tw:hover{
-    color:#00acee;
-}
-.fj-wa:hover{
-    color: #25D366;
+    color: #25D366; 
 }
 .fj-sub-heading{
     font-size: 18px;
