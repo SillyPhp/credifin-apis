@@ -28,7 +28,8 @@ echo $this->render('/widgets/header/secondary-header', [
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
+                        <a href="<?= Url::to('/tweets/internship/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
                             <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
@@ -44,7 +45,14 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                        <h3>No Active Internships</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No active Internships</div>
+                                </div>
+                            </div>
                     <?php }
                     ?>
                 </div>
@@ -78,7 +86,14 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                <h3>No Questionnaire To Display</h3>
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">No Questionnaires to display</div>
+                                        </div>
+                                    </div>
                             <?php }
                             ?>
                         </div>
@@ -110,7 +125,14 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                <h3>No Processes To Display</h3>
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">No process to display</div>
+                                        </div>
+                                    </div>
                             <?php }
                             ?>
                         </div>
@@ -157,7 +179,14 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                        <h3>No Closed Jobs</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No closed Internships</div>
+                                </div>
+                            </div>
                     <?php }
                     ?>
                 </div>
@@ -166,6 +195,20 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss('
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
 .loader
 {
     display:none;

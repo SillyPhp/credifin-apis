@@ -126,7 +126,7 @@ endif;
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
                                     <div class="widget-thumb-body">
-                                        <span class="widget-thumb-body-stat"><?= $org_applications['total']?></span>
+                                        <span class="widget-thumb-body-stat"><?= $org_applications['total'] ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@ endif;
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-red fa fa-users"></i>
                                     <div class="widget-thumb-body">
-                                        <span class="widget-thumb-body-stat"><?= $dropResume;?></span>
+                                        <span class="widget-thumb-body-stat"><?= $dropResume; ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +153,7 @@ endif;
                                     <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-subtitle"></span>
-                                        <span class="widget-thumb-body-stat"><?= $total_org_applied?></span>
+                                        <span class="widget-thumb-body-stat"><?= $total_org_applied ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -230,7 +230,11 @@ endif;
                         </div>
                         <div class="actions">
                             <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Job'); ?></a>
+                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Create Quick Job'); ?></a>
+                            <a href="<?= Url::to('/tweets/job/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Post Job Tweet'); ?></a>
                             <?php if ($applications['jobs']['total'] > 8): ?>
                                 <a href="<?= Url::toRoute('/jobs'); ?>" title=""
                                    class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
@@ -248,7 +252,14 @@ endif;
                             ]);
                         } else {
                             ?>
-                            <h3>No Active Jobs</h3>
+                                <div class="tab-empty">
+                                    <div class="tab-empty-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                    </div>
+                                    <div class="tab-empty-text">
+                                        <div class="">No Active Jobs</div>
+                                    </div>
+                                </div>
                         <?php }
                         Pjax::end();
                         ?>
@@ -262,7 +273,9 @@ endif;
                         </div>
                         <div class="actions">
                             <a href="<?= Url::toRoute('/internships/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
+                            <a href="<?= Url::toRoute('/internships/create'); ?>"
+                               class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
                             <?php if ($applications['internships']['total'] > 8): ?>
                                 <a href="<?= Url::toRoute('/internships'); ?>" title=""
                                    class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
@@ -280,17 +293,167 @@ endif;
                             ]);
                         } else {
                             ?>
-                            <h3>No Active Internships</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/internship.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No Active Internship</div>
+                                </div>
+                            </div>
                         <?php }
                         Pjax::end();
                         ?>
                     </div>
                 </div>
             <?php endif; ?>
+<!--            <div class="portlet light portlet-fit nd-shadow">-->
+<!--                <div class="portlet-title" style="border-bottom:none;">-->
+<!--                    <div class="car-main row">-->
+<!--                        <div class="c-head">Careers</div>-->
+<!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
+<!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->
+<!--                            is that it has a more-or-less normal distribution of letters, as opposed to using 'Content-->
+<!--                            here, content here', making it look like readable English. Many desktop publishing packages-->
+<!--                            and web page editors now use Lorem Ipsum as their default model text,-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="works-main row">-->
+<!--                        <div class="works">-->
+<!--                            <div class="w-head">How It Works</div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-4">-->
+<!--                            <div class="step-main">-->
+<!--                                <div class="s-logo">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+<!--                                </div>-->
+<!--                                <div class="s-text">Put Your Website address Here</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-4">-->
+<!--                            <div class="step-main">-->
+<!--                                <div class="s-logo">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+<!--                                </div>-->
+<!--                                <div class="s-text">copy Link</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="col-md-4">-->
+<!--                            <div class="step-main">-->
+<!--                                <div class="s-logo">-->
+<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+<!--                                </div>-->
+<!--                                <div class="s-text">Paste On your website</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="row">-->
+<!--                        <div class="main-btn">-->
+<!--                            <div class="inner-btn">-->
+<!--                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"-->
+<!--                                       class="form-control" value="--><?//= $link ?><!--" readonly>-->
+<!--                                <i class="fa fa-copy"></i>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
+<script>
+    function copyToClipboard() {
+    var copyText = document.getElementById("share_manually");
+    copyText.select();
+    document.execCommand("copy");
+    // toastr.success("", "Copied");
+    alert("Copied the text: " + copyText.value);
+    }
+</script>
 <?php
 $this->registerCss("
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+.topic-con{
+    position:relative;
+}
+.main-btn {
+    width: 85px;
+    margin: 0 auto;
+    position: relative;
+    cursor: pointer;
+}
+.inner-btn .form-control {
+    cursor: pointer;
+    background: #00a0e3;
+    border: 2px solid #00a0e3;
+}
+.inner-btn .form-control:hover{
+    box-shadow: 0px 1px 10px 4px #eee !important;
+}
+.inner-btn > i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color:#fff;
+}
+.car-main{
+    text-align:center;
+    padding-bottom:20px;
+    border-bottom: 1px solid #eee;
+}
+.c-head, .b-head, .w-head{
+    font-size: 16px;
+    font-weight: 700;
+    font-family: \"Open Sans\",sans-serif;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+.career-descripption{
+    font-size: 13px;
+    text-align: justify;
+    color: #9eacb4;
+}
+.works-main{
+    padding-bottom:35px;
+    padding-top:35px;
+}
+.works{
+    text-align:center;
+    padding-bottom:35px;
+}
+.step-main {
+    text-align: center;
+    border: 1px solid #eee;
+    padding: 25px 10px;
+}
+.s-logo{
+    padding-bottom:20px;
+}
+.s-logo img{
+    height:100px;
+    width:100px;
+}
+.s-text {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color:#9eacb4;
+}
 @media only screen and (max-width: 950px) {
 .marg{
     margin-top:20px !important;

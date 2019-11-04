@@ -403,13 +403,15 @@ class ReviewsController extends ApiBaseController
             if ($limit) {
                 $reviews->limit($limit);
             }
-            $rating = $reviews->Select(['a.job_security',
-                'a.growth career_growth',
-                'a.organization_culture company_culture',
-                'a.compensation salary_and_benefits',
-                'a.work work_satisfaction',
-                'a.work_life work_life_balance',
-                'a.skill_development',])->asArray()->all();
+            $rating = $reviews->Select([
+                'a.job_security Job_Security',
+                'a.growth Career_Growth',
+                'a.organization_culture Company_Culture',
+                'a.compensation Salary_And_Benefits',
+                'a.work Work_Satisfaction',
+                'a.work_life Work_Life_Balance',
+                'a.skill_development Skill_Development',
+                ])->asArray()->all();
             $result = $reviews->Select([
                 'a.show_user_details',
                 'a.review_enc_id',
@@ -496,13 +498,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.job_security',
-                        'a.growth career_growth',
-                        'a.organization_culture company_culture',
-                        'a.compensation salary_and_benefits',
-                        'a.work work_satisfaction',
-                        'a.work_life work_life_balance',
-                        'a.skill_development',
+                        'a.job_security Job_Security',
+                        'a.growth Career_Growth',
+                        'a.organization_culture Company_Culture',
+                        'a.compensation Salary_And_Benefits',
+                        'a.work Work_Satisfaction',
+                        'a.work_life Work_Life_Balance',
+                        'a.skill_development Skill_Development',
                     ]
                 ];
 
@@ -562,13 +564,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.academics',
-                        'a.faculty_teaching_quality',
-                        'a.infrastructure',
-                        'a.accomodation_food',
-                        'a.placements_internships',
-                        'a.social_life_extracurriculars',
-                        'a.culture_diversity',
+                        'a.academics Academics',
+                        'a.faculty_teaching_quality Faculty_Teaching_Quality',
+                        'a.infrastructure Infrastructure',
+                        'a.accomodation_food Accomodation_Food',
+                        'a.placements_internships Placements_Internships',
+                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
+                        'a.culture_diversity Culture_Diversity',
                     ]
                 ];
 
@@ -617,13 +619,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure infrastructure',
-                        'a.faculty',
-                        'a.accessibility_of_faculty',
-                        'a.co_curricular_activities',
-                        'a.leadership_development',
-                        'a.sports',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure Infrastructure',
+                        'a.faculty Faculty',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
+                        'a.co_curricular_activities Co_Curricular_Activities',
+                        'a.leadership_development Leadership_Development',
+                        'a.sports Sports',
                     ]
                 ];
 
@@ -673,13 +675,13 @@ class ReviewsController extends ApiBaseController
                 $options['main'] = [
                     'alias' => 'a',
                     'selections' => [
-                        'a.student_engagement',
-                        'a.school_infrastructure',
-                        'a.faculty',
-                        'a.value_for_money',
-                        'a.teaching_style',
-                        'a.coverage_of_subject_matter',
-                        'a.accessibility_of_faculty',
+                        'a.student_engagement Student_Engagement',
+                        'a.school_infrastructure School_Infrastructure',
+                        'a.faculty Faculty',
+                        'a.value_for_money Value_For_Money',
+                        'a.teaching_style Teaching_Style',
+                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
+                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
                     ]
                 ];
 
@@ -700,229 +702,6 @@ class ReviewsController extends ApiBaseController
             }
 
 
-        } else {
-            return $this->response(404, 'Not Found');
-        }
-    }
-
-    //get organization review fields
-    public function actionReviewFields()
-    {
-        $parameters = \Yii::$app->request->post();
-        $candidate = $this->userId();
-
-        $data = [];
-
-        if (isset($parameters['org_enc_id']) && !empty($parameters['org_enc_id'])) {
-            $org_enc_id = $parameters['org_enc_id'];
-        } else {
-            return $this->response(422, 'Missing Information');
-        }
-
-        if (isset($parameters['limit']) && !empty($parameters['limit'])) {
-            $limit = $parameters['limit'];
-        }
-
-        $org = Organizations::find()
-            ->select(['organization_enc_id', 'slug', 'initials_color', 'name', 'website', 'email', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
-            ->where(['organization_enc_id' => $org_enc_id, 'is_deleted' => 0])
-            ->asArray()
-            ->one();
-
-        $unclaimed_org = UnclaimedOrganizations::find()
-            ->alias('a')
-            ->select(['a.organization_enc_id', 'b.business_activity', 'a.slug', 'a.initials_color', 'a.name', 'a.website', 'a.email', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE NULL END logo'])
-            ->joinWith(['organizationTypeEnc b'], false)
-            ->where([
-                'a.organization_enc_id' => $org_enc_id,
-                'a.status' => 1
-            ])
-            ->asArray()
-            ->one();
-
-        if (!empty($org)) {
-            $review_type = 'claimed';
-            $reviews = OrganizationReviews::find()
-                ->alias('a')
-                ->select([])
-                ->select([
-                    'a.job_security Job_Security',
-                    'a.growth Career_Growth',
-                    'a.organization_culture Company_Culture',
-                    'a.compensation Salary_And_Benefits',
-                    'a.work Work_Satisfaction',
-                    'a.work_life Work_Life_Balance',
-                    'a.skill_development Skill_Development',
-                ])
-                ->where(['a.organization_enc_id' => $org['organization_enc_id'], 'a.status' => 1])
-                ->joinWith(['createdBy b'], false)
-                ->joinWith(['categoryEnc c'], false)
-                ->joinWith(['organizationReviewLikeDislikes d'], false)
-                ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
-            if ($limit) {
-                $reviews->limit($limit);
-            }
-            $result = $reviews->asArray()
-                ->all();
-
-            $data['reviews'] = $result;
-
-            if (!empty($data)) {
-                return $this->response(200, $data);
-            } else {
-                return $this->response(404, 'Not Found');
-            }
-
-        } elseif (!empty($unclaimed_org)) {
-            $review_type = 'unclaimed';
-
-
-            $options = [];
-            $options['main'] = [
-                'alias' => 'a',
-                'selections' => [
-                    'a.job_security Job_Security',
-                    'a.growth Career_Growth',
-                    'a.organization_culture Company_Culture',
-                    'a.compensation Salary_And_Benefits',
-                    'a.work Work_Satisfaction',
-                    'a.work_life Work_Life_Balance',
-                    'a.skill_development Skill_Development',
-                ]
-            ];
-
-            $options['joins']['created_by'] = [
-                'alias' => 'b'
-            ];
-
-            $options['joins']['category'] = [
-                'alias' => 'c'
-            ];
-
-            $options['joins']['designation'] = [
-                'alias' => 'd'
-            ];
-
-            $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
-            $options['condition'][] = ['in', 'a.reviewer_type', [0, 1]];
-
-            $options['user_id'] = $candidate->user_enc_id;
-
-            $options['quant'] = 'all';
-
-            $emp_reviews = $this->__unclaimedReviews($options);
-
-            if ($unclaimed_org['business_activity'] == 'College') {
-
-                $options = [];
-                $options['main'] = [
-                    'alias' => 'a',
-                    'selections' => [
-                        'a.academics Academics',
-                        'a.faculty_teaching_quality Faculty_Teaching_Quality',
-                        'a.infrastructure Infrastructure',
-                        'a.accomodation_food Accomodation_Food',
-                        'a.placements_internships Placements_Internships',
-                        'a.social_life_extracurriculars Social_Life_Extracurriculars',
-                        'a.culture_diversity Culture_Diversity',
-                    ]
-                ];
-
-                $options['joins']['created_by'] = [
-                    'alias' => 'b'
-                ];
-
-                $options['joins']['educational_stream'] = [
-                    'alias' => 'c'
-                ];
-
-
-                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
-                $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
-                $options['user_id'] = $candidate->user_enc_id;
-                $options['quant'] = 'all';
-
-                $reviews_students = $this->__unclaimedReviews($options);
-
-
-            } elseif ($unclaimed_org['business_activity'] == 'School') {
-
-                $options = [];
-                $options['main'] = [
-                    'alias' => 'a',
-                    'selections' => [
-                        'a.student_engagement Student_Engagement',
-                        'a.school_infrastructure School_Infrastructure',
-                        'a.faculty Faculty',
-                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
-                        'a.co_curricular_activities Co_Curricular_Activities',
-                        'a.leadership_development Leadership_Development',
-                        'a.sports Sports',
-                    ]
-                ];
-
-                $options['joins']['created_by'] = [
-                    'alias' => 'b'
-                ];
-
-                $options['joins']['educational_stream'] = [
-                    'alias' => 'c'
-                ];
-
-                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
-                $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
-                $options['user_id'] = $candidate->user_enc_id;
-                $options['quant'] = 'all';
-
-                $reviews_students = $this->__unclaimedReviews($options);
-
-
-            } elseif ($unclaimed_org['business_activity'] == 'Educational Institute') {
-
-                $options = [];
-                $options['main'] = [
-                    'alias' => 'a',
-                    'selections' => [
-                        'a.student_engagement Student_Engagement',
-                        'a.school_infrastructure School_Infrastructure',
-                        'a.faculty Faculty',
-                        'a.value_for_money Value_For_Money',
-                        'a.teaching_style Teaching_Style',
-                        'a.coverage_of_subject_matter Coverage_Of_Subject_Matter',
-                        'a.accessibility_of_faculty Accessibility_Of_Faculty',
-                    ]
-                ];
-
-                $options['joins']['created_by'] = [
-                    'alias' => 'b'
-                ];
-
-                $options['joins']['educational_stream'] = [
-                    'alias' => 'c'
-                ];
-
-
-                $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
-                $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
-                $options['user_id'] = $candidate->user_enc_id;
-                $options['quant'] = 'all';
-
-                $reviews_students = $this->__unclaimedReviews($options);
-
-            }
-
-            $org = $unclaimed_org;
-
-            $data['reviews'] = $emp_reviews;
-            $data['student_reviews'] = $reviews_students;
-
-            if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute') {
-                if (!empty($data)) {
-                    return $this->response(200, $data);
-                } else {
-                    return $this->response(404, 'Not Found');
-                }
-            }
         } else {
             return $this->response(404, 'Not Found');
         }
@@ -1312,7 +1091,7 @@ class ReviewsController extends ApiBaseController
         }
     }
 
-    //show perticular review data to edit
+    //show particular review data to edit
     public function actionShowReview()
     {
         $a = \Yii::$app->request->post();
@@ -1387,6 +1166,7 @@ class ReviewsController extends ApiBaseController
             $options['main'] = [
                 'alias' => 'a',
                 'selections' => [
+                    'a.reviewer_type',
                     'a.review_enc_id',
                     'a.organization_enc_id',
                     'a.job_security Job_Security',
@@ -1413,7 +1193,7 @@ class ReviewsController extends ApiBaseController
 
             $options['quant'] = 'one';
 
-            $reviews = $this->__unclaimedReviews($options);
+            $emp_reviews = $this->__unclaimedReviews($options);
 
             if ($unclaimed_org['business_activity'] == 'College') {
 
@@ -1523,8 +1303,17 @@ class ReviewsController extends ApiBaseController
 
             $sub_array = [];
             $data = [];
+
             if (!empty($reviews)) {
                 foreach ($reviews as $key => $value) {
+                    if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
+                        $sub_array[$key] = $value;
+                    } else {
+                        $data[$key] = $value;
+                    }
+                }
+            }elseif (!empty($emp_reviews)){
+                foreach ($emp_reviews as $key => $value) {
                     if ($key == 'review_enc_id' || $key == 'organization_enc_id' || $key == 'show_user_details' || $key == 'likes' || $key == 'dislikes' || $key == 'reviewer_type' || $key == 'first_name' || $key == 'last_name') {
                         $sub_array[$key] = $value;
                     } else {
