@@ -936,6 +936,7 @@ class ApplicationForm extends Model
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
             }])
             ->joinWith(['applicationPlacementCities r'=>function($b)
             {

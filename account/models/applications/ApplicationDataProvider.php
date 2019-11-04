@@ -595,8 +595,8 @@ class ApplicationDataProvider extends Model
             $user_pl_loc = json_decode($model->placement_loc, true);
             $p1 = ArrayHelper::map($user_pl_loc, 'id', 'value');
             $p2 = ArrayHelper::map($pl_loc, 'location_enc_id', 'positions');
-            $new_loc = array_diff($p1, $p2);
-            $ploc_delt = array_diff($p2, $p1);
+            $new_loc = array_diff_assoc($p1, $p2);
+            $ploc_delt = array_diff_assoc($p2, $p1);
             if (!empty($new_loc)) {
                 foreach ($new_loc as $k => $v) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
