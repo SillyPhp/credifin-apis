@@ -111,4 +111,58 @@ class UsaJobsController extends Controller
         return trim($stringSplit1);
     }
 
+    public function actionFederal(){
+
+        return $this->render('federal');
+    }
+
+    public function actionMilitary(){
+
+        return $this->render('military');
+    }
+
+    public function actionIndividualsWithDisabilities(){
+
+        return $this->render('individuals-with-disabilities');
+    }
+
+    public function actionNativeAmericans(){
+        return $this->render('native-americans');
+    }
+
+    public function actionStudentsRecentGraduates(){
+
+        return $this->render('students-recent-graduates');
+    }
+
+    public function actionSpecialAuthorities(){
+
+        return $this->render('special-authorities');
+    }
+
+    public function actionThePublic(){
+
+        return $this->render('the-public');
+    }
+
+    public function actionNationalGuardReserves(){
+        return $this->render('national-guard-reserves');
+    }
+
+    public function actionPeaceCorps(){
+        return $this->render('peace-corps');
+    }
+
+    public function actionOverseasEmployees(){
+        return $this->render('overseas-employees');
+    }
+
+    public function actionVeterans(){
+        return $this->render('veterans');
+    }
+
+    public function actionSeniorExecutives(){
+        return $this->render('senior-executives');
+    }
+
 }
