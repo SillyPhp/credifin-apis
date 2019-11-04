@@ -66,8 +66,7 @@ echo $this->render('/widgets/drop_resume', [
                                 <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7 days</label><br/>
                                 <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14 days</label><br/>
                                 <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30 days</label><br/>
-                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm"
-                                                                                    for="qweqw">All</label><br/>
+                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm" for="qweqw">All</label><br/>
                             </div>
                         </div>
                     </div>
@@ -1653,7 +1652,7 @@ $(document).on('submit','#search_form',function(e) {
     load_all(page=1,limit=20,keywords=key,city=city);
 });  
 $(document).on('click','input[name="choose"]',function(e) {
-  load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$(this).val(),choosetype=getChoosetype(type),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+  load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$(this).val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
 });
 $(document).on('click','input[name="choosetype[]"]',function(e) {
   load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$('input[name="choose"]:checked').val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
@@ -1669,7 +1668,7 @@ $(document).on('click','input[name="salry[]"]',function(e) {
 
 function getGender(gend) {
   $.each($("input[name='smplechk[]']:checked"), function(){            
-                gend.push($(this).val());
+                gend.push(($(this).val()));
             });
   return gend;
 }

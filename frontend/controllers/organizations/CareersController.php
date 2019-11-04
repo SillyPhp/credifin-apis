@@ -45,6 +45,7 @@ class CareersController extends Controller
                 $internships = $this->getCareerInfo('Internships', $options, $slug);
                 $count = $jobs['count'] + $internships['count'];
             }
+
             return ['status' => 200, 'jobs' => $jobs['result'], 'internships' => $internships['result'], 'count' => $count];
 
         }
@@ -112,7 +113,8 @@ class CareersController extends Controller
             ->joinWith(['preferredIndustry h'], false)
             ->joinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => $slug]);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => $slug])
+            ->andWhere(['in','a.preferred_gender',[0,2,1,3]]);
         if (isset($options['location']) && !empty($options['location'])) {
             $jobDetail->andFilterWhere(['g.name' => $options['location']]);
         }
@@ -154,13 +156,19 @@ class CareersController extends Controller
         {
             $jobDetail->andFilterWhere(['in', 'a.type', $options['choosetype']]);
         }
+
         if (isset($options['gender']) && !empty($options['gender']))
         {
-            if ($options['gender']==[1,2]){
-                array_push($options['gender'],0);
-            }
-            $jobDetail->andFilterWhere(['in', 'a.preferred_gender', $options['gender']]);
+            if (in_array("1", $options['gender'])&&in_array("2", $options['gender'])){
+                array_push($options['gender'], "0");
         }
+            if (in_array("1", $options['gender'])&&in_array("2", $options['gender'])&&in_array("3", $options['gender'])){
+                array_push($options['gender'], "0");
+                array_push($options['gender'], "3");
+            }
+            $jobDetail->andWhere(['in','a.preferred_gender',$options['gender']]);
+        }
+
         if (isset($options['minsalary']) && isset($options['maxsalary']) && !empty($options['minsalary']) && !empty($options['maxsalary']))
         {
             $jobDetail->andFilterWhere([
@@ -228,7 +236,7 @@ class CareersController extends Controller
                 ->asArray()
                 ->one();
         }
-        $model = new \frontend\moels\applications\JobApplied();
+        $model = new \frontend\models\applications\JobApplied();
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
