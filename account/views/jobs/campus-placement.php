@@ -37,7 +37,7 @@ use yii\helpers\Url;
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
-                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>">
+                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>" class="app-list-main">
                                                 <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -576,6 +576,14 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
+$(document).on('change', '.app-list-main', function() {
+  console.log('click');
+});
+function validateAppList(){
+    $('.app-list-main').each(function() {
+        
+    });
+}
 // Checking button status ( wether or not next/previous and
 // submit should be displayed )
 const checkButtons = (activeStep, stepsCount) => {
