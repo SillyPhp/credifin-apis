@@ -31,8 +31,6 @@ use yii\helpers\Url;
                                 <div class="step initial active">
                                     <div class="row">
                                         <?php
-                                        //                                    print_r($applications['data']);
-                                        //                                    exit();
                                         foreach ($applications['data'] as $app) {
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
@@ -87,6 +85,7 @@ use yii\helpers\Url;
                                             <?php
                                         }
                                         ?>
+                                        <div class="error-list"></div>
                                     </div>
                                 </div>
                                 <div class="step">
@@ -96,7 +95,7 @@ use yii\helpers\Url;
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
-                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
+                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>" class="college-list-main">
                                                 <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -160,66 +159,9 @@ use yii\helpers\Url;
                                             <?php
                                         }
                                         ?>
+                                        <div class="error-c-list"></div>
                                     </div>
                                 </div>
-                                <!--                            <div class="step">-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="firstname">First Name:</label>-->
-                                <!--                                            <input type="text" class="form-control" id="firstname">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="lastname">Last Name:</label>-->
-                                <!--                                            <input type="text" class="form-control" id="lastname">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="email">Email address:</label>-->
-                                <!--                                            <input type="email" class="form-control" id="email">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatEmail">Repeat Email address:</label>-->
-                                <!--                                            <input type="email" class="form-control" id="repeatEmail">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="password">Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="password">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="password">Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="password">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                            </div>-->
                             </div>
                             <div class="wizard-footer">
                                 <div class="row">
@@ -574,16 +516,16 @@ $this->registerCss('
     white-space: nowrap;
     overflow: hidden;
 }
+.error-list, .error-c-list{
+    text-align:center;
+    clear:both;
+}
+.error-list p, .error-c-list p{
+    color:red;
+    font-size:18px;
+}
 ');
 $script = <<< JS
-$(document).on('change', '.app-list-main', function() {
-  console.log('click');
-});
-function validateAppList(){
-    $('.app-list-main').each(function() {
-        
-    });
-}
 // Checking button status ( wether or not next/previous and
 // submit should be displayed )
 const checkButtons = (activeStep, stepsCount) => {
@@ -664,28 +606,48 @@ $(function() {
 
   // Next button handler
   $("#wizard-next").click(() => {
-    // Sliding out current step
-    $(steps[activeStep]).removeClass("inital").addClass("off").removeClass("active");
-    $(wizardSteps[activeStep]).removeClass("active");
-
-    // Next step
-    activeStep++;
-    
-    // Sliding in next step
-    $(steps[activeStep]).addClass("active");
-    $(wizardSteps[activeStep]).addClass("active");
-
-    activeStepHeight = $(steps[activeStep]).height();
-    setWizardHeight(activeStepHeight);
-    checkButtons(activeStep, stepsCount);
+      var validated = false;
+      $('.app-list-main').each(function() {
+            if($(this).is(':checked')){
+                validated = true;
+                return true;
+            }
+        });
+        if(validated){
+            $('.error-list').html('');
+        // Sliding out current step
+            $(steps[activeStep]).removeClass("inital").addClass("off").removeClass("active");
+            $(wizardSteps[activeStep]).removeClass("active");
+        
+            // Next step
+            activeStep++;
+            
+            // Sliding in next step
+            $(steps[activeStep]).addClass("active");
+            $(wizardSteps[activeStep]).addClass("active");
+        
+            activeStepHeight = $(steps[activeStep]).height();
+            setWizardHeight(activeStepHeight);
+            checkButtons(activeStep, stepsCount);
+        } else {
+            $('.error-list').html('<p>Please Select any Job</p>');
+        }
   });
 });
 
 $(document).on('submit', '#add-applications-inErexx', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    // if(valdidate_form){
-        console.log('request');
+    var valdidate_form = false;
+      $('.college-list-main').each(function() {
+            if($(this).is(':checked')){
+                valdidate_form = true;
+                return true;
+            }
+        });
+    if(valdidate_form){
+        $('.error-c-list').html('');
+        $('#wizard-prev').prop('disabled', true);
         var me = $('.submit-applications-inErexx');
         if ( me.data('requestRunning') ) {
             return false;
@@ -718,7 +680,9 @@ $(document).on('submit', '#add-applications-inErexx', function (event) {
             me.data('requestRunning', false);
           }
         });
-    // }
+    } else {
+        $('.error-c-list').html('<p>Please Select any College</p>');
+    }
 });
 JS;
 $this->registerJs($script);
