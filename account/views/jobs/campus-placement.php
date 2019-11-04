@@ -12,12 +12,23 @@ use yii\helpers\Url;
                             <div class="wizard-header">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <h1 class="text-center">
-                                            Welcome to an amazing Experience
-                                            <!--                                        <br>-->
-                                            <!--                                        <small>Provide us some details to get you started-->
-                                            <!--                                        </small>-->
-                                        </h1>
+                                        <div class="col-sm-9">
+                                            <h1 class="text-center">Campus Hiring</h1>
+                                        </div>
+                                        <div class="col-sm-3 text-right">
+                                            <button style="display:none" type="button"
+                                                    class="btn btn-default wizard-prev">
+                                                Previous
+                                            </button>
+                                            <button type="button" class="btn btn-primary wizard-next">
+                                                Continue
+                                            </button>
+                                            <button style="display:none" type="submit"
+                                                    class="btn btn-primary wizard-subm submit-applications-inErexx">
+                                                Submit
+                                            </button>
+
+                                        </div>
                                         <hr/>
                                         <!--                                    <div class="steps text-center">-->
                                         <!--                                        <div class="wizard-step active"></div>-->
@@ -30,12 +41,16 @@ use yii\helpers\Url;
                             <div class="wizard-body">
                                 <div class="step initial active">
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>Select Jobs for campus hiring.</h4>
+                                        </div>
                                         <?php
                                         foreach ($applications['data'] as $app) {
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
-                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>" class="app-list-main">
+                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>"
+                                                       class="app-list-main">
                                                 <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -73,14 +88,6 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
                                             <?php
                                         }
@@ -90,12 +97,29 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="step">
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>Select Colleges for campus hiring.</h4>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="form-group form-md-line-input form-md-floating-label">
+                                                <div class="md-checkbox">
+                                                    <input type="checkbox" id="select-all-colleges" name="selectAll" class="md-check">
+                                                    <label for="select-all-colleges">
+                                                        <span></span>
+                                                        <span class="check"></span>
+                                                        <span class="box"></span>
+                                                        Select All Colleges
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <?php
                                         foreach ($colleges as $clg) {
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
-                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>" class="college-list-main">
+                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>"
+                                                       class="college-list-main">
                                                 <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -105,8 +129,6 @@ use yii\helpers\Url;
                                                         </div>
                                                         <div class="job-details">
                                                             <div class="job-details-inner">
-                                                                <!--                                                            <h3 class="job-listing-loop-job__title">-->
-                                                                <?//= $app['name']; ?><!--</h3>-->
                                                                 <div class="job-listing-company company"
                                                                      title="<?= $clg['name']; ?>">
                                                                     <strong><?= $clg['name']; ?></strong></div>
@@ -124,41 +146,21 @@ use yii\helpers\Url;
                                                                 <div class="job-location location">
                                                                     <i class="la la-map-marker"></i> <?= $clg['city']; ?>
                                                                 </div>
-<!--                                                                <ul class="job-types">-->
-<!--                                                                    --><?php
-//                                                                    if (!empty($clg['collegeEnc']['students'])) {
-//                                                                        ?>
-<!--                                                                        <li class="job-type full-time">-->
-<!--                                                                            --><?//= $clg['collegeEnc']['students']; ?>
-<!--                                                                            Students-->
-<!--                                                                        </li>-->
-<!--                                                                        --><?php
-//                                                                    }
-//                                                                    ?>
-<!--                                                                </ul>-->
-                                                                <!--                                                            <span class="job-published-date date">Last Date To Apply</span>-->
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
-                                            <!--                                        <div class="col-sm-6">-->
-                                            <!--                                            <div class="form-group app-list-data">-->
-                                            <!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
-                                            <!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
-                                            <!--                                            </div>-->
-                                            <!--                                        </div>-->
                                             <?php
                                         }
                                         ?>
+                                        <div class="ch-message">
+                                            <p>
+                                                We are partnering with New collages/universities everyday for you. We
+                                                will push your Job there as Well.
+                                                <input type="checkbox" name="subscribed-to-all" checked/>
+                                            </p>
+                                        </div>
                                         <div class="error-c-list"></div>
                                     </div>
                                 </div>
@@ -167,14 +169,14 @@ use yii\helpers\Url;
                                 <div class="row">
                                     <div class="col-xs-12 text-right">
                                         <button id="wizard-prev" style="display:none" type="button"
-                                                class="btn btn-default">
+                                                class="btn btn-default wizard-prev">
                                             Previous
                                         </button>
-                                        <button id="wizard-next" type="button" class="btn btn-primary">
-                                            Next
+                                        <button id="wizard-next" type="button" class="btn btn-primary wizard-next">
+                                            Continue
                                         </button>
                                         <button id="wizard-subm" style="display:none" type="submit"
-                                                class="btn btn-primary submit-applications-inErexx">
+                                                class="btn btn-primary submit-applications-inErexx wizard-subm">
                                             Submit
                                         </button>
                                     </div>
@@ -213,6 +215,7 @@ $this->registerCss('
 .wizard .wizard-header hr {
   border-color: #038dab;
   border-top-width: 2px;
+  clear:both;
 }
 .wizard .wizard-header .steps {
   height: 15px;
@@ -524,14 +527,46 @@ $this->registerCss('
     color:red;
     font-size:18px;
 }
+.ch-message{
+    clear:both;
+    padding: 20px 5px;
+}
+.ch-message p{
+    color: #777;
+}
+.ch-message input{
+    display: inline-block;
+    margin-top: 5px;
+}
+.step-title{
+    font-weight:500;
+    margin-bottom:30px;
+}
 ');
 $script = <<< JS
+$(document).on('change','input[name=selectAll]', function() {
+    if($(this).is(':checked')){
+        allChecked();
+    } else {
+        allUnChecked(); 
+    }
+});
+function allChecked() {
+  $('.college-list-main').each(function() {
+        $(this).prop('checked', true);
+  });
+}
+function allUnChecked() {
+  $('.college-list-main').each(function() {
+        $(this).prop('checked', false);
+  });
+}
 // Checking button status ( wether or not next/previous and
 // submit should be displayed )
 const checkButtons = (activeStep, stepsCount) => {
-  const prevBtn = $("#wizard-prev");
-  const nextBtn = $("#wizard-next");
-  const submBtn = $("#wizard-subm");
+  const prevBtn = $(".wizard-prev");
+  const nextBtn = $(".wizard-next");
+  const submBtn = $(".wizard-subm");
 
   switch (activeStep / stepsCount) {
     case 0: // First Step
@@ -588,7 +623,7 @@ $(function() {
   });
 
   // Previous button handler
-  $("#wizard-prev").click(() => {
+  $(".wizard-prev").click(() => {
     // Sliding out current step
     $(steps[activeStep]).removeClass("active");
     $(wizardSteps[activeStep]).removeClass("active");
@@ -605,7 +640,7 @@ $(function() {
   });
 
   // Next button handler
-  $("#wizard-next").click(() => {
+  $(".wizard-next").click(() => {
       var validated = false;
       $('.app-list-main').each(function() {
             if($(this).is(':checked')){
@@ -647,7 +682,7 @@ $(document).on('submit', '#add-applications-inErexx', function (event) {
         });
     if(valdidate_form){
         $('.error-c-list').html('');
-        $('#wizard-prev').prop('disabled', true);
+        $('.wizard-prev').prop('disabled', true);
         var me = $('.submit-applications-inErexx');
         if ( me.data('requestRunning') ) {
             return false;
