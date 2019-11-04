@@ -279,8 +279,6 @@ class JobsController extends Controller
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
                 $session_token = Yii::$app->request->post('n');
-                print_r($obj->update($model, $aidk, $type));
-                exit;
                 if ($obj->update($model, $aidk, $type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
