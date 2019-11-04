@@ -66,7 +66,9 @@ class ApplicationDataProvider extends Model
             ->one();
         $applicationPlacementLocations = ApplicationPlacementLocations::find()
             ->select(['location_enc_id','positions'])
-            ->where(['application_enc_id' => $aidk,'is_deleted'=>0])
+            ->distinct()
+            ->where(['application_enc_id' => $aidk])
+            ->andWhere(['is_deleted'=>0])
             ->asArray()
             ->all();
         $applicationInterviewLocations = ApplicationInterviewLocations::find()
@@ -587,9 +589,9 @@ class ApplicationDataProvider extends Model
                     ->where(['application_enc_id' => $aidk])
                     ->andWhere(['is_deleted' => 0])
                     ->select(['location_enc_id', 'positions'])
+                    ->distinct()
                     ->asArray()
                     ->all();
-
             $user_pl_loc = json_decode($model->placement_loc, true);
             $p1 = ArrayHelper::map($user_pl_loc, 'id', 'value');
             $p2 = ArrayHelper::map($pl_loc, 'location_enc_id', 'positions');
@@ -606,7 +608,6 @@ class ApplicationDataProvider extends Model
                     $applicationPlacementLocationsModel->application_enc_id = $aidk;
                     $applicationPlacementLocationsModel->created_on = date('Y-m-d H:i:s');
                     $applicationPlacementLocationsModel->created_by = Yii::$app->user->identity->user_enc_id;
-
                     if (!$applicationPlacementLocationsModel->save()) {
                         return false;
                     }
@@ -615,18 +616,20 @@ class ApplicationDataProvider extends Model
 
             if (!empty($ploc_delt)) {
                 foreach ($ploc_delt as $k => $v) {
-                    $update = Yii::$app->db->createCommand()
-                        ->update(ApplicationPlacementLocations::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['positions' => $v, 'location_enc_id' => $k, 'application_enc_id' => $aidk])
-                        ->execute();
-
-                    if (!$update) {
+                    $updateModel = ApplicationPlacementLocations::find()
+                                  ->where(['application_enc_id' => $aidk])
+                                  ->andWhere(['positions'=>$v,'location_enc_id'=>$k])
+                                  ->one();
+                    $updateModel->is_deleted = 1;
+                    $updateModel->last_updated_on = date('Y-m-d H:i:s');
+                    $updateModel->last_updated_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$updateModel->update()) {
                         return false;
                     }
                 }
             }
         }
         }
-
         if ($model->questionnaire_selection==1)
         {
             if (!empty($model->question_process))
