@@ -234,9 +234,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
 <div class="fader"></div>
 <input type="hidden" id="app_id_main"/>
 <?php
-echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
-    'type' => $type,
-]);
+//echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
+//    'type' => $type,
+//]);
 $this->registerCss("
 .g-pref{
     display:block;
@@ -1733,17 +1733,17 @@ window.ChildFunction = ChildFunction;
                        },
                    success: function(res) {
                    if(res['status'] == 200) {
-                        // $('.fader').css('display','block');    
-                        // $('#loading_img').addClass('show');
+                        $('.fader').css('display','block');    
+                        $('#loading_img').addClass('show');
                         $('#app_id_main').val(res['app_id']);
-                        setTimeout(function() {
-                            $('.m-modal, .m-cover').removeClass("hidden");
-                            $('.m-modal').addClass("zoom");
-                        }, 500);
-                    // function explode(){
-                    //  window.location.replace(redirect_url); 
-                    //  }
-                    //    setTimeout(explode, 2000);
+                        // setTimeout(function() {
+                        //     $('.m-modal, .m-cover').removeClass("hidden");
+                        //     $('.m-modal').addClass("zoom");
+                        // }, 500);
+                    function explode(){
+                     window.location.replace(redirect_url); 
+                     }
+                       setTimeout(explode, 2000);
                      } else {
                          $('#loading_img').removeClass('show');
                          $('.button-submit').prop('disabled','');

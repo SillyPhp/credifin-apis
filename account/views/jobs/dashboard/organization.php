@@ -38,7 +38,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         <a href="<?= Url::toRoute('/jobs/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                            <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" title=""
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
@@ -70,7 +70,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         <a href="<?= Url::toRoute('/jobs/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
                         <?php if ($erexx_applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                            <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" title=""
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>

@@ -14,16 +14,8 @@ use yii\helpers\Url;
                                     <div class="col-xs-12">
                                         <h1 class="text-center">
                                             Welcome to an amazing Experience
-                                            <!--                                        <br>-->
-                                            <!--                                        <small>Provide us some details to get you started-->
-                                            <!--                                        </small>-->
                                         </h1>
                                         <hr/>
-                                        <!--                                    <div class="steps text-center">-->
-                                        <!--                                        <div class="wizard-step active"></div>-->
-                                        <!--                                        <div class="wizard-step"></div>-->
-                                        <!--                                        <div class="wizard-step"></div>-->
-                                        <!--                                    </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -31,8 +23,6 @@ use yii\helpers\Url;
                                 <div class="step initial active">
                                     <div class="row">
                                         <?php
-                                        //                                    print_r($applications['data']);
-                                        //                                    exit();
                                         foreach ($applications['data'] as $app) {
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
@@ -75,14 +65,6 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
                                             <?php
                                         }
@@ -142,84 +124,12 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
-                                            <!--                                        <div class="col-sm-6">-->
-                                            <!--                                            <div class="form-group app-list-data">-->
-                                            <!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
-                                            <!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
-                                            <!--                                            </div>-->
-                                            <!--                                        </div>-->
                                             <?php
                                         }
                                         ?>
                                     </div>
                                 </div>
-                                <!--                            <div class="step">-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="firstname">First Name:</label>-->
-                                <!--                                            <input type="text" class="form-control" id="firstname">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="lastname">Last Name:</label>-->
-                                <!--                                            <input type="text" class="form-control" id="lastname">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="email">Email address:</label>-->
-                                <!--                                            <input type="email" class="form-control" id="email">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatEmail">Repeat Email address:</label>-->
-                                <!--                                            <input type="email" class="form-control" id="repeatEmail">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="password">Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="password">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                                <div class="row">-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="password">Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="password">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                    <div class="col-sm-6">-->
-                                <!--                                        <div class="form-group">-->
-                                <!--                                            <label for="repeatPassword">Repeat Password:</label>-->
-                                <!--                                            <input type="password" class="form-control" id="repeatPassword">-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                                <!--                            </div>-->
                             </div>
                             <div class="wizard-footer">
                                 <div class="row">
@@ -676,14 +586,13 @@ $(function() {
 $(document).on('submit', '#add-applications-inErexx', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    // if(valdidate_form){
-        console.log('request');
+
         var me = $('.submit-applications-inErexx');
         if ( me.data('requestRunning') ) {
             return false;
         }
         me.data('requestRunning', true);
-        var url = '/account/jobs/submit-erexx-applications';
+        var url = '/account/internships/submit-erexx-applications';
         var data = $('#add-applications-inErexx').serialize();
         $.ajax({
             url: url,
@@ -702,7 +611,7 @@ $(document).on('submit', '#add-applications-inErexx', function (event) {
                 }
                 $('.submit-applications-inErexx').html('Submit');
                 // function explode(){
-                     window.location.replace('/account/jobs/dashboard'); 
+                     window.location.replace('/account/internships/dashboard'); 
                 // }
                 // setTimeout(explode, 2000);
             },

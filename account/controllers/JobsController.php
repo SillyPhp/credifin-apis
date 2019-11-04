@@ -62,6 +62,22 @@ class JobsController extends Controller
         ]);
     }
 
+    public function actionActiveJobs()
+    {
+        return $this->render('list/organization', [
+            'applications' => $this->__jobs(),
+            'type' => 'Active Jobs'
+        ]);
+    }
+
+    public function actionActiveErexxJobs()
+    {
+        return $this->render('list/organization', [
+            'applications' => $this->__erexxJobs(),
+            'type' => 'Active Erexx Jobs'
+        ]);
+    }
+
     private function __jobs($limit = NULL)
     {
         $options = [
@@ -69,7 +85,33 @@ class JobsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
-                'a.application_for' => 1,
+            ],
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 1]
+            ],
+
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __jobss($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'Jobs',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 1
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')
@@ -409,7 +451,10 @@ class JobsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
-                'a.application_for' => 2,
+            ],
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 2]
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')
@@ -1326,7 +1371,8 @@ class JobsController extends Controller
         return false;
     }
 
-    public function actionCampusPlacement(){
+    public function actionCampusPlacement()
+    {
         if (Yii::$app->user->identity->organization) {
 //        $applications = EmployerApplications::find()
 //            ->alias('a')
@@ -1335,38 +1381,57 @@ class JobsController extends Controller
 //            ->andWhere(['b.name' => 'Jobs'])
 //            ->asArray()
 //            ->all();
-            $colleges = ErexxCollaborators::find()
-                ->alias('a')
-                ->distinct()
-                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
-                ->joinWith(['collegeEnc b' => function($b){
-                    $b->select(['b.organization_enc_id','e.name as location', 'COUNT(c.user_enc_id) as students']);
-                    $b->joinWith(['userOtherDetails c'], false);
-                    $b->joinWith(['organizationOtherDetails d' => function($d){
-                        $d->joinWith(['locationEnc e'], false);
-                    }], false);
-                }])
-                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
-                ->asArray()
-                ->all();
+//            $colleges = ErexxCollaborators::find()
+//                ->alias('a')
+//                ->distinct()
+//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+//                ->joinWith(['collegeEnc b' => function ($b) {
+//                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
+//                    $b->joinWith(['userOtherDetails c'], false);
+//                    $b->joinWith(['organizationOtherDetails d' => function ($d) {
+//                        $d->joinWith(['locationEnc e'], false);
+//                    }], false);
+//                }])
+//                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+//                ->asArray()
+//                ->all();
 
 //            print_r($colleges);
 //            exit();
 
+            $colleges = Organizations::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.organization_enc_id','a.organization_enc_id college_enc_id','a.name','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','e.name city'])
+                ->innerJoinWith(['businessActivityEnc b' => function ($b) {
+                    $b->onCondition(["b.business_activity" => "College"]);
+                }], false)
+                ->joinWith(['organizationOtherDetails c' => function ($c) {
+                    $c->joinWith(['locationEnc e'], true);
+                }], false)
+                ->where([
+                    "a.is_erexx_registered" => 1,
+                    "a.status" => "Active",
+                    "a.is_deleted" => 0,
+                ])
+                ->asArray()
+                ->all();
+
             return $this->render('campus-placement', [
-                'applications' => $this->__jobs(),
+                'applications' => $this->__jobss(),
                 'colleges' => $colleges,
             ]);
-        } else{
+        } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
     }
 
-    public function actionSubmitErexxApplications(){
+    public function actionSubmitErexxApplications()
+    {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
-            foreach ($data['applications'] as $app){
+            foreach ($data['applications'] as $app) {
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
                     $errexApplication = new ErexxEmployerApplications();
@@ -1384,7 +1449,7 @@ class JobsController extends Controller
                         ];
                     }
                 }
-                if(!$this->__updateApplicationFor($app)){
+                if (!$this->__updateApplicationFor($app)) {
                     return $response = [
                         'status' => 201,
                         'title' => 'Error',
@@ -1400,7 +1465,8 @@ class JobsController extends Controller
         }
     }
 
-    private function __updateApplicationFor($app){
+    private function __updateApplicationFor($app)
+    {
         $update = Yii::$app->db->createCommand()
             ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
             ->execute();
