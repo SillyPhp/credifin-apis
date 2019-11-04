@@ -11,6 +11,7 @@ use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\States;
+use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -199,8 +200,8 @@ class SiteController extends Controller
             ->limit(4)
             ->all();
 
-        $a = $this->_getTweets(null, null,"Jobs", 4 , "");
-        $b = $this->_getTweets(null, null,"Internships", 4 , "");
+        $a = $this->_getTweets(null, null, "Jobs", 4, "");
+        $b = $this->_getTweets(null, null, "Internships", 4, "");
         $tweets = array_merge($a, $b);
 
         return $this->render('index', [
@@ -213,6 +214,67 @@ class SiteController extends Controller
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs
         ]);
+    }
+
+    private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
+    {
+        $tweets1 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\UnclaimedOrganizations::tableName() . 'as c', 'c.organization_enc_id = a.unclaim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $tweets2 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\Organizations::tableName() . 'as c', 'c.organization_enc_id = a.claim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $result = (new \yii\db\Query())
+            ->from([
+                $tweets1->union($tweets2),
+            ])
+            ->limit($limit)
+            ->offset($offset)
+            ->groupBy('tweet_enc_id')
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
+
+        return $result;
     }
 
     public function actionSendFeedback()
@@ -281,9 +343,12 @@ class SiteController extends Controller
             'contactFormModel' => $contactFormModel,
         ]);
     }
-    public function actionTweetDetail(){
+
+    public function actionTweetDetail()
+    {
         return $this->render('tweet-detail');
     }
+
     public function actionAllQuiz()
     {
         $quizes = Quiz::find()
@@ -308,17 +373,10 @@ class SiteController extends Controller
 
     public function actionAddNewSubscriber()
     {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        if (Yii::$app->request->post()) {
-            $userData = Yii::$app->request->post();
-            $subscribersForm = new Subscribers();
-            $utilitiesModel = new Utilities();
-            $subscribersForm->first_name = $userData['first_name'];
-            $subscribersForm->last_name = $userData['last_name'];
-            $subscribersForm->email = $userData['email'];
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $subscribersForm->subscriber_enc_id = $utilitiesModel->encrypt();
-            if ($subscribersForm->validate()) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $subscribersForm = new SubscribeNewsletterForm();
+            if ($subscribersForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 if ($subscribersForm->save()) {
                     $response = [
                         'status' => 200,
@@ -330,13 +388,8 @@ class SiteController extends Controller
                         'message' => Yii::t('frontend', 'An error has occurred. Please try again.'),
                     ];
                 }
-            } else {
-                $response = [
-                    'status' => 0,
-                    'message' => Yii::t('frontend', 'Please enter all the information correctly'),
-                ];
+                return $response;
             }
-            return $response;
         }
     }
 
@@ -411,6 +464,7 @@ class SiteController extends Controller
             'posts' => $posts,
         ]);
     }
+
     public function actionFreelancers()
     {
         $this->layout = 'main-secondary';
@@ -676,66 +730,5 @@ class SiteController extends Controller
                 ]);
             }
         }
-    }
-
-    private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
-    {
-        $tweets1 = (new \yii\db\Query())
-            ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on','j.name application_type', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
-            ->from(\common\models\TwitterJobs::tableName() . 'as a')
-            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
-            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
-            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
-            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
-            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
-            ->innerJoin(\common\models\UnclaimedOrganizations::tableName() . 'as c', 'c.organization_enc_id = a.unclaim_organization_enc_id')
-            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->FilterWhere([
-                'or',
-                ['like', 'a.job_type', $keywords],
-                ['like', 'c.name', $keywords],
-                ['like', 'f.name', $keywords],
-                ['like', 'e.name', $keywords],
-                ['like', 'a.html_code', $keywords],
-                ['like', 'h.name', $keywords],
-            ])
-            ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
-
-        $tweets2 = (new \yii\db\Query())
-            ->distinct()
-            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'j.name application_type','c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
-            ->from(\common\models\TwitterJobs::tableName() . 'as a')
-            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
-            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
-            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
-            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
-            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
-            ->innerJoin(\common\models\Organizations::tableName() . 'as c', 'c.organization_enc_id = a.claim_organization_enc_id')
-            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->FilterWhere([
-                'or',
-                ['like', 'a.job_type', $keywords],
-                ['like', 'c.name', $keywords],
-                ['like', 'f.name', $keywords],
-                ['like', 'e.name', $keywords],
-                ['like', 'a.html_code', $keywords],
-                ['like', 'h.name', $keywords],
-            ])
-            ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
-
-        $result = (new \yii\db\Query())
-            ->from([
-                $tweets1->union($tweets2),
-            ])
-            ->limit($limit)
-            ->offset($offset)
-            ->groupBy('tweet_enc_id')
-            ->orderBy(['created_on' => SORT_DESC])
-            ->all();
-
-        return $result;
     }
 }

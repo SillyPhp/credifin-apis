@@ -252,7 +252,7 @@ class ResumeController extends Controller
         $type = Yii::$app->request->post('type');
         $selectedfields = OrganizationAssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'b.name'])
+            ->select(['a.assigned_category_enc_id', 'b.name','b.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon'])
             ->joinWith(['categoryEnc b'], false)
             ->where(['a.assigned_to' => $type])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id, 'a.created_by' => Yii::$app->user->identity->user_enc_id])
