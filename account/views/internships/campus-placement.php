@@ -14,16 +14,8 @@ use yii\helpers\Url;
                                     <div class="col-xs-12">
                                         <h1 class="text-center">
                                             Welcome to an amazing Experience
-                                            <!--                                        <br>-->
-                                            <!--                                        <small>Provide us some details to get you started-->
-                                            <!--                                        </small>-->
                                         </h1>
                                         <hr/>
-                                        <!--                                    <div class="steps text-center">-->
-                                        <!--                                        <div class="wizard-step active"></div>-->
-                                        <!--                                        <div class="wizard-step"></div>-->
-                                        <!--                                        <div class="wizard-step"></div>-->
-                                        <!--                                    </div>-->
                                     </div>
                                 </div>
                             </div>
@@ -35,7 +27,7 @@ use yii\helpers\Url;
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
-                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>" class="app-list-main">
+                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>">
                                                 <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -73,19 +65,10 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
                                             <?php
                                         }
                                         ?>
-                                        <div class="error-list"></div>
                                     </div>
                                 </div>
                                 <div class="step">
@@ -95,7 +78,7 @@ use yii\helpers\Url;
                                             ?>
                                             <div class="col-sm-6 app-list-data-main">
                                                 <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
-                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>" class="college-list-main">
+                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>">
                                                 <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
                                                     <div class="inner-list-main">
                                                         <div class="job-listing-company-logo">
@@ -141,25 +124,10 @@ use yii\helpers\Url;
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <!--                                            <div class="form-group app-list-data">-->
-                                                <!--                                                <input id="-->
-                                                <?//= $app['application_enc_id']; ?><!--" type="checkbox" name="applications[]" value="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <!--                                                <label for="-->
-                                                <?//= $app['application_enc_id']; ?><!--">-->
-                                                <?//= $app['name']; ?><!--</label>-->
-                                                <!--                                            </div>-->
                                             </div>
-                                            <!--                                        <div class="col-sm-6">-->
-                                            <!--                                            <div class="form-group app-list-data">-->
-                                            <!--                                                <input id="--><?//= $clg['college_enc_id']; ?><!--" type="checkbox" name="colleges[]" value="--><?//= $clg['college_enc_id']; ?><!--">-->
-                                            <!--                                                <label for="--><?//= $clg['college_enc_id']; ?><!--">--><?//= $clg['name']; ?><!--</label>-->
-                                            <!--                                            </div>-->
-                                            <!--                                        </div>-->
                                             <?php
                                         }
                                         ?>
-                                        <div class="error-c-list"></div>
                                     </div>
                                 </div>
                             </div>
@@ -516,14 +484,6 @@ $this->registerCss('
     white-space: nowrap;
     overflow: hidden;
 }
-.error-list, .error-c-list{
-    text-align:center;
-    clear:both;
-}
-.error-list p, .error-c-list p{
-    color:red;
-    font-size:18px;
-}
 ');
 $script = <<< JS
 // Checking button status ( wether or not next/previous and
@@ -606,54 +566,33 @@ $(function() {
 
   // Next button handler
   $("#wizard-next").click(() => {
-      var validated = false;
-      $('.app-list-main').each(function() {
-            if($(this).is(':checked')){
-                validated = true;
-                return true;
-            }
-        });
-        if(validated){
-            $('.error-list').html('');
-        // Sliding out current step
-            $(steps[activeStep]).removeClass("inital").addClass("off").removeClass("active");
-            $(wizardSteps[activeStep]).removeClass("active");
-        
-            // Next step
-            activeStep++;
-            
-            // Sliding in next step
-            $(steps[activeStep]).addClass("active");
-            $(wizardSteps[activeStep]).addClass("active");
-        
-            activeStepHeight = $(steps[activeStep]).height();
-            setWizardHeight(activeStepHeight);
-            checkButtons(activeStep, stepsCount);
-        } else {
-            $('.error-list').html('<p>Please Select any Job</p>');
-        }
+    // Sliding out current step
+    $(steps[activeStep]).removeClass("inital").addClass("off").removeClass("active");
+    $(wizardSteps[activeStep]).removeClass("active");
+
+    // Next step
+    activeStep++;
+    
+    // Sliding in next step
+    $(steps[activeStep]).addClass("active");
+    $(wizardSteps[activeStep]).addClass("active");
+
+    activeStepHeight = $(steps[activeStep]).height();
+    setWizardHeight(activeStepHeight);
+    checkButtons(activeStep, stepsCount);
   });
 });
 
 $(document).on('submit', '#add-applications-inErexx', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    var valdidate_form = false;
-      $('.college-list-main').each(function() {
-            if($(this).is(':checked')){
-                valdidate_form = true;
-                return true;
-            }
-        });
-    if(valdidate_form){
-        $('.error-c-list').html('');
-        $('#wizard-prev').prop('disabled', true);
+
         var me = $('.submit-applications-inErexx');
         if ( me.data('requestRunning') ) {
             return false;
         }
         me.data('requestRunning', true);
-        var url = '/account/jobs/submit-erexx-applications';
+        var url = '/account/internships/submit-erexx-applications';
         var data = $('#add-applications-inErexx').serialize();
         $.ajax({
             url: url,
@@ -672,7 +611,7 @@ $(document).on('submit', '#add-applications-inErexx', function (event) {
                 }
                 $('.submit-applications-inErexx').html('Submit');
                 // function explode(){
-                     window.location.replace('/account/jobs/dashboard'); 
+                     window.location.replace('/account/internships/dashboard'); 
                 // }
                 // setTimeout(explode, 2000);
             },
@@ -680,9 +619,7 @@ $(document).on('submit', '#add-applications-inErexx', function (event) {
             me.data('requestRunning', false);
           }
         });
-    } else {
-        $('.error-c-list').html('<p>Please Select any College</p>');
-    }
+    // }
 });
 JS;
 $this->registerJs($script);
