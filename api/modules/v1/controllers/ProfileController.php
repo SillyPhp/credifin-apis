@@ -141,10 +141,10 @@ class ProfileController extends ApiBaseController
                     return $this->response(409, $basicDetails->getErrors());
                 }
             } else {
-                return $this->response(422);
+                return $this->response(422,'Missing Information');
             }
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -168,7 +168,7 @@ class ProfileController extends ApiBaseController
             }
 
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -261,7 +261,7 @@ class ProfileController extends ApiBaseController
             }
             return $this->response(200, 'skills added');
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -354,7 +354,7 @@ class ProfileController extends ApiBaseController
             }
                 return $this->response(200, 'languages added');
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 
@@ -367,7 +367,7 @@ class ProfileController extends ApiBaseController
             }
             return $this->response(200, 'Already Updated');
         } else {
-            return $this->response(422);
+            return $this->response(422,'Missing Information');
         }
     }
 }

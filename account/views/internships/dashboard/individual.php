@@ -196,17 +196,15 @@ use yii\widgets\Pjax;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Select any internships for review.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
@@ -261,17 +259,15 @@ use yii\widgets\Pjax;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Shortlisted any internships.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
@@ -310,18 +306,16 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
-                                        <div class="col-md-12">
+                                        ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Applied any internships.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                     <?php } ?>
                                 </div>
                                 <div id="tab-4" class="tab-con" > 
@@ -358,18 +352,16 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
-                                        <div class="col-md-12">
+                                        ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't any accepted internships.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                     <?php } ?>
                                 </div>
                                 <div id="tab-5" class="tab-con">
@@ -416,17 +408,15 @@ use yii\widgets\Pjax;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
                                                     <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Shortlisted any internships</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     } ?>
 

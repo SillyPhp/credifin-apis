@@ -51,9 +51,9 @@ class ApiUtilitiesController extends ApiBaseController
             if (count($cities) > 0) {
                 return $this->response(200, $cities);
             }
-            return $this->response(404);
+            return $this->response(404,'Not found');
         }
-        return $this->response(422);
+        return $this->response(422,'Missing Information');
     }
 
 //    public function actionJobProfiles($n){

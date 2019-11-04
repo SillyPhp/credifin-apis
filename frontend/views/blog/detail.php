@@ -18,8 +18,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -61,7 +61,11 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <!--                    <div class="divider"></div>-->
-                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <?=
+                    $this->render('/widgets/mustache/discussion/discussion-box', [
+                    "controllerId" => Yii::$app->controller->id . "/comments"
+                    ]);
+                    ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -152,6 +156,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 $this->registerCss('
@@ -330,6 +336,7 @@ textarea::placeholder{
 }
 .channel-icon img, .channel-icon canvas, .comment-icon img{
     width:100%;
+    height:100%;
     line-height:0px;
 }
 .popular-heading, .about-heading{
@@ -437,6 +444,9 @@ textarea::placeholder{
 }
 .reply button:hover{
     color:#00a0e3;
+}
+.reply-comm .comment{
+    margin-left:15px;
 }
 
 /*----blog section ends----*/

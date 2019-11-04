@@ -13,8 +13,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -90,17 +90,10 @@ $this->registerCss('
             </div>
         </div>
     </section>
-
-
 <?php
-
-echo $this->render('/widgets/mustache/application-card', [
-    'type' => 'Jobs',
+echo $this->render('/widgets/mustache/training_cards/cards', [
 ]);
-
-
 $script = <<<JS
-
 var loading = false;
 var load_more_cards = true;
 $(window).animate({scrollTop:0}, '300');
@@ -138,7 +131,7 @@ $(document).on('click','.loading_more', function(e){
     getCards();
 });
 loader = true;
-draggable = true;
-getCards();
+draggable = false;
+getCards("Trainings");
 JS;
 $this->registerJs($script);

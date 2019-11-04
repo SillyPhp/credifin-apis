@@ -204,7 +204,8 @@ $this->registerCss('
             your preferences.
         </div>
         <div class="btns">
-            <div class="btn"><a href="<?= Url::to("/" . $data['username'] . "/edit", "https"); ?>">Edit Profile</a></div>
+            <div class="btn"><a href="<?= Url::to("/" . $data['username'] . "/edit", "https"); ?>">Edit Profile</a>
+            </div>
             <div class="btn1"><a href="<?= Url::to("/account/preferences", "https"); ?>">Edit Preferences</a></div>
         </div>
 
@@ -220,7 +221,7 @@ $this->registerCss('
         <div class="social">
             <a href="https://www.facebook.com/" target="blank">
                 <span><img src="images/facebook.png"></span></a>
-            <a href="https://twitter.com/EmpowerYouth__" target="blank">
+            <a href="https://twitter.com/EmpowerYouthin" target="blank">
                 <span><img src="images/twitter.png"></span></a>
             <a href="https://www.instagram.com/empoweryouth.in" target="blank">
                 <span><img src="images/instagram.png"></span></a>

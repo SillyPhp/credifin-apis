@@ -14,6 +14,9 @@
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
+                                    <a href="/usa-jobs">USA Jobs</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
@@ -58,10 +61,14 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/training-programs">
+                Training Courses
+            </a>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
@@ -87,10 +94,45 @@
                                 </li>
                             </ul>
                         </nav>
-                        <!--                        <div class="ey-header-sub-menu-container"></div>-->
                     </div>
                 </div>
             </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/learning">
+                Learning Hub
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="ey-sub-menu">
+                <div class="container-fluid">
+                    <div class="large-container container">
+                        <nav class="ey-sub-nav-main">
+                            <ul class="ey-sub-nav-items">
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/categories">
+                                        Popular Topics
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/questions">
+                                        Questions
+                                    </a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
+                                    <a href="/learning/contribute">
+                                        Collaborate With Us
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/career-advice">
+                Career Advice
+            </a>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
@@ -107,9 +149,6 @@
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/blog/category/infographics">Infographics</a>
-                                </li>
-                                <li class="ey-head-sub-menu-has-child">
-                                    <a href="/quizzes/all">Quizzes</a>
                                 </li>
                             </ul>
                         </nav>
@@ -140,10 +179,27 @@
                                         <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li>
+                                                <a href="/account/training-program">Manage Training Programs</a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li class="ey-head-sub-menu-has-child">
                                             <a href="javascript:;">Create Job</a>
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Job</span>
+                                                        </a>
+                                                    </li>
                                                     <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/jobs/quick-job">
                                                             <div>
@@ -160,14 +216,6 @@
                                                             <span>Post Job Tweet</span>
                                                         </a>
                                                     </li>
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <a href="/account/jobs/create">
-                                                            <div>
-                                                                <span class="ey-services-icons ai"></span>
-                                                            </div>
-                                                            <span>Create AI Job</span>
-                                                        </a>
-                                                    </li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -176,14 +224,6 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/tweets/internship/create">
-                                                            <div>
-                                                                <span class="ey-services-icons tweet"></span>
-                                                            </div>
-                                                            <span>Post Internship Tweet</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/internships/create">
                                                             <div>
                                                                 <span class="ey-services-icons ai"></span>
@@ -191,9 +231,38 @@
                                                             <span>Create AI Internship</span>
                                                         </a>
                                                     </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/internship/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Internship Tweet</span>
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li class="ey-head-sub-menu-has-child">
+                                                <a href="javascript:;">Create Training Programs</a>
+                                                <div class="ey-sub-sec">
+                                                    <ul class="ey-head-sub-menu-items">
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="/account/training-program/create">
+                                                                <div>
+                                                                    <span class="ey-services-icons ai"></span>
+                                                                </div>
+                                                                <span>Create AI Training Programs</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
                                         <li>
                                             <a href="/account/templates">Templates</a>
                                         </li>
@@ -406,7 +475,7 @@ $this->registerCss('
 }
 
 .ey-sub-sec .ey-head-sub-menu-icon {
-    max-width: 164px;
+    max-width: 180px;
     width: 100%;
     text-align: center;
 }
@@ -572,7 +641,9 @@ $this->registerCss('
     transition: .25s ease-in-out;
     width: 100%;
 }
-
+.text-black span{
+    background:#333 !important;
+}
 .ey-humburger-menu span:nth-child(2) {
     top: 0;
 }
@@ -653,6 +724,8 @@ $this->registerCss('
     list-style: none;
     margin: 0 0 20px;
     padding: 0;
+    max-height: 90vh;
+    overflow: scroll;
 }
 .ey-head-main .ey-header-item-is-menu:hover>a {
     color: #286efa;
@@ -840,8 +913,10 @@ $this->registerCss('
     padding: 0 0 19px;
 }
 .ey-mobile-menu .ey-mobile-menu-toggler, .ey-mobile-menu .ey-mobile-menu-item-toggler {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1em;
+    padding: 22px 30px;
+    margin-top: -25px;
     position: absolute;
     right: 0;
     top: 7px;
@@ -969,12 +1044,17 @@ $this->registerCss('
 @media screen and (max-width: 900px) and (min-width: 0px) {
     #header-main{
         padding:6px 0px;
+        padding-top:0px;
     }
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
 }
-.ey-mobile-menu{
+.ey-mobile-menu {
+    padding: 17px 5px 3px 0px;
+    transition: margin 500ms;
+}
+.header-show > .ey-mobile-menu{
     padding: 10px 5px 3px 0px;
 }
 ');
