@@ -1,18 +1,16 @@
 <?php
 
 namespace frontend\controllers\organizations;
-
 use common\models\AppliedApplications;
 use common\models\EmployerApplications;
 use common\models\Organizations;
 use common\models\ApplicationTypes;
-use frontend\models\JobApplied;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
 use yii\web\HttpException;
-
+use yii\helpers\ArrayHelper;
 class CareersController extends Controller
 {
     public function actionIndex($slug)
@@ -21,6 +19,7 @@ class CareersController extends Controller
         $org = Organizations::find()
             ->select([
                 'name',
+                'slug',
                 'website',
                 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
             ])
@@ -33,6 +32,7 @@ class CareersController extends Controller
         if (!$org) {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
         }
+        $cities = $this->getCities($slug);
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post();
@@ -45,12 +45,13 @@ class CareersController extends Controller
                 $internships = $this->getCareerInfo('Internships', $options, $slug);
                 $count = $jobs['count'] + $internships['count'];
             }
+
             return ['status' => 200, 'jobs' => $jobs['result'], 'internships' => $internships['result'], 'count' => $count];
 
         }
-
         return $this->render('career-company', [
-            'org' => $org
+            'org' => $org,
+            'cities'=>$cities
 
         ]);
     }
@@ -73,7 +74,6 @@ class CareersController extends Controller
                 'l.designation',
                 'd.initials_color color',
                 'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
-//                "g.name as city",
                 'c.name as title',
                 'CONCAT("' . Url::to('@commonAssets/categories/svg/', "https") . '", dd.icon) icon',
                 'd.name as organization_name',
@@ -99,19 +99,93 @@ class CareersController extends Controller
             ->joinWith(['organizationEnc d' => function ($a) {
                 $a->where(['d.is_deleted' => 0]);
             }], false)
+            ->joinWith(['applicationOptions m'],false)
             ->joinWith(['applicationPlacementLocations e' => function ($x) {
                 $x->select(['e.application_enc_id','g.name','e.placement_location_enc_id']);
+                $x->onCondition(['e.is_deleted' => 0]);
                 $x->joinWith(['locationEnc f' => function ($x) {
                     $x->joinWith(['cityEnc g' => function ($x) {
-//                        $x->select(['g.name city']);
                         $x->joinWith(['stateEnc s'], false);
                     }], false);
                 }], false);
             }], true)
+            ->orderBy(['a.created_on'=>SORT_DESC])
             ->joinWith(['preferredIndustry h'], false)
             ->joinWith(['designationEnc l'], false)
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => $slug]);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.is_deleted' => 0, 'd.slug' => $slug])
+            ->andWhere(['in','a.preferred_gender',[0,2,1,3]]);
+        if (isset($options['location']) && !empty($options['location'])) {
+            $jobDetail->andFilterWhere(['g.name' => $options['location']]);
+        }
+        if (isset($options['keywords']) && !empty($options['keywords'])) {
+            $jobDetail->andFilterWhere([
+                'or',
+                ['like', 'l.designation', $options['keywords']],
+                ['like', 'a.type', $options['keywords']],
+                ['like', 'c.name', $options['keywords']],
+                ['like', 'h.industry', $options['keywords']],
+                ['like', 'dd.name', $options['keywords']],
+            ]);
+        }
+        if (isset($options['date']) && !empty($options['date']))
+        {
+          switch ($options['date'])
+          {
+              case 1:
+                  $jobDetail->andFilterWhere(['>=', 'a.created_on',  new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]);
+                  break;
+              case 2:
+                  $jobDetail->andFilterWhere(['>=', 'a.created_on',  new \yii\db\Expression('NOW() - INTERVAL 1 DAY')]);
+                  break;
+              case 3:
+                  $jobDetail->andFilterWhere(['>=', 'a.created_on',  new \yii\db\Expression('NOW() - INTERVAL 7 DAY')]);
+                  break;
+              case 4:
+                  $jobDetail->andFilterWhere(['>=', 'a.created_on',  new \yii\db\Expression('NOW() - INTERVAL 14 DAY')]);
+                  break;
+              case 5:
+                  $jobDetail->andFilterWhere(['>=', 'a.created_on',  new \yii\db\Expression('NOW() - INTERVAL 30 DAY')]);
+                  break;
+              case 6:
+                  $jobDetail->orderBy(['a.created_on'=>SORT_DESC]);
+                  break;
+          }
+        }
+        if (isset($options['choosetype']) && !empty($options['choosetype']))
+        {
+            $jobDetail->andFilterWhere(['in', 'a.type', $options['choosetype']]);
+        }
+
+        if (isset($options['gender']) && !empty($options['gender']))
+        {
+            if (in_array("1", $options['gender'])&&in_array("2", $options['gender'])){
+                array_push($options['gender'], "0");
+        }
+            if (in_array("1", $options['gender'])&&in_array("2", $options['gender'])&&in_array("3", $options['gender'])){
+                array_push($options['gender'], "0");
+                array_push($options['gender'], "3");
+            }
+            $jobDetail->andWhere(['in','a.preferred_gender',$options['gender']]);
+        }
+
+        if (isset($options['minsalary']) && isset($options['maxsalary']) && !empty($options['minsalary']) && !empty($options['maxsalary']))
+        {
+            $jobDetail->andFilterWhere([
+                    'or',
+                    ['>=', 'm.min_wage',$options['minsalary']],
+                    ['<=','m.max_wage',$options['maxsalary']],
+                    ['between','m.fixed_wage',$options['minsalary'],$options['maxsalary']]
+                ]);
+        }
+        if (!empty($options['minsalary']) && empty($options['maxsalary']))
+        {
+            $jobDetail->andFilterWhere([
+                'or',
+                ['>=', 'm.min_wage',$options['minsalary']],
+                ['>=','m.fixed_wage',$options['minsalary']]
+            ]);
+        }
         $count = $jobDetail->count();
         $result = $jobDetail
             ->limit($limit)
@@ -177,6 +251,32 @@ class CareersController extends Controller
                 "showNewPositionsWidget" => true,
             ]
         ]);
+    }
+
+    private function getCities($slug)
+    {
+            $cities = EmployerApplications::find()
+                ->alias('a')
+                ->select(['(CASE WHEN g.name IS NOT NULL THEN g.name ELSE b.name  END) as name','(CASE WHEN g.city_enc_id IS NOT NULL THEN g.city_enc_id ELSE b.city_enc_id END) as city_enc_id'])
+                ->joinWith(['organizationEnc d' => function ($a) {
+                    $a->where(['d.is_deleted' => 0]);
+                }], false)
+                ->joinWith(['applicationPlacementCities c'=>function($b)
+                {
+                    $b->select(['c.application_enc_id','b.name']);
+                    $b->joinWith(['cityEnc b'],false);
+                }],false)
+                ->joinWith(['applicationPlacementLocations e' => function ($x) {
+                    $x->select(['e.application_enc_id','g.name']);
+                    $x->joinWith(['locationEnc f' => function ($x) {
+                        $x->joinWith(['cityEnc g'], false);
+                    }], false);
+                }], false)
+                ->distinct()
+                ->where(['d.slug'=>$slug])
+                ->asArray()
+                ->all();
+            return ArrayHelper::map($cities, 'name', 'name');
     }
 
 }
