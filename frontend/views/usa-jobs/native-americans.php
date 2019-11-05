@@ -40,8 +40,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <div class="para">
                         <P>With Indian Preference, you may receive preference over non-Indian applicants when applying to
                             jobs
-                            with the <a href="https://www.ihs.gov/">Indian Health Service</a> and
-                            <a href="https://www.bia.gov/">Indian Affairs</a> (including
+                            with the <a href="https://www.ihs.gov/" target="_blank">Indian Health Service</a> and
+                            <a href="https://www.bia.gov/" target="_blank">Indian Affairs</a> (including
                             the Bureau of Indian Affairs, the Bureau of Indian Education, and some positions within the
                             Assistant Secretary – Indian Affairs.) </P>
 
@@ -49,7 +49,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             Indian
                             Reorganization Act of 1934 (Title 25, USC, Section 472). If you’re claiming Indian Preference,
                             you
-                            must submit <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/native-americans/#required-documents">
+                            must submit <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/native-americans/#required-documents" target="_blank">
                                 Form BIA 4432 Verification of Indian Preference</a> with your application.
                             Indian Preference eligibles not currently employed in federal service may be appointed under the
                             Excepted Service Appointment Authority Schedule A, 213.3112(a)(7). Consideration will be given
@@ -66,7 +66,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="para">
                         <p>To be eligible, you must submit a complete
-                             <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/native-americans/#required-documents">
+                             <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/native-americans/#required-documents" target="_blank">
                              BIA form 4432</a> along with your application for each job announcement. </p>
                     </div>
                 </div>
@@ -95,7 +95,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="para">
-                        <a href="https://www.bia.gov/sites/bia.gov/files/assets/public/raca/online_forms/pdf/IndianPref_1076-0160_Exp3-31-21.pdf">
+                        <a href="https://www.bia.gov/sites/bia.gov/files/assets/public/raca/online_forms/pdf/IndianPref_1076-0160_Exp3-31-21.pdf" target="_blank">
                             <p><i class="far fa-file-pdf"></i> Form BIA 4432
                             <span class="ser-prof">Verification of Indian Preference for Employment</span></p></a>
 
@@ -104,8 +104,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you can
                         submit
                         these forms with your job application as needed.
-                        <a href="https://www.usajobs.gov/Applicant/ProfileDashboard/Home">Sign into USAJOBS</a> or
-                        <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/">learn how to upload documents.</a></P>
+                        <a href="https://www.usajobs.gov/Applicant/ProfileDashboard/Home" target="_blank">Sign into USAJOBS</a> or
+                        <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank">learn how to upload documents.</a></P>
                 </div>
             </div>
         </div>

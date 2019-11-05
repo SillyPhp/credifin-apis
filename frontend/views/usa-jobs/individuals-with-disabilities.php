@@ -49,13 +49,24 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 
                         <ul>
                             <li class="list1">
-                                <button class="usa-btn">Schedule A Hiring Authority</button>
+                                <button class="usa-btn" data-toggle="collapse" data-target="#demo">Schedule A Hiring Authority</button>
                             </li>
+                            <div id="demo" class="para">
+                                <p>Schedule A refers to a special hiring authority that gives Federal agencies an optional, and potentially quicker, way to hire individuals with disabilities. Applying under Schedule A offers an exception to the traditional competitive hiring process. You can apply for jobs using Schedule A, if you are a person with an intellectual disability, a severe physical disability, or a psychiatric disability.</p>
+                                <p>To be eligible for Schedule A, you must provide a "proof of a disability" letter stating that you have an intellectual disability, severe physical disability or psychiatric disability. You can get this letter from your doctor, a licensed medical professional, a licensed vocational rehabilitation specialist, or any federal, state, or local agency that issues or provides disability benefits.</p>
+                                <p>Applying using "Schedule A" can be a great way to get a Federal job, but it is only one of many options that may be available and you still have to compete with other eligible applicants. Federal agencies hire people using many options, so applying under "Schedule A" does not guarantee you a job.</p>
+                             </div>
                             <li class="list1">
-                                <button class="usa-btn">Tips for applying under Schedule A</button>
+                                <button class="usa-btn" data-toggle="collapse" data-target="#demo1">Tips for applying under Schedule A</button>
                             </li>
+                            <div id="demo1" class="para">
+                                <p>Mention your eligibility and that you want to be considered for "Schedule A" on your resume (and in your cover letter, if you use one).</p>
+                                <p>If you're eligible for Schedule A, go to your profile and select the Individuals with disabilities hiring path and make your resume searchable. If your resume is searchable, agencies who are looking for people eligible under Schedule A, may be able to find you.</p>
+                            </div>
+
                             <li>
-                                <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/getting-a-job/#url=Schedule-A-Hiring-Authority">
+
+                                <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/getting-a-job/#url=Schedule-A-Hiring-Authority" target="_blank">
                                     Learn more about eligibility for Schedule A <i class="fas fa-external-link-alt"></i>
                                 </a>
                             </li>
@@ -98,11 +109,11 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             Manager. </p>
                         <p> If you are a person with a disability and interested in a job opportunity, contact the agency
                             SPPC
-                            using the <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/selective-placement-program-coordinator-directory/">
+                            using the <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/selective-placement-program-coordinator-directory/" target="_blank" >
                                 Selective Placement Program Coordinator directory
                                 <i class="fas fa-external-link-alt"></i> </a></p>
                         <p>
-                            <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/selective-placement-program-coordinator/">
+                            <a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/selective-placement-program-coordinator/" target="_blank">
                                 Learn more about the Selective Placement Coordinator. <i class="fas fa-external-link-alt"></i> </a></p>
 
                     </div>
@@ -139,7 +150,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <li>Contact the agency SPPC.</li>
                             <li>Request a reasonable accommodation verbally or in writing; no special language is needed.
                             </li>
-                            <p><a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/reasonable-accommodations/">
+                            <p><a class="link-file" href="https://www.opm.gov/policy-data-oversight/disability-employment/reasonable-accommodations/" target="_blank">
                                     Learn more about reasonable accommodation requests .
                                 <i class="fas fa-external-link-alt"></i> </a></p>
                         </ul>
@@ -158,12 +169,12 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         <p> A disability letter from you doctor or a licensed medical professional that proves your
                             eligibility
                             for Schedule A appointment </p>
-                        <h4 class="heading-set">Upload and submit through USAJOBS</h4>
+                        <h4 > <strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                         <p>You can upload and save documents to your USAJOBS account. Once uploaded, you can submit these
                             forms
                             with your job application as needed.
-                            <a class="link-file" href="https://secure.login.gov/?request_id=18338861-f63d-4806-a589-0331a04ce832"> Sign into USAJOBS </a> or
-                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/">learn how to upload documents. </a>
+                            <a class="link-file" href="https://secure.login.gov/?request_id=18338861-f63d-4806-a589-0331a04ce832" target="_blank"> Sign into USAJOBS </a> or
+                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank">learn how to upload documents. </a>
                         </p>
                     </div>
                 </div>

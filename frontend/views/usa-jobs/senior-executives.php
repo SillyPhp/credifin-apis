@@ -7,7 +7,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/veteran.png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/senior-executives.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">
@@ -63,7 +63,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>Anyone is eligible to apply to an SES position (as long as you’re a U.S. citizen or national),
                             but to be <strong>qualified,</strong> you must meet the five Executive Core Qualifications
                             (ECQs). </p>
@@ -78,7 +78,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <li> Results Driven</li>
                             <li>Business Acumen</li>
                         </ul>
-                        <p><a href="https://www.opm.gov/policy-data-oversight/senior-executive-service/executive-core-qualifications/">
+                        <p><a href="https://www.opm.gov/policy-data-oversight/senior-executive-service/executive-core-qualifications/" target="_blank">
                                 Learn more about the executive core qualifications <i class="fas fa-external-link-alt"></i>
                             </a></p>
                     </div>
@@ -91,7 +91,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>There are two ways you can apply for a Senior Executive Service position: </p>
                         <ul class="list-2">
                             <li>Apply directly to a federal agency for a specific SES position.</li>
@@ -149,7 +149,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p><i class="fas fa-file-alt"></i><strong> OPM Qualifications Review Board certification for
                                 SES</strong></p>
                         <p>The Qualifications Review Board (QRB) reviews and certifies the executive qualifications of each
@@ -161,8 +161,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                             <p class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you
                                 can submit these forms with your job application as needed.
-                                <a href="https://secure.login.gov/?request_id=1a0c1b32-5da4-4bd0-917c-09bb10267cea">Sign into USAJOBS</a> or
-                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/"> learn how to upload documents.</a></p>
+                                <a  href="https://secure.login.gov/?request_id=1a0c1b32-5da4-4bd0-917c-09bb10267cea" target="_blank">Sign into USAJOBS</a> or
+                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank"> learn how to upload documents.</a></p>
                         </div>
                     </div>
                 </div>
@@ -285,7 +285,7 @@ a{
 .list-2 {
 	list-style: decimal;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 
