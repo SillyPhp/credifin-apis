@@ -1449,7 +1449,7 @@ class JobsController extends Controller
                         ];
                     }
                 }
-                if (!$this->__updateApplicationFor($app)) {
+                if (!$this->__updateApplicationFor($app, $data['subscribed-to-all'])) {
                     return $response = [
                         'status' => 201,
                         'title' => 'Error',
@@ -1465,11 +1465,17 @@ class JobsController extends Controller
         }
     }
 
-    private function __updateApplicationFor($app)
+    private function __updateApplicationFor($app, $for)
     {
-        $update = Yii::$app->db->createCommand()
-            ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
-            ->execute();
+        if($for) {
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->execute();
+        } else{
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->execute();
+        }
         if ($update) {
             return true;
         } else {

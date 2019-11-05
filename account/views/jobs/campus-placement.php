@@ -15,7 +15,7 @@ use yii\helpers\Url;
                                         <div class="col-sm-9">
                                             <h1 class="text-center">Campus Hiring</h1>
                                         </div>
-                                        <div class="col-sm-3 text-right">
+                                        <div class="col-sm-3 text-right pr-0">
                                             <button style="display:none" type="button"
                                                     class="btn btn-default wizard-prev">
                                                 Previous
@@ -158,7 +158,7 @@ use yii\helpers\Url;
                                             <p>
                                                 We are partnering with New collages/universities everyday for you. We
                                                 will push your Job there as Well.
-                                                <input type="checkbox" name="subscribed-to-all" checked/>
+                                                <input type="checkbox" name="subscribed-to-all" value="1" checked/>
                                             </p>
                                         </div>
                                         <div class="error-c-list"></div>
@@ -190,6 +190,9 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.pr-0{
+    padding-right:0px;
+}
 .card-like {
 //  margin-top: 50px;
 //  margin-bottom: 50px;
