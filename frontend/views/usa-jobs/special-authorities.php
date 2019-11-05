@@ -192,9 +192,6 @@ $this->registerCss("
 	font-family: roboto;
 	color: #000;
 }
-.para p{
-    padding-top:10px;
-}
 .feature-box{
 	 border-bottom: 1px solid lightgray;
 	  margin-bottom: 10px;

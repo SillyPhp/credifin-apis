@@ -7,7 +7,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/veteran.png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/senior-executives.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">
@@ -63,7 +63,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>Anyone is eligible to apply to an SES position (as long as you’re a U.S. citizen or national),
                             but to be <strong>qualified,</strong> you must meet the five Executive Core Qualifications
                             (ECQs). </p>
@@ -91,7 +91,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>There are two ways you can apply for a Senior Executive Service position: </p>
                         <ul class="list-2">
                             <li>Apply directly to a federal agency for a specific SES position.</li>
@@ -149,7 +149,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p><i class="fas fa-file-alt"></i><strong> OPM Qualifications Review Board certification for
                                 SES</strong></p>
                         <p>The Qualifications Review Board (QRB) reviews and certifies the executive qualifications of each

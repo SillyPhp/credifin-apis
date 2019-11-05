@@ -169,7 +169,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         <p> A disability letter from you doctor or a licensed medical professional that proves your
                             eligibility
                             for Schedule A appointment </p>
-                        <h4 class="heading-set">Upload and submit through USAJOBS</h4>
+                        <h4 > <strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                         <p>You can upload and save documents to your USAJOBS account. Once uploaded, you can submit these
                             forms
                             with your job application as needed.
@@ -237,7 +237,6 @@ $this->registerCss("
 	font-size: 17px;
 	font-family: roboto;
 	color: #000;
-	padding:10px;
 }
 .feature-box{
     border-bottom: 1px solid lightgray;

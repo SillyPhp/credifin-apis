@@ -7,7 +7,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/Family of overseas employees(1).png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/family-of-overseas-employees.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">
@@ -140,7 +140,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>In the job announcement look for the This job is open to section. When a job is open to Family of
                             overseas employees you’ll see this icon: There may be other groups listed that can also
                             apply. </p>
@@ -162,7 +162,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <p><a href="https://www.opm.gov/forms/pdfimage/sf50.pdf" target="_blank">
                                     <i class="far fa-file-pdf"></i> SF-50 <br> Notification of Personnel Action for

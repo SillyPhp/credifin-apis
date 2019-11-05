@@ -61,14 +61,14 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>Services are how the Federal Government describes categories of jobs that provide different
                             options and benefits to the future employee. There are three services in the Federal
                             Government. </p>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Competitive Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/#competitive-service">Competitive Service</a>
                             <div class="services-p">
                                 Positions with agencies that follow the U.S. Office of Personnel Management's hiring
                                 rules
@@ -84,7 +84,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Expected Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/#excepted-service">Expected Service</a>
                             <div class="services-p">
                                 Positions with agencies that have their own hiring rules, pay scales, and evaluation
                                 criteria.
@@ -93,7 +93,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 <h5> Eligible to apply for merit promotion jobs?</h5>
                                 <p class="service-text"><i class="fa fa-times" aria-hidden="true"></i><strong>
                                         No,</strong>unless
-                                    your agency <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/interchange-agreements/" target="_blank">has an Interchange Agreement.</a> But you can apply to jobs
+                                    your agency has an <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/interchange-agreements/" target="_blank"> Interchange Agreement.</a> But you can apply to jobs
                                     that
                                     are <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/public/" target="_blank" >open to the public</a> and federal employees -- excepted service. </p>
                             </div>
@@ -101,7 +101,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Senior Executive Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/senior-executive-service/">Senior Executive Service</a>
                             <div class="services-p">
                                 Positions with agencies that follow the U.S. Office of Personnel Management's hiring
                                 rules
@@ -171,18 +171,18 @@ $this->registerCss("
 	color:white;
 }
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 .feature-box{
     border-bottom: 1px solid lightgray;
     margin-bottom: 10px;
 }
-.text a, .list-option li a{
+.text a, .list-option li a, .para a{
  color: #6d2bcc; 
 }
 
