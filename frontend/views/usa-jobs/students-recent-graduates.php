@@ -34,9 +34,9 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="col-md-12">
                     <div class="feature-box">
                         <ul class="list-option">
-                            <li><a href="#">Help</a> /</li>
-                            <li><a href="#">Working in Government</a> /</li>
-                            <li><a href="#">Unique Hiring Path</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/" target="_blank" >Help</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/" target="_blank" >Working in Government</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/" target="_blank" >Unique Hiring Path</a> /</li>
                             <li> Students & Recent Graduates</li>
                         </ul>
                     </div>
@@ -58,7 +58,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             paid opportunities to work in federal agencies and explore federal careers while completing your
                             education. </P>
 
-                        <p><a href="#">Learn more about the Internship Program <i class="fas fa-external-link-alt"></i></a>
+                        <p><a href="https://www.opm.gov/policy-data-oversight/hiring-information/students-recent-graduates/#url=intern" target="_blank" >Learn more about the Internship Program <i class="fas fa-external-link-alt"></i></a>
                         </P>
 
                         <h3 class="st-btn"> Recent Graduates Program</h3>
@@ -69,7 +69,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         <p>You must apply within two years of getting your degree or certificate (veterans have up to six
                             years
                             to apply due to their military service obligation). </p>
-                        <p><a href="#">Learn more about the recent graduate program <i class="fas fa-external-link-alt"></i></a>
+                        <p><a href="https://www.opm.gov/policy-data-oversight/hiring-information/students-recent-graduates/#url=graduates"  target="_blank" >Learn more about the recent graduate program <i class="fas fa-external-link-alt"></i></a>
                         </P>
 
                     </div>
@@ -86,8 +86,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <div class="para">
                         <p>There are several other opportunities available to students, including: </p>
                         <ul class="list-2">
-                            <li><a href="#">Department of State Student Internship program</a></li>
-                            <li><a href="#">Virtual Student Foreign Service (VSFS)</a></li>
+                            <li><a href="https://careers.state.gov/intern/student-internships/" target="_blank" >Department of State Student Internship program</a></li>
+                            <li><a href="https://vsfs.state.gov/" target="_blank" > Virtual Student Foreign Service (VSFS)</a></li>
                             <li>Overseas Student Summer Hire program</li>
                             <li>Summer jobs (for example, a lifeguard)</li>
                         </ul>
@@ -114,9 +114,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                     <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you can
                         submit
-                        these forms with your job application as needed. <a href="#">Sign into USAJOBS or learn how to
-                            upload
-                            documents.</a></P>
+                        these forms with your job application as needed. <a href="https://secure.login.gov/?request_id=80e85ade-357a-4a2a-a321-a1cebc0856a5" target="_blank" >Sign into USAJOBS</a> or  <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank" >learn how to
+                            upload documents.</a></P>
                 </div>
             </div>
         </div>

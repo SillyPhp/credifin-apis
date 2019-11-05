@@ -78,7 +78,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <li> Results Driven</li>
                             <li>Business Acumen</li>
                         </ul>
-                        <p><a href="https://www.opm.gov/policy-data-oversight/senior-executive-service/executive-core-qualifications/">
+                        <p><a href="https://www.opm.gov/policy-data-oversight/senior-executive-service/executive-core-qualifications/" target="_blank">
                                 Learn more about the executive core qualifications <i class="fas fa-external-link-alt"></i>
                             </a></p>
                     </div>
@@ -161,8 +161,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                             <p class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you
                                 can submit these forms with your job application as needed.
-                                <a href="https://secure.login.gov/?request_id=1a0c1b32-5da4-4bd0-917c-09bb10267cea">Sign into USAJOBS</a> or
-                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/"> learn how to upload documents.</a></p>
+                                <a  href="https://secure.login.gov/?request_id=1a0c1b32-5da4-4bd0-917c-09bb10267cea" target="_blank">Sign into USAJOBS</a> or
+                            <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank"> learn how to upload documents.</a></p>
                         </div>
                     </div>
                 </div>

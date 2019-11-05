@@ -97,7 +97,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 station.
                             </li>
                         </ul>
-                        <p><a href="https://wu.acpol.army.mil/eur/employment/fmp/index.asp">
+                        <p><a href="https://wu.acpol.army.mil/eur/employment/fmp/index.asp" target="_blank">
                                 Learn more about Overseas Family Member Preference</a></p>
 
                         <h2 class="heading-1">The Department of State’s Family Member Appointment (FMA)</h2>
@@ -122,7 +122,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             FMA.
                             However, if you’re a civil service annuitant, you’re not eligible. </p>
                         <p>
-                           <a href="https://www.state.gov/family-liaison-office/family-member-employment/family-member-employment-frequently-asked-questions/">
+                           <a href="https://www.state.gov/family-liaison-office/family-member-employment/family-member-employment-frequently-asked-questions/" target="_blank">
                                Learn more about the Family Member Appointment . </a>
                         </p>
                         <p>Your eligibility does not entitle you to a job within the Federal Government. You must still
@@ -164,7 +164,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="col-md-8 col-sm-8 col-xs-12">
                     <div class="paragraph">
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <p><a href="https://www.opm.gov/forms/pdfimage/sf50.pdf">
+                            <p><a href="https://www.opm.gov/forms/pdfimage/sf50.pdf" target="_blank">
                                     <i class="far fa-file-pdf"></i> SF-50 <br> Notification of Personnel Action for
                                     your
                                     family member</a></p>
@@ -179,8 +179,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded,
                                 you
                                 can submit these forms with your job application as needed.
-                                <a href="https://www.usajobs.gov/Applicant/ProfileDashboard/Home">Sign into USAJOBS</a> or
-                                <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/"> learn how to upload documents.</a></P>
+                                <a href="https://www.usajobs.gov/Applicant/ProfileDashboard/Home" target="_blank">Sign into USAJOBS</a> or
+                                <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank"> learn how to upload documents.</a></P>
                         </div>
                     </div>
                 </div>
