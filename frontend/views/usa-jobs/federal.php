@@ -48,7 +48,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         </ul>
                         <p>Understanding this will help you know which jobs you’re eligible for and prevent you from
                             spending time on jobs for which you’re not eligible. </p>
-                        <P>Being eligible for a job is different from being qualified for a job.<a href="#"> Understand
+                        <P>Being eligible for a job is different from being qualified for a job.<a href="https://www.usajobs.gov/Help/faq/application/eligibility/difference-from-qualifications/" target="_blank"> Understand
                                 the
                                 difference.</a></P>
                     </div>
@@ -93,9 +93,9 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 <h5> Eligible to apply for merit promotion jobs?</h5>
                                 <p class="service-text"><i class="fa fa-times" aria-hidden="true"></i><strong>
                                         No,</strong>unless
-                                    your agency <a href="#">has an Interchange Agreement.</a> But you can apply to jobs
+                                    your agency <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/interchange-agreements/" target="_blank">has an Interchange Agreement.</a> But you can apply to jobs
                                     that
-                                    are open to the public and federal employees -- excepted service. </p>
+                                    are <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/public/" target="_blank" >open to the public</a> and federal employees -- excepted service. </p>
                             </div>
                         </div>
                     </div>
@@ -111,15 +111,15 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 <h5> Eligible to apply for merit promotion jobs?</h5>
                                 <p class="service-text"><i class="fa fa-times" aria-hidden="true"></i><strong>
                                         No</strong>
-                                    but you can apply to jobs that are open to the public or other jobs in the Senior
-                                    Executive Service. </p>
+                                    but you can apply to jobs that are <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/public/" target="_blank"> open to the public</a> or other jobs in the<a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/senior-executive-service/" target="_blank"> Senior
+                                        Executive Service.</a> </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="text-body">
                             <h2>Not sure what service you fall under? </h2>
-                            <button class="buton">Learn how to determine your service and appointment type</button>
+                            <a href="https://www.usajobs.gov/Help/working-in-government/service/SF-50/" target="_blank"> <button class="buton">Learn how to determine your service and appointment type</button></a>
                         </div>
                     </div>
                 </div>
