@@ -21,7 +21,7 @@ class CareersController extends Controller
                 'name',
                 'slug',
                 'website',
-                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", logo_location, "/", logo) END logo'
+                'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) END logo'
             ])
             ->where([
                 'slug' => $slug
