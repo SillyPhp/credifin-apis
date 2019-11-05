@@ -4,7 +4,8 @@ $this->params['url'] = $org['website'];
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-Yii::$app->view->registerJs('var slug_var = "'. $org['slug'].'"',  \yii\web\View::POS_HEAD);
+
+Yii::$app->view->registerJs('var slug_var = "' . $org['slug'] . '"', \yii\web\View::POS_HEAD);
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -20,7 +21,7 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="inner-header wform">
                     <div class="nav-com-logo">
                         <a href="<?= Url::to($org['website']) ?>">
-                            <img src="<?= $org['logo'] ?>" alt="">
+                            <img src="<?= Url::to($org['logo']); ?>" alt="<?= $org['name'] ?>">
                         </a>
                     </div>
                     <div class="job-search-sec">
@@ -30,13 +31,14 @@ echo $this->render('/widgets/drop_resume', [
                                 <div class="row">
                                     <div class="col-lg-7">
                                         <div class="job-field">
-                                            <input type="text" name="keywords" id="keywords" placeholder="Job title, keywords or company name"/>
+                                            <input type="text" name="keywords" id="keywords"
+                                                   placeholder="Job title, keywords or company name"/>
                                             <i class="far fa-keyboard"></i>
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
                                         <div class="job-field">
-                                            <?= Html::dropDownList('cities_drp',null,$cities, ['id'=>'cities_drp','prompt'=>'Choose City','data-placeholder'=>'City, province or region', 'class'=>'chosen-city']) ?>
+                                            <?= Html::dropDownList('cities_drp', null, $cities, ['id' => 'cities_drp', 'prompt' => 'Choose City', 'data-placeholder' => 'City, province or region', 'class' => 'chosen-city']) ?>
                                             <i class="la la-map-marker"></i>
                                         </div>
                                     </div>
@@ -61,12 +63,18 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="col-md-12">
                             <h3 class="sb-title open">Date Posted</h3>
                             <div class="posted_widget">
-                                <input type="radio" name="choose" value="1"  id="232"><label for="232">Last Hour</label><br/>
-                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24 hours</label><br/>
-                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7 days</label><br/>
-                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14 days</label><br/>
-                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30 days</label><br/>
-                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm" for="qweqw">All</label><br/>
+                                <input type="radio" name="choose" value="1" id="232"><label for="232">Last
+                                    Hour</label><br/>
+                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24
+                                    hours</label><br/>
+                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30
+                                    days</label><br/>
+                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm"
+                                                                                              for="qweqw">All</label><br/>
                             </div>
                         </div>
                     </div>
@@ -76,12 +84,15 @@ echo $this->render('/widgets/drop_resume', [
                         <div class="col-md-12">
                             <h3 class="sb-title open">Job Type</h3>
                             <div class="type_widget">
-                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label for="dsf">Full
+                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label
+                                            for="dsf">Full
                                         Time</label></p>
-                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd" value="Part Time"><label for="sadd">Part
+                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd"
+                                                         value="Part Time"><label for="sadd">Part
                                         Time</label></p>
-                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa" value="Work From Home"><label for="assa">Work From Home
-                                        </label></p>
+                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa"
+                                                         value="Work From Home"><label for="assa">Work From Home
+                                    </label></p>
                             </div>
                         </div>
                     </div>
@@ -93,106 +104,114 @@ echo $this->render('/widgets/drop_resume', [
                             <h3 class="sb-title closed">Offerd Salary</h3>
                             <div class="specialism_widget">
                                 <div class="posted_widget">
-                                    <p><input type="radio" name="salry" id="sal1" min-value="10000" max-value="20000"><label for="sal1">10k - 20k</label>
+                                    <p><input type="radio" name="salry" id="sal1" min-value="10000"
+                                              max-value="20000"><label for="sal1">10k - 20k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal2" min-value="20000" max-value="30000"><label for="sal2">20k - 30k</label>
+                                    <p><input type="radio" name="salry" id="sal2" min-value="20000"
+                                              max-value="30000"><label for="sal2">20k - 30k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal3" min-value="30000" max-value="40000"><label for="sal3">30k - 40k</label>
+                                    <p><input type="radio" name="salry" id="sal3" min-value="30000"
+                                              max-value="40000"><label for="sal3">30k - 40k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal4" min-value="40000" max-value="50000"><label for="sal4">40k - 50k</label>
+                                    <p><input type="radio" name="salry" id="sal4" min-value="40000"
+                                              max-value="50000"><label for="sal4">40k - 50k</label>
                                     </p>
-                                    <p><input type="radio" name="salry" id="sal5" min-value="50000" max-value=""><label for="sal5"> More Then 50k</label>
+                                    <p><input type="radio" name="salry" id="sal5" min-value="50000" max-value=""><label
+                                                for="sal5"> More Then 50k</label>
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Career Level</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Experince</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to-->
-<!--                                            2Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to-->
-<!--                                            3Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to-->
-<!--                                            4Year</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to-->
-<!--                                            5Year</label></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Career Level</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>-->
+                <!--                                    </p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Experince</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to-->
+                <!--                                            2Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to-->
+                <!--                                            3Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to-->
+                <!--                                            4Year</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to-->
+                <!--                                            5Year</label></p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <div class="widget border">
                     <div class="row">
                         <div class="col-md-12">
                             <h3 class="sb-title closed">Gender</h3>
                             <div class="specialism_widget">
                                 <div class="simple-checkbox">
-                                    <p><input type="checkbox" name="smplechk[]" id="13" value="1"><label for="13">Male</label></p>
-                                    <p><input type="checkbox" name="smplechk[]" id="14" value="2"><label for="14">Female</label></p>
-                                    <p><input type="checkbox" name="smplechk[]" id="15" value="3"><label for="15">Others</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="13" value="1"><label
+                                                for="13">Male</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="14" value="2"><label
+                                                for="14">Female</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="15" value="3"><label
+                                                for="15">Others</label></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Industry</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize-->
-<!--                                            Jobs</label>-->
-<!--                                    </p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business-->
-<!--                                            Jobs</label></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="widget border">-->
-<!--                    <div class="row">-->
-<!--                        <div class="col-md-12">-->
-<!--                            <h3 class="sb-title closed">Qualification</h3>-->
-<!--                            <div class="specialism_widget">-->
-<!--                                <div class="simple-checkbox">-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="19"><label-->
-<!--                                                for="19">Matriculation</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="20"><label-->
-<!--                                                for="20">Intermidiate</label></p>-->
-<!--                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>-->
-<!--                                    </p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div> -->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Industry</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize-->
+                <!--                                            Jobs</label>-->
+                <!--                                    </p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business-->
+                <!--                                            Jobs</label></p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="widget border">-->
+                <!--                    <div class="row">-->
+                <!--                        <div class="col-md-12">-->
+                <!--                            <h3 class="sb-title closed">Qualification</h3>-->
+                <!--                            <div class="specialism_widget">-->
+                <!--                                <div class="simple-checkbox">-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="19"><label-->
+                <!--                                                for="19">Matriculation</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="20"><label-->
+                <!--                                                for="20">Intermidiate</label></p>-->
+                <!--                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>-->
+                <!--                                    </p>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                        </div> -->
+                <!--                    </div>-->
+                <!--                </div>-->
             </div>
             <div class="col-lg-9 col-md-9 column">
                 <div class="modrn-joblist">
