@@ -199,10 +199,9 @@ use frontend\models\applications\CandidateApply;
                                         ?>
                                         <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reviewlist.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Select any jobs for review.</div>
                                                 </div>
                                             </div>
@@ -265,10 +264,9 @@ use frontend\models\applications\CandidateApply;
                                         ?>
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Shortlisted any jobs.</div>
                                                 </div>
                                             </div>
@@ -316,10 +314,9 @@ use frontend\models\applications\CandidateApply;
                                         ?>
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Applied any jobs.</div>
                                                 </div>
                                             </div>
@@ -362,11 +359,10 @@ use frontend\models\applications\CandidateApply;
                                         ?>
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/acceptedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">You haven't Accepted any jobs.</div>
                                                 </div>
                                             </div>
                                     <?php } ?>
@@ -417,10 +413,9 @@ use frontend\models\applications\CandidateApply;
                                         ?>
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Shortlisted any jobs.</div>
                                                 </div>
                                             </div>
@@ -463,11 +458,14 @@ use frontend\models\applications\CandidateApply;
 
 <?php
 $this->registerCss('
+.portlet.light > .portlet-title > .actions{
+    padding:0px !important;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    height:170px;
     margin:0 auto;
 }
 .tab-empty-text{

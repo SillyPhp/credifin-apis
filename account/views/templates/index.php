@@ -28,7 +28,15 @@ use yii\helpers\Url;
                             ]);
                         } else {
                             ?>
-                            <h3>No Questionnaire To Display</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No Questionnaires</div>
+                                </div>
+                            </div>
                         <?php }
                         ?>
                     </div>
@@ -62,7 +70,15 @@ use yii\helpers\Url;
                             ]);
                         } else {
                             ?>
-                            <h3>No Processes To Display</h3>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No process to display</div>
+                                </div>
+                            </div>
                         <?php }
                         ?>
                     </div>
@@ -71,3 +87,20 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
+<?php
+$this->registerCss('
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    height:170px;
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+');

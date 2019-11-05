@@ -7,7 +7,9 @@ echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Internships',
 ]);
 ?>
-    <div class="loader"><img src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/></div>
+    <div class="loader"><img
+                src='https://gifimage.net/wp-content/uploads/2017/09/ajax-loading-gif-transparent-background-4.gif'/>
+    </div>
     <div class="row widget-row">
         <?=
         $this->render('/widgets/internships/stats', [
@@ -15,7 +17,7 @@ echo $this->render('/widgets/header/secondary-header', [
             'applications' => $applications,
             'interview_processes' => $interview_processes,
             'total_applied' => $total_applied,
-            'viewed'=>$viewed,
+            'viewed' => $viewed,
         ]);
         ?>
     </div>
@@ -25,13 +27,17 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><a
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/internships/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
-                        <a href="<?= Url::to('/tweets/internship/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
+                        <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Create AI Internship">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                        <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip" title="Post Internship Tweet">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/internships'); ?>" title="" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -45,14 +51,15 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                            <div class="tab-empty">
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">No active Internships</div>
-                                </div>
+                        <div class="tab-empty">
+                            <div class="tab-empty-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/active-internships.png'); ?>"
+                                     class="img-responsive" alt=""/>
                             </div>
+                            <div class="tab-empty-text">
+                                <div class="">No active Internships</div>
+                            </div>
+                        </div>
                     <?php }
                     ?>
                 </div>
@@ -65,12 +72,17 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?><a
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>"data-toggle="tooltip" title="Add New">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                        <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>"data-toggle="tooltip" title="Choose from Templates">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                         <?php if ($questionnaire['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/questionnaire'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -86,30 +98,38 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                    <div class="tab-empty">
-                                        <div class="tab-empty-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
-                                        </div>
-                                        <div class="tab-empty-text">
-                                            <div class="">No Questionnaires to display</div>
-                                        </div>
+                                <div class="tab-empty">
+                                    <div class="tab-empty-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>"
+                                             class="img-responsive" alt=""/>
                                     </div>
+                                    <div class="tab-empty-text">
+                                        <div class="">No Questionnaires to display</div>
+                                    </div>
+                                </div>
                             <?php }
                             ?>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-lg-6 col-xs-12 col-sm-12">
             <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?><a
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"data-toggle="tooltip" title="Add New">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                        <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>"data-toggle="tooltip" title="Choose from Templates">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                         <?php if ($interview_processes['total'] > 4): ?>
-                            <a href="<?= Url::toRoute('/hiring-processes'); ?>" class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -125,14 +145,15 @@ echo $this->render('/widgets/header/secondary-header', [
                                 ]);
                             } else {
                                 ?>
-                                    <div class="tab-empty">
-                                        <div class="tab-empty-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
-                                        </div>
-                                        <div class="tab-empty-text">
-                                            <div class="">No process to display</div>
-                                        </div>
+                                <div class="tab-empty">
+                                    <div class="tab-empty-icon">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                             class="img-responsive" alt=""/>
                                     </div>
+                                    <div class="tab-empty-text">
+                                        <div class="">No process to display</div>
+                                    </div>
+                                </div>
                             <?php }
                             ?>
                         </div>
@@ -140,33 +161,35 @@ echo $this->render('/widgets/header/secondary-header', [
                 </div>
             </div>
         </div>
-        <div class="col-lg-6 col-xs-12 col-sm-12">
-        <?php
-         echo $this->render('/widgets/applied-applications/users-card', [
-        'applied_applications' => $applied_applications,
-    ]); ?>
-        </div>
     </div>
-
     <div class="row">
+        <div class="col-lg-6 col-xs-12 col-sm-12">
+            <?php
+            echo $this->render('/widgets/applied-applications/users-card', [
+                'applied_applications' => $applied_applications,
+            ]); ?>
+        </div>
         <div class="col-lg-6 col-xs-12 col-sm-12">
             <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
                 'data' => $primary_fields
             ]); ?>
         </div>
+    </div>
+    <div class="row">
         <div class="col-lg-6 col-xs-12 col-sm-12">
             <div class="portlet light nd-shadow">
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?><a
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Add New">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/jobs'); ?>" title=""
-                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -179,14 +202,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         ]);
                     } else {
                         ?>
-                            <div class="tab-empty">
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">No closed Internships</div>
-                                </div>
+                        <div class="tab-empty">
+                            <div class="tab-empty-text">
+                                <div class="">No closed Internships</div>
                             </div>
+                        </div>
                     <?php }
                     ?>
                 </div>
@@ -195,11 +215,39 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss('
+.portlet.light > .portlet-title > .actions{
+    padding:0px !important;
+}
+@media only screen and (max-width: 400px) {
+ .portlet.light > .portlet-title > .actions{
+    padding-bottom:10px !important;
+    width:100%;
+    text-align:center;
+    }
+}
+.actions > a {
+    margin-right: 15px;
+}
+.actions > a:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+@media only screen and (max-width: 450px) {
+  .viewall-jobs {
+    margin-bottom:5px;
+  }
+}
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    height:170px;
     margin:0 auto;
 }
 .tab-empty-text{
@@ -232,6 +280,9 @@ $(document).on('click', '.remov_btn', function (e) {
 
 $(document).on('click', '.share_btn', function (e) {
     e.preventDefault();
+});
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
 });
 JS;
 $this->registerJs($script);

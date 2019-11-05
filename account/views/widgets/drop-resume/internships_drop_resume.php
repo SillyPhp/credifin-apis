@@ -1,19 +1,25 @@
+<?php
+
+use yii\helpers\Url;
+?>
 <input type="hidden" id="parent_enc_id">
 <div class="portlet light nd-shadow">
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Resume Bank</span>
+            <span class="caption-subject font-dark bold uppercase">Resume Bank<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
         </div>
         <div class="actions">
             <div class="btn-group dashboard-button">
-                <button title="" data-toggle="modal" data-target="#resumeBank" class="viewall-jobs">Add New</button>
+                <span title="Add New" data-toggle="modal" data-target="#resumeBank" class="sett">
+                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                </span>
             </div>
 
         </div>
     </div>
 
-    <div class="portlet-body" id="resume-bank"></div>
+    <div class="portlet-body set-h" id="resume-bank"></div>
 
 </div>
 
@@ -60,6 +66,28 @@
 
 <?php
 $this->registerCss('
+.sett{
+    margin-right:10px;
+}
+.set-h {
+    max-height: 288px;
+    overflow: hidden;
+    position: relative;
+    display: block;
+    padding: 0px 15px;
+}
+.ps__rail-x{
+    display:none !important;
+}
+.ps-visible{
+    overflow:visible !important;
+    overflow-x:visible !important;
+}
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .work-profile-box{
     border: 2px solid #eef1f5;
     text-align:center;
@@ -136,6 +164,9 @@ $this->registerCss('
 
 $script = <<<JS
 $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+$(document).ready(function(){
   $("#text").on("keyup", function() {
     var value = $(this).val().toLowerCase();
     $(".search").filter(function() {
@@ -189,7 +220,11 @@ function showSelectedCategories(){
             var response = JSON.parse(response);
             var template = $("#selected-categories").html();
             var rendered = Mustache.render(template, response);
-            $('#resume-bank').append(rendered);
+            if(response.length != 0){
+                $('#resume-bank').append(rendered);
+            } else{
+                $('#resume-bank').append('<div class="tab-empty"><div class="tab-empty-icon"><img src="/assets/themes/ey/images/pages/dashboard/resume-bank.png" class="img-responsive" alt=""/></div><div class="tab-empty-text"><div class="">No Resume in the Bank</div></div></div>');
+            }
         }
     })
 }
@@ -285,8 +320,11 @@ $(document).on("keypress", "#add_new",function(event){
         addNew();
     }
 });
+var ps = new PerfectScrollbar('.set-h');
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>

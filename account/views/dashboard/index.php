@@ -226,18 +226,18 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                         </div>
                         <div class="actions">
-                            <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Job'); ?></a>
-                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Create Quick Job'); ?></a>
-                            <a href="<?= Url::to('/tweets/job/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Post Job Tweet'); ?></a>
+                            <a href="<?= Url::toRoute('/jobs/create'); ?>"  data-toggle="tooltip" title="Create AI Job">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip" title="Create Quick Job">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job1.png'); ?>"></a>
+                            <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip" title="Post Job Tweet">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
                             <?php if ($applications['jobs']['total'] > 8): ?>
-                                <a href="<?= Url::toRoute('/jobs'); ?>" title=""
-                                   class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                                <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -254,7 +254,7 @@ endif;
                             ?>
                                 <div class="tab-empty">
                                     <div class="tab-empty-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobinterview.png'); ?>" class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
                                         <div class="">No Active Jobs</div>
@@ -269,16 +269,18 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                         </div>
                         <div class="actions">
-                            <a href="<?= Url::toRoute('/internships/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Create AI Internship'); ?></a>
-                            <a href="<?= Url::toRoute('/internships/create'); ?>"
-                               class="viewall-jobs"><?= Yii::t('account', 'Post Internship Tweet'); ?></a>
+                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Create AI Internship">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                            </a>
+                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Post Internship Tweet">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
+                            </a>
                             <?php if ($applications['internships']['total'] > 8): ?>
-                                <a href="<?= Url::toRoute('/internships'); ?>" title=""
-                                   class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                                <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip" title="View All">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -295,11 +297,11 @@ endif;
                             ?>
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/internship.png'); ?>"
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/active-internships.png'); ?>"
                                          class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
-                                    <div class="">No Active Internship</div>
+                                    <div class="">No Active Internships</div>
                                 </div>
                             </div>
                         <?php }
@@ -372,11 +374,34 @@ endif;
 </script>
 <?php
 $this->registerCss("
+.portlet.light > .portlet-title > .actions{
+    padding:0px !important;
+}
+@media only screen and (max-width: 400px) {
+ .portlet.light > .portlet-title > .actions{
+    padding-bottom:10px !important;
+    width:100%;
+    text-align:center;
+    }
+}
+.actions > a {
+    margin-right: 15px;
+}
+.actions > a:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    height:170px;
     margin:0 auto;
 }
 .tab-empty-text{
@@ -530,6 +555,8 @@ p{
 } 
 ");
 $script = <<<JS
-
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
 JS;
 $this->registerJs($script);

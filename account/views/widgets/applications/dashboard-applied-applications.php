@@ -71,7 +71,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapp.png'); ?>" class="img-responsive" alt=""/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>" class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
                                     <div class="">You haven't applied yet on any application</div>
@@ -116,7 +116,7 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div class="tab-empty">
                             <div class="tab-empty-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>" class="img-responsive" alt=""/>
                             </div>
                             <div class="tab-empty-text">
                                 <div class="">No Questionnaires</div>
@@ -218,7 +218,7 @@ $this->registerCss("
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    max-width:250px; 
     margin:0 auto;
 }
 .tab-empty-text{

@@ -7,7 +7,7 @@ use yii\helpers\Url;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
 </div>
 </div>
 <div class="portlet-body">
@@ -53,10 +53,46 @@ use yii\helpers\Url;
                     }
                 } else {
                     ?>
-                    <h3>No Applications To Display</h3>
+                    <div class="tab-empty">
+                        <div class="tab-empty-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>"
+                                 class="img-responsive" alt=""/>
+                        </div>
+                        <div class="tab-empty-text">
+                            <div class="">No Application</div>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
     </div>
 </div>
 </div>
+<?php
+$this->registerCss("
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:250px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+");
+$script = <<<JS
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+});
+JS;
+$this->registerJs($script);

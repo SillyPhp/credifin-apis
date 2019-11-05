@@ -64,7 +64,7 @@ if ($organization_data) {
     <div class="col-md-12">
         <div class="tab-empty">
             <div class="tab-empty-icon">
-                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/followedcompanies.png'); ?>" class="img-responsive" alt=""/>
             </div>
             <div class="tab-empty-text">
                 <div class="">You haven't Followed any Company.</div>
@@ -80,7 +80,7 @@ $this->registerCss('
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    max-width:250px; 
     margin:0 auto;
 }
 .tab-empty-text{
