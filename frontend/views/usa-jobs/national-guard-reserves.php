@@ -36,9 +36,9 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="col-md-12">
                     <div class="feature-box">
                         <ul class="list-option">
-                            <li><a href="#">Help</a> /</li>
-                            <li><a href="#">Working in Government</a> /</li>
-                            <li><a href="#">Unique Hiring Path</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/" target="_blank">Help</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/" target="_blank">Working in Government</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/" target="_blank">Unique Hiring Path</a> /</li>
                             <li> National Guard & Reserves</li>
                         </ul>
                     </div>
@@ -53,7 +53,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="col-md-8 col-sm-8 col-xs-12">
 
                     <div class="para">
-                        <P>Jobs within a National Guard unit are in the excepted service, so it’s important to read the Who
+                        <P>Jobs within a National Guard unit are in the <a href="https://www.usajobs.gov/Help/working-in-government/service/" target="_blank">excepted service</a> , so it’s important to read the Who
                             May
                             Apply section of the job announcement to understand if you’re eligible or what you need to do to
                             be
@@ -133,12 +133,12 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             to
                             complete are listed below. </p>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <p><a href="#"> <i class="far fa-file-pdf"></i> SF-144 <br> Statement of prior federal service
+                            <p><a href="https://www.opm.gov/Forms/pdf_fill/SF144.pdf" target="_blank"> <i class="far fa-file-pdf"></i> SF-144 <br> Statement of prior federal service
                                 </a>
                             </p>
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12">
-                            <a href="#"><p><i class="far fa-file-pdf"> </i> DD-369 <br> police record check form</a> </p>
+                            <a href="https://www.esd.whs.mil/Portals/54/Documents/DD/forms/dd/dd0369.pdf" target="_blank" ><p><i class="far fa-file-pdf"> </i> DD-369 <br> police record check form</a> </p>
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -146,8 +146,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                             <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded,
                                 you
-                                can submit these forms with your job application as needed. <a href="#">Sign into USAJOBS or
-                                    learn how to upload documents.</a></P>
+                                can submit these forms with your job application as needed. <a href="https://secure.login.gov/?request_id=80e26213-726f-41b4-bfb6-08cf19c72225" target="_blank">Sign into USAJOBS</a> or
+                                   <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank"> learn how to upload documents.</a></P>
                         </div>
                     </div>
                 </div>

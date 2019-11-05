@@ -30,9 +30,9 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                 <div class="col-md-12">
                     <div class="feature-box">
                         <ul class="list-option">
-                            <li><a href="#">Help</a> /</li>
-                            <li><a href="#">Working in Government</a> /</li>
-                            <li><a href="#">Unique Hiring Path</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/" target="_blank">Help</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/" target="_blank">Working in Government</a> /</li>
+                            <li><a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/" target="_blank" >Unique Hiring Path</a> /</li>
                             <li> Military Spouses</li>
                         </ul>
                     </div>
@@ -56,7 +56,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                         </ul>
                         <p>You are no longer eligible if you remarry.</p>
                         <p>You must meet certain criteria for each of these eligibility categories
-                            .<a href="#"> Learn more about the specific criteria for military spouses. </a>
+                            .<a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/family-members/" target="_blank" > Learn more about the specific criteria for military spouses. </a>
                         </p>
                         <p>Your eligibility does not entitle you to a job within the Federal Government. You must still apply and meet qualification standards and additional requirements, such as a background investigation.</>
                         <p>You can also select the Military spouses filter in search. Your results will display all jobs open to military spouses. </p>
@@ -86,11 +86,11 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                     <div class="para">
                         <p> <i class="far fa-file-alt"></i> Documentation verifying marriage  </p>
                         <p> <i class="far fa-file-alt"></i> A copy of your spouse's active military orders   </p>
-                        <a href="#"><p><i class="far fa-file-pdf"></i> DD-214</p>  </a>
+                        <a href="https://www.archives.gov/veterans/military-service-records" target="_blank" ><p><i class="far fa-file-pdf"></i> DD-214</p>  </a>
                         <p>Military spouses of 100% disabled separated or retired veterans and widows or widowers, who are not remarried, of military service members who were killed on active duty. </p>
                     </div>
                     <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
-                    <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you can submit these forms with your job application as needed. <a href="#">Sign into USAJOBS or learn how to upload documents.</a> </P>
+                    <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you can submit these forms with your job application as needed. <a href="https://secure.login.gov/?request_id=80e26213-726f-41b4-bfb6-08cf19c72225" target="_blank">Sign into USAJOBS</a> or <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank" >learn how to upload documents.</a> </P>
                 </div>
             </div>
         </div>
