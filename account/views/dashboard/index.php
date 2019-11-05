@@ -226,19 +226,25 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><a
+                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                         </div>
                         <div class="actions">
-                            <a href="<?= Url::toRoute('/jobs/create'); ?>"  data-toggle="tooltip" title="Create AI Job">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
-                            <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip" title="Create Quick Job">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job1.png'); ?>"></a>
-                            <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip" title="Post Job Tweet">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
-                            <?php if ($applications['jobs']['total'] > 8): ?>
-                                <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                            <?php endif; ?>
+                            <div class="set-im">
+                                <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                   title="Create AI Job" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
+                                   title="Create Quick Job" class="quick">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job1.png'); ?>"></a>
+                                <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
+                                   title="Post Job Tweet" class="tweet">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                <?php if ($applications['jobs']['total'] > 8): ?>
+                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All" class="view">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="portlet-body">
@@ -252,14 +258,15 @@ endif;
                             ]);
                         } else {
                             ?>
-                                <div class="tab-empty">
-                                    <div class="tab-empty-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobinterview.png'); ?>" class="img-responsive" alt=""/>
-                                    </div>
-                                    <div class="tab-empty-text">
-                                        <div class="">No Active Jobs</div>
-                                    </div>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobinterview.png'); ?>"
+                                         class="img-responsive" alt=""/>
                                 </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No Active Jobs</div>
+                                </div>
+                            </div>
                         <?php }
                         Pjax::end();
                         ?>
@@ -269,13 +276,16 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><a
+                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                         </div>
                         <div class="actions">
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Create AI Internship">
+                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                               title="Create AI Internship">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
                             </a>
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Post Internship Tweet">
+                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                               title="Post Internship Tweet">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
                             </a>
                             <?php if ($applications['internships']['total'] > 8): ?>
@@ -310,70 +320,86 @@ endif;
                     </div>
                 </div>
             <?php endif; ?>
-<!--            <div class="portlet light portlet-fit nd-shadow">-->
-<!--                <div class="portlet-title" style="border-bottom:none;">-->
-<!--                    <div class="car-main row">-->
-<!--                        <div class="c-head">Careers</div>-->
-<!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
-<!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->
-<!--                            is that it has a more-or-less normal distribution of letters, as opposed to using 'Content-->
-<!--                            here, content here', making it look like readable English. Many desktop publishing packages-->
-<!--                            and web page editors now use Lorem Ipsum as their default model text,-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="works-main row">-->
-<!--                        <div class="works">-->
-<!--                            <div class="w-head">How It Works</div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="step-main">-->
-<!--                                <div class="s-logo">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
-<!--                                </div>-->
-<!--                                <div class="s-text">Put Your Website address Here</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="step-main">-->
-<!--                                <div class="s-logo">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
-<!--                                </div>-->
-<!--                                <div class="s-text">copy Link</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="col-md-4">-->
-<!--                            <div class="step-main">-->
-<!--                                <div class="s-logo">-->
-<!--                                    <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
-<!--                                </div>-->
-<!--                                <div class="s-text">Paste On your website</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="row">-->
-<!--                        <div class="main-btn">-->
-<!--                            <div class="inner-btn">-->
-<!--                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"-->
-<!--                                       class="form-control" value="--><?//= $link ?><!--" readonly>-->
-<!--                                <i class="fa fa-copy"></i>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <!--            <div class="portlet light portlet-fit nd-shadow">-->
+            <!--                <div class="portlet-title" style="border-bottom:none;">-->
+            <!--                    <div class="car-main row">-->
+            <!--                        <div class="c-head">Careers</div>-->
+            <!--                        <div class="career-descripption">It is a long established fact that a reader will be distracted-->
+            <!--                            by the readable content of a page when looking at its layout. The point of using Lorem Ipsum-->
+            <!--                            is that it has a more-or-less normal distribution of letters, as opposed to using 'Content-->
+            <!--                            here, content here', making it look like readable English. Many desktop publishing packages-->
+            <!--                            and web page editors now use Lorem Ipsum as their default model text,-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="works-main row">-->
+            <!--                        <div class="works">-->
+            <!--                            <div class="w-head">How It Works</div>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-md-4">-->
+            <!--                            <div class="step-main">-->
+            <!--                                <div class="s-logo">-->
+            <!--                                    <img src="-->
+            <? //= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+            <!--                                </div>-->
+            <!--                                <div class="s-text">Put Your Website address Here</div>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-md-4">-->
+            <!--                            <div class="step-main">-->
+            <!--                                <div class="s-logo">-->
+            <!--                                    <img src="-->
+            <? //= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+            <!--                                </div>-->
+            <!--                                <div class="s-text">copy Link</div>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                        <div class="col-md-4">-->
+            <!--                            <div class="step-main">-->
+            <!--                                <div class="s-logo">-->
+            <!--                                    <img src="-->
+            <? //= Url::to('@eyAssets/images/pages/dashboard/check.png') ?><!--">-->
+            <!--                                </div>-->
+            <!--                                <div class="s-text">Paste On your website</div>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="row">-->
+            <!--                        <div class="main-btn">-->
+            <!--                            <div class="inner-btn">-->
+            <!--                                <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()"-->
+            <!--                                       class="form-control" value="--><? //= $link ?><!--" readonly>-->
+            <!--                                <i class="fa fa-copy"></i>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
         </div>
     </div>
-<script>
-    function copyToClipboard() {
-    var copyText = document.getElementById("share_manually");
-    copyText.select();
-    document.execCommand("copy");
-    // toastr.success("", "Copied");
-    alert("Copied the text: " + copyText.value);
-    }
-</script>
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("share_manually");
+            copyText.select();
+            document.execCommand("copy");
+            // toastr.success("", "Copied");
+            alert("Copied the text: " + copyText.value);
+        }
+    </script>
 <?php
 $this->registerCss("
+.quick > img{
+    height:38px;
+}
+.set-im > a{
+    margin-right:10px;
+}
+.ai img, .view img{
+    height:31px;
+}
+.actions > a > img {
+    height:22px;
+    margin-top:7px;
+}
 .portlet.light > .portlet-title > .actions{
     padding:0px !important;
 }
@@ -386,6 +412,11 @@ $this->registerCss("
 }
 .actions > a {
     margin-right: 15px;
+}
+.set-im > a:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
 }
 .actions > a:hover > img{
     -ms-transform: scale(1.2);

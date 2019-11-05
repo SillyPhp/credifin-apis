@@ -31,14 +31,18 @@ echo $this->render('/widgets/header/secondary-header', [
                                     href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Create AI Internship">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
-                        <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip" title="Post Internship Tweet">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
-                        <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip" title="View All">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                        <?php endif; ?>
+                        <div class="set-im">
+                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                               title="Create AI Internship" class="ai">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                            <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip"
+                               title="Post Internship Tweet" class="tweet">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                            <?php if ($applications['total'] > 8): ?>
+                                <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip" title="View All" class="view">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -76,9 +80,10 @@ echo $this->render('/widgets/header/secondary-header', [
                                     href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>"data-toggle="tooltip" title="Add New">
+                        <a href="<?= Url::toRoute('/questionnaire/create'); ?>" data-toggle="tooltip" title="Add New">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                        <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>"data-toggle="tooltip" title="Choose from Templates">
+                        <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>" data-toggle="tooltip"
+                           title="Choose from Templates">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                         <?php if ($questionnaire['total'] > 4): ?>
                             <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip" title="View All">
@@ -123,9 +128,11 @@ echo $this->render('/widgets/header/secondary-header', [
                                     href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"data-toggle="tooltip" title="Add New">
+                        <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" data-toggle="tooltip"
+                           title="Add New">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                        <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>"data-toggle="tooltip" title="Choose from Templates">
+                        <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
+                           title="Choose from Templates">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                         <?php if ($interview_processes['total'] > 4): ?>
                             <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip" title="View All">
@@ -185,8 +192,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                     href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Add New">
-                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
                         <?php if ($applications['total'] > 8): ?>
                             <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
@@ -215,6 +220,19 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss('
+.quick > img{
+    height:38px;
+}
+.set-im > a{
+    margin-right:10px;
+}
+.ai img, .view img{
+    height:31px;
+}
+.actions > a > img {
+    height:22px;
+    margin-top:7px;
+}
 .portlet.light > .portlet-title > .actions{
     padding:0px !important;
 }
@@ -227,6 +245,11 @@ $this->registerCss('
 }
 .actions > a {
     margin-right: 15px;
+}
+.set-im > a:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
 }
 .actions > a:hover > img{
     -ms-transform: scale(1.2);

@@ -59,7 +59,7 @@ use yii\helpers\Url;
                                  class="img-responsive" alt=""/>
                         </div>
                         <div class="tab-empty-text">
-                            <div class="">No Application</div>
+                            <div class="">No Applications</div>
                         </div>
                     </div>
                 <?php } ?>

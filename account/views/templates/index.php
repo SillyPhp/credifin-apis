@@ -11,8 +11,8 @@ use yii\helpers\Url;
                 </div>
                 <div class="actions">
                     <?php if ($questionnaire['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('templates/questionnaire/index'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <a href="<?= Url::toRoute('templates/questionnaire/index'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -53,8 +53,8 @@ use yii\helpers\Url;
                 </div>
                 <div class="actions">
                     <?php if ($interview_processes['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -89,6 +89,18 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.actions > a {
+    margin-right: 15px;
+}
+.actions > a:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+.actions > a > img {
+    height:22px;
+    margin-top:7px;
+}
 .tab-empty{
     padding:20px;
 }
@@ -104,3 +116,10 @@ $this->registerCss('
     padding-top:20px;
 }
 ');
+$script = <<<JS
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+JS;
+$this->registerJs($script);
+?>

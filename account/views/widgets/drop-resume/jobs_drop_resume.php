@@ -18,7 +18,7 @@ use yii\helpers\Url;
         </div>
     </div>
 
-    <div class="portlet-body set-h" id="resume-bank"></div>
+    <div class="portlet-body" id="resume-bank"></div>
 
 </div>
 
@@ -68,12 +68,14 @@ $this->registerCss('
 .sett{
     margin-right:10px;
 }
-.set-h {
-    max-height: 288px;
-    overflow: hidden;
-    position: relative;
-    display: block;
-    padding: 0px 15px;
+.sett img{
+    height:22px;
+    margin-top:7px;
+}
+.sett:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
 }
 .font-dark > a > i {
     font-size: 13px;
@@ -315,12 +317,7 @@ $(document).on("keypress", "#add_new",function(event){
         addNew();
     }
 });
-
-var ps = new PerfectScrollbar('.set-h');
 JS;
-$this->registerJs($script);
-$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
