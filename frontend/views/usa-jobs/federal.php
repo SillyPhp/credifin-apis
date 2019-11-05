@@ -32,18 +32,6 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="feature-box">
-                        <ul class="list-option">
-                            <li><a href="#">Help</a> /</li>
-                            <li><a href="#">Working in Government</a> /</li>
-                            <li><a href="#">Unique Hiring Path</a> /</li>
-                            <li>Federal Employees</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="usa-heading heading-box">
                         <h3>Eligibility </h3>

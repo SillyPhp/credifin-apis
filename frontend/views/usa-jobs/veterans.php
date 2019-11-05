@@ -247,12 +247,12 @@ $this->registerCss("
 
 
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 
 .feature-box{
@@ -267,7 +267,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 

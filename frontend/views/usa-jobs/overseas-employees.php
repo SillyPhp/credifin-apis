@@ -292,7 +292,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 

@@ -7,13 +7,13 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
 <section>
     <div class="bg-img">
-        <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA(1).png'); ?>" class="img_load">
+        <img src="<?= Url::to('@eyAssets/images/usajobs/peace-corps-americorps-VISTA.png'); ?>" class="img_load">
     </div>
     <div id="back-color">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="bg-color">
+                    <div class="usa-heading bg-color">
                         <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA1.png'); ?>"
                              class="img_load">
                         <h3> Peace Corps & AmeriCorps VISTA </h3>
@@ -30,18 +30,6 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 </section>
 <section>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="feature-box">
-                    <ul class="list-option">
-                        <li><a href="#">Help</a> /</li>
-                        <li><a href="#">Working in Government</a> /</li>
-                        <li><a href="#">Unique Hiring Path</a> /</li>
-                        <li> Peace Corps & AmeriCorps VISTA</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="usa-heading heading-box">
@@ -205,12 +193,12 @@ $this->registerCss("
 
 
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 
 .feature-box{
@@ -225,7 +213,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 

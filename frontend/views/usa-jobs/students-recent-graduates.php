@@ -31,18 +31,6 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="feature-box">
-                        <ul class="list-option">
-                            <li><a href="https://www.usajobs.gov/Help/" target="_blank" >Help</a> /</li>
-                            <li><a href="https://www.usajobs.gov/Help/working-in-government/" target="_blank" >Working in Government</a> /</li>
-                            <li><a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/" target="_blank" >Unique Hiring Path</a> /</li>
-                            <li> Students & Recent Graduates</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="usa-heading heading-box">
                         <h3>Eligibility </h3>
@@ -221,7 +209,7 @@ $this->registerCss("
     list-style: disc;
     padding-left: 23px; 
     color: black;
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .list-option{
