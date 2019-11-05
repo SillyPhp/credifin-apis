@@ -23,12 +23,8 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                 </div>
             </div>
         </div>
-<!--        <div class="overlay-image i-2"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/top-header.png');?><!--"/></div>-->
-<!--        <div class="overlay-image i-3"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header-1.png');?><!--"/></div>-->
-<!--        <div class="overlay-image i-4"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?><!--"/></div>-->
     </div>
 </section>
-<body>
 <section class="background-color">
     <div class="container">
         <div class="usajobs-main-box">
@@ -54,7 +50,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     If you’re a Veteran who served on active duty in the U.S. Armed Forces and were separated under honorable conditions, you may be eligible for veterans.
                                 </div>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/veterans')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -76,7 +72,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     to hire an individual with a disability.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/individuals-with-disabilities')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -96,7 +92,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     Your non-competitive eligibility lasts for one year after completing your Peace Corps.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/peace-corps')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -116,7 +112,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                   You may be eligible for a Senior Executive Service position if you meet the five Executive Core Qualifications (ECQs).
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/senior-executives')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -137,7 +133,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     You’re eligible as long as you’re a U.S. citizen or national.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/the-public')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -157,7 +153,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     If you're an American Indian or an Alaskan Native who is a member of one of the federally recognized tribes.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/native-americans')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -177,7 +173,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     The Federal Government offers other special hiring paths to help hire individuals that represent our diverse society.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/special-authorities')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -197,7 +193,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     If you’re a member of the National Guard, or are willing and able to join the National Guard
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/national-guard-reserves')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -217,7 +213,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     Hiring options depend on whether you’re currently working overseas and are planning to come back to the United States
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/overseas-employees')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -237,7 +233,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     Federal agencies can use the military spouse non-competitive hiring process to fill positions on either a temporary or permanent basis.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/military')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -257,7 +253,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     If you’re a current student or recent graduate, you may be eligible for federal internships and jobs
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/students-recent-graduates')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -277,7 +273,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                                     If you are a current or former federal employee, there are different hiring options available to you, depending on your eligibility.
                                 </p>
                             </div>
-                            <button class="btn">Read more</button>
+                            <a href="<?= Url::to('/usa-jobs/federal')?>" class="usa-read">Read more</a>
                         </div>
                     </a>
                 </div>
@@ -302,10 +298,26 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 </section>
 <?php
 $this->registerCss("
-.loader_screen img
-{
-display:none;
-margin:auto
+.usa-read{
+   position: absolute;
+    bottom: 10px;
+    right: 10px;
+//    background: #00a0e3;
+    background: linear-gradient(45deg, #00a0e3, #89d8f9);
+    padding: 7px 13px;
+    color: #fff;
+    font-size: 13px;
+    border-radius: 5px;
+}
+.usa-read:hover{
+    color:#fff;
+//    border-radius:0px;
+    transition:.3s ease;
+    background: linear-gradient(45deg, #89d8f9, #00a0e3);    
+}
+.loader_screen img{
+    display:none;
+    margin:auto
 }
 .re-twitte{
 	position:fixed;
@@ -329,7 +341,7 @@ margin:auto
 }
 
 .background-color{
-	background-color:#dce4ef;
+//	background-color:#dce4ef;
 }
 .usa-job-title{
 	text-align: center;
@@ -354,10 +366,12 @@ margin:auto
 	padding: 10px;
 	background-color: white;
 	border-radius: 6px;
-	box-shadow: 0px 2px 6px 5px lightgray;
+//	box-shadow: 0px 2px 6px 5px lightgray;
+	box-shadow: 0px 0px 10px rgba(211,211,211,.5);
 	margin: 10px;
 	min-height: 24em;
 	transition: 0.5s;
+	position:relative;
 }
 .icon img {
 	max-width: 65px;
@@ -396,8 +410,10 @@ margin:auto
 }
 
 .card-box:hover {
-	background-color: #ffa251;
-	color: white;
+//	background-color: #ffa251;
+	color: #fff;
+	box-shadow:0 0 10px rgba(211,211,211,.9);
+	transform: translateY(-2px);
 }
 
 
