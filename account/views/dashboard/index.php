@@ -241,7 +241,8 @@ endif;
                                    title="Post Job Tweet" class="tweet">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
                                 <?php if ($applications['jobs']['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All" class="view">
+                                    <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
+                                       class="view">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 <?php endif; ?>
                             </div>
@@ -280,18 +281,21 @@ endif;
                                         href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                         </div>
                         <div class="actions">
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                               title="Create AI Internship">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
-                            </a>
-                            <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
-                               title="Post Internship Tweet">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
-                            </a>
-                            <?php if ($applications['internships']['total'] > 8): ?>
-                                <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip" title="View All">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                            <?php endif; ?>
+                            <div class="set-im">
+                                <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                   title="Create AI Internship">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
+                                </a>
+                                <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                   title="Post Internship Tweet">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">
+                                </a>
+                                <?php if ($applications['internships']['total'] > 8): ?>
+                                    <a href="<?= Url::toRoute('/internships'); ?>" data-toggle="tooltip"
+                                       title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="portlet-body">
