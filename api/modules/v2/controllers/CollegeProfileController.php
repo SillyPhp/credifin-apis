@@ -273,6 +273,7 @@ class CollegeProfileController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
+            $limit = Yii::$app->request->post('limit');
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -298,9 +299,12 @@ class CollegeProfileController extends ApiBaseController
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1])
-                ->limit(6)
-                ->asArray()
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+            if ($limit) {
+                $jobs->limit($limit);
+            }
+            $jobs = $jobs->
+            asArray()
                 ->all();
 
 

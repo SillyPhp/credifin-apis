@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
 use common\models\CollegeCourses;
+use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
@@ -165,92 +166,92 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    public function actionCompanySelection()
-    {
-
-        if ($user = $this->isAuthorized()) {
-
-            $organizations = Users::find()
-                ->alias('a')
-                ->select(['b.organization_enc_id college_id'])
-                ->joinWith(['organizationEnc b'], false)
-                ->where(['a.user_enc_id' => $user->user_enc_id])
-                ->asArray()
-                ->one();
-
-            $req = [];
-            $req['college_id'] = $organizations['college_id'];
-
-            $companies = ErexxCollaborators::find()
-                ->alias('aa')
-                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
-                ->distinct()
-                ->innerJoinWith(['organizationEnc b' => function ($x) {
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
-                    $x->joinWith(['businessActivityEnc e'], false);
-                    $x->joinWith(['employerApplications c' => function ($y) {
-                        $y->select(['c.organization_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name'])
-                            ->joinWith(['applicationTypeEnc d'], false)
-                            ->onCondition([
-                                'c.status' => 'Active',
-                                'c.is_deleted' => 0,
-                                'c.application_for' => 0
-                            ])
-                            ->orOnCondition([
-                                'c.status' => 'Active',
-                                'c.is_deleted' => 0,
-                                'c.application_for' => 2
-                            ])
-                            ->groupBy(['c.application_type_enc_id']);
-                    }]);
-                }])
-                ->where(['aa.college_enc_id' => $req['college_id'], 'aa.organization_approvel' => 1, 'aa.college_approvel' => 0, 'aa.is_deleted' => 0, 'aa.status' => 'Active'])
-                ->asArray()
-                ->all();
-
-            if (!empty($companies)) {
-                return $this->response(200, ['status' => 200, 'companies' => $companies]);
-            } else {
-                return $this->response(404, ['status' => 404]);
-            }
-        } else {
-            return $this->response(401, ['status' => 401]);
-        }
-    }
-
-    public function actionCompanyApprove()
-    {
-        if ($user = $this->isAuthorized()) {
-            $req = Yii::$app->request->post();
-
-            $approve = ErexxCollaborators::find()
-                ->where(['collaboration_enc_id' => $req['collaborator_enc_id'], 'college_approvel' => 0])
-                ->one();
-
-            if (!empty($approve)) {
-                if ($req['action'] == 'Accept') {
-                    $approve->college_approvel = 1;
-                } elseif ($req['action'] == 'Reject') {
-                    $approve->is_deleted = 1;
-                }
-                $approve->last_updated_by = $user->user_enc_id;
-                $approve->last_updated_on = date('Y-m-d H:i:s');
-
-                if ($approve->update()) {
-                    return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
-                } else {
-                    return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
-                }
-
-
-            } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-            }
-
-        } else {
-            return $this->response(401, ['status' => 401]);
-        }
-    }
+//    public function actionCompanySelection()
+//    {
+//
+//        if ($user = $this->isAuthorized()) {
+//
+//            $organizations = Users::find()
+//                ->alias('a')
+//                ->select(['b.organization_enc_id college_id'])
+//                ->joinWith(['organizationEnc b'], false)
+//                ->where(['a.user_enc_id' => $user->user_enc_id])
+//                ->asArray()
+//                ->one();
+//
+//            $req = [];
+//            $req['college_id'] = $organizations['college_id'];
+//
+//            $companies = ErexxCollaborators::find()
+//                ->alias('aa')
+//                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
+//                ->distinct()
+//                ->innerJoinWith(['organizationEnc b' => function ($x) {
+//                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+//                    $x->joinWith(['businessActivityEnc e'], false);
+//                    $x->joinWith(['employerApplications c' => function ($y) {
+//                        $y->select(['c.organization_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name'])
+//                            ->joinWith(['applicationTypeEnc d'], false)
+//                            ->onCondition([
+//                                'c.status' => 'Active',
+//                                'c.is_deleted' => 0,
+//                                'c.application_for' => 0
+//                            ])
+//                            ->orOnCondition([
+//                                'c.status' => 'Active',
+//                                'c.is_deleted' => 0,
+//                                'c.application_for' => 2
+//                            ])
+//                            ->groupBy(['c.application_type_enc_id']);
+//                    }]);
+//                }])
+//                ->where(['aa.college_enc_id' => $req['college_id'], 'aa.organization_approvel' => 1, 'aa.college_approvel' => 0, 'aa.is_deleted' => 0, 'aa.status' => 'Active'])
+//                ->asArray()
+//                ->all();
+//
+//            if (!empty($companies)) {
+//                return $this->response(200, ['status' => 200, 'companies' => $companies]);
+//            } else {
+//                return $this->response(404, ['status' => 404]);
+//            }
+//        } else {
+//            return $this->response(401, ['status' => 401]);
+//        }
+//    }
+//
+//    public function actionCompanyApprove()
+//    {
+//        if ($user = $this->isAuthorized()) {
+//            $req = Yii::$app->request->post();
+//
+//            $approve = ErexxCollaborators::find()
+//                ->where(['collaboration_enc_id' => $req['collaborator_enc_id'], 'college_approvel' => 0])
+//                ->one();
+//
+//            if (!empty($approve)) {
+//                if ($req['action'] == 'Accept') {
+//                    $approve->college_approvel = 1;
+//                } elseif ($req['action'] == 'Reject') {
+//                    $approve->is_deleted = 1;
+//                }
+//                $approve->last_updated_by = $user->user_enc_id;
+//                $approve->last_updated_on = date('Y-m-d H:i:s');
+//
+//                if ($approve->update()) {
+//                    return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+//                } else {
+//                    return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
+//                }
+//
+//
+//            } else {
+//                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+//            }
+//
+//        } else {
+//            return $this->response(401, ['status' => 401]);
+//        }
+//    }
 
     public function actionJobsSelection()
     {
@@ -301,6 +302,7 @@ class CollegeIndexController extends ApiBaseController
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
                 $data['org_enc_id'] = $j['organization_enc_id'];
+                $data['employer_application_enc_id'] = $j['employer_application_enc_id'];
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['college_enc_id'] = $j['college_enc_id'];
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
@@ -329,6 +331,7 @@ class CollegeIndexController extends ApiBaseController
 
             if (!empty($data)) {
                 if ($req['action'] == 'Accept') {
+                    $this->__addCompany($req['org_enc_id'],$this->getOrgId());
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
@@ -345,6 +348,31 @@ class CollegeIndexController extends ApiBaseController
             }
         } else {
             return $this->response(401, ['status' => 401]);
+        }
+    }
+
+    private function __addCompany($org_id,$college_enc_id){
+
+        $erexx_collab = ErexxCollaborators::find()
+            ->where(['organization_enc_id'=>$org_id,'college_enc_id'=>$college_enc_id])
+            ->exists();
+
+        if(!$erexx_collab){
+            $save_collab = new ErexxCollaborators();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $save_collab->collaboration_enc_id = $utilitiesModel->encrypt();
+            $save_collab->organization_enc_id = $org_id;
+            $save_collab->college_enc_id = $college_enc_id;
+            $save_collab->organization_approvel = 0;
+            $save_collab->college_approvel = 1;
+            $save_collab->created_on = date('Y-m-d H:i:s');
+            $save_collab->created_by = $college_enc_id;
+            if($save_collab->save()){
+                return true;
+            }else{
+               return false;
+            }
         }
     }
 
@@ -455,7 +483,7 @@ class CollegeIndexController extends ApiBaseController
                     'a.is_deleted' => 0,
                     'a.is_erexx_registered' => 1
                 ])
-//                ->andWhere(['not in','a.organization_enc_id',$org_ids])
+                ->andWhere(['not in','a.organization_enc_id',$org_ids])
                 ->asArray()
                 ->all();
 
