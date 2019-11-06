@@ -97,7 +97,7 @@ use yii\helpers\Url;
                                                                     <ul class="job-types">
                                                                         <li class="job-type full-time"> <?= $app['type']; ?></li>
                                                                     </ul>
-                                                                    <span class="job-published-date date">Last Date To Apply <?= $app['last_date']; ?></span>
+                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y',strtotime($app['last_date'])); ?></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -146,16 +146,26 @@ use yii\helpers\Url;
                                             <?php
                                             foreach ($colleges as $clg) {
                                                 ?>
-                                                <div class="col-sm-6 app-list-data-main">
+                                                <div class="col-sm-6 app-list-data-main set-borders">
                                                     <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
                                                            name="colleges[]" value="<?= $clg['college_enc_id']; ?>"
                                                            class="college-list-main">
                                                     <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
                                                         <div class="inner-list-main">
                                                             <div class="job-listing-company-logo">
-                                                                <img class="company_logo"
-                                                                     src="<?= Url::to($clg['logo']); ?>"
-                                                                     alt="<?= $clg['name']; ?>">
+                                                                <?php
+                                                                if(!empty($clg['logo'])) {
+                                                                    ?>
+                                                                    <img class="company_logo"
+                                                                         src="<?= Url::to($clg['logo']); ?>"
+                                                                         alt="<?= $clg['name']; ?>">
+                                                                    <?php
+                                                                } else{
+                                                                    ?>
+                                                                    <canvas class="user-icon" name="<?= $clg['name']; ?>" width="80" height="80" color="<?= $clg['color']?>" font="39px"></canvas>
+                                                                    <?php
+                                                                }
+                                                                    ?>
                                                             </div>
                                                             <div class="job-details">
                                                                 <div class="job-details-inner">
@@ -387,7 +397,7 @@ $this->registerCss('
   from {display: block;}
   to {display: none;} 
 }
-.app-list-data-main:first-child > .job_listing > .inner-list-main, .app-list-data-main:nth-child(2) > .job_listing > .inner-list-main {
+.app-list-data-main:first-child > .job_listing > .inner-list-main, .app-list-data-main:nth-child(2) > .job_listing > .inner-list-main, .app-list-data-main:nth-child(3) > .job_listing > .inner-list-main, .set-borders:nth-child(4) > .job_listing > .inner-list-main {
     border-top: 1px solid #edeff7;
 }
 .app-list-data-main:nth-child(odd) > .job_listing > .inner-list-main{

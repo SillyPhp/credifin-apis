@@ -761,13 +761,17 @@ class JobsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
                 if ($obj->update($model, $aidk, $type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                    ];
                 } else {
                     return false;
                 }
@@ -1422,7 +1426,7 @@ class JobsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->organization) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
 //        $applications = EmployerApplications::find()
 //            ->alias('a')
 //            ->joinWith(['applicationTypeEnc b'])
@@ -1445,13 +1449,10 @@ class JobsController extends Controller
 //                ->asArray()
 //                ->all();
 
-//            print_r($colleges);
-//            exit();
-
             $colleges = Organizations::find()
                 ->alias('a')
                 ->distinct()
-                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
+                ->select(['a.organization_enc_id', 'a.organization_enc_id college_enc_id', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'e.name city'])
                 ->innerJoinWith(['businessActivityEnc b' => function ($b) {
                     $b->onCondition(["b.business_activity" => "College"]);
                 }], false)
