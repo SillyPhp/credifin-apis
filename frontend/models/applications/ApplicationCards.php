@@ -3,8 +3,10 @@
 namespace frontend\models\applications;
 
 use common\models\ApplicationPlacementCities;
+use common\models\ApplicationSkills;
 use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
+use common\models\Skills;
 use common\models\States;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
@@ -40,7 +42,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.application_enc_id application_id','a.type','i.name category',
+            ->select(['a.created_on','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -66,6 +68,8 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
                 ])
+            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
+            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -79,6 +83,7 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->groupBy('a.application_enc_id')
             ->orderBy(['a.created_on'=>SORT_DESC])
             ->limit($limit)
             ->offset($offset);
@@ -86,7 +91,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.application_enc_id application_id','a.type','i.name category',
+            ->select(['a.created_on','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill','a.application_enc_id application_id','a.type','i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
@@ -112,6 +117,8 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
+            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
+            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -122,6 +129,7 @@ class ApplicationCards
             ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->groupBy('a.application_enc_id')
             ->orderBy(['a.created_on'=>SORT_DESC])
             ->limit($limit)
             ->offset($offset);
@@ -200,6 +208,7 @@ class ApplicationCards
                 'h.industry LIKE "%' . $options['keyword'] . '%"',
                 'i.name LIKE "%' . $options['keyword'] . '%"',
                 'd.name LIKE "%' . $options['keyword'] . '%"',
+                'a.slug LIKE "%' . $options['keyword'] . '%"',
             ]);
             $cards2->andFilterWhere([
                 'or',
@@ -207,6 +216,7 @@ class ApplicationCards
                 'c.name LIKE "%' . $options['keyword'] . '%"',
                 'i.name LIKE "%' . $options['keyword'] . '%"',
                 'd.name LIKE "%' . $options['keyword'] . '%"',
+                'a.slug LIKE "%' . $options['keyword'] . '%"',
             ]);
         }
         $result = null;
@@ -228,7 +238,7 @@ class ApplicationCards
                 ])
                 ->limit($limit)
                 ->offset($offset)
-                ->orderBy(new \yii\db\Expression('rand()'))
+                ->orderBy(['created_on'=>SORT_DESC])
                 ->all();
         }
 
