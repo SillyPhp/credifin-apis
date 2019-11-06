@@ -25,6 +25,9 @@ class SearchController extends ApiBaseController{
         if($req['keyword']){
             $options['keyword'] = $req['keyword'];
             return $this->response(200, $this->findJobs($options));
+        }elseif($req['slug']){
+            $options['slug'] = $req['slug'];
+            return $this->response(200, $this->findJobs($options));
         }else{
             return $this->response(200, $this->findJobs($options));
         }
@@ -213,6 +216,12 @@ class SearchController extends ApiBaseController{
         $cards->orWhere([
             'a.application_for' => 0
         ]);
+
+        if(isset($options['slug'])){
+            $cards->andWhere([
+               'd.slug'=>$options['slug']
+            ]);
+        }
 
         if (isset($options['keyword'])) {
             $cards->andWhere([
