@@ -1,8 +1,10 @@
 <?php
 $this->params['header_dark'] = false;
 $this->params['url'] = $org['website'];
-use yii\helpers\Url;
 
+use yii\helpers\Url;
+use yii\helpers\Html;
+Yii::$app->view->registerJs('var slug_var = "'. $org['slug'].'"',  \yii\web\View::POS_HEAD);
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -11,45 +13,38 @@ echo $this->render('/widgets/drop_resume', [
 
 <section class="overlape">
     <div class="block no-padding">
-        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div><!-- PARALLAX BACKGROUND IMAGE -->
-        <div class="">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="inner-header wform">
-                        <div class="nav-com-logo">
-                            <a href="<?= Url::to($org['website'])?>">
-                                <img src="<?= $org['logo']?>" alt="">
-                            </a>
-                        </div>
-                        <div class="job-search-sec">
-                            <div class="job-search">
-                                <h4>Opportunities in <?= $org['name']?></h4>
-<!--                                <form>-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="col-lg-7">-->
-<!--                                            <div class="job-field">-->
-<!--                                                <input type="text" placeholder="Job title, keywords or company name" />-->
-<!--                                                <i class="far fa-keyboard"></i>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-lg-4">-->
-<!--                                            <div class="job-field">-->
-<!--                                                <select data-placeholder="City, province or region" class="chosen-city">-->
-<!---->
-<!--                                                    <option>Istanbul</option>-->
-<!--                                                    <option>New York</option>-->
-<!--                                                    <option>London</option>-->
-<!--                                                    <option>Russia</option>-->
-<!--                                                </select>-->
-<!--                                                <i class="fas fa-map-marker-alt"></i>-->
-<!--                                            </div>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-lg-1">-->
-<!--                                            <button type="submit"><i class="fas fa-search"></i></button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </form>-->
-                            </div>
+        <div data-velocity="-.1" class="parallax scrolly-invisible no-parallax"></div>
+        <!-- PARALLAX BACKGROUND IMAGE -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="inner-header wform">
+                    <div class="nav-com-logo">
+                        <a href="<?= Url::to($org['website']) ?>">
+                            <img src="<?= $org['logo'] ?>" alt="<?= $org['name'] ?>">
+                        </a>
+                    </div>
+                    <div class="job-search-sec">
+                        <div class="job-search">
+                            <h4>Opportunities in <?= $org['name'] ?></h4>
+                            <form id="search_form">
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <div class="job-field">
+                                            <input type="text" name="keywords" id="keywords" placeholder="Job title, keywords or company name"/>
+                                            <i class="far fa-keyboard"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="job-field">
+                                            <?= Html::dropDownList('cities_drp',null,$cities, ['id'=>'cities_drp','prompt'=>'Choose City','data-placeholder'=>'City, province or region', 'class'=>'chosen-city']) ?>
+                                            <i class="la la-map-marker"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-1">
+                                        <button type="submit"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -60,55 +55,203 @@ echo $this->render('/widgets/drop_resume', [
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-offset-2 column">
-                <div class="modrn-joblist">
-<!--                    <div class="tags-bar">-->
-<!--                        <span>Full Time<i class="close-tag">x</i></span>-->
-<!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
-<!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
-<!--                        <div class="action-tags">-->
-<!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
-<!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-                    <!-- Tags Bar -->
-                    <div class="filterbar">
-<!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
-<!--                        <div class="sortby-sec">-->
-<!--                            <span>Sort by</span>-->
-<!--                            <select data-menu>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option selected>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                            </select>-->
-<!--                            <select data-menu>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option selected>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                                <option>Most Recent</option>-->
-<!--                            </select>-->
-<!--                        </div>-->
-                        <h5>Total <span id="count"></span> Opportunities</h5>
-                        <h1 class="heading-style">Jobs</h1>
-                    </div>
-                </div><!-- MOdern Job LIst -->
-                <div class="job-list-modern">
-                    <div class="job-listings-sec" id="career_job_list">
-
-                    </div>
-                    <div class="col-md-12">
-                        <div class="viewmore">
-                            <button type="button" id="jobMore">View More</button>
+            <div class="col-lg-3 col-md-3 column">
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Date Posted</h3>
+                            <div class="posted_widget">
+                                <input type="radio" name="choose" value="1"  id="232"><label for="232">Last Hour</label><br/>
+                                <input type="radio" name="choose" value="2" id="wwqe"><label for="wwqe">Last 24 hours</label><br/>
+                                <input type="radio" name="choose" value="3" id="erewr"><label for="erewr">Last 7 days</label><br/>
+                                <input type="radio" name="choose" value="4" id="qwe"><label for="qwe">Last 14 days</label><br/>
+                                <input type="radio" name="choose" value="5" id="wqe"><label for="wqe">Last 30 days</label><br/>
+                                <input type="radio" name="choose" value="6" id="qweqw"><label class="nm" for="qweqw">All</label><br/>
+                            </div>
                         </div>
                     </div>
-                    <h1 class="heading-style">Internships</h1>
-                    <div class="job-listings-sec" id="career_internship_list">
-
+                </div>
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title open">Job Type</h3>
+                            <div class="type_widget">
+                                <p class="ftchek"><input type="checkbox" name="choosetype[]" id="dsf" value="Full Time"><label for="dsf">Full
+                                        Time</label></p>
+                                <p class="ptchek"><input type="checkbox" name="choosetype[]" id="sadd" value="Part Time"><label for="sadd">Part
+                                        Time</label></p>
+                                <p class="tpchek"><input type="checkbox" name="choosetype[]" id="assa" value="Work From Home"><label for="assa">Work From Home
+                                        </label></p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="viewmore">
-                            <button type="button" id="jobMoreIntern">View More</button>
+                </div>
+
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Offerd Salary</h3>
+                            <div class="specialism_widget">
+                                <div class="posted_widget">
+                                    <p><input type="radio" name="salry" id="sal1" min-value="10000" max-value="20000"><label for="sal1">10k - 20k</label>
+                                    </p>
+                                    <p><input type="radio" name="salry" id="sal2" min-value="20000" max-value="30000"><label for="sal2">20k - 30k</label>
+                                    </p>
+                                    <p><input type="radio" name="salry" id="sal3" min-value="30000" max-value="40000"><label for="sal3">30k - 40k</label>
+                                    </p>
+                                    <p><input type="radio" name="salry" id="sal4" min-value="40000" max-value="50000"><label for="sal4">40k - 50k</label>
+                                    </p>
+                                    <p><input type="radio" name="salry" id="sal5" min-value="50000" max-value=""><label for="sal5"> More Then 50k</label>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="widget border">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h3 class="sb-title closed">Career Level</h3>-->
+<!--                            <div class="specialism_widget">-->
+<!--                                <div class="simple-checkbox">-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="5"><label for="5">Intermediate</label>-->
+<!--                                    </p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="6"><label for="6">Normal</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="7"><label for="7">Special</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="8"><label for="8">Experienced</label>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="widget border">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h3 class="sb-title closed">Experince</h3>-->
+<!--                            <div class="specialism_widget">-->
+<!--                                <div class="simple-checkbox">-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="9"><label for="9">1Year to-->
+<!--                                            2Year</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="10"><label for="10">2Year to-->
+<!--                                            3Year</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="11"><label for="11">3Year to-->
+<!--                                            4Year</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="12"><label for="12">4Year to-->
+<!--                                            5Year</label></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="widget border">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="sb-title closed">Gender</h3>
+                            <div class="specialism_widget">
+                                <div class="simple-checkbox">
+                                    <p><input type="checkbox" name="smplechk[]" id="13" value="1"><label for="13">Male</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="14" value="2"><label for="14">Female</label></p>
+                                    <p><input type="checkbox" name="smplechk[]" id="15" value="3"><label for="15">Others</label></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<!--                <div class="widget border">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h3 class="sb-title closed">Industry</h3>-->
+<!--                            <div class="specialism_widget">-->
+<!--                                <div class="simple-checkbox">-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="16"><label for="16">Meezan Job</label>-->
+<!--                                    </p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="17"><label for="17">Speicalize-->
+<!--                                            Jobs</label>-->
+<!--                                    </p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="18"><label for="18">Business-->
+<!--                                            Jobs</label></p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="widget border">-->
+<!--                    <div class="row">-->
+<!--                        <div class="col-md-12">-->
+<!--                            <h3 class="sb-title closed">Qualification</h3>-->
+<!--                            <div class="specialism_widget">-->
+<!--                                <div class="simple-checkbox">-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="19"><label-->
+<!--                                                for="19">Matriculation</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="20"><label-->
+<!--                                                for="20">Intermidiate</label></p>-->
+<!--                                    <p><input type="checkbox" name="smplechk" id="21"><label for="21">Gradute</label>-->
+<!--                                    </p>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div> -->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+            <div class="col-lg-9 col-md-9 column">
+                <div class="modrn-joblist">
+                    <!--                    <div class="tags-bar">-->
+                    <!--                        <span>Full Time<i class="close-tag">x</i></span>-->
+                    <!--                        <span>UX/UI Design<i class="close-tag">x</i></span>-->
+                    <!--                        <span>Istanbul<i class="close-tag">x</i></span>-->
+                    <!--                        <div class="action-tags">-->
+                    <!--                            <a href="#" title=""><i class="fas fa-cloud-upload-alt"></i> Save</a>-->
+                    <!--                            <a href="#" title=""><i class="fas fa-trash-alt"></i> Clean</a>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <!-- Tags Bar -->
+                    <div class="filterbar">
+                        <!--                        <span class="emlthis"><a href="mailto:example.com" title=""><i class="far fa-envelope"></i> Email me Jobs Like These</a></span>-->
+                        <!--                        <div class="sortby-sec">-->
+                        <!--                            <span>Sort by</span>-->
+                        <!--                            <select data-menu>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option selected>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                            </select>-->
+                        <!--                            <select data-menu>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option selected>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                                <option>Most Recent</option>-->
+                        <!--                            </select>-->
+                        <!--                        </div>-->
+                        <h5>Total <span id="count"></span> Opportunities</h5>
+                        <ul class="nav nav-tabs nav-padd-20 set-fonts">
+                            <li class="active"><a data-toggle="tab" href="#jobs_list">Jobs</a></li>
+                            <li><a data-toggle="tab" href="#internships_list">Internships</a></li>
+                        </ul>
+                    </div>
+                </div><!-- MOdern Job LIst -->
+                <div class="job-list-modern tab-content">
+                    <div id="jobs_list" class="tab-pane fade in active">
+                        <div class="loader_screen">
+                            <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+                        </div>
+                        <div class="job-listings-sec" id="career_job_list">
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="viewmore">
+                                <button type="button" id="jobMore">View More</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="internships_list" class="tab-pane fade">
+                        <div class="job-listings-sec" id="career_internship_list">
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="viewmore">
+                                <button type="button" id="jobMoreIntern">View More</button>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -182,6 +325,22 @@ echo $this->render('/widgets/mustache/career-job-box');
 
 $this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerCss('
+.loader_screen img
+{
+display:none;
+margin:auto
+}
+.nav-tabs > li > a{
+    font-family: roboto !important;
+    font-size: 14px !important;
+    border:none;
+}
+.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
+    color: #fff !important;
+    background-color: #00a0e3 !important;
+    font-weight: 500 !important;
+    font-family: roboto !important;
+}
 #myModal{
     top: 50%;
     transform: translateY(-50%);
@@ -294,7 +453,7 @@ section.overlape {
     float: left;
     z-index: 4;
     top: 0;
-    
+    padding:0 15px;
     -webkit-transform: translateX(-50%);
     -moz-transform: translateX(-50%);
     -ms-transform: translateX(-50%);
@@ -306,7 +465,7 @@ section.overlape {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 1180px;
+    max-width: 1180px;
     content: "";
     
     -webkit-transform: translateY(-50%) translateX(-50%);
@@ -483,8 +642,8 @@ section.overlape {
     margin: 0;
 }
 .modrn-joblist {
-    float: left;
     width: 100%;
+    display:flex;
     border-bottom: 1px solid #edeff7;
 }
 .tags-bar > span {
@@ -1048,18 +1207,297 @@ section.overlape {
 .chosen-container{
     border:none !important; 
 }
+/*--- filters----*/
+.widget.border {
+    border: 2px solid #e6e7ef;
+    padding: 18px 20px;
+    
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+
+}
+.widget.border:first-child {
+    margin-top: 30px;
+}
+.sb-title {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #111111;
+    margin: 0;
+    position: relative;
+    padding-right: 30px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.sb-title::before {
+    position: absolute;
+    right: 0;
+    top: 11px;
+    width: 20px;
+    height: 1px;
+    background: #222222;
+    content: "";
+}
+.posted_widget {
+    float: left;
+    width: 100%;
+}
+.posted_widget label {
+    float: left;
+    width: 100%;
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 16px;
+    padding-left: 30px;
+}
+.type_widget {
+    float: left;
+    width: 100%;
+}
+.type_widget p {
+    float: left;
+    width: 100%;
+    margin: 0;
+    font-size: 13px;
+    color: #888888;
+    margin-bottom: 4px;
+}
+.type_widget p label {
+    padding-left: 31px;
+}
+.flchek label::before {
+    border-color: #fb236a !important;
+}
+.ftchek label::before {
+    border-color: #8b91dd !important;
+}
+.ischek label::before {
+    border-color: #f831e3 !important;
+}
+.ptchek label::before {
+    border-color: #7dc246 !important;
+}
+.tpchek label::before {
+    border-color: #26ae61 !important;
+}
+.vtchek label::before {
+    border-color: #18f0f8 !important;
+}
+.sb-title::after {
+    position: absolute;
+    right: 8px;
+    top: 4px;
+    width: 1px;
+    height: 0px;
+    background: #222222;
+    content: "";
+}
+.sb-title.open.active::before {
+    width: 17px;
+}
+.sb-title::after {
+    height: 0px;
+}
+.sb-title.open.active::after {
+    height: 15px;
+}
+
+.sb-title.open.active {
+    margin-bottom: 0;
+}
+.specialism_widget {
+    float: left;
+    width: 100%;
+}
+.simple-checkbox p {
+    float: left;
+    width: 100%;
+    margin: 0;
+        margin-bottom: 0px;
+    font-family: Open Sans;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+.simple-checkbox p label {
+    padding-left: 31px;
+}
+.simple-checkbox p input[type="checkbox"]:checked + label::before, .simple-checkbox p input[type="radio"]:checked + label::before {
+    background: #2c7dfa;
+    border-color: #2c7dfa;
+}
+.simple-checkbox p input[type="checkbox"] + label::after {
+    color: #ffffff;
+}
+.simple-checkbox {
+    float: left;
+    width: 100% !important;
+}
+.simple-checkbox.scrollbar {
+    height: 232px;
+}
+.sb-title.closed::after {
+    height: 15px;
+}
+.sb-title.closed::before {
+    width: 17px;
+}
+.subscribe_widget > h3 {
+    float: left;
+    width: 100%;
+    font-family: Open Sans;
+    font-size: 15px;
+    color: #111111;
+    margin: 0;
+        margin-bottom: 0px;
+    position: relative;
+    padding-right: 30px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+ .subscribe_widget form input {
+    border: 2px solid #e8ecec;
+    color: #333333;
+}
+ .subscribe_widget form button {
+    background: #fb236a;
+}
+
+/*---form elements----*/
+.widget input[type="checkbox"],
+.widget input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+  margin: 0;
+}
+.widget label {
+  position: relative;
+  display: inline-block;
+  padding: 0 0 0 2em;
+  margin-right: 10px;
+  height: 1.5em;
+  line-height: 1.5;
+  cursor: pointer;
+}
+.widget label::before,
+.widget label::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 20px !important;
+  height: 20px !important;
+}
+.widget label::before {
+  content: " ";
+  border: 2px solid #e6e7ef;
+  
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+
+}
+/* Checkbox */
+.widget input[type="checkbox"] + label::after {
+  content: "\2714";
+  color: #2c3e50;
+  line-height: 1.5;
+  text-align: center;
+  border: none !important;
+}
+/* Radio */
+.widget input[type="radio"] + label::before {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+
+}
+.widget input[type=radio] + label::after {
+  content: " ";
+  top: 7px;
+  left: 7px;
+  width: 6px !important;
+  height: 6px !important;
+  background: #fff;
+  border: 3px solid #fb236a;
+  
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  -o-border-radius: 50%;
+  border-radius: 50%;
+
+}
+/* :checked */
+.widget input[type="checkbox"]:checked + label::before,
+.widget input[type="radio"]:checked + label::before {
+  background: #ffffff;
+  border-color: #e6e7ef;
+}
+.widget input[type="checkbox"] + label::after,
+.widget input[type=radio] + label::after {
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -ms-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0);
+}
+.widget input[type="checkbox"]:checked + label::after,
+.widget input[type=radio]:checked + label::after {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+}
+/* Transition */
+.widget label::before,
+.widget label::after {
+  -webkit-transition: .25s all ease;
+  -moz-transition: .25s all ease;
+  -ms-transition: .25s all ease;
+  -o-transition: .25s all ease;
+  transition: .25s all ease;
+}
+
+
 ');
 $script = <<< JS
+$('.sb-title.open').next().slideDown();
+$('.sb-title.closed').next().slideUp();
+$('.sb-title').on('click', function(){
+    $(this).next().slideToggle();
+    $(this).toggleClass('active');
+    $(this).toggleClass('closed');
+});
 let page = 1;
 let limit = 10;
 var loadmore=false;
 var jobPage = 0;
 var internPage = 0;
-$.ajax({
+function load_all(page,limit,keywords=null,city=null,date=null,choosetype=null,gender=null,minsalary=null,maxsalary=null)
+{
+    $.ajax({
     url:window.location.href,
     method: 'post',
-    data:{page: page, limit: limit},
+    data:{
+        page: page, limit: limit,keywords:keywords,location:city,date:date,choosetype:choosetype,gender:gender,minsalary:minsalary,maxsalary:maxsalary
+        },
+    beforeSend: function()
+    {
+        $('.img_load').css('display','block');
+    },    
     success:function(data){
+        $('.img_load').css('display','none');
         if(data.status == 200){
             var career = $('#career-job-box').html();
             $("#career_job_list").html(Mustache.render(career, data.jobs));
@@ -1068,7 +1506,7 @@ $.ajax({
             $('#count').text(data.count);
             if(data['jobs'].length >= 10){
                 jobPage = 2;
-            }else{
+            }else{ 
                 $('#jobMore').hide();
             }
              if(data['internships'].length >= 10){
@@ -1078,7 +1516,9 @@ $.ajax({
             }
         }
     }
- });
+ }); 
+}
+load_all(page=1,limit=10);
 $('#jobMore').on('click',function(e) {
   e.preventDefault();
   $.ajax({
@@ -1189,7 +1629,7 @@ $(document).click(e => {
         $('.select-menu').removeClass('open');
     }
 })
-var slugg = 'ravinder21'  
+var slugg = slug_var;  
 var data = {slug: slugg};
 
 $.ajax({
@@ -1199,9 +1639,59 @@ $.ajax({
    success: function(response){
        $('#dropcv').val(response.message);
    }
-});   
+});
+$(document).on('submit','#search_form',function(e) {
+    e.preventDefault();
+    var key = $('#keywords').val();
+    var city = $('#cities_drp').val();
+    if (key==''&&city=='')
+        {
+            alert('select atleast one city or atleast enter one keyword');
+            return false;
+        }
+    load_all(page=1,limit=20,keywords=key,city=city);
+});  
+$(document).on('click','input[name="choose"]',function(e) {
+  load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$(this).val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+});
+$(document).on('click','input[name="choosetype[]"]',function(e) {
+  load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$('input[name="choose"]:checked').val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+});
+
+$(document).on('click','input[name="smplechk[]"]',function(e) {
+      load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$('input[name="choose"]:checked').val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+});
+
+$(document).on('click','input[name="salry[]"]',function(e) {
+      load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$('input[name="choose"]:checked').val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+});
+
+function getGender(gend) {
+  $.each($("input[name='smplechk[]']:checked"), function(){            
+                gend.push(($(this).val()));
+            });
+  return gend;
+}
+
+function getChoosetype(type) {
+  $.each($("input[name='choosetype[]']:checked"), function(){            
+                type.push($(this).val());
+            });
+  return type;
+}
+
+function getminSalry() { 
+  return $('input[name="salry"]:checked').attr("min-value");
+}
+function getmaxSalry() {
+  return $('input[name="salry"]:checked').attr("max-value");
+}
+$(document).on('click','input[name="salry"]',function(e) {
+  load_all(page=1,limit=20,keywords=$('#keywords').val(),city=$('#cities_drp').val(),date=$('input[name="choose"]:checked').val(),choosetype=getChoosetype(type=[]),gender=getGender(gend=[]),minsalary=getminSalry(),maxsalary=getmaxSalry());
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/css/chosen.css');
 $this->registerJsFile('@eyAssets/js/select-chosen.js');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

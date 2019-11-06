@@ -196,7 +196,6 @@ use yii\widgets\Pjax;
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
                                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
@@ -206,7 +205,6 @@ use yii\widgets\Pjax;
                                                     <div class="">You haven't Select any internships for review.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();

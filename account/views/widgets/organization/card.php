@@ -3,12 +3,16 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+if(!$column_size){
+    $column_size = 'col-md-3';
+}
+
 Pjax::begin(['id' => 'pjax_org']);
 if ($organization_data) {
     foreach ($organization_data as $shortlist) {
         $logo = $shortlist['logo'];
         ?>
-        <div class="col-md-4 hr-j-box">
+        <div class="<?= $column_size;?> hr-j-box">
             <div class="topic-con">
                 <div class="hr-company-box">
                     <a href="/<?= $shortlist['slug']; ?>">
