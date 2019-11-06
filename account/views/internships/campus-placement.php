@@ -422,7 +422,7 @@ $this->registerCss('
     text-align: center;
     margin-bottom: 30px;
 }
-.job-listing-company-logo img {
+.job-listing-company-logo img, .job-listing-company-logo {
     width: 80px;
     height: 80px;
 }
@@ -450,6 +450,10 @@ $this->registerCss('
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    max-width: calc(100% - 110px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .job-details-inner {
     line-height: 1.6;
@@ -462,6 +466,9 @@ $this->registerCss('
     -webkit-box-flex: inherit;
     -ms-flex: inherit;
     flex: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .job-listing-loop-job__title {
     font-size: 16px;
