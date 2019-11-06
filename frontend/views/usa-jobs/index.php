@@ -265,7 +265,6 @@ $this->registerCss("
    position: absolute;
     bottom: 10px;
     right: 10px;
-//    background: #00a0e3;
     background: linear-gradient(45deg, #00a0e3, #89d8f9);
     padding: 7px 13px;
     color: #fff;
@@ -274,7 +273,6 @@ $this->registerCss("
 }
 .usa-read:hover{
     color:#fff;
-//    border-radius:0px;
     transition:.3s ease;
     background: linear-gradient(45deg, #89d8f9, #00a0e3);    
 }
@@ -303,9 +301,6 @@ $this->registerCss("
     font-weight: 700;
 }
 
-.background-color{
-//	background-color:#dce4ef;
-}
 .usa-job-title{
 	text-align: center;
 	font-weight: 700;
@@ -329,9 +324,8 @@ $this->registerCss("
 	padding: 10px;
 	background-color: white;
 	border-radius: 6px;
-//	box-shadow: 0px 2px 6px 5px lightgray;
 	box-shadow: 0px 0px 10px rgba(211,211,211,.5);
-	margin: 10px;
+	margin: 10px 0;
 	min-height: 24em;
 	transition: 0.5s;
 	position:relative;
@@ -772,7 +766,7 @@ $script = <<< JS
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
   fetchLocalData(template=$('#cards'),min+8,max+8,loader=false,loader_btn=true);
-})
+});
 var host = 'data.usajobs.gov';  
 var userAgent = 'snehkant93@gmail.com';  
 var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM='; 
@@ -780,7 +774,7 @@ $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
   fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
-})
+});
 var min =0;
 var max = 8;
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
