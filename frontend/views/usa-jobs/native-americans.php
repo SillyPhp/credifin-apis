@@ -7,7 +7,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/native americans(1).png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/native-americans-bg.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">

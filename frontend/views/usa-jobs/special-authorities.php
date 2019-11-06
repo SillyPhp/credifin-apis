@@ -7,14 +7,14 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/Students & recent graduates(1).png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/special-authorities.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="usa-heading bg-color">
-                            <img src="<?= Url::to('@eyAssets/images/usajobs/Special authorities1.png'); ?>"
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Specialauthorities1.png'); ?>"
                                  class="img_load">
                             <h3> Special Authorities </h3>
                         </div>
