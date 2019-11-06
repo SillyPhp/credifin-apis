@@ -186,9 +186,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 <?php

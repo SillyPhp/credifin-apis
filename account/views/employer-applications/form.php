@@ -235,98 +235,24 @@ Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS
     </div>
 </div>
 <div class="fader"></div>
-
-<div class="modal fade" id="add-new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="org-info">Organization Information</span>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="comp-logo">
-                            <img src="/assets/themes/ey/images/pages/hr-recruiters/1job.png">
-                        </div>
-                        <div class="add-photo">
-                            <i class="fa fa-plus" style="position: absolute;bottom: 40px;left: 55px;"></i>
-                            <span style="position: absolute;bottom: 16px;left: 31px;font-size:12px;">Add photo</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group form-md-line-input form-md-floating-label">
-                            <input type="text" class="form-control" placeholder="Organization Name"/>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group form-md-line-input form-md-floating-label">
-                            <input type="email" class="form-control" placeholder="Organization E-mail"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group form-md-line-input form-md-floating-label">
-                            <input type="text" class="form-control" placeholder="Website"/>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group form-md-line-input form-md-floating-label">
-                            <input type="tel" class="form-control" placeholder="Phone No.">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <select class="form-control" id="exampleFormControlSelect1">
-                            <option>Select Business Activity</option>
-                            <option>Banking & Finance</option>
-                            <option>Educational Institute</option>
-                            <option>Schools</option>
-                            <option>Colleges</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 padd">
-                        <div class="form-group form-md-line-input form-md-floating-label">
-                            <textarea id="form7" class="md-textarea form-control" rows="5   "></textarea>
-                            <label for="form7">Description</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 align">
-                        <div class="form-group">
-                            <ul class="ks-cboxtags">
-                                <li class="service-list">
-                                    <input type="checkbox" id="services" class="checkbox-input services"/>
-                                    <label for="services">
-                                        Jobs
-                                    </label>
-                                </li>
-                                <li class="service-list">
-                                    <input type="checkbox" id="services2" class="checkbox-input services"/>
-                                    <label for="services2">
-                                        Internships
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-primary">Save</a>
-            </div>
-        </div>
-    </div>
-</div>
+<input type="hidden" id="app_id_main"/>
 <?php
+//echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
+//    'type' => $type,
+//]);
 $this->registerCss("
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/ai-header.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.page-container-bg-solid .page-content{
+    background: transparent !important;
+}
+.portlet.light {
+    background-color: #ffffffe3 !important;
+}
 ul.ks-cboxtags {
     list-style: none;
     padding:0px;
@@ -1898,22 +1824,25 @@ window.ChildFunction = ChildFunction;
                        {
                          $('.button-submit').prop('disabled','disabled');
                        },
-                   success: function(data) {
-                   if(data == true)
-                    {
-                    $('.fader').css('display','block');    
-                    $('#loading_img').addClass('show');    
+                   success: function(res) {
+                   if(res['status'] == 200) {
+                        $('.fader').css('display','block');    
+                        $('#loading_img').addClass('show');
+                        $('#app_id_main').val(res['app_id']);
+                        // setTimeout(function() {
+                        //     $('.m-modal, .m-cover').removeClass("hidden");
+                        //     $('.m-modal').addClass("zoom");
+                        // }, 500);
                     function explode(){
                      window.location.replace(redirect_url); 
                      }
-                       setTimeout(explode, 2000); 
+                       setTimeout(explode, 2000);
+                     } else {
+                         $('#loading_img').removeClass('show');
+                         $('.button-submit').prop('disabled','');
+                         $('.fader').css('display','none');
+                         toastr.error('Opps Something went wrong', 'Server Error');
                      }
-                     else {
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
-                     $('.fader').css('display','none');
-                     toastr.error('Opps Something went wrong', 'Server Error');
-                       }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');

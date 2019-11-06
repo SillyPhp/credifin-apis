@@ -3,6 +3,14 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
+if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+    echo $this->render('/widgets/campus-placement/select-college', [
+        'colleges' => $colleges,
+        'addedColleges' => $addedColleges,
+        'saveCollege' => $saveCollege,
+    ]);
+}
+
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Jobs',
 ]);
@@ -11,7 +19,7 @@ echo $this->render('/widgets/header/secondary-header', [
         <?=
         $this->render('/widgets/jobs/stats', [
             'questionnaire' => $questionnaire,
-            'applications' => $applications,
+            'applications' => $applications['total'] + $erexx_applications['total'],
             'interview_processes' => $interview_processes,
             'total_applied' => $total_applied,
             'viewed' => $viewed,
@@ -28,9 +36,13 @@ echo $this->render('/widgets/header/secondary-header', [
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                           class="viewall-jobs"><?= Yii::t('account', 'Create AI Job'); ?></a>
+                        <a href="<?= Url::toRoute('/jobs/quick-job'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Create Quick Job'); ?></a>
+                        <a href="<?= Url::to('/tweets/job/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Post Job Tweet'); ?></a>
                         <?php if ($applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/jobs'); ?>" title=""
+                            <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" title=""
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
                         <?php endif; ?>
                     </div>
@@ -58,6 +70,38 @@ echo $this->render('/widgets/header/secondary-header', [
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-12 col-xs-12 col-sm-12">
+            <div class="portlet light nd-shadow">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class=" icon-social-twitter font-dark hide"></i>
+                        <span class="caption-subject font-dark bold uppercase">Active Erexx Jobs</span>
+                    </div>
+                    <div class="actions">
+                        <a href="<?= Url::toRoute('/jobs/create'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <?php if ($erexx_applications['total'] > 8): ?>
+                            <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" title=""
+                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <?php
+                    if ($erexx_applications['total'] > 0) {
+                        echo $this->render('/widgets/applications/card', [
+                            'applications' => $erexx_applications['data'],
+                            'per_row' => 4,
+                        ]);
+                    } else {
+                        ?>
+                        <h3>No Active Erexx Jobs</h3>
+                    <?php }
+                    ?>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-6 col-xs-12 col-sm-12">
@@ -70,6 +114,8 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="actions">
                         <a href="<?= Url::toRoute('/questionnaire/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Choose From Templates'); ?></a>
                         <?php if ($questionnaire['total'] > 4): ?>
                             <a href="<?= Url::toRoute('/questionnaire'); ?>"
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
@@ -112,6 +158,8 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="actions">
                         <a href="<?= Url::toRoute('/hiring-processes/create'); ?>"
                            class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>"
+                           class="viewall-jobs"><?= Yii::t('account', 'Choose From Templates'); ?></a>
                         <?php if ($interview_processes['total'] > 4): ?>
                             <a href="<?= Url::toRoute('/hiring-processes'); ?>"
                                class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>

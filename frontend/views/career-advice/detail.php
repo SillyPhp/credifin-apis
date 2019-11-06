@@ -9,7 +9,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-12">
                 <div class="csb-pos-rel">
-                    <div class="csb-header-text">Career Advice</div>
+                    <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
                 </div>
             </div>
         </div>
@@ -42,20 +42,24 @@ use yii\helpers\Url;
                                 <div class="tp-box">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <div class="img-box">
-                                                <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
-                                            </div>
+                                            <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                <div class="img-box">
+                                                    <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                </div>
+                                            </a>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="cs-blog-detail">
                                                 <div class="heading-text">
-                                                    <?= $c['title'] ?>
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                        <?= $c['title'] ?>
+                                                    </a>
                                                 </div>
                                                 <div class="box-des">
                                                     <?= $c['description'] ?>
                                                 </div>
                                                 <div class="cs-read-btn">
-                                                    <a href="<?= $c['link'] ?>">Read</a>
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">Read</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -69,42 +73,44 @@ use yii\helpers\Url;
                 }
                 ?>
             </div>
-            <div class="divider"></div>
-            <div class="row">
-                <div class="col-md-8">
-                    <?php
-                    $count = 0;
-                    for ($i = 0; $i < count($careerBlog); $i++) {
-                        $count++
-                        ?>
-                        <div class="vertical-blog">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <div class="ca-vb-icon">
-                                        <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+            <?php if (count($careerBlog) > 6) { ?>
+                <div class="divider"></div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <?php
+                        //                        $count = 0;
+                        for ($i = 6; $i < count($careerBlog); $i++) {
+//                            $count++
+                            ?>
+                            <div class="vertical-blog">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="ca-vb-icon">
+                                            <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="ca-vd-details">
-                                        <div class="heading-text">
-                                            <?= $careerBlog[$i]['title'] ?>
-                                        </div>
-                                        <div class="box-des">
-                                            <?= $careerBlog[$i]['description'] ?>
-                                        </div>
-                                        <div class="cs-vd-btn">
-                                            <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
+                                    <div class="col-md-9">
+                                        <div class="ca-vd-details">
+                                            <div class="heading-text">
+                                                <?= $careerBlog[$i]['title'] ?>
+                                            </div>
+                                            <div class="box-des">
+                                                <?= $careerBlog[$i]['description'] ?>
+                                            </div>
+                                            <div class="cs-vd-btn">
+                                                <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <?php
-                    }
-                    ?>
+                            <?php
+                        }
+                        ?>
+                    </div>
                 </div>
-            </div>
-            <?php
+                <?php
+            }
         }
         ?>
     </div>
@@ -186,9 +192,8 @@ text-align:right;
    
 .blog-img{
     width: 100%;
-	height: auto;
+	max-height: 430px;
 	border-radius: 5px 5px 0px 0px;
-
 }
 .heading{
     margin-bottom: 15px;

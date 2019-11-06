@@ -84,7 +84,7 @@ $this->registerCss('
 
 $r = [
     'username' => Yii::$app->user->identity->username,
-    'type'=> 'career'
+    'type'=> 'company'
 ];
 $result = json_encode($r);
 

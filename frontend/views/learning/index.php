@@ -1,9 +1,7 @@
 <?php
+
 $this->params['header_dark'] = true;
-$this->title = Yii::t('frontend', 'Learning Corner');
-
 use yii\helpers\Url;
-
 ?>
 <section>
     <div class="container headsec">
@@ -297,7 +295,8 @@ use yii\helpers\Url;
                                         <?= $obj['question']; ?>
                                     </div>
                                     <div class="t-answers">
-                                        <span class="answers"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
+                                        <span class="answers"><a href="<?= $link ?>"
+                                                                 target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
                                         <div class="best-answers">
                                             <?php if (!empty($obj['questionsPoolAnswers'])): ?>
                                                 <span class="best-images">
@@ -353,11 +352,11 @@ use yii\helpers\Url;
 
 <section>
     <div class="container">
-<!--        <div class="row">-->
-            <div class="col-md-12">
-                <h2 class="heading-style">Our Collaborators</h2>
-            </div>
-<!--        </div>-->
+        <!--        <div class="row">-->
+        <div class="col-md-12">
+            <h2 class="heading-style">Our Collaborators</h2>
+        </div>
+        <!--        </div>-->
         <div class="row">
             <div class="col-md-12" id="contributors">
 

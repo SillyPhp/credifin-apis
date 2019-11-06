@@ -11,13 +11,6 @@ use common\models\JsonMachine\JsonMachine;
 
 class UsaJobsController extends Controller
 {
-    public function beforeAction($action)
-    {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
-        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
-        return parent::beforeAction($action);
-    }
-
     public function actionIndex($keywords = null)
     {
         return $this->render('index', ['keywords' => $keywords]);
@@ -114,6 +107,60 @@ class UsaJobsController extends Controller
         $strpos = strpos($string, ',');
         $stringSplit1 = substr($string, 0, $strpos);
         return trim($stringSplit1);
+    }
+
+    public function actionFederal(){
+
+        return $this->render('federal');
+    }
+
+    public function actionMilitary(){
+
+        return $this->render('military');
+    }
+
+    public function actionIndividualsWithDisabilities(){
+
+        return $this->render('individuals-with-disabilities');
+    }
+
+    public function actionNativeAmericans(){
+        return $this->render('native-americans');
+    }
+
+    public function actionStudentsRecentGraduates(){
+
+        return $this->render('students-recent-graduates');
+    }
+
+    public function actionSpecialAuthorities(){
+
+        return $this->render('special-authorities');
+    }
+
+    public function actionThePublic(){
+
+        return $this->render('the-public');
+    }
+
+    public function actionNationalGuardReserves(){
+        return $this->render('national-guard-reserves');
+    }
+
+    public function actionPeaceCorps(){
+        return $this->render('peace-corps');
+    }
+
+    public function actionOverseasEmployees(){
+        return $this->render('overseas-employees');
+    }
+
+    public function actionVeterans(){
+        return $this->render('veterans');
+    }
+
+    public function actionSeniorExecutives(){
+        return $this->render('senior-executives');
     }
 
 }

@@ -23,9 +23,9 @@ $careerAdviceCategories = [
         "buttonColor" => "vb-orange",
     ],
     [
-        "name" => "Find Company",
+        "name" => "Finding Your Dream Company",
         "icon" => Url::to('@eyAssets/images/pages/custom/find-company.png'),
-        "slug" => "find-company",
+        "slug" => "finding-your-dream-company",
         "buttonColor" => "vb-purple",
     ],
     [
@@ -65,15 +65,15 @@ $careerAdviceCategories = [
         "buttonColor" => "vb-purple",
     ],
     [
-        "name" => "Brand",
+        "name" => "Personal Branding",
         "icon" => Url::to('@eyAssets/images/pages/custom/brand.png'),
-        "slug" => "brand",
+        "slug" => "personal-branding",
         "buttonColor" => "vb-pink",
     ],
     [
-        "name" => "Employee",
+        "name" => "Employers Corner",
         "icon" => Url::to('@eyAssets/images/pages/custom/employee.png'),
-        "slug" => "employee",
+        "slug" => "employers-corner",
         "buttonColor" => "vb-green",
     ]
 ];

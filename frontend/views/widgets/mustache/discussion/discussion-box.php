@@ -6,7 +6,7 @@
         <div class="add-comment">
             <div class="row">
                 <div class="col-md-10 col-md-offset-1">
-                    <form id="postComm" action="/<?= Yii::$app->controller->id; ?>/comments/parent-comment">
+                    <form id="postComm" action="/<?= $controllerId; ?>/parent-comment">
                         <div class="">
                             <textarea id="commentArea"></textarea>
                         </div>
@@ -67,7 +67,7 @@ $this->registerCss('
 
 $this->registerJs('
     //page load => get all parent comments
-    var slug = window.location.pathname.split("/");
+        var slug = window.location.pathname.split("/");
         var lastpart = slug[slug.length-1];
         if(lastpart === "")
         {
@@ -75,7 +75,7 @@ $this->registerJs('
         }
     $.ajax({
         type: "POST",
-        url: "/' . Yii::$app->controller->id . '/comments/get-parent-comments",
+        url: "/' . $controllerId . '/get-parent-comments",
         async: false,
         data: {
             param: lastpart
@@ -322,7 +322,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 
         $.ajax({
             type: 'POST',
-            url: '/<?= Yii::$app->controller->id; ?>/comments/get-child-comments',
+            url: '/<?= $controllerId; ?>/get-child-comments',
             data: {
                 parent: parent_id,
                 param: lastpart,
@@ -422,7 +422,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <div class="col-md-10 col-md-offset-2">
             <div class="reply-comment">
                 <div class="col-md-12">
-                    <form action="/<?= Yii::$app->controller->id; ?>/comments/child-comment" id="child-comment-box">
+                    <form action="/<?= $controllerId; ?>/child-comment" id="child-comment-box">
                         <textarea id="commentReply" class="repComment"></textarea>
                         <div class="comment-sub1">
                             <button type="button" class="addComment" id="reply_comm" onclick="addDynamicComment(this)">

@@ -14,7 +14,10 @@
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                 </li>
                                 <li>
-                                    <a href="/usa-jobs">USA Jobs</a>
+                                    <a href="/govt-jobs">Indian Govt. Jobs</a>
+                                </li>
+                                <li>
+                                    <a href="/usa-jobs">USA Govt. Jobs</a>
                                 </li>
                                 <li>
                                     <a href="/organizations">Explore Companies</a>
@@ -130,6 +133,11 @@
             </div>
         </li>
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+            <a href="/career-advice">
+                Career Advice
+            </a>
+        </li>
+        <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/blog">
                 Blog
                 <i class="fa fa-caret-down" aria-hidden="true"></i>
@@ -187,6 +195,14 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Job</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/jobs/quick-job">
                                                             <div>
                                                                 <span class="ey-services-icons quick"></span>
@@ -202,14 +218,6 @@
                                                             <span>Post Job Tweet</span>
                                                         </a>
                                                     </li>
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <a href="/account/jobs/create">
-                                                            <div>
-                                                                <span class="ey-services-icons ai"></span>
-                                                            </div>
-                                                            <span>Create AI Job</span>
-                                                        </a>
-                                                    </li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -218,19 +226,19 @@
                                             <div class="ey-sub-sec">
                                                 <ul class="ey-head-sub-menu-items">
                                                     <li class="ey-head-sub-menu-icon">
-                                                        <a href="/tweets/internship/create">
-                                                            <div>
-                                                                <span class="ey-services-icons tweet"></span>
-                                                            </div>
-                                                            <span>Post Internship Tweet</span>
-                                                        </a>
-                                                    </li>
-                                                    <li class="ey-head-sub-menu-icon">
                                                         <a href="/account/internships/create">
                                                             <div>
                                                                 <span class="ey-services-icons ai"></span>
                                                             </div>
                                                             <span>Create AI Internship</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/internship/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Internship Tweet</span>
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -902,8 +910,10 @@ $this->registerCss('
     padding: 0 0 19px;
 }
 .ey-mobile-menu .ey-mobile-menu-toggler, .ey-mobile-menu .ey-mobile-menu-item-toggler {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1em;
+    padding: 22px 30px;
+    margin-top: -25px;
     position: absolute;
     right: 0;
     top: 7px;
