@@ -23,12 +23,8 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                 </div>
             </div>
         </div>
-<!--        <div class="overlay-image i-2"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/top-header.png');?><!--"/></div>-->
-<!--        <div class="overlay-image i-3"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/bottom-header-1.png');?><!--"/></div>-->
-<!--        <div class="overlay-image i-4"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?><!--"/></div>-->
     </div>
 </section>
-<body>
 <section class="background-color">
     <div class="container">
         <div class="usajobs-main-box">
@@ -38,251 +34,214 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
             </p>
         </div>
         <div class="row">
-            <div class="col-md-12">
-                <!--- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Veterans1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Veterans
-                                </h3>
-                                <div>
-                                    If you’re a Veteran who served on active duty in the U.S. Armed Forces and were separated under honorable conditions, you may be eligible for veterans.
-                                </div>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Veterans1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Veterans
+                            </h3>
+                            <div>
+                                If you’re a Veteran who served on active duty in the U.S. Armed Forces and were separated under honorable conditions, you may be eligible for veterans.
+                            </div>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/veterans')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
-                <!---------col 3 en here--->
-                <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Individuals with disabilities1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Individuals with disabilities
-                                </h3>
-                                <p>
-                                    Federal agencies can use
-                                    the Schedule A Hiring Authority
-                                    to hire an individual with a disability.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Individuals with disabilities1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Individuals with disabilities
+                            </h3>
+                            <p>
+                                Federal agencies can use
+                                the Schedule A Hiring Authority
+                                to hire an individual with a disability.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/individuals-with-disabilities')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
-
-                <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Peace Corps & AmeriCorps VISTA
-                                </h3>
-                                <p>
-                                    Your non-competitive eligibility lasts for one year after completing your Peace Corps.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Peace Corps & AmeriCorps VISTA
+                            </h3>
+                            <p>
+                                Your non-competitive eligibility lasts for one year after completing your Peace Corps.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/peace-corps')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
-
-                <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Senior executives1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Senior executives
-                                </h3>
-                                <p>
-                                  You may be eligible for a Senior Executive Service position if you meet the five Executive Core Qualifications (ECQs).
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Senior executives1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Senior executives
+                            </h3>
+                            <p>
+                              You may be eligible for a Senior Executive Service position if you meet the five Executive Core Qualifications (ECQs).
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/senior-executives')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
-
-                <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/public1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Open to the Public
-                                </h3>
-                                <p>
-                                    U.S. citizens, nationals or those who owe allegiance to the U.S.
-                                    You’re eligible as long as you’re a U.S. citizen or national.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/public1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Open to the Public
+                            </h3>
+                            <p>
+                                U.S. citizens, nationals or those who owe allegiance to the U.S.
+                                You’re eligible as long as you’re a U.S. citizen or national.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/the-public')?>" class="usa-read">Read more</a>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Native Americans1(1).png');?>"/>
+                        </div>
+                        <div class="text">
+                            <h3 class="heading">
+                                Native Americans
+                            </h3>
+                            <p>
+                                If you're an American Indian or an Alaskan Native who is a member of one of the federally recognized tribes.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/native-americans')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Native Americans1(1).png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Native Americans
-                                </h3>
-                                <p>
-                                    If you're an American Indian or an Alaskan Native who is a member of one of the federally recognized tribes.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Special authorities1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Special authorities
+                            </h3>
+                            <p>
+                                The Federal Government offers other special hiring paths to help hire individuals that represent our diverse society.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/special-authorities')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Special authorities1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Special authorities
-                                </h3>
-                                <p>
-                                    The Federal Government offers other special hiring paths to help hire individuals that represent our diverse society.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/National Guard & Reserves1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                National Guard & Reserves
+                            </h3>
+                            <p>
+                                If you’re a member of the National Guard, or are willing and able to join the National Guard
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/national-guard-reserves')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/National Guard & Reserves1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    National Guard & Reserves
-                                </h3>
-                                <p>
-                                    If you’re a member of the National Guard, or are willing and able to join the National Guard
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Family of overseas employees1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Family of overseas employees
+                            </h3>
+                            <p>
+                                Hiring options depend on whether you’re currently working overseas and are planning to come back to the United States
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/overseas-employees')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Family of overseas employees1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Family of overseas employees
-                                </h3>
-                                <p>
-                                    Hiring options depend on whether you’re currently working overseas and are planning to come back to the United States
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Military spouses1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Military spouses
+                            </h3>
+                            <p>
+                                Federal agencies can use the military spouse non-competitive hiring process to fill positions on either a temporary or permanent basis.
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/military')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Military spouses1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Military spouses
-                                </h3>
-                                <p>
-                                    Federal agencies can use the military spouse non-competitive hiring process to fill positions on either a temporary or permanent basis.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Students & recent graduates1.png');?>"/>
                         </div>
-                    </a>
+                        <div class="text">
+                            <h3 class="heading">
+                                Students & recent graduates
+                            </h3>
+                            <p>
+                                If you’re a current student or recent graduate, you may be eligible for federal internships and jobs
+                            </p>
+                        </div>
+                        <a href="<?= Url::to('/usa-jobs/students-recent-graduates')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
 
                 <!----- commemet col 3 start from here-->
                 <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Students & recent graduates1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Students & recent graduates
-                                </h3>
-                                <p>
-                                    If you’re a current student or recent graduate, you may be eligible for federal internships and jobs
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                    <div class="card-box">
+                        <div class="icon">
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Federal employees1.png');?>"/>
                         </div>
-                    </a>
-                </div>
-
-                <!----- commemet col 3 start from here-->
-                <div class="col-md-3 col-sm-6 col-xs-12">
-                    <a href="#">
-                        <div class="card-box">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/usajobs/Federal employees1.png');?>"/>
-                            </div>
-                            <div class="text">
-                                <h3 class="heading">
-                                    Federal employees
-                                </h3>
-                                <p>
-                                    If you are a current or former federal employee, there are different hiring options available to you, depending on your eligibility.
-                                </p>
-                            </div>
-                            <button class="btn">Read more</button>
+                        <div class="text">
+                            <h3 class="heading">
+                                Federal employees
+                            </h3>
+                            <p>
+                                If you are a current or former federal employee, there are different hiring options available to you, depending on your eligibility.
+                            </p>
                         </div>
-                    </a>
+                        <a href="<?= Url::to('/usa-jobs/federal')?>" class="usa-read">Read more</a>
+                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
 </section>
@@ -302,10 +261,24 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 </section>
 <?php
 $this->registerCss("
-.loader_screen img
-{
-display:none;
-margin:auto
+.usa-read{
+   position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(45deg, #00a0e3, #89d8f9);
+    padding: 7px 13px;
+    color: #fff;
+    font-size: 13px;
+    border-radius: 5px;
+}
+.usa-read:hover{
+    color:#fff;
+    transition:.3s ease;
+    background: linear-gradient(45deg, #89d8f9, #00a0e3);    
+}
+.loader_screen img{
+    display:none;
+    margin:auto
 }
 .re-twitte{
 	position:fixed;
@@ -328,9 +301,6 @@ margin:auto
     font-weight: 700;
 }
 
-.background-color{
-	background-color:#dce4ef;
-}
 .usa-job-title{
 	text-align: center;
 	font-weight: 700;
@@ -346,7 +316,7 @@ margin:auto
 	margin-bottom: 1em;
 	margin-top: 1em;
 	font-size: 16px;
-	padding: 25px;
+	padding: 25px 0;
 	color:black;
 }
 
@@ -354,10 +324,11 @@ margin:auto
 	padding: 10px;
 	background-color: white;
 	border-radius: 6px;
-	box-shadow: 0px 2px 6px 5px lightgray;
-	margin: 10px;
+	box-shadow: 0px 0px 10px rgba(211,211,211,.5);
+	margin: 10px 0;
 	min-height: 24em;
 	transition: 0.5s;
+	position:relative;
 }
 .icon img {
 	max-width: 65px;
@@ -376,6 +347,7 @@ margin:auto
 	font-size: 22px;
 	color: black;
 	font-family: roboto;
+	text-transform:capitalize;
 }
 
 
@@ -396,8 +368,10 @@ margin:auto
 }
 
 .card-box:hover {
-	background-color: #ffa251;
-	color: white;
+//	background-color: #ffa251;
+	color: #fff;
+	box-shadow:0 0 10px rgba(211,211,211,.9);
+	transform: translateY(-2px);
 }
 
 
@@ -792,7 +766,7 @@ $script = <<< JS
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
   fetchLocalData(template=$('#cards'),min+8,max+8,loader=false,loader_btn=true);
-})
+});
 var host = 'data.usajobs.gov';  
 var userAgent = 'snehkant93@gmail.com';  
 var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM='; 
@@ -800,7 +774,7 @@ $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
   fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
-})
+});
 var min =0;
 var max = 8;
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);

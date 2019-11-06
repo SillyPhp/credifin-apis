@@ -20,7 +20,7 @@ echo $this->render('/widgets/drop_resume', [
                 <div class="inner-header wform">
                     <div class="nav-com-logo">
                         <a href="<?= Url::to($org['website']) ?>">
-                            <img src="<?= $org['logo'] ?>" alt="">
+                            <img src="<?= $org['logo'] ?>" alt="<?= $org['name'] ?>">
                         </a>
                     </div>
                     <div class="job-search-sec">
