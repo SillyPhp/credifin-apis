@@ -11,6 +11,7 @@ class Applications extends EmployerApplications
     private $_limit;
     private $_pageNumber;
     private $_where = [];
+    private $_andWhere = [];
     private $_orderBy = [];
     private $_having = [];
 
@@ -31,6 +32,7 @@ class Applications extends EmployerApplications
                 $c->select(['e.application_enc_id']);
             }], true)
             ->joinWith(['placementLocations'])
+            ->joinWith(['locations'])
             ->where(['a.is_deleted' => 0])
             ->groupBy(['a.application_enc_id']);
 
@@ -43,6 +45,11 @@ class Applications extends EmployerApplications
         if ($this->_where) {
             $applications->andWhere($this->_where);
         }
+
+        if($this->_andWhere){
+            $applications->andWhere($this->_andWhere);
+        }
+
         if ($this->_having) {
             $applications->having($this->_having);
         }
@@ -71,6 +78,7 @@ class Applications extends EmployerApplications
             $this->_limit = ((int)$options['limit']) ? $options['limit'] : NULL;
             $this->_pageNumber = ((int)$options['pageNumber']) ? $options['pageNumber'] : 1;
             $this->_where = ($options['where']) ? $options['where'] : [];
+            $this->_andWhere = ($options['andWhere']) ? $options['andWhere'] : [];
             $this->_orderBy = ($options['orderBy']) ? $options['orderBy'] : [];
             $this->_having = ($options['having']) ? $options['having'] : [];
             $this->_applicationType = ($options['applicationType']) ? $options['applicationType'] : NULL;

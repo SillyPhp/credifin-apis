@@ -7,13 +7,13 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
 <section>
     <div class="bg-img">
-        <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA(1).png'); ?>" class="img_load">
+        <img src="<?= Url::to('@eyAssets/images/usajobs/peace-corps-americorps-VISTA.png'); ?>" class="img_load">
     </div>
     <div id="back-color">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="bg-color">
+                    <div class="usa-heading bg-color">
                         <img src="<?= Url::to('@eyAssets/images/usajobs/Peace Corps & AmeriCorps VISTA1.png'); ?>"
                              class="img_load">
                         <h3> Peace Corps & AmeriCorps VISTA </h3>
@@ -30,18 +30,6 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 </section>
 <section>
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="feature-box">
-                    <ul class="list-option">
-                        <li><a href="#">Help</a> /</li>
-                        <li><a href="#">Working in Government</a> /</li>
-                        <li><a href="#">Unique Hiring Path</a> /</li>
-                        <li> Peace Corps & AmeriCorps VISTA</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <div class="usa-heading heading-box">
@@ -99,14 +87,14 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                 <div class="para">
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <p>
-                            <a href="#">
+                            <a href="https://www.opm.gov/forms/pdfimage/sf50.pdf" target="_blank">
                                 <i class="far fa-file-pdf"></i> SF-50 <br> Notification of Personnel Action
                             </a>
                         </p>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <p>
-                            <a href="#">
+                            <a href="https://files.peacecorps.gov/multimedia/pdf/Certification_Request_Form_2015.pdf" target="_blank">
                                 <i class="far fa-file-pdf"></i> Certification of volunteer service <br> You may use the
                                 Peace Corps certification request form to request your certification.
                             </a>
@@ -117,8 +105,8 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <div class="heading-job">
                         <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                         <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded, you
-                            can submit these forms with your job application as needed. <a href="#">Sign into USAJOBS or
-                                learn how to upload documents.</a></P>
+                            can submit these forms with your job application as needed. <a href="https://secure.login.gov/?request_id=80e26213-726f-41b4-bfb6-08cf19c72225" target="_blank">Sign into USAJOBS</a> or
+                              <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/"  target="_blank">  learn how to upload documents.</a></P>
                     </div>
                 </div>
             </div>
@@ -205,12 +193,12 @@ $this->registerCss("
 
 
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 
 .feature-box{
@@ -225,7 +213,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 

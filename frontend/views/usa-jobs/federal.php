@@ -32,18 +32,6 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="feature-box">
-                        <ul class="list-option">
-                            <li><a href="#">Help</a> /</li>
-                            <li><a href="#">Working in Government</a> /</li>
-                            <li><a href="#">Unique Hiring Path</a> /</li>
-                            <li>Federal Employees</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <div class="usa-heading heading-box">
                         <h3>Eligibility </h3>
@@ -60,7 +48,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         </ul>
                         <p>Understanding this will help you know which jobs you’re eligible for and prevent you from
                             spending time on jobs for which you’re not eligible. </p>
-                        <P>Being eligible for a job is different from being qualified for a job.<a href="#"> Understand
+                        <P>Being eligible for a job is different from being qualified for a job.<a href="https://www.usajobs.gov/Help/faq/application/eligibility/difference-from-qualifications/" target="_blank"> Understand
                                 the
                                 difference.</a></P>
                     </div>
@@ -73,14 +61,14 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                 </div>
                 <div class="col-md-8 col-sm-8 col-xs-12">
-                    <div class="paragraph">
+                    <div class="para">
                         <p>Services are how the Federal Government describes categories of jobs that provide different
                             options and benefits to the future employee. There are three services in the Federal
                             Government. </p>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Competitive Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/#competitive-service">Competitive Service</a>
                             <div class="services-p">
                                 Positions with agencies that follow the U.S. Office of Personnel Management's hiring
                                 rules
@@ -96,7 +84,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Expected Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/#excepted-service">Expected Service</a>
                             <div class="services-p">
                                 Positions with agencies that have their own hiring rules, pay scales, and evaluation
                                 criteria.
@@ -105,15 +93,15 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 <h5> Eligible to apply for merit promotion jobs?</h5>
                                 <p class="service-text"><i class="fa fa-times" aria-hidden="true"></i><strong>
                                         No,</strong>unless
-                                    your agency <a href="#">has an Interchange Agreement.</a> But you can apply to jobs
+                                    your agency has an <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/federal-employees/interchange-agreements/" target="_blank"> Interchange Agreement.</a> But you can apply to jobs
                                     that
-                                    are open to the public and federal employees -- excepted service. </p>
+                                    are <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/public/" target="_blank" >open to the public</a> and federal employees -- excepted service. </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-12 col-xs-12">
                         <div class="card-box">
-                            <a class="services" href="#">Senior Executive Service</a>
+                            <a class="services" href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/senior-executive-service/">Senior Executive Service</a>
                             <div class="services-p">
                                 Positions with agencies that follow the U.S. Office of Personnel Management's hiring
                                 rules
@@ -123,15 +111,15 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                                 <h5> Eligible to apply for merit promotion jobs?</h5>
                                 <p class="service-text"><i class="fa fa-times" aria-hidden="true"></i><strong>
                                         No</strong>
-                                    but you can apply to jobs that are open to the public or other jobs in the Senior
-                                    Executive Service. </p>
+                                    but you can apply to jobs that are <a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/public/" target="_blank"> open to the public</a> or other jobs in the<a href="https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/senior-executive-service/" target="_blank"> Senior
+                                        Executive Service.</a> </p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <div class="text-body">
                             <h2>Not sure what service you fall under? </h2>
-                            <button class="buton">Learn how to determine your service and appointment type</button>
+                            <a href="https://www.usajobs.gov/Help/working-in-government/service/SF-50/" target="_blank"> <button class="buton">Learn how to determine your service and appointment type</button></a>
                         </div>
                     </div>
                 </div>
@@ -183,18 +171,18 @@ $this->registerCss("
 	color:white;
 }
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 .feature-box{
     border-bottom: 1px solid lightgray;
     margin-bottom: 10px;
 }
-.text a, .list-option li a{
+.text a, .list-option li a, .para a{
  color: #6d2bcc; 
 }
 

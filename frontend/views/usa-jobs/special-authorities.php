@@ -7,14 +7,14 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 ?>
     <section>
         <div class="bg-img">
-            <img src="<?= Url::to('@eyAssets/images/usajobs/Students & recent graduates(1).png'); ?>" class="img_load">
+            <img src="<?= Url::to('@eyAssets/images/usajobs/special-authorities.png'); ?>" class="img_load">
         </div>
         <div id="back-color">
             <div class="container">
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="usa-heading bg-color">
-                            <img src="<?= Url::to('@eyAssets/images/usajobs/Special authorities1.png'); ?>"
+                            <img src="<?= Url::to('@eyAssets/images/usajobs/Specialauthorities1.png'); ?>"
                                  class="img_load">
                             <h3> Special Authorities </h3>
                         </div>
@@ -54,7 +54,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <li>Former employee of the Panama Canal Commission located in the United States.</li>
                         </ul>
                         <p>There are specific eligibility requirements for each of these special hiring authorities.
-                            <div><a href="https://www.ecfr.gov/cgi-bin/text-idx?c=ecfr&sid=aebca61862e022b41d5c463067e2bdff&rgn=div5&view=text&node=5:1.0.1.2.39&idno=5#sp5.1.315.f">
+                            <div><a href="https://www.ecfr.gov/cgi-bin/text-idx?c=ecfr&sid=aebca61862e022b41d5c463067e2bdff&rgn=div5&view=text&node=5:1.0.1.2.39&idno=5#sp5.1.315.f" target="_blank">
                                 Please read OPM's code of federal hiring regulations for more details.
                             </a></div>
                         </p>
@@ -96,7 +96,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                         <p>You can also select the Students or recent graduates filter. Your results will display all jobs
                             open
                             to students and recent graduates.
-                            <a href="https://www.usajobs.gov/Help/faq/application/documents/"> Learn about the different document types. </a>
+                            <a href="https://www.usajobs.gov/Help/faq/application/documents/" target="_blank"> Learn about the different document types. </a>
                         </p>
                     </div>
                 </div>
@@ -192,9 +192,6 @@ $this->registerCss("
 	font-family: roboto;
 	color: #000;
 }
-.para p{
-    padding-top:10px;
-}
 .feature-box{
 	 border-bottom: 1px solid lightgray;
 	  margin-bottom: 10px;
@@ -207,7 +204,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 

@@ -42,13 +42,13 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             both the competitive and excepted service (of the executive branch). </P>
                         <p>There are three types of veterans' preferences: </p>
 
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#10point">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#10point" target="_blank">
                                 <button class="buton">Disabled (10 point preference eligible)</button>
                             </a></p>
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#5point">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#5point" target="_blank">
                                 <button class="buton">Non-disabled (5 point preference eligible)</button>
                             </a></p>
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#0point">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/veterans-preference/#0point" target="_blank">
                                 <button class="buton"> Sole survivorship (0 point preference eligible)</button>
                             </a></p>
                     </div>
@@ -82,7 +82,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             Release or Discharge from Active Duty, or other acceptable documentation. Applicants claiming
                             10-point preference will need to submit Form SF-15, or other acceptable documentation. </p>
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                            <p><a href="http://www.archives.gov/veterans/military-service-records/">
+                            <p><a href="http://www.archives.gov/veterans/military-service-records/" target="_blank">
                                     <i class="far fa-file-pdf"></i> DD-214 <br>Certificate of Release or Discharge
                                     from Active Duty
                                 </a></p>
@@ -91,11 +91,11 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             information about the veteran's dates of military service and separation. Most veterans and
                             their next-of-kin can obtain free copies of their DD Form 214 Report of Separation and other
                             military and medical records through the
-                            <a href="https://www.archives.gov/veterans/military-service-records">
+                            <a href="https://www.archives.gov/veterans/military-service-records" target="_blank">
                                 National Archives Veterans’ Records Service.
                             </a></p>
                         <div class="col-md-12 col-sm-12 col-xs-12">
-                            <p><a href="https://www.opm.gov/forms/pdf_fill/sf15.pdf">
+                            <p><a href="https://www.opm.gov/forms/pdf_fill/sf15.pdf" target="_blank">
                                     <i class="far fa-file-pdf"></i> SF-15<br> Application for 10-point Veterans' Preference
                                 </a></p>
                         </div>
@@ -114,9 +114,9 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                             <h4><strong class="chg-c">Upload and submit through USAJOBS</strong></h4>
                             <P class="content1">You can upload and save documents to your USAJOBS account. Once uploaded,
                                 you can submit these forms with your job application as needed.
-                                <a href="https://secure.login.gov/?request_id=18338861-f63d-4806-a589-0331a04ce832">Sign into
+                                <a href="https://secure.login.gov/?request_id=18338861-f63d-4806-a589-0331a04ce832" target="_blank">Sign into
                                     USAJOBS</a> or
-                                <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/">learn how to upload documents.</a></P>
+                                <a href="https://www.usajobs.gov/Help/how-to/account/documents/upload/" target="_blank">learn how to upload documents.</a></P>
                         </div>
                     </div>
                 </div>
@@ -132,16 +132,16 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
                     <div class="para">
                         <p>If you’re a veteran, you may also be eligible for one of these special hiring authorities: </p>
 
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#vra">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#vra" target="_blank">
                                 <button class="buton">Veterans Recruitment Appointment (VRA)</button>
                             </a></p>
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#30">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#30" target="_blank">
                                 <button class="buton">30% or More Disabled Veteran</button>
                             </a></p>
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#veoa">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#veoa" target="_blank">
                                 <button class="buton">Veterans Employment Opportunity Act of 1998 (VEOA)</button>
                             </a></p>
-                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#training">
+                        <p><a href="https://www.fedshirevets.gov/job-seekers/special-hiring-authorities/#training" target="_blank">
                                 <button class="buton">Disabled Veterans Enrolled in a VA Training Program</button>
                             </a></p>
                     </div>
@@ -247,12 +247,12 @@ $this->registerCss("
 
 
 .para {
-	line-height: 2.1;
-	margin-bottom: 4em;
+	line-height: 1.9;
+	margin-bottom: 3em;
 	margin-top: 1em;
 	font-size: 17px;
 	font-family: roboto;
-	color: #4a4a4a;
+	color: #000;
 }
 
 .feature-box{
@@ -267,7 +267,7 @@ $this->registerCss("
 .list-2 {
 	list-style: disc;
 	padding-left: 23px;
-	color: #4a4a65;
+	color: #000;
 	font-size: 17px;
 }
 
