@@ -362,7 +362,6 @@ $this->params['header_dark'] = false;
                                             <div class="intern-tag">Internship</div>
                                         </a>
                                     </div>
-                                    <!-- Job -->
                                     <div class="job-listing wtabs">
                                         <a href="/internship/assistant-director-98591554009460">
                                             <div class="job-title-sec">
@@ -540,6 +539,9 @@ $this->params['header_dark'] = false;
                             </div>
                         </div>
                     </div>
+<!--                    --><?//=
+//                        $this->render('/widgets/mustache/new-jobs-box')
+//                    ?>
                     <div class="browse-all-cat">
                         <a href="jobs/list" title="" class="style2">Show all listings</a>
                     </div>
