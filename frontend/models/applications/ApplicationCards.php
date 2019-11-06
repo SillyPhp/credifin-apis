@@ -200,23 +200,49 @@ class ApplicationCards
             ]);
         }
         if (isset($options['keyword'])) {
+            $options['keyword'] = trim($options['keyword']," ");
+            function makeSQL_search_pattern($search) {
+                $search_pattern = false;
+                //escape the special regex chars
+                $search = str_replace('"', "''", $search);
+                $search = str_replace('^', "\\^", $search);
+                $search = str_replace('$', "\\$", $search);
+                $search = str_replace('.', "\\.", $search);
+                $search = str_replace('[', "\\[", $search);
+                $search = str_replace(']', "\\]", $search);
+                $search = str_replace('|', "\\|", $search);
+                $search = str_replace('*', "\\*", $search);
+                $search = str_replace('+', "\\+", $search);
+                $search = str_replace('{', "\\{", $search);
+                $search = str_replace('}', "\\}", $search);
+                $search = explode(" ", $search);
+                for ($i = 0; $i < count($search); $i++) {
+                    if ($i > 0 && $i < count($search) ) {
+                        $search_pattern .= "|";
+                    }
+                    $search_pattern .= $search[$i];
+                }
+                return $search_pattern;
+            }
+
+            $search_pattern = makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
-                'l.designation LIKE "%' . $options['keyword'] . '%"',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'h.industry LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'l.designation',$search_pattern],
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'h.industry',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
             ]);
             $cards2->andFilterWhere([
                 'or',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
             ]);
         }
         $result = null;
