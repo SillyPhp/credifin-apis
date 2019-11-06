@@ -436,7 +436,7 @@ use frontend\models\applications\CandidateApply;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
@@ -458,6 +458,11 @@ use frontend\models\applications\CandidateApply;
 
 <?php
 $this->registerCss('
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .portlet.light > .portlet-title > .actions{
     padding:0px !important;
 }
@@ -720,8 +725,10 @@ $(document).on('click','#close_btn',function()
  {
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
-})
-
+});
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');

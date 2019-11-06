@@ -61,7 +61,6 @@ if ($organization_data) {
     }
 } else {
     ?>
-    <div class="col-md-12">
         <div class="tab-empty">
             <div class="tab-empty-icon">
                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/followedcompanies.png'); ?>" class="img-responsive" alt=""/>
@@ -70,7 +69,6 @@ if ($organization_data) {
                 <div class="">You haven't Followed any Company.</div>
             </div>
         </div>
-    </div>
     <?php
 }
 Pjax::end();

@@ -6,7 +6,7 @@ use yii\helpers\Url;
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
-                <span class="caption-subject bold font-dark uppercase">Applied Application</span>
+                <span class="caption-subject bold font-dark uppercase">Applied Application<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
             </div>
         </div>
         <div class="portlet-body">
@@ -90,7 +90,7 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Questionnaires</span>
+            <span class="caption-subject font-dark bold uppercase">Questionnaires<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
         </div>
     </div>
     <div class="portlet-body">
@@ -135,10 +135,11 @@ use yii\helpers\Url;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                        <span class="caption-subject font-dark bold uppercase">Followed Companies<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
+                        <a href="<?= Url::to('/account/organization/shortlisted') ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -214,6 +215,7 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss("
+.portlet.light.portlet-fit > .portlet-title{padding:0px;}
 .tab-empty{
     padding:20px;
 }
@@ -437,6 +439,8 @@ $(document).on('click','.cancel-app',function(e)
               })
         }
        });
-
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);

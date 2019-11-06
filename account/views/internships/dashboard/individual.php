@@ -430,7 +430,7 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a href="#"></span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
@@ -450,6 +450,11 @@ use yii\widgets\Pjax;
 </div>
 <?php
 $this->registerCss('
+.font-dark > a > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .portlet.light > .portlet-title > .actions{
     padding:0px !important;
 }
@@ -702,7 +707,9 @@ $(document).on('click','.rmv_org',function()
 $(document).on('click', '#removejob', function(){
     $(this).closest('.hr-j-box').remove();
 });   
-
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
