@@ -316,7 +316,7 @@ $this->registerCss("
 	margin-bottom: 1em;
 	margin-top: 1em;
 	font-size: 16px;
-	padding: 25px;
+	padding: 25px 0;
 	color:black;
 }
 
