@@ -16,7 +16,12 @@
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
-                            <a href="/usa-jobs">USA Jobs</a>
+                            <a href="/govt-jobs">Indian Govt. Jobs</a>
+                        </div>
+                    </div>
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/usa-jobs">USA Govt. Jobs</a>
                         </div>
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">

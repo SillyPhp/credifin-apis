@@ -20,6 +20,8 @@ namespace common\models;
  *
  * @property Organizations $collegeEnc
  * @property Organizations $organizationEnc
+ * @property Users $createdBy
+ * @property Users $lastUpdatedBy
  */
 class ErexxCollaborators extends \yii\db\ActiveRecord
 {
@@ -46,6 +48,8 @@ class ErexxCollaborators extends \yii\db\ActiveRecord
             [['organization_enc_id', 'college_enc_id', 'is_deleted'], 'unique', 'targetAttribute' => ['organization_enc_id', 'college_enc_id', 'is_deleted']],
             [['college_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['college_enc_id' => 'organization_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
+            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
@@ -63,5 +67,21 @@ class ErexxCollaborators extends \yii\db\ActiveRecord
     public function getOrganizationEnc()
     {
         return $this->hasOne(Organizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
     }
 }
