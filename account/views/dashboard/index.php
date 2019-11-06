@@ -226,8 +226,8 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><a
-                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
+                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                         </div>
                         <div class="actions">
                             <div class="set-im">
@@ -277,8 +277,8 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><a
-                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
+                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                         </div>
                         <div class="actions">
                             <div class="set-im">
@@ -427,7 +427,7 @@ $this->registerCss("
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
 }
-.font-dark > a > i {
+.font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;

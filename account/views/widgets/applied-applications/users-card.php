@@ -7,7 +7,7 @@ use yii\helpers\Url;
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?><a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?><span href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
 </div>
 </div>
 <div class="portlet-body">
@@ -70,7 +70,7 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss("
-.font-dark > a > i {
+.font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;

@@ -7,7 +7,7 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Resume Bank<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+            <span class="caption-subject font-dark bold uppercase">Resume Bank<span href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
         </div>
         <div class="actions">
             <div class="btn-group dashboard-button">
@@ -87,7 +87,7 @@ $this->registerCss('
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
 }
-.font-dark > a > i {
+.font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;

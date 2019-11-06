@@ -32,8 +32,8 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><a
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -79,14 +79,15 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Active Erexx Jobs</span>
+                        <span class="caption-subject font-dark bold uppercase">Active Erexx Jobs<span
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::toRoute('/jobs/create'); ?>"
-                           class="viewall-jobs"><?= Yii::t('account', 'Add New'); ?></a>
+                        <a href="<?= Url::toRoute('/jobs/create'); ?>"data-toggle="tooltip" title="Add New">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
                         <?php if ($erexx_applications['total'] > 8): ?>
-                            <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" title=""
-                               class="viewall-jobs"><?= Yii::t('account', 'View all'); ?></a>
+                            <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip" title="View All">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -112,8 +113,8 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?><a
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?><span
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/questionnaire/create'); ?>" data-toggle="tooltip" title="Add New">
@@ -160,8 +161,8 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?><a
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?><span
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" data-toggle="tooltip"
@@ -224,8 +225,8 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Jobs'); ?><a
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Jobs'); ?><span
+                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <?php if ($applications['total'] > 8): ?>
@@ -296,7 +297,7 @@ $this->registerCss('
     -webkit-transform: scale(1.2);
     transform: scale(1.2);
 }
-.font-dark > a > i {
+.font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;
