@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
+use borales\extensions\phoneInput\PhoneInput;
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
@@ -101,13 +101,29 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 <?php
 $this->registerCss('
+.individual-form::-webkit-scrollbar { 
+    width: 0 !important 
+}
+.individual-form { 
+    overflow: -moz-scrollbars-none; 
+}
+.individual-form { 
+    -ms-overflow-style: none; 
+}
+.individual-form{
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-top:50px;
+    max-height:76vh; 
+}
+.intl-tel-input{
+    display:block !important;
+}
 ::placeholder{
     color:#999;
 }

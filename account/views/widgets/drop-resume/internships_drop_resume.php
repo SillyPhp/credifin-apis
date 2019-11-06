@@ -12,7 +12,7 @@ use yii\helpers\Url;
         <div class="actions">
             <div class="btn-group dashboard-button">
                 <span title="Add New" data-toggle="modal" data-target="#resumeBank" class="sett">
-                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>">
                 </span>
             </div>
 
@@ -23,7 +23,7 @@ use yii\helpers\Url;
 
 </div>
 
-<div id="resumeBank" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<div id="resumeBank" class="modal fade modal-80" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" id="profiles">
         <!-- Modal content-->
         <div class="modal-content">
@@ -42,10 +42,11 @@ use yii\helpers\Url;
 
                 <div class="row padd10">
                     <?php foreach ($data as $p) { ?>
-                        <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search search">
-                            <input type="radio" data-id="<?= $p['category_enc_id']?>" class="category-input"/>
+                        <div class="col-md-2 col-sm-4 padd-5 work-profile-box-search search">
+                            <input type="radio" data-id="<?= $p['category_enc_id']?>" id="<?= $p['category_enc_id']?>" class="category-input"/>
                             <label class="work-profile-box parent_category" data-id = "<?= $p['category_enc_id']?>">
                                 <div class="work-profile">
+                                    <div class="rb-cat-icon"><img src="<?= $p['icon']?>"></div>
                                     <p><?php echo $p['name'] ?></p>
                                 </div>
                             </label>
@@ -66,6 +67,14 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.rb-cat-icon img{
+    max-width:50px;
+    max-height:50px;
+    margin-bottom:5px;
+}
+.modal-80 .modal-dialog{
+    width:80%;
+}
 .sett{
     margin-right:10px;
 }
@@ -86,7 +95,7 @@ $this->registerCss('
 .work-profile-box{
     border: 2px solid #eef1f5;
     text-align:center;
-    height:65px !important;
+    height:120px !important;
     display: table;
     width:100%;
     padding:0px 0 5px 0;
@@ -98,7 +107,8 @@ $this->registerCss('
     display: table-cell;
     text-align: center;
     vertical-align: middle;
-    padding:0 0px 0 0;
+    padding:0 5px 0 5px;
+    word-break: break-word;
 }
 .work-profile-box span{
     background:#eee;
@@ -119,6 +129,10 @@ $this->registerCss('
     -moz-transition:.3s all;
     -webkit-transition:.3s all;
     transition:.3s all;
+     cursor: pointer;
+}
+.work-profile p{
+    margin: 0px !important;
 }
 .work-profile-box:hover span{
     background:#fff;
@@ -155,6 +169,9 @@ $this->registerCss('
     height: 34px;
     line-height: 15px;
 }
+.wp2{
+    height:70px !important;
+}
 ');
 
 $script = <<<JS
@@ -180,10 +197,11 @@ $(document).on('click', '.parent_category', function(){
             url:"/account/resume/first",
             data: data,
             beforeSend:function(){
-              $('#page-loading').fadeIn(1000);  
+              // $('#page-loading').fadeIn(1000); 
+                $('.parent_category').css('pointer-events', 'none'); 
             },
             success:function (response) {
-                $('#page-loading').fadeOut(1000);
+                // $('#page-loading').fadeOut(1000);
                 var response = JSON.parse(response);
                 $('#parent_enc_id').val(response.parent_enc_id);
                 var template = $('#modal-two').html();
@@ -194,6 +212,7 @@ $(document).on('click', '.parent_category', function(){
                     var chckbox = $("#"+response.already_selected_categories[i]["category_enc_id"]);
                     chckbox.attr("checked", true);
                 }
+                $('.parent_category').css('pointer-events', 'auto');
             }
         });
     
@@ -217,6 +236,10 @@ function showSelectedCategories(){
             var rendered = Mustache.render(template, response);
             if(response.length != 0){
                 $('#resume-bank').append(rendered);
+                for(var i = 0; i< response.length; i++){
+                    var chckbox = $("#"+response[i]["category_enc_id"]);
+                    chckbox.attr("checked", true);
+                }
             } else{
                 $('#resume-bank').append('<div class="tab-empty"><div class="tab-empty-icon"><img src="/assets/themes/ey/images/pages/dashboard/resume-bank.png" class="img-responsive" alt=""/></div><div class="tab-empty-text"><div class="">No Resume in the Bank</div></div></div>');
             }
@@ -253,7 +276,7 @@ $(document).on('click', '#save', function(e){
             success: function(response){
                 if(JSON.parse(response)["status"] == 200){
                     toastr.success('Successfully Saved','Job Profile');
-                    $('#resumeBank').modal('hide');
+                    // $('#resumeBank').modal('hide');
                     $('#titles').remove();
                     $('#profiles').show();
                     showSelectedCategories();
@@ -297,8 +320,9 @@ function addNew(){
                     var template = $('#new-data').html();
                     var rendered = Mustache.render(template,response);
                     $('.cards-cont').append(rendered);
+                    var chckbox = $("#"+response["category_enc_id"]);
+                    chckbox.attr("checked", true);
                     }
-                    
                 }
       });
       }else{
@@ -322,9 +346,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 <script>
 </script>
 <script id="new-data" type="text/template">
-    <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
+    <div class="col-md-2 col-sm-4 padd-5 work-profile-box-search">
         <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
-        <label for="{{category_enc_id}}" class="work-profile-box unique2">
+        <label for="{{category_enc_id}}" class="work-profile-box unique2 wp2">
 
             <div class="work-profile">
                 {{name}}
@@ -339,16 +363,16 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close close-modal" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add Job Title</h4>
+                <h4 class="modal-title">Add Internship Title</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-md-10">
                         <div class="form-group">
                             <input type="text" id="add_new" placeholder="Add New Category" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <button type="button" id="add_new_btn" class="btn btn-default">Add To The List</button>
                         </div>
@@ -356,9 +380,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                 </div>
                 <div class="row padd10 cards-cont">
                     {{#.}}
-                    <div class="col-md-4 col-sm-6 padd-5 work-profile-box-search">
+                    <div class="col-md-2 col-sm-4 padd-5 work-profile-box-search">
                         <input type="checkbox" id="{{category_enc_id}}" class="category-input checks" value="{{category_enc_id}}"/>
-                        <label for="{{category_enc_id}}" class="work-profile-box unique2">
+                        <label for="{{category_enc_id}}" class="work-profile-box unique2 wp2">
 
                             <div class="work-profile">
                                 {{name}}
@@ -394,6 +418,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                 <a href="/account/uploaded-resume/candidate-resumes?id={{assigned_category_enc_id}}&type=Internships">
                                     <div class="work-profile-box">
                                         <div class="work-profile">
+                                            <div class="rb-cat-icon"><img src="{{icon}}" alt=""></div>
                                             {{name}}
                                         </div>
                                     </div>
