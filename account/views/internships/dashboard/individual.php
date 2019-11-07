@@ -430,8 +430,7 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies
-                        <span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
                     </span>
                 </div>
                 <div class="actions">
@@ -452,7 +451,7 @@ use yii\widgets\Pjax;
 </div>
 <?php
 $this->registerCss('
-.font-dark > a > i {
+.font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;
     color:darkgray;

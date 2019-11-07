@@ -6,8 +6,7 @@ use yii\helpers\Url;
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
-                <span class="caption-subject bold font-dark uppercase">Applied Application
-                    <span data-toggle="tooltip" title="Here you will find all applications you have applied on"><i class="fa fa-info-circle"></i></span>
+                <span class="caption-subject bold font-dark uppercase">Applied Application<span data-toggle="tooltip" title="Here you will find all applications you have applied on"><i class="fa fa-info-circle"></i></span>
                 </span>
             </div>
         </div>
@@ -92,8 +91,7 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Questionnaires
-                <span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
+            <span class="caption-subject font-dark bold uppercase">Questionnaires<span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
             </span>
         </div>
     </div>
@@ -139,8 +137,7 @@ use yii\helpers\Url;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Followed Companies
-                            <span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
+                        <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
                         </span>
                     </div>
                     <div class="actions">
@@ -221,6 +218,11 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss("
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .portlet.light.portlet-fit > .portlet-title{
     padding:0px;
 }
