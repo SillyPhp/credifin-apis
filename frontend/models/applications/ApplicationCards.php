@@ -211,6 +211,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
             $cards2->andFilterWhere([
                 'or',
@@ -219,6 +221,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
         }
         $result = null;
