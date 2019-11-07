@@ -440,11 +440,13 @@ class ApplicationCards
         if (isset($options['location'])) {
             $cards1->andWhere([
                 'or',
-                ['g.name' => $options['location']]
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']],
             ]);
             $cards2->andWhere([
                 'or',
-                ['g.name' => $options['location']]
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']],
             ]);
         }
         if (isset($options['keyword'])) {
@@ -457,6 +459,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
 
             $cards2->andFilterWhere([
@@ -466,6 +470,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
         }
 
