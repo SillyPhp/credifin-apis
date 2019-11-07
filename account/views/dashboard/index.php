@@ -231,6 +231,8 @@ endif;
                         </div>
                         <div class="actions">
                             <div class="set-im">
+                                <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip" title="Campus Hiring" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
                                    title="Create AI Job" class="ai">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>

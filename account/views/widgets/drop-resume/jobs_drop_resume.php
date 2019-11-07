@@ -242,10 +242,14 @@ function showSelectedCategories(){
             var response = JSON.parse(response);
             var template = $("#selected-categories").html();
             var rendered = Mustache.render(template, response);
+            if(response.length != 0){
             $('#resume-bank').append(rendered);
-            for(var i = 0; i< response.length; i++){
-                var chckbox = $("#"+response[i]["category_enc_id"]);
-                chckbox.attr("checked", true);
+                for(var i = 0; i< response.length; i++){
+                    var chckbox = $("#"+response[i]["category_enc_id"]);
+                    chckbox.attr("checked", true);
+                }
+            } else {
+                $('#resume-bank').append('<div class="tab-empty"><div class="tab-empty-icon"><img src="/assets/themes/ey/images/pages/dashboard/resume-bank.png" class="img-responsive" alt=""/></div><div class="tab-empty-text"><div class="">No Resume in the Bank</div></div></div>');
             }
         }
         
