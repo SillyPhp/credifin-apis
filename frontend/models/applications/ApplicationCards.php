@@ -664,7 +664,7 @@ class ApplicationCards
         $search = str_replace('+', "\\+", $search);
         $search = str_replace('{', "\\{", $search);
         $search = str_replace('}', "\\}", $search);
-        $search = explode(" ", $search);
+        $search = preg_split('/ /', $search, null, PREG_SPLIT_NO_EMPTY);
         for ($i = 0; $i < count($search); $i++) {
             if ($i > 0 && $i < count($search) ) {
                 $search_pattern .= "|";
