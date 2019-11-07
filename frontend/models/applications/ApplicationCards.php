@@ -211,6 +211,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
             $cards2->andFilterWhere([
                 'or',
@@ -219,6 +221,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
         }
         $result = null;
@@ -664,7 +668,7 @@ class ApplicationCards
         $search = str_replace('+', "\\+", $search);
         $search = str_replace('{', "\\{", $search);
         $search = str_replace('}', "\\}", $search);
-        $search = explode(" ", $search);
+        $search = preg_split('/ /', $search, null, PREG_SPLIT_NO_EMPTY);
         for ($i = 0; $i < count($search); $i++) {
             if ($i > 0 && $i < count($search) ) {
                 $search_pattern .= "|";
