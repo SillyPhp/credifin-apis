@@ -201,31 +201,7 @@ class ApplicationCards
         }
         if (isset($options['keyword'])) {
             $options['keyword'] = trim($options['keyword']," ");
-            function makeSQL_search_pattern($search) {
-                $search_pattern = false;
-                //escape the special regex chars
-                $search = str_replace('"', "''", $search);
-                $search = str_replace('^', "\\^", $search);
-                $search = str_replace('$', "\\$", $search);
-                $search = str_replace('.', "\\.", $search);
-                $search = str_replace('[', "\\[", $search);
-                $search = str_replace(']', "\\]", $search);
-                $search = str_replace('|', "\\|", $search);
-                $search = str_replace('*', "\\*", $search);
-                $search = str_replace('+', "\\+", $search);
-                $search = str_replace('{', "\\{", $search);
-                $search = str_replace('}', "\\}", $search);
-                $search = explode(" ", $search);
-                for ($i = 0; $i < count($search); $i++) {
-                    if ($i > 0 && $i < count($search) ) {
-                        $search_pattern .= "|";
-                    }
-                    $search_pattern .= $search[$i];
-                }
-                return $search_pattern;
-            }
-
-            $search_pattern = makeSQL_search_pattern($options['keyword']);
+            $search_pattern = self::makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
                 ['REGEXP', 'l.designation',$search_pattern],
@@ -468,30 +444,30 @@ class ApplicationCards
             ]);
         }
         if (isset($options['keyword'])) {
+            $options['keyword'] = trim($options['keyword']," ");
+            $search_pattern = self::makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
             ]);
 
             $cards2->andFilterWhere([
                 'or',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
             ]);
         }
 
         $result = null;
         if(isset($options['similar_jobs'])){
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
-            $cards2->andWhere(['in', 'c.name', $options['similar_jobs']]);
-            $cards1->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $result  = (new \yii\db\Query())
                 ->from([
@@ -674,5 +650,27 @@ class ApplicationCards
             ->all();
         return $result;
     }
-
+    private static function makeSQL_search_pattern($search) {
+        $search_pattern = false;
+        //escape the special regex chars
+        $search = str_replace('"', "''", $search);
+        $search = str_replace('^', "\\^", $search);
+        $search = str_replace('$', "\\$", $search);
+        $search = str_replace('.', "\\.", $search);
+        $search = str_replace('[', "\\[", $search);
+        $search = str_replace(']', "\\]", $search);
+        $search = str_replace('|', "\\|", $search);
+        $search = str_replace('*', "\\*", $search);
+        $search = str_replace('+', "\\+", $search);
+        $search = str_replace('{', "\\{", $search);
+        $search = str_replace('}', "\\}", $search);
+        $search = explode(" ", $search);
+        for ($i = 0; $i < count($search); $i++) {
+            if ($i > 0 && $i < count($search) ) {
+                $search_pattern .= "|";
+            }
+            $search_pattern .= $search[$i];
+        }
+        return $search_pattern;
+    }
 }
