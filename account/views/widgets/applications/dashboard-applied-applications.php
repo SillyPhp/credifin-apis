@@ -6,7 +6,9 @@ use yii\helpers\Url;
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
-                <span class="caption-subject bold font-dark uppercase">Applied Application<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                <span class="caption-subject bold font-dark uppercase">Applied Application
+                    <span data-toggle="tooltip" title="Here you will find all applications you have applied on"><i class="fa fa-info-circle"></i></span>
+                </span>
             </div>
         </div>
         <div class="portlet-body">
@@ -90,7 +92,9 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Questionnaires<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+            <span class="caption-subject font-dark bold uppercase">Questionnaires
+                <span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
+            </span>
         </div>
     </div>
     <div class="portlet-body">
@@ -135,7 +139,9 @@ use yii\helpers\Url;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Followed Companies<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                        <span class="caption-subject font-dark bold uppercase">Followed Companies
+                            <span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
+                        </span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::to('/account/organization/shortlisted') ?>" data-toggle="tooltip" title="View All">
@@ -215,7 +221,9 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss("
-.portlet.light.portlet-fit > .portlet-title{padding:0px;}
+.portlet.light.portlet-fit > .portlet-title{
+    padding:0px;
+}
 .tab-empty{
     padding:20px;
 }

@@ -28,7 +28,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                    href="#" data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <div class="set-im">
@@ -76,7 +76,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Erexx Internships') ?><span
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                    href="#" data-toggle="tooltip" title="Here you will find internships that are active on Erexx"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip" title="Add New">
@@ -111,7 +111,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire'); ?><span
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                    href="#" data-toggle="tooltip" title="Here you will find all existing questionnaires"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/questionnaire/create'); ?>" data-toggle="tooltip" title="Add New">
@@ -159,7 +159,7 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
                         <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?><span
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                    href="#" data-toggle="tooltip" title="Here you will find all existing interview processes"><i class="fa fa-info-circle"></i></span></span>
                     </div>
                     <div class="actions">
                         <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" data-toggle="tooltip"
@@ -222,8 +222,11 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="portlet-title">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?><span
-                                    href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?>
+                            <span data-toggle="tooltip" title="Here you will find all companies that you are following">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+                        </span>
                     </div>
                     <div class="actions">
                         <?php if ($applications['total'] > 8): ?>
@@ -254,6 +257,11 @@ echo $this->render('/widgets/header/secondary-header', [
     </div>
 <?php
 $this->registerCss('
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
 .quick > img{
     height:38px;
 }

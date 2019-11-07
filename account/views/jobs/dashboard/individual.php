@@ -436,7 +436,11 @@ use frontend\models\applications\CandidateApply;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies<a href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></a></span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies
+                        <span data-toggle="tooltip" title="Here you will find all companies that you are following">
+                            <i class="fa fa-info-circle"></i>
+                        </span>
+                    </span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>

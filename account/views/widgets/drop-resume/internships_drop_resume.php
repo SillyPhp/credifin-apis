@@ -7,7 +7,11 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Resume Bank<span href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+            <span class="caption-subject font-dark bold uppercase">Resume Bank
+                <span href="#" data-toggle="tooltip" title="Here you will find all profiles in which applicants have
+                droped their resume">
+                    <i class="fa fa-info-circle"></i></span>
+            </span>
         </div>
         <div class="actions">
             <div class="btn-group dashboard-button">

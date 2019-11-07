@@ -4,12 +4,16 @@ use yii\helpers\Url;
 //exit();
 ?>
 <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?><span href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
-</div>
-</div>
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?>
+                <span href="#" data-toggle="tooltip" title="Here you will find all applications received on your open opportunities">
+                    <i class="fa fa-info-circle"></i>
+                </span>
+            </span>
+        </div>
+    </div>
 <div class="portlet-body">
     <div class="row">
         <div class="col-md-12">

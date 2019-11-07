@@ -227,7 +227,7 @@ endif;
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
                             <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
-                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                        href="#" data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span></span>
                         </div>
                         <div class="actions">
                             <div class="set-im">
@@ -278,7 +278,7 @@ endif;
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
                             <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
-                                        href="#" data-toggle="tooltip" title="Hooray!"><i class="fa fa-info-circle"></i></span></span>
+                                        href="#" data-toggle="tooltip" title="Here you will find all your active internships"><i class="fa fa-info-circle"></i></span></span>
                         </div>
                         <div class="actions">
                             <div class="set-im">
