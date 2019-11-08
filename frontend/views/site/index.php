@@ -1358,7 +1358,7 @@ how-icon{
     font-weight:400;
     font-family:Roboto;
     letter-spacing: 0px;
-    padding: 14px 25px;
+    padding: 12px 21px;
     color:#fff;
     -webkit-border-radius: 8px;
     -moz-border-radius: 5px;
@@ -1368,6 +1368,7 @@ how-icon{
     cursor: pointer;
     margin-top: 8px;
     margin-bottom: 3px;
+    border-left:none !important;
 }
 .nav.nav-tabs > li a:hover{
     border-color:transparent;

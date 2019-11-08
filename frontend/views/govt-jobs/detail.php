@@ -95,7 +95,12 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="duties">Details</div>
                 <div class="duties-tab set-sticky">
                     <div class="summary">Summary</div>
-                    <div id="gv-summary" class="d-content"><?= $get['Data'] ?>
+                    <div id="gv-summary" class="d-content">
+                        <?php
+                        $data = ltrim($get['Data'],"[");
+                        $data = rtrim($data,"]");
+                        echo $data;
+                          ?>
                     </div>
                 </div>
                 <?php if (!empty($get['Eligibility'])){ ?>
