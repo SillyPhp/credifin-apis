@@ -428,7 +428,7 @@ $this->registerCss("
     .loc-batches{display:none;}
     .loc-batches:first-child{display:block;}
     .overlay-top {
-        width: 70%;
+        width: 80%;
         margin: auto;
         margin-top: -150px;
         float: none;
@@ -587,8 +587,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
