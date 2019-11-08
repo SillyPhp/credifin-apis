@@ -117,11 +117,13 @@ a:hover{
 /*Dashboard main css ends*/
 /*Dashboard button css starts*/
 .custom-buttons{
-    width:100%;
-    background:#00a0e3 !important;
-    font-size: 10px !important;
+    width: 100%;
+    font-size: 11px !important;
     padding: 8px 0px !important;
-    margin-bottom:20px;
+    margin-bottom: 20px;
+    border-radius: 6px !important;
+    background: linear-gradient(45deg, #00a0e3, #89d8f9);
+    border: none;
      -webkit-border-radius: 6px !important;
     -moz-border-radius: 6px !important;
     -ms-border-radius: 6px !important;
