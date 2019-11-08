@@ -193,6 +193,10 @@ class AuthController extends ApiBaseController
 
         $params = \Yii::$app->request->post();
 
+        $already_taken = [
+            'username' => 'Username already taken'
+        ];
+
         $username = $params['username'];
         $password = $params['password'];
         $source = $params['source'];
@@ -207,6 +211,10 @@ class AuthController extends ApiBaseController
             } else {
                 return $this->response(404);
             }
+        }
+
+        if (!$this->usernameValid($params)) {
+            return $this->response(409, $already_taken);
         }
 
         if (isset($username) && isset($password) && isset($source)) {
