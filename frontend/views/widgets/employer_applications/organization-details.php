@@ -169,7 +169,7 @@ $this->registerCss('
     margin:5px;
 }
 .overlay-top{
-    width: 80%;
+    width: 80% !Important;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -177,6 +177,10 @@ $this->registerCss('
     z-index: 9;
     padding-top: 20px;
     padding-bottom: 50px;
+}
+#logo_img {
+    width: 115px !Important;
+    height: 115px !Important;
 }
 .organization-details{
     display: block;
