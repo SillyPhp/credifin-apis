@@ -84,9 +84,9 @@ class ApplicationCards
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->orderBy(['a.created_on'=>SORT_DESC]);
+            //->limit($limit)
+            //->offset($offset);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -130,9 +130,9 @@ class ApplicationCards
             ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->orderBy(['a.created_on'=>SORT_DESC]);
+            //->limit($limit)
+            //->offset($offset);
 
         if (isset($options['company'])) {
             $cards1->andWhere([
