@@ -344,10 +344,8 @@ class ApplicationCards
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -380,10 +378,8 @@ class ApplicationCards
             ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         if (isset($options['company'])) {
             $cards1->andWhere([
