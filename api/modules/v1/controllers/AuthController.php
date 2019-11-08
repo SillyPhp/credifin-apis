@@ -68,6 +68,17 @@ class AuthController extends ApiBaseController
         }
     }
 
+    private function userValid($model)
+    {
+        $usernamesModel = new Usernames();
+        $usernamesModel->username = $model->username;
+        if (!$usernamesModel->validate()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private function returnData($user, $token)
     {
         return [
@@ -213,8 +224,10 @@ class AuthController extends ApiBaseController
             }
         }
 
-        if (!$this->usernameValid($params)) {
-            return $this->response(409, $already_taken);
+        if($params['password'] == '' && $params['password'] == null){
+            if (!$this->userValid($params)) {
+                return $this->response(409, $already_taken);
+            }
         }
 
         if (isset($username) && isset($password) && isset($source)) {
