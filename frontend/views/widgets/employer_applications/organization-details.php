@@ -14,8 +14,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     <?php
                 } else {
                     ?>
-                    <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
-                            color="<?= $initial_color; ?>" font="48px"></canvas>
+                    <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
+                            color="<?= $initial_color; ?>" font="60px"></canvas>
                     <?php
                 }
                 ?>
