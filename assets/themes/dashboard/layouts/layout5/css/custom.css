@@ -119,7 +119,7 @@ a:hover{
 .custom-buttons{
     width: 100%;
     font-size: 11px !important;
-    padding: 8px 0px !important;
+    padding: 9px 0px !important;
     margin-bottom: 20px;
     border-radius: 6px !important;
     background: linear-gradient(45deg, #00a0e3, #89d8f9);
@@ -129,15 +129,17 @@ a:hover{
     -ms-border-radius: 6px !important;
     -o-border-radius: 6px !important;
     border-radius: 6px !important;
+    box-shadow:none !important;
 }
 .custom-buttons:hover{
-    color: #ffffff;
-    box-shadow:0 0 10px rgba(0,0,0,.5) !important;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -ms-transition:.3s all;
-    -o-transition:.3s all;
+    color: #fff;
+    background: linear-gradient(45deg, #89d8f9, #00a0e3);
+    transition:.4s all;
+    -webkit-transition:.4s all;
+    -moz-transition:.4s all;
+    -ms-transition:.4s all;
+    -o-transition:.4s all;
+    box-shadow:none !important;
 }
 /*Dashboard button css ends*/
 
