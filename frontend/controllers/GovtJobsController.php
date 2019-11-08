@@ -46,7 +46,7 @@ class GovtJobsController extends Controller
                     ])
                     ->limit($limit)
                     ->offset($offset)
-                    ->orderBy(['created_on'=>SORT_ASC])
+                    ->orderBy(['created_on'=>SORT_DESC])
                     ->asArray()
                     ->all();
             return json_encode($data);
