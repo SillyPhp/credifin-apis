@@ -357,6 +357,23 @@
 </nav>
 <?php
 $this->registerJs('
+function closeOpened(){
+    $(".ey-sub-menu").each(function(){
+        if($(this).hasClass("ey-header-delay")){
+            $(this).removeClass("ey-header-delay");
+        }
+    });
+}
+$(".ey-head-main .ey-header-item-is-menu").mouseenter(function(){
+    closeOpened();
+    $(this).children(".ey-sub-menu").addClass("ey-header-delay");
+});
+$(".ey-head-main .ey-header-item-is-menu").mouseleave(function(){
+    var elem = $(this);
+    setTimeout(function(){
+        elem.children(".ey-sub-menu").removeClass("ey-header-delay");
+    }, 2000);
+});
  $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
     $(".ey-header-sub-menu-container").addClass("ey-header-sub-menu-container-show");
 });

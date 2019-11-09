@@ -733,7 +733,7 @@ $this->registerCss('
 .ey-head-main .ey-header-item-is-menu:hover>a {
     color: #286efa;
 }
-.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-active-menu {
+.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-active-menu, .ey-header-delay {
     display: block;
     overflow:visible;
     height:40px;
@@ -742,7 +742,7 @@ $this->registerCss('
     animation-name: ey_menu;
     animation-duration: 0.5s;
 }
-.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover{z-index:99;}
+.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-header-delay{z-index:99;}
 
 @-webkit-keyframes ey_menu {
   from {overflow:hidden;display: none;height: 0px;}
