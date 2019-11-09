@@ -158,8 +158,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
 <?php
 $this->registerCss('
 .job-thumb a{
-    width: 125px;
-    height: 125px;
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
     margin: auto;
