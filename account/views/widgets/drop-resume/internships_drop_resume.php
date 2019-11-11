@@ -1,13 +1,23 @@
+<?php
+
+use yii\helpers\Url;
+?>
 <input type="hidden" id="parent_enc_id">
 <div class="portlet light nd-shadow">
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Resume Bank</span>
+            <span class="caption-subject font-dark bold uppercase">Resume Bank
+                <span href="#" data-toggle="tooltip" title="Here you will find all profiles in which applicants have
+                droped their resume">
+                    <i class="fa fa-info-circle"></i></span>
+            </span>
         </div>
         <div class="actions">
             <div class="btn-group dashboard-button">
-                <button title="" data-toggle="modal" data-target="#resumeBank" class="viewall-jobs">Add New</button>
+                <span title="Add New" data-toggle="modal" data-target="#resumeBank" class="sett">
+                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>">
+                </span>
             </div>
 
         </div>
@@ -68,6 +78,23 @@ $this->registerCss('
 }
 .modal-80 .modal-dialog{
     width:80%;
+}
+.sett{
+    margin-right:10px;
+}
+.sett img{
+    height:22px;
+    margin-top:7px;
+}
+.sett:hover > img{
+    -ms-transform: scale(1.2);
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
 }
 .work-profile-box{
     border: 2px solid #eef1f5;
@@ -153,6 +180,9 @@ $this->registerCss('
 
 $script = <<<JS
 $(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
+});
+$(document).ready(function(){
   $("#text").on("keyup", function() {
     var value = $(this).val().toLowerCase();
     $(".search").filter(function() {
@@ -208,10 +238,14 @@ function showSelectedCategories(){
             var response = JSON.parse(response);
             var template = $("#selected-categories").html();
             var rendered = Mustache.render(template, response);
-            $('#resume-bank').append(rendered);
-            for(var i = 0; i< response.length; i++){
-                var chckbox = $("#"+response[i]["category_enc_id"]);
-                chckbox.attr("checked", true);
+            if(response.length != 0){
+                $('#resume-bank').append(rendered);
+                for(var i = 0; i< response.length; i++){
+                    var chckbox = $("#"+response[i]["category_enc_id"]);
+                    chckbox.attr("checked", true);
+                }
+            } else{
+                $('#resume-bank').append('<div class="tab-empty"><div class="tab-empty-icon"><img src="/assets/themes/ey/images/pages/dashboard/resume-bank.png" class="img-responsive" alt=""/></div><div class="tab-empty-text"><div class="">No Resume in the Bank</div></div></div>');
             }
         }
     })

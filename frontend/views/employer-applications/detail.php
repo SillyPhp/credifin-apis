@@ -557,8 +557,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
