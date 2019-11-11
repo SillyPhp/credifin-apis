@@ -816,12 +816,12 @@ $this->registerCss('
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {
-    width: 50%;
+    width: 47%;
   }
 }
 @media (max-width: 768px) {
   #mixedSlider .MS-content .item {
-    width: 47%;
+    width: 49%;
     margin:0px;
   }
 }
