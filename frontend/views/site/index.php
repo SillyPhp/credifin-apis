@@ -539,9 +539,6 @@ $this->params['header_dark'] = false;
                             </div>
                         </div>
                     </div>
-<!--                    --><?//=
-//                        $this->render('/widgets/mustache/new-jobs-box')
-//                    ?>
                     <div class="browse-all-cat">
                         <a href="jobs/list" title="" class="style2">Show all listings</a>
                     </div>
