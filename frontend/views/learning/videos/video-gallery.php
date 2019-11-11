@@ -3,16 +3,19 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+
 ?>
-    <section class="background" style="background: url('<?= $parentId['banner']?>');">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="h-spacing"><?= $parentId['name'];?></h2>
+<section class="background" style="background: url('<?= $parentId['banner'] ?>');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-3">
+                <div class="h-text">
+                    <div class="h-spacing"><?= $parentId['name']; ?></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section class="topics-main">-->
 <!--        <div class="container">-->
@@ -44,7 +47,7 @@ use yii\helpers\Html;
 <!--                <div class="pos-rel">-->
 <!--                    <div class="parent">-->
 <!--                        <div class="logo _1">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -60,7 +63,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _2">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -76,7 +79,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _3">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -92,7 +95,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _4">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -108,7 +111,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _5">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -124,7 +127,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _6">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -140,7 +143,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _7">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -156,7 +159,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _8">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -172,7 +175,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _9">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -188,7 +191,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _10">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -204,7 +207,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _11">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -225,26 +228,26 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section class="videos-main">
-        <div class="container">
-            <div class="row">
-                <div class=" col-md-12">
-                    <div class="heading-style">Top Videos</div>
-                </div>
+<section class="videos-main">
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12">
+                <div class="heading-style">Top Videos</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Other Videos-->
+    <div class="videorows">
+        <div class="videorow container">
+            <div class="col-md-12 row1 v-padding">
+
+                <div id="gallery-video"></div>
             </div>
         </div>
 
-        <!--Other Videos-->
-        <div class="videorows">
-            <div class="videorow container">
-                <div class="col-md-12 row1 v-padding">
-
-                    <div id="gallery-video"></div>
-                </div>
-            </div>
-
-        </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section>-->
 <!--        <div class="container">-->
@@ -258,7 +261,7 @@ use yii\helpers\Html;
 <!--                    <div class="inst-container">-->
 <!--                        <a href="#">-->
 <!--                            <div class="inst-icon">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                                <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            </div>-->
 <!--                            <div class="inst-member">-->
 <!--                                <div class="inst-name">Web Developing</div>-->
@@ -280,46 +283,46 @@ use yii\helpers\Html;
             </div>
             <div class="question-list">
                 <?= $this->render('/widgets/questions_gallery_view', [
-                    'object'=>$object
+                    'object' => $object
                 ]); ?>
             </div>
         </div>
     </section>
 <?php endif; ?>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Related Jobs</div>
-                </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Related Jobs</div>
             </div>
-            <div class="jobs-list"></div>
         </div>
-    </section>
+        <div class="jobs-list"></div>
+    </div>
+</section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Related Internships</div>
-                </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Related Internships</div>
             </div>
-            <div class="internships-list"></div>
         </div>
-    </section>
+        <div class="internships-list"></div>
+    </div>
+</section>
 
 <!--    <section class="bg-black">-->
 <!--        <div class="container">-->
 <!--            <div class="row">-->
 <!--                <div class="col-md-6 col-sm-6">-->
 <!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
-<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><? //= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
 <!--                </div>-->
 <!--                <div class="col-md-6 col-sm-6">-->
 <!--                    <div class="type-1">-->
 <!--                        <div>-->
-<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
-<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+<!--                            <a href="--><? //= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+<!--                                <span class="txt">--><? //= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
 <!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
 <!--                            </a>-->
 <!--                        </div>-->
@@ -330,7 +333,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
 <!--                                 class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -341,7 +344,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
 <!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -352,7 +355,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">-->
-<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
+<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
 <!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -364,21 +367,21 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">Blogs</div>
-                        </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading-style">Blogs</div>
                     </div>
-                    <div id="whats-new" class="row">
-                    </div>
+                </div>
+                <div id="whats-new" class="row">
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
@@ -554,7 +557,7 @@ $this->registerCss('
 .h-spacing{
     letter-spacing: 4px;
     text-transform: uppercase;
-    font-size: 30pt;
+    font-size: 30px;
     font-family: roboto;
    
 }
@@ -705,6 +708,36 @@ $this->registerCss('
     background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
+}
+@media (max-width:768px){
+.background {
+    min-height: 310px;
+    padding-top: 75px;
+    padding-left: 50px;
+    background-size: 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right bottom !Important;
+}
+}
+@media (max-width: 500px){
+.background {
+    min-height: 250px;
+    padding-top: 134px;
+    padding-left: 0px;
+    background-size:auto 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right top !Important;
+}
+.h-text{
+    text-align: center;
+    background:#fff;
+}
+.h-spacing {
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-family: roboto;
+}
 }
 .logo{
     width: 140px;
