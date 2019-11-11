@@ -25,9 +25,6 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
             <?php if ($website): ?>
                 <p><i class="fas fa-unlink"></i><?= $website; ?></p>
             <?php endif; ?>
-             <?php if ($email): ?>
-            <p><i class="fas fa-envelope"></i><?= $email; ?></p>
-            <?php endif; ?>
         </div>
     </div>
     <div class="actions-main">

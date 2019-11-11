@@ -297,11 +297,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'benefits' => $data2['applicationEmployeeBenefits']
                             ]);
                             ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/skills', [
-                                'skills' => $data2['applicationSkills']
-                            ]);
-                            ?>
+
                             <?=
                             $this->render('/widgets/employer_applications/job-description', [
                                 'job_description' => $data2['applicationJobDescriptions'],
@@ -358,7 +354,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'initial_color' => $org['color'],
                         'slug' => $org['slug'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'type' => $type,
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
@@ -374,7 +369,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'slug' => $org['slug'],
                         'cid' => $org['organization_enc_id'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'job_url' => $data1['job_url'],
                         'application_id' => $data1['application_enc_id'],
                         'type' => $type,
@@ -384,6 +378,15 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'shortlist_btn_display' => true
                     ]);
                 endif;
+                ?>
+                <?php
+                    if(Yii::$app->user->isGuest){
+                ?>
+                <?=
+                    $this->render('/widgets/best-platform')
+                ?>
+                <?php
+                    }
                 ?>
             </div>
         </div>

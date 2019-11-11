@@ -53,7 +53,7 @@ AppAssets::register($this);
 <div class="body-overlay"></div>
 <div id="wrapper" class="clearfix">
     <div class="back-btn">
-        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i> Go Back To Website </a>
+        <a href="<?= $this->params['url'] ?>"><i class="fas fa-long-arrow-alt-left"></i> Go Back To Website</a>
     </div>
 
     <div class="main-content">
@@ -97,13 +97,12 @@ $this->registerCss('
     background:#00a0e3;
 //    padding:5px 10px;
     transition:.3s ease;
-    font-size:17px;
 //    border-radius:5px;
     color:#fff;
 }
 .back-btn a{
     color: #fff;
-    font-size: 17px;
+    font-size: 14px;
     padding: 6px 15px;
     display: block;
     transition: .5s ease;

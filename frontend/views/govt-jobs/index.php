@@ -14,7 +14,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
                     <h4 class="text-white font-20 mt-0">Find Your Dream Job Today.</h4>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
-                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search Jobs." name="keywords" value="<?= $keywords ?>">
+                            <input type="text" id="search_company" class="col-md-7 header-search-tw" placeholder="Search City,State,Organizations" name="keywords" value="<?= $keywords ?>">
                             <div class="input-group-btn">
                                 <button class="loader_btn_search"><i class="fas fa-search"></i></button>
                             </div>
@@ -36,9 +36,9 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
             </div>
             <div id="cards">
             </div>
-<!--            <div class="align_btn">-->
-<!--                <button id="loader" class="btn btn-success">Load More</button>-->
-<!--            </div>-->
+            <div class="align_btn">
+                <button id="loader" class="btn btn-success">Load More</button>
+            </div>
         </div>
     </div>
 </section>
@@ -168,7 +168,7 @@ body{
 }
 .posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
-    background:url('" . Url::to('@eyAssets/images/pages/jobs/govt.jpg') . "');
+    background:url('" . Url::to('@eyAssets/images/pages/jobs/indian-job.png') . "');
     background-repeat: no-repeat;
     background-size: 100% 100%;
     padding: 105px 0px;
@@ -450,11 +450,16 @@ echo $this->render('/widgets/mustache/govt-jobs-card');
 $script = <<< JS
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchLocalData(template=$('#cards'),min+8,max+8,loader=false,loader_btn=true);
+  fetchLocalData(template=$('#cards'),limit,offset+12,loader=false,loader_btn=true);
 })
-var min =0;
-var max = 8;
-fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
+var limit =12;
+var offset = 0;
+fetchLocalData(template=$('#cards'),limit,offset,loader=true,loader_btn=false);
+$(document).on('submit','#form-search',function(e) {
+  e.preventDefault();
+  var keyword = $('#search_company').val();
+  fetchLocalData(template=$('#cards'),limit=50,offset,loader=true,loader_btn=false,keyword=keyword,replace=true);
+})
 JS;
 $this->registerJs($script);
 ?>
