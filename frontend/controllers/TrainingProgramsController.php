@@ -13,6 +13,13 @@ use yii\web\Response;
 
 class TrainingProgramsController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {

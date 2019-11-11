@@ -16,6 +16,16 @@
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
+                            <a href="/govt-jobs">Indian Govt. Jobs</a>
+                        </div>
+                    </div>
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/usa-jobs">USA Govt. Jobs</a>
+                        </div>
+                    </div>
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
                             <a href="/organizations">Explore Companies</a>
                         </div>
                     </div>
@@ -122,10 +132,29 @@
                 <div class="ey-mob-sub-items">
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
+                            <a href="/learning/categories">Popular Topics</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
                             <a href="/questions">Questions</a>
                         </div>
                     </div>
                 </div>
+                <div class="ey-mob-sub-items">
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
+                            <a href="/learning/contribute">Collaborate With Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+            <div class="ey-mobile-item-main">
+                <a href="/career-advice">Career Advice</a>
             </div>
         </div>
         <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
@@ -145,11 +174,6 @@
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
                             <a href="/blog/category/infographics">Infographics</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/quizzes/all">Quizzes</a>
                         </div>
                     </div>
                 </div>
@@ -204,6 +228,14 @@
                                 <div class="ey-mobile-sub-menu-container">
                                     <div class="ey-mobile-sub-nav-items">
                                         <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                            <a href="/account/jobs/create">
+                                                <div>
+                                                    <span class="ey-services-icons ai"></span>
+                                                </div>
+                                                <span>Create AI Job</span>
+                                            </a>
+                                        </div>
+                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
                                             <a href="/account/jobs/quick-job">
                                                 <div>
                                                     <span class="ey-services-icons quick"></span>
@@ -219,14 +251,6 @@
                                                 <span>Post Job Tweet</span>
                                             </a>
                                         </div>
-                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                            <a href="/account/jobs/create">
-                                                <div>
-                                                    <span class="ey-services-icons ai"></span>
-                                                </div>
-                                                <span>Create AI Job</span>
-                                            </a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -240,19 +264,19 @@
                                 <div class="ey-mobile-sub-menu-container">
                                     <div class="ey-mobile-sub-nav-items">
                                         <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                            <a href="/tweets/internship/create">
-                                                <div>
-                                                    <span class="ey-services-icons tweet"></span>
-                                                </div>
-                                                <span>Post Internship Tweet</span>
-                                            </a>
-                                        </div>
-                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
                                             <a href="/account/internships/create">
                                                 <div>
                                                     <span class="ey-services-icons ai"></span>
                                                 </div>
                                                 <span>Create AI Internship</span>
+                                            </a>
+                                        </div>
+                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                            <a href="/tweets/internship/create">
+                                                <div>
+                                                    <span class="ey-services-icons tweet"></span>
+                                                </div>
+                                                <span>Post Internship Tweet</span>
                                             </a>
                                         </div>
                                     </div>
@@ -333,7 +357,24 @@
 </nav>
 <?php
 $this->registerJs('
- $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
+function closeOpened(){
+    $(".ey-sub-menu").each(function(){
+        if($(this).hasClass("ey-header-delay")){
+            $(this).removeClass("ey-header-delay");
+        }
+    });
+}
+$(".ey-head-main .ey-header-item-is-menu").mouseenter(function(){
+    closeOpened();
+    $(this).children(".ey-sub-menu").addClass("ey-header-delay");
+});
+$(".ey-head-main .ey-header-item-is-menu").mouseleave(function(){
+    var elem = $(this);
+    setTimeout(function(){
+        elem.children(".ey-sub-menu").removeClass("ey-header-delay");
+    }, 2000);
+});
+$(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
     $(".ey-header-sub-menu-container").addClass("ey-header-sub-menu-container-show");
 });
 $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseleave(function(){
@@ -341,14 +382,18 @@ $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseleave(funct
 });
 $(document).on("click", "#open-mobile-menu", function(e){
     e.preventDefault();
+    $(this).toggleClass("text-black");
     $(".ey-mobile-content").toggleClass("ey-mobile-show");
+    var h_main_header = $("#header-main");
+    if(h_main_header.hasClass("header-show")){
+        h_main_header.removeClass("header-show");
+    }
 });
 $(document).on("click", ".ey-mob-menu-inner-item.ey-mob-menu-has-sub .ey-mobile-item-main .ey-mobile-menu-toggler", function(e){
     e.preventDefault();
     $(this).parent().next(".ey-mob-sub-menu-has-container").toggleClass("ey-mobile-sub-menu-show");
 });
 $(document).on("click", ".ey-mob-sub-item.ey-mobile-sub-has-container .ey-mobile-sub-menu-heading", function(e){
-    e.preventDefault();
     $(this).next(".ey-mobile-sub-menu-container").toggleClass("ey-mobile-sub-nav-show");
 });
 ');

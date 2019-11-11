@@ -1,9 +1,7 @@
 <?php
+
 $this->params['header_dark'] = true;
-$this->title = Yii::t('frontend', 'Learning Corner');
-
 use yii\helpers\Url;
-
 ?>
 <section>
     <div class="container headsec">
@@ -297,7 +295,8 @@ use yii\helpers\Url;
                                         <?= $obj['question']; ?>
                                     </div>
                                     <div class="t-answers">
-                                        <span class="answers"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
+                                        <span class="answers"><a href="<?= $link ?>"
+                                                                 target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
                                         <div class="best-answers">
                                             <?php if (!empty($obj['questionsPoolAnswers'])): ?>
                                                 <span class="best-images">
@@ -353,11 +352,11 @@ use yii\helpers\Url;
 
 <section>
     <div class="container">
-<!--        <div class="row">-->
-            <div class="col-md-12">
-                <h2 class="heading-style">Our Collaborators</h2>
-            </div>
-<!--        </div>-->
+        <!--        <div class="row">-->
+        <div class="col-md-12">
+            <h2 class="heading-style">Our Collaborators</h2>
+        </div>
+        <!--        </div>-->
         <div class="row">
             <div class="col-md-12" id="contributors">
 
@@ -408,7 +407,7 @@ $this->registerCss('
     height: 25px;
 }
 .sharing-links:hover .set{
-    height:146px;
+    height:110px;
     padding: 5px;
 }
 .head{
@@ -450,6 +449,7 @@ $this->registerCss('
 }
 .best-answers {
     float: right;
+    display:flex;
 }
 .t-answers img {
     height: 20px;
@@ -483,6 +483,7 @@ $this->registerCss('
     padding-top: 35px;
     max-width: 90%;
     margin: 0px auto;
+    margin-bottom: 10px;
 }
 @media only screen and (max-width: 1200px) and (min-width:992px){
     .card{
