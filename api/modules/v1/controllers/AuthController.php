@@ -2,7 +2,9 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\models\ForgotPasswordForm;
 use common\models\Usernames;
+use common\models\Users;
 use common\models\UserTypes;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
@@ -255,6 +257,26 @@ class AuthController extends ApiBaseController
             return $this->response(422);
         }
         return $this->response(405);
+    }
+
+    public function actionForgotPassword(){
+        $email = Yii::$app->request->post('email');
+        $model = new ForgotPasswordForm();
+        $model->email = $email;
+        $user = Users::find()
+            ->where(['status'=>'Active','is_deleted'=>0,'email'=>$email])
+            ->exists();
+        if(!$user){
+            $this->response(404,['message'=>'not found']);
+        }else {
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->forgotPassword()) {
+                    return $this->response(200, ['message' => 'An email with instructions has been sent to your email address (please also check your spam folder).']);
+                } else {
+                    return $this->response(500, ['message' => 'An error has occurred. Please try again.']);
+                }
+            }
+        }
     }
 
 
