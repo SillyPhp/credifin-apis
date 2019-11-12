@@ -192,19 +192,19 @@ $this->params['seo_tags'] = [
                     </div>
                     <!--                        <div class="share-it">Share :-</div>-->
                     <div class="fb-share">
-                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=http://https://www.empoweryouth.com/learning/video/slug"><button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button></a>
                     </div>
                     <div class="tw-share">
-                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                        <a href="https://twitter.com/home?status=https://www.empoweryouth.com/learning/video/slug"> <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button></a>
                     </div>
                     <div class="li-share">
-                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/learning/video/slug">  <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button></a>
                     </div>
                     <div class="wa-share">
-                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                        <a href="wa.me/?text=https://www.empoweryouth.com/learning/video/slug"><button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp </button></a>
                     </div>
                     <div class="mail-share">
-                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+                        <a href="mailto:someone@example.com?Subject=Hello&body=https://www.empoweryouth.com/learning/video/slug" target="_top"> <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button></a>
                     </div>
                 </div>
 <!--                <div class="rate-video">-->
@@ -1212,6 +1212,19 @@ left:10px;
     width:147px;
 }
 }
+
+@media only screen and (min-width: 1400px) and (max-width:2000px)  {
+  .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+   width: 154px;
+}
+}
+@media only screen and (min-width: 1200px) and (max-width:1350px)  {
+  .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+   width: 127px;
+}
+}
+
+
 ');
 
 $script = <<<JS
