@@ -369,6 +369,12 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.best-images{
+    display:flex;
+}
+.best-images a{
+    margin-right:5px;   
+}
 .wts-app, .fb, .tw, .male{
     width: 30px;
     text-align: center;
