@@ -1,7 +1,7 @@
 <script id="application-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}" class="application-card-main">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}" class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
                     <div class="col-md-3">
@@ -100,7 +100,6 @@ function renderCards(cards, container){
             cards[i].skill = [];
         }
     }
-    console.log(cards);
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
@@ -241,9 +240,9 @@ $this->registerCss('
     margin-bottom: 8px !important;
 }
 .application-card-main {
-    box-shadow: none !important; 
     background-color: transparent !important;
-    margin-bottom: 0px !important;
+    margin-bottom: 20px !important;
+    border-radius: 10px;
 }
 .not-found{
     max-width: 400px;
@@ -253,17 +252,13 @@ $this->registerCss('
 .app-box {
     text-align: left;
     padding: 10px;
-    margin-top: 25px;
     border-radius: 10px;
-//    box-shadow: 1px 2px 5px 2px lightgray;
     position:relative;
     background:#fff;
 }
-
 .img{
     max-width: 66px;
 }
-
 .cover-box{
     display: inline-block;
     padding-left: 13px;
