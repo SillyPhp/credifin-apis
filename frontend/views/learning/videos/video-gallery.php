@@ -4,15 +4,17 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
 ?>
-    <section class="background" style="background: url('<?= $parentId['banner']?>');">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="heading-style h-spacing"><?= $parentId['name'];?></h2>
+<section class="background" style="background: url('<?= $parentId['banner'] ?>');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-3">
+                <div class="h-text">
+                    <div class="h-spacing"><?= $parentId['name']; ?></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section class="topics-main">-->
 <!--        <div class="container">-->
@@ -225,26 +227,26 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section class="videos-main">
-        <div class="container">
-            <div class="row">
-                <div class=" col-md-12">
-                    <div class="heading-style">Top Videos</div>
-                </div>
+<section class="videos-main">
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12">
+                <div class="heading-style">Top Videos</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Other Videos-->
+    <div class="videorows">
+        <div class="videorow container">
+            <div class="col-md-12 row1 v-padding">
+
+                <div id="gallery-video"></div>
             </div>
         </div>
 
-        <!--Other Videos-->
-        <div class="videorows">
-            <div class="videorow container">
-                <div class="col-md-12 row1 v-padding">
-
-                    <div id="gallery-video"></div>
-
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section>-->
 <!--        <div class="container">-->
@@ -280,7 +282,7 @@ use yii\helpers\Html;
             </div>
             <div class="question-list">
                 <?= $this->render('/widgets/questions_gallery_view', [
-                    'object'=>$object
+                    'object' => $object
                 ]); ?>
             </div>
         </div>
@@ -364,21 +366,21 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">Blogs</div>
-                        </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading-style">Blogs</div>
                     </div>
-                    <div id="whats-new" class="row">
-                    </div>
+                </div>
+                <div id="whats-new" class="row">
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
@@ -405,6 +407,18 @@ $this->registerCss('
   content:"";
   top: 20px; 
   transition: .5s ease;
+}
+
+.show{
+	padding: 10px;
+	border: none;
+	display: block;
+	margin: auto;
+	font-size: 15px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: white;
+	border-radius: 5px;
 }
 .card__block--main {
   background-color: #fff;
@@ -541,8 +555,10 @@ $this->registerCss('
 } 
 .h-spacing{
     letter-spacing: 4px;
-    word-spacing: 10px;
     text-transform: uppercase;
+    font-size: 30px;
+    font-family: roboto;
+   
 }
 /*    <!-- view-all button css start -->*/
 .btn-3 {
@@ -691,6 +707,36 @@ $this->registerCss('
     background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
+}
+@media (max-width:768px){
+.background {
+    min-height: 310px;
+    padding-top: 75px;
+    padding-left: 50px;
+    background-size: 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right bottom !Important;
+}
+}
+@media (max-width: 500px){
+.background {
+    min-height: 250px;
+    padding-top: 134px;
+    padding-left: 0px;
+    background-size:auto 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right top !Important;
+}
+.h-text{
+    text-align: center;
+    background:#fff;
+}
+.h-spacing {
+    letter-spacing: 0px;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-family: roboto;
+}
 }
 .logo{
     width: 140px;

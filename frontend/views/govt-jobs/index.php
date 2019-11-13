@@ -168,11 +168,11 @@ body{
 }
 .posted-tweet iframe{width:100% !important;margin-bottom:0px !important;}
 .head-bg{
-    background:url('" . Url::to('@eyAssets/images/pages/jobs/indian-job.png') . "');
+    background:url('" . Url::to('@eyAssets/images/pages/jobs/indian-govt-job.png') . "');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    padding: 105px 0px;
-    height: 400px;
+    padding: 85px 0px;
+    height: 450px;
 }
 .search-box{
     width: 100%;
