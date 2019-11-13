@@ -257,6 +257,7 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
+            $type = Yii::$app->request->post('type');
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -270,6 +271,7 @@ class CollegeIndexController extends ApiBaseController
                     'e.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'z.name job_type',
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -284,8 +286,9 @@ class CollegeIndexController extends ApiBaseController
                         }], false);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0])
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0,'z.name'=>$type])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -298,6 +301,7 @@ class CollegeIndexController extends ApiBaseController
                 $positions = 0;
                 $data['name'] = $j['name'];
                 $data['logo'] = $j['logo'];
+                $data['job_type'] = $j['job_type'];
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];

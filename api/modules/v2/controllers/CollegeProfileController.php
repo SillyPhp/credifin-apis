@@ -275,6 +275,7 @@ class CollegeProfileController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
             $limit = Yii::$app->request->post('limit');
+            $type = Yii::$app->request->post('type');
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -292,6 +293,7 @@ class CollegeProfileController extends ApiBaseController
                     'm.min_wage as min_salary',
                     'm.wage_duration as salary_duration',
                     'dd.designation',
+                    'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -323,8 +325,9 @@ class CollegeProfileController extends ApiBaseController
                         }], false);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1,'z.name'=>$type]);
             if ($limit) {
                 $jobs->limit($limit);
             }
@@ -390,6 +393,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
