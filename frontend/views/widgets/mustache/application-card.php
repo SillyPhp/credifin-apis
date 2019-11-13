@@ -69,7 +69,7 @@
                                     <span class="after">{{.}}</span>
                                 {{/skill}}
                                 {{^skill}}
-                                    <span class="after">Multiple Skilled</span>
+                                    <span class="after">Multiple Skills</span>
                                 {{/skill}}
                             </div>
                         </div>
