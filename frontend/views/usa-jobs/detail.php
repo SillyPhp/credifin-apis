@@ -249,15 +249,16 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script async src=“https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js“></script>
+                <ins class=“adsbygoogle”
+                     style=“display:block”
+                     data-ad-client=“ca-pub-2186770765824304”
+                     data-ad-slot=“6687290527"
+                     data-ad-format=“auto”
+                     data-full-width-responsive=“true”></ins>
                 <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({
-                        google_ad_client: "ca-pub-2186770765824304",
-                        enable_page_level_ads: true
-                    });
+                    (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
-                <ins class="adsbygoogle" style="display:inline-block;width:100%;heigth:250px;"
-                     data-ad-client="ca-pub-2186770765824304" data-ad-slot="first"></ins>
             </div>
         </div>
     </div>
