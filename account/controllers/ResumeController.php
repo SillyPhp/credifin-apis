@@ -29,8 +29,12 @@ class ResumeController extends Controller
                 ->alias('a')
                 ->select(['b.name', 'b.category_enc_id'])
                 ->innerJoin(Categories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id])
-                ->andWhere(['a.is_deleted' => 0])
+                ->where(['a.assigned_to' => $type, 'a.parent_enc_id' => $category_enc_id,'a.is_deleted' => 0])
+                ->andWhere([
+                    'or',
+                    ['=', 'a.status', 'Approved'],
+                    ['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
+                ])
                 ->asArray()
                 ->all();
 
@@ -62,14 +66,16 @@ class ResumeController extends Controller
 
             if ($c_e_id = $this->addCategory($new_value)) {
                 $assigned_category = new AssignedCategories();
-                $assigned_category->assigned_category_enc_id = Yii::$app->security->generateRandomString(12);
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $assigned_category->assigned_category_enc_id = $utilitiesModel->encrypt();
                 $assigned_category->category_enc_id = $c_e_id->category_enc_id;
                 $assigned_category->parent_enc_id = $parent_enc_id;
                 $assigned_category->assigned_to = $type;
+                $assigned_category->status = 'Pending';
                 $assigned_category->created_on = date('Y-m-d H:i:s');
                 $assigned_category->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
                 $assigned_category->created_by = Yii::$app->user->identity->user_enc_id;
-                $assigned_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
                 if ($assigned_category->save()) {
                     $data = [];
                     $data['category_enc_id'] = $c_e_id->category_enc_id;
@@ -109,7 +115,8 @@ class ResumeController extends Controller
         } else {
             $new_category = new Categories();
             $utilitiesModel = new Utilities();
-            $new_category->category_enc_id = Yii::$app->security->generateRandomString(12);
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $new_category->category_enc_id = $utilitiesModel->encrypt();
             $new_category->name = $new_value;
             $utilitiesModel->variables['name'] = $new_value;
             $utilitiesModel->variables['table_name'] = Categories::tableName();
@@ -117,7 +124,6 @@ class ResumeController extends Controller
             $new_category->slug = $utilitiesModel->create_slug();
             $new_category->created_on = date('Y-m-d H:i:s');
             $new_category->created_by = Yii::$app->user->identity->user_enc_id;
-            $new_category->last_updated_by = Yii::$app->user->identity->user_enc_id;
             if ($new_category->save()) {
                 return $new_category;
             }
@@ -213,7 +219,9 @@ class ResumeController extends Controller
     private function saveFirstCategory($category_enc_id, $type)
     {
         $organization_a_c = new OrganizationAssignedCategories();
-        $organization_a_c->assigned_category_enc_id = Yii::$app->security->generateRandomString(12);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $organization_a_c->assigned_category_enc_id = $utilitiesModel->encrypt();
         $organization_a_c->category_enc_id = $category_enc_id;
         $organization_a_c->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
         $organization_a_c->assigned_to = $type;
@@ -226,7 +234,9 @@ class ResumeController extends Controller
     private function saveSecondCategory($c_enc_id, $p_enc_id, $type)
     {
         $organization_a_c = new OrganizationAssignedCategories();
-        $organization_a_c->assigned_category_enc_id = Yii::$app->security->generateRandomString(12);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $organization_a_c->assigned_category_enc_id = $utilitiesModel->encrypt();
         $organization_a_c->category_enc_id = $c_enc_id;
         $organization_a_c->parent_enc_id = $p_enc_id;
         $organization_a_c->organization_enc_id = Yii::$app->user->identity->organization_enc_id;
@@ -242,7 +252,7 @@ class ResumeController extends Controller
         $type = Yii::$app->request->post('type');
         $selectedfields = OrganizationAssignedCategories::find()
             ->alias('a')
-            ->select(['a.assigned_category_enc_id', 'b.name'])
+            ->select(['a.assigned_category_enc_id', 'b.name','b.category_enc_id', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", b.icon) icon'])
             ->joinWith(['categoryEnc b'], false)
             ->where(['a.assigned_to' => $type])
             ->andWhere(['a.organization_enc_id' => Yii::$app->user->identity->organization_enc_id, 'a.created_by' => Yii::$app->user->identity->user_enc_id])
@@ -327,6 +337,7 @@ class ResumeController extends Controller
                 ->all();
             $location = OrganizationLocations::find()
                 ->alias('a')
+                ->distinct()
                 ->select(['c.name', 'c.city_enc_id'])
                 ->joinWith(['organizationEnc b'], false)
                 ->joinWith(['cityEnc c'])
@@ -506,7 +517,9 @@ class ResumeController extends Controller
     private function dropResumeApplications($exp)
     {
         $d_r_applications = new DropResumeApplications();
-        $d_r_applications->applied_application_enc_id = Yii::$app->security->generateRandomString(12);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $d_r_applications->applied_application_enc_id = $utilitiesModel->encrypt();
         $d_r_applications->user_enc_id = Yii::$app->user->identity->user_enc_id;
         $d_r_applications->experience = $exp;
         $d_r_applications->created_on = date('Y-m-d H:i:s');
@@ -520,7 +533,9 @@ class ResumeController extends Controller
     private function dropResumeApplicationLocation($location, $applied_app_enc_id)
     {
         $d_r_a_locations = new DropResumeApplicationLocations();
-        $d_r_a_locations->applied_location_enc_id = Yii::$app->security->generateRandomString(12);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $d_r_a_locations->applied_location_enc_id = $utilitiesModel->encrypt();
         $d_r_a_locations->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_locations->city_enc_id = $location;
         $d_r_a_locations->user_enc_id = Yii::$app->user->identity->user_enc_id;
@@ -535,7 +550,9 @@ class ResumeController extends Controller
     private function dropResumeApplicationTitle($job_title, $applied_app_enc_id)
     {
         $d_r_a_title = new DropResumeApplicationTitles();
-        $d_r_a_title->applied_title_enc_id = Yii::$app->security->generateRandomString(12);
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $d_r_a_title->applied_title_enc_id = $utilitiesModel->encrypt();
         $d_r_a_title->applied_application_enc_id = $applied_app_enc_id;
         $d_r_a_title->title = $job_title;
         $d_r_a_title->user_enc_id = Yii::$app->user->identity->user_enc_id;

@@ -1,35 +1,64 @@
 <?php
 
+use kartik\widgets\TimePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use kartik\select2\Select2;
-use yii\web\JsExpression;
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
+function getVal($p)
+{
+    switch ($p)
+    {
+        case 1:
+            return 'Mon';
+            break;
+        case 2:
+            return 'Tue';
+            break;
+        case 3:
+            return 'Wed';
+            break;
+        case 4:
+            return 'Thu';
+            break;
+        case 5:
+            return 'Fri';
+            break;
+        case 6:
+            return 'Sat';
+            break;
+        case 7:
+            return 'Sun';
+            break;
+        default:
+            return '';
+            break;
+    }
+}
 ?>
-<div class="container set-width">
-    <?php
-    if (Yii::$app->session->hasFlash('success')):
-        echo "<div class='m-cover hidden'></div>
+    <div class="container set-width">
+        <?php
+        if (Yii::$app->session->hasFlash('success')):
+            echo "<div class='m-cover hidden'></div>
                 <div class='m-modal hidden'>
                     <div class='m-content'>
                         <img src='" . Url::to('@eyAssets/images/pages/jobs/submitted.png') . "'/>
-                        <p>Your Application has successfully submitted.</p>
+                        <p>".Yii::$app->session->getFlash('success')."</p>
                         <div class='m-actions'>
                             <a href='javascript:;' class='close-m-mo'>Post Another Training</a>
                         </div>
                     </div>
                 </div>";
-    else:
-        Yii::$app->session->hasFlash('error');
-        echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
-    endif;
-    ?>
-    <div class="portlet light" id="form_wizard_1">
-        <div class="portlet-title">
-            <div class="caption">
-                <i class=" icon-layers font-red"></i>
-                <span class="caption-subject font-red bold uppercase">Training Program</span>
+        else:
+            Yii::$app->session->hasFlash('error');
+            echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
+        endif;
+        ?>
+        <div class="portlet light" id="form_wizard_1">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-layers font-red"></i>
+                    <span class="caption-subject font-red bold uppercase">Training Program</span>
                 </div>
             </div>
             <div class="portlet-body form">
@@ -65,6 +94,16 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="pf-field no-margin">
                             <ul class="tags_input skill_tag_list">
+                                <?php if (!empty($skill)) {
+                                    foreach ($skill as $s) { ?>
+                                        <li class="addedTag"><?= $s ?><span
+                                                    onclick="$(this).parent().remove();"
+                                                    class="tagRemove">x</span><input type="hidden"
+                                                                                     name="skills[]"
+                                                                                     value="<?= $s ?>">
+                                        </li>
+                                    <?php }
+                                } ?>
                                 <li class="tagAdd taglist">
                                     <div class="skill_wrapper">
                                         <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -96,11 +135,38 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="contenu">
                             <div class="choice_pattern">
-                                <div class="results"></div>
+                                <div class="results">
+                                    <?php if (!empty($batch_data)):
+                                        $week_array = [
+                                               1 => "Mon",
+                                               2 => "Tue",
+                                               3 => "Wed",
+                                               4 => "Thu",
+                                               5 => "Fri",
+                                               6 => "Sat",
+                                               7 => "Sun"
+                                            ];
+                                        foreach($batch_data as $batch){
+                                            $d="";
+                                            $batch_days = json_decode($batch['days'],true);
+                                            $start_time = date("h:i A", strtotime($batch['start_time']));
+                                            $end_time = date("h:i A", strtotime($batch['end_time']));
+                                            for($i=0;$i<=6;$i++)
+                                            {
+                                                if (!empty(getVal($batch_days[$i]))) {
+                                                    $d .= getVal($batch_days[$i]) . ',';
+                                                }
+                                            }
+                                            ?>
+                                            <div class="result-item"><div class="result-data"><span></span><span><?= rtrim($d,','); ?></span> : from <strong><?= $start_time ?></strong> to <strong><?= $end_time ?></strong> <i class="fa fa-times cancelCurrent" onclick="removeIt($(this));"></i></div><div class="result-data"><b>Fees: </b><span><?= $batch['fees'] ?></span></div><div class="result-data"><b>City: </b><span><?= $batch['name'] ?></span></div><div class="result-data"><b>Seat: </b> <span><?= $batch['seats'] ?></span></div></div>
+                                            <input type="hidden" class="hours_class" name"business_hours[]"="" value="<?= rtrim($d,',') ?>, : from <?= $start_time ?> to <?= $end_time ?> Fees: <?=  $batch['fees'] ?>City: <?= $batch['name'] ?>:  <?= $batch['seats'] ?>">
+                                        <?php } ?>
+                                    <?php endif; ?>
+                                </div>
                                 <div class="selection">
                                     <input type="text" data-value="" class="city_select" placeholder="Search city">
-                                    <input type="number" class="total_seat" placeholder="Seats">
-                                    <input type="number" class="fees_select" placeholder="Fees">
+                                    <input type="text" class="total_seat" placeholder="Seats">
+                                    <input type="text" class="fees_select" placeholder="Fees">
                                     <select class="fees_method" name="fees_method">
                                         <option value="1">Monthly</option>
                                         <option value="2">Weekly</option>
@@ -108,12 +174,16 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                         <option value="4">One Time</option>
                                     </select>
                                     <div class="fromto">
-                                        <label class="set" for="">From </label>
-                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                               value="09:00"/>
-                                        <label class="set" for="">to </label>
-                                        <input type="time" min="04:00" max="23:00" step="0" placeholder="hh:mm"
-                                               value="05:00"/>
+                                        <div class="row">
+                                            <div class="col-md-3 col-md-offset-3">
+                                                <?= $form->field($model, 'from')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '9:00 AM']])->label('Batch Timing From');
+                                                ?>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <?= $form->field($model, 'to')->widget(TimePicker::classname(), ['pluginOptions' => ['defaultTime' => '5:00 PM']])->label('Upto');
+                                                ?>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="jours">
@@ -126,8 +196,8 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                                     </div>
                                     <div id="custom-checkboxes"></div>
                                     <div class="check-selection">
-<!--                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>-->
-                                        <a href="#" class="btn add">Add New Batch</a>
+                                        <!--                                        <a href="#" class="btn add" style="width: 150px;">Copy detail</a>-->
+                                        <a href="#" class="btn add">Create Batch</a>
                                     </div>
                                 </div>
                             </div>
@@ -135,8 +205,6 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                         <?= $form->field($model, 'batch_details')->hiddenInput(['id' => 'final_result'])->label(false); ?>
                     </div>
                 </div>
-
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="btn-set">
@@ -150,6 +218,10 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
     </div>
 <?php
 $this->registerCss('
+.result-item
+{
+margin: auto !important;
+}
 body > .wrapper > .container-fluid{
     background-image: url("/assets/themes/ey/images/pages/training-program/institutebg.png");
     background-repeat: no-repeat;
@@ -699,7 +771,7 @@ var arrType=new Array("No available time","always open","permanently closed","Op
         for(var y=0; y<arrJour.length; y++)
             $('#custom-checkboxes').append(
                 '<style>[type="checkbox"]#checkDay'+ y +':not(:checked) + label:before,[type="checkbox"]#checkDay'+ y + ':checked + label:before,[type="checkbox"]#checkDay'+ y +':not(:checked) + label:after,[type="checkbox"]#checkDay'+ y +':checked + label:after { content:  "' + arrJour[y] +'"; }</style>' +
-                '<input type="checkbox" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
+                '<input type="checkbox" data-value = "'+(y+1)+'" id="checkDay' + y + '" value="' + arrJour[y] +'" /><label for="checkDay' + y + '" '+(y==6?"class='last'":"")+'></label>'
             );
 
         $("input[type='radio']").on("change", function(){
@@ -770,9 +842,11 @@ function add_tags(thisObj,tag_class,name,duplicates)
                         });
     if(thisObj.val() == '' || jQuery.inArray($.trim(thisObj.val()).toUpperCase(), duplicates) != -1) {
                 thisObj.val('');
+                $('#search-skill').typeahead('val','');
                     } else {
                      $('<li class="addedTag">' + thisObj.val() + '<span class="tagRemove" onclick="$(this).parent().remove();">x</span><input type="hidden" value="' + thisObj.val() + '" name="'+name+'[]"></li>').insertBefore('.'+tag_class+' .tagAdd');
                      thisObj.val('');
+                     $('#search-skill').typeahead('val','');
                 }
 }
 var skills = new Bloodhound({
@@ -874,8 +948,11 @@ $(".close-m-mo").on("click", function() {
   $('.m-modal').attr('class', 'm-modal');
   $('.m-modal, .m-cover').addClass("hidden");
 });
+$('.fees_select').mask("#,#0,#00", {reverse: true});
+$('.total_seat, #training_duration').mask("#", {reverse: true});
 JS;
 $this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/hours-widget.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

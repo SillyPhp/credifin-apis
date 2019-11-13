@@ -8,6 +8,8 @@ use frontend\models\applications\CandidateApply;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
+$this->params['url'] = $org['website'];
+
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
@@ -295,11 +297,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'benefits' => $data2['applicationEmployeeBenefits']
                             ]);
                             ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/skills', [
-                                'skills' => $data2['applicationSkills']
-                            ]);
-                            ?>
+
                             <?=
                             $this->render('/widgets/employer_applications/job-description', [
                                 'job_description' => $data2['applicationJobDescriptions'],
@@ -356,7 +354,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'initial_color' => $org['color'],
                         'slug' => $org['slug'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'type' => $type,
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
@@ -372,7 +369,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'slug' => $org['slug'],
                         'cid' => $org['organization_enc_id'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'job_url' => $data1['job_url'],
                         'application_id' => $data1['application_enc_id'],
                         'type' => $type,
@@ -383,14 +379,25 @@ $this->render('/widgets/employer_applications/top-banner', [
                     ]);
                 endif;
                 ?>
+                <?php
+                    if(Yii::$app->user->isGuest){
+                ?>
+                <?=
+                    $this->render('/widgets/best-platform')
+                ?>
+                <?php
+                    }
+                ?>
             </div>
         </div>
+        <?php if($settings["showRelatedOpportunities"]):?>
         <div class="row m-0">
             <div class="col-md-12">
                 <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
                 <div class="similar-application"></div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
@@ -398,6 +405,17 @@ $this->render('/widgets/employer_applications/top-banner', [
     }
     ?>
 </section>
+<?php
+    if($settings["showNewPositionsWidget"]):
+?>
+<section>
+    <div class="container">
+        <?=
+            $this->render('/widgets/new-position');
+        ?>
+    </div>
+</section>
+<?php endif; ?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
@@ -539,8 +557,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}

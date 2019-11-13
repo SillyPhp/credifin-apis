@@ -3,7 +3,6 @@ $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 use yii\helpers\Html;
-
 ?>
 <section class="background" style="background: url('<?= $parentId['banner'] ?>');">
     <div class="container">
@@ -47,7 +46,7 @@ use yii\helpers\Html;
 <!--                <div class="pos-rel">-->
 <!--                    <div class="parent">-->
 <!--                        <div class="logo _1">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -63,7 +62,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _2">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -79,7 +78,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _3">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -95,7 +94,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _4">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -111,7 +110,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _5">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -127,7 +126,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _6">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -143,7 +142,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _7">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -159,7 +158,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _8">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -175,7 +174,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _9">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -191,7 +190,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _10">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -207,7 +206,7 @@ use yii\helpers\Html;
 <!--                            </div>-->
 <!--                        </div>-->
 <!--                        <div class="logo _11">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            <div class="overlay">-->
 <!--                                <div class="text">-->
 <!--                                    <span class="setloc">Hello World</span>-->
@@ -261,7 +260,7 @@ use yii\helpers\Html;
 <!--                    <div class="inst-container">-->
 <!--                        <a href="#">-->
 <!--                            <div class="inst-icon">-->
-<!--                                <img src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?><!--">-->
 <!--                            </div>-->
 <!--                            <div class="inst-member">-->
 <!--                                <div class="inst-name">Web Developing</div>-->
@@ -289,40 +288,40 @@ use yii\helpers\Html;
         </div>
     </section>
 <?php endif; ?>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Related Jobs</div>
+    <section id="r-jobs-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Related Jobs</div>
+                </div>
             </div>
+            <div class="jobs-list"></div>
         </div>
-        <div class="jobs-list"></div>
-    </div>
-</section>
+    </section>
 
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Related Internships</div>
+    <section id="r-internships-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Related Internships</div>
+                </div>
             </div>
+            <div class="internships-list"></div>
         </div>
-        <div class="internships-list"></div>
-    </div>
-</section>
+    </section>
 
 <!--    <section class="bg-black">-->
 <!--        <div class="container">-->
 <!--            <div class="row">-->
 <!--                <div class="col-md-6 col-sm-6">-->
 <!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
-<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><? //= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
 <!--                </div>-->
 <!--                <div class="col-md-6 col-sm-6">-->
 <!--                    <div class="type-1">-->
 <!--                        <div>-->
-<!--                            <a href="--><? //= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
-<!--                                <span class="txt">--><? //= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
 <!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
 <!--                            </a>-->
 <!--                        </div>-->
@@ -333,7 +332,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
 <!--                                 class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -344,7 +343,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
 <!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -355,7 +354,7 @@ use yii\helpers\Html;
 <!--                <div class="col-md-4">-->
 <!--                    <div class="q-box">-->
 <!--                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">-->
-<!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
 <!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
 <!--                            <div class="q-box-hover">-->
 <!--                                <div class="text2">Take Quiz</div>-->
@@ -389,7 +388,7 @@ echo $this->render('/widgets/blogs/whats-new', [
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
-
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .card:hover::before{
     right: -15px;
@@ -1161,29 +1160,60 @@ $this->registerCss('
 
 $script = <<< JS
 function fillData(){
+    var path = window.location.pathname.split('/');
     $.ajax({
         type: 'POST',
         async: false,
         url: '/learning/videos/get-category-job',
-        data: {
-            'keyword' : 'it'
-        },
+        data: {'keyword' : path['4']},
         success: function(result){
-                var application_card = $('#application-card').html();
-                var jobs_render = Mustache.render(application_card, result.jobs);
-                $('.jobs-list').html(jobs_render);
-            
-                var application_card = $('#application-card').html();
-                var internships_render = Mustache.render(application_card, result.internships);
-                $('.internships-list').html(internships_render);
-            
+            var application_card = $('#application-card').html();
+            var jobs_render = Mustache.render(application_card, result.jobs);
+            $('.jobs-list').html(jobs_render);
+            var application_card = $('#application-card').html();
+            var internships_render = Mustache.render(application_card, result.internships);
+            $('.internships-list').html(internships_render);
+            if(result.jobs.length == 0){
+                $('#r-jobs-main').hide();
+            } 
+            if(result.internships.length == 0){
+                $('#r-internships-main').hide();
+            }
             utilities.initials();
         }
     })
 }
 fillData();
+$(document).on('click','.application-card-add', function(event){
+    event.preventDefault();
+    var c_user = "$c_user"
+    if(c_user == ""){
+        $('#loginModal').modal('show');
+        return false;
+    }
+    var itemid = $(this).closest('.application-card-main').attr('data-id');
+    $.ajax({
+        url: "/jobs/item-id",
+        method: "POST",
+        data: {'itemid': itemid},
+        beforeSend:function(){
+//            $('.loader-aj-main').fadeIn(1000);  
+        },
+        success: function (response) {
+            if (response.status == '200' || response.status == 'short') {
+                toastr.success('Added to your Review list', 'Success');
+            } else if (response.status == 'unshort') {
+                toastr.success('Delete from your Review list', 'Success');
+            } else {
+                toastr.error('Please try again Later', 'Error');
+            }
+        }
+    });
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="application-card" type="text/template">
     {{#.}}

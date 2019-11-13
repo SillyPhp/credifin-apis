@@ -113,7 +113,7 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('/widgets/top-header-beta'); ?>
+                                <?= $this->render('@common/widgets/top-header-beta'); ?>
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
@@ -227,7 +227,7 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('/widgets/top-header-mobile'); ?>
+                            <?= $this->render('@common/widgets/top-header-mobile'); ?>
                         </div>
                     </div>
                 </div>
@@ -486,7 +486,7 @@ $this->registerCss('
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top:-2px;
+    margin-top: 0px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -818,9 +818,10 @@ if (Yii::$app->user->isGuest) {
         window.addEventListener("scroll", header_main);
         var lastScrollTop = 50;
         function header_main() {
+            var h_element = $(".ey-mobile-content");
             var st = $(this).scrollTop();
             var check_h_type = document.getElementById("header-main");
-            if(st > lastScrollTop) {
+            if(st > lastScrollTop || h_element.hasClass("ey-mobile-show")) {
                 check_h_type.classList.remove("header-show");
             } else {
                 check_h_type.classList.add("header-show");

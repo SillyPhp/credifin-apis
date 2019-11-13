@@ -64,8 +64,14 @@ class OrganizationsController extends ApiBaseController
 
                 $options = [];
                 $options['organization_id'] = $organization['organization_enc_id'];
-                $result['jobs'] = Cards::jobs($options);
-                $result['internships'] = Cards::internships($options);
+                if($req['type'] == 'Jobs'){
+                    $result['jobs'] = Cards::jobs($options);
+                }elseif ($req['type'] == 'Internships'){
+                    $result['internships'] = Cards::internships($options);
+                }else{
+                    $result['jobs'] = Cards::jobs($options);
+                    $result['internships'] = Cards::internships($options);
+                }
 
                 return $this->response(200, $result);
             } else {
