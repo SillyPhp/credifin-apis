@@ -154,7 +154,9 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             $.each($('.application-card-main'), function(){
                 $(this).draggable({
                     helper: "clone",
-                    drag: function() { 
+                    drag: function() {
+                        var default_elem = $('.application-card-main.ui-draggable.ui-draggable-handle:first-child').width();
+                        $('.ui-draggable-dragging').css('width', default_elem + 'px');
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
                      },
