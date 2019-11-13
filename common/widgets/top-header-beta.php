@@ -118,7 +118,7 @@
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/questions">
-                                        Ask
+                                        ASK
                                     </a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
@@ -1059,6 +1059,9 @@ $this->registerCss('
 }
 .header-show > .ey-mobile-menu{
     padding: 10px 5px 3px 0px;
+}
+.ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
+    color:#00a0e3 !important;
 }
 ');
 ?>

@@ -249,6 +249,15 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({
+                        google_ad_client: "ca-pub-2186770765824304",
+                        enable_page_level_ads: true
+                    });
+                </script>
+                <ins class="adsbygoogle" style="display:inline-block;width:100%;"
+                     data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
             </div>
         </div>
     </div>
