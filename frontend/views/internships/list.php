@@ -33,7 +33,7 @@ $this->registerCss('
                 ?>
                 <div class="col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
-                    <?= $this->render('/widgets/preloader-application-card'); ?>
+                    <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                         <a href="#" id="loadMore"
                            class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>

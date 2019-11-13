@@ -139,7 +139,7 @@
                 <div class="ey-mob-sub-items">
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
-                            <a href="/questions">Questions</a>
+                            <a href="/questions">ASK</a>
                         </div>
                     </div>
                 </div>
@@ -357,7 +357,24 @@
 </nav>
 <?php
 $this->registerJs('
- $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
+function closeOpened(){
+    $(".ey-sub-menu").each(function(){
+        if($(this).hasClass("ey-header-delay")){
+            $(this).removeClass("ey-header-delay");
+        }
+    });
+}
+$(".ey-head-main .ey-header-item-is-menu").mouseenter(function(){
+    closeOpened();
+    $(this).children(".ey-sub-menu").addClass("ey-header-delay");
+});
+$(".ey-head-main .ey-header-item-is-menu").mouseleave(function(){
+    var elem = $(this);
+    setTimeout(function(){
+        elem.children(".ey-sub-menu").removeClass("ey-header-delay");
+    }, 4000);
+});
+$(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
     $(".ey-header-sub-menu-container").addClass("ey-header-sub-menu-container-show");
 });
 $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseleave(function(){
@@ -365,7 +382,12 @@ $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseleave(funct
 });
 $(document).on("click", "#open-mobile-menu", function(e){
     e.preventDefault();
+    $(this).toggleClass("text-black");
     $(".ey-mobile-content").toggleClass("ey-mobile-show");
+    var h_main_header = $("#header-main");
+    if(h_main_header.hasClass("header-show")){
+        h_main_header.removeClass("header-show");
+    }
 });
 $(document).on("click", ".ey-mob-menu-inner-item.ey-mob-menu-has-sub .ey-mobile-item-main .ey-mobile-menu-toggler", function(e){
     e.preventDefault();
