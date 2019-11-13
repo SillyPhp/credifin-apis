@@ -12,23 +12,33 @@ use yii\helpers\Url;
                             <div class="wizard-header">
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <div class="col-sm-9">
-                                            <h1 class="text-center">Campus Hiring</h1>
-                                        </div>
-                                        <div class="col-sm-3 text-right pr-0">
-                                            <button style="display:none" type="button"
-                                                    class="btn btn-default wizard-prev">
-                                                Previous
-                                            </button>
-                                            <button type="button" class="btn btn-primary wizard-next">
-                                                Continue
-                                            </button>
-                                            <button style="display:none" type="submit"
-                                                    class="btn btn-primary wizard-subm submit-applications-inErexx">
-                                                Submit
-                                            </button>
+                                        <?php
+                                        if (!empty($applications['data'])) {
+                                            ?>
+                                            <div class="col-sm-9">
+                                                <h1 class="text-center">Campus Hiring</h1>
+                                            </div>
+                                            <div class="col-sm-3 text-right pr-0">
+                                                <button style="display:none" type="button"
+                                                        class="btn btn-default wizard-prev">
+                                                    Previous
+                                                </button>
+                                                <button type="button" class="btn btn-primary wizard-next">
+                                                    Continue
+                                                </button>
+                                                <button style="display:none" type="submit"
+                                                        class="btn btn-primary wizard-subm submit-applications-inErexx">
+                                                    Submit
+                                                </button>
 
-                                        </div>
+                                            </div>
+                                            <?php
+                                        } else{
+                                            ?>
+                                            <h1 class="text-center">Campus Hiring</h1>
+                                            <?php
+                                        }
+                                        ?>
                                         <hr/>
                                         <!--                                    <div class="steps text-center">-->
                                         <!--                                        <div class="wizard-step active"></div>-->
@@ -41,144 +51,184 @@ use yii\helpers\Url;
                             <div class="wizard-body">
                                 <div class="step initial active">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <h4>Select Jobs for campus hiring.</h4>
-                                        </div>
                                         <?php
-                                        foreach ($applications['data'] as $app) {
+                                        if (!empty($applications['data'])) {
                                             ?>
-                                            <div class="col-sm-6 app-list-data-main">
-                                                <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
-                                                       name="applications[]" value="<?= $app['application_enc_id']; ?>"
-                                                       class="app-list-main">
-                                                <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
-                                                    <div class="inner-list-main">
-                                                        <div class="job-listing-company-logo">
-                                                            <img class="company_logo"
-                                                                 src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>"
-                                                                 alt="<?= $app['name']; ?>">
-                                                        </div>
-                                                        <div class="job-details">
-                                                            <div class="job-details-inner">
-                                                                <!--                                                            <h3 class="job-listing-loop-job__title">-->
-                                                                <?//= $app['name']; ?><!--</h3>-->
-                                                                <div class="job-listing-company company"
-                                                                     title="<?= $app['name']; ?>">
-                                                                    <strong><?= $app['name']; ?></strong></div>
-                                                                <div class="job-location location">
-                                                                    <i class="fa fa-map-marker"></i>
-                                                                    <?php
-                                                                    $lc = [];
-                                                                    foreach ($app['locations'] as $loc) {
-                                                                        array_push($lc, $loc['name']);
-                                                                    }
-                                                                    echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
-                                                                    ?>
+                                            <div class="col-md-12">
+                                                <h4>Select Jobs for campus hiring.</h4>
+                                            </div>
+                                            <?php
+                                            foreach ($applications['data'] as $app) {
+                                                ?>
+                                                <div class="col-sm-6 app-list-data-main">
+                                                    <input id="<?= $app['application_enc_id']; ?>" type="checkbox"
+                                                           name="applications[]"
+                                                           value="<?= $app['application_enc_id']; ?>"
+                                                           class="app-list-main">
+                                                    <label for="<?= $app['application_enc_id']; ?>" class="job_listing">
+                                                        <div class="inner-list-main">
+                                                            <div class="job-listing-company-logo">
+                                                                <img class="company_logo"
+                                                                     src="<?= Url::to('@commonAssets/categories/' . $app['icon']); ?>"
+                                                                     alt="<?= $app['name']; ?>">
+                                                            </div>
+                                                            <div class="job-details">
+                                                                <div class="job-details-inner">
+                                                                    <!--                                                            <h3 class="job-listing-loop-job__title">-->
+                                                                    <?//= $app['name']; ?><!--</h3>-->
+                                                                    <div class="job-listing-company company"
+                                                                         title="<?= $app['name']; ?>">
+                                                                        <strong><?= $app['name']; ?></strong></div>
+                                                                    <div class="job-location location">
+                                                                        <i class="fa fa-map-marker"></i>
+                                                                        <?php
+                                                                        $lc = [];
+                                                                        foreach ($app['locations'] as $loc) {
+                                                                            array_push($lc, $loc['name']);
+                                                                        }
+                                                                        echo ' <span title="' . implode(', ', $lc) . '">' . implode(', ', $lc) . '</span>';
+                                                                        ?>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="job-listing-meta meta">
+                                                                    <div class="job-location location"><i
+                                                                                class="la la-map-marker"></i>Ukraine
+                                                                    </div>
+                                                                    <ul class="job-types">
+                                                                        <li class="job-type full-time"> <?= $app['type']; ?></li>
+                                                                    </ul>
+                                                                    <span class="job-published-date date">Last Date To Apply <?= date('d-M-y',strtotime($app['last_date'])); ?></span>
                                                                 </div>
                                                             </div>
-                                                            <div class="job-listing-meta meta">
-                                                                <div class="job-location location"><i
-                                                                            class="la la-map-marker"></i>Ukraine
-                                                                </div>
-                                                                <ul class="job-types">
-                                                                    <li class="job-type full-time"> <?= $app['type']; ?></li>
-                                                                </ul>
-                                                                <span class="job-published-date date">Last Date To Apply <?= $app['last_date']; ?></span>
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </label>
+                                                    </label>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                            <div class="error-list"></div>
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <div class="col-md-12 text-center">
+<!--                                                <img src="/assets/themes/ey/images/pages/dashboard/jobinterview.png" class="img-responsive">-->
+                                                <h2>No Active Jobs found!</h2>
+                                                <h4>Create AI Jobs to Hire Candidates from Colleges</h4>
+                                                <a href="<?= Url::to('/account/jobs/create');?>" class="btn btn-primary">Create AI Job</a>
                                             </div>
                                             <?php
                                         }
                                         ?>
-                                        <div class="error-list"></div>
                                     </div>
                                 </div>
                                 <div class="step">
                                     <div class="row">
-                                        <div class="col-md-12">
-                                            <h4>Select Colleges for campus hiring.</h4>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group form-md-line-input form-md-floating-label">
-                                                <div class="md-checkbox">
-                                                    <input type="checkbox" id="select-all-colleges" name="selectAll" class="md-check">
-                                                    <label for="select-all-colleges">
-                                                        <span></span>
-                                                        <span class="check"></span>
-                                                        <span class="box"></span>
-                                                        Select All Colleges
-                                                    </label>
+                                        <?php
+                                        if (!empty($applications['data'])) {
+                                            ?>
+                                            <div class="col-md-12">
+                                                <h4>Select Colleges for campus hiring.</h4>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group form-md-line-input form-md-floating-label">
+                                                    <div class="md-checkbox">
+                                                        <input type="checkbox" id="select-all-colleges" name="selectAll"
+                                                               class="md-check">
+                                                        <label for="select-all-colleges">
+                                                            <span></span>
+                                                            <span class="check"></span>
+                                                            <span class="box"></span>
+                                                            Select All Colleges
+                                                        </label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <?php
-                                        foreach ($colleges as $clg) {
-                                            ?>
-                                            <div class="col-sm-6 app-list-data-main">
-                                                <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
-                                                       name="colleges[]" value="<?= $clg['college_enc_id']; ?>"
-                                                       class="college-list-main">
-                                                <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
-                                                    <div class="inner-list-main">
-                                                        <div class="job-listing-company-logo">
-                                                            <img class="company_logo"
-                                                                 src="<?= Url::to($clg['logo']); ?>"
-                                                                 alt="<?= $clg['name']; ?>">
-                                                        </div>
-                                                        <div class="job-details">
-                                                            <div class="job-details-inner">
-                                                                <div class="job-listing-company company"
-                                                                     title="<?= $clg['name']; ?>">
-                                                                    <strong><?= $clg['name']; ?></strong></div>
-                                                                <div class="job-location location">
-                                                                    <?php
-                                                                    if (!empty($clg['city'])) {
-                                                                        ?>
-                                                                        <i class="fa fa-map-marker"></i> <?= $clg['city']; ?>
-                                                                        <?php
-                                                                    }
+                                            <?php
+                                            foreach ($colleges as $clg) {
+                                                ?>
+                                                <div class="col-sm-6 app-list-data-main set-borders">
+                                                    <input id="<?= $clg['college_enc_id']; ?>" type="checkbox"
+                                                           name="colleges[]" value="<?= $clg['college_enc_id']; ?>"
+                                                           class="college-list-main">
+                                                    <label for="<?= $clg['college_enc_id']; ?>" class="job_listing">
+                                                        <div class="inner-list-main">
+                                                            <div class="job-listing-company-logo">
+                                                                <?php
+                                                                if(!empty($clg['logo'])) {
                                                                     ?>
-                                                                </div>
+                                                                    <img class="company_logo"
+                                                                         src="<?= Url::to($clg['logo']); ?>"
+                                                                         alt="<?= $clg['name']; ?>">
+                                                                    <?php
+                                                                } else{
+                                                                    ?>
+                                                                    <canvas class="user-icon" name="<?= $clg['name']; ?>" width="80" height="80" color="<?= $clg['color']?>" font="39px"></canvas>
+                                                                    <?php
+                                                                }
+                                                                    ?>
                                                             </div>
-                                                            <div class="job-listing-meta meta">
-                                                                <div class="job-location location">
-                                                                    <i class="la la-map-marker"></i> <?= $clg['city']; ?>
+                                                            <div class="job-details">
+                                                                <div class="job-details-inner">
+                                                                    <div class="job-listing-company company"
+                                                                         title="<?= $clg['name']; ?>">
+                                                                        <strong><?= $clg['name']; ?></strong></div>
+                                                                    <div class="job-location location">
+                                                                        <?php
+                                                                        if (!empty($clg['city'])) {
+                                                                            ?>
+                                                                            <i class="fa fa-map-marker"></i> <?= $clg['city']; ?>
+                                                                            <?php
+                                                                        }
+                                                                        ?>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="job-listing-meta meta">
+                                                                    <div class="job-location location">
+                                                                        <i class="la la-map-marker"></i> <?= $clg['city']; ?>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </label>
+                                                    </label>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                            <div class="ch-message">
+                                                <p>
+                                                    We are partnering with New collages/universities everyday for you.
+                                                    We
+                                                    will push your Job there as Well.
+                                                    <input type="checkbox" name="subscribed-to-all" value="1" checked/>
+                                                </p>
                                             </div>
+                                            <div class="error-c-list"></div>
                                             <?php
                                         }
                                         ?>
-                                        <div class="ch-message">
-                                            <p>
-                                                We are partnering with New collages/universities everyday for you. We
-                                                will push your Job there as Well.
-                                                <input type="checkbox" name="subscribed-to-all" value="1" checked/>
-                                            </p>
-                                        </div>
-                                        <div class="error-c-list"></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="wizard-footer">
                                 <div class="row">
                                     <div class="col-xs-12 text-right">
-                                        <button id="wizard-prev" style="display:none" type="button"
-                                                class="btn btn-default wizard-prev">
-                                            Previous
-                                        </button>
-                                        <button id="wizard-next" type="button" class="btn btn-primary wizard-next">
-                                            Continue
-                                        </button>
-                                        <button id="wizard-subm" style="display:none" type="submit"
-                                                class="btn btn-primary submit-applications-inErexx wizard-subm">
-                                            Submit
-                                        </button>
+                                        <?php
+                                        if (!empty($applications['data'])) {
+                                            ?>
+                                            <button id="wizard-prev" style="display:none" type="button"
+                                                    class="btn btn-default wizard-prev">
+                                                Previous
+                                            </button>
+                                            <button id="wizard-next" type="button" class="btn btn-primary wizard-next">
+                                                Continue
+                                            </button>
+                                            <button id="wizard-subm" style="display:none" type="submit"
+                                                    class="btn btn-primary submit-applications-inErexx wizard-subm">
+                                                Submit
+                                            </button>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -347,7 +397,7 @@ $this->registerCss('
   from {display: block;}
   to {display: none;} 
 }
-.app-list-data-main:first-child > .job_listing > .inner-list-main, .app-list-data-main:nth-child(2) > .job_listing > .inner-list-main {
+.app-list-data-main:first-child > .job_listing > .inner-list-main, .app-list-data-main:nth-child(2) > .job_listing > .inner-list-main, .app-list-data-main:nth-child(3) > .job_listing > .inner-list-main, .set-borders:nth-child(4) > .job_listing > .inner-list-main {
     border-top: 1px solid #edeff7;
 }
 .app-list-data-main:nth-child(odd) > .job_listing > .inner-list-main{
@@ -376,7 +426,7 @@ $this->registerCss('
     text-align: center;
     margin-bottom: 30px;
 }
-.job-listing-company-logo img {
+.job-listing-company-logo img, .job-listing-company-logo {
     width: 80px;
     height: 80px;
 }
@@ -404,6 +454,10 @@ $this->registerCss('
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
+    max-width: calc(100% - 110px);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .job-details-inner {
     line-height: 1.6;
@@ -416,6 +470,9 @@ $this->registerCss('
     -webkit-box-flex: inherit;
     -ms-flex: inherit;
     flex: inherit;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .job-listing-loop-job__title {
     font-size: 16px;

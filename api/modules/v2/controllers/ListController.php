@@ -17,7 +17,7 @@ class ListController extends ApiBaseController
 
         $result['companies'] = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'CONCAT("'. Url::to('/', true). '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
             ->distinct()
             ->innerJoinWith(['employerApplications b' => function ($x) {
                 $x

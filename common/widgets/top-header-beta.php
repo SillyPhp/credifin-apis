@@ -3,7 +3,7 @@
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/jobs">
                 Jobs
-                <i class="fas fa-caret-down" aria-hidden="true"></i>
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
@@ -40,7 +40,7 @@
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/internships">
                 Internships
-                <i class="fas fa-caret-down" aria-hidden="true"></i>
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
@@ -76,7 +76,7 @@
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
             <a href="/reviews">
                 Reviews
-                <i class="fas fa-caret-down" aria-hidden="true"></i>
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
             </a>
             <div class="ey-sub-menu">
                 <div class="container-fluid">
@@ -118,7 +118,7 @@
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
                                     <a href="/questions">
-                                        Questions
+                                        ASK
                                     </a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
@@ -733,7 +733,7 @@ $this->registerCss('
 .ey-head-main .ey-header-item-is-menu:hover>a {
     color: #286efa;
 }
-.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-active-menu {
+.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-active-menu, .ey-header-delay {
     display: block;
     overflow:visible;
     height:40px;
@@ -742,7 +742,7 @@ $this->registerCss('
     animation-name: ey_menu;
     animation-duration: 0.5s;
 }
-.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover{z-index:99;}
+.ey-head-main .ey-header-item-is-menu:hover .ey-sub-menu, .ey-head-main .ey-header-item-is-menu .ey-sub-menu:hover, .ey-header-delay{z-index:99;}
 
 @-webkit-keyframes ey_menu {
   from {overflow:hidden;display: none;height: 0px;}
@@ -1059,6 +1059,9 @@ $this->registerCss('
 }
 .header-show > .ey-mobile-menu{
     padding: 10px 5px 3px 0px;
+}
+.ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
+    color:#00a0e3 !important;
 }
 ');
 ?>

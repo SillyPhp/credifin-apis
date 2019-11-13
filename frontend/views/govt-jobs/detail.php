@@ -95,7 +95,12 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="duties">Details</div>
                 <div class="duties-tab set-sticky">
                     <div class="summary">Summary</div>
-                    <div id="gv-summary" class="d-content"><?= $get['Data'] ?>
+                    <div id="gv-summary" class="d-content">
+                        <?php
+                        $data = ltrim($get['Data'],"[");
+                        $data = rtrim($data,"]");
+                        echo $data;
+                          ?>
                     </div>
                 </div>
                 <?php if (!empty($get['Eligibility'])){ ?>
@@ -171,6 +176,15 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({
+                        google_ad_client: "ca-pub-2186770765824304",
+                        enable_page_level_ads: true
+                    });
+                </script>
+                <ins class="adsbygoogle" style="display:inline-block;width:100%;"
+                     data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
             </div>
         </div>
     </div>
