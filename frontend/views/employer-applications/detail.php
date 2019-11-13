@@ -388,6 +388,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 <?php
                     }
                 ?>
+                <?= $this->render('/widgets/employer_applications/review'); ?>
                 <?= $this->render('/widgets/employer_applications/learning-videos'); ?>
             </div>
         </div>
