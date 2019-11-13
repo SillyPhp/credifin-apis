@@ -7,13 +7,32 @@ $total_applications = count($applications);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
 if (!empty($total_applications)) {
+    if (!function_exists("findDifference")) {
+        function findDifference($date)
+        {
+//            $date = '2019-11-10 21:21:21';
+            $date = new DateTime($date);
+            $time_now = date("Y-m-d H:i:s");
+            $now = new DateTime($time_now);
+            return $res = $date->diff($now);
+//            return $year = $res->y * (365 * 60 * 60 * 24);
+//            $month = $res->m * (30 * 60 * 60 * 24);
+//            return $day = $res->d * (60 * 60 * 24);
+//
+//            $hour = $res->h * (60 * 60);
+//            $minute = $res->i * 60;
+//            $second = $res->s;
+//            return $year + $month + $day + $hour + $minute + $second;
+
+        }
+    }
     ?>
     <div class="row">
         <?php
         for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
                 ?>
-                <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
+                <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-6'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
                             <?php if (!empty($applications[$next]['interview_process_enc_id'])): ?>
@@ -72,6 +91,18 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
+                        <?php
+                        $dayDiff = findDifference($applications[$next]['last_date']);
+                        if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
+                            $time = $dayDiff->h . 'h:' . $dayDiff->i .'m:'. $dayDiff->s . 's';
+                            $day = $dayDiff->d .'d ';
+                            ?>
+                            <div class="expring-btn" data-toggle="tooltip" title="Expring in - <?= ($day < 1)? $time : $day ?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job2.png') ?>" alt="expring icon">
+                            </div>
+                            <?php
+                        }
+                        ?>
                         <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
                             <div class="hr-com-icon">
                                 <img src="<?= Url::to('@commonAssets/categories/' . $applications[$next]["icon"]); ?>"
@@ -120,7 +151,20 @@ if (!empty($total_applications)) {
     </div>
 <?php }
 Pjax::end();
+
 $this->registerCss("
+.expring-btn{
+    position:absolute;
+    top:35px;
+    right:50px;
+    background:#00a0e3;
+    height:30px;
+    width:30px;
+    border-radius:50%; 
+}
+.expring-btn img{
+    padding-top:7px;
+}
 .tab-empty{
     padding:20px;
 }

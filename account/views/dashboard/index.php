@@ -5,7 +5,6 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
-
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):
     if (!Yii::$app->user->identity->organization->is_email_verified):
@@ -117,8 +116,8 @@ endif;
                     'question_list' => $question_list,
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
-                ]);
-                ?>
+                ]); ?>
+
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">
