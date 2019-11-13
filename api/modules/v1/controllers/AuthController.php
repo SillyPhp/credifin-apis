@@ -25,7 +25,8 @@ class AuthController extends ApiBaseController
             'actions' => [
                 'signup' => ['POST'],
                 'login' => ['POST'],
-                'refresh-access-token' => ['POST']
+                'refresh-access-token' => ['POST'],
+                'forgot-password'=>['POST']
             ]
         ];
         return $behaviors;
@@ -262,14 +263,18 @@ class AuthController extends ApiBaseController
     public function actionForgotPassword(){
         $email = Yii::$app->request->post('email');
         $model = new ForgotPasswordForm();
-        $model->email = $email;
         $user = Users::find()
-            ->where(['status'=>'Active','is_deleted'=>0,'email'=>$email])
-            ->exists();
-        if(!$user){
+            ->select(['user_enc_id','email'])
+            ->where(['status'=>'Active','is_deleted'=>0])
+            ->andWhere(['or',['email'=>$email],['username'=>$email]])
+            ->asArray()
+            ->one();
+
+        $model->email = $user['email'];
+        if(empty($user)){
             $this->response(404,['message'=>'not found']);
         }else {
-            if ($model->load(Yii::$app->request->post())) {
+            if ($model) {
                 if ($model->forgotPassword()) {
                     return $this->response(200, ['message' => 'An email with instructions has been sent to your email address (please also check your spam folder).']);
                 } else {
