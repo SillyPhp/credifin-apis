@@ -158,7 +158,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-
+<?php
+    if($viewed == 0){
+?>
     <div class="portlet light portlet-fit nd-shadow">
         <div class="portlet-title" style="border-bottom:none;">
             <div class="check-icon">
@@ -217,6 +219,7 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php
+    }
 $this->registerCss("
 .font-dark > span > i {
     font-size: 13px;
