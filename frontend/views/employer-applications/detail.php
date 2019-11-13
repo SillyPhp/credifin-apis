@@ -388,6 +388,12 @@ $this->render('/widgets/employer_applications/top-banner', [
                 <?php
                     }
                 ?>
+                <?= $this->render('/widgets/employer_applications/learning-videos'); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Related Jobs</div>
             </div>
         </div>
         <?php if($settings["showRelatedOpportunities"]):?>
@@ -1104,26 +1110,27 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-        background: #00a0e3;
-        -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        font-family: Open Sans;
-        font-size: 13px;
-        color: #fff;
-        width: 175px;
-        height: auto;
-        padding: 15px 6px;
-        text-align: center;
-        margin:auto;
-    }
+    display:inline-block !important;    
+    background: #00a0e3;
+    -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color: #fff;
+    width: 175px;
+    height: auto;
+    padding: 15px 6px;
+    text-align: center;
+    margin:auto;
+}
     .apply-job-btn:hover {
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
