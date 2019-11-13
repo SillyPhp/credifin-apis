@@ -22,6 +22,7 @@ endif;
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
+            <?= $this->render('/widgets/user-ques') ?>
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
@@ -116,7 +117,8 @@ endif;
                     'question_list' => $question_list,
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
-                ]); ?>
+                ]);
+                ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">
