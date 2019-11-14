@@ -27,28 +27,28 @@ if (!empty($total_applications)) {
                         <div class="rt-bttns">
                             <?php if (!empty($applications[$next]['interview_process_enc_id'])): ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Edit Job"
                                    class="j-edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Clone Job"
                                    class="j-clone share_btn">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php else: ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-edit?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Edit Job"
                                    class="j-edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-clone?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Clone Job"
                                    class="j-clone share_btn">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php endif; ?>
-                            <button type="button" class="j-delete"
+                            <button type="button" class="j-delete" data-toggle="tooltip" title="Delete Job"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
@@ -57,22 +57,22 @@ if (!empty($total_applications)) {
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn" type="button">
+                               class="j-twitter share_btn" type="button" data-toggle="tooltip" title="Share on twitter">
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-email share_btn" type="button">
+                               class="j-email share_btn" type="button" data-toggle="tooltip" title="Share via mail">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-whatsapp share_btn" type="button">
+                               class="j-whatsapp share_btn" type="button" data-toggle="tooltip" title="Share on whatsapp">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-linkedin share_btn" type="button">
+                               class="j-linkedin share_btn" type="button" data-toggle="tooltip" title="Share on Linked In">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
@@ -80,11 +80,16 @@ if (!empty($total_applications)) {
                         $dayDiff = findDifference($applications[$next]['last_date']);
                         if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
                             ?>
-                            <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>">
-                                <div class="expring-btn" data-toggle="tooltip" title="Expring Soon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job2.png') ?>" alt="expring icon">
+                            <div class="exp-soon-main">
+                                <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>">
+                                    <div class="expring-btn" data-toggle="tooltip" title="Extend Date">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>" alt="expring icon">
+                                    </div>
+                                </a>
+                                <div class="exp-soon-msg">
+                                    Expring Soon
                                 </div>
-                            </a>
+                            </div>
                             <?php
                         }
                         ?>
@@ -138,18 +143,74 @@ if (!empty($total_applications)) {
 Pjax::end();
 
 $this->registerCss("
+.exp-soon-msg{
+     box-shadow: 0 0 10px rgba(0,0,0,.2);
+    padding: 5px;
+    position: absolute;
+    top: 51px;
+    right: -2px;
+    max-width: 60px;
+    font-size: 12px;
+    border-radius: 0 5px 5px;
+    display:none;
+    
+     -webkit-animation: myOrbit 4s linear infinite; /* Chrome, Safari 5 */
+       -moz-animation: myOrbit 4s linear infinite; /* Firefox 5-15 */
+         -o-animation: myOrbit 4s linear infinite; /* Opera 12+ */
+            animation: myOrbit 4s linear infinite; /* Chrome, Firefox 16+, IE 10+, Safari 5 */
+}
+@-webkit-keyframes myOrbit {
+    from { -webkit-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -webkit-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@-moz-keyframes myOrbit {
+    from { -moz-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -moz-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@-o-keyframes myOrbit {
+    from { -o-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -o-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@keyframes myOrbit {
+    from { transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+.hr-company-box:hover > div > .exp-soon-msg{
+    display:block;
+    transition:1s ease !important;
+}
+.hr-company-box:hover .expring-btn img{
+    animation-play-state: paused !important;
+    transform: scale(1) !important;
+}
+.exp-soon-main:hover .exp-soon-msg  {
+    display:none !important;
+}
+.expring-btn img{
+   animation: BigSmall .5s linear infinite;
+}
+@keyframes BigSmall {
+    from{transform: scale(1)}
+    to{transform: scale(1.1)}
+}
+.j-twitter{
+    left: 40px !important;
+}
+.j-email {
+    left: 65px !important;
+}
+.j-linkedin{
+    left: 93px !important;
+}
 .expring-btn{
     position:absolute;
     top:35px;
     right:50px;
-    background:#00a0e3;
-    height:30px;
-    width:30px;
-    border-radius:50%; 
 }
-.expring-btn img{
-    padding-top:7px;
-}
+
 .tab-empty{
     padding:20px;
 }
