@@ -547,6 +547,16 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
+
+<section>
+    <?= $this->render('/widgets/govt-jobs')?>
+</section>
+
+<section>
+    <?= $this->render('/widgets/info-stats')?>
+</section>
+
+
 <section>
     <div class="container">
         <?=
