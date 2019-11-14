@@ -115,6 +115,12 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registercss('
+.best-images{
+    display:flex;
+}
+.best-images a{
+    margin-right:5px;   
+}
 .modal-content{
     margin-top:100px;
 }

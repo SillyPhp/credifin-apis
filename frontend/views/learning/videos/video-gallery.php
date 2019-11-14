@@ -390,6 +390,12 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+.best-images{
+    display:flex;
+}
+.best-images a{
+    margin-right:5px;   
+}
 .card:hover::before{
     right: -15px;
     bottom: -15px;
