@@ -411,7 +411,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.name'])
             ->joinWith(['businessActivityEnc b'], false)
-            ->where(['a.is_erexx_registered' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['a.has_placement_rights' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['b.business_activity' => 'College'])
             ->asArray()
             ->all();
