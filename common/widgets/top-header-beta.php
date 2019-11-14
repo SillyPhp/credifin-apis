@@ -163,12 +163,18 @@
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="/account/dashboard">
                     Dashboard
-                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                    <?php
+                    if ($for != 'Dashboard') {
+                        ?>
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <?php
+                    }
+                    ?>
                 </a>
                 <?php
                 if (Yii::$app->user->identity->organization_enc_id) {
                     ?>
-                    <div class="ey-sub-menu">
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '')?>">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
@@ -278,7 +284,7 @@
                     <?php
                 } else {
                     ?>
-                    <div class="ey-sub-menu">
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '')?>">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">

@@ -113,7 +113,9 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('@common/widgets/top-header-beta'); ?>
+                                <?= $this->render('@common/widgets/top-header-beta',[
+                                        'for'=>'Frontend'
+                                ]); ?>
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
