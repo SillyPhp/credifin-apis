@@ -9,6 +9,7 @@ use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
+use common\models\Referral;
 use common\models\ReviewsType;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -486,7 +487,7 @@ class CollegeIndexController extends ApiBaseController
                 ->groupBy(['a.organization_enc_id'])
                 ->where([
                     'a.is_deleted' => 0,
-                    'a.is_erexx_registered' => 1
+                    'a.has_placement_rights' => 1
                 ])
                 ->andWhere(['not in', 'a.organization_enc_id', $org_ids])
                 ->asArray()
@@ -529,10 +530,12 @@ class CollegeIndexController extends ApiBaseController
     public function actionCandidateInvitation()
     {
         if ($user = $this->isAuthorized()) {
+
             $data = Yii::$app->request->post();
             $mail = Yii::$app->mailLogs;
             $mail->organization_enc_id = $this->getOrgId();
             $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
             $mail->email_receivers = [
                 [
@@ -563,6 +566,7 @@ class CollegeIndexController extends ApiBaseController
             $mail = Yii::$app->mailLogs;
             $mail->organization_enc_id = $this->getOrgId();
             $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
             $mail->email_receivers = $mails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
@@ -588,6 +592,7 @@ class CollegeIndexController extends ApiBaseController
             $mail = Yii::$app->mailLogs;
             $mail->organization_enc_id = $this->getOrgId();
             $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
             $mail->email_receivers = $emails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
@@ -597,5 +602,17 @@ class CollegeIndexController extends ApiBaseController
             }
             return $this->response(200,['status'=>200,'message'=>'Email sent']);
         }
+    }
+
+    private function getReferralCode(){
+        $referral_code = Referral::find()
+            ->alias('a')
+            ->select(['a.referral_enc_id','b.organization_enc_id','a.code'])
+            ->joinWith(['organizationEnc b'])
+            ->where(['b.organization_enc_id'=>$this->getOrgId()])
+            ->asArray()
+            ->one();
+
+        return $referral_code['code'];
     }
 }
