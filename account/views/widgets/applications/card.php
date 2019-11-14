@@ -10,20 +10,10 @@ if (!empty($total_applications)) {
     if (!function_exists("findDifference")) {
         function findDifference($date)
         {
-//            $date = '2019-11-10 21:21:21';
             $date = new DateTime($date);
             $time_now = date("Y-m-d H:i:s");
             $now = new DateTime($time_now);
             return $res = $date->diff($now);
-//            return $year = $res->y * (365 * 60 * 60 * 24);
-//            $month = $res->m * (30 * 60 * 60 * 24);
-//            return $day = $res->d * (60 * 60 * 24);
-//
-//            $hour = $res->h * (60 * 60);
-//            $minute = $res->i * 60;
-//            $second = $res->s;
-//            return $year + $month + $day + $hour + $minute + $second;
-
         }
     }
     ?>
@@ -66,11 +56,6 @@ if (!empty($total_applications)) {
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-fb share_btn" type="button">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn" type="button">
                                 <i class="fa fa-twitter"></i>
@@ -95,9 +80,11 @@ if (!empty($total_applications)) {
                         $dayDiff = findDifference($applications[$next]['last_date']);
                         if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
                             ?>
-                            <div class="expring-btn" data-toggle="tooltip" title="Expring Soon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job2.png') ?>" alt="expring icon">
-                            </div>
+                            <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>">
+                                <div class="expring-btn" data-toggle="tooltip" title="Expring Soon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job2.png') ?>" alt="expring icon">
+                                </div>
+                            </a>
                             <?php
                         }
                         ?>
