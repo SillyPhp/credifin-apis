@@ -94,10 +94,8 @@ if (!empty($total_applications)) {
                         <?php
                         $dayDiff = findDifference($applications[$next]['last_date']);
                         if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
-                            $time = $dayDiff->h . 'h:' . $dayDiff->i .'m:'. $dayDiff->s . 's';
-                            $day = $dayDiff->d .'d ';
                             ?>
-                            <div class="expring-btn" data-toggle="tooltip" title="Expring in - <?= ($day < 1)? $time : $day ?>">
+                            <div class="expring-btn" data-toggle="tooltip" title="Expring Soon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job2.png') ?>" alt="expring icon">
                             </div>
                             <?php

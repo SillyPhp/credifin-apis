@@ -21,7 +21,7 @@ endif;
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
-            <?= $this->render('/widgets/user-ques') ?>
+
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
