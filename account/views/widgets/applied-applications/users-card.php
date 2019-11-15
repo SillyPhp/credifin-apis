@@ -1,20 +1,26 @@
 <?php
 use yii\helpers\Url;
+//print_r($applied_applications['list']);
+//exit();
 ?>
 <div class="portlet light nd-shadow">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?></span>
-</div>
-</div>
+    <div class="portlet-title">
+        <div class="caption">
+            <i class=" icon-social-twitter font-dark hide"></i>
+            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?>
+                <span href="#" data-toggle="tooltip" title="Here you will find all applications received on your open opportunities">
+                    <i class="fa fa-info-circle"></i>
+                </span>
+            </span>
+        </div>
+    </div>
 <div class="portlet-body">
     <div class="row">
         <div class="col-md-12">
             <div class="mt-actions">
                 <?php
-                if (!empty($applied_applications)) { ?>
-                    <?php foreach ($applied_applications as $candiates) { ?>
+                if (!empty($applied_applications['list'])) { ?>
+                    <?php foreach ($applied_applications['list'] as $candiates) { ?>
                         <div class="mt-action">
                             <div class="mt-action-img" style="width: auto">
                                 <a href="/<?= $candiates['username'] ?>">
@@ -51,10 +57,46 @@ use yii\helpers\Url;
                     }
                 } else {
                     ?>
-                    <h3>No Applications To Display</h3>
+                    <div class="tab-empty">
+                        <div class="tab-empty-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>"
+                                 class="img-responsive" alt=""/>
+                        </div>
+                        <div class="tab-empty-text">
+                            <div class="">No Applications</div>
+                        </div>
+                    </div>
                 <?php } ?>
             </div>
         </div>
     </div>
 </div>
 </div>
+<?php
+$this->registerCss("
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:250px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+");
+$script = <<<JS
+        $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip();
+});
+JS;
+$this->registerJs($script);

@@ -1,8 +1,9 @@
 <?php
+
 namespace account\models\applications;
+
 use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
-use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
 use common\models\AssignedCategories;
@@ -39,28 +40,28 @@ class ShortJobs extends Model
     public function rules()
     {
         return [
-            [['job_title','skills','wage_duration','positions','description','exp','location','currency','country','gender','job_profile','wage_type','job_type'],'required'],
-            [['email'],'safe'],
-            ['fixed_wage','required','when' => function($model) {
+            [['job_title', 'skills', 'wage_duration', 'positions', 'description', 'exp', 'location', 'currency', 'country', 'gender', 'job_profile', 'wage_type', 'job_type'], 'required'],
+            [['email'], 'safe'],
+            ['fixed_wage', 'required', 'when' => function ($model) {
                 return $model->wage_type == 1;
-            },'whenClient' => "function (attribute, value) {
+            }, 'whenClient' => "function (attribute, value) {
             return $(\"input[name='wage_type']:checked\").val() == 1;
             }"],
-            ['min_salary','required','when' => function($model) {
+            ['min_salary', 'required', 'when' => function ($model) {
                 return $model->wage_type == 2;
-            },'whenClient' => "function (attribute, value) {
+            }, 'whenClient' => "function (attribute, value) {
                 return $(\"input[name='wage_type']:checked\").val() == 2;
             }"],
-            ['max_salary','required','when' => function($model) {
+            ['max_salary', 'required', 'when' => function ($model) {
                 return $model->wage_type == 2;
-            },'whenClient' => "function (attribute, value) {
+            }, 'whenClient' => "function (attribute, value) {
             return $(\"input[name='wage_type']:checked\").val() == 2;
             }"],
-            [['job_title'],'string','max'=>50],
-            [['job_title','fixed_wage','min_salary','max_salary','positions','email'],'trim'],
-            [['positions'],'integer','max'=>100000],
-            [['fixed_wage'],'string','min'=>4,'max'=>15],
-            ['email','email'],
+            [['job_title'], 'string', 'max' => 50],
+            [['job_title', 'fixed_wage', 'min_salary', 'max_salary', 'positions', 'email'], 'trim'],
+            [['positions'], 'integer', 'max' => 100000],
+            [['fixed_wage'], 'string', 'min' => 4, 'max' => 15],
+            ['email', 'email'],
         ];
     }
 
@@ -68,7 +69,8 @@ class ShortJobs extends Model
     {
         return '';
     }
-    public function update($editid,$typ)
+
+    public function update($editid, $typ)
     {
         $employerApplicationsModel = EmployerApplications::find()
             ->where(['application_enc_id' => $editid])
@@ -167,10 +169,8 @@ class ShortJobs extends Model
                     $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
                     if (!$applicationSkillsModel->save()) {
                         return false;
-                    }
-                    else
-                    {
-                        $this->assignedSkill($applicationSkillsModel->skill_enc_id, $cat_id,$typ);
+                    } else {
+                        $this->assignedSkill($applicationSkillsModel->skill_enc_id, $cat_id, $typ);
                     }
                 }
             }
@@ -271,6 +271,7 @@ class ShortJobs extends Model
         }
         return true;
     }
+
     public function save()
     {
         switch ($this->wage_type) {
@@ -289,18 +290,18 @@ class ShortJobs extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-       $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
-       $employerApplication = new EmployerApplications();
-       $utilitiesModel = new Utilities();
-       $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-       $employerApplication->application_enc_id = $utilitiesModel->encrypt();
-       $employerApplication->application_number = rand(1000,10000).time();
-       $employerApplication->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
-       $employerApplication->experience = $this->exp;
-       $employerApplication->published_on = date('Y-m-d H:i:s');
-       $employerApplication->image = '1';
-       $employerApplication->image_location = '1';
-       $employerApplication->status = 'Active';
+        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+        $employerApplication = new EmployerApplications();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $employerApplication->application_enc_id = $utilitiesModel->encrypt();
+        $employerApplication->application_number = rand(1000, 10000) . time();
+        $employerApplication->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
+        $employerApplication->experience = $this->exp;
+        $employerApplication->published_on = date('Y-m-d H:i:s');
+        $employerApplication->image = '1';
+        $employerApplication->image_location = '1';
+        $employerApplication->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
             ->where(['name' => $this->job_title]);
@@ -320,7 +321,7 @@ class ShortJobs extends Model
             $categoriesModel->created_on = date('Y-m-d H:i:s');
             $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
             if ($categoriesModel->save()) {
-                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication,$type='Jobs');
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerApplication, $type = 'Jobs');
             } else {
                 return false;
             }
@@ -330,11 +331,11 @@ class ShortJobs extends Model
                 ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
                 ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
                 ->andWhere(['not', ['b.parent_enc_id' => null]])
-                ->andWhere(['b.assigned_to' => $type='Jobs', 'b.parent_enc_id' => $this->job_profile])
+                ->andWhere(['b.assigned_to' => $type = 'Jobs', 'b.parent_enc_id' => $this->job_profile])
                 ->asArray()
                 ->one();
             if (empty($chk_assigned)) {
-                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, $type='Jobs');
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerApplication, $type = 'Jobs');
             } else {
                 $employerApplication->title = $chk_assigned['assigned_category_enc_id'];
                 $utilitiesModel->variables['name'] = $chk_assigned['name'] . '-' . $employerApplication->application_number;
@@ -353,8 +354,7 @@ class ShortJobs extends Model
         $employerApplication->created_on = date('Y-m-d H:i:s');
         $employerApplication->created_by = Yii::$app->user->identity->user_enc_id;
         $employerApplication->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
-        if ($employerApplication->save())
-        {
+        if ($employerApplication->save()) {
             $applicationoptionsModel = new ApplicationOptions();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $applicationoptionsModel->option_enc_id = $utilitiesModel->encrypt();
@@ -385,7 +385,7 @@ class ShortJobs extends Model
                 return false;
             }
 
-            if (!empty($this->location)){
+            if (!empty($this->location)) {
                 foreach ($this->location as $city) {
                     $placementCity = new ApplicationPlacementCities();
                     $utilitiesModel = new Utilities();
@@ -400,7 +400,7 @@ class ShortJobs extends Model
                     }
                 }
             }
-            if (!empty($this->skills)){
+            if (!empty($this->skills)) {
                 foreach ($this->skills as $skill) {
                     $skills_set = Skills::find()
                         ->select(['skill_enc_id'])
@@ -447,27 +447,24 @@ class ShortJobs extends Model
                     }
                 }
             }
+        } else {
+            return false;
         }
-        else
-        {
-           return false;
-        }
-      return true;
+        return true;
     }
-    public function setData($editid,$typ)
+
+    public function setData($editid, $typ)
     {
         $modelData = EmployerApplications::find()
             ->alias('a')
-            ->select(['title', 'type','h.name country_name','positions','application_type_enc_id', 'description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type','wage_duration','currency_enc_id'])
+            ->select(['title', 'type', 'h.name country_name', 'positions', 'application_type_enc_id', 'description', 'experience', 'a.application_enc_id', 'preferred_gender', 'fixed_wage', 'min_wage', 'max_wage', 'wage_type', 'wage_duration', 'currency_enc_id'])
             ->where(['a.application_enc_id' => $editid])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationPlacementCities d' => function ($b) {
                 $b->select(['e.city_enc_id', 'd.application_enc_id', 'e.name']);
-                $b->onCondition(['d.is_deleted'=>0]);
-                $b->joinWith(['cityEnc e'=>function($b)
-                {
-                    $b->joinWith(['stateEnc i'=>function($b)
-                    {
+                $b->onCondition(['d.is_deleted' => 0]);
+                $b->joinWith(['cityEnc e' => function ($b) {
+                    $b->joinWith(['stateEnc i' => function ($b) {
                         $b->joinWith(['countryEnc h']);
                     }]);
                 }], false);
@@ -485,7 +482,7 @@ class ShortJobs extends Model
             ->select(['a.assigned_category_enc_id', 'b.name', 'b.category_enc_id', 'a.parent_enc_id'])
             ->joinWith(['categoryEnc b'], false)
             ->where(['not', ['a.parent_enc_id' => null]])
-            ->andWhere(['assigned_to' =>$typ, 'assigned_category_enc_id' => $modelData['title']])->asArray()->one();
+            ->andWhere(['assigned_to' => $typ, 'assigned_category_enc_id' => $modelData['title']])->asArray()->one();
         switch ($modelData['wage_type']) {
             case 'Fixed':
                 $wage_type = 1;
@@ -530,6 +527,7 @@ class ShortJobs extends Model
                 'skill' => ArrayHelper::getColumn($modelData['applicationSkills'], 'skill')
             ];
     }
+
     private function assignedSkill($s_id, $cat_id)
     {
         $asignedSkillModel = new AssignedSkills();
@@ -544,6 +542,7 @@ class ShortJobs extends Model
             return false;
         }
     }
+
     private function addNewAssignedCategory($category_id, $employerApplication, $type)
     {
         $assignedCategoryModel = new AssignedCategories();

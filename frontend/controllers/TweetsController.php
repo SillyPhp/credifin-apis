@@ -19,6 +19,13 @@ use frontend\models\twitterjobs\TwitterJobsForm;
 
 class TweetsController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
     {
         return $this->_getTweets($keywords, $location, $type, $limit, $offset);
