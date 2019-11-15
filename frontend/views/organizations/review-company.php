@@ -515,6 +515,7 @@ $this->registerCss('
     font-size: 14px;
     border-radius: 5px;
     text-transform: uppercase;
+    font-family:roboto;
 }
 .share-btn ul{
     width:100%;
@@ -615,6 +616,7 @@ padding:16px 0px;
     font-size:14px;
     border-radius:5px;
     text-transform:uppercase;
+    font-family:roboto;
 }
 .cp-center{
     text-align:center;
@@ -667,7 +669,7 @@ border: 2px solid #cadfe8 !important;
 }
 .com-name{
     font-size:38px;
-    font-family: "Lora", serif;
+    font-family: roboto;
     font-weight: 700;
     color:#fff;
     line-height:50px;
@@ -692,6 +694,7 @@ border: 2px solid #cadfe8 !important;
     font-size: 13px;
     font-style: italic;
     padding:10px 0;
+    font-family:roboto;
 }
 .rh-main-heading{
     font-size:30px;
@@ -718,6 +721,7 @@ border: 2px solid #cadfe8 !important;
     padding-top:10px;
     line-height:15px;
     color:#00a0e3;
+    font-family:roboto;
 }
 .user-saying{
     padding-top:20px;
@@ -730,14 +734,15 @@ border: 2px solid #cadfe8 !important;
 }
 .uheading{
     font-weight:bold;
-    
+    font-family:roboto;
 }
 .utext{
     text-align:justify;
+    font-family:roboto;
 }
 .publish-date{
     text-align:right;
-//    font-style:italic;
+    font-family:roboto;
     font-size: 14px;
 }
 .view-detail-btn button{
@@ -754,7 +759,7 @@ border: 2px solid #cadfe8 !important;
     transition:.3s all;
 }
 .num-rate{
-    
+    font-family:roboto;
 }
 .re-btns{
     text-align:right;
@@ -783,6 +788,7 @@ border: 2px solid #cadfe8 !important;
     font-weight:bold;
     padding-top:8px;
     color:#00a0e3;
+    font-family:roboto;
 }
 .user-review-main{
     border-left:2px solid #ccc;
@@ -798,17 +804,19 @@ border: 2px solid #cadfe8 !important;
 .uratingtitle{
     font-size:12px;
     line-height:15px;
+    font-family:roboto;
 }
 .urating{
     font-size:25px;
 }
 .emp-duration{
     text-align:right;
+    font-family:roboto;
 //    line-height:18px;
 //    padding-top:20px;
 }
 .ushare i{
-   font-size:20px;
+   font-size:24px;
     color:#ccc; 
 }
 .ushare i.fa-facebook-square:hover{
@@ -837,6 +845,7 @@ border: 2px solid #cadfe8 !important;
     padding-top:20px;
     line-height:23px;
     font-weight:bold;
+    font-family:roboto;
 }
 .usefull-bttn{
     padding-top:33px;
@@ -857,6 +866,7 @@ border: 2px solid #cadfe8 !important;
     -webkit-transition:.2s all;
     -moz-transition:.2s all;
     -o-transition:.2s all;
+    font-family:roboto;
 }
 .re-bttn{
     padding-bottom:5px;
@@ -893,6 +903,7 @@ border: 2px solid #cadfe8 !important;
     font-size: 17px;
     text-transform: capitalize;
     font-weight: bold;
+    font-family:roboto;
 }
 .filter-review{
     padding-top:80px;
@@ -1144,6 +1155,7 @@ border: 2px solid #cadfe8 !important;
         height: 95px;
         width: 200px;
         float: left;
+        font-family:roboto;
     }
     .user-rating {
         display: inherit;

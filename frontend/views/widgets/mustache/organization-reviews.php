@@ -36,11 +36,6 @@ $link = Url::to($org_slug . '/reviews', true);
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
-                            <button type="button" data-toggle="modal" data-target="#report">
-                                <i class="fas fa-flag"></i> Report
-                            </button>
-                        </div>
                         <div class="publish-date">{{created_on}}</div>
                         {{#is_current_employee}}
                         <div class="emp-duration">Current Employee</div>
@@ -96,7 +91,7 @@ $link = Url::to($org_slug . '/reviews', true);
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6">
+                    <div class="col-md-4 col-sm-6">
                         <div class="ushare">
                             <div class="ushare-heading">Share</div>
                             <i class="fab fa-facebook-square"
@@ -109,7 +104,7 @@ $link = Url::to($org_slug . '/reviews', true);
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                         </div>
                     </div>
-                    <div class="col-md-6 col-sm-6">
+                    <div class="col-md-8 col-sm-6">
                         <div class="usefull-bttn pull-right">
                             <div class="use-bttn">
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
@@ -119,6 +114,11 @@ $link = Url::to($org_slug . '/reviews', true);
                             <div class="notuse-bttn">
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
                                             class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                            </div>
+                            <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
+                                <button type="button" data-toggle="modal" data-target="#report">
+                                    <i class="fas fa-flag"></i> Report
                                 </button>
                             </div>
                         </div>
