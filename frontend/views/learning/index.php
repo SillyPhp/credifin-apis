@@ -1,28 +1,48 @@
 <?php
 
-$this->params['header_dark'] = true;
+$this->params['header_dark'] = false;
+
 use yii\helpers\Url;
+
 ?>
-<section>
+<section style="background: #242937; overflow: hidden;">
     <div class="container headsec">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
                 <div class="newlogoset">
-                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learningc.png'); ?>" align="right"
-                         class="responsive"/>
+                    <div class="main-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>" align="right"
+                             class="responsive"/>
+                    </div>
+                    <div class="anim-3">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element1.png'); ?>"/>
+                    </div>
+                    <div class="anim-4">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element2.png'); ?>"/>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
-                <div class="jumbo-heading">BOOST YOUR SKILLS</div>
-                <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>
-                <div class="search-box1">
-                    <form action="<?= Url::to('/learning/search-video') ?>">
-                        <input type="text" placeholder="Search" name="keyword">
-                        <button type="submit"><i class="fas fa-search"></i></button>
-                    </form>
+                <div class="main-heading-set">
+                    <div class="min-heading">Learn anything, anytime, anywhere</div>
+                    <div class="jumbo-heading">the world's largest selection of Free Learning Content</div>
+<!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
+                    <div class="search-box1">
+                        <form action="<?= Url::to('/learning/search-video') ?>">
+                            <input type="text" placeholder="Search" name="keyword">
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+                <div class="animations-set">
+                    <div class="anim-1">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/ele3.png'); ?>"/>
+                    </div>
+                    <div class="anim-2">
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/lines.png'); ?>"/>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -368,6 +388,127 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.main-heading-set {
+    display: block;
+    z-index: 9;
+    position: relative;
+    padding-top: 25px;
+}
+.main-img {
+    position: relative;
+    display: inline-block;
+    z-index: 9;
+    margin-bottom: 10px;
+    margin-top:20px;
+}
+.min-heading {
+    color: #fff;
+    text-transform: uppercase;
+    border-left: 3px solid #ff7803;
+    padding-left: 10px;
+    font-weight: 500;
+    font-size: 11px;
+    font-family: roboto;
+    letter-spacing: 1px;
+}
+.animation-set{
+    position:relative;
+}
+.anim-1{
+    position: absolute;
+    bottom: -148px;
+    left: 10px;
+    width:130px;
+}
+.anim-1 img{
+    animation-duration:15s;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+    animation-name:round;
+}
+@keyframes round {
+	from{ transform: rotate(0deg);}
+    to{transform: rotate(360deg);}  
+}
+.anim-2{
+    position:absolute;
+    width:450px;
+    top:100px;
+    right:310px;
+}
+.anim-2 img{
+    animation-duration:5s;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+    animation-name:line;
+}
+@keyframes line {
+	0%{ transform: translateY(0px);}
+    25%{transform: translateY(10px);}  
+    50%{transform: translateY(20px);}  
+    75%{transform: translateY(10px);}  
+    100%{transform: translateY(0px);}  
+}
+.anim-3 {
+    position: absolute;
+    width: 240px;
+    top: 289px;
+    right: 337px;
+}
+.anim-3 img, .anim-4 img{
+    animation-duration:2.5s;
+    animation-timing-function:linear;
+    animation-iteration-count: infinite;
+    animation-name:line-set;
+}
+@keyframes line-set {
+	0%{ transform: translateY(0px);}
+    25%{transform: translateY(2px);}  
+    50%{transform: translateY(5px);}  
+    75%{transform: translateY(2px);}  
+    100%{transform: translateY(0px);}  
+}
+.anim-4 {
+    position: absolute;
+    width: 240px;
+    bottom: 34px;
+    right: 22px;
+}
+@media (max-width:768px){
+.anim-1{
+    bottom: -148px;
+    left: 10px;
+    width: 106px;
+}
+.anim-2{
+    top: 69px;
+    right: 150px;
+}
+.anim-3{
+    width: 162px !important;
+    top: 211px !important;
+    right: 228px !important;
+}
+.anim-4{
+    width: 160px !important;
+    top: 204px !important;
+    right: 18px !important;
+}
+}
+@media (max-width:550px){
+.anim-3 {
+    width: 162px !important;
+    top: 235px !important;
+    right: 266px !important;
+}
+}
+@media(max-width:380px){
+.anim-3 {
+    width: 162px !important;
+    top: 210px !important;
+    right: 233px !important;
+}
+}
 .best-images{
     display:flex;
 }
@@ -561,6 +702,7 @@ $this->registerCss('
 .newlogoset{
     max-width:500px;
     margin: 0 auto;
+    position:relative;
 }
 .newlogoset img{
     width:100%;
@@ -573,7 +715,6 @@ $this->registerCss('
     border-radius: 10px;
     padding: 3px;
     margin: 21px 0 0 0;
-    box-shadow: 0px 0px 10px 1px #eee;
 }
 .search-box1 form{
     margin-bottom:0px;
@@ -609,27 +750,22 @@ $this->registerCss('
 .head-pic{
     text-align: center;
 }
-.headsec{
-    color:#333;
-}
 .jumbo-heading{
     font-size: 40px;
-    font-weight:bold;
-    font-family: lora;
-    text-transform: uppercase;
-    color:#3b394a; 
+    font-weight: bold;
+    font-family: roboto;
+    text-transform: capitalize;
+    color:#fff;
 }
 @media only screen and (max-width:1200px) {
  .search-box1 input[type=text]
     {
     width:300px;
     }
-  .jumbo-heading{
-    font-size: 35px !important;}
 }
 @media only screen and (max-width:992px) {
   .jumbo-heading{
-    font-size: 25px !important; margin-top: -30px !important;}
+    font-size: 25px !important;}
 }
 @media only screen and (max-width:767px) {
     .topp-pad{text-align:center; margin-top:50px !important;}
