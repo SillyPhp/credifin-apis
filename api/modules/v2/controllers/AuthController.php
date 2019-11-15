@@ -5,6 +5,8 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
+use common\models\EmailLogs;
+use common\models\Referral;
 use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
@@ -30,8 +32,6 @@ class AuthController extends ApiBaseController{
 
         $model = new IndividualSignup();
         if($model->load(Yii::$app->request->post(), '')){
-//            print_r($model);
-//            die();
             if($model->validate()){
                 if(!$this->usernameValid($model)){
                     return $this->response(409, [
@@ -39,16 +39,44 @@ class AuthController extends ApiBaseController{
                     ]);
                 }
 
-                if($model->saveUser()){
-                    return $this->response(200);
-                }else{
-                    return $this->response(500);
-                }
+//                if($this->getRef($model) && $this->getInvitation($model)) {
+                    if ($model->saveUser()) {
+                        return $this->response(200, ['status' => 200]);
+                    } else {
+                        return $this->response(500, ['status' => 500]);
+                    }
+//                }else{
+//                    return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
+//                }
 
             }
             return $this->response(409, $model->getErrors());
         }
         return $this->response(422);
+    }
+
+    private function getRef($model){
+        $ref = Referral::find()
+            ->alias('a')
+            ->select(['a.referral_enc_id','b.organization_enc_id'])
+            ->joinWith(['organizationEnc b'])
+            ->where(['code'=>$model->ref])
+            ->asArray()
+            ->one();
+
+        if($ref['organization_enc_id']){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    private function getInvitation($model){
+        $initation = EmailLogs::find()
+            ->where(['email_log_enc_id'=>$model->invitation])
+            ->exists();
+
+        return $initation;
     }
 
     public function actionUsername(){
@@ -101,7 +129,6 @@ class AuthController extends ApiBaseController{
         }
         return $this->response(422);
     }
-
 
     private function onlyTokens($token){
         $time_now = date('Y-m-d H:i:s', time('now'));
