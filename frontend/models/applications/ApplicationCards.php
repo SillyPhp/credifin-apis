@@ -69,7 +69,7 @@ class ApplicationCards
                 'g.name city'
                 ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -77,16 +77,14 @@ class ApplicationCards
             ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
             ->leftJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->leftJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id')
+            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id AND e.is_deleted = 0')
             ->leftJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -118,21 +116,19 @@ class ApplicationCards
                 'g.name city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
-            ->innerJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id')
-            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
-            ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
+            ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
+            ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         if (isset($options['company'])) {
             $cards1->andWhere([
@@ -201,31 +197,7 @@ class ApplicationCards
         }
         if (isset($options['keyword'])) {
             $options['keyword'] = trim($options['keyword']," ");
-            function makeSQL_search_pattern($search) {
-                $search_pattern = false;
-                //escape the special regex chars
-                $search = str_replace('"', "''", $search);
-                $search = str_replace('^', "\\^", $search);
-                $search = str_replace('$', "\\$", $search);
-                $search = str_replace('.', "\\.", $search);
-                $search = str_replace('[', "\\[", $search);
-                $search = str_replace(']', "\\]", $search);
-                $search = str_replace('|', "\\|", $search);
-                $search = str_replace('*', "\\*", $search);
-                $search = str_replace('+', "\\+", $search);
-                $search = str_replace('{', "\\{", $search);
-                $search = str_replace('}', "\\}", $search);
-                $search = explode(" ", $search);
-                for ($i = 0; $i < count($search); $i++) {
-                    if ($i > 0 && $i < count($search) ) {
-                        $search_pattern .= "|";
-                    }
-                    $search_pattern .= $search[$i];
-                }
-                return $search_pattern;
-            }
-
-            $search_pattern = makeSQL_search_pattern($options['keyword']);
+            $search_pattern = self::makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
                 ['REGEXP', 'l.designation',$search_pattern],
@@ -235,6 +207,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
             $cards2->andFilterWhere([
                 'or',
@@ -243,6 +217,8 @@ class ApplicationCards
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
                 ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
         }
         $result = null;
@@ -350,7 +326,7 @@ class ApplicationCards
                 'g.name city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -358,16 +334,14 @@ class ApplicationCards
             ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
             ->leftJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->leftJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id')
+            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id AND e.is_deleted = 0')
             ->leftJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
@@ -389,21 +363,19 @@ class ApplicationCards
                 'g.name city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->innerJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
+            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
-            ->innerJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id')
-            ->innerJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
-            ->innerJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
+            ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
+            ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy('a.application_enc_id')
-            ->orderBy(['a.created_on'=>SORT_DESC])
-            ->limit($limit)
-            ->offset($offset);
+            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->orderBy(['a.created_on'=>SORT_DESC]);
 
         if (isset($options['company'])) {
             $cards1->andWhere([
@@ -460,38 +432,44 @@ class ApplicationCards
         if (isset($options['location'])) {
             $cards1->andWhere([
                 'or',
-                ['g.name' => $options['location']]
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']],
             ]);
             $cards2->andWhere([
                 'or',
-                ['g.name' => $options['location']]
+                ['g.name' => $options['location']],
+                ['s.name' => $options['location']],
             ]);
         }
         if (isset($options['keyword'])) {
+            $options['keyword'] = trim($options['keyword']," ");
+            $search_pattern = self::makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
 
             $cards2->andFilterWhere([
                 'or',
-                'a.type LIKE "%' . $options['keyword'] . '%"',
-                'c.name LIKE "%' . $options['keyword'] . '%"',
-                'i.name LIKE "%' . $options['keyword'] . '%"',
-                'd.name LIKE "%' . $options['keyword'] . '%"',
-                'a.slug LIKE "%' . $options['keyword'] . '%"'
+                ['REGEXP', 'a.type',$search_pattern],
+                ['REGEXP', 'c.name',$search_pattern],
+                ['REGEXP', 'i.name',$search_pattern],
+                ['REGEXP', 'd.name',$search_pattern],
+                ['REGEXP', 'a.slug',$search_pattern],
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern]
             ]);
         }
 
         $result = null;
         if(isset($options['similar_jobs'])){
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
-            $cards2->andWhere(['in', 'c.name', $options['similar_jobs']]);
-            $cards1->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $cards2->andWhere(['in', 'i.name', $options['similar_jobs']]);
             $result  = (new \yii\db\Query())
                 ->from([
@@ -674,5 +652,27 @@ class ApplicationCards
             ->all();
         return $result;
     }
-
+    private static function makeSQL_search_pattern($search) {
+        $search_pattern = false;
+        //escape the special regex chars
+        $search = str_replace('"', "''", $search);
+        $search = str_replace('^', "\\^", $search);
+        $search = str_replace('$', "\\$", $search);
+        $search = str_replace('.', "\\.", $search);
+        $search = str_replace('[', "\\[", $search);
+        $search = str_replace(']', "\\]", $search);
+        $search = str_replace('|', "\\|", $search);
+        $search = str_replace('*', "\\*", $search);
+        $search = str_replace('+', "\\+", $search);
+        $search = str_replace('{', "\\{", $search);
+        $search = str_replace('}', "\\}", $search);
+        $search = preg_split('/ /', $search, null, PREG_SPLIT_NO_EMPTY);
+        for ($i = 0; $i < count($search); $i++) {
+            if ($i > 0 && $i < count($search) ) {
+                $search_pattern .= "|";
+            }
+            $search_pattern .= $search[$i];
+        }
+        return $search_pattern;
+    }
 }

@@ -539,9 +539,6 @@ $this->params['header_dark'] = false;
                             </div>
                         </div>
                     </div>
-<!--                    --><?//=
-//                        $this->render('/widgets/mustache/new-jobs-box')
-//                    ?>
                     <div class="browse-all-cat">
                         <a href="jobs/list" title="" class="style2">Show all listings</a>
                     </div>
@@ -1339,14 +1336,13 @@ how-icon{
     margin: 0;
     display: inline-block;
     border: 1px solid #e7e7e7;
-    
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-
-    padding: 0 4px;
+    background: #00a0e3;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0 8px;
 }
 .nav.nav-tabs > li {
     float: none;
@@ -1359,19 +1355,26 @@ how-icon{
     font-weight:400;
     font-family:Roboto;
     letter-spacing: 0px;
-    padding: 15px 30px;
-    
+    padding: 12px 21px;
+    color:#fff;
     -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    border-left:none !important;
+}
+.nav.nav-tabs > li a:hover{
+    border-color:transparent;
+    background:#fff;
+    color:#00a0e3;
 }
 .nav.nav-tabs > li a.current {
-    color: #ffffff;
-    background-color: #00a0e3;
+    color: #00a0e3 !important;
+    background-color: #fff;
     font-family:Roboto;
     font-weight:400;
 }
@@ -1874,7 +1877,7 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
         // var i = 0;
         // i += 5;
         // var k = 4;
-        var ll = 0;
+        var ll = 0;``
         var zz = 0;
         var tt = 0;
         var f = true;

@@ -5,11 +5,9 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
-use common\models\User;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
-use frontend\widgets\Login;
 use Yii;
 
 class AuthController extends ApiBaseController{

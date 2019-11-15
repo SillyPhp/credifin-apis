@@ -198,10 +198,9 @@ use yii\widgets\Pjax;
                                         ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reviewlist.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Select any internships for review.</div>
                                                 </div>
                                             </div>
@@ -261,10 +260,9 @@ use yii\widgets\Pjax;
                                         ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlists.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Shortlisted any internships.</div>
                                                 </div>
                                             </div>
@@ -309,10 +307,9 @@ use yii\widgets\Pjax;
                                         ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/apply.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Applied any internships.</div>
                                                 </div>
                                             </div>
@@ -355,10 +352,9 @@ use yii\widgets\Pjax;
                                         ?>
                                             <div class="tab-empty"> 
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/acceptedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't any accepted internships.</div>
                                                 </div>
                                             </div>
@@ -410,10 +406,9 @@ use yii\widgets\Pjax;
                                         ?>
                                             <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/rejected.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Internships to show.</div>
                                                     <div class="">You haven't Shortlisted any internships</div>
                                                 </div>
                                             </div>
@@ -435,7 +430,8 @@ use yii\widgets\Pjax;
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
+                    </span>
                 </div>
                 <div class="actions">
                     <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
@@ -455,11 +451,19 @@ use yii\widgets\Pjax;
 </div>
 <?php
 $this->registerCss('
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
+.portlet.light > .portlet-title > .actions{
+    padding:0px !important;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    height:170px; 
     margin:0 auto;
 }
 .tab-empty-text{
@@ -704,7 +708,9 @@ $(document).on('click','.rmv_org',function()
 $(document).on('click', '#removejob', function(){
     $(this).closest('.hr-j-box').remove();
 });   
-
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');

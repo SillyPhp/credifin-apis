@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use borales\extensions\phoneInput\PhoneInput;
+
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
     <div class="modal-dialog">
@@ -87,101 +88,16 @@ use borales\extensions\phoneInput\PhoneInput;
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
                                 <div class="indi-btn">
-                                    <a href="/signup/individual">Individual</a>
+                                    <a href="/signup/individual">Individual / Candidate</a>
                                 </div>
                                 <div class="organ-btn">
-                                    <a href="/signup/organization">Organization</a>
+                                    <a href="/signup/organization">Organization / Companies</a>
                                 </div>
                                 <div class="new-user">
                                     Existing User?
                                     <button type="button" onclick="changeBackLogin()"> Login</button>
                                 </div>
                             </div>
-
-<!--                            <div class="individual-form" id="individualForm">-->
-<!--                                --><?php
-//                                $form = ActiveForm::begin([
-//                                    'id' => 'user-form',
-//                                    'options' => [
-//                                        'class' => 'clearfix',
-//                                    ],
-//                                    'fieldConfig' => [
-//                                        'template' => '<div class="form-group">{input}{error}</div>',
-//                                        'labelOptions' => ['class' => ''],
-//                                    ],
-//                                ]);
-//                                ?>
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'first_name')->textInput([
-//                                            'class' => 'uname-in capitalize',
-//                                            'autocomplete' => 'off',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('first_name')]);
-//                                        ?>
-<!--                                    </div>-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'last_name')->textInput([
-//                                            'class' => 'uname-in capitalize',
-//                                            'autocomplete' => 'off',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('last_name')]);
-//                                        ?>
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'email', ['enableAjaxValidation' => true])->textInput([
-//                                            'class' => 'uname-in lowercase ',
-//                                            'autocomplete' => 'off',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('email')]); ?>
-<!--                                    </div>-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//=
-//                                        $form->field($signUpFormModel, 'phone', ['enableAjaxValidation' => true])->widget(PhoneInput::className(), [
-//                                            'jsOptions' => [
-//                                                'allowExtensions' => false,
-//                                                'preferredCountries' => ['in'],
-//                                                'nationalMode' => false,
-//                                            ]
-//                                        ]);
-//                                        ?><!--  -->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'username', [
-//                                            'template' => '<div class="form-group ">{input}</div>{error}', 'enableAjaxValidation' => true])->textInput([
-//                                            'class' => 'lowercase uname-in',
-//                                            'autocomplete' => 'off',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('username')]);
-//                                        ?>
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'new_password')->passwordInput([
-//                                            'autocomplete' => 'off',
-//                                            'class' => 'uname-in',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('new_password')]); ?>
-<!--                                    </div>-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= $form->field($signUpFormModel, 'confirm_password')->passwordInput([
-//                                            'autocomplete' => 'off',
-//                                            'class' => 'uname-in',
-//                                            'placeholder' => $signUpFormModel->getAttributeLabel('confirm_password')]);
-//                                        ?>
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <div class="row">-->
-<!--                                    <div class="col-md-12">-->
-<!--                                        --><?//= Html::submitButton('Sign Up', [
-//                                                'class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn',
-//                                                'name' => 'register-button'
-//                                            ]);
-//                                        ?>
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                --><?php //ActiveForm::end(); ?>
-<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -242,7 +158,7 @@ $this->registerCss('
     border-radius: 5px;
     text-transform: capitalize;
     font-size: 15px;
-    width: 160px;
+    width: 245px;
     margin: auto;
     margin-top: 5px;
     display: block;
