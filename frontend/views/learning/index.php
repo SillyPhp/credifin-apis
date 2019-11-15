@@ -1,9 +1,7 @@
 <?php
+
 $this->params['header_dark'] = true;
-$this->title = Yii::t('frontend', 'Learning Corner');
-
 use yii\helpers\Url;
-
 ?>
 <section>
     <div class="container headsec">
@@ -297,7 +295,8 @@ use yii\helpers\Url;
                                         <?= $obj['question']; ?>
                                     </div>
                                     <div class="t-answers">
-                                        <span class="answers"><a href="<?= $link ?>" target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
+                                        <span class="answers"><a href="<?= $link ?>"
+                                                                 target="_blank"><?= sizeof($obj['questionsPoolAnswers']); ?><answers> Answers</answers></a></span>
                                         <div class="best-answers">
                                             <?php if (!empty($obj['questionsPoolAnswers'])): ?>
                                                 <span class="best-images">
@@ -353,11 +352,11 @@ use yii\helpers\Url;
 
 <section>
     <div class="container">
-<!--        <div class="row">-->
-            <div class="col-md-12">
-                <h2 class="heading-style">Our Collaborators</h2>
-            </div>
-<!--        </div>-->
+        <!--        <div class="row">-->
+        <div class="col-md-12">
+            <h2 class="heading-style">Our Collaborators</h2>
+        </div>
+        <!--        </div>-->
         <div class="row">
             <div class="col-md-12" id="contributors">
 
@@ -369,6 +368,12 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.best-images{
+    display:flex;
+}
+.best-images a{
+    margin-right:5px;   
+}
 .wts-app, .fb, .tw, .male{
     width: 30px;
     text-align: center;
@@ -524,6 +529,20 @@ $this->registerCss('
     border-radius:8px;
     background: ghostwhite;
     margin-top: 40px;
+}
+.col-img{
+    text-align:center;
+}
+@media (max-width: 768px) {
+.col-img img{
+    width: 65%
+  }
+}
+@media (max-width: 500px) {
+    .col-text{padding-top:12px !important;}
+    .col-img img{width: 100%;}
+    .col-inner {font-size: 12px !important;}
+    .col-head {font-size:18px !important;}
 }
 .col-text {
     text-align: center;
@@ -803,10 +822,16 @@ $this->registerCss('
 }
 @media (max-width: 991px) {
   #mixedSlider .MS-content .item {
-    width: 50%;
+    width: 47%;
   }
 }
-@media (max-width: 767px) {
+@media (max-width: 768px) {
+  #mixedSlider .MS-content .item {
+    width: 49%;
+    margin:0px;
+  }
+}
+@media (max-width: 550px) {
   #mixedSlider .MS-content .item {
     width: 100%;
     margin:0px;
@@ -1524,7 +1549,7 @@ $this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\Jqu
 
 <script id="video-collaborators" type="text/template">
     {{#.}}
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-4 col-md-6 col-sm-6">
         <div class="collaborators-main">
             <div class="c-detail">
                 <h4 class="title">{{name}}</h4>

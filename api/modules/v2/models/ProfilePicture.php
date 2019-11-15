@@ -3,6 +3,7 @@
 namespace api\modules\v2\models;
 
 use api\modules\v1\models\Candidates;
+use common\models\Organizations;
 use common\models\UserAccessTokens;
 use Yii;
 use yii\base\Model;
@@ -44,7 +45,42 @@ class ProfilePicture extends Model{
                 if(!is_dir($base_path)){
                     if(mkdir($base_path, 0755, true)){
                         if($this->profile_image->saveAs($base_path . DIRECTORY_SEPARATOR . $user->image)) {
-                            return true;
+                            return $user->user_enc_id;
+                        }else{
+                            return false;
+                        }
+                    }else{
+                        return false;
+                    }
+                }
+            }else{
+                return false;
+            }
+        }
+    }
+
+    public function updateLogo(){
+        $token_holder_id = UserAccessTokens::findOne([
+            'access_token' => explode(" ", Yii::$app->request->headers->get('Authorization'))[1]
+        ]);
+        $candidate = Candidates::findOne([
+            'user_enc_id' => $token_holder_id->user_enc_id
+        ]);
+        $utilitiesModel = new Utilities();
+        $usersModel = new Organizations();
+        $user = $usersModel->find()
+            ->where(['created_by' => $candidate->user_enc_id])
+            ->one();
+        if($user){
+            $user->logo_location = \Yii::$app->getSecurity()->generateRandomString();
+            $base_path = Yii::$app->params->upload_directories->organizations->logo_path . $user->logo_location;
+            $utilitiesModel->variables['string'] = time(). rand(100, 100000);
+            $user->logo = $utilitiesModel->encrypt() . '.' . $this->profile_image->extension;
+            if($user->update()){
+                if(!is_dir($base_path)){
+                    if(mkdir($base_path, 0755, true)){
+                        if($this->profile_image->saveAs($base_path . DIRECTORY_SEPARATOR . $user->logo)) {
+                            return $user->organization_enc_id;
                         }else{
                             return false;
                         }

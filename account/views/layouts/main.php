@@ -47,7 +47,7 @@ $this->beginPage();
                                             </a>
                                         </div>
                                         <div class="ey-menu-main">
-                                            <?= $this->render('/widgets/common/header/top-header-beta'); ?>
+                                            <?= $this->render('@common/widgets/top-header-beta'); ?>
                                         </div>
                                         <div class="ey-nav-actions">
                                             <div class="ey-menu-login">
@@ -137,7 +137,7 @@ $this->beginPage();
                             <div class="ey-mobile-content">
                                 <div class="ey-mobile-menu-main-content">
                                     <div class="ey-mobile-menu-inner-content">
-                                        <?= $this->render('/widgets/common/header/top-header-mobile'); ?>
+                                        <?= $this->render('@common/widgets/top-header-mobile'); ?>
                                     </div>
                                 </div>
                             </div>

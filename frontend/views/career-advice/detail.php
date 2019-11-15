@@ -9,7 +9,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-12">
                 <div class="csb-pos-rel">
-                    <div class="csb-header-text"><?= $careerBlog[0]['cat']?></div>
+                    <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
                 </div>
             </div>
         </div>
@@ -37,40 +37,48 @@ use yii\helpers\Url;
                     } else {
                         echo 3;
                     } ?>  col-sm-12">
-                            <div class="tp-box">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="img-box">
-                                            <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-4">
+                                <div class="tp-box">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                <div class="img-box">
+                                                    <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                </div>
+                                            </a>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="cs-blog-detail">
-                                            <div class="heading-text">
-                                                <?= $c['title'] ?>
-                                            </div>
-                                            <div class="box-des">
-                                                <?= substr($c['description'], 0, 160) ?>
-                                            </div>
-                                            <div class="cs-read-btn">
-                                                <a href="/career-advice/<?= $c['category']?>/<?= $c['slug'] ?>">Read</a>
+                                        <div class="col-md-12">
+                                            <div class="cs-blog-detail">
+                                                <div class="heading-text">
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                        <?= $c['title'] ?>
+                                                    </a>
+                                                </div>
+                                                <div class="box-des">
+                                                    <?= $c['description'] ?>
+                                                </div>
+                                                <div class="cs-read-btn">
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">Read</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                     <?php
                     $count++;
                 }
                 ?>
             </div>
-            <?php if(count($careerBlog) > 6) { ?>
+            <?php if (count($careerBlog) > 6) { ?>
                 <div class="divider"></div>
                 <div class="row">
                     <div class="col-md-8">
                         <?php
-//                        $count = 0;
+                        //                        $count = 0;
                         for ($i = 6; $i < count($careerBlog); $i++) {
 //                            $count++
                             ?>
@@ -184,9 +192,8 @@ text-align:right;
    
 .blog-img{
     width: 100%;
-	height: auto;
+	max-height: 430px;
 	border-radius: 5px 5px 0px 0px;
-
 }
 .heading{
     margin-bottom: 15px;

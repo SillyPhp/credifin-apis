@@ -10,7 +10,7 @@
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="{{organization_link}}" title="{{DepartmentName}}">
+                    <a href="/usa-jobs/detail/{{JobCategory}}/{{MatchedObjectId}}" title="{{DepartmentName}}">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                         {{/logo}}
@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="{{link}}" title="{{PositionTitle}}"><h4 class="application-title">{{PositionTitle}}</h4></a>
+                    <a href="/usa-jobs/detail/{{JobCategory}}/{{MatchedObjectId}}" title="{{PositionTitle}}"><h4 class="application-title">{{PositionTitle}}</h4></a>
                     <h5><i class="fas fa-dollar-sign"></i>{{MinimumRange}} - <i class="fas fa-dollar-sign"></i>{{MaximumRange}} {{Duration}}</h5>
                     <h5><i class="far fa-calendar-alt"></i>&nbsp;Last Date: {{ApplicationCloseDate}}</h5>
                     <h5><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>

@@ -68,6 +68,17 @@ class AuthController extends ApiBaseController
         }
     }
 
+    private function userValid($model)
+    {
+        $usernamesModel = new Usernames();
+        $usernamesModel->username = $model->username;
+        if (!$usernamesModel->validate()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private function returnData($user, $token)
     {
         return [
@@ -193,6 +204,16 @@ class AuthController extends ApiBaseController
 
         $params = \Yii::$app->request->post();
 
+        $already_taken = [
+            'username' => 'Username already taken'
+        ];
+
+        if (!$this->userValid($params)) {
+            if ($params['password'] == '' && $params['password'] == null) {
+                return $this->response(409, $already_taken);
+            }
+        }
+
         $username = $params['username'];
         $password = $params['password'];
         $source = $params['source'];
@@ -235,6 +256,7 @@ class AuthController extends ApiBaseController
         }
         return $this->response(405);
     }
+
 
 //    public function actionRefreshAccessToken(){
 //        if(\Yii::$app->request->post('refresh_token')){

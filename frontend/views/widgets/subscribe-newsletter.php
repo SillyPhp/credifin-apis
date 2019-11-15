@@ -68,6 +68,11 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
+$('#newsletterForm input').keypress(function (e) {
+    if (e.which == 13) {
+        $('#newsletterForm').submit();
+    }
+});
 $(document).on('submit', '#newsletterForm', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();

@@ -205,7 +205,12 @@ $this->params['seo_tags'] = [
                         <span class="annousncement-num"><?= $objectid; ?></span>
                     </div>
                     <div class="follow-btn">
+                        <?php if (Yii::$app->user->isGuest): ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="follow app_btn"><i
+                                    class="fas fa-paper-plane"></i>Login to apply</a>
+                        <?php else : ?>
                         <a class="follow app_btn" href="<?= $get['ApplyURI'][0] ?>" target="_blank">Apply On Website</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="sharing-box">
@@ -244,6 +249,15 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({
+                        google_ad_client: "ca-pub-2186770765824304",
+                        enable_page_level_ads: true
+                    });
+                </script>
+                <ins class="adsbygoogle" style="display:inline-block;width:100%;"
+                     data-ad-client="ca-pub-2186770765824304" data-ad-slot="second"></ins>
             </div>
         </div>
     </div>
@@ -640,6 +654,7 @@ margin:auto;
 }
 #us-sub-header{
     height:52px;
+    overflow: hidden;
 }
 @media only screen and (max-width: 768px){
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {

@@ -44,8 +44,8 @@ $this->params['header_dark'] = false;
                                     </form>
                                 </div><!-- Job Search 2 -->
                                 <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
-                                    <a href="/internships">Internships</a>, <a href="/reviews">Reviews</a>,
-                                    <a href="">Learning Content</a>, <a href="/blog">Blogs</a>
+                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
+                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a href="/blog">Blogs</a>
                                 </span>
                             </div>
                         </div>
@@ -145,6 +145,17 @@ $this->params['header_dark'] = false;
                 </a>
             </div>
             <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/learning'); ?>">
+                    <div class="service-box ser-box-yellow">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning.png') ?>"
+                                 alt="learning">
+                        </div>
+                        <div class="ser-heading">Learning Hub</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
@@ -152,6 +163,28 @@ $this->params['header_dark'] = false;
                                  title="Reviews"/>
                         </div>
                         <div class="ser-heading">Reviews</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/training-programs'); ?>">
+                    <div class="service-box ser-box-maroon">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
+                                 alt="training">
+                        </div>
+                        <div class="ser-heading">Training Courses</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/career-advice'); ?>">
+                    <div class="service-box ser-box-green">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
+                                 alt="reviews">
+                        </div>
+                        <div class="ser-heading">Career Advice</div>
                     </div>
                 </a>
             </div>
@@ -329,7 +362,6 @@ $this->params['header_dark'] = false;
                                             <div class="intern-tag">Internship</div>
                                         </a>
                                     </div>
-                                    <!-- Job -->
                                     <div class="job-listing wtabs">
                                         <a href="/internship/assistant-director-98591554009460">
                                             <div class="job-title-sec">
@@ -1041,7 +1073,7 @@ background-attachment:fixed;
 
 /*services section starts*/
 .services{
-    padding: 25px 0 25px 0; 
+    padding: 0px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -1059,9 +1091,9 @@ background-attachment:fixed;
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
+    background-size: 100% !important;
+    background-position: 0px -8px !important;
+    background-repeat:no-repeat !important;
 }
 .service-box:hover{
     box-shadow: 0px 2px 13px 3px #ddddddb8;
@@ -1074,61 +1106,39 @@ background-attachment:fixed;
 }
 .ser-box-orange{
     background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
 }
 .ser-box-orange:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
     border-top:5px solid #00a0e3;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
     color:#00a0e3;
 }
 .ser-box-purple{
     background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
 }
 .ser-box-purple:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
     border-top:5px solid #5E4795;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
     color:#5E4795;
 }
-
+.ser-box-yellow{
+    background: url('.Url::to('@eyAssets/images/pages/index2/learningbg.png').');
+}
+.ser-box-yellow:hover{
+    border-top: 5px solid #f8b321;
+    color:#f8b321
+}
+.ser-box-maroon{
+    background: url('.Url::to('@eyAssets/images/pages/index2/trainingbg.png').');
+}
+.ser-box-maroon:hover{
+    border-top: 5px solid #c76692;
+    color:#c76692
+}
+.ser-box-green{
+    background: url('.Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png').');
+}
+.ser-box-green:hover{
+    border-top: 5px solid #047c7d;
+    color:#047c7d
+}
 .ser-icons{
     text-align:center;
 }
@@ -1326,14 +1336,13 @@ how-icon{
     margin: 0;
     display: inline-block;
     border: 1px solid #e7e7e7;
-    
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-
-    padding: 0 4px;
+    background: #00a0e3;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0 8px;
 }
 .nav.nav-tabs > li {
     float: none;
@@ -1346,19 +1355,26 @@ how-icon{
     font-weight:400;
     font-family:Roboto;
     letter-spacing: 0px;
-    padding: 15px 30px;
-    
+    padding: 12px 21px;
+    color:#fff;
     -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    border-left:none !important;
+}
+.nav.nav-tabs > li a:hover{
+    border-color:transparent;
+    background:#fff;
+    color:#00a0e3;
 }
 .nav.nav-tabs > li a.current {
-    color: #ffffff;
-    background-color: #00a0e3;
+    color: #00a0e3 !important;
+    background-color: #fff;
     font-family:Roboto;
     font-weight:400;
 }
@@ -1861,7 +1877,7 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
         // var i = 0;
         // i += 5;
         // var k = 4;
-        var ll = 0;
+        var ll = 0;``
         var zz = 0;
         var tt = 0;
         var f = true;
