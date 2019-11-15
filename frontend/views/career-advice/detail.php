@@ -17,6 +17,9 @@ use yii\helpers\Url;
 </section>
 <section>
     <div class="container">
+        <div class="visible_in_mobile">
+            <div class="csb-header-text-mobile"><?= $careerBlog[0]['cat'] ?></div>
+        </div>
         <?php
         if (empty($careerBlog)) {
             ?>
@@ -120,6 +123,43 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+@media only screen and (max-width:500px){
+    .csb-header{
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        max-height: 300px !important;
+        min-height: 300px !important;
+        background-position: left center !important;
+    }
+}  
+@media only screen and (max-width:992px){
+      .csb-header-text{
+        display:none;
+    }
+    .visible_in_mobile{
+        display:block !important;
+    }
+    .heading-style{
+        display:none;
+    }
+    .csb-header-text-mobile{
+        color:#000;
+        font-family:Lobster;
+        font-size:50px;
+        font-size:30px;
+    }
+} 
+.visible_in_mobile{
+    display:none;
+}
+.csb-header-text-mobile{
+    color:#000;
+    font-family:Lobster;
+    font-size:50px;
+    font-size:25px;
+    line-height:30px;  
+    padding-bottom: 30px;  
+}
 .noResult{
     font-family:Lobster;
     font-weight:bold;
