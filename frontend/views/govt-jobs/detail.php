@@ -137,7 +137,7 @@ $this->params['seo_tags'] = [
                     <div class="agency">Official Notification</div>
                     <div class="a-divider"></div>
                     <div class="follow-btn">
-                        <a class="follow app_btn" href="<?= $get['Pdf_link'] ?>" target="_blank">Download PDF</a>
+                        <a class="follow app_btn" href="<?= $get['Pdf_link'] ?>" target="_blank">Detailed Advertisement</a>
                     </div>
                 </div>
                 <div class="sharing-box">
