@@ -56,7 +56,7 @@ use yii\helpers\Url;
                                                     </a>
                                                 </div>
                                                 <div class="box-des">
-                                                    <?= $c['description'] ?>
+                                                    <?= substr($c['description'], 0, 160) ?>
                                                 </div>
                                                 <div class="cs-read-btn">
                                                     <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">Read</a>
@@ -69,17 +69,20 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <?php
+                    if($count == 2){
+                        break;
+                    }
                     $count++;
                 }
                 ?>
             </div>
-            <?php if (count($careerBlog) > 6) { ?>
+            <?php if (count($careerBlog) > 3) { ?>
                 <div class="divider"></div>
                 <div class="row">
                     <div class="col-md-8">
                         <?php
                         //                        $count = 0;
-                        for ($i = 6; $i < count($careerBlog); $i++) {
+                        for ($i = 3; $i < count($careerBlog); $i++) {
 //                            $count++
                             ?>
                             <div class="vertical-blog">
