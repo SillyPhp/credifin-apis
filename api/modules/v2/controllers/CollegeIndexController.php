@@ -257,6 +257,7 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
+            $type = Yii::$app->request->post('type');
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -270,6 +271,7 @@ class CollegeIndexController extends ApiBaseController
                     'e.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'z.name job_type',
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -284,8 +286,9 @@ class CollegeIndexController extends ApiBaseController
                         }], false);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0])
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0,'z.name'=>$type])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -298,6 +301,7 @@ class CollegeIndexController extends ApiBaseController
                 $positions = 0;
                 $data['name'] = $j['name'];
                 $data['logo'] = $j['logo'];
+                $data['job_type'] = $j['job_type'];
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
@@ -331,7 +335,7 @@ class CollegeIndexController extends ApiBaseController
 
             if (!empty($data)) {
                 if ($req['action'] == 'Accept') {
-                    $this->__addCompany($req['org_enc_id'],$this->getOrgId());
+                    $this->__addCompany($req['org_enc_id'], $this->getOrgId());
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
@@ -351,13 +355,14 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    private function __addCompany($org_id,$college_enc_id){
+    private function __addCompany($org_id, $college_enc_id)
+    {
 
         $erexx_collab = ErexxCollaborators::find()
-            ->where(['organization_enc_id'=>$org_id,'college_enc_id'=>$college_enc_id])
+            ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
             ->exists();
 
-        if(!$erexx_collab){
+        if (!$erexx_collab) {
             $save_collab = new ErexxCollaborators();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -368,10 +373,10 @@ class CollegeIndexController extends ApiBaseController
             $save_collab->college_approvel = 1;
             $save_collab->created_on = date('Y-m-d H:i:s');
             $save_collab->created_by = $college_enc_id;
-            if($save_collab->save()){
+            if ($save_collab->save()) {
                 return true;
-            }else{
-               return false;
+            } else {
+                return false;
             }
         }
     }
@@ -426,7 +431,7 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200,['status'=>200,'courses'=>$courses]);
+            return $this->response(200, ['status' => 200, 'courses' => $courses]);
         }
     }
 
@@ -468,14 +473,14 @@ class CollegeIndexController extends ApiBaseController
                         ])
                         ->groupBy(['b.application_type_enc_id']);
                 }])
-                ->joinWith(['organizationLocations e'=>function($e){
-                    $e->select(['e.organization_enc_id','f.name']);
-                    $e->joinWith(['cityEnc f'],false)
+                ->joinWith(['organizationLocations e' => function ($e) {
+                    $e->select(['e.organization_enc_id', 'f.name']);
+                    $e->joinWith(['cityEnc f'], false)
                         ->limit(10);
                     $e->groupBy(['f.city_enc_id']);
                 }])
-                ->joinWith(['organizationReviews k'=>function($k){
-                    $k->select(['k.organization_enc_id','ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
+                ->joinWith(['organizationReviews k' => function ($k) {
+                    $k->select(['k.organization_enc_id', 'ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
                 }])
                 ->joinWith(['businessActivityEnc d'], false)
                 ->groupBy(['a.organization_enc_id'])
@@ -483,7 +488,7 @@ class CollegeIndexController extends ApiBaseController
                     'a.is_deleted' => 0,
                     'a.is_erexx_registered' => 1
                 ])
-                ->andWhere(['not in','a.organization_enc_id',$org_ids])
+                ->andWhere(['not in', 'a.organization_enc_id', $org_ids])
                 ->asArray()
                 ->all();
 
@@ -491,8 +496,9 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    public function actionCandidates(){
-        if($user = $this->isAuthorized()){
+    public function actionCandidates()
+    {
+        if ($user = $this->isAuthorized()) {
             $req['college_id'] = $this->getOrgId();
             $candidates = UserOtherDetails::find()
                 ->alias('a')
@@ -517,6 +523,79 @@ class CollegeIndexController extends ApiBaseController
                 ->all();
 
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
+        }
+    }
+
+    public function actionCandidateInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->email_type = 6;
+            $mail->email_receivers = [
+                [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone']
+                ]
+            ];
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500,['status'=>500,'message'=>'an error occurred']);
+            }
+            return $this->response(200,['status'=>200,'message'=>'Email sent']);
+        }
+    }
+
+    public function actionCandidatesInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('emails');
+            $mail = [];
+            $mails = [];
+            foreach ($data as $m){
+                $mail['email'] = $m;
+                array_push($mails,$mail);
+            }
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->email_type = 6;
+            $mail->email_receivers = $mails;
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500,['status'=>500,'message'=>'an error occurred']);
+            }
+            return $this->response(200,['status'=>200,'message'=>'Email sent']);
+        }
+    }
+
+    public function actionCandidatesFileInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('emails');
+            $emails = [];
+            for($i=0;$i<count($data);$i++){
+                if(filter_var($data[$i]['email'], FILTER_VALIDATE_EMAIL)){
+                    array_push($emails,$data[$i]);
+                }
+            }
+
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->email_type = 6;
+            $mail->email_receivers = $emails;
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500,['status'=>500,'message'=>'an error occurred']);
+            }
+            return $this->response(200,['status'=>200,'message'=>'Email sent']);
         }
     }
 }
