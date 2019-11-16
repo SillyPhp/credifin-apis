@@ -69,7 +69,7 @@ $this->params['seo_tags'] = [
                     <button id="sb">Share</button>
                         <ul class="sd-btns share-hidden">
                            <li><a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url='.$link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
                            <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in"></i></a> </li>
                         </ul>
                 </div>
