@@ -39,15 +39,23 @@ class AuthController extends ApiBaseController{
                     ]);
                 }
 
-//                if($this->getRef($model) && $this->getInvitation($model)) {
+                if($model->ref && $model->invitation){
+                    if($this->getRef($model) && $this->getInvitation($model)) {
+                        if ($model->saveUser()) {
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500]);
+                        }
+                    }else{
+                        return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
+                    }
+                }else{
                     if ($model->saveUser()) {
                         return $this->response(200, ['status' => 200]);
                     } else {
                         return $this->response(500, ['status' => 500]);
                     }
-//                }else{
-//                    return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
-//                }
+                }
 
             }
             return $this->response(409, $model->getErrors());
