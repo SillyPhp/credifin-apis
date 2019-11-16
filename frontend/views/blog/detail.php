@@ -18,8 +18,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -61,7 +61,11 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                     <!--                    <div class="divider"></div>-->
-                    <?php // $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <?=
+                    $this->render('/widgets/mustache/discussion/discussion-box', [
+                    "controllerId" => Yii::$app->controller->id . "/comments"
+                    ]);
+                    ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -130,7 +134,7 @@ $this->params['seo_tags'] = [
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
-                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3 ">
+                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
                                         <a href="/blog/<?= $related['slug'] ?>">
                                             <div class="video-icon">
@@ -152,6 +156,8 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 $this->registerCss('
@@ -330,6 +336,7 @@ textarea::placeholder{
 }
 .channel-icon img, .channel-icon canvas, .comment-icon img{
     width:100%;
+    height:100%;
     line-height:0px;
 }
 .popular-heading, .about-heading{
@@ -368,6 +375,7 @@ textarea::placeholder{
     position:relative;
     margin-top:20px;
     overflow:hidden;
+    
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -437,6 +445,9 @@ textarea::placeholder{
 .reply button:hover{
     color:#00a0e3;
 }
+.reply-comm .comment{
+    margin-left:15px;
+}
 
 /*----blog section ends----*/
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
@@ -496,6 +507,9 @@ textarea::placeholder{
         max-width:100%;
     }
 }
+
+
+
 /*----blog description preview css start----*/
 #blog-description ul{
     list-style: disc;
@@ -514,3 +528,4 @@ div#blog-description * {
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+

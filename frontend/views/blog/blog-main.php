@@ -2,36 +2,7 @@
 
 use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', 'Blogs');
 $this->registerCssFile('@eyAssets/css/blog-main.css');
-
-$keywords = 'Blogs,Digital Marketing Blogs,IT Blogs,Lifestyle Blogs,Business Blog';
-$description = 'Read the top blogs on business development, how to deal with rejection, how to write resume and many more are available on our platform.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
     <section class="blog-header">
@@ -204,7 +175,7 @@ $this->params['seo_tags'] = [
     <section class="bg-black">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6">
+                <div class="col-md-6 col-xs-4">
                     <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
                     <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
                 </div>
@@ -718,6 +689,7 @@ $this->registerCss('
     width:100%;
     height:100%;
     display:none;
+    object-fit:contain;
 }
 .imgmain-div{
     width:60%;
@@ -870,6 +842,7 @@ hr {
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -887,6 +860,7 @@ hr {
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     display: inline-block;
+    
 }
 .type-1 div a span {
     position: relative;

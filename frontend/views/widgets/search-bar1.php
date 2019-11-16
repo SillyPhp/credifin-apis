@@ -16,7 +16,7 @@ use yii\helpers\Url;
                                 ?>
                                 <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword'); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="Job Title or Keywords or Company" class="form-control">
+                                        <input type="text" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
@@ -281,7 +281,7 @@ $('#cities').typeahead(null, {
         
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
-        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"50px"}, 1000);
+        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);
     } else if ($(window).scrollTop() == 0){
         $('.set-scroll-fixed').removeClass('stickyheader').css({"top":"-100%"});
     }

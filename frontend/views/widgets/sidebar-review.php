@@ -175,6 +175,7 @@ li.draggable-item.ui-sortable-placeholder {
     margin-top: -5px;
     border-radius: 50%;
 }
+.secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
 @media only screen and (max-width: 767px) {
     .sidebar-review-bar{
@@ -353,7 +354,6 @@ function widget(selector) {
 }
 
 function droppingWidgets(type, logo, logo_main, internship, slug, company, location, period, lastDate, lat, long, dataKey, dataId) {
-    console.log(company);
     if ($("#review-internships > ul > li").length == 0) {
         Ajax_call(dataId);
         $("#ilist").append('<li class="draggable-item" data-key="' + dataKey + '" data-id="' + dataId +'" ><a class="close" href="#" data-id="' + dataId + '" aria-label="Close"><span aria-hidden="true">&times;</span></a><div class="opens product set-scrollbar iconbox-border iconbox-theme-colored shadow pb-5"><span id="set-types" type="' + type + '" lat="' + lat + '" long="' + long + '" logo="' + logo_main + '" slug="' + slug + '" company="' + company + '" title="' + internship + '" location="' + location + '" period="' + period + '" lastdate="' + lastDate + '"></span><div class="' + type + '"><div class="col-md-3 col-xs-3 pt-10 p-0"><div class="sidebar-logo-main">' + logo + '</div></div><div class="col-md-9 col-xs-9 pt-5 p-0"><p class="mb-0 text-wrap-ellipsis"><strong>' + internship + '</strong></p><p class="mb-5 text-wrap-ellipsis">' + company + '</p></div></div></div></li>');

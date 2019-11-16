@@ -21,8 +21,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -515,6 +515,7 @@ $this->registerCss('
     font-size: 14px;
     border-radius: 5px;
     text-transform: uppercase;
+    font-family:roboto;
 }
 .share-btn ul{
     width:100%;
@@ -615,6 +616,7 @@ padding:16px 0px;
     font-size:14px;
     border-radius:5px;
     text-transform:uppercase;
+    font-family:roboto;
 }
 .cp-center{
     text-align:center;
@@ -633,22 +635,41 @@ background: #cadfe8 !important;
 {
 border: 2px solid #cadfe8 !important;
 }  
-.logo-box{
-    height:150px;
-    width:150px;
+//.logo-box{
+//    height:150px;
+//    width:150px;
 //    padding:0 10px;
-    background:#fff;
-    display:block;
-    line-height:150px; 
-    text-align:center;
+//    background:#fff;
+//    display:block;
+//    line-height:150px; 
+//    text-align:center;
+//    border-radius:6px;
+//}  
+.logo-box{
+    height: 150px;
+    width: 150px;
+    padding: 0 10px;
+    background: #fff;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+.logo-box canvas{
     border-radius:6px;
-}  
-.logo-box img, .logo-box canvas{
-    border-radius:6px;
+}
+.logo-box img{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: top center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 .com-name{
     font-size:38px;
-    font-family: "Lora", serif;
+    font-family: roboto;
     font-weight: 700;
     color:#fff;
     line-height:50px;
@@ -673,6 +694,7 @@ border: 2px solid #cadfe8 !important;
     font-size: 13px;
     font-style: italic;
     padding:10px 0;
+    font-family:roboto;
 }
 .rh-main-heading{
     font-size:30px;
@@ -699,6 +721,7 @@ border: 2px solid #cadfe8 !important;
     padding-top:10px;
     line-height:15px;
     color:#00a0e3;
+    font-family:roboto;
 }
 .user-saying{
     padding-top:20px;
@@ -711,14 +734,15 @@ border: 2px solid #cadfe8 !important;
 }
 .uheading{
     font-weight:bold;
-    
+    font-family:roboto;
 }
 .utext{
     text-align:justify;
+    font-family:roboto;
 }
 .publish-date{
     text-align:right;
-//    font-style:italic;
+    font-family:roboto;
     font-size: 14px;
 }
 .view-detail-btn button{
@@ -735,7 +759,7 @@ border: 2px solid #cadfe8 !important;
     transition:.3s all;
 }
 .num-rate{
-    
+    font-family:roboto;
 }
 .re-btns{
     text-align:right;
@@ -764,6 +788,7 @@ border: 2px solid #cadfe8 !important;
     font-weight:bold;
     padding-top:8px;
     color:#00a0e3;
+    font-family:roboto;
 }
 .user-review-main{
     border-left:2px solid #ccc;
@@ -779,17 +804,19 @@ border: 2px solid #cadfe8 !important;
 .uratingtitle{
     font-size:12px;
     line-height:15px;
+    font-family:roboto;
 }
 .urating{
     font-size:25px;
 }
 .emp-duration{
     text-align:right;
+    font-family:roboto;
 //    line-height:18px;
 //    padding-top:20px;
 }
 .ushare i{
-   font-size:20px;
+   font-size:24px;
     color:#ccc; 
 }
 .ushare i.fa-facebook-square:hover{
@@ -818,6 +845,7 @@ border: 2px solid #cadfe8 !important;
     padding-top:20px;
     line-height:23px;
     font-weight:bold;
+    font-family:roboto;
 }
 .usefull-bttn{
     padding-top:33px;
@@ -838,6 +866,7 @@ border: 2px solid #cadfe8 !important;
     -webkit-transition:.2s all;
     -moz-transition:.2s all;
     -o-transition:.2s all;
+    font-family:roboto;
 }
 .re-bttn{
     padding-bottom:5px;
@@ -874,6 +903,7 @@ border: 2px solid #cadfe8 !important;
     font-size: 17px;
     text-transform: capitalize;
     font-weight: bold;
+    font-family:roboto;
 }
 .filter-review{
     padding-top:80px;
@@ -1125,6 +1155,7 @@ border: 2px solid #cadfe8 !important;
         height: 95px;
         width: 200px;
         float: left;
+        font-family:roboto;
     }
     .user-rating {
         display: inherit;

@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\Countries;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -16,6 +17,7 @@ class LocationsController extends Controller
     public function actionCreate()
     {
         $statesModel = new States();
+        $countriesModel = new Countries();
         $locationFormModel = new LocationForm();
         $locationFormModel->location_for  = [1,2];
         if ($locationFormModel->load(Yii::$app->request->post())) {
@@ -38,6 +40,7 @@ class LocationsController extends Controller
 
         return $this->renderAjax('form', [
             'statesModel' => $statesModel,
+            'countriesModel' => $countriesModel,
             'locationFormModel' => $locationFormModel,
         ]);
     }

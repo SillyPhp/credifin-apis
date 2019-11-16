@@ -3,6 +3,7 @@
 namespace account\models\applications;
 
 use common\models\ApplicationOption;
+use common\models\Currencies;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -610,7 +611,7 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
-            return true;
+            return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
         }
@@ -747,7 +748,15 @@ class ApplicationForm extends Model
         $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
         return $que;
     }
-
+    public function getCurrency()
+    {
+        $d = Currencies::find()
+            ->select(['currency_enc_id','CONCAT(code," ",html_code) code'])
+            ->orderBy([new \yii\db\Expression('FIELD (code, "INR") DESC, code ASC')])
+            ->asArray()->all();
+        $d = ArrayHelper::map($d, 'currency_enc_id', 'code');
+        return $d;
+    }
     public function getOrganizationLocations($type = 1)
     {
         $loc_list = OrganizationLocations::find()
@@ -874,6 +883,7 @@ class ApplicationForm extends Model
 
     public function getCloneData($aidk, $application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -893,7 +903,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience', 'b.*'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
@@ -926,6 +936,7 @@ class ApplicationForm extends Model
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
             }])
             ->joinWith(['applicationPlacementCities r'=>function($b)
             {
@@ -952,6 +963,7 @@ class ApplicationForm extends Model
 
     public function getCloneUnclaimed($aidk,$application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -967,7 +979,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience'])
+                END) as experience','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);

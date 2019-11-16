@@ -1,6 +1,6 @@
 <script id="video-gallery-video" type="text/template">
     {{#.}}
-    <div class="col-md-3 col-sm-4">
+    <div class="col-md-4 col-sm-4">
         <div class="video-container2">
             <a href="/learning/video/{{slug}}">
                 <div class="video-icon2">
@@ -14,6 +14,20 @@
     </div>
     {{/.}}
 </script>
+<!--<script id="video-categories" type="text/template">-->
+<!--    {{#.}}-->
+<!--    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+<!--        <a href="/learning/video/{{slug}}">-->
+<!--            <div class="newset">-->
+<!--                <div class="imag">-->
+<!--                    <img src="http://ajay.eygb.me/assets/common/quiz_categories/blog.png">-->
+<!--                </div>-->
+<!--                <div class="txt">{{name}}</div>-->
+<!--            </div>-->
+<!--        </a>-->
+<!--    </div>-->
+<!--    {{/.}}-->
+<!--</script>-->
 
 <?php
 $this->registerCss('
@@ -63,7 +77,19 @@ $script = <<<JS
         success: function(response) {
             if(response.status === 200) {
                 var videos = $('#video-gallery-video').html();
-                $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
+                // var cats = $('#video-categories').html();
+                // if(response.categories.length == 0){
+                //     $(".topics-main").remove();
+                // } else {
+                //     $(".popular-cate").html(Mustache.render(cats, response.categories));
+                // }
+                if(response.video_gallery.length == 0){
+                    $(".videos-main").remove();
+                } else {
+                    $("#gallery-video").html(Mustache.render(videos, response.video_gallery));
+                }
+            } else {
+                $(".videos-main").remove();
             }
         }
     });

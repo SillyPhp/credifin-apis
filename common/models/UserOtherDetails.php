@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string $user_other_details_enc_id
+ * @property string $user_enc_id
  * @property string $organization_enc_id
  * @property string $department_enc_id
  * @property string $educational_requirement_enc_id
@@ -20,10 +21,6 @@ use Yii;
  * @property int $internship_duration 0 as 6 weeks, 1 as 3 months, 2 as 6 months, 3 as 1 year
  * @property string $job_start_month
  * @property string $job_year
- *
- * @property Organizations $organizationEnc
- * @property Departments $departmentEnc
- * @property EducationalRequirements $educationalRequirementEnc
  */
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
@@ -41,17 +38,14 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_other_details_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number'], 'required'],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number'], 'required'],
             [['semester', 'internship_duration'], 'integer'],
             [['starting_year', 'ending_year', 'internship_start_date', 'job_year'], 'safe'],
             [['job_start_month'], 'string'],
-            [['user_other_details_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id'], 'string', 'max' => 100],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 20],
             [['user_other_details_enc_id'], 'unique'],
             [['university_roll_number'], 'unique'],
-            [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
-            [['department_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Departments::className(), 'targetAttribute' => ['department_enc_id' => 'department_enc_id']],
-            [['educational_requirement_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => EducationalRequirements::className(), 'targetAttribute' => ['educational_requirement_enc_id' => 'educational_requirement_enc_id']],
         ];
     }
 
@@ -78,4 +72,14 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     {
         return $this->hasOne(EducationalRequirements::className(), ['educational_requirement_enc_id' => 'educational_requirement_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEnc()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
 }
+
+

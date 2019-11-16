@@ -5,136 +5,140 @@ use yii\helpers\Url;
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
-    <div class="job-thumb">
-        <a href="/<?= $slug; ?>">
-            <?php
-            if (!empty($org_logo)) {
-                ?>
-                <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+        <div class="job-thumb">
+            <a href="/<?= $slug; ?>">
                 <?php
-            } else {
+                if (!empty($org_logo)) {
+                    ?>
+                    <img src="<?= Url::to($logo_image); ?>" id="logo_img" alt=""/>
+                    <?php
+                } else {
+                    ?>
+                    <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
+                            color="<?= $initial_color; ?>" font="60px"></canvas>
+                    <?php
+                }
                 ?>
-                <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
-                        color="<?= $initial_color; ?>" font="48px"></canvas>
-                <?php
-            }
-            ?>
-        </a>
-    </div>
-    <div class="job-head-info">
-        <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
-        <div class="organization-details">
-            <?php if ($website): ?>
-                <p><i class="fas fa-unlink"></i><?= $website; ?></p>
-            <?php endif; ?>
-            <p><i class="fas fa-envelope"></i><?= $email; ?></p>
+            </a>
         </div>
-    </div>
-    <div class="actions-main">
-        <?php if (Yii::$app->user->isGuest): ?>
-            <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                        class="fas fa-paper-plane"></i>Login to apply</a>
-            <div class="sub-actions">
-                <?php
-                if ($type == 'Internship'): ?>
-                    <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
-                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                        Compare Internship</a>
-                <?php elseif ($type == 'Job'): ?>
-                    <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                       class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                        Compare Job</a>
+        <div class="job-head-info">
+            <a href="/<?= $slug; ?>"><h4><?= $org_name; ?></h4></a>
+            <div class="organization-details">
+                <?php if ($website): ?>
+                    <p><i class="fas fa-unlink"></i><?= $website; ?></p>
                 <?php endif; ?>
             </div>
-        <?php else: ?>
-            <?php if ($applied): ?>
-                <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fas fa-check"></i>Applied</a>
+        </div>
+        <div class="actions-main">
+            <?php if (Yii::$app->user->isGuest): ?>
+                <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
+                            class="fas fa-paper-plane"></i>Login to apply</a>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
                         <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
                            class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Internship</a>
-
                     <?php elseif ($type == 'Job'): ?>
                         <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
                            class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
                             Compare Job</a>
                     <?php endif; ?>
                 </div>
-            <?php elseif (!Yii::$app->user->identity->organization): ?>
-                <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
-                    for
-                    <?= $type ?></a>
-                <div class="sub-actions">
-                    <?php
-                    if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
-                        if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
-                            ?>
-                            <a href="#"
-                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                        class="far fa-heart hvr-icon"></i>Shortlisted</a>
-                            <?php
-                        } else {
-                            ?>
-                            <a href="#"
-                               class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
-                                        class="far fa-heart hvr-icon"></i>Shortlist</a>
-                            <?php
+            <?php else: ?>
+                <?php if ($applied): ?>
+                    <a href="#" title="" class="apply-job-btn single-btn" disabled="disabled"><i class="fas fa-check"></i>Applied</a>
+                    <div class="sub-actions">
+                        <?php
+                        if ($type == 'Internship'): ?>
+                            <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                               class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                                Compare Internship</a>
+
+                        <?php elseif ($type == 'Job'): ?>
+                            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                               class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                                Compare Job</a>
+                        <?php endif; ?>
+                    </div>
+                <?php elseif (!Yii::$app->user->identity->organization): ?>
+                    <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                        for
+                        <?= $type ?></a>
+                <?php if ($shortlist_btn_display): ?>
+                    <div class="sub-actions">
+                        <?php
+                        if (!Yii::$app->user->isGuest && !Yii::$app->user->identity->organization) {
+                            if (!empty($shortlist) && $shortlist['shortlisted'] == 1) {
+                                ?>
+                                <a href="#"
+                                   class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                            class="far fa-heart hvr-icon"></i>Shortlisted</a>
+                                <?php
+                            } else {
+                                ?>
+                                <a href="#"
+                                   class="add-or-compare hvr-icon-pulse shortlist_job <?= (($type == 'Internship') ? 'full-width' : '') ?>"><i
+                                            class="far fa-heart hvr-icon"></i>Shortlist</a>
+                                <?php
+                            }
                         }
-                    }
-                    ?>
-                    <?php
-                    if ($type == 'Internship'): ?>
-                        <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
-                            Compare Internship</a>
+                        ?>
+                        <?php
+                        if ($type == 'Internship'): ?>
+                            <a href="<?= Url::to('/internships/compare?s=' . $application_slug) ?>"
+                               class="add-or-compare hvr-icon-pulse full-width"><i class="far fa-copy hvr-icon"></i>
+                                Compare Internship</a>
 
-                    <?php elseif ($type == 'Job'): ?>
-                        <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
-                           class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
-                            Compare Job</a>
-                    <?php endif; ?>
-                </div>
+                        <?php elseif ($type == 'Job'): ?>
+                            <a href="<?= Url::to('/jobs/compare?s=' . $application_slug) ?>"
+                               class="add-or-compare hvr-icon-pulse"><i class="far fa-copy hvr-icon"></i>
+                                Compare Job</a>
+                        <?php endif; ?>
+                    </div>
+                  <?php endif; ?>
+                <?php endif; ?>
             <?php endif; ?>
-        <?php endif; ?>
-        <?php
-        if ($type == 'Internship'): ?>
-            <a href="<?= Url::to('/internships/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
-                Internships</a>
-        <?php elseif ($type == 'Job'): ?>
-            <a href="<?= Url::to('/jobs/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
-                Jobs</a>
-        <?php endif; ?>
-    </div>
-    <div class="effect thurio">
+            <?php
+            if ($type == 'Internship'): ?>
+                <a href="<?= Url::to('/internships/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
+                    Internships</a>
+            <?php elseif ($type == 'Job'): ?>
+                <a href="<?= Url::to('/jobs/list?company=' . $org_name); ?>" title="" class="view-all-a">View all
+                    Jobs</a>
+            <?php endif; ?>
+        </div>
+        <div class="effect thurio">
         <h3 class="text-white">Share</h3>
         <div class="buttons">
             <?php
-            $referral = Yii::$app->referral->getReferralCode();
             if ($type == 'Internship') {
-                $link = Url::to('internship/' . $application_slug . $referral, 'https');
+                $link = Url::to('internship/' . $application_slug, 'https');
             } else if ($type == 'Job') {
-                $link = Url::to('job/' . $application_slug . $referral, 'https');
+                $link = Url::to('job/' . $application_slug, 'https');
+            }
+            else if ($type=='Training')
+            {
+                $link = Url::to('training/' . $application_slug, 'https');
             }
             ?>
-            <a href="#"
+            <a href="#" class="facebook-f"
                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-facebook-f"></i>
             </a>
-            <a href="#"
+            <a href="#" class="twitter-t"
                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-twitter"></i>
             </a>
-            <a href="#"
+            <a href="#" class="linked-l"
                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-linkedin-in"></i>
             </a>
-            <a href="#"
+            <a href="#" class="whatsapp-w"
                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-whatsapp"></i>
             </a>
-            <a href="#"
+            <a href="#" class="enve-e"
                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fas fa-envelope"></i>
             </a>
@@ -150,19 +154,22 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
             </div>
         </div>
     </div>
+    </div>
 <?php
 $this->registerCss('
 .job-thumb a{
-    width: 100px;
-    height: 100px;
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
     margin: auto;
     border-radius: 50%;
 }
-.job-thumb a img{margin:5px;}
+.job-thumb a img{
+    margin:5px;
+}
 .overlay-top{
-    width: 70%;
+    width: 80% !Important;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -170,6 +177,10 @@ $this->registerCss('
     z-index: 9;
     padding-top: 20px;
     padding-bottom: 50px;
+}
+#logo_img {
+    width: 115px !Important;
+    height: 115px !Important;
 }
 .organization-details{
     display: block;
@@ -250,7 +261,7 @@ a.add-or-compare:hover, a.add-or-compare:focus {
   height: 40px;
   display: inline-block;
   border-radius: 50%;
-  margin-right: 15px;
+  margin-right: 10px;
   font-size: 17px;
   overflow: hidden;
   position: relative;
@@ -264,25 +275,46 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 .effect a i {
   display: inline-block;
   vertical-align: middle;
-  margin-left: -2px;
-  margin-top: 3px;
+  margin-left: 0px;
+  margin-top: 5px;
+}
+.effect a.facebook-f:hover{
+    background:#3b5998;
+    border-color:#3b5998;
+} 
+.effect a.twitter-t:hover{
+    background:#6699FF;
+    border-color:#6699FF;
+} 
+.effect a.linked-l:hover{
+    background:#0e76a8;
+    border-color:#0e76a8;
+}
+.effect a.whatsapp-w:hover{
+    background:#25D366;
+    border-color:#25D366;
+}
+.effect a.enve-e:hover{
+    background:#00a0e3;
+    border-color:#00a0e3;
 }
 /* thurio effect */
-.effect.thurio a {
-  transition: border-radius 0.2s linear 0s;
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-}
-.effect.thurio a i {
-  transition: -webkit-transform 0.01s linear 0s;
-  transition: transform 0.01s linear 0s;
-  transition: transform 0.01s linear 0s, -webkit-transform 0.01s linear 0s;
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
-}
-.effect.thurio a:hover {
-  border-radius: 0px;
-}
+//.effect.thurio a {
+//  transition: border-radius 0.2s linear 0s;
+//  -webkit-transform: rotate(45deg);
+//          transform: rotate(45deg);
+//}
+//.effect.thurio a i {
+//  transition: -webkit-transform 0.01s linear 0s;
+//  transition: transform 0.01s linear 0s;
+//  transition: transform 0.01s linear 0s, -webkit-transform 0.01s linear 0s;
+//  -webkit-transform: rotate(-45deg);
+//          transform: rotate(-45deg);
+//}
+//.effect.thurio a:hover {
+//  border-radius: 0px;
+//}
+
 .view-all-a{
     margin-top: 15px;
     display: block;

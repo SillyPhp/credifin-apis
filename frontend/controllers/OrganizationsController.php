@@ -3,9 +3,6 @@
 namespace frontend\controllers;
 
 use common\models\BusinessActivities;
-use common\models\EmployerReviews;
-use common\models\Reviews;
-use common\models\ReviewsType;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -945,137 +942,124 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isPost) {
             $arr = Yii::$app->request->post('data');
-            $reviewsModel = new Reviews();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $reviewsModel->reviews_enc_id = $utilitiesModel->encrypt();
-            $reviewsModel->review_type_enc_id = ReviewsType::findOne(['name'=>'Employer_review'])->review_type_enc_id;
             if ($request_type == 1) {
                 $org_id = Organizations::find()
                     ->where(['slug' => $slug])
                     ->asArray()
                     ->one();
-                $reviewsModel->claimed_organization_enc_id = $org_id['organization_enc_id'];
+                $companyReview = new OrganizationReviews();
             } else {
                 $org_id = UnclaimedOrganizations::find()
                     ->where(['slug' => $slug])
                     ->asArray()
                     ->one();
-                $reviewsModel->unclaimed_organization_enc_id = $org_id['organization_enc_id'];
+                $companyReview = new NewOrganizationReviews();
             }
             $f_time = strtotime($arr['from']);
             $from_time = date('Y-m-d', $f_time);
             $t_time = strtotime($arr['to']);
             $to_time = date('Y-m-d', $t_time);
-            $reviewsModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if ($reviewsModel->save())
-            {
-                $employerReview = new EmployerReviews();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $companyReview->review_enc_id = $utilitiesModel->encrypt();
+            $companyReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
+            $category_execute = Categories::find()
+                ->alias('a')
+                ->where(['name' => $arr['department']]);
+            $chk_cat = $category_execute->asArray()->one();
+            if (empty($chk_cat)) {
+                $categoriesModel = new Categories();
                 $utilitiesModel = new Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $employerReview->employer_review_enc_id = $utilitiesModel->encrypt();
-                $employerReview->review_enc_id = $reviewsModel->reviews_enc_id;
-                $category_execute = Categories::find()
-                    ->alias('a')
-                    ->where(['name' => $arr['department']]);
-                $chk_cat = $category_execute->asArray()->one();
-                if (empty($chk_cat)) {
-                    $categoriesModel = new Categories();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
-                    $categoriesModel->name = $arr['department'];
-                    $utilitiesModel->variables['name'] = $arr['department'];
-                    $utilitiesModel->variables['table_name'] = Categories::tableName();
-                    $utilitiesModel->variables['field_name'] = 'slug';
-                    $categoriesModel->slug = $utilitiesModel->create_slug();
-                    $categoriesModel->created_on = date('Y-m-d H:i:s');
-                    $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if ($categoriesModel->save()) {
-                        $this->addNewAssignedCategory($categoriesModel->category_enc_id, $employerReview, $type = 'Reviews');
-                    } else {
-                        return false;
-                    }
+                $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+                $categoriesModel->name = $arr['department'];
+                $utilitiesModel->variables['name'] = $arr['department'];
+                $utilitiesModel->variables['table_name'] = Categories::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $categoriesModel->slug = $utilitiesModel->create_slug();
+                $categoriesModel->created_on = date('Y-m-d H:i:s');
+                $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($categoriesModel->save()) {
+                    $this->addNewAssignedCategory($categoriesModel->category_enc_id, $companyReview, $type = 'Reviews');
                 } else {
-                    $cat_id = $chk_cat['category_enc_id'];
-                    $chk_assigned = $category_execute
-                        ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
-                        ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
-                        ->andWhere(['b.parent_enc_id' => null])
-                        ->andWhere(['b.assigned_to' => 'Reviews'])
-                        ->asArray()
-                        ->one();
-                    if (empty($chk_assigned)) {
-                        $this->addNewAssignedCategory($chk_cat['category_enc_id'], $employerReview, $type = 'Reviews');
-                    } else {
-                        $employerReview->category_enc_id = $chk_cat['category_enc_id'];
-                    }
-                }
-                $data = Designations::find()
-                    ->where(['designation' => $arr['designation']])
-                    ->asArray()
-                    ->one();
-                if (!empty($data)) {
-                    $employerReview->designation_enc_id = $data['designation_enc_id'];
-                } else {
-                    $desigModel = new Designations();
-                    $utilitiesModel = new Utilities();
-                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                    $desigModel->designation_enc_id = $utilitiesModel->encrypt();
-                    $utilitiesModel->variables['name'] = $arr['designation'];
-                    $utilitiesModel->variables['table_name'] = Designations::tableName();
-                    $utilitiesModel->variables['field_name'] = 'slug';
-                    $desigModel->slug = $utilitiesModel->create_slug();
-                    $desigModel->designation = $arr['designation'];
-                    $desigModel->created_on = date('Y-m-d H:i:s');
-                    $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    if ($desigModel->save()) {
-                        $employerReview->designation_enc_id = $desigModel->designation_enc_id;
-                    } else {
-                        return false;
-                    }
-                }
-                $employerReview->show_user_details = (($arr['user'] == 'anonymous') ? 0 : 1);
-                $employerReview->average_rating = $arr['average_rating'];
-                $employerReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
-                $employerReview->from_date = $from_time;
-                $employerReview->to_date = $to_time;
-                $employerReview->skill_development = $arr['skill_development'];
-                $employerReview->work_life = $arr['work_life'];
-                $employerReview->compensation = $arr['compensation'];
-                $employerReview->organization_culture = $arr['organization_culture'];
-                $employerReview->job_security = $arr['job_security'];
-                $employerReview->growth = $arr['growth'];
-                $employerReview->work = $arr['work'];
-                $employerReview->city_enc_id = $arr['location'];
-                $employerReview->likes = $arr['likes'];
-                $employerReview->dislikes = $arr['dislikes'];
-                $employerReview->created_by = Yii::$app->user->identity->user_enc_id;
-                $employerReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
-                $employerReview->status = 1;
-                $employerReview->created_on = date('Y-m-d H:i:s');
-                if (!$employerReview->save())
-                {
                     return false;
                 }
-                else
-                {
-                    if ($request_type == 1) {
-                        ReferralReviewsTracking::widget(['claim_review_id' => $reviewsModel->reviews_enc_id]);
-                    } else {
-                        ReferralReviewsTracking::widget(['unclaim_review_id' => $reviewsModel->reviews_enc_id]);
-                    }
-                    return true;
+            } else {
+                $cat_id = $chk_cat['category_enc_id'];
+                $chk_assigned = $category_execute
+                    ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                    ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                    ->andWhere(['b.parent_enc_id' => null])
+                    ->andWhere(['b.assigned_to' => 'Reviews'])
+                    ->asArray()
+                    ->one();
+                if (empty($chk_assigned)) {
+                    $this->addNewAssignedCategory($chk_cat['category_enc_id'], $companyReview, $type = 'Reviews');
+                } else {
+                    $companyReview->category_enc_id = $chk_cat['category_enc_id'];
                 }
             }
-            else
-            {
-                return false;
+            $data = Designations::find()
+                ->where(['designation' => $arr['designation']])
+                ->asArray()
+                ->one();
+            if (!empty($data)) {
+                $companyReview->designation_enc_id = $data['designation_enc_id'];
+            } else {
+                $desigModel = new Designations();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $desigModel->designation_enc_id = $utilitiesModel->encrypt();
+                $utilitiesModel->variables['name'] = $arr['designation'];
+                $utilitiesModel->variables['table_name'] = Designations::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $desigModel->slug = $utilitiesModel->create_slug();
+                $desigModel->designation = $arr['designation'];
+                $desigModel->created_on = date('Y-m-d H:i:s');
+                $desigModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if ($desigModel->save()) {
+                    $companyReview->designation_enc_id = $desigModel->designation_enc_id;
+                } else {
+                    return false;
+                }
+            }
+            $companyReview->organization_enc_id = $org_id['organization_enc_id'];
+            $companyReview->average_rating = $arr['average_rating'];
+            if ($request_type == 1) {
+                $companyReview->is_current_employee = (($arr['current_employee'] == 'current') ? 1 : 0);
+            } else {
+                $companyReview->reviewer_type = (($arr['current_employee'] == 'current') ? 1 : 0);
+            }
+            $companyReview->from_date = $from_time;
+            $companyReview->to_date = $to_time;
+            $companyReview->skill_development = $arr['skill_development'];
+            $companyReview->work_life = $arr['work_life'];
+            $companyReview->compensation = $arr['compensation'];
+            $companyReview->organization_culture = $arr['organization_culture'];
+            $companyReview->job_security = $arr['job_security'];
+            $companyReview->growth = $arr['growth'];
+            $companyReview->work = $arr['work'];
+            $companyReview->city_enc_id = $arr['location'];
+            $companyReview->likes = $arr['likes'];
+            $companyReview->dislikes = $arr['dislikes'];
+            $companyReview->created_by = Yii::$app->user->identity->user_enc_id;
+            $companyReview->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            $companyReview->status = 1;
+            $companyReview->created_on = date('Y-m-d H:i:s');
+            if (!$companyReview->save()) {
+                return true;
+            } else {
+                if ($request_type == 1) {
+                    ReferralReviewsTracking::widget(['claim_review_id' => $companyReview->review_enc_id]);
+                } else {
+                    ReferralReviewsTracking::widget(['unclaim_review_id' => $companyReview->review_enc_id]);
+                }
+                return true;
             }
         }
     }
 
-    private function addNewAssignedCategory($category_id, $employerReview, $type)
+    private function addNewAssignedCategory($category_id, $companyReview, $type)
     {
         $assignedCategoryModel = new AssignedCategories();
         $utilitiesModel = new Utilities();
@@ -1087,7 +1071,7 @@ class OrganizationsController extends Controller
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
         $assignedCategoryModel->created_by = Yii::$app->user->identity->user_enc_id;
         if ($assignedCategoryModel->save()) {
-            $employerReview->category_enc_id = $category_id;
+            $companyReview->category_enc_id = $category_id;
         } else {
             return false;
         }

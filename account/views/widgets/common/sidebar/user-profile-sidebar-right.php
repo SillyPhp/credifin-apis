@@ -1,9 +1,6 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
-
 ?>
     <div class="profiles-sidebar">
         <span class="close-profile"><i class="fa fa-close"></i></span>
@@ -17,12 +14,14 @@ use yii\helpers\Url;
                     }
                     $name = Yii::$app->user->identity->organization->name;
                     $color = Yii::$app->user->identity->organization->initials_color;
+                    $email = Yii::$app->user->identity->organization->email;
                 } else {
                     if (Yii::$app->user->identity->image) {
                         $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                     }
                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                     $color = Yii::$app->user->identity->initials_color;
+                    $email = Yii::$app->user->identity->email;
                 }
                 if ($image):
                     ?>
@@ -32,8 +31,8 @@ use yii\helpers\Url;
                                   font="60px"></canvas></span>
                 <?php endif; ?>
             </div>
-            <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
-            <p><?= Yii::$app->user->identity->email ?></p>
+            <h3 class="capitalize"><?= $name; ?></h3>
+            <p><?= $email ?></p>
         </div>
         <div class="tree_widget-sec">
             <ul>
@@ -42,7 +41,7 @@ use yii\helpers\Url;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
 
@@ -64,7 +63,7 @@ use yii\helpers\Url;
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="fa fa-file-text-o"></i>My Profile</a>
                     </li>
