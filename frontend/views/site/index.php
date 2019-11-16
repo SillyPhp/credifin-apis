@@ -192,26 +192,59 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!---->
+<section class="goven-jobs-sec">
 
-<!---->
-<section class="fixed-bttn">
-    <div class="pos-ab">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="fx-heading">
-                        Its Free To Get Hired On Empower Youth
-                    </h1>
-                    <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Get Hired
-                        </a>
-                    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="gov-heading">
+                    <h1>Find Latest Government Jobs</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="gov-job">
+                    <a href="/usa-jobs">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="USA Jobs">
+                        <div class="link-none">
+                            USA Government Jobs
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="gov-job">
+                    <a href="/govt-jobs">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="USA Jobs">
+                        <div class="link-none">
+                            Indian Government Jobs
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<!---->
+<!--<section class="fixed-bttn">-->
+<!--    <div class="pos-ab">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <h1 class="fx-heading">-->
+<!--                        Its Free To Get Hired On Empower Youth-->
+<!--                    </h1>-->
+<!--                    <div class="post-job-bttn">-->
+<!--                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">-->
+<!--                            Get Hired-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
 <!---->
 <section>
     <div class="block">
@@ -751,6 +784,40 @@ $this->params['header_dark'] = false;
 <?php
 //echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
+.goven-jobs-sec{
+    background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
+    background-repeat: no-repeat;
+    background-size:cover;
+    padding:20px 20px 40px 20px;
+}
+.gov-heading h1{
+    text-align:center;
+    font-family: roboto;
+    font-size:30px;
+    margin-bottom:15px;
+}
+.gov-job{
+    text-align:center;
+    position:relative;
+}
+.gov-job img{
+    border-radius: 10px;
+}
+.gov-job a:hover .link-none{
+    background: rgba(0,0,0,.3);
+    transition:.3s ease;
+    border-radius:5px;
+}
+.link-none{
+    position:absolute;
+    top:20px;
+    left:40px;
+}
+.link-none{
+    color:#fff;
+    font-size:20px;
+    padding:5px 10px;
+}
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
     background-attachment: fixed;
