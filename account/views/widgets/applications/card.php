@@ -57,22 +57,22 @@ if (!empty($total_applications)) {
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn" type="button" data-toggle="tooltip" title="Share on twitter">
+                               class="j-twitter share_btn" type="button" >
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('mailto:?&body=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-email share_btn" type="button" data-toggle="tooltip" title="Share via mail">
+                               class="j-email share_btn" type="button">
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-whatsapp share_btn" type="button" data-toggle="tooltip" title="Share on whatsapp">
+                               class="j-whatsapp share_btn" type="button">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
                             <a href=""
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-linkedin share_btn" type="button" data-toggle="tooltip" title="Share on Linked In">
+                               class="j-linkedin share_btn" type="button">
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
@@ -81,7 +81,7 @@ if (!empty($total_applications)) {
                         if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
                             ?>
                             <div class="exp-soon-main">
-                                <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>">
+                                <a href="#" class="datepicker_opn" data-id="<?= $applications[$next]['application_enc_id']?>" data-date="<?= date("d-m-Y", strtotime($application['last_date'])); ?>">
                                     <div class="expring-btn" data-toggle="tooltip" title="Extend Date">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>" alt="expring icon">
                                     </div>
