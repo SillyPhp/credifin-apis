@@ -1295,29 +1295,6 @@ class JobsController extends Controller
         endif;
     }
 
-    public function actionQuickInternship()
-    {
-        if (Yii::$app->user->identity->organization->organization_enc_id):
-            $model = new ShortJobs();
-            $type = 'Internships';
-            $data = new ApplicationForm();
-            $primary_cat = $data->getPrimaryFields($type);
-            $job_type = $data->getApplicationTypes();
-            $placement_locations = $data->PlacementLocations();
-            $currencies = $data->getCurrency();
-            if ($model->load(Yii::$app->request->post())) {
-                if ($model->save($type)) {
-                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
-                } else {
-                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
-                }
-                return $this->refresh();
-            }
-            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
-        else:
-            return $this->redirect('/');
-        endif;
-    }
 
     private function __candidateApplications($limit = NULL)
     {
