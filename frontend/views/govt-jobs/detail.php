@@ -176,6 +176,7 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>

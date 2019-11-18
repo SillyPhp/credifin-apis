@@ -32,7 +32,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            class="fas fa-paper-plane"></i>Apply</a>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -62,9 +62,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                         <?php endif; ?>
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
-                    <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
-                        for
-                        <?= $type ?></a>
+                <div class="btn-parent">
+                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                            for
+                            <?= $type ?></a>
+                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>
+                </div>
                 <?php if ($shortlist_btn_display): ?>
                     <div class="sub-actions">
                         <?php
@@ -157,6 +160,19 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     </div>
 <?php
 $this->registerCss('
+.follow-btn{
+    background:#ff7803;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color:#fff;
+    width: 32px;
+    height: auto;
+    padding: 15px 10px;
+    text-align: center;
+}
+.follow-btn:hover{color:#fff;}
 .job-thumb a{
     width: 125px !Important;
     height: 125px !Important;

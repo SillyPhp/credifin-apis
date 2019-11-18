@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
@@ -115,7 +114,8 @@ endif;
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
                     'question_list' => $question_list,
-                    'shortlist_org' => $shortlist_org
+                    'shortlist_org' => $shortlist_org,
+                    'viewed' => $viewed
                 ]); ?>
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
@@ -160,6 +160,9 @@ endif;
                         </a>
                     </div>
                 </div>
+                <?php
+                    if($viewed == 0){
+                ?>
                 <div class="portlet light portlet-fit nd-shadow">
                     <div class="portlet-title" style="border-bottom:none;">
                         <div class="check-icon">
@@ -222,6 +225,9 @@ endif;
                         </div>
                     </div>
                 </div>
+                <?php
+                        }
+                ?>
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">

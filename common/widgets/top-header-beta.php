@@ -10,25 +10,25 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/jobs/near-me">Jobs Near Me</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/govt-jobs">Indian Govt. Jobs</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/usa-jobs">USA Govt. Jobs</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/jobs/compare">Compare Jobs</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations/explore">Featured Companies</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/tweets/jobs">Job Tweets</a>
                                 </li>
                             </ul>
@@ -47,19 +47,19 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/internships/near-me">Internships Near Me</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/internships/compare">Compare Internships</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations/explore">Featured Companies</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/tweets/internships">Internship Tweets</a>
                                 </li>
                             </ul>
@@ -83,16 +83,16 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/reviews/companies">Companies</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/reviews/colleges">Colleges</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/reviews/schools">Schools</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/reviews/institutes">Educational Institutes</a>
                                 </li>
                             </ul>
@@ -111,17 +111,17 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/learning/categories">
                                         Popular Topics
                                     </a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/questions">
-                                        Questions
+                                        ASK
                                     </a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/learning/contribute">
                                         Collaborate With Us
                                     </a>
@@ -147,10 +147,10 @@
                     <div class="large-container container">
                         <nav class="ey-sub-nav-main">
                             <ul class="ey-sub-nav-items">
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/blog/category/articles">Articles</a>
                                 </li>
-                                <li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/blog/category/infographics">Infographics</a>
                                 </li>
                             </ul>
@@ -163,11 +163,12 @@
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="/account/dashboard">
                     Dashboard
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
                 </a>
                 <?php
                 if (Yii::$app->user->identity->organization_enc_id) {
                     ?>
-                    <div class="ey-sub-menu ey-active-menu">
+                    <div class="ey-sub-menu">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
@@ -277,24 +278,24 @@
                     <?php
                 } else {
                     ?>
-                    <div class="ey-sub-menu ey-active-menu">
+                    <div class="ey-sub-menu">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
                                     <ul class="ey-sub-nav-items">
-                                        <li>
+                                        <li class="ey-head-sub-menu-has-child">
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
-                                        <li>
+                                        <li class="ey-head-sub-menu-has-child">
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
-                                        <li>
+                                        <li class="ey-head-sub-menu-has-child">
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
-                                        <li>
+                                        <li class="ey-head-sub-menu-has-child">
                                             <a href="/account/preferences">My Preferences</a>
                                         </li>
-                                        <li>
+                                        <li class="ey-head-sub-menu-has-child">
                                             <a href="/account/resume-builder">Build Resume</a>
                                         </li>
                                     </ul>
@@ -360,6 +361,7 @@ $this->registerCss('
     flex: 16;
     margin: 0 30px;
 }
+
 .ey-head-main .ey-main-menu-nav,
 .ey-head-main .ey-menu-inner-main {
     -webkit-box-align: center;
@@ -375,9 +377,10 @@ $this->registerCss('
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
 }
+
 .ey-head-main .ey-menu-inner-main {
     list-style: none;
-    margin-top: 10px;
+//    margin: auto;
     padding: 0;
 }
 .ey-head-main .ey-nav-item, .ey-head-main .ey-nav-actions .ey-menu-login {
@@ -426,7 +429,7 @@ $this->registerCss('
 }
 
 .ey-sub-menu li > a,
-.ey-sub-menu .ey-head-sub-menu-has-child>span {
+.ey-sub-menu li > span {
     cursor: pointer;
     padding: 0 0 17px;
     position: relative;
@@ -641,7 +644,9 @@ $this->registerCss('
     transition: .25s ease-in-out;
     width: 100%;
 }
-
+.text-black span{
+    background:#333 !important;
+}
 .ey-humburger-menu span:nth-child(2) {
     top: 0;
 }
@@ -776,7 +781,8 @@ $this->registerCss('
     -ms-transition: background-color 500ms linear;
     transition: background-color 500ms linear;
 }
-.large-container.container.add-padding nav ul > .ey-head-sub-menu-has-child a{color: #f2f2f2;}
+.large-container.container.add-padding nav .ey-sub-nav-items > li a{color: #f2f2f2 !important;}
+.ey-head-sub-menu-items > .ey-head-sub-menu-icon > a > span{color:#444;}
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>a,
 .ey-sub-menu .ey-head-sub-menu-has-child:focus>span,
 .ey-sub-menu .ey-head-sub-menu-has-child:hover>a,
@@ -1041,13 +1047,21 @@ $this->registerCss('
 @media screen and (max-width: 900px) and (min-width: 0px) {
     #header-main{
         padding:6px 0px;
+        padding-top:0px;
     }
 }
 .ey-sub-nav-main .ey-sub-nav-items > li > a:hover{
     color:#00a0e3 !Important;
 }
-.ey-mobile-menu{
+.ey-mobile-menu {
+    padding: 17px 5px 3px 0px;
+    transition: margin 500ms;
+}
+.header-show > .ey-mobile-menu{
     padding: 10px 5px 3px 0px;
+}
+.ey-main-menu-nav > .ey-menu-inner-main > .ey-nav-item.ey-header-item.ey-header-item-is-menu:hover > a{
+    color:#00a0e3 !important;
 }
 ');
 ?>
