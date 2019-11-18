@@ -84,7 +84,7 @@ class IndividualSignup extends Model
         $user->username = $this->username;
         $user->first_name = $this->first_name;
         $user->last_name = $this->last_name;
-        $user->phone = $this->phone;
+        $user->phone = preg_replace("/\s+/", "", $this->phone);
         $user->email = $this->email;
         $user->user_enc_id = time() . mt_rand(10, 99);
         $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
@@ -175,7 +175,7 @@ class IndividualSignup extends Model
             return false;
         }
 
-        if ($this->ref && $this->invitation) {
+        if ($this->ref != '' && $this->invitation != '') {
             $this->saveRefferal($user->user_enc_id, $this->ref);
         }
 
