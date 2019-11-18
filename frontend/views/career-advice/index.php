@@ -120,10 +120,33 @@ $careerAdviceCategories = [
             </div>
         </div>
     </div>
-    <section class="ca-coming-soon-sec">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-5 col-md-offset-1">
+<!--    <section class="ca-coming-soon-sec">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="col-md-5 col-md-offset-1">-->
+<!--                    <div class="ca-coming-pos-rel">-->
+<!--                        <div class="max-500">-->
+<!--                            <div class="ca-coming-text">Hey There,</div>-->
+<!--                            <div class="ca-soon-text">-->
+<!--                                We are launching a detailed space for you to understand the in and out of each-->
+<!--                                profession.-->
+<!--                            </div>-->
+<!--                            <div class="ca-coming-text">Be exited</div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <div class="ca-comming-soon-icon">-->
+<!--                        <img src="--><?//= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?><!--" alt="">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
+    <section>
+        <div class="container-fluid no-padd">
+            <div class="row mar-0">
+                <div class="col-md-6 col-sm-6 no-padd">
                     <div class="ca-coming-pos-rel">
                         <div class="max-500">
                             <div class="ca-coming-text">Hey There,</div>
@@ -135,17 +158,27 @@ $careerAdviceCategories = [
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 col-sm-6 no-padd">
                     <div class="ca-comming-soon-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/custom/career-advice-vector.png') ?>" alt="">
                     </div>
                 </div>
             </div>
         </div>
-
     </section>
 <?php
 $this->registerCss('
+.ca-comming-soon-icon{
+    text-align:right
+}
+.no-padd{
+    padding-left:0px;
+    padding-right:0px;
+}
+.mar-0{
+    margin-left:0px;
+    margin-right:0px;
+}
 .mar-top-20{
     margin-top:40px;
 }
@@ -168,11 +201,13 @@ body {
     min-height:400px;
 }
 .max-500{
-    max-width:500px;
-    text-align:center;
+    max-width: 500px;
+    text-align: center;
     position: absolute;
-    top:50%;
-    transform: translateY(-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
 }
 .ca-soon-text{
     font-size:25px;
@@ -270,6 +305,12 @@ body {
         margin: 0 auto;
     }
 } 
+@media only screen and (max-width: 992px){
+    .career-advice-header{
+        background-size: contain;
+        min-height:300px;
+    }
+}
 .card:hover::before{
     right: 0px;
     bottom: 0px;
@@ -293,7 +334,7 @@ body {
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 2px 5px 25px rgba(0, 0, 0, .15);
-  min-height: 250px;
+  min-height: 200px;
   padding: 20px;
   padding-top: 50px;
   position: relative;
@@ -334,7 +375,7 @@ body {
 .card__title {
   font-size: 1.40rem;
   font-weight: bold;
-  line-height: 1.1;
+  line-height: 1.3;
   margin: 0;
 }
 

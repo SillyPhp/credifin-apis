@@ -9,6 +9,7 @@ use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
+use common\models\Referral;
 use common\models\ReviewsType;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -151,6 +152,7 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
+                ->limit(6)
                 ->asArray()
                 ->all();
 
@@ -257,6 +259,7 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
+            $type = Yii::$app->request->post('type');
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -270,6 +273,7 @@ class CollegeIndexController extends ApiBaseController
                     'e.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'z.name job_type',
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -284,8 +288,9 @@ class CollegeIndexController extends ApiBaseController
                         }], false);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0])
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0, 'z.name' => $type])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -298,6 +303,7 @@ class CollegeIndexController extends ApiBaseController
                 $positions = 0;
                 $data['name'] = $j['name'];
                 $data['logo'] = $j['logo'];
+                $data['job_type'] = $j['job_type'];
                 $data['org_slug'] = $j['org_slug'];
                 $data['title'] = $j['title'];
                 $data['slug'] = $j['slug'];
@@ -331,7 +337,7 @@ class CollegeIndexController extends ApiBaseController
 
             if (!empty($data)) {
                 if ($req['action'] == 'Accept') {
-                    $this->__addCompany($req['org_enc_id'],$this->getOrgId());
+                    $this->__addCompany($req['org_enc_id'], $this->getOrgId());
                     $data->is_college_approved = 1;
                 } elseif ($req['action'] == 'Reject') {
                     $data->is_deleted = 1;
@@ -351,13 +357,14 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    private function __addCompany($org_id,$college_enc_id){
+    private function __addCompany($org_id, $college_enc_id)
+    {
 
         $erexx_collab = ErexxCollaborators::find()
-            ->where(['organization_enc_id'=>$org_id,'college_enc_id'=>$college_enc_id])
+            ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
             ->exists();
 
-        if(!$erexx_collab){
+        if (!$erexx_collab) {
             $save_collab = new ErexxCollaborators();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -368,10 +375,10 @@ class CollegeIndexController extends ApiBaseController
             $save_collab->college_approvel = 1;
             $save_collab->created_on = date('Y-m-d H:i:s');
             $save_collab->created_by = $college_enc_id;
-            if($save_collab->save()){
+            if ($save_collab->save()) {
                 return true;
-            }else{
-               return false;
+            } else {
+                return false;
             }
         }
     }
@@ -426,7 +433,7 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            return $this->response(200,['status'=>200,'courses'=>$courses]);
+            return $this->response(200, ['status' => 200, 'courses' => $courses]);
         }
     }
 
@@ -449,13 +456,38 @@ class CollegeIndexController extends ApiBaseController
                 array_push($org_ids, $e['organization_enc_id']);
             }
 
+//            $companies = Organizations::find()
+//                ->alias('a')
+//                ->distinct()
+//                ->select(['a.organization_enc_id', 'a.ame', 'a.slug', 'a.website'])
+//                ->innerJoinWith(['employerApplications b'])
+//                ->joinWith(['organizationLocations e' => function ($e) {
+//                    $e->select(['e.organization_enc_id', 'f.city_enc_id', 'f.name'])
+//                        ->joinWith(['cityEnc f'], false)
+//                        ->orOnCondition([
+//                            'e.is_deleted' => 0,
+//                        ]);
+//                    $e->groupBy(['e.city_enc_id']);
+//                }])
+//                ->joinWith(['organizationReviews k' => function ($k) {
+//                    $k->select(['k.organization_enc_id', 'ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
+//                }])
+//                ->groupBy(['a.organization_enc_id'])
+//                ->where([
+//                    'a.is_deleted' => 0,
+//                    'a.has_placement_rights' => 1
+//                ])
+//                ->andWhere(['not in', 'a.organization_enc_id', $org_ids])
+//                ->asArray()
+//                ->all();
+
             $companies = Organizations::find()
                 ->alias('a')
                 ->select(['a.organization_enc_id', 'a.name', 'a.slug', 'a.website', 'a.description', 'CONCAT("' . Url::to('/', true) . '", a.slug) profile_link', 'd.business_activity', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo'])
                 ->distinct()
-                ->joinWith(['employerApplications b' => function ($x) {
+                ->innerJoinWith(['employerApplications b' => function ($x) {
                     $x->select(['b.organization_enc_id', 'COUNT(b.application_enc_id) application_type', 'c.name'])
-                        ->joinWith(['applicationTypeEnc c'], false)
+                        ->joinWith(['applicationTypeEnc c'], true)
                         ->onCondition([
                             'b.status' => 'Active',
                             'b.is_deleted' => 0,
@@ -468,22 +500,24 @@ class CollegeIndexController extends ApiBaseController
                         ])
                         ->groupBy(['b.application_type_enc_id']);
                 }])
-                ->joinWith(['organizationLocations e'=>function($e){
-                    $e->select(['e.organization_enc_id','f.name']);
-                    $e->joinWith(['cityEnc f'],false)
-                        ->limit(10);
+                ->joinWith(['organizationLocations e' => function ($e) {
+                    $e->select(['e.organization_enc_id', 'f.city_enc_id','f.name']);
+                    $e->joinWith(['cityEnc f'], false)
+                        ->orOnCondition([
+                            'e.is_deleted' => 0,
+                        ]);
                     $e->groupBy(['f.city_enc_id']);
                 }])
-                ->joinWith(['organizationReviews k'=>function($k){
-                    $k->select(['k.organization_enc_id','ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
+                ->joinWith(['organizationReviews k' => function ($k) {
+                    $k->select(['k.organization_enc_id', 'ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
                 }])
                 ->joinWith(['businessActivityEnc d'], false)
                 ->groupBy(['a.organization_enc_id'])
                 ->where([
                     'a.is_deleted' => 0,
-                    'a.is_erexx_registered' => 1
+                    'a.has_placement_rights' => 1
                 ])
-                ->andWhere(['not in','a.organization_enc_id',$org_ids])
+                ->andWhere(['not in', 'a.organization_enc_id', $org_ids])
                 ->asArray()
                 ->all();
 
@@ -491,8 +525,9 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    public function actionCandidates(){
-        if($user = $this->isAuthorized()){
+    public function actionCandidates()
+    {
+        if ($user = $this->isAuthorized()) {
             $req['college_id'] = $this->getOrgId();
             $candidates = UserOtherDetails::find()
                 ->alias('a')
@@ -502,21 +537,126 @@ class CollegeIndexController extends ApiBaseController
                     'a.user_enc_id',
                     'b.email',
                     'b.phone',
-                    'c.name course_name',
+                    'a.university_roll_number',
+                    'c.name department',
                     'b.first_name',
                     'b.last_name',
                     'a.starting_year',
                     'a.ending_year',
                     'a.semester',
                     'c.name',
+                    'cc.educational_requirement course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'], false)
+                ->joinWith(['userEnc b'=>function($b){
+//                    $b->innerJoinWith(['appliedApplications ccc'=>function($c){
+//                        $c->joinWith(['applicationEnc d'=>function($d){
+//                            $d->joinWith(['title ee'=>function($ee){
+//                                $ee->joinWith(['categoryEnc f']);
+//                            }]);
+//                            $d->joinWith(['organizationEnc e']);
+//                        }]);
+//                    }]);
+                }],false)
+                ->joinWith(['educationalRequirementEnc cc'],false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
                 ->asArray()
                 ->all();
 
+//            print_r($candidates);
+//            die();
+
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
         }
+    }
+
+    public function actionCandidateInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $data = Yii::$app->request->post();
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
+            $mail->email_type = 6;
+            $mail->email_receivers = [
+                [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone']
+                ]
+            ];
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
+    public function actionCandidatesInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('emails');
+            $mail = [];
+            $mails = [];
+            foreach ($data as $m) {
+                $mail['email'] = $m;
+                array_push($mails, $mail);
+            }
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
+            $mail->email_type = 6;
+            $mail->email_receivers = $mails;
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
+    public function actionCandidatesFileInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('emails');
+            $emails = [];
+            for ($i = 0; $i < count($data); $i++) {
+                if (filter_var($data[$i]['email'], FILTER_VALIDATE_EMAIL)) {
+                    array_push($emails, $data[$i]);
+                }
+            }
+
+            $mail = Yii::$app->mailLogs;
+            $mail->organization_enc_id = $this->getOrgId();
+            $mail->user_enc_id = $user->user_enc_id;
+            $mail->referral_code = $this->getReferralCode();
+            $mail->email_type = 6;
+            $mail->email_receivers = $emails;
+            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+            $mail->email_template = 'invitation-email';
+            if (!$mail->setEmailLog()) {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
+    private function getReferralCode()
+    {
+        $referral_code = Referral::find()
+            ->alias('a')
+            ->select(['a.referral_enc_id', 'b.organization_enc_id', 'a.code'])
+            ->joinWith(['organizationEnc b'])
+            ->where(['b.organization_enc_id' => $this->getOrgId()])
+            ->asArray()
+            ->one();
+
+        return $referral_code['code'];
     }
 }

@@ -539,9 +539,6 @@ $this->params['header_dark'] = false;
                             </div>
                         </div>
                     </div>
-<!--                    --><?//=
-//                        $this->render('/widgets/mustache/new-jobs-box')
-//                    ?>
                     <div class="browse-all-cat">
                         <a href="jobs/list" title="" class="style2">Show all listings</a>
                     </div>
@@ -1880,7 +1877,7 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
         // var i = 0;
         // i += 5;
         // var k = 4;
-        var ll = 0;
+        var ll = 0;``
         var zz = 0;
         var tt = 0;
         var f = true;

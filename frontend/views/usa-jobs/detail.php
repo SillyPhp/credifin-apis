@@ -249,6 +249,7 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>
@@ -397,7 +398,6 @@ margin:auto;
     margin-top: 67px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
 }
 .agency{
@@ -599,9 +599,9 @@ margin:auto;
     margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
     background-color:#1d759a;
+    margin-bottom: 20px;
 }
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     padding: 10px 0;

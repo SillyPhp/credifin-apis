@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 
-if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
     echo $this->render('/widgets/campus-placement/select-college', [
         'colleges' => $colleges,
         'addedColleges' => $addedColleges,

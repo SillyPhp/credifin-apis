@@ -1050,6 +1050,9 @@ class InternshipsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -1177,7 +1180,7 @@ class InternshipsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
 
             $colleges = Organizations::find()
                 ->alias('a')
@@ -1190,7 +1193,6 @@ class InternshipsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
-                    "a.is_erexx_registered" => 1,
                     "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,

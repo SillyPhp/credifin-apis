@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
     <section>
         <div class="row">
@@ -62,12 +63,12 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <?php
-                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
                         ?>
                         <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
-                        <a class="btn btn-primary custom-buttons" href="/account/jobs/campus-placement">
-                            <?= Yii::t('account', 'Campus Hiring'); ?>
-                        </a>
+                            <a class="btn btn-primary custom-buttons" href="/account/jobs/campus-placement">
+                                <?= Yii::t('account', 'Campus Hiring'); ?>
+                            </a>
                         </div>
                         <?php
                     }
@@ -85,12 +86,12 @@ use yii\helpers\Url;
                         </a>
                     </div>
                     <?php
-                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
                         ?>
                         <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
-                        <a class="btn btn-primary custom-buttons" href="/account/internships/campus-placement">
-                            <?= Yii::t('account', 'Campus Hiring'); ?>
-                        </a>
+                            <a class="btn btn-primary custom-buttons" href="/account/internships/campus-placement">
+                                <?= Yii::t('account', 'Campus Hiring'); ?>
+                            </a>
                         </div>
                         <?php
                     }

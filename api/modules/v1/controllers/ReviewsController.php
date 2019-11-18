@@ -438,7 +438,7 @@ class ReviewsController extends ApiBaseController
             }
 
             $data['reviews'] = $result;
-            if (!empty($data)) {
+            if (!empty($result)) {
                 return $this->response(200, $data);
             } else {
                 return $this->response(404, 'not found');
@@ -516,7 +516,7 @@ class ReviewsController extends ApiBaseController
 
                 $data['reviews'] = $emp_reviews;
 
-                if (!empty($data)) {
+                if (!empty($emp_reviews)) {
                     return $this->response(200, $data);
                 } else {
                     return $this->response(404, 'Not Found');
@@ -695,7 +695,7 @@ class ReviewsController extends ApiBaseController
 
             $data['reviews'] = $reviews_students;
 
-            if (!empty($data)) {
+            if (!empty($reviews_students)) {
                 return $this->response(200, $data);
             } else {
                 return $this->response(404, 'Not Found');
