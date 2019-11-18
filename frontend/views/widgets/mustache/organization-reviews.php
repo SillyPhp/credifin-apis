@@ -107,14 +107,28 @@ $link = Url::to($org_slug . '/reviews', true);
                     <div class="col-md-8 col-sm-6">
                         <div class="usefull-bttn pull-right">
                             <div class="use-bttn">
+                                {{#feedback_type}}
+                                <button type="button" class="btn_usefull usefull_btn_color" data-key="{{review_enc_id}}" value="1"><i
+                                            class="fas fa-thumbs-up"></i> Usefull
+                                </button>
+                                {{/feedback_type}}
+                                {{^feedback_type}}
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="1"><i
                                             class="fas fa-thumbs-up"></i> Usefull
                                 </button>
+                                {{/feedback_type}}
                             </div>
                             <div class="notuse-bttn">
+                                {{#feedback_type_not}}
                                 <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
                                             class="fas fa-thumbs-down"></i> Not Usefull
                                 </button>
+                                {{/feedback_type_not}}
+                                {{^feedback_type_not}}
+                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="0"><i
+                                            class="fas fa-thumbs-down"></i> Not Usefull
+                                </button>
+                                {{/feedback_type_not}}
                             </div>
                             <div class="re-bttn" id="report_btn" data-key="{{review_enc_id}}">
                                 <button type="button" data-toggle="modal" data-target="#report">
