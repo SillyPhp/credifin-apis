@@ -1,36 +1,34 @@
-<div class="container">
-    <div class="box-parent row">
-        <div class="bolls">
-            <div class="boll1 bol2"></div>
-            <div class="boll2 bol2"></div>
-            <div class="boll3 bol"></div>
-            <div class="boll4 bol"></div>
-            <div class="boll5 bol2"></div>
-            <div class="boll6 bol2"></div>
+<div class="box-parent row">
+    <div class="bolls">
+        <div class="boll1 bol2"></div>
+        <div class="boll2 bol2"></div>
+        <div class="boll3 bol"></div>
+        <div class="boll4 bol"></div>
+        <div class="boll5 bol2"></div>
+        <div class="boll6 bol2"></div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="jobs-content">
+            <div class="j-count">2000+</div>
+            <div class="j-name">Jobs</div>
         </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="jobs-content">
-                <div class="j-count">2000+</div>
-                <div class="j-name">Jobs</div>
-            </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="jobs-content">
+            <div class="j-count">1500+</div>
+            <div class="j-name">Internships</div>
         </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="jobs-content">
-                <div class="j-count">1500+</div>
-                <div class="j-name">Internships</div>
-            </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="jobs-content">
+            <div class="j-count">500+</div>
+            <div class="j-name">Locations</div>
         </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="jobs-content">
-                <div class="j-count">500+</div>
-                <div class="j-name">Locations</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-            <div class="jobs-content">
-                <div class="j-count">10k+</div>
-                <div class="j-name">opportunities</div>
-            </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="jobs-content">
+            <div class="j-count">10k+</div>
+            <div class="j-name">opportunities</div>
         </div>
     </div>
 </div>
@@ -41,6 +39,7 @@ $this->registerCss('
     border-radius: 8px;
     padding: 90px 50px;
     overflow:hidden;
+    margin: 20px;
 }
 .jobs-content {
     text-align: left;

@@ -212,7 +212,15 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<!---->
+
+<section>
+    <?= $this->render('/widgets/info-stats')?>
+</section>
+
+<section>
+    <?= $this->render('/widgets/subscribe-widget')?>
+</section>
+
 <section>
     <div class="block">
         <div class="container">
@@ -548,14 +556,9 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<section>
-    <?= $this->render('/widgets/govt-jobs')?>
-</section>
-
-<section>
-    <?= $this->render('/widgets/info-stats')?>
-</section>
-
+<!--<section>-->
+<!--    --><?//= $this->render('/widgets/govt-jobs')?>
+<!--</section>-->
 
 <section>
     <div class="container">
