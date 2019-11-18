@@ -120,12 +120,12 @@ $link = Url::to($org_slug . '/reviews', true);
                             </div>
                             <div class="notuse-bttn">
                                 {{#feedback_type_not}}
-                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
+                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="0"><i
                                             class="fas fa-thumbs-down"></i> Not Usefull
                                 </button>
                                 {{/feedback_type_not}}
                                 {{^feedback_type_not}}
-                                <button type="button" class="btn_usefull notusefull_btn_color" data-key="{{review_enc_id}}" value="0"><i
+                                <button type="button" class="btn_usefull" data-key="{{review_enc_id}}" value="0"><i
                                             class="fas fa-thumbs-down"></i> Not Usefull
                                 </button>
                                 {{/feedback_type_not}}
