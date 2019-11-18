@@ -5,21 +5,18 @@ use yii\helpers\Url;
 
 ?>
 <section class="csb-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="csb-pos-rel">
-                    <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
-                </div>
-            </div>
-        </div>
+    <div class="csb-pos-rel">
+        <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
+    </div>
+</section>
+<section>
+    <div class="visible_in_mobile">
+        <div class="csb-header-text-mobile"><?= $careerBlog[0]['cat'] ?></div>
     </div>
 </section>
 <section>
     <div class="container">
-        <div class="visible_in_mobile">
-            <div class="csb-header-text-mobile"><?= $careerBlog[0]['cat'] ?></div>
-        </div>
+
         <?php
         if (empty($careerBlog)) {
             ?>
@@ -129,11 +126,11 @@ $this->registerCss('
         background-repeat: no-repeat !important;
         max-height: 300px !important;
         min-height: 300px !important;
-        background-position: left center !important;
+        background-position: center !important;
     }
 }  
 @media only screen and (max-width:992px){
-      .csb-header-text{
+    .csb-header-text{
         display:none;
     }
     .visible_in_mobile{
@@ -145,7 +142,6 @@ $this->registerCss('
     .csb-header-text-mobile{
         color:#000;
         font-family:Lobster;
-        font-size:50px;
         font-size:30px;
     }
 } 
@@ -153,12 +149,13 @@ $this->registerCss('
     display:none;
 }
 .csb-header-text-mobile{
-    color:#000;
-    font-family:Lobster;
-    font-size:50px;
-    font-size:25px;
-    line-height:30px;  
-    padding-bottom: 30px;  
+    background:#00a0e3;
+    color:#fff;
+    font-family:lobster;
+    font-size:40px;
+    width:100%;
+    text-align:center;
+    
 }
 .noResult{
     font-family:Lobster;
@@ -202,24 +199,26 @@ $this->registerCss('
     margin:20px 0 40px;
 }
 .csb-header{
-    background:url(' . Url::to('@eyAssets/images/pages/custom/cabloghdr.png') . ');
+    background:url(' . Url::to('@eyAssets/images/pages/custom/ci.png') . ');
     background-size:cover;
     min-height:400px;
     min-width:100%;
 }  
 .csb-pos-rel{
-text-align:right;
-    height:400px;
+    text-align:right;
+    width:100%;
+    min-height:400px;
     position:relative;
 }  
 .csb-header-text{
+    background:#00a0e3;
+    bottom:0;
+    color:#fff;
+    font-family:lobster;
+    font-size:40px;
+    width:100%;
+    text-align:center;
     position:absolute;
-    right:10%;
-    top:50%;
-    transform:translateY(-50%);
-    color:#000;
-    font-family:Lobster;
-    font-size:50px;
 }
 .new-box{
     margin-bottom: 20px;
@@ -273,7 +272,6 @@ text-align:right;
     border-radius: 5px;
     transition:0.5s;
     margin-bottom: 20px;
-    height:200px;
 }
 .tp-box:hover, .vertical-blog:hover, .pop-box:hover{
 	border-radius: 5px;
