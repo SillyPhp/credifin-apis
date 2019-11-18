@@ -5,7 +5,7 @@ use yii\helpers\Url;
     <div class="col-md-12">
         <div class="widget-heading">
             <span><img src="" alt=""></span>
-            <span>Developer Jobs</span>
+            <span>Prefered Jobs</span>
             <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
                 <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
                     <i class="fab fa-whatsapp-square"></i> Join Us
