@@ -132,6 +132,9 @@ class JobsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -408,7 +411,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.name'])
             ->joinWith(['businessActivityEnc b'], false)
-            ->where(['a.is_erexx_registered' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['a.has_placement_rights' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['b.business_activity' => 'College'])
             ->asArray()
             ->all();
@@ -1272,24 +1275,26 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization->organization_enc_id):
             $model = new ShortJobs();
+            $type = 'Jobs';
             $data = new ApplicationForm();
             $primary_cat = $data->getPrimaryFields();
             $job_type = $data->getApplicationTypes();
             $placement_locations = $data->PlacementLocations();
             $currencies = $data->getCurrency();
             if ($model->load(Yii::$app->request->post())) {
-                if ($model->save()) {
+                if ($model->save($type)) {
                     Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Something Went Wrong..');
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
 
     private function __candidateApplications($limit = NULL)
     {
@@ -1426,7 +1431,7 @@ class JobsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
 //        $applications = EmployerApplications::find()
 //            ->alias('a')
 //            ->joinWith(['applicationTypeEnc b'])
@@ -1460,20 +1465,18 @@ class JobsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
-                    "a.is_erexx_registered" => 1,
                     "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
                 ])
                 ->asArray()
                 ->all();
-
             return $this->render('campus-placement', [
                 'applications' => $this->__jobss(),
                 'colleges' => $colleges,
             ]);
         } else {
-            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+            throw new HttpException(404, Yii::t('account', 'Page Not Found.'));
         }
     }
 

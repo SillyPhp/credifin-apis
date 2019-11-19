@@ -72,16 +72,18 @@ AppAssets::register($this);
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-//            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
+            //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
             if (Yii::$app->user->isGuest) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
                         <span>
-                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a
+                                    href="/internships/quick-internship"><strong>Internship</strong></a>
                         </span>
                         <span>
-                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a
+                                    href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
@@ -113,7 +115,9 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('@common/widgets/top-header-beta'); ?>
+                                <?= $this->render('@common/widgets/top-header-beta', [
+                                    'for' => 'Frontend'
+                                ]); ?>
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
@@ -291,7 +295,8 @@ AppAssets::register($this);
                                         <li><a href="<?= "/reviews/companies"; ?>">Company Reviews</a></li>
                                         <li><a href="<?= "/reviews/colleges"; ?>">College Reviews</a></li>
                                         <li><a href="<?= "/reviews/schools"; ?>">School Reviews</a></li>
-                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a></li>
+                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -324,20 +329,22 @@ AppAssets::register($this);
                                         <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank"
                                                class="overig"><i
                                                         class="fab fa-instagram"></i></a></li>
-                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i
+                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank"
+                                               class="overpt"><i
                                                         class="fab fa-pinterest"></i></a></li>
                                         <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
                                                class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <div class="quick-btns">-->
-<!--                                    <ul class="qb">-->
-<!--                                        <li><a href="--><?//= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <!--                            <div class="col-md-12 col-sm-12">-->
+                            <!--                                <div class="quick-btns">-->
+                            <!--                                    <ul class="qb">-->
+                            <!--                                        <li><a href="-->
+                            <? //= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
+                            <!--                                    </ul>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -371,8 +378,18 @@ AppAssets::register($this);
         </div>
         <div class="footer-bottom">
             <div class="container pt-20 pb-20">
-                <div class="col-md-12 col-sm-12 text-center">
-                    <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 footer-bottom-links">
+                        <a href="<?= Url::to('/terms-conditions'); ?>">
+                            Terms &amp; Conditions
+                        </a>
+                        <a href="<?= Url::to('/privacy-policy'); ?>">
+                            Privacy Policy
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-right">
+                        <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -387,6 +404,17 @@ AppAssets::register($this);
 </div>
 <?php
 $this->registerCss('
+.footer-bottom-links a{
+    color:#fff;
+    margin-right: 20px;
+    font-size: 12px;
+    display: inline-block;
+    width: auto !important;
+    margin-top: 7px;
+}
+.footer-bottom-links a:hover{
+    color:#c7c7c7;
+}
 .foot-heading{
     font-family: lora;
     font-size:20px;
