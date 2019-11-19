@@ -139,7 +139,7 @@
                 <div class="ey-mob-sub-items">
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
-                            <a href="/questions">Ask</a>
+                            <a href="/questions">ASK</a>
                         </div>
                     </div>
                 </div>
@@ -372,7 +372,7 @@ $(".ey-head-main .ey-header-item-is-menu").mouseleave(function(){
     var elem = $(this);
     setTimeout(function(){
         elem.children(".ey-sub-menu").removeClass("ey-header-delay");
-    }, 2000);
+    }, 4000);
 });
 $(".ey-sub-nav-items .ey-head-sub-menu-has-child, .ey-sub-sec").mouseenter(function(){
     $(".ey-header-sub-menu-container").addClass("ey-header-sub-menu-container-show");

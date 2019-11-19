@@ -39,7 +39,7 @@ class CampusPlacementController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
         return parent::beforeAction($action);
     }
 
@@ -326,7 +326,7 @@ class CampusPlacementController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id','a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -338,7 +338,7 @@ class CampusPlacementController extends Controller
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
             }], false)
@@ -356,13 +356,13 @@ class CampusPlacementController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id','a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -710,13 +710,13 @@ class CampusPlacementController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id','k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'k.applied_application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -824,7 +824,7 @@ class CampusPlacementController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id','k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'k.applied_application_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -837,7 +837,7 @@ class CampusPlacementController extends Controller
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
             }], false)
             ->having(['type' => 'Jobs'])
@@ -997,19 +997,6 @@ class CampusPlacementController extends Controller
         }
     }
 
-    public function actionGetCollegesList(){
-        $colleges = Organizations::find()
-            ->alias('a')
-//            ->select(['a.organization_enc_id', 'a.name'])
-            ->joinWith(['businessActivityEnc b'], false)
-            ->where(['a.is_erexx_registered' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['b.business_activity' => 'College'])
-            ->asArray()
-            ->all();
-        print_r($colleges);
-        exit();
-    }
-
     private function __organizationDashboard()
     {
         $coaching_category = new WidgetTutorials();
@@ -1064,23 +1051,20 @@ class CampusPlacementController extends Controller
             $job_type = $data->getApplicationTypes();
             $placement_locations = $data->PlacementLocations();
             $currencies = $data->getCurrency();
-            if ($model->load(Yii::$app->request->post()))
-            {
-                if ($model->save())
-                {
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save()) {
                     Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
-                }
-                else
-                {
+                } else {
                     Yii::$app->session->setFlash('error', 'Something Went Wrong..');
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job',['currencies'=>$currencies,'placement_locations'=>$placement_locations,'model'=>$model,'primary_cat'=>$primary_cat,'job_type'=>$job_type]);
+            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
     private function __organizationJobs()
     {
         return $this->render('list/organization', [

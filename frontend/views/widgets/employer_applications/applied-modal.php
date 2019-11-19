@@ -1,9 +1,10 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
 <section>
     <div id="appliedModal" class="appliedModal">
-
         <!-- Modal content -->
         <div class="appliedModal-content">
             <span class="applied-close" data-dismiss="modal">&times;</span>
@@ -12,20 +13,22 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div class="col-md-6 col-sm-6">
                             <div class="appliedPic">
-                                <img src="<?= Url::to('@eyAssets/images/pages/custom/exciting.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/custom/exciting.png') ?>">
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6">
                             <div class="applied-heading">
                                 <h2>How Exciting!</h2>
                             </div>
-                            <div class="applied-text">You just applied for a job on Empower Youth, High fives all rounds!
+                            <div class="applied-text">You just applied for a job on Empower Youth, High fives all
+                                rounds!
                                 Here's hoping you get selected.
                             </div>
                             <div class="applied-btns">
                                 <ul>
                                     <li>
-                                        <a href="/<?= Yii::$app->user->identity->username . '/edit' ?>">Update Profile</a>
+                                        <a href="/<?= Yii::$app->user->identity->username . '/edit' ?>">Update
+                                            Profile</a>
                                     </li>
                                     <li>
                                         <a href="<?= "/account/jobs/applied" ?>">View Application</a>
@@ -36,9 +39,6 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-<!--            <div class="applied-abso-btn">-->
-<!--                <a href="">View Similar Jobs</a>-->
-<!--            </div>-->
         </div>
 </section>
 <?php
