@@ -23,9 +23,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <div class="icon">
                                 <div class="icon-white-bg">
-                                    <div class="iwb-pos-abso">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png')?>" alt="">
-                                    </div>
+                                    <a href="/account/jobs/create">
+                                        <div class="iwb-pos-abso">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png')?>" alt="">
+                                        </div>
+                                    </a>
                                 </div>
 <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                             </div>
@@ -47,9 +49,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <div class="icon">
                                 <div class="icon-white-bg">
-                                    <div class="iwb-pos-abso">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png')?>" alt="">
-                                    </div>
+                                    <a href="/account/jobs/campus-placement">
+                                        <div class="iwb-pos-abso">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png')?>" alt="">
+                                        </div>
+                                    </a>
                                 </div>
 <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
                             </div>
@@ -71,9 +75,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <div class="icon">
                                 <div class="icon-white-bg">
-                                    <div class="iwb-pos-abso">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png')?>" alt="">
-                                    </div>
+                                    <a href="/tweets/job/create">
+                                        <div class="iwb-pos-abso">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png')?>" alt="">
+                                        </div>
+                                    </a>
                                 </div>
 <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
                             </div>
@@ -95,9 +101,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <div class="icon">
                                 <div class="icon-white-bg">
-                                    <div class="iwb-pos-abso">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png')?>" alt="">
-                                    </div>
+                                    <a href="/account/jobs/quick-job">
+                                        <div class="iwb-pos-abso">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png')?>" alt="">
+                                        </div>
+                                    </a>
                                 </div>
 <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                             </div>
@@ -119,9 +127,11 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <div class="icon">
                                 <div class="icon-white-bg">
-                                    <div class="iwb-pos-abso">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/walk-in-interview.png')?>" alt="">
-                                    </div>
+                                    <a href="/account/jobs/quick-job">
+                                        <div class="iwb-pos-abso">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/walk-in-interview.png')?>" alt="">
+                                        </div>
+                                    </a>
                                 </div>
                                 <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                             </div>
