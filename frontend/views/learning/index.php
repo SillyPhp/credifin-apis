@@ -504,8 +504,8 @@ $this->registerCss('
 }
 @media(max-width:380px){
 .anim-3 {
-    width: 162px !important;
-    top: 210px !important;
+    width: 125px !important;
+    top: 202px !important;
     right: 233px !important;
 }
 }
@@ -760,7 +760,22 @@ $this->registerCss('
 @media only screen and (max-width:1200px) {
  .search-box1 input[type=text]
     {
+    width:315px;
+    }
+}
+@media only screen and (max-width:768px) {
+ .search-box1 input[type=text]
+    {
     width:300px;
+    }
+}
+@media (max-width:370px){
+.search-box1 input[type=text]
+    {
+    width:285px;
+    }
+.main-heading-set{
+    padding-top:0px;        
     }
 }
 @media only screen and (max-width:992px) {

@@ -23,7 +23,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>
-                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create Job In Minutes'); ?></span>
+                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create '.(($type=="Jobs")?"Job":"Internship").' In Minutes'); ?></span>
                     </div>
                 </div>
                 <?php
@@ -40,12 +40,12 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                     ]); ?>
                     <div class="row">
                         <div class="col-md-12">
-                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile'])->label(false); ?>
+                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")?"Job":"Internship").' Profile'])->label(false); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => 'Job Title'])->label(false); ?>
+                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => (($type=="Jobs")?"Job":"Internship").' Title'])->label(false); ?>
                         </div>
                         <div class="col-md-4">
                             <?= $form->field($model, 'gender')->dropDownList([
