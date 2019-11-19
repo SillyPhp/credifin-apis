@@ -165,6 +165,7 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
+<?= $this->render('/widgets/ai-quick-jobs'); ?>
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 
