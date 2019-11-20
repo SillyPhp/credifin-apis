@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ExtendsJob;
+use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
@@ -42,7 +43,29 @@ class InternshipsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
         return parent::beforeAction($action);
     }
-
+    public function actionQuickInternship()
+    {
+        if (Yii::$app->user->identity->organization->organization_enc_id):
+            $model = new ShortJobs();
+            $type = 'Internships';
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields($type);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save($type)) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
+    }
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -1050,6 +1073,9 @@ class InternshipsController extends Controller
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -1177,7 +1203,7 @@ class InternshipsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
 
             $colleges = Organizations::find()
                 ->alias('a')
@@ -1190,7 +1216,6 @@ class InternshipsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
-                    "a.is_erexx_registered" => 1,
                     "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,

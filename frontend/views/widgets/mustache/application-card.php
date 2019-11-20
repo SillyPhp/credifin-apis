@@ -75,6 +75,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="application-card-wrapper">
+                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                </div>
             </div>
         </div>
     </div>
@@ -159,6 +163,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                         $('.ui-draggable-dragging').css('width', default_elem + 'px');
                         $('#sticky').addClass('drag-on');
                         $('#review-internships').addClass('drop-on');
+                        utilities.initials();
                      },
                      stop: function() { 
                         $('#sticky').removeClass('drag-on');
