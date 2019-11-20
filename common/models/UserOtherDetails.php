@@ -21,6 +21,7 @@ use Yii;
  * @property int $internship_duration 0 as 6 weeks, 1 as 3 months, 2 as 6 months, 3 as 1 year
  * @property string $job_start_month
  * @property string $job_year
+ * @property int $college_actions 0 as approved, 1 as blocked, 2 as rejected
  */
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
@@ -39,7 +40,7 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     {
         return [
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number'], 'required'],
-            [['semester', 'internship_duration'], 'integer'],
+            [['semester', 'internship_duration', 'college_actions'], 'integer'],
             [['starting_year', 'ending_year', 'internship_start_date', 'job_year'], 'safe'],
             [['job_start_month'], 'string'],
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id'], 'string', 'max' => 100],
