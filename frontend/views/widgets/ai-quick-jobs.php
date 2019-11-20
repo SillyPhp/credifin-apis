@@ -33,7 +33,7 @@ use yii\helpers\Url;
                         <li>hassle free job creating</li>
                         <li>fast recruitment process</li>
                         <li>make your job more dynamic</li>
-                        <li>expedites the hiring process</li>
+                        <li>expedites the hiring process system</li>
                     </ul>
                 </div>
             </div>
@@ -69,8 +69,9 @@ $this->registerCss('
     width: 68%;
     margin: 0 auto;
     border: 1px solid #eee;
-    box-shadow: 0px 0px 15px 8px #eee;
+    box-shadow: 0px 0px 18px 0px #e6d5d5;
     border-radius: 25px;
+    background:#fff;
 }
 .ai-img {
     margin: -46px 0px 0 10px;
@@ -83,6 +84,7 @@ $this->registerCss('
     font-size:14px;
     font-family:Roboto;
     list-style: circle;
+    text-transform: capitalize;
 }
 @media (max-width:1200px){
 .ai-job{width:84%;}

@@ -164,8 +164,10 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+<section style="background: floralwhite;">
+    <?= $this->render('/widgets/ai-quick-jobs'); ?>
+</section>
 
-<?= $this->render('/widgets/ai-quick-jobs'); ?>
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 
