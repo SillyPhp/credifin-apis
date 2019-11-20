@@ -5,8 +5,8 @@ use yii\helpers\Url;
 ?>
 
 <div class="container">
-    <div class="parent row" style="margin:80px 0px 40px 0;">
-        <div class="col-md-4">
+    <div class="parent row">
+        <div class="col-md-4 col-sm-4">
             <div class="ai-job">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/ai-jobs.png') ?>">
@@ -22,8 +22,8 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="ai-job" style="margin-top: 90px;">
+        <div class="col-md-4 col-sm-4">
+            <div class="ai-job quick">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
                 </div>
@@ -38,7 +38,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 col-sm-4">
             <div class="ai-job">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/twitter-jobs.png') ?>">
@@ -59,6 +59,12 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.parent{
+    margin:80px 0px 40px 0;
+}
+.quick{
+    margin-top: 90px !important;
+}
 .ai-job {
     width: 68%;
     margin: 0 auto;
@@ -68,9 +74,7 @@ $this->registerCss('
 }
 .ai-img {
     margin: -46px 0px 0 10px;
-}
-.ai-img img {
-    max-width: 220px;
+    width:93%;
 }
 .ai-point {
     padding: 15px 8px 15px 27px;
@@ -79,5 +83,31 @@ $this->registerCss('
     font-size:14px;
     font-family:Roboto;
     list-style: circle;
+}
+@media (max-width:1200px){
+.ai-job{width:84%;}
+}
+@media (max-width:992px){
+.ai-job{width:100%;}
+.ai-point > ul > li{font-size:13px;}
+}
+@media (max-width:786px){
+.ai-job{width:100%;}
+.ai-point > ul > li{font-size:13px;}
+}
+@media (max-width:414px){
+.parent{
+    margin:80px 0px 0px 0;
+}
+.ai-job{
+    width:78%;
+    margin-bottom:70px;
+}
+.quick{
+    margin-top: 0px;
+}
+}
+@media (max-width:375px){
+    .ai-job{width:85%}
 }
 ');
