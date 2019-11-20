@@ -1,7 +1,8 @@
 <script id="application-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}" class="application-card-main shadow">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+             class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
                     <div class="col-md-3">
@@ -28,9 +29,9 @@
                                 <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
                             </a>
                         </div>
-
                         {{#city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}" data-long="{{longitude}}">
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}">
                              <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
                         </span>
                         {{/city}}
@@ -66,10 +67,10 @@
                         <div class="tag-box">
                             <div class="tags">
                                 {{#skill}}
-                                    <span class="after">{{.}}</span>
+                                <span class="after">{{.}}</span>
                                 {{/skill}}
                                 {{^skill}}
-                                    <span class="after">Multiple Skills</span>
+                                <span class="after">Multiple Skills</span>
                                 {{/skill}}
                             </div>
                         </div>
@@ -77,7 +78,8 @@
                 </div>
                 <div class="application-card-wrapper">
                     <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                class="fas fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
         </div>
@@ -143,6 +145,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             if(response.status === 200) {
                 renderCards(response.cards, container);
                 utilities.initials();
+                // checkSkills();
             } else {
                 if(loader === true) {
                     if(page === 1) {
@@ -235,6 +238,17 @@ function getReviewList(sidebarpage){
         });
     }
 }
+// function checkSkills(){
+//     $('.application-card-main').each(function(){
+//        var elems = $(this).find('.after');
+//        $(elems).each(function() {
+//            console.log($(this).text());
+//             if($(this).width() > 100 && $(this).text() != 'Multiple Skills'){
+//                 $(this).addClass('hidden');
+//             }
+//        })
+//     });
+// }
 JS;
 $this->registerJs($script);
 $this->registerCss('
