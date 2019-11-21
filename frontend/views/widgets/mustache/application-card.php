@@ -112,6 +112,8 @@ function renderCards(cards, container){
         $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
+    checkSkills();
+    // showSkills();
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
@@ -145,7 +147,6 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             if(response.status === 200) {
                 renderCards(response.cards, container);
                 utilities.initials();
-                // checkSkills();
             } else {
                 if(loader === true) {
                     if(page === 1) {
@@ -238,17 +239,32 @@ function getReviewList(sidebarpage){
         });
     }
 }
-// function checkSkills(){
-//     $('.application-card-main').each(function(){
-//        var elems = $(this).find('.after');
-//        $(elems).each(function() {
-//            console.log($(this).text());
-//             if($(this).width() > 100 && $(this).text() != 'Multiple Skills'){
-//                 $(this).addClass('hidden');
-//             }
-//        })
-//     });
-// }
+function checkSkills(){
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var i = 0;
+       $(elems).each(function() {
+            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+                $(this).addClass('hidden');
+            }
+            i++;
+       });
+       var skillsMain = $(this).find('.tags');
+       var hddn = $(this).find('.after.hidden');
+       var hasMore = $(this).find('span.more-skills');
+       if(hddn.length != 0){
+           if(elems.length === hddn.length){
+               $(elems[0]).removeClass('hidden');
+               var countMore = hddn.length - 1;
+               if(countMore != 0 && hasMore.length == 0){
+                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+               }
+           } else if(hasMore.length == 0) {
+                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+           }
+       }
+    });
+}
 JS;
 $this->registerJs($script);
 $this->registerCss('
@@ -352,9 +368,8 @@ $this->registerCss('
 }
 
 .tags{
-    font-size: 19px;
+    font-size: 17px;
     color:gray;
-
     font-family: Georgia !important;
 }
 .after{
@@ -398,6 +413,12 @@ $this->registerCss('
 .comps-name-1{
     float: none;
     margin: 0px !important;
+}
+.more-skills{
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
 }
 @media only screen and (max-width: 360px){
     .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
