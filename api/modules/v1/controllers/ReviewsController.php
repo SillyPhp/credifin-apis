@@ -1600,7 +1600,7 @@ class ReviewsController extends ApiBaseController
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CONCAT(a.slug, "/reviews") profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'b.business_activity_enc_id', 'b.business_activity', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);
