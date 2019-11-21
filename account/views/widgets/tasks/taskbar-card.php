@@ -592,20 +592,6 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js'
 <script>
     const getTasksByCountByClassName = (className) => {
         const tasks = document.querySelectorAll(className);
-        console.log(tasks.length);
         document.getElementById('pt-number').innerHTML = tasks.length
     };
-        // let pendingTasks = 0;
-        // const x = document.querySelectorAll('.todo-check');
-        // console.log(x);
-        // for(var i=0; i < x.length; i++ ){
-        //     pendingTasks++;
-        //     console.log('1');
-        // }
-        // console.log(pendingTasks);
-    // var pendingTasks = document.getElementsByClassName('todo-check');
-    // console.log(pendingTasks);
-    // var pt =  pendingTasks.length;
-    // console.log(pt);
-    // document.getElementById('pt-number').innerHTML =
 </script>
