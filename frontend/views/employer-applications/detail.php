@@ -381,11 +381,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 ?>
                 <?php
                     if(Yii::$app->user->isGuest){
-                ?>
-                <?=
-                    $this->render('/widgets/best-platform')
-                ?>
-                <?php
+                        echo $this->render('/widgets/best-platform');
                     }
                 ?>
             </div>
@@ -558,7 +554,8 @@ $this->registerCss("
     }
     #logo_img{
         width: 115px;
-        height: 115px; 
+        height: 115px;
+        background-color:#fff;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}

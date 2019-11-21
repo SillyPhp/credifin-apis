@@ -1,7 +1,8 @@
 <script id="application-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-6 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}" class="application-card-main shadow">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+             class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
                     <div class="col-md-3">
@@ -28,9 +29,9 @@
                                 <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
                             </a>
                         </div>
-
                         {{#city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}" data-long="{{longitude}}">
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}">
                              <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
                         </span>
                         {{/city}}
@@ -66,10 +67,10 @@
                         <div class="tag-box">
                             <div class="tags">
                                 {{#skill}}
-                                    <span class="after">{{.}}</span>
+                                <span class="after">{{.}}</span>
                                 {{/skill}}
                                 {{^skill}}
-                                    <span class="after">Multiple Skills</span>
+                                <span class="after">Multiple Skills</span>
                                 {{/skill}}
                             </div>
                         </div>
@@ -77,7 +78,8 @@
                 </div>
                 <div class="application-card-wrapper">
                     <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                class="fas fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
         </div>
@@ -110,6 +112,8 @@ function renderCards(cards, container){
         $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
+    checkSkills();
+    // showSkills();
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
@@ -235,6 +239,32 @@ function getReviewList(sidebarpage){
         });
     }
 }
+function checkSkills(){
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var i = 0;
+       $(elems).each(function() {
+            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+                $(this).addClass('hidden');
+            }
+            i++;
+       });
+       var skillsMain = $(this).find('.tags');
+       var hddn = $(this).find('.after.hidden');
+       var hasMore = $(this).find('span.more-skills');
+       if(hddn.length != 0){
+           if(elems.length === hddn.length){
+               $(elems[0]).removeClass('hidden');
+               var countMore = hddn.length - 1;
+               if(countMore != 0 && hasMore.length == 0){
+                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+               }
+           } else if(hasMore.length == 0) {
+                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+           }
+       }
+    });
+}
 JS;
 $this->registerJs($script);
 $this->registerCss('
@@ -338,9 +368,8 @@ $this->registerCss('
 }
 
 .tags{
-    font-size: 19px;
+    font-size: 17px;
     color:gray;
-
     font-family: Georgia !important;
 }
 .after{
@@ -384,6 +413,12 @@ $this->registerCss('
 .comps-name-1{
     float: none;
     margin: 0px !important;
+}
+.more-skills{
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
 }
 @media only screen and (max-width: 360px){
     .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
