@@ -7,7 +7,7 @@ use yii\helpers\Url;
     <div class="portlet-title">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'View Applications'); ?>
+            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Applicants'); ?>
                 <span href="#" data-toggle="tooltip" title="Here you will find all applications received on your open opportunities">
                     <i class="fa fa-info-circle"></i>
                 </span>

@@ -5,7 +5,6 @@ use yii\widgets\Pjax;
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Dashboard',
 ]);
-
 $is_email_verified = true;
 if (Yii::$app->user->identity->organization->organization_enc_id):
     if (!Yii::$app->user->identity->organization->is_email_verified):
@@ -22,6 +21,7 @@ endif;
     <div class="row">
         <div class="col-md-3">
             <?= $this->render('/widgets/tasks/taskbar-card', ['viewed' => $viewed]); ?>
+
             <?=
             $this->render('/widgets/services-selection/edit-services', [
                 'model' => $model,
@@ -117,6 +117,7 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
+
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">

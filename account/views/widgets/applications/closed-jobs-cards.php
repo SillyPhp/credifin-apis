@@ -107,6 +107,9 @@ if (!empty($total_applications)) {
 <?php }
 Pjax::end();
 $this->registerCss("
+.btn-group.btn-group-circle > .btn:first-child, .btn-group.btn-group-circle > .btn:last-child{
+    border-radius:0px !important
+}
 .tab-empty{
     padding:20px;
 }
