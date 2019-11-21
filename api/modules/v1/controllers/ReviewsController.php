@@ -107,6 +107,8 @@ class ReviewsController extends ApiBaseController
         } else {
             $result = $primary_result
                 ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $options['user_id'] . '") DESC, a.created_on DESC')])
+                ->limit($options['limit'])
+                ->offset(($options['page'] - 1) * $options['limit'])
                 ->asArray()->all();
         }
 
@@ -355,6 +357,9 @@ class ReviewsController extends ApiBaseController
 
         $data = [];
 
+        $limit = 3;
+        $page = 1;
+
         //check parameter is empty or not
         if (isset($parameters['org_enc_id']) && !empty($parameters['org_enc_id'])) {
             $org_enc_id = $parameters['org_enc_id'];
@@ -364,6 +369,10 @@ class ReviewsController extends ApiBaseController
 
         if (isset($parameters['limit']) && !empty($parameters['limit'])) {
             $limit = $parameters['limit'];
+        }
+
+        if (isset($parameters['page']) && !empty($parameters['page'])) {
+            $page = (int)$parameters['page'];
         }
 
         //if parameter not empty then find data of organization claimed
@@ -405,6 +414,7 @@ class ReviewsController extends ApiBaseController
             $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
             if ($limit) {
                 $reviews->limit($limit);
+                $reviews->offset(($page - 1) * $limit);
             }
             $rating = $reviews->Select([
                 'a.job_security Job_Security',
@@ -495,6 +505,8 @@ class ReviewsController extends ApiBaseController
                 $options['user_id'] = $candidate->user_enc_id;
 
                 $options['quant'] = 'all';
+                $options['limit'] = $limit;
+                $options['page'] = $page;
 
                 $emp_reviews = $this->__unclaimedReviews($options);
 
@@ -510,6 +522,9 @@ class ReviewsController extends ApiBaseController
                         'a.skill_development Skill_Development',
                     ]
                 ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
 
                 $emp_rating = $this->__unclaimedReviews($options);
 
@@ -562,6 +577,9 @@ class ReviewsController extends ApiBaseController
                 $options['user_id'] = $candidate->user_enc_id;
                 $options['quant'] = 'all';
 
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
                 $reviews_students = $this->__unclaimedReviews($options);
 
                 $options['main'] = [
@@ -576,6 +594,9 @@ class ReviewsController extends ApiBaseController
                         'a.culture_diversity Culture_Diversity',
                     ]
                 ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
 
                 $rating_students = $this->__unclaimedReviews($options);
 
@@ -617,6 +638,9 @@ class ReviewsController extends ApiBaseController
                 $options['user_id'] = $candidate->user_enc_id;
                 $options['quant'] = 'all';
 
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
                 $reviews_students = $this->__unclaimedReviews($options);
 
                 $options['main'] = [
@@ -631,6 +655,9 @@ class ReviewsController extends ApiBaseController
                         'a.sports Sports',
                     ]
                 ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
 
                 $rating_students = $this->__unclaimedReviews($options);
 
@@ -673,6 +700,9 @@ class ReviewsController extends ApiBaseController
                 $options['user_id'] = $candidate->user_enc_id;
                 $options['quant'] = 'all';
 
+                $options['limit'] = $limit;
+                $options['page'] = $page;
+
                 $reviews_students = $this->__unclaimedReviews($options);
 
                 $options['main'] = [
@@ -687,6 +717,9 @@ class ReviewsController extends ApiBaseController
                         'a.accessibility_of_faculty Accessibility_Of_Faculty',
                     ]
                 ];
+
+                $options['limit'] = $limit;
+                $options['page'] = $page;
 
                 $rating_students = $this->__unclaimedReviews($options);
 
