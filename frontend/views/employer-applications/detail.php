@@ -388,14 +388,21 @@ $this->render('/widgets/employer_applications/top-banner', [
                 <?php
                     }
                 ?>
-                <?= $this->render('/widgets/employer_applications/learning-videos'); ?>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">More Jobs By This Company</div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <div class="heading-style">Related Jobs</div>
             </div>
         </div>
+
         <?php if($settings["showRelatedOpportunities"]):?>
         <div class="row m-0">
             <div class="col-md-12">

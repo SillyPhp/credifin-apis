@@ -5,6 +5,11 @@ use yii\helpers\Url;
 ?>
 
 <div class="container">
+    <div class="row">
+        <div class="ocl-md-12">
+            <div class="jobs-main-heading">jobs that can turn into a career</div>
+        </div>
+    </div>
     <div class="parent row">
         <div class="col-md-4 col-sm-4">
             <div class="ai-job">
@@ -59,6 +64,15 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.jobs-main-heading{
+    text-align: center;
+    font-size: 28pt;
+    text-transform: uppercase;
+    font-family: lobster;
+    font-weight: 800;
+    word-spacing:10px;
+    margin:10px 0px;
+}
 .parent{
     margin:80px 0px 40px 0;
 }
@@ -69,7 +83,7 @@ $this->registerCss('
     width: 68%;
     margin: 0 auto;
     border: 1px solid #eee;
-    box-shadow: 0px 0px 18px 0px #e6d5d5;
+    box-shadow: 0px 0px 18px 0px #eee;
     border-radius: 25px;
     background:#fff;
 }
@@ -98,6 +112,9 @@ $this->registerCss('
 .ai-point > ul > li{font-size:13px;}
 }
 @media (max-width:414px){
+.jobs-main-heading{
+    font-size:23pt;
+}
 .parent{
     margin:80px 0px 0px 0;
 }

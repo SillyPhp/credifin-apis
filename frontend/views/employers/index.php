@@ -75,7 +75,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works11.png') ?>">
@@ -83,7 +83,7 @@ $this->params['header_dark'] = false;
                         <div class="hwn-title">Create a free account</div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works22.png') ?>">
@@ -91,7 +91,7 @@ $this->params['header_dark'] = false;
                         <div class="hwn-title">Add a position</div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works33.png') ?>">
@@ -99,7 +99,7 @@ $this->params['header_dark'] = false;
                         <div class="hwn-title">Get applications</div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 col-sm-3">
                     <div class="hwn-box">
                         <div class="hwn-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/how-it-works44.png') ?>">
@@ -126,13 +126,18 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+
+    <section>
+        <?= $this->render('/widgets/ai-quick-jobs'); ?>
+    </section>
+
     <section class="how-it-works">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="heading-style">How It Works</h1>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-4">
                     <div class="">
                         <div class="step-icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/identity.png') ?>">
@@ -143,7 +148,7 @@ $this->params['header_dark'] = false;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-4">
                     <div class="step-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/save-time.png') ?>">
                     </div>
@@ -152,7 +157,7 @@ $this->params['header_dark'] = false;
                         interview only qualified, culture-fit candidates.
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-4">
                     <div class="step-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/index2/hired.png') ?>">
                     </div>
@@ -164,9 +169,6 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
-<section style="background: floralwhite;">
-    <?= $this->render('/widgets/ai-quick-jobs'); ?>
-</section>
 
 
 <?= $this->render('/widgets/companies-with-us'); ?>
@@ -196,7 +198,22 @@ $this->registerCss('
     font-size:20px;
     color:#00a0e3;
 }
-
+@media (max-width:768px){
+.hwn-icon{
+    max-width:120px;
+}
+.hwn-title{
+    font-size:18px;
+}
+.step-dis{
+    font-size:13px;
+}
+}
+@media (max-width:767px){
+.hwn-box{
+    margin-bottom:30px;
+}
+}
 /*showcase starts*/
 .showcase{
     padding:80px 0 110px;
