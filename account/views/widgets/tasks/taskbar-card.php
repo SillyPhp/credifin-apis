@@ -56,6 +56,9 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
                                 <i class="fa fa-check mr-1"></i> Tasks
                             </a>
                         </h4>
+                        <div class="pendind-tasks">
+                            <div class="pt">Pending Tasks: <span id="pt-number"></span></div>
+                        </div>
                     </div>
                     <div id="collapse1One" class="accordion-body collapse show">
                         <div class="card-body padding-0" style="text-align:center">
@@ -84,6 +87,14 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
 
 <?php
 $this->registerCss("
+.pt{
+    font-size: 15px;
+    padding-left: 27px;
+    padding-top: 10px;
+}
+.pt span{
+    color:#00a0e3;
+}
 .card {
     background: transparent;
     -webkit-box-shadow: none;
@@ -334,9 +345,11 @@ $script = <<< JS
                     btn_submit.prop('disabled', '');
                     $('.widget-todo-list').prepend(Mustache.render(todo_template, response.data));
                     form[0].reset();
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
                     btn_submit.prop('disabled', '');
+                    getTasksByCountByClassName('.todo-check')
                 }
             },
             error: function (response) {
@@ -357,6 +370,7 @@ $script = <<< JS
                 if (response.status == 200) {
                     $(remove).remove();
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
                 }
@@ -397,8 +411,10 @@ $script = <<< JS
             success: function (response) {
                 if (response.status == 200) {
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 } else {
                     toastr.error(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check')
                 }
             }
         });
@@ -415,6 +431,7 @@ $script = <<< JS
             success: function (response) {
                 if (response.status == 200) {
                     toastr.success(response.message, response.title);
+                    getTasksByCountByClassName('.todo-check');
                 } else {
                     toastr.error(response.message, response.title);
                 }
@@ -479,6 +496,7 @@ $script = <<< JS
                                 var dattaa = $('.edit_task').val();
                                 $('.edit_task').hide();
                                 parent.text(dattaa);
+                                getTasksByCountByClassName('.todo-check')
                             } else {
                                 toastr.error(response.message, response.title);
                             }
@@ -525,6 +543,7 @@ $script = <<< JS
                         }
                     }
                     $('.widget-todo-list').append(Mustache.render(todo_template, response.tasks));
+                    getTasksByCountByClassName(".todo-check");
                     action = 1;
                 } else {
                     action = 2;
@@ -557,8 +576,7 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js'
     {{#.}}
     <li>
         <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
-                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
                    {{#is_completed}} checked {{/is_completed}} />
             <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>
@@ -569,4 +587,25 @@ $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js'
         </div>
     </li>
     {{/.}}
+</script>
+
+<script>
+    const getTasksByCountByClassName = (className) => {
+        const tasks = document.querySelectorAll(className);
+        console.log(tasks.length);
+        document.getElementById('pt-number').innerHTML = tasks.length
+    };
+        // let pendingTasks = 0;
+        // const x = document.querySelectorAll('.todo-check');
+        // console.log(x);
+        // for(var i=0; i < x.length; i++ ){
+        //     pendingTasks++;
+        //     console.log('1');
+        // }
+        // console.log(pendingTasks);
+    // var pendingTasks = document.getElementsByClassName('todo-check');
+    // console.log(pendingTasks);
+    // var pt =  pendingTasks.length;
+    // console.log(pt);
+    // document.getElementById('pt-number').innerHTML =
 </script>
