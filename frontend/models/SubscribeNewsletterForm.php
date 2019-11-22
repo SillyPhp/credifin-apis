@@ -16,7 +16,8 @@ class SubscribeNewsletterForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email'], 'required'],
+            [['email'], 'required'],
+            [['first_name', 'last_name'], 'safe'],
             [['first_name', 'last_name', 'email'], 'trim'],
             [['email'], 'email'],
         ];

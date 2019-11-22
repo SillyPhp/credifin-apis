@@ -504,8 +504,8 @@ $this->registerCss('
 }
 @media(max-width:380px){
 .anim-3 {
-    width: 162px !important;
-    top: 210px !important;
+    width: 125px !important;
+    top: 202px !important;
     right: 233px !important;
 }
 }
@@ -710,7 +710,6 @@ $this->registerCss('
 }
 .search-box1{
     max-width:500px;
-    float:left;
 //  border: 1px solid #ccc;
     border-radius: 10px;
     padding: 3px;
@@ -724,7 +723,7 @@ $this->registerCss('
     font-size: 15px;
     border:none ;
     border-radius:10px 0 0 10px;
-    width: 440px;
+    width: calc(100% - 38px);
 }
 
 .search-box1 input:focus{
@@ -757,32 +756,21 @@ $this->registerCss('
     text-transform: capitalize;
     color:#fff;
 }
-@media only screen and (max-width:1200px) {
- .search-box1 input[type=text]
-    {
-    width:300px;
-    }
-}
-@media only screen and (max-width:992px) {
-  .jumbo-heading{
-    font-size: 25px !important;}
-}
-@media only screen and (max-width:767px) {
-    .topp-pad{text-align:center; margin-top:50px !important;}
-    .search-box1{max-width: 360px; float: none; margin: auto;}
-}
-.jumbo-subheading{
-    font-size: 25px;
-    padding-top: 0px;
-    font-family: lobster;
-    color:#7ba9da;
-}
-@media only screen and (max-width:992px) {
-  .jumbo-subheading{
-    font-size: 20px !important;}
-}
 .jumbo-subheading span{
     text-transform: uppercase;
+}
+@media (max-width:768px){
+.jumbo-heading{
+    font-size:25px;
+}
+}
+@media (max-width:500px){
+.main-heading-set{
+    padding-top:0px !important
+}
+.topp-pad{
+    margin-top:10px !important;
+}
 }
 .search-box{
     float: right;
