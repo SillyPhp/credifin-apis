@@ -380,19 +380,35 @@ $this->render('/widgets/employer_applications/top-banner', [
                 endif;
                 ?>
                 <?php
-                    if(Yii::$app->user->isGuest){
-                        echo $this->render('/widgets/best-platform');
-                    }
+                if (Yii::$app->user->isGuest) {
+                    echo $this->render('/widgets/best-platform')
+                }
                 ?>
             </div>
         </div>
-        <?php if($settings["showRelatedOpportunities"]):?>
-        <div class="row m-0">
-            <div class="col-md-12">
-                <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
-                <div class="similar-application"></div>
+        <?php
+        if (!empty($data2)) {
+            ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="blogbox"></div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+        <?php if ($settings["showRelatedOpportunities"]): ?>
+            <div class="row m-0">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
+                    <div class="similar-application"></div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
     <?php
@@ -402,15 +418,15 @@ $this->render('/widgets/employer_applications/top-banner', [
     ?>
 </section>
 <?php
-    if($settings["showNewPositionsWidget"]):
-?>
-<section>
-    <div class="container">
-        <?=
+if ($settings["showNewPositionsWidget"]):
+    ?>
+    <section>
+        <div class="container">
+            <?=
             $this->render('/widgets/new-position');
-        ?>
-    </div>
-</section>
+            ?>
+        </div>
+    </section>
 <?php endif; ?>
 <script>
     function copyToClipboard() {
@@ -418,7 +434,6 @@ $this->render('/widgets/employer_applications/top-banner', [
         copyText.select();
         document.execCommand("copy");
         toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
     }
 </script>
 <?php
@@ -575,7 +590,6 @@ $this->registerCss("
         width: 100%;
         height: 100%;
         content: '';
-//        z-index: -1;
         background: #00000078;
         opacity: 0.8;
     }
@@ -750,7 +764,6 @@ $this->registerCss("
     .job-details {
         float: left;
         width: 100%;
-//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
@@ -980,8 +993,6 @@ $this->registerCss("
         border-color: #4FCE5D;
     }
     .job-single-head.style2 {
-//        float: left;
-//        width: 100%;
         display: inherit;
         text-align: center;
         border: none;
@@ -997,11 +1008,6 @@ $this->registerCss("
         display: inline-block;
         width: auto;
         border: none;
-//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-//        -o-box-shadow: 0px 0px 20px 7px #ddd;
-//        box-shadow: 0px 0px 20px 7px #ddd;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -1101,26 +1107,27 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-        background: #00a0e3;
-        -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        font-family: Open Sans;
-        font-size: 13px;
-        color: #fff;
-        width: 175px;
-        height: auto;
-        padding: 15px 6px;
-        text-align: center;
-        margin:auto;
-    }
+    display:inline-block !important;    
+    background: #00a0e3;
+    -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color: #fff;
+    width: 175px;
+    height: auto;
+    padding: 15px 6px;
+    text-align: center;
+    margin:auto;
+}
     .apply-job-btn:hover {
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
@@ -1436,6 +1443,11 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
-getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
+//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
+if (!empty($data2)) {
+$this->registerJs("
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
+");
+}
 ?>
