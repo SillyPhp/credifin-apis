@@ -578,7 +578,7 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id']])
+                ->where(['a.organization_enc_id' => $req['college_id'],'a.college_actions'=>null])
                 ->asArray()
                 ->all();
 
