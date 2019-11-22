@@ -584,7 +584,7 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-6 col-sm-12 col-xs-12">
-                        <div class="heading-style">Popular Categories</div>
+                        <div class="heading-style">Top Learning Topics</div>
                     </div>
                     <div class="col-md-6 col-sm-12 col-xs-12">
                         <div class="type-1">
@@ -831,11 +831,31 @@ $this->registerCss('
     font-family: lora;
     margin: 0px 0px 20px 0;
 }
+.gov-job {
+  overflow: hidden;
+  margin: 10px;
+  max-width: 500px;
+  height: 300px;
+  width: 100%;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+}
+.gov-job img {
+    max-width: inherit;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    -webkit-transition: all 2s ease-out;
+    transition: all 2s ease-out;
+}
+.gov-job:hover img {
+  -webkit-transform: translateX(100px);
+  transform: translateX(100px);
+}
 .gov-job{
     text-align:center;
     position:relative;
 }
-.gov-job img{
+.gov-job, .gov-job img{
     border-radius: 10px;
 }
 .gov-job a:hover .link-none{
@@ -846,7 +866,7 @@ $this->registerCss('
 .link-none{
     position:absolute;
     top:20px;
-    left:40px;
+    left:20px;
 }
 .link-none{
     color:#fff;
@@ -1931,14 +1951,14 @@ $script = <<< JS
     });
 
 
-window.onscroll = function() {scrollFunction()};
-function scrollFunction() {
-  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-    document.getElementById("myBttn").style.display = "block";
-  } else {
-    document.getElementById("myBttn").style.display = "none";
-  }
-}
+// window.onscroll = function() {scrollFunction()};
+// function scrollFunction() {
+//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+//     document.getElementById("myBttn").style.display = "block";
+//   } else {
+//     document.getElementById("myBttn").style.display = "none";
+//   }
+// }
         
   jQuery(function($) {
   $('.main-slider-sec').slick({
