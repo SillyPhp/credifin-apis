@@ -16,13 +16,13 @@ use yii\helpers\Url;
                     <div class="col-md-5 col-sm-6">
                         <form id="subscribe-newsletter">
                             <div class="email-set" style="display: flex;">
-                                <input type="email" class="form-control" id="email" name="email"
+                                <input type="email" class="form-control" id="subscription-email" name="email"
                                        placeholder="ENTER E-MAIL ADDRESS" required>
                                 <button type="submit" class="btn btn-primary subscribe-widget-btn">
                                     &rarr;
-<!--                                    <article class="right-arrow">-->
-<!--                                        <span class="arrow"></span>-->
-<!--                                    </article>-->
+                                    <!--                                    <article class="right-arrow">-->
+                                    <!--                                        <span class="arrow"></span>-->
+                                    <!--                                    </article>-->
                                 </button>
                             </div>
                         </form>
@@ -164,38 +164,50 @@ $this->registerCss('
 //}
 ');
 $script = <<<JS
+function validateEmail(emailField){
+    var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+    if (reg.test(emailField) == false) {
+        return false;
+    }
+    return true;
+}
 $(document).on('submit', '#subscribe-newsletter', function (event) {
     event.preventDefault();
     event.stopImmediatePropagation();
     var me = $('.subscribe-widget-btn');
-    if ( me.data('requestRunning') ) {
-        return false;
+    var elemVal = $('#subscription-email').val();
+    if(validateEmail(elemVal)){
+        if ( me.data('requestRunning') ) {
+            return false;
+        }
+        me.data('requestRunning', true);
+        var data = $('#subscribe-newsletter').serialize();
+        $.ajax({
+            url: '/site/add-new-subscriber',
+            type: 'post',
+            data: data,
+            beforeSend: function (){
+                $('.subscribe-widget-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
+                $('.subscribe-widget-btn').prop('disabled', true);
+            },
+            success: function (response) {
+                if (response.status == 200) {
+                    toastr.success(response.message, response.title);
+                    $(".w-parent").fadeOut(100);
+                    $(".thanks-portion").fadeIn(700);
+                } else {
+                    toastr.error(response.message, response.title);
+                }
+                $('.subscribe-widget-btn').prop('disabled', false);
+                $('.subscribe-widget-btn').html('&rarr;');
+            },
+            complete: function() {
+            me.data('requestRunning', false);
+          }
+        });
+    } else {
+        toastr.error('Please Enter Valid Email Address', 'Invalid Email');
     }
-    me.data('requestRunning', true);
-    var data = $('#subscribe-newsletter').serialize();
-    $.ajax({
-        url: '/site/add-new-subscriber',
-        type: 'post',
-        data: data,
-        beforeSend: function (){
-            $('.subscribe-widget-btn').html('<i class="fas fa-circle-notch fa-spin"></i>');
-            $('.subscribe-widget-btn').prop('disabled', true);
-        },
-        success: function (response) {
-            if (response.status == 200) {
-                toastr.success(response.message, response.title);
-                $(".w-parent").fadeOut(700);
-                $(".thanks-portion").fadeIn(700);
-            } else {
-                toastr.error(response.message, response.title);
-            }
-            $('.subscribe-widget-btn').prop('disabled', false);
-            $('.subscribe-widget-btn').html('&rarr;');
-        },
-        complete: function() {
-        me.data('requestRunning', false);
-      }
-    });
 });
 JS;
 $this->registerJs($script);
