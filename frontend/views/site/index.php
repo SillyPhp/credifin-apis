@@ -193,13 +193,10 @@ $this->params['header_dark'] = false;
 </section>
 <!---->
 <section class="goven-jobs-sec">
-
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="gov-heading">
-                    <h1>Find Latest Government Jobs</h1>
-                </div>
+                <div class="gov-heading">Find Latest Government Jobs</div>
             </div>
         </div>
         <div class="row">
@@ -788,13 +785,13 @@ $this->registerCss('
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
     background-repeat: no-repeat;
     background-size:cover;
-    padding:20px 20px 40px 20px;
+    padding:0px 0px 40px 0px;
 }
-.gov-heading h1{
-    text-align:center;
-    font-family: roboto;
-    font-size:30px;
-    margin-bottom:15px;
+.gov-heading {
+    text-align: center;
+    font-size: 30px;
+    font-family: lora;
+    margin: 0px 0px 20px 0;
 }
 .gov-job{
     text-align:center;
