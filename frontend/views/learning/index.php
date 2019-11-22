@@ -353,7 +353,7 @@ use yii\helpers\Url;
             <div class="row" style="margin:20px">
                 <div class="col-md-4">
                     <div class="col-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>"/>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -671,19 +671,21 @@ $this->registerCss('
     background: ghostwhite;
     margin-top: 40px;
 }
-.col-img{
-    text-align:center;
+.col-img {
+    text-align: center;
+    max-width: 250px;
+    margin: 0 auto;
 }
 @media (max-width: 768px) {
 .col-img img{
-    width: 65%
+    width: 100%
   }
 }
 @media (max-width: 500px) {
     .col-text{padding-top:12px !important;}
-    .col-img img{width: 100%;}
+    .col-img img{width: 80%;}
     .col-inner {font-size: 12px !important;}
-    .col-head {font-size:18px !important;}
+    .col-head {font-size:16px !important;}
 }
 .col-text {
     text-align: center;
