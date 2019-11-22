@@ -142,12 +142,12 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                         <div class="actions">
                             <div class="set-im">
-                                <a href="<?= Url::toRoute('/internships/campus-placement'); ?>" data-toggle="tooltip"
-                                   title="Campus Hiring" class="ai">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
                                    title="Create AI Internship" class="ai">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/internships/campus-placement'); ?>" data-toggle="tooltip"
+                                   title="Campus Hiring" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::to('/tweets/internship/create'); ?>" data-toggle="tooltip"
                                    title="Post Internship Tweet" class="tweet">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>

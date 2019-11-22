@@ -223,26 +223,7 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-<!---->
-<!--<section class="fixed-bttn">-->
-<!--    <div class="pos-ab">-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <h1 class="fx-heading">-->
-<!--                        Its Free To Get Hired On Empower Youth-->
-<!--                    </h1>-->
-<!--                    <div class="post-job-bttn">-->
-<!--                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">-->
-<!--                            Get Hired-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</section>-->
-<!---->
+
 <section>
     <div class="block">
         <div class="container">
@@ -817,7 +798,6 @@ if (Yii::$app->user->isGuest) {
 
 <?php
 echo $this->render('/widgets/mustache/learning-categories');
-//echo $this->render('/widgets/employers-landing-page-floating-widget');
 $this->registerCss('
 .goven-jobs-sec{
     background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');

@@ -237,17 +237,17 @@ endif;
                         </div>
                         <div class="actions">
                             <div class="set-im">
-                                <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip" title="Campus Hiring" class="ai">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
                                    title="Create AI Job" class="ai">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
-                                <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
-                                   title="Create Quick Job" class="quick">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job1.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip" title="Campus Hiring" class="ai">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                 <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
                                    title="Post Job Tweet" class="tweet">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
+                                   title="Create Quick Job" class="quick">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
                                 <?php if ($applications['jobs']['total'] > 8): ?>
                                     <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All"
                                        class="view">
