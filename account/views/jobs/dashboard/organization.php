@@ -122,32 +122,6 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="face face1">
-                        <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/quick-job">
-                                        <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/walk-in-interview.png')?>" alt="">
-                                        </div>
-                                    </a>
-                                </div>
-                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/quick-job" target="_blank">
-                                <h3>
-                                    Walk in Interviews
-                                </h3>
-                                <p>Create Quick Jobs</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-md-10 col-sm-9">
@@ -530,6 +504,7 @@ $this->registerCss('
 }
 
 .new-card-container .card .face.face2 {
+    width:99%;
     position: absolute;
     top:0px;
     right:0px;
@@ -537,7 +512,7 @@ $this->registerCss('
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 20px 15px;
     box-sizing: border-box;
     box-shadow: 0 8px 19px rgba(0,0,0,0.4);
     transform: translateX(0px);
@@ -546,7 +521,7 @@ $this->registerCss('
 
 .new-card-container .card:hover .face.face2{
     transform: translateX(0x);
-    right:-100%;
+    right:-99%;
     z-index:1;
 }
 
@@ -555,15 +530,17 @@ $this->registerCss('
     padding: 0;
     text-align: center;
     color: #414141;
+    font-size: 13px;
 }
 
 .new-card-container .card .face.face2 .content h3 {
     margin: 0 0 10px 0;
     padding: 0;
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     text-align: center;
     color: #414141;
+    font-weight: 500;
 } 
 
 .new-card-container a {

@@ -381,7 +381,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                 ?>
                 <?php
                 if (Yii::$app->user->isGuest) {
-                    echo $this->render('/widgets/best-platform')
+                    echo $this->render('/widgets/best-platform');
                 }
                 ?>
             </div>

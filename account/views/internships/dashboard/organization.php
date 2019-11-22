@@ -490,6 +490,7 @@ $this->registerCss('
 }
 
 .new-card-container .card .face.face2 {
+    width:99%;
     position: absolute;
     top:0px;
     right:0px;
@@ -497,7 +498,7 @@ $this->registerCss('
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 20px 15px;
     box-sizing: border-box;
     box-shadow: 0 8px 19px rgba(0,0,0,0.4);
     transform: translateX(0px);
@@ -506,7 +507,7 @@ $this->registerCss('
 
 .new-card-container .card:hover .face.face2{
     transform: translateX(0x);
-    right:-100%;
+    right:-99%;
     z-index:1;
 }
 
@@ -515,15 +516,17 @@ $this->registerCss('
     padding: 0;
     text-align: center;
     color: #414141;
+    font-size: 13px;
 }
 
 .new-card-container .card .face.face2 .content h3 {
     margin: 0 0 10px 0;
     padding: 0;
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     text-align: center;
     color: #414141;
+    font-weight: 500;
 } 
 
 .new-card-container a {
