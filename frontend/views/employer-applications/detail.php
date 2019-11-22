@@ -380,36 +380,46 @@ $this->render('/widgets/employer_applications/top-banner', [
                 endif;
                 ?>
                 <?php
-                    if(Yii::$app->user->isGuest){
-                ?>
-                <?=
+                if (Yii::$app->user->isGuest) {
+                    ?>
+                    <?=
                     $this->render('/widgets/best-platform')
+                    ?>
+                    <?php
+                }
                 ?>
-                <?php
-                    }
-                ?>
             </div>
         </div>
+        <?php
+        if (!empty($data2)) {
+            ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="blogbox"></div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+        <!---->
+        <!--        <div class="row">-->
+        <!--            <div class="col-md-12">-->
+        <!--                <div class="heading-style">Related Jobs</div>-->
+        <!--            </div>-->
+        <!--        </div>-->
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">More Jobs By This Company</div>
+        <?php if ($settings["showRelatedOpportunities"]): ?>
+            <div class="row m-0">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
+                    <div class="similar-application"></div>
+                </div>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="heading-style">Related Jobs</div>
-            </div>
-        </div>
-
-        <?php if($settings["showRelatedOpportunities"]):?>
-        <div class="row m-0">
-            <div class="col-md-12">
-                <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
-                <div class="similar-application"></div>
-            </div>
-        </div>
         <?php endif; ?>
     </div>
     <?php
@@ -419,15 +429,15 @@ $this->render('/widgets/employer_applications/top-banner', [
     ?>
 </section>
 <?php
-    if($settings["showNewPositionsWidget"]):
-?>
-<section>
-    <div class="container">
-        <?=
+if ($settings["showNewPositionsWidget"]):
+    ?>
+    <section>
+        <div class="container">
+            <?=
             $this->render('/widgets/new-position');
-        ?>
-    </div>
-</section>
+            ?>
+        </div>
+    </section>
 <?php endif; ?>
 <script>
     function copyToClipboard() {
@@ -1453,6 +1463,11 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
-getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
+//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
+if (!empty($data2)) {
+$this->registerJs("
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
+");
+}
 ?>

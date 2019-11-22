@@ -214,14 +214,6 @@ $this->params['header_dark'] = false;
 </section>
 
 <section>
-    <?= $this->render('/widgets/info-stats')?>
-</section>
-
-<section>
-    <?= $this->render('/widgets/subscribe-widget')?>
-</section>
-
-<section>
     <div class="block">
         <div class="container">
             <!--            <div class="row">-->
