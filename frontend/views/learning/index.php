@@ -578,7 +578,8 @@ $this->registerCss('
 }
 .topic-name {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
+    font-family: roboto;
 }
 .box-content {
     padding: 10px 0;
@@ -590,13 +591,15 @@ $this->registerCss('
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
+    font-family: roboto;
 }
 .t-answers {
     padding-top: 10px;
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
     border-top: 1px solid #eee;
     margin-top: 10px;
+    font-family: roboto;
 }
 .best-answers {
     float: right;
