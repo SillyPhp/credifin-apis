@@ -6,7 +6,7 @@ use yii\helpers\Url;
         <div class="quick-review">
             <div class="row quick-review-inner">
                 <div class="col-md-3 quick-review-img"><img src="<?= Url::to('@eyAssets/images/pages/review/quick-review.png');?>"></div>
-                <div class="col-md-7 overflow-hidden">
+                <div class="col-md-7 overflow-hidden set-heading-c">
                     <h2>Help The Community</h2>
                     <div class="quick-review-t">find empoweryouth reviews Helpful?start helping others by sharing your
                         personal experience.
@@ -61,6 +61,9 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/review/quick-review-search-bar');
 $this->registerCss('
+.set-heading-c > h2{
+    font-family: lora;
+}
 .overflow-hidden{
     overflow:hidden;
 }
@@ -77,6 +80,7 @@ $this->registerCss('
 .quick-review-t{
 	margin: 15px 0;
 	font-size: 15px;
+	font-family: roboto;
 }
 .quick-review-action {
 	font-family: "Roboto", sans-serif;
@@ -93,10 +97,11 @@ $this->registerCss('
     background:#00a0e3; 
     border-radius:4px; 
     font-size:15px; 
-    font-weight:bold; 
+    font-weight:500; 
     color:#fff;
     text-decoration: none;
     text-transform: capitalize;
+    font-family: roboto;
 }
 .btn1 {
 	font-family: "Roboto", sans-serif;
