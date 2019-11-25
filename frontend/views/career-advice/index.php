@@ -374,9 +374,10 @@ body {
 
 .card__title {
   font-size: 1.40rem;
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1.3;
   margin: 0;
+  font-family:roboto;
 }
 
 .card__subtitle {

@@ -148,7 +148,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/learning'); ?>">
                     <div class="service-box ser-box-yellow">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
                                  alt="learning">
                         </div>
                         <div class="ser-heading">Learning Hub</div>
@@ -1183,7 +1183,7 @@ background-attachment:fixed;
 }
 .how-heading{
     font-size: 15px;
-    font-weight:300;
+    font-weight:400;
     font-family:Roboto;
 }
 .steps-row{
@@ -1753,7 +1753,9 @@ how-icon{
     -o-border-radius: 0px 8px 8px 0px !important;
     border-radius: 0px 8px 8px 0px !important;
 }
-
+.search-job2 form button{
+    font-family:roboto;
+}
 .list-heading{
     font-size:16px;
     font-weight:500;

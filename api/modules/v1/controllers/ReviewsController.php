@@ -38,7 +38,10 @@ class ReviewsController extends ApiBaseController
                 'review-fields',
                 'top-reviews',
                 'view-all-reviews',
-                'review-data'
+                'review-data',
+                'latest-reviews',
+                'top-user-reviews',
+                'most-reviewed',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -1451,7 +1454,7 @@ class ReviewsController extends ApiBaseController
 
         $cards = Organizations::find()
             ->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -1508,7 +1511,7 @@ class ReviewsController extends ApiBaseController
     {
         $card_query = UnclaimedOrganizations::find()
             ->alias('a');
-        $cards = $card_query->select(['a.organization_enc_id','max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews','max(c.created_on) created_on', 'a.name', 'a.initials_color color',  'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo,true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating']);
+        $cards = $card_query->select(['a.organization_enc_id', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating']);
         $cards->where(['a.is_deleted' => 0])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c'], false)
@@ -1545,40 +1548,53 @@ class ReviewsController extends ApiBaseController
         ];
     }
 
-    public function actionReviewData(){
+    public function actionLatestReviews()
+    {
         $options = [];
 
-        $options['rating'] = [1,2,3,4,5];
+        $options['rating'] = [1, 2, 3, 4, 5];
         $options['limit'] = 2;
         $options['sort'] = 1;
 
         $latest_reviews = $this->getReviewCards($options);
 
-        $options['rating'] = [4,5];
+        if (!empty($latest_reviews)) {
+            return $this->response(200, $latest_reviews);
+        } else {
+            return $this->response(404, 'Not Found');
+        }
+    }
+
+    public function actionTopUserReviews()
+    {
+        $options['rating'] = [4, 5];
         $options['limit'] = 2;
         $top_user_reviews = $this->getReviewCards($options);
 
+        if (!empty($top_user_reviews)) {
+            return $this->response(200, $top_user_reviews);
+        } else {
+            return $this->response(404, 'Not Found');
+        }
+    }
+
+    public function actionMostReviewed(){
         $options['rating'] = [4,5];
         $options['limit'] = 2;
         $options['most_reviewed'] = 1;
         $most_reviewed = $this->getReviewCards($options);
 
-        $data = [];
-        $data['latest_reviews'] = $latest_reviews;
-        $data['top_user_reviews'] = $top_user_reviews;
-        $data['most_reviewed'] = $most_reviewed;
-
-        if(!empty($latest_reviews) || !empty($top_user_reviews) || !empty($most_reviewed)){
-            return $this->response(200,$data);
-        }else{
-            return $this->response(404,'Not Found');
+        if (!empty($most_reviewed)) {
+            return $this->response(200, $most_reviewed);
+        } else {
+            return $this->response(404, 'Not Found');
         }
     }
 
     private function getReviewCards($options)
     {
         $q1 = Organizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color','max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -1633,7 +1649,7 @@ class ReviewsController extends ApiBaseController
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color','max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);

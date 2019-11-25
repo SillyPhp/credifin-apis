@@ -537,7 +537,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 14px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -551,7 +551,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family: roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;
