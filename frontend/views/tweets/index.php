@@ -104,6 +104,9 @@ if($type == 'internships') {
     <?php
 }
 $this->registerCss("
+.fullwidth-page > #wrapper.clearfix > .main-content{
+    padding-top:0px !important;
+}
 .re-twitte{
 	position:fixed;
 	width:225px;
@@ -512,7 +515,7 @@ twttr.ready(function (twttr) {
          // At this point all tweets have been fully loaded
          // and rendered and you we can proceed with our Javascript
         $.each($(".container blockquote"),function() {
-          console.log($(this).closest(".tweet-main").css("display","none"));
+          // console.log($(this).closest(".tweet-main").css("display","none"));
         })
     });
 });

@@ -7,7 +7,7 @@ use common\models\QuizAnswersPool;
 use common\models\QuizPool;
 use common\models\Quizs;
 use common\models\QuizSubmittedAnswers;
-use common\models\Quiz;
+//use common\models\Quiz;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -23,26 +23,24 @@ class QuizzesController extends Controller
                 ->alias('a')
                 ->select(['b.name','b.slug','CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/others.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
                 ->joinWith(['parentEnc b'], false)
-                ->innerJoinWith(['quizzes c'], false)
+                ->innerJoinWith(['quizs c'], false)
                 ->where(['a.assigned_to'=> 'Quiz','a.status' =>'Approved', 'a.is_deleted' => 0, 'c.is_deleted'=> 0, 'c.display' => 1])
                 ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
                 ->all();
 
-            $quizes = Quiz::find()
+            $quizes = Quizs::find()
                 ->alias('a')
-                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
-                ->joinWith(['quizQuestions b' => function ($x) {
-                    $x->onCondition([
-                        'b.is_deleted' => 0
-                    ]);
-                    $x->groupBy(['b.quiz_enc_id']);
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'COUNT(z.quiz_question_pool_enc_id) cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug'])
+                ->joinWith(['quizPoolEnc b' => function($b) {
+                    $b->joinWith(['quizQuestionsPools z']);
                 }], false)
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 1,
                     'a.display' => 1
                 ])
+                ->groupBy('a.quiz_enc_id')
                 ->asArray()
                 ->all();
             return $this->render('quiz-landing-page', [
@@ -50,14 +48,11 @@ class QuizzesController extends Controller
                 'quiz' => $quizes
             ]);
         } else {
-            $quizes = Quiz::find()
+            $quizes = Quizs::find()
                 ->alias('a')
-                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
-                ->joinWith(['quizQuestions b' => function ($x) {
-                    $x->onCondition([
-                        'b.is_deleted' => 0
-                    ]);
-                    $x->groupBy(['b.quiz_enc_id']);
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'COUNT(z.quiz_question_pool_enc_id) cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
+                ->joinWith(['quizPoolEnc b' => function($b) {
+                    $b->joinWith(['quizQuestionsPools z']);
                 }], false)
                 ->joinWith(['assignedCategoryEnc c' => function ($x) {
                     $x->joinWith(['parentEnc d']);
@@ -76,7 +71,7 @@ class QuizzesController extends Controller
     }
 
     public function actionAll(){
-        $quizes = Quiz::find()
+        $quizes = Quizs::find()
             ->alias('a')
             ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
             ->joinWith(['quizQuestions b' => function ($x) {
@@ -146,9 +141,67 @@ class QuizzesController extends Controller
                         'result' => $result,
                     ];
                 }
+            } else{
+                $quiz = Quizs::find()
+                    ->alias('a')
+                    ->joinWith(['quizPoolEnc b' => function ($x) {
+                        $x->andWhere([
+                            'b.status' => 1,
+                            'b.is_deleted' => 0
+                        ]);
+                        $x->joinWith(['quizQuestionsPools c' => function($c){
+                            $c->joinWith(['quizAnswersPools d']);
+                        }]);
+//                        $x->joinWith(['quizAnswers c']);
+                    }])
+                    ->where([
+                        'a.slug' => $slug,
+                        'a.status' => 1,
+                        'a.is_deleted' => 0
+                    ])
+                    ->asArray()
+                    ->one();
+                return [
+                    'results' => $quiz['quizPoolEnc']['quizQuestionsPools']
+                ];
             }
         }
-        if ($temp['template'] == 6) {
+        if ($temp['template'] == 1) {
+            $this->layout = 'quiz-main';
+            return $this->render('cricket-quiz', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 2) {
+            $this->layout = 'quiz2-main';
+            return $this->render('cricket-quiz-2', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 3) {
+            $this->layout = 'quiz3-main';
+            return $this->render('quiz-3', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 4) {
+            $this->layout = 'quiz4-main';
+            return $this->render('quiz-4', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 5) {
+            $this->layout = 'quiz5-main';
+            return $this->render('quiz-5', [
+                'score' => $s,
+                'total' => $t,
+                'quiz' => $temp
+            ]);
+        } elseif ($temp['template'] == 6) {
             $this->layout = 'quiz6-main';
             $result = QuizSubmittedAnswers::find()
                 ->select(['answer_enc_id'])
