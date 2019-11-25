@@ -11,6 +11,7 @@ use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
 use common\models\Referral;
 use common\models\ReviewsType;
+use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use Yii;
@@ -151,7 +152,7 @@ class CollegeIndexController extends ApiBaseController
                     }], true);
                 }], true)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id']])
+                ->where(['a.organization_enc_id' => $req['college_id'],'a.college_actions'=>0])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -414,7 +415,7 @@ class CollegeIndexController extends ApiBaseController
                 ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id']])
+                ->where(['a.organization_enc_id' => $req['college_id'],'a.college_actions'=>0])
                 ->asArray()
                 ->all();
 
@@ -501,7 +502,7 @@ class CollegeIndexController extends ApiBaseController
                         ->groupBy(['b.application_type_enc_id']);
                 }])
                 ->joinWith(['organizationLocations e' => function ($e) {
-                    $e->select(['e.organization_enc_id', 'f.city_enc_id','f.name']);
+                    $e->select(['e.organization_enc_id', 'f.city_enc_id', 'f.name']);
                     $e->joinWith(['cityEnc f'], false)
                         ->orOnCondition([
                             'e.is_deleted' => 0,
@@ -547,24 +548,39 @@ class CollegeIndexController extends ApiBaseController
                     'c.name',
                     'cc.educational_requirement course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'=>function($b){
-//                    $b->innerJoinWith(['appliedApplications ccc'=>function($c){
-//                        $c->joinWith(['applicationEnc d'=>function($d){
-//                            $d->joinWith(['title ee'=>function($ee){
+                ->joinWith(['userEnc b' => function ($b) {
+                    $b->select(['b.user_enc_id']);
+//                    $b->joinWith(['appliedApplications ccc' => function ($c) {
+////                        $c->select(['ccc.created_by','ccc.application_enc_id','e.organization_enc_id','e.name company_name','f.name','ccc.applied_application_enc_id','COUNT(CASE WHEN g.is_completed = 1 THEN 1 END) as active', 'COUNT(g.is_completed) total']);
+//                        $c->joinWith(['appliedApplicationProcesses g' => function ($g) {
+//                            $g->select(['g.applied_application_enc_id', 'h.field_enc_id']);
+//                            $g->joinWith(['fieldEnc h' => function ($h) {
+//                                $h->select(['h.field_enc_id', 'h.field_name', 'h.sequence']);
+//                            }]);
+//                        }]);
+//                        $c->joinWith(['applicationEnc d' => function ($d) {
+//                            $d->joinWith(['title ee' => function ($ee) {
 //                                $ee->joinWith(['categoryEnc f']);
 //                            }]);
 //                            $d->joinWith(['organizationEnc e']);
-//                        }]);
+//                            $d->onCondition([
+//                                'd.status' => 'Active',
+//                                'd.is_deleted' => 0,
+//                            ])
+//                            ->andOnCondition(["or",
+//                                ['d.application_for' => 0],
+//                                ['d.application_for' => 2],
+//                            ]);
+//                        }], false);
+//                        $c->onCondition(['ccc.is_deleted' => 0]);
+//                        $c->orderBy(['ccc.id' => SORT_DESC]);
 //                    }]);
-                }],false)
-                ->joinWith(['educationalRequirementEnc cc'],false)
+                }], true)
+                ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']])
                 ->asArray()
                 ->all();
-
-//            print_r($candidates);
-//            die();
 
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
         }
@@ -658,5 +674,34 @@ class CollegeIndexController extends ApiBaseController
             ->one();
 
         return $referral_code['code'];
+    }
+
+    public function actionCollegeActions()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
+
+            $user = UserOtherDetails::find()
+                ->where(['user_other_details_enc_id' => $data['user_id']])
+                ->one();
+
+            if ($user) {
+                if ($data['type'] == "approve") {
+                    $user->college_actions = 0;
+                } elseif ($data['type'] == "block") {
+                    $user->college_actions = 1;
+                } elseif ($data['type'] == "reject") {
+                    $user->college_actions = 2;
+                }
+
+                if ($user->update()) {
+                    return $this->response(200, ['status' => 200]);
+                } else {
+                    return $this->response(500, ['status' => 500]);
+                }
+            } else {
+                return $this->response(500, ['status' => 500]);
+            }
+        }
     }
 }

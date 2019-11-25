@@ -235,20 +235,34 @@
                                                 <span>Create AI Job</span>
                                             </a>
                                         </div>
-                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                            <a href="/account/jobs/quick-job">
-                                                <div>
-                                                    <span class="ey-services-icons quick"></span>
-                                                </div>
-                                                <span>Create Quick Job</span>
-                                            </a>
-                                        </div>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                            ?>
+                                            <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                                <a href="/account/jobs/campus-placement">
+                                                    <div>
+                                                        <span class="ey-services-icons campus"></span>
+                                                    </div>
+                                                    <span>Campus Hiring</span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
                                             <a href="/tweets/job/create">
                                                 <div>
                                                     <span class="ey-services-icons tweet"></span>
                                                 </div>
                                                 <span>Post Job Tweet</span>
+                                            </a>
+                                        </div>
+                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                            <a href="/account/jobs/quick-job">
+                                                <div>
+                                                    <span class="ey-services-icons quick"></span>
+                                                </div>
+                                                <span>Create Quick Job</span>
                                             </a>
                                         </div>
                                     </div>
@@ -271,12 +285,34 @@
                                                 <span>Create AI Internship</span>
                                             </a>
                                         </div>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                            ?>
+                                            <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                                <a href="/account/internships/campus-placement">
+                                                    <div>
+                                                        <span class="ey-services-icons campus"></span>
+                                                    </div>
+                                                    <span>Campus Hiring</span>
+                                                </a>
+                                            </div>
+                                            <?php
+                                        }
+                                        ?>
                                         <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
                                             <a href="/tweets/internship/create">
                                                 <div>
                                                     <span class="ey-services-icons tweet"></span>
                                                 </div>
                                                 <span>Post Internship Tweet</span>
+                                            </a>
+                                        </div>
+                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                            <a href="/account/internships/quick-internship">
+                                                <div>
+                                                    <span class="ey-services-icons quick"></span>
+                                                </div>
+                                                <span>Create Quick Internship</span>
                                             </a>
                                         </div>
                                     </div>
