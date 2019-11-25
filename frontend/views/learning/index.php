@@ -392,7 +392,7 @@ $this->registerCss('
     display: block;
     z-index: 9;
     position: relative;
-    padding-top: 25px;
+    padding-top: 55px;
 }
 .main-img {
     position: relative;
@@ -475,6 +475,9 @@ $this->registerCss('
     right: 22px;
 }
 @media (max-width:768px){
+.main-heading-set{
+    padding-top:25px;
+}
 .anim-1{
     bottom: -148px;
     left: 10px;
