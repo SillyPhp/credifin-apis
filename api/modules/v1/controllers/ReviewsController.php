@@ -1442,7 +1442,7 @@ class ReviewsController extends ApiBaseController
             return $this->response(422, 'Missing Information');
         }
 
-        if (!empty($data)) {
+        if (!empty($data['cards'])) {
             return $this->response(200, $data);
         } else {
             return $this->response(404, 'Not Found');
@@ -1540,7 +1540,7 @@ class ReviewsController extends ApiBaseController
 
         }
         $total_cards = $cards->count();
-        $data = $cards->limit($options['limit'])->offset($options['offset'])->asArray()->all();
+        $data = $cards->limit($options['limit'])->offset(($options['page'] - 1) * $options['limit'])->asArray()->all();
 
         return [
             'total' => $total_cards,
