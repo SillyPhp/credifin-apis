@@ -113,7 +113,7 @@ class CollegeIndexController extends ApiBaseController
                 ->alias('aa')
                 ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
                 ->distinct()
-                ->innerJoinWith(['organizationEnc b' => function ($x) {
+                ->joinWith(['organizationEnc b' => function ($x) {
                     $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) {
@@ -372,7 +372,7 @@ class CollegeIndexController extends ApiBaseController
             $save_collab->collaboration_enc_id = $utilitiesModel->encrypt();
             $save_collab->organization_enc_id = $org_id;
             $save_collab->college_enc_id = $college_enc_id;
-            $save_collab->organization_approvel = 0;
+            $save_collab->organization_approvel = 1;
             $save_collab->college_approvel = 1;
             $save_collab->created_on = date('Y-m-d H:i:s');
             $save_collab->created_by = $college_enc_id;
@@ -380,6 +380,18 @@ class CollegeIndexController extends ApiBaseController
                 return true;
             } else {
                 return false;
+            }
+        }else{
+            $erexx_comp = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
+                ->one();
+
+            if($erexx_comp->college_approvel == 0){
+                $erexx_comp->college_approvel = 1;
+                $erexx_comp->last_updated_by = $this->getOrgId();
+                if($erexx_comp->update()){
+                    return true;
+                }
             }
         }
     }
@@ -578,7 +590,7 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id']])
+                ->where(['a.organization_enc_id' => $req['college_id'],'a.college_actions'=>null])
                 ->asArray()
                 ->all();
 
