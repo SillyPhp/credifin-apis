@@ -176,6 +176,7 @@ class SiteController extends Controller
             ->where(['e.is_deleted' => 0, 'b.name' => 'India']);
         $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
         $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
+
         $ai_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
@@ -183,19 +184,21 @@ class SiteController extends Controller
                 'a.state_enc_id',
                 'b.country_enc_id',
                 'c.city_enc_id',
-                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
-                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
+                'count(CASE WHEN i.placement_location_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
+                'count(CASE WHEN i.placement_location_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
             ])
             ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
             ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
-            ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
-            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
+            ->innerJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
+            ->innerJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
             ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
-            ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
-            ->where(['j.is_deleted' => 0, 'l.is_deleted' => 0, 'b.name' => 'India']);
+//            ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
+            ->where(['j.is_deleted' => 0, 'b.name' => 'India']);
         $ai_jobs_state_wise = $ai_jobs->addSelect('a.name state_name')->groupBy('a.id');
         $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+
+//        print_r($ai_jobs_city_wise->orderBy(['city_name' => SORT_DESC])->limit(10)->all());exit();
         $cities_jobs = (new \yii\db\Query())
             ->from([
                 $other_jobs_city_wise->union($ai_jobs_city_wise),
@@ -205,6 +208,7 @@ class SiteController extends Controller
             ->orderBy(['jobs' => SORT_DESC])
             ->limit(4)
             ->all();
+//        print_r($cities_jobs);exit();
 
         $a = $this->_getTweets(null, null, "Jobs", 4, "");
         $b = $this->_getTweets(null, null, "Internships", 4, "");
