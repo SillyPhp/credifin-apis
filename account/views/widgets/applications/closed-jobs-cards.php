@@ -107,6 +107,17 @@ if (!empty($total_applications)) {
 <?php }
 Pjax::end();
 $this->registerCss("
+.mt-action-author > a{
+    font-family:roboto;
+    font-weight: 500;
+}
+.mt-action-desc{
+    font-family:roboto;
+}
+.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all).btn-sm{
+    font-family: roboto;
+    font-weight: 500;
+}
 .btn-group.btn-group-circle > .btn:first-child, .btn-group.btn-group-circle > .btn:last-child{
     border-radius:0px !important
 }

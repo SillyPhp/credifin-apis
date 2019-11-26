@@ -109,6 +109,7 @@ $this->registerCss('
     position:relative;
     border-radius:12px !important;
     color:#000;
+    font-family: roboto;
 }
 .work-profile-box:hover > a > .work-profile  {
     color:#fff !important;
