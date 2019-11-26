@@ -2,7 +2,6 @@
 
 use yii\helpers\Url;
 
-
 $this->title = $quiz['title'];
 
 $keywords = $quiz['keywords'];
@@ -51,7 +50,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 
-    <div class="container" style="margin-top: 12vh;">
+    <div id="app-main-quiz" class="container" style="margin-top: 12vh;">
         <div class="row">
             <div class="col-xs-12 col-md-10 col-md-offset-1 text-center">
                 <p id="quiz-question" class="animated"></p>
@@ -92,7 +91,6 @@ $this->params['seo_tags'] = [
     </div>
 
 <?php
-
 $background_image = null;
 
 if ($quiz['background_image']) {
@@ -100,7 +98,6 @@ if ($quiz['background_image']) {
 } else {
     $background_image = Url::to('/assets/themes/quiz/cric.png');
 }
-
 $this->registerCss('
 .background-overlay {
     width: 100%;
@@ -195,3 +192,6 @@ $this->registerCss('
 }
 ');
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+if($quiz['is_login'] == 1 && Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/login-required-modal');
+}
