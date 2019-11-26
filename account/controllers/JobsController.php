@@ -1471,6 +1471,7 @@ class JobsController extends Controller
                 ])
                 ->asArray()
                 ->all();
+
             return $this->render('campus-placement', [
                 'applications' => $this->__jobss(),
                 'colleges' => $colleges,
@@ -1485,6 +1486,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
+
             foreach ($data['applications'] as $app) {
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
@@ -1511,6 +1513,9 @@ class JobsController extends Controller
                     ];
                 }
             }
+
+            $this->__addCollege($data['colleges']);
+
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
@@ -1534,6 +1539,28 @@ class JobsController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
         }
     }
 
