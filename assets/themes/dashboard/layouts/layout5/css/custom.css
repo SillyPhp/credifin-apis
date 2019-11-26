@@ -601,3 +601,16 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     font-family:roboto;
     font-weight:500 !important;
 }
+.dashboard-stat .details .desc{
+    font-family:roboto;
+}
+.table thead tr th {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    font-family: roboto;
+}
+.table td, .table th {
+    font-size: 14px !important;
+    font-family: roboto;
+    font-weight: 400 !important;
+}
