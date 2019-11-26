@@ -179,15 +179,17 @@ a:hover{
     padding-top:10px;
     text-decoration:none;
     font-size:16px;
+    font-family: roboto;
 }
 .hr-com-name:hover{
     text-decoration:none;
 }
 .hr-com-field{
     padding-top:2px;
-    font-weight:bold;
+    font-weight:500;
     font-size:14px;
     color:#080808;
+    font-family: roboto;
 }
 .hr-com-name, .hr-com-field{
     text-overflow: ellipsis;
@@ -206,7 +208,7 @@ a:hover{
     padding-right:0px !important;
 }
 .j-grid > a {
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 11px;
     color: #00a0e3;
     border: 1px solid #00a0e3;
@@ -435,7 +437,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
 .p-category > a span {
     float: left;
     width: 100%;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 15px;
     color: #202020;
     margin-top: 18px;
@@ -446,6 +448,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     font-size: 13px;
     margin: 0;
     margin-top: 3px !important;
+    font-family: roboto;
 }
 .p-category:hover a {
     border-color:transparent;
@@ -593,4 +596,8 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
 }
 .new-card-container .card .face.face2 .content p{
     font-size:13px !important;
+}
+.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all){
+    font-family:roboto;
+    font-weight:500 !important;
 }
