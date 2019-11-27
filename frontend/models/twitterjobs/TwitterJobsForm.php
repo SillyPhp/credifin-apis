@@ -50,6 +50,7 @@ class TwitterJobsForm extends Model
 
     public function save($type)
     {
+        $this->html = $this->utf8ize($this->html);
         switch ($this->wage_type) {
             case 1:
                 $wage_type = 'Fixed';
@@ -271,6 +272,17 @@ class TwitterJobsForm extends Model
         if (!$asignedSkillModel->save()) {
             return false;
         }
+    }
+
+    private  function utf8ize($mixed) {
+        if (is_array($mixed)) {
+            foreach ($mixed as $key => $value) {
+                $mixed[$key] = $this->utf8ize($value);
+            }
+        } elseif (is_string($mixed)) {
+            return mb_convert_encoding($mixed, "UTF-8", "UTF-8");
+        }
+        return $mixed;
     }
 
 }
