@@ -353,7 +353,7 @@ use yii\helpers\Url;
             <div class="row" style="margin:20px">
                 <div class="col-md-4">
                     <div class="col-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/contributors.png'); ?>"/>
+                        <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/learning-wt.png'); ?>"/>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -387,12 +387,13 @@ use yii\helpers\Url;
 
 
 <?php
+echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
 .main-heading-set {
     display: block;
     z-index: 9;
     position: relative;
-    padding-top: 25px;
+    padding-top: 55px;
 }
 .main-img {
     position: relative;
@@ -475,6 +476,9 @@ $this->registerCss('
     right: 22px;
 }
 @media (max-width:768px){
+.main-heading-set{
+    padding-top:25px;
+}
 .anim-1{
     bottom: -148px;
     left: 10px;
@@ -574,7 +578,8 @@ $this->registerCss('
 }
 .topic-name {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
+    font-family: roboto;
 }
 .box-content {
     padding: 10px 0;
@@ -586,13 +591,15 @@ $this->registerCss('
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
+    font-family: roboto;
 }
 .t-answers {
     padding-top: 10px;
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
     border-top: 1px solid #eee;
     margin-top: 10px;
+    font-family: roboto;
 }
 .best-answers {
     float: right;
@@ -671,19 +678,21 @@ $this->registerCss('
     background: ghostwhite;
     margin-top: 40px;
 }
-.col-img{
-    text-align:center;
+.col-img {
+    text-align: center;
+    max-width: 250px;
+    margin: 0 auto;
 }
 @media (max-width: 768px) {
 .col-img img{
-    width: 65%
+    width: 100%
   }
 }
 @media (max-width: 500px) {
     .col-text{padding-top:12px !important;}
-    .col-img img{width: 100%;}
+    .col-img img{width: 80%;}
     .col-inner {font-size: 12px !important;}
-    .col-head {font-size:18px !important;}
+    .col-head {font-size:16px !important;}
 }
 .col-text {
     text-align: center;
@@ -806,28 +815,8 @@ $this->registerCss('
 .popular-cate{
     text-align:center;
 }
-.newset{
-    text-align:center;
-    max-width: 160px;
-    line-height: 210px;
-    position: relative;
-    width:100%;
-    margin-bottom:20px;
-}
-.imag{
-    text-align: right;
-}
-.txt {
-    position: absolute;
-    line-height: 17px;
-    bottom: 10px;
-    left: -4px;
-    font-weight: 400;
-    color: #222;
-    font-family: roboto;
-    text-transform: capitalize;
-    background-color: #fff;
-    padding: 0px 5px;
+.cat-padding{
+    padding-top:20px;
 }
 .b-padding{
     padding-top: 125px;
@@ -853,9 +842,6 @@ $this->registerCss('
     transition: all .5s; 
     text-decoration: none; 
     box-shadow: 0px 0px 10px rgb(255, 120, 3, .5 )  
-}
-.cat-padding{
-    padding-top:20px;
 }
 .mv{
     padding: 0px 0 0 0;
@@ -1639,23 +1625,9 @@ $script = <<< JS
             }
         }
    });
-
-    $.ajax({
-        method: "POST",
-        url : '/learning/home-categories',
-        async: false,
-        success: function(response) {
-            if(response.status === 200) {
-                if(response.result.length > 0){
-                    var contributor = $('#video-categories').html();
-                    $("#categories").html(Mustache.render(contributor, response.result));
-                }
-            }
-        }
-   });
     
-        $(document).ready(function(){
-        $('[data-toggle="tooltip"]').tooltip();
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
 });
         
   // $("#share").hover(function(){
@@ -1714,21 +1686,6 @@ $this->registerJsFile('@eyAssets/js/multislider.js', ['depends' => [\yii\web\Jqu
                      alt="">
             </div>
         </div>
-    </div>
-    {{/.}}
-</script>
-
-<script id="video-categories" type="text/template">
-    {{#.}}
-    <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
-        <a href="/learning/videos/category/{{slug}}">
-            <div class="newset">
-                <div class="imag">
-                    <img src="{{icon}}">
-                </div>
-                <div class="txt">{{name}}</div>
-            </div>
-        </a>
     </div>
     {{/.}}
 </script>

@@ -174,7 +174,7 @@
                 <?php
                 if (Yii::$app->user->identity->organization_enc_id) {
                     ?>
-                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '')?>">
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '') ?>">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
@@ -209,20 +209,20 @@
                                                             <span>Create AI Job</span>
                                                         </a>
                                                     </li>
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <?php
-                                                        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-                                                            ?>
+                                                    <?php
+                                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                                        ?>
+                                                        <li class="ey-head-sub-menu-icon">
                                                             <a href="/account/jobs/campus-placement">
                                                                 <div>
                                                                     <span class="ey-services-icons campus"></span>
                                                                 </div>
                                                                 <span>Campus Hiring</span>
                                                             </a>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </li>
+                                                        </li>
+                                                        <?php
+                                                    }
+                                                    ?>
                                                     <li class="ey-head-sub-menu-icon">
                                                         <a href="/tweets/job/create">
                                                             <div>
@@ -254,20 +254,20 @@
                                                             <span>Create AI Internship</span>
                                                         </a>
                                                     </li>
-                                                    <li class="ey-head-sub-menu-icon">
-                                                        <?php
-                                                        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
-                                                            ?>
+                                                    <?php
+                                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                                        ?>
+                                                        <li class="ey-head-sub-menu-icon">
                                                             <a href="/account/internships/campus-placement">
                                                                 <div>
                                                                     <span class="ey-services-icons campus"></span>
                                                                 </div>
                                                                 <span>Campus Hiring</span>
                                                             </a>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </li>
+                                                        </li>
+                                                        <?php
+                                                    }
+                                                    ?>
                                                     <li class="ey-head-sub-menu-icon">
                                                         <a href="/tweets/internship/create">
                                                             <div>
@@ -320,7 +320,7 @@
                     <?php
                 } else {
                     ?>
-                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '')?>">
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '') ?>">
                         <div class="container-fluid">
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">

@@ -74,6 +74,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss("
+.mt-action-details{
+    font-family:roboto;
+} 
 .font-dark > span > i {
     font-size: 13px;
     margin-left: 5px;

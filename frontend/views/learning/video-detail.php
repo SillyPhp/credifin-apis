@@ -35,6 +35,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <section class="bg-blue">
     <div class="large-container">
         <div class="row">
@@ -49,6 +50,16 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="5305796212"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
@@ -249,13 +260,6 @@ $this->params['seo_tags'] = [
 <!--                        </label>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({
-                        google_ad_client: "ca-pub-9111969809145171",
-                        enable_page_level_ads: true
-                    });
-                </script>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -269,6 +273,16 @@ $this->params['seo_tags'] = [
                     <div class="row" id="r-videos">
                     </div>
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="6492214366"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
     </div>

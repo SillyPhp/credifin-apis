@@ -25,11 +25,12 @@ echo $this->render('/widgets/header/secondary-header', [
                                 <div class="icon-white-bg">
                                     <a href="/account/jobs/create">
                                         <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png')?>" alt="">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"
+                                                 alt="">
                                         </div>
                                     </a>
                                 </div>
-<!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
+                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                             </div>
                         </div>
                     </div>
@@ -44,32 +45,39 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="face face1">
-                        <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/campus-placement">
-                                        <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png')?>" alt="">
-                                        </div>
-                                    </a>
+                <?php
+                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                    ?>
+                    <div class="card">
+                        <div class="face face1">
+                            <div class="content">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
+                                        <a href="/account/jobs/campus-placement">
+                                            <div class="iwb-pos-abso">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"
+                                                     alt="">
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
                                 </div>
-<!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
+                            </div>
+                        </div>
+                        <div class="face face2">
+                            <div class="content">
+                                <a href="/account/jobs/campus-placement" target="_blank">
+                                    <h3>
+                                        Campus Hiring
+                                    </h3>
+                                    <p>Select jobs for campus hiring</p>
+                                </a>
                             </div>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/campus-placement" target="_blank">
-                                <h3>
-                                    Campus Hiring
-                                </h3>
-                                <p>Select jobs for campus hiring</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                    <?php
+                }
+                ?>
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
@@ -77,11 +85,12 @@ echo $this->render('/widgets/header/secondary-header', [
                                 <div class="icon-white-bg">
                                     <a href="/tweets/job/create">
                                         <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png')?>" alt="">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png') ?>"
+                                                 alt="">
                                         </div>
                                     </a>
                                 </div>
-<!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
+                                <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
                             </div>
                         </div>
                     </div>
@@ -103,33 +112,8 @@ echo $this->render('/widgets/header/secondary-header', [
                                 <div class="icon-white-bg">
                                     <a href="/account/jobs/quick-job">
                                         <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png')?>" alt="">
-                                        </div>
-                                    </a>
-                                </div>
-<!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/quick-job" target="_blank">
-                                <h3>
-                                    Quick Jobs
-                                </h3>
-                                <p>Create Quick Jobs</p>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="face face1">
-                        <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/quick-job">
-                                        <div class="iwb-pos-abso">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/walk-in-interview.png')?>" alt="">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png') ?>"
+                                                 alt="">
                                         </div>
                                     </a>
                                 </div>
@@ -141,7 +125,7 @@ echo $this->render('/widgets/header/secondary-header', [
                         <div class="content">
                             <a href="/account/jobs/quick-job" target="_blank">
                                 <h3>
-                                    Walk in Interviews
+                                    Quick Jobs
                                 </h3>
                                 <p>Create Quick Jobs</p>
                             </a>
@@ -169,23 +153,32 @@ echo $this->render('/widgets/header/secondary-header', [
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
                                 <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs'); ?>
-                            <span href="#" data-toggle="tooltip" title="Here you will find all your active jobs"><i class="fa fa-info-circle"></i></span>
+                            <span href="#" data-toggle="tooltip" title="Here you will find all your active jobs"><i
+                                        class="fa fa-info-circle"></i></span>
                         </span>
                             </div>
                             <div class="actions">
                                 <div class="set-im">
-                                    <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
-                                       title="Campus Hiring" class="ai">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
-                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Create AI Job"
+                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                       title="Create AI Job"
                                        class="ai">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>"></a>
-                                    <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
-                                       title="Create Quick Job" class="quick">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job1.png'); ?>"></a>
-                                    <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip" title="Post Job Tweet"
+                                    <?php
+                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                        ?>
+                                        <a href="<?= Url::toRoute('/jobs/campus-placement'); ?>" data-toggle="tooltip"
+                                           title="Campus Hiring" class="ai">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
+                                        <?php
+                                    }
+                                    ?>
+                                    <a href="<?= Url::to('/tweets/job/create'); ?>" data-toggle="tooltip"
+                                       title="Post Job Tweet"
                                        class="tweet">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>"></a>
+                                    <a href="<?= Url::toRoute('/jobs/quick-job'); ?>" data-toggle="tooltip"
+                                       title="Create Quick Job" class="quick">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png'); ?>"></a>
                                     <?php if ($applications['total'] > 8): ?>
                                         <a href="<?= Url::toRoute('/jobs/active-jobs'); ?>" data-toggle="tooltip"
                                            title="View All" class="view">
@@ -224,7 +217,8 @@ echo $this->render('/widgets/header/secondary-header', [
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
                                 <span class="caption-subject font-dark bold uppercase">Campus Placement Jobs
-                            <span data-toggle="tooltip" title="Here you will find jobs that are active on Erexx"><i class="fa fa-info-circle"></i></span></span>
+                            <span data-toggle="tooltip" title="Here you will find jobs that are active on Erexx"><i
+                                        class="fa fa-info-circle"></i></span></span>
                             </div>
                             <div class="actions">
                                 <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Add New">
@@ -273,13 +267,15 @@ echo $this->render('/widgets/header/secondary-header', [
                         </span>
                             </div>
                             <div class="actions">
-                                <a href="<?= Url::toRoute('/questionnaire/create'); ?>" data-toggle="tooltip" title="Add New">
+                                <a href="<?= Url::toRoute('/questionnaire/create'); ?>" data-toggle="tooltip"
+                                   title="Add New">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
                                 <a href="<?= Url::toRoute('/templates/questionnaire/index'); ?>" data-toggle="tooltip"
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                                 <?php if ($questionnaire['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip" title="View All">
+                                    <a href="<?= Url::toRoute('/questionnaire'); ?>" data-toggle="tooltip"
+                                       title="View All">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 <?php endif; ?>
                             </div>
@@ -340,7 +336,8 @@ echo $this->render('/widgets/header/secondary-header', [
                                    title="Choose from Templates">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
                                 <?php if ($interview_processes['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip" title="View All">
+                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
+                                       title="View All">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                                 <?php endif; ?>
                             </div>
@@ -530,6 +527,7 @@ $this->registerCss('
 }
 
 .new-card-container .card .face.face2 {
+    width:99%;
     position: absolute;
     top:0px;
     right:0px;
@@ -537,7 +535,7 @@ $this->registerCss('
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 20px 15px;
     box-sizing: border-box;
     box-shadow: 0 8px 19px rgba(0,0,0,0.4);
     transform: translateX(0px);
@@ -546,7 +544,7 @@ $this->registerCss('
 
 .new-card-container .card:hover .face.face2{
     transform: translateX(0x);
-    right:-100%;
+    right:-99%;
     z-index:1;
 }
 
@@ -555,15 +553,17 @@ $this->registerCss('
     padding: 0;
     text-align: center;
     color: #414141;
+    font-size: 13px;
 }
 
 .new-card-container .card .face.face2 .content h3 {
     margin: 0 0 10px 0;
     padding: 0;
     color: #fff;
-    font-size: 24px;
+    font-size: 20px;
     text-align: center;
     color: #414141;
+    font-weight: 500;
 } 
 
 .new-card-container a {
