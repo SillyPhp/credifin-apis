@@ -77,7 +77,7 @@ $(document).on('submit','#created-company',function(event) {
             contentType: false,
             processData: false,
             beforeSend: function () {
-               l_btn.html('<i class="fa fa-circle-o-notch"></i>');
+               l_btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
                l_btn.attr("disabled","true");
             },
             success: function (response) {

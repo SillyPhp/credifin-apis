@@ -83,7 +83,7 @@ class CreateCompany extends Model
       }
       else
       {
-          return false;
+          print_r($model->getErrors());
       }
 
   }
