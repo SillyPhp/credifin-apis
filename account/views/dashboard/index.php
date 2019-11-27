@@ -29,6 +29,8 @@ endif;
                 'services' => $services,
             ]);
             ?>
+            <?= $this->render('/widgets/user-ques'); ?>
+            <?= $this->render('/widgets/features'); ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -344,6 +346,30 @@ endif;
                         ?>
                     </div>
                 </div>
+                <div class="portlet light nd-shadow">
+                    <div class="portlet-title">
+                        <div class="caption">
+                            <i class=" icon-social-twitter font-dark hide"></i>
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Applicants'); ?><span
+                                        data-toggle="tooltip" title="Applicants for jobs and internships"><i
+                                            class="fa fa-info-circle"></i></span></span>
+                        </div>
+                        <div class="actions">
+                            <div class="set-im">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row ">
+                            <div class="col-md-12">
+                                <div class="o-hidden" id="applicants">
+                                  <?= $this->render('/widgets/dashboard-candidate-card')?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
             <!--                <div class="portlet-title" style="border-bottom:none;">-->
@@ -412,6 +438,9 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.ps__rail-x{
+    display:block !important;
+}
 .quick > img{
     height:38px;
 }
@@ -614,5 +643,8 @@ $script = <<<JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
+var ps = new PerfectScrollbar('#applicants');
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

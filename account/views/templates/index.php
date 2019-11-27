@@ -86,6 +86,90 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+    <div class="col-lg-6 col-xs-12 col-sm-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-social-twitter font-dark hide"></i>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs Templates'); ?></span>
+                </div>
+                <div class="actions">
+                    <?php if ($interview_processes['total'] > 4): ?>
+                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <?php
+                        if ($interview_processes['total'] > 0) {
+                            echo $this->render('/widgets/jobs/template-card', [
+                                'processes' => $interview_processes['data'],
+                                'per_row' => 2,
+                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No process to display</div>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12 col-sm-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-social-twitter font-dark hide"></i>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships Templates'); ?></span>
+                </div>
+                <div class="actions">
+                    <?php if ($interview_processes['total'] > 4): ?>
+                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <?php
+                        if ($interview_processes['total'] > 0) {
+                            echo $this->render('/widgets/internships/template-card', [
+                                'processes' => $interview_processes['data'],
+                                'per_row' => 2,
+                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No process to display</div>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <?php
 $this->registerCss('
