@@ -127,7 +127,8 @@ class TweetsController extends Controller
                 ['like', 'h.name', $keywords],
             ])
             ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
+            ->andFilterWhere(['like', 'j.name', $type])
+            ->andWhere(['a.is_deleted'=>0]);
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
@@ -150,7 +151,8 @@ class TweetsController extends Controller
                 ['like', 'h.name', $keywords],
             ])
             ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
+            ->andFilterWhere(['like', 'j.name', $type])
+            ->andWhere(['a.is_deleted'=>0]);
 
         $result = (new \yii\db\Query())
             ->from([
