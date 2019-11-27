@@ -111,36 +111,25 @@ class CollegeIndexController extends ApiBaseController
 
             $companies = ErexxCollaborators::find()
                 ->alias('aa')
-                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id','count(distinct c.application_enc_id) as count_s'])
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) {
-                    $x->select(['b.organization_enc_id','b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->groupBy('organization_enc_id');
+                    $x->select(['b.organization_enc_id','b.name organization_name','count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count','count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count','b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) {
-//                        $y->select(['c.organization_enc_id', 'c.application_enc_id', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND c.status = "Active" AND c.is_deleted = 0 AND c.application_for = 2 Then 1 END)  as data_count']);
-//                        $y->select(['c.organization_enc_id', 'c.application_enc_id', 'COUNT(c.application_enc_id)  as data_count']);
-                        $y->select(['c.organization_enc_id', 'c.application_enc_id']);
-//                            ->joinWith(['applicationTypeEnc d'], false)
+                        $y->joinWith(['applicationTypeEnc d'], false);
                         $y->andWhere([
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
                         ]);
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
-//                            ->orOnCondition([
-//                                'c.status' => 'Active',
-//                                'c.is_deleted' => 0,
-//                                'c.application_for' => 2
-//                            ]);
-                    }]);
-
+                    }],false);
                 }])
-                ->groupBy(['c.application_enc_id'])
-                ->where(['aa.college_enc_id' => 'RXVWV1duTFYwZTRJZmsyVUJuMGFVUT09', 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0])
+                ->where(['aa.college_enc_id' => $req['college_id'], 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0])
                 ->asArray()
                 ->all();
 
-            print_r($companies);
-            die();
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
