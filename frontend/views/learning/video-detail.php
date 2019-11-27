@@ -50,12 +50,13 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
-                <ins class=“adsbygoogle”
-                     style=“display:block”
-                     data-ad-client=“ca-pub-2186770765824304"
-                     data-ad-slot=“5305796212”
-                     data-ad-format=“auto”
-                     data-full-width-responsive=“true”></ins>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="5305796212"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
@@ -196,12 +197,12 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
-                <ins class=“adsbygoogle”
-                     style=“display:block”
-                     data-ad-client=“ca-pub-2186770765824304"
-                     data-ad-slot=“6492214366”
-                     data-ad-format=“auto”
-                     data-full-width-responsive=“true”></ins>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="6492214366"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
@@ -344,7 +345,7 @@ padding-top:0px;
 padding-bottom:30px
 }
 .blue-bg{
-padding-top:0px;
+padding-top:20px;
 padding-bottom:30px
 }
 .padd-left-0{
