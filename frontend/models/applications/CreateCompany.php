@@ -65,8 +65,7 @@ class CreateCompany extends Model
               return false;
           }
           $source_path = $base_path . DIRECTORY_SEPARATOR . $model->logo;
-          $destinationPath = Yii::$app->params->empower_youth->upload_directories->unclaimed_organizations->logo_path . $model->logo_location;
-          if (!$this->logo->saveAs($source_path)|| !Yii::$app->utilities->recurseCopy($source_path, $destinationPath, $model->logo)) {
+          if (!$this->logo->saveAs($source_path)) {
               return false;
           }
       }
