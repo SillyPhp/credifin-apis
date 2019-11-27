@@ -255,6 +255,7 @@ $this->registerCss('
     padding: 10px 15px;
     border-radius: 5px;
     color: #fff;  
+    font-family: roboto;
 }
 .es-btn button:hover{
     box-shadow: 0 0 10px rgba(0,0,0,.5);
@@ -264,22 +265,25 @@ $this->registerCss('
     -ms-transition:.3s all;
 }
 .es-text{
-     font-family: lora;
+     font-family: roboto;
     font-size: 20px;
     padding-top: 20px;
     font-weight:bold;
+}
+.es-text2{
+     font-family: roboto;
 }
 .btn_add_new_org{
     margin-top:15px;
 }
 .add_new_org1{
-
     padding:10px 15px;
     background:#fff;
     color:#00a0e3;
     border: 2px solid #eee;
     border-radius:10px;
-    font-weight:bold;
+    font-weight:500 !important;
+    font-family:roboto;
 }
 .add_new_org1:hover{
     color:#00a0e3;
@@ -308,6 +312,9 @@ $this->registerCss('
     border:none;
     border-radius:10px;
     color:#bcbaba;
+    font-size: 16px;
+    font-family: roboto;
+    font-weight: 500;
 }
 input::placeholder{
     color:#bcbaba;
@@ -323,6 +330,7 @@ form input[type="text"]:focus{
     border:none;
     background:none;
     color:#bcbaba;
+    font-size: 16px;    
 }
 #loading_img
 {
@@ -390,7 +398,7 @@ form input[type="text"]:focus{
     background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
     background-size:100% 300px;
     background-repeat: no-repeat;
-    padding:60px 0 35px 0;
+    padding:130px 0 35px 0;
     color:#fff;
     margin-bottom:20px;
 } 
@@ -474,13 +482,13 @@ form input[type="text"]:focus{
     padding:0px 15px 0px 10px;
     font-size:17px;
     text-transform:uppercase;
-    font-family: lora;
+    font-family: roboto;
 }
 .overall-box-heading{
     font-size:16px;
     padding-top:5px;
-    font-weight:bold;
-    font-family:lora;
+    font-weight:500;
+    font-family:roboto;
 }
 .all-label{
     padding-top:5px;
@@ -491,6 +499,8 @@ form input[type="text"]:focus{
     padding-top:5px;
     font-weight:500;
     text-transform: capitalize;;
+    font-family: roboto;
+    font-weight: 300;
 }
 .f-rating-box-2{
     margin-top:20px;
