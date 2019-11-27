@@ -88,7 +88,7 @@ $(document).on('submit','#created-company',function(event) {
                     $('#email').val(email);
                 } else {
                     toastr.error(response.message, response.title);
-                    l_btn.html('submit');
+                    l_btn.html('Submit');
                     l_btn.removeAttr("disabled");
                 }
             },

@@ -421,7 +421,6 @@ class JobsController extends Controller
         if ($createCompany->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $createCompany->logo = UploadedFile::getInstance($createCompany, 'logo');
-            return json_encode($createCompany->save());
             if ($createCompany->save()) {
                 return [
                     'status' => 'success',

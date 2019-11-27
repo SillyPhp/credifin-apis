@@ -32,7 +32,7 @@ class CreateCompany extends Model
           [['contact'],'string','max'=>15],
           [['name','email','website','description'],'trim'],
           ['email','email'],
-          [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpg, gif'],
+          [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpeg, jpg, gif'],
       ];
   }
 
@@ -83,7 +83,7 @@ class CreateCompany extends Model
       }
       else
       {
-          print_r($model->getErrors());
+          return false;
       }
 
   }
