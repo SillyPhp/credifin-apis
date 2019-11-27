@@ -39,6 +39,10 @@ $this->registerCss('
     font-weight: 400;
     font-family: Roboto;
 }
+.text-center > h2 {
+    font-family:roboto;
+    font-weight:400;
+}
 @media only screen and (max-width: 1600px) {
     .us-background{
         background-size: 100% auto;

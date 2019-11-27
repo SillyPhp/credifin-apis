@@ -525,7 +525,7 @@ class JobsController extends Controller
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
             ->asArray()
@@ -1275,24 +1275,26 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization->organization_enc_id):
             $model = new ShortJobs();
+            $type = 'Jobs';
             $data = new ApplicationForm();
             $primary_cat = $data->getPrimaryFields();
             $job_type = $data->getApplicationTypes();
             $placement_locations = $data->PlacementLocations();
             $currencies = $data->getCurrency();
             if ($model->load(Yii::$app->request->post())) {
-                if ($model->save()) {
+                if ($model->save($type)) {
                     Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Something Went Wrong..');
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
 
     private function __candidateApplications($limit = NULL)
     {
@@ -1469,6 +1471,7 @@ class JobsController extends Controller
                 ])
                 ->asArray()
                 ->all();
+
             return $this->render('campus-placement', [
                 'applications' => $this->__jobss(),
                 'colleges' => $colleges,
@@ -1483,6 +1486,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
+
             foreach ($data['applications'] as $app) {
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
@@ -1509,6 +1513,9 @@ class JobsController extends Controller
                     ];
                 }
             }
+
+            $this->__addCollege($data['colleges']);
+
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
@@ -1532,6 +1539,28 @@ class JobsController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
         }
     }
 

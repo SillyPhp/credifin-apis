@@ -4,6 +4,7 @@ namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ExtendsJob;
+use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
@@ -42,7 +43,29 @@ class InternshipsController extends Controller
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
         return parent::beforeAction($action);
     }
-
+    public function actionQuickInternship()
+    {
+        if (Yii::$app->user->identity->organization->organization_enc_id):
+            $model = new ShortJobs();
+            $type = 'Internships';
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields($type);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save($type)) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
+    }
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -1255,6 +1278,9 @@ class InternshipsController extends Controller
                     ];
                 }
             }
+
+            $this->__addCollege($data['colleges']);
+
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
@@ -1332,6 +1358,28 @@ class InternshipsController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
         }
     }
 

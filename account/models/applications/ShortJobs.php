@@ -272,7 +272,7 @@ class ShortJobs extends Model
         return true;
     }
 
-    public function save()
+    public function save($t)
     {
         switch ($this->wage_type) {
             case 1:
@@ -290,7 +290,7 @@ class ShortJobs extends Model
             default:
                 $wage_type = 'Unpaid';
         }
-        $application_type_enc_id = ApplicationTypes::findOne(['name' => 'Jobs']);
+        $application_type_enc_id = ApplicationTypes::findOne(['name' => $t]);
         $employerApplication = new EmployerApplications();
         $utilitiesModel = new Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);

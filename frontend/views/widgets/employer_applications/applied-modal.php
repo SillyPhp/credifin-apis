@@ -40,6 +40,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+    </div>
 </section>
 <?php
 $this->registerCss('

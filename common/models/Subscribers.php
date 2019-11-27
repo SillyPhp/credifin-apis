@@ -28,7 +28,7 @@ class Subscribers extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['subscriber_enc_id', 'first_name', 'last_name', 'email'], 'required'],
+            [['subscriber_enc_id', 'email'], 'required'],
             [['is_verified'], 'integer'],
             [['subscriber_enc_id'], 'string', 'max' => 100],
             [['first_name', 'last_name'], 'string', 'max' => 30],

@@ -93,7 +93,7 @@ class TwitterJobsForm extends Model
             $utilitiesModel->variables['table_name'] = Categories::tableName();
             $utilitiesModel->variables['field_name'] = 'slug';
             $categoriesModel->slug = $utilitiesModel->create_slug();
-            $categoriesModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
+            $categoriesModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $twitterJobs, 'Jobs');
             } else {
@@ -143,7 +143,7 @@ class TwitterJobsForm extends Model
             $model->slug = $slug_replace_str;
             $model->website = null;
             $model->name = $this->company_name;
-            $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
+            $model->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
             $model->initials_color = '#73ef9c';
             $model->status = 1;
             if ($model->save()) {
@@ -175,7 +175,7 @@ class TwitterJobsForm extends Model
                             $applicationSkillsModel->skill_enc_id = $skills_set['skill_enc_id'];
                             $applicationSkillsModel->tweet_enc_id = $twitterJobs->tweet_enc_id;
                             $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
-                            $applicationSkillsModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
+                            $applicationSkillsModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
                             if ($applicationSkillsModel->save()) {
                                 $chk_skill = $data_skill
                                     ->innerJoin(AssignedSkills::tableName().'as b','b.skill_enc_id = a.skill_enc_id')
@@ -203,7 +203,7 @@ class TwitterJobsForm extends Model
                                 $applicationSkillsModel->skill_enc_id = $skillsModel->skill_enc_id;
                                 $applicationSkillsModel->tweet_enc_id = $twitterJobs->tweet_enc_id;
                                 $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
-                                $applicationSkillsModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
+                                $applicationSkillsModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
                                 if ($applicationSkillsModel->save()) {
                                     $this->assignedSkill($skillsModel->skill_enc_id, $cat_id,'Jobs');
                                 }
@@ -248,7 +248,7 @@ class TwitterJobsForm extends Model
         $assignedCategoryModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
         $assignedCategoryModel->assigned_to = $typ;
         $assignedCategoryModel->created_on = date('Y-m-d H:i:s');
-        $assignedCategoryModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);;
+        $assignedCategoryModel->created_by = ((Yii::$app->user->identity->user_enc_id)?Yii::$app->user->identity->user_enc_id:null);
         if ($assignedCategoryModel->save()) {
             $twitterJobs->job_title = $assignedCategoryModel->assigned_category_enc_id;
         } else {
