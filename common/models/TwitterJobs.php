@@ -54,30 +54,38 @@ class TwitterJobs extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
-        return [
-            [['tweet_enc_id', 'profile', 'job_title', 'wage_type', 'job_type', 'url', 'author_name', 'author_url', 'html_code'], 'required'],
-            [['wage_type', 'job_type', 'html_code'], 'string'],
-            [['fixed_wage', 'min_wage', 'max_wage'], 'number'],
-            [['is_deleted'], 'integer'],
-            [['created_on', 'last_updated_on'], 'safe'],
-            [['tweet_enc_id', 'unclaim_organization_enc_id', 'claim_organization_enc_id', 'application_type_enc_id', 'profile', 'job_title', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['url', 'contact_email', 'apply_url', 'author_name', 'author_url'], 'string', 'max' => 255],
-            [['tweet_enc_id'], 'unique'],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
-            [['unclaim_organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['unclaim_organization_enc_id' => 'organization_enc_id']],
-            [['claim_organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['claim_organization_enc_id' => 'organization_enc_id']],
-            [['job_title'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['job_title' => 'assigned_category_enc_id']],
-            [['profile'], 'exist', 'skipOnError' => true, 'targetClass' => Categories::className(), 'targetAttribute' => ['profile' => 'category_enc_id']],
-            [['application_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => ApplicationTypes::className(), 'targetAttribute' => ['application_type_enc_id' => 'application_type_enc_id']],
-        ];
-    }
 
     /**
      * @inheritdoc
      */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('dsbedutech', 'ID'),
+            'tweet_enc_id' => Yii::t('dsbedutech', 'Tweet Enc ID'),
+            'unclaim_organization_enc_id' => Yii::t('dsbedutech', 'Unclaim Organization Enc ID'),
+            'claim_organization_enc_id' => Yii::t('dsbedutech', 'Claim Organization Enc ID'),
+            'application_type_enc_id' => Yii::t('dsbedutech', 'Application Type Enc ID'),
+            'profile' => Yii::t('dsbedutech', 'Profile'),
+            'job_title' => Yii::t('dsbedutech', 'Job Title'),
+            'wage_type' => Yii::t('dsbedutech', 'Wage Type'),
+            'fixed_wage' => Yii::t('dsbedutech', 'Fixed Wage'),
+            'min_wage' => Yii::t('dsbedutech', 'Min Wage'),
+            'max_wage' => Yii::t('dsbedutech', 'Max Wage'),
+            'job_type' => Yii::t('dsbedutech', 'Job Type'),
+            'url' => Yii::t('dsbedutech', 'Url'),
+            'contact_email' => Yii::t('dsbedutech', 'Contact Email'),
+            'apply_url' => Yii::t('dsbedutech', 'Apply Url'),
+            'author_name' => Yii::t('dsbedutech', 'Author Name'),
+            'author_url' => Yii::t('dsbedutech', 'Author Url'),
+            'html_code' => Yii::t('dsbedutech', 'Html Code'),
+            'is_deleted' => Yii::t('dsbedutech', 'Is Deleted'),
+            'created_on' => Yii::t('dsbedutech', 'Created On'),
+            'created_by' => Yii::t('dsbedutech', 'Created By'),
+            'last_updated_on' => Yii::t('dsbedutech', 'Last Updated On'),
+            'last_updated_by' => Yii::t('dsbedutech', 'Last Updated By'),
+        ];
+    }
 
     /**
      * @return \yii\db\ActiveQuery
