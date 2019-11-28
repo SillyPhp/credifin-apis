@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use common\models\AssignedHeader;
 use common\models\HeaderMenuItems;
 use Yii;
 use yii\base\Component;
@@ -12,10 +13,16 @@ class HeaderComponent extends Component
     public function getMenuHeader($route, $menu_of = 1)
     {
         return '';
-        $children = HeaderMenuItems::find()
-            ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
-            ->where(['menu_of' => $menu_of])
-            ->orderBy(['sequence' => SORT_ASC])
+        $children = AssignedHeader::find()
+            ->alias('a')
+            ->joinWith(['headerEnc b' => function($b){
+                $b->joinWith(['headerMenuEnc c' => function($c){
+
+                }]);
+            }])
+//            ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
+//            ->where(['menu_of' => $menu_of])
+//            ->orderBy(['sequence' => SORT_ASC])
             ->asArray()
             ->all();
         
