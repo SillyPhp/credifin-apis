@@ -338,7 +338,7 @@ class ReviewsController extends ApiBaseController
             $data['org_detail'] = $org;
             $data['total_reviewers'] = $overall['reviews_cnt'];
             $data['reviews_count'] = $overall['average_rating'];
-            $data['follow'] = $follow->followed;
+            $data['follow'] = $follow->followed == 1 ? true : false;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
             if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute') {
@@ -1578,8 +1578,9 @@ class ReviewsController extends ApiBaseController
         }
     }
 
-    public function actionMostReviewed(){
-        $options['rating'] = [4,5];
+    public function actionMostReviewed()
+    {
+        $options['rating'] = [4, 5];
         $options['limit'] = 2;
         $options['most_reviewed'] = 1;
         $most_reviewed = $this->getReviewCards($options);
