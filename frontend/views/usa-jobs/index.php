@@ -248,6 +248,60 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 <section>
     <div class="container">
         <div class="row">
+            <div class="heading-style">Departments</div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-6">
+                <div class="agency-box">
+                    <div class="agency-logo">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                    </div>
+                    <div class="agency-name">Joint Services Survival, Evasion, Resistance & Escape Agency</div>
+                    <div class="agency-count">
+                        <a href="#">25 Jobs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="agency-box">
+                    <div class="agency-logo">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                    </div>
+                    <div class="agency-name">Escape Agency</div>
+                    <div class="agency-count">
+                        <a href="#">25 Jobs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="agency-box">
+                    <div class="agency-logo">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                    </div>
+                    <div class="agency-name">Evasion, Resistance & Escape Agency</div>
+                    <div class="agency-count">
+                        <a href="#">25 Jobs</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="agency-box">
+                    <div class="agency-logo">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                    </div>
+                    <div class="agency-name">Joint Services Survival,</div>
+                    <div class="agency-count">
+                        <a href="#">25 Jobs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <div class="row">
             <div class="heading-style">Jobs</div>
         </div>
         <div class="row">
@@ -268,9 +322,11 @@ $this->registerCss("
     border: 1px solid #fff;
     box-shadow: 0px 0px 8px 0px #eee;
     margin-bottom: 20px;
+    background:#fff;
+    border-radius: 2px;
 }
 .agency-box:hover {
-    box-shadow: 0px 0px 18px 2px #eee !important;
+    box-shadow: 0px 0px 20px 5px #eee !important;
     transition: .3s ease-in-out;
 }
 .agency-box:hover .agency-count a {

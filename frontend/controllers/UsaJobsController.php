@@ -163,4 +163,8 @@ class UsaJobsController extends Controller
         return $this->render('senior-executives');
     }
 
+    public function actionDepartments(){
+        return $this->render('departments');
+    }
+
 }
