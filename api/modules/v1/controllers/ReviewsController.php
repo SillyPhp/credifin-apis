@@ -1393,21 +1393,16 @@ class ReviewsController extends ApiBaseController
         $options['limit'] = 3;
 
 
-        $options['rating'] = [4, 5];
-        $top_company = $this->__companyReviews($options);
-        $options['rating'] = [3, 4, 5];
-        $options['business_activity'] = 'College';
-        $top_colleges = $this->__unclaimedTopReviews($options);
-        $options['business_activity'] = 'Educational Institute';
-        $top_educational_insitutes = $this->__unclaimedTopReviews($options);
-        $options['business_activity'] = 'School';
-        $top_schools = $this->__unclaimedTopReviews($options);
+        if ($options['business_activity'] == 'College') {
+            $data = $this->__unclaimedTopReviews($options);
+        } elseif ($options['business_activity'] == 'Educational Institute') {
+            $data = $this->__unclaimedTopReviews($options);
+        } elseif ($options['business_activity'] == 'School') {
+            $data = $this->__unclaimedTopReviews($options);
+        } else {
+            $data = $this->__companyReviews($options);
+        }
 
-        $data = [];
-        $data['company'] = $top_company;
-        $data['college'] = $top_colleges;
-        $data['Educational Institute'] = $top_educational_insitutes;
-        $data['School'] = $top_schools;
         if ($data) {
             return $this->response(200, $data);
         } else {
@@ -1451,6 +1446,8 @@ class ReviewsController extends ApiBaseController
 
     private function __companyReviews($options)
     {
+
+        $options['rating'] = [4, 5];
 
         $cards = Organizations::find()
             ->alias('a')
@@ -1509,6 +1506,7 @@ class ReviewsController extends ApiBaseController
 
     private function __unclaimedTopReviews($options)
     {
+        $options['rating'] = [3, 4, 5];
         $card_query = UnclaimedOrganizations::find()
             ->alias('a');
         $cards = $card_query->select(['a.organization_enc_id', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating']);
