@@ -675,10 +675,6 @@ if (Yii::$app->user->isGuest) {
 }
 ?>
 <!--Subscribe Widget ends-->
-<?//= $this->render('/widgets/partner-with-us-and-feedback-form', [
-//    'feedbackFormModel' => $feedbackFormModel,
-//    'partnerWithUsModel' => $partnerWithUsModel,
-//]); ?>
 <section class="search-lists">
     <div class="container">
         <div class="row">
