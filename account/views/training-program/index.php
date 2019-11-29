@@ -4,8 +4,37 @@ use kartik\widgets\TimePicker;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
+function getVal($p)
+{
+    switch ($p)
+    {
+        case 1:
+            return 'Mon';
+            break;
+        case 2:
+            return 'Tue';
+            break;
+        case 3:
+            return 'Wed';
+            break;
+        case 4:
+            return 'Thu';
+            break;
+        case 5:
+            return 'Fri';
+            break;
+        case 6:
+            return 'Sat';
+            break;
+        case 7:
+            return 'Sun';
+            break;
+        default:
+            return '';
+            break;
+    }
+}
 ?>
     <div class="container set-width">
         <?php
@@ -65,6 +94,16 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="pf-field no-margin">
                             <ul class="tags_input skill_tag_list">
+                                <?php if (!empty($skill)) {
+                                    foreach ($skill as $s) { ?>
+                                        <li class="addedTag"><?= $s ?><span
+                                                    onclick="$(this).parent().remove();"
+                                                    class="tagRemove">x</span><input type="hidden"
+                                                                                     name="skills[]"
+                                                                                     value="<?= $s ?>">
+                                        </li>
+                                    <?php }
+                                } ?>
                                 <li class="tagAdd taglist">
                                     <div class="skill_wrapper">
                                         <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
@@ -96,7 +135,34 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                     <div class="col-md-12">
                         <div class="contenu">
                             <div class="choice_pattern">
-                                <div class="results"></div>
+                                <div class="results">
+                                    <?php if (!empty($batch_data)):
+                                        $week_array = [
+                                               1 => "Mon",
+                                               2 => "Tue",
+                                               3 => "Wed",
+                                               4 => "Thu",
+                                               5 => "Fri",
+                                               6 => "Sat",
+                                               7 => "Sun"
+                                            ];
+                                        foreach($batch_data as $batch){
+                                            $d="";
+                                            $batch_days = json_decode($batch['days'],true);
+                                            $start_time = date("h:i A", strtotime($batch['start_time']));
+                                            $end_time = date("h:i A", strtotime($batch['end_time']));
+                                            for($i=0;$i<=6;$i++)
+                                            {
+                                                if (!empty(getVal($batch_days[$i]))) {
+                                                    $d .= getVal($batch_days[$i]) . ',';
+                                                }
+                                            }
+                                            ?>
+                                            <div class="result-item"><div class="result-data"><span></span><span><?= rtrim($d,','); ?></span> : from <strong><?= $start_time ?></strong> to <strong><?= $end_time ?></strong> <i class="fa fa-times cancelCurrent" onclick="removeIt($(this));"></i></div><div class="result-data"><b>Fees: </b><span><?= $batch['fees'] ?></span></div><div class="result-data"><b>City: </b><span><?= $batch['name'] ?></span></div><div class="result-data"><b>Seat: </b> <span><?= $batch['seats'] ?></span></div></div>
+                                            <input type="hidden" class="hours_class" name"business_hours[]"="" value="<?= rtrim($d,',') ?>, : from <?= $start_time ?> to <?= $end_time ?> Fees: <?=  $batch['fees'] ?>City: <?= $batch['name'] ?>:  <?= $batch['seats'] ?>">
+                                        <?php } ?>
+                                    <?php endif; ?>
+                                </div>
                                 <div class="selection">
                                     <input type="text" data-value="" class="city_select" placeholder="Search city">
                                     <input type="text" class="total_seat" placeholder="Seats">
@@ -139,8 +205,6 @@ $url = \yii\helpers\Url::to(['/cities/career-city-list']);
                         <?= $form->field($model, 'batch_details')->hiddenInput(['id' => 'final_result'])->label(false); ?>
                     </div>
                 </div>
-
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="btn-set">

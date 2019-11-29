@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 use account\models\applications\ApplicationForm;
+use account\models\training_program\InviteCandidatesForm;
 use account\models\training_program\TrainingProgram;
 use account\models\training_program\UserAppliedTraining;
 use common\models\AppliedTrainingApplications;
@@ -132,20 +133,73 @@ class TrainingProgramController extends Controller
     public function actionClone($aidk)
     {
         if (Yii::$app->user->identity->organization):
-            $model = new TrainingProgram();
+            $object = new TrainingProgram();
+            $model = $object->setData($aidk);
             $type = 'Clone';
             $object = new ApplicationForm();
             $primary_cat = $object->getPrimaryFields();
-            if ($model->load(Yii::$app->request->post())) {
-                if ($model->save()) {
+            if ($object->load(Yii::$app->request->post())) {
+                if ($object->save()) {
                     Yii::$app->session->setFlash('success', 'Your Application Has Been Submitted Successfully..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
                 }
                 return $this->refresh();
             }
-            return $this->render('index',['model'=>$model,'primary_cat'=>$primary_cat]);
+            return $this->render('index',['model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
             endif;
 
+    }
+
+    public function actionEdit($aidk)
+    {
+        if (Yii::$app->user->identity->organization):
+            $obj = new TrainingProgram();
+            $model = $obj->setData($aidk);
+            $type = 'Edit';
+            $object = new ApplicationForm();
+            $primary_cat = $object->getPrimaryFields();
+            if ($obj->load(Yii::$app->request->post())) {
+                if ($obj->update($aidk)) {
+                    Yii::$app->session->setFlash('success', 'Your Application Has Been Updated Successfully..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+                }
+                return $this->refresh();
+            }
+            return $this->render('index',['type'=>$type,'model'=>$model['model'],'batch_data'=>$model['batch_data'],'skill'=>$model['skill_list'],'primary_cat'=>$primary_cat]);
+        endif;
+    }
+
+    public function actionInviteCandidates(){
+        if (Yii::$app->request->isAjax) {
+            $inviteForm = new InviteCandidatesForm();
+
+            return $this->renderAjax('invitation_form',[
+                'inviteForm' => $inviteForm,
+            ]);
+        }
+    }
+
+    public function actionSubmitInvitations(){
+        if (Yii::$app->request->isAjax) {
+            $inviteForm = new InviteCandidatesForm();
+            if ($inviteForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($inviteForm->send()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Invitations has been Send.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+        }
     }
 }

@@ -9,7 +9,8 @@ class AppAssets extends AssetBundle {
     public $basePath = '@backendAssetsDirectory';
     public $baseUrl = '@backendAssets';
     public $css = [
-        '//fonts.googleapis.com/css?family=Oswald:400,300,700',
+//        '//fonts.googleapis.com/css?family=Oswald:400,300,700',
+        'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
         '//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
         'global/plugins/simple-line-icons/simple-line-icons.min.css',

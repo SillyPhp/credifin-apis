@@ -63,11 +63,11 @@ function initiateGame(questions, stats) {
         success: function (data) {
             for (let i = 0; i < data.results.length; i++) {
                 questions.push({
-                    category: data.results[i].category,
+                    // category: data.results[i].category,
                     difficulty: data.results[i].difficulty,
                     type: data.results[i].type,
                     question: data.results[i].question,
-                    answers: createAnswersArray(data.results[i]['quizAnswers'])
+                    answers: createAnswersArray(data.results[i]['quizAnswersPools'])
                 });
             }
             displayQuestion(questions[0]);

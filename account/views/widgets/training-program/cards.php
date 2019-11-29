@@ -8,7 +8,7 @@ $next = 0;
 Pjax::begin(['id' => 'pjax_active_trainings']);
 if (!empty($total_applications)) {
     ?>
-    <div class="row">
+    <div class="row" xmlns:font-family="http://www.w3.org/1999/xhtml">
         <?php
         for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
@@ -20,6 +20,16 @@ if (!empty($total_applications)) {
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
+                            <a href="<?= Url::toRoute('/training-program/' . $applications[$next]["application_enc_id"]).'/edit'; ?>"
+                               target="_blank"
+                               class="j-edit">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>
+                            <a href="<?= Url::toRoute('/training-program/' . $applications[$next]["application_enc_id"]).'/clone'; ?>"
+                               target="_blank"
+                               class="j-clone share_btn">
+                                <i class="fa fa-clone"></i>
+                            </a>
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
@@ -69,7 +79,7 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedTrainingApplications']); ?>
+                            <div class="col-md-6 minus-15-pad" style="font-family: roboto;"><?= sizeof($applications[$next]['appliedTrainingApplications']); ?>
                                 Applications
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a

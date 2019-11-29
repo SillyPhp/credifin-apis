@@ -2,19 +2,22 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\ValidateUser;
+use Yii;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
-use common\models\User;
+use common\models\EmailLogs;
+use common\models\Referral;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
-use frontend\widgets\Login;
-use Yii;
 
-class AuthController extends ApiBaseController{
+class AuthController extends ApiBaseController
+{
 
-    public function behaviors(){
+    public function behaviors()
+    {
         $behaviors = parent::behaviors();
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
@@ -26,72 +29,123 @@ class AuthController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionSignup(){
+    public function actionSignup()
+    {
 
         $model = new IndividualSignup();
-        if($model->load(Yii::$app->request->post(), '')){
-//            print_r($model);
-//            die();
-            if($model->validate()){
-                if(!$this->usernameValid($model)){
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->validate()) {
+
+                if (!$this->usernameValid($model)) {
                     return $this->response(409, [
                         'username' => 'Username already taken'
                     ]);
                 }
 
-                if($model->saveUser()){
-                    return $this->response(200);
+                if($model->ref != '' && $model->invitation != ''){
+                    if($this->getRef($model) && $this->getInvitation($model)) {
+                        if ($model->saveUser()) {
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500]);
+                        }
+                    }else{
+                        return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
+                    }
                 }else{
-                    return $this->response(500);
+                    if ($model->saveUser()) {
+                        return $this->response(200, ['status' => 200]);
+                    } else {
+                        return $this->response(500, ['status' => 500]);
+                    }
                 }
 
             }
             return $this->response(409, $model->getErrors());
         }
-        return $this->response(422);
+        return $this->response(422,'Not found');
     }
 
-    public function actionUsername(){
-        $username = Yii::$app->request->post('username');
-        $user_names = Usernames::find()
-            ->where(['username'=>$username])
-            ->exists();
-
-        if($user_names){
-            return $this->response(200,['status'=>201,'exists'=>true]);
-        }else{
-            return $this->response(200,['status'=>200,'exists'=>false]);
+    public function actionValidate(){
+        $model = new ValidateUser();
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->validate()) {
+                return $this->response(200,['status'=>200]);
+            }else{
+                return $this->response(409, $model->getErrors());
+            }
         }
     }
 
-    public function actionLogin(){
+    private function getRef($model)
+    {
+        $ref = Referral::find()
+            ->alias('a')
+            ->select(['a.referral_enc_id', 'b.organization_enc_id'])
+            ->joinWith(['organizationEnc b'])
+            ->where(['code' => $model->ref])
+            ->asArray()
+            ->one();
+
+        if ($ref['organization_enc_id']) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function getInvitation($model)
+    {
+        $initation = EmailLogs::find()
+            ->where(['email_log_enc_id' => $model->invitation])
+            ->exists();
+
+        return $initation;
+    }
+
+    public function actionUsername()
+    {
+        $username = Yii::$app->request->post('username');
+        $user_names = Usernames::find()
+            ->where(['username' => $username])
+            ->exists();
+
+        if ($user_names) {
+            return $this->response(200, ['status' => 201, 'exists' => true]);
+        } else {
+            return $this->response(200, ['status' => 200, 'exists' => false]);
+        }
+    }
+
+    public function actionLogin()
+    {
         $model = new LoginForm();
-        if($model->load(Yii::$app->request->post(), '')){
-            if($model->login()){
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->login()) {
                 $source = Yii::$app->request->post()['source'];
                 $user = $this->findUser($model);
-                if($user->organization_enc_id){
+                if ($user->organization_enc_id) {
                     $user_type = Users::find()
                         ->alias('a')
-                        ->select(['a.user_enc_id','a.organization_enc_id','c.business_activity type'])
-                        ->joinWith(['organizationEnc b'=>function($b){
+                        ->select(['a.user_enc_id', 'a.organization_enc_id', 'c.business_activity type'])
+                        ->joinWith(['organizationEnc b' => function ($b) {
                             $b->joinWith(['businessActivityEnc c']);
-                        }],false)
-                        ->where(['a.user_enc_id'=>$user->user_enc_id,'b.is_erexx_registered'=>1,'b.is_deleted'=>0])
+                        }], false)
+                        ->where(['a.user_enc_id' => $user->user_enc_id, 'b.is_erexx_registered' => 1, 'b.is_deleted' => 0])
                         ->asArray()
                         ->one();
-                    if($user_type['type'] != 'College'){
+                    if ($user_type['type'] != 'College') {
                         return false;
                     }
                 }
                 $token = $this->findToken($user, $source);
-                if(empty($token)){
-                    if($token=$this->newToken($user->user_enc_id,$source)){
+                if (empty($token)) {
+                    if ($token = $this->newToken($user->user_enc_id, $source)) {
                         $data = $this->returnData($user, $token);
                         return $this->response(200, $data);
                     }
-                }else{
-                    if($token = $this->onlyTokens($token)){
+                } else {
+                    if ($token = $this->onlyTokens($token)) {
                         $data = $this->returnData($user, $token);
                         return $this->response(200, $data);
                     }
@@ -102,8 +156,8 @@ class AuthController extends ApiBaseController{
         return $this->response(422);
     }
 
-
-    private function onlyTokens($token){
+    private function onlyTokens($token)
+    {
         $time_now = date('Y-m-d H:i:s', time('now'));
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
@@ -132,17 +186,18 @@ class AuthController extends ApiBaseController{
         return $token->getErrors();
     }
 
-    private function returnData($user, $source){
+    private function returnData($user, $source)
+    {
 
         $user_type = Users::find()
             ->alias('a')
-            ->select(['a.user_enc_id','b.user_type','c.name city_name','e.name org_name'])
-            ->joinWith(['userTypeEnc b'],false)
-            ->joinWith(['cityEnc c'],false)
-            ->joinWith(['userOtherInfo d'=>function($d){
+            ->select(['a.user_enc_id', 'b.user_type', 'c.name city_name', 'e.name org_name'])
+            ->joinWith(['userTypeEnc b'], false)
+            ->joinWith(['cityEnc c'], false)
+            ->joinWith(['userOtherInfo d' => function ($d) {
                 $d->joinWith(['organizationEnc e']);
-            }],false)
-            ->where(['a.user_enc_id'=>$source->user_enc_id])
+            }], false)
+            ->where(['a.user_enc_id' => $source->user_enc_id])
             ->asArray()
             ->one();
 
@@ -164,18 +219,20 @@ class AuthController extends ApiBaseController{
         ];
     }
 
-    private function findToken($user, $source){
+    private function findToken($user, $source)
+    {
         return UserAccessTokens::findOne([
-           'user_enc_id' => $user->user_enc_id,
-           'source' => $source
+            'user_enc_id' => $user->user_enc_id,
+            'source' => $source
         ]);
     }
 
-    private function findUser($model){
+    private function findUser($model)
+    {
         $user = Candidates::findOne([
             'username' => $model->username
         ]);
-        if(!$user){
+        if (!$user) {
             $user = Candidates::findOne([
                 'email' => $model->username
             ]);
@@ -183,42 +240,44 @@ class AuthController extends ApiBaseController{
         return $user;
     }
 
-    private function usernameValid($model){
+    private function usernameValid($model)
+    {
         $usernameModel = new Usernames();
         $usernameModel->username = $model->username;
         $usernameModel->assigned_to = 1;
-        if(!$usernameModel->validate()){
+        if (!$usernameModel->validate()) {
             return false;
         }
         return true;
     }
 
-    public function actionFindUser(){
+    public function actionFindUser()
+    {
 
         $access_token = Yii::$app->request->post('access_token');
         $source = Yii::$app->request->post('source');
 
         $find_user = UserAccessTokens::find()
             ->select(['*'])
-            ->where(['access_token'=>$access_token,'source'=>$source])
+            ->where(['access_token' => $access_token, 'source' => $source])
             ->asArray()
             ->one();
 
-        if(!empty($find_user)){
+        if (!empty($find_user)) {
             $user_type = Users::find()
-                ->where(['!=','organization_enc_id','null'])
+                ->where(['!=', 'organization_enc_id', 'null'])
                 ->exists();
 
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.first_name','a.last_name','a.username','a.phone','a.email','a.initials_color','b.user_type','c.name city_name','e.name org_name','d.organization_enc_id'])
-                ->joinWith(['userTypeEnc b'],false)
-                ->joinWith(['cityEnc c'],false)
-                ->joinWith(['userOtherInfo d'=>function($d){
+                ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id'])
+                ->joinWith(['userTypeEnc b'], false)
+                ->joinWith(['cityEnc c'], false)
+                ->joinWith(['userOtherInfo d' => function ($d) {
                     $d->joinWith(['organizationEnc e']);
-                }],false)
-                ->where(['a.user_enc_id'=>$find_user['user_enc_id']])
+                }], false)
+                ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
                 ->one();
 

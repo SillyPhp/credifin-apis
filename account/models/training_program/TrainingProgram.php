@@ -13,6 +13,7 @@ use common\models\TrainingProgramSkills;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 use common\models\Utilities;
 
 class TrainingProgram extends Model
@@ -30,18 +31,21 @@ class TrainingProgram extends Model
     public function rules()
     {
         return [
-            [['title','skills','batch_details','training_duration','training_duration_type','profile','description'],'required'],
-            [['from','to'],'safe'],
-            [['title'],'string','max'=>50],
-            [['training_duration'],'integer','max'=>12],
-            [['title'],'trim'],
+            [['title', 'skills', 'batch_details', 'training_duration', 'training_duration_type', 'profile', 'description'], 'required'],
+            [['from', 'to'], 'safe'],
+            [['title'], 'string', 'max' => 50],
+            [['training_duration'], 'integer', 'max' => 12],
+            [['title'], 'trim'],
         ];
     }
+
     public function formName()
     {
         return '';
     }
-    public function save(){
+
+    public function save()
+    {
         if (!$this->validate()) {
             return $this->getErrors();
         }
@@ -78,7 +82,7 @@ class TrainingProgram extends Model
             if ($categoriesModel->save()) {
                 $this->addNewAssignedCategory($categoriesModel->category_enc_id, $trainingProgramApplication, 'Training');
             } else {
-                return  false;
+                return false;
             }
         } else {
             $cat_id = $chk_cat['category_enc_id'];
@@ -99,9 +103,8 @@ class TrainingProgram extends Model
                 $trainingProgramApplication->title = $chk_assigned['assigned_category_enc_id'];
             }
         }
-        if ($trainingProgramApplication->save())
-        {
-            if (!empty($this->skills)){
+        if ($trainingProgramApplication->save()) {
+            if (!empty($this->skills)) {
                 foreach ($this->skills as $skill) {
                     $skills_set = Skills::find()
                         ->select(['skill_enc_id'])
@@ -149,11 +152,9 @@ class TrainingProgram extends Model
                 }
             }
 
-            if (!empty($this->batch_details))
-            {
-                $arr = json_decode($this->batch_details,true);
-                foreach ($arr as $a)
-                {
+            if (!empty($this->batch_details)) {
+                $arr = json_decode($this->batch_details, true);
+                foreach ($arr as $a) {
                     $trainingProgramBatches = new TrainingProgramBatches();
                     $utilitiesModel = new Utilities();
                     $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -168,20 +169,18 @@ class TrainingProgram extends Model
                     $trainingProgramBatches->start_time = date("H:i:s", strtotime($a['from']));
                     $trainingProgramBatches->end_time = date("H:i:s", strtotime($a['to']));
                     $trainingProgramBatches->days = json_encode($a['days']);
-                    if (!$trainingProgramBatches->save())
-                    {
-                       return false;
+                    if (!$trainingProgramBatches->save()) {
+                        return false;
                     }
 
                 }
             }
             return true;
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
+
     private function assignedSkill($s_id, $cat_id)
     {
         $asignedSkillModel = new AssignedSkills();
@@ -196,6 +195,7 @@ class TrainingProgram extends Model
             return false;
         }
     }
+
     private function addNewAssignedCategory($category_id, $trainingProgramApplication, $typ)
     {
         $assignedCategoryModel = new AssignedCategories();
@@ -216,6 +216,191 @@ class TrainingProgram extends Model
             $trainingProgramApplication->slug = $utilitiesModel->create_slug();
         } else {
             return false;
+        }
+    }
+
+    public function setData($aidk)
+    {
+        $modalData = TrainingProgramApplication::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'e.name title_name', 'profile_enc_id', 'title', 'a.description', 'training_duration', 'training_duration_type'])
+            ->where(['a.application_enc_id' => $aidk])
+            ->joinWith(['trainingProgramBatches b' => function ($b) {
+                $b->onCondition(['b.is_deleted' => 0]);
+                $b->joinWith(['cityEnc c'], false);
+                $b->select(['b.application_enc_id', 'b.city_enc_id', 'c.name', 'b.fees', 'b.fees_methods', 'seats', 'days', 'start_time', 'end_time']);
+            }])
+            ->joinWith(['title0 d' => function ($b) {
+                $b->joinWith(['categoryEnc e'], false);
+            }], false)
+            ->joinWith(['trainingProgramSkills f' => function ($b) {
+                $b->onCondition(['f.is_deleted' => 0]);
+                $b->select(['f.application_enc_id', 'g.skill']);
+                $b->joinWith(['skillEnc g'], false);
+            }])
+            ->asArray()->one();
+        $this->profile = $modalData['profile_enc_id'];
+        $this->title = $modalData['title_name'];
+        $this->training_duration = $modalData['training_duration'];
+        $this->training_duration_type = $modalData['training_duration_type'];
+        $this->description = $modalData['description'];
+        if (!empty($modalData['trainingProgramBatches'])) {
+            $batch_data = $modalData['trainingProgramBatches'];
+            foreach ($modalData['trainingProgramBatches'] as $key => $batch) {
+                $get[$key]['days'] = json_decode($batch['days'], true);
+                $get[$key]['from'] = date('h:i a', strtotime($batch['start_time']));
+                $get[$key]['to'] = date('h:i a', strtotime($batch['end_time']));
+                $get[$key]['fees'] = $batch['fees'];
+                $get[$key]['city'] = $batch['city_enc_id'];
+                $get[$key]['seat'] = $batch['seats'];
+                $get[$key]['method'] = $batch['fees_methods'];
+            }
+        } else {
+            $batch_data = [];
+        }
+        $this->batch_details = json_encode($get);
+        if (!empty($modalData['trainingProgramSkills'])):
+            $skill_list = ArrayHelper::getColumn($modalData['trainingProgramSkills'], 'skill');
+        endif;
+        return [
+            'model' => $this,
+            'skill_list' => $skill_list,
+            'batch_data' => $batch_data
+        ];
+    }
+
+    public function update($aidk)
+    {
+        $trainingApplicationsModel = TrainingProgramApplication::find()
+            ->where(['application_enc_id' => $aidk])
+            ->one();
+        $trainingApplicationsModel->description = $this->description;
+        $trainingApplicationsModel->profile_enc_id = $this->profile;
+        $trainingApplicationsModel->description = $this->description;
+        $trainingApplicationsModel->training_duration = $this->training_duration;
+        $trainingApplicationsModel->training_duration_type = $this->training_duration_type;
+        $category_execute = Categories::find()
+            ->alias('a')
+            ->where(['name' => $this->title]);
+        $chk_cat = $category_execute->asArray()->one();
+
+        if (empty($chk_cat)) {
+            $categoriesModel = new Categories();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $categoriesModel->category_enc_id = $utilitiesModel->encrypt();
+            $cat_id = $categoriesModel->category_enc_id;
+            $categoriesModel->name = $this->title;
+            $utilitiesModel->variables['name'] = $this->title;
+            $utilitiesModel->variables['table_name'] = Categories::tableName();
+            $utilitiesModel->variables['field_name'] = 'slug';
+            $categoriesModel->slug = $utilitiesModel->create_slug();
+            $categoriesModel->created_by = Yii::$app->user->identity->user_enc_id;
+            if ($categoriesModel->save()) {
+                $this->addNewAssignedCategory($categoriesModel->category_enc_id, $trainingApplicationsModel, 'Training');
+            } else {
+                return false;
+            }
+        } else {
+            $cat_id = $chk_cat['category_enc_id'];
+            $chk_assigned = $category_execute
+                ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
+                ->select(['b.assigned_category_enc_id', 'a.name', 'a.category_enc_id', 'b.parent_enc_id', 'b.assigned_to'])
+                ->andWhere(['not', ['b.parent_enc_id' => null]])
+                ->andWhere(['b.assigned_to' => 'Training', 'b.parent_enc_id' => $this->profile])
+                ->asArray()
+                ->one();
+            if (empty($chk_assigned)) {
+                $this->addNewAssignedCategory($chk_cat['category_enc_id'], $trainingApplicationsModel, 'Training');
+            } else {
+                $trainingApplicationsModel->title = $chk_assigned['assigned_category_enc_id'];
+            }
+        }
+        if ($trainingApplicationsModel->save())
+        {
+            $getSkills = $this->skills;
+            if (!empty($getSkills))
+            {
+                $skill_set = [];
+                foreach ($getSkills as $val){
+                    $chk_skill = Skills::find()
+                        ->distinct()
+                        ->select(['skill_enc_id'])
+                        ->where(['skill'=>$val,'is_deleted'=>0])
+                        ->asArray()
+                        ->one();
+                    if (!empty($chk_skill))
+                    {
+                        $skill_set[] = $chk_skill['skill_enc_id'];
+                    }
+                    else
+                    {
+                        $skillsModel = new Skills();
+                        $utilitiesModel = new Utilities();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $skillsModel->skill_enc_id = $utilitiesModel->encrypt();
+                        $skillsModel->skill = $val;
+                        $skillsModel->created_on = date('Y-m-d H:i:s');
+                        $skillsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$skillsModel->save())
+                        {
+                            return false;
+                        }
+                        $skill_set[] = $skillsModel->skill_enc_id;
+                    }
+                }
+            }
+            else
+            {
+                $skill_set = [];
+            }
+            $userSkills = TrainingProgramSkills::find()
+                ->where(['application_enc_id'=>$aidk])
+                ->andWhere(['is_deleted'=>0])
+                ->asArray()
+                ->all();
+            $skillArray = ArrayHelper::getColumn($userSkills, 'skill_enc_id');
+            $new_skill = array_diff($skill_set, $skillArray);
+            $delet_skill = array_diff($skillArray, $skill_set);
+            if (!empty($new_skill)) {
+                foreach ($new_skill as $val) {
+                    $applicationSkillsModel = new TrainingProgramSkills();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $applicationSkillsModel->application_skill_enc_id = $utilitiesModel->encrypt();
+                    $applicationSkillsModel->skill_enc_id = $val;
+                    $applicationSkillsModel->application_enc_id = $trainingApplicationsModel->application_enc_id;
+                    $applicationSkillsModel->created_on = date('Y-m-d H:i:s');
+                    $applicationSkillsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$applicationSkillsModel->save()) {
+                        return false;
+                    }
+                }
+            }
+            if (!empty($delet_skill)) {
+                foreach ($delet_skill as $val) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(TrainingProgramSkills::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id'=>$aidk,'skill_enc_id'=>$val])
+                        ->execute();
+                    if (!$update) {
+                        return false;
+                    }
+                }
+            }
+//            if (!empty($this->batch_details)) {
+//                $batch = json_decode($this->batch_details, true);
+//                $batch_d = TrainingProgramBatches::find()
+//                           ->select(['fees','fees_methods','seats','days','TIME_FORMAT(start_time, "%h:%i %p" ) as start_time','TIME_FORMAT(end_time, "%h:%i %p") as end_time'])
+//                           ->where(['application_enc_id'=>$aidk])
+//                           ->asArray()
+//                           ->all();
+//                return $batch_d;
+//            }
+            return true;
+        }
+        else
+        {
+            return true;
         }
     }
 }

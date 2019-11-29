@@ -44,7 +44,16 @@ if (!empty($total_applications)) {
                         }
                     } else {
                         ?>
-                        <h3>No Closed Jobs</h3>
+                        <div class="col-md-12">
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No closed jobs</div>
+                                </div>
+                            </div>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -85,10 +94,50 @@ if (!empty($total_applications)) {
     </div>
     <?php
 } else { ?>
-    <h3>No Closed Jobs</h3>
+    <div class="col-md-12">
+        <div class="tab-empty">
+            <div class="tab-empty-icon">
+                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/jobsclose.png'); ?>" class="img-responsive" alt=""/>
+            </div>
+            <div class="tab-empty-text">
+                <div class="">No closed jobs</div>
+            </div>
+        </div>
+    </div>
 <?php }
 Pjax::end();
 $this->registerCss("
+.mt-action-author > a{
+    font-family:roboto;
+    font-weight: 500;
+}
+.mt-action-desc{
+    font-family:roboto;
+}
+.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all).btn-sm{
+    font-family: roboto;
+    font-weight: 500;
+}
+.btn-group.btn-group-circle > .btn:first-child, .btn-group.btn-group-circle > .btn:last-child{
+    border-radius:0px !important
+}
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:200px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+.topic-con{
+    position:relative;
+}
 .modal-open {
     overflow: hidden!important;
 }

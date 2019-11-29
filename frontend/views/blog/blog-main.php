@@ -2,36 +2,7 @@
 
 use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', 'Blogs');
 $this->registerCssFile('@eyAssets/css/blog-main.css');
-
-$keywords = 'Blogs,Digital Marketing Blogs,IT Blogs,Lifestyle Blogs,Business Blog';
-$description = 'Read the top blogs on business development, how to deal with rejection, how to write resume and many more are available on our platform.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouthin',
-        'twitter:creator' => '@EmpowerYouthin',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
 
     <section class="blog-header">
@@ -201,61 +172,61 @@ $this->params['seo_tags'] = [
     <!--            </div>-->
     <!--        </div>-->
     <!--    </section>-->
-    <section class="bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-xs-4">
-                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
-                                <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
-                                <span class="round"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?>" alt="World Cup 2019 Quiz"
-                                 class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?>"
-                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="History Quiz" href="/quiz/history-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?>"
-                                 alt="Yuvraj Singh Quiz" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="bg-black">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6 col-xs-4">-->
+<!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
+<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--                </div>-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <div class="type-1">-->
+<!--                        <div>-->
+<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+<!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="world-cup-quiz-volume-3" href="/quiz/world-cup-quiz-volume-3">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vlm3.png') ?><!--" alt="World Cup 2019 Quiz"-->
+<!--                                 class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="Independence Quiz" href="/quiz/how-well-do-you-know-about-independence-daylevel-three">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/independence.jpg') ?><!--"-->
+<!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="History Quiz" href="/quiz/history-quiz">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/history.jpg') ?><!--"-->
+<!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
     <section class="blog-section-2">
         <div class="container">
             <div class="row">
@@ -381,6 +352,9 @@ echo $this->render('/widgets/blogs/whats-new');
 echo $this->render('/widgets/blogs/popular-blogs');
 echo $this->render('/widgets/blogs/trending-posts');
 $this->registerCss('
+.price > h5{
+    font-family:roboto;
+}
 .q-box{
     text-align:center;
     position:relative;   

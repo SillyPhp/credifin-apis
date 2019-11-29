@@ -274,7 +274,7 @@ textarea:focus{
 
 .animation-img{
 	position: relative;
-	
+	z-index:-1;
 }
 
 .animation-img1 img,.animation-img5 img,.animation-img6 img{
