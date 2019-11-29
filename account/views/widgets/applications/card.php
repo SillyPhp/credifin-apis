@@ -7,39 +7,48 @@ $total_applications = count($applications);
 $next = 0;
 Pjax::begin(['id' => 'pjax_active_jobs']);
 if (!empty($total_applications)) {
+    if (!function_exists("findDifference")) {
+        function findDifference($date)
+        {
+            $date = new DateTime($date);
+            $time_now = date("Y-m-d H:i:s");
+            $now = new DateTime($time_now);
+            return $res = $date->diff($now);
+        }
+    }
     ?>
     <div class="row">
         <?php
         for ($j = 0; $j < $total_applications; $j++) {
             if ($next < $total_applications) {
                 ?>
-                <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-3'); ?>">
+                <div class="box-main-col <?= (!empty($col_width) ? $col_width : 'col-lg-3 col-md-3 col-sm-6'); ?>">
                     <div class="hr-company-box">
                         <div class="rt-bttns">
                             <?php if (!empty($applications[$next]['interview_process_enc_id'])): ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'edit'); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Edit Job"
                                    class="j-edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . $applications[$next]["application_enc_id"] . DIRECTORY_SEPARATOR . 'clone'); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Clone Job"
                                    class="j-clone share_btn">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php else: ?>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-edit?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Edit Job"
                                    class="j-edit">
                                     <i class="fa fa-pencil-square-o"></i>
                                 </a>
                                 <a href="<?= Url::toRoute($applications[$next]['application_type'] . DIRECTORY_SEPARATOR . 'quick-job-clone?editid=' . $applications[$next]["application_enc_id"]); ?>"
-                                   target="_blank"
+                                   target="_blank" data-toggle="tooltip" title="Clone Job"
                                    class="j-clone share_btn">
                                     <i class="fa fa-clone"></i>
                                 </a>
                             <?php endif; ?>
-                            <button type="button" class="j-delete"
+                            <button type="button" class="j-delete" data-toggle="tooltip" title="Delete Job"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
@@ -47,13 +56,8 @@ if (!empty($total_applications)) {
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-fb share_btn" type="button">
-                                <i class="fa fa-facebook"></i>
-                            </a>
-                            <a href=""
                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
-                               class="j-twitter share_btn" type="button">
+                               class="j-twitter share_btn" type="button" >
                                 <i class="fa fa-twitter"></i>
                             </a>
                             <a href=""
@@ -72,6 +76,23 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-linkedin"></i>
                             </a>
                         </div>
+                        <?php
+                        $dayDiff = findDifference($applications[$next]['last_date']);
+                        if ($dayDiff->d < 8 && $dayDiff->m == 0 && $dayDiff->y == 0) {
+                            ?>
+                            <div class="exp-soon-main">
+                                <a href="#" class="datepicker_opn" data-id="<?= $applications[$next]['application_enc_id']?>" data-date="<?= date("d-m-Y", strtotime($application['last_date'])); ?>">
+                                    <div class="expring-btn" data-toggle="tooltip" title="Extend Date">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/expired-job4.png') ?>" alt="expring icon">
+                                    </div>
+                                </a>
+                                <div class="exp-soon-msg">
+                                    Expring Soon
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
                         <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
                             <div class="hr-com-icon">
                                 <img src="<?= Url::to('@commonAssets/categories/' . $applications[$next]["icon"]); ?>"
@@ -93,8 +114,11 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad"><?= sizeof($applications[$next]['appliedApplications']); ?>
-                                Applications
+                            <div class="col-md-6 minus-15-pad" style="font-family: roboto;">
+                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
+                                    <?= sizeof($applications[$next]['appliedApplications']); ?>
+                                    Applications
+                                </a>
                             </div>
                             <div class="col-md-6 minus-15-pad j-grid"><a
                                         href="<?= Url::to($applications[$next]["link"]); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
@@ -120,7 +144,76 @@ if (!empty($total_applications)) {
     </div>
 <?php }
 Pjax::end();
+
 $this->registerCss("
+.exp-soon-msg{
+     box-shadow: 0 0 10px rgba(0,0,0,.2);
+    padding: 5px;
+    position: absolute;
+    top: 51px;
+    right: -2px;
+    max-width: 60px;
+    font-size: 12px;
+    border-radius: 0 5px 5px;
+    display:none;
+    
+     -webkit-animation: myOrbit 4s linear infinite; /* Chrome, Safari 5 */
+       -moz-animation: myOrbit 4s linear infinite; /* Firefox 5-15 */
+         -o-animation: myOrbit 4s linear infinite; /* Opera 12+ */
+            animation: myOrbit 4s linear infinite; /* Chrome, Firefox 16+, IE 10+, Safari 5 */
+}
+@-webkit-keyframes myOrbit {
+    from { -webkit-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -webkit-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@-moz-keyframes myOrbit {
+    from { -moz-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -moz-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@-o-keyframes myOrbit {
+    from { -o-transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { -o-transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+
+@keyframes myOrbit {
+    from { transform: rotate(0deg) translateX(2px) rotate(0deg); }
+    to   { transform: rotate(360deg) translateX(2px) rotate(-360deg); }
+}
+.hr-company-box:hover > div > .exp-soon-msg{
+    display:block;
+    transition:1s ease !important;
+}
+.hr-company-box:hover .expring-btn img{
+    animation-play-state: paused !important;
+    transform: scale(1) !important;
+}
+.exp-soon-main:hover .exp-soon-msg  {
+    display:none !important;
+}
+.expring-btn img{
+   animation: BigSmall .5s linear infinite;
+}
+@keyframes BigSmall {
+    from{transform: scale(1)}
+    to{transform: scale(1.1)}
+}
+.j-twitter{
+    left: 40px !important;
+}
+.j-email {
+    left: 65px !important;
+}
+.j-linkedin{
+    left: 93px !important;
+}
+.expring-btn{
+    position:absolute;
+    top:35px;
+    right:50px;
+}
+
 .tab-empty{
     padding:20px;
 }

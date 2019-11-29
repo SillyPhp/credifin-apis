@@ -148,7 +148,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/learning'); ?>">
                     <div class="service-box ser-box-yellow">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
                                  alt="learning">
                         </div>
                         <div class="ser-heading">Learning Hub</div>
@@ -192,34 +192,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!---->
-
-<!---->
-<section class="fixed-bttn">
-    <div class="pos-ab">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="fx-heading">
-                        Its Free To Get Hired On Empower Youth
-                    </h1>
-                    <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Get Hired
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section>
-    <?= $this->render('/widgets/info-stats')?>
-</section>
-
-<section>
-    <?= $this->render('/widgets/subscribe-widget')?>
-</section>
+<?= $this->render('/widgets/usa_and_govt_jobs');?>
 
 <section>
     <div class="block">
@@ -556,19 +529,35 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<!--<section>-->
-<!--    --><?//= $this->render('/widgets/govt-jobs')?>
-<!--</section>-->
-
 <section>
-    <div class="container">
-        <?=
-        $this->render('/widgets/featured-jobs',[
-            'featured_jobs' => $featured_jobs
-        ])
-        ?>
+    <div class="container ">
+        <div class="cat-padding">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="heading-style">Top Learning Topics</div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="type-1">
+                            <div>
+                                <a href="/learning/categories" class="btn btn-3">
+                                    <span class="txt-cate">View all</span>
+                                    <span class="round"><i class="fas fa-chevron-right"></i></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="popular-cate" id="categories"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
+
 <?= $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs
 ])?>
@@ -636,8 +625,16 @@ $this->params['header_dark'] = false;
         ?>
     </div>
 </section>
-
 <!--how it works ends-->
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
@@ -770,7 +767,7 @@ $this->params['header_dark'] = false;
 </section>
 
 <?php
-//echo $this->render('/widgets/employers-landing-page-floating-widget');
+echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
@@ -1186,7 +1183,7 @@ background-attachment:fixed;
 }
 .how-heading{
     font-size: 15px;
-    font-weight:300;
+    font-weight:400;
     font-family:Roboto;
 }
 .steps-row{
@@ -1264,7 +1261,86 @@ how-icon{
 }
 
 /*---make a basic box ---*/
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.txt-cate {
+    font-size: 14px;
+    line-height: 1.45;
+}
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+/*<!---- view-all button css ends --->*/
 
 @media screen and (min-width: 993px){
     .box-border{
@@ -1384,7 +1460,7 @@ how-icon{
     -o-border-radius: 5px;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: 9px;
     margin-bottom: 3px;
     border-left:none !important;
 }
@@ -1677,7 +1753,9 @@ how-icon{
     -o-border-radius: 0px 8px 8px 0px !important;
     border-radius: 0px 8px 8px 0px !important;
 }
-
+.search-job2 form button{
+    font-family:roboto;
+}
 .list-heading{
     font-size:16px;
     font-weight:500;
@@ -1771,14 +1849,14 @@ $script = <<< JS
     });
 
 
-window.onscroll = function() {scrollFunction()};
-function scrollFunction() {
-  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-    document.getElementById("myBttn").style.display = "block";
-  } else {
-    document.getElementById("myBttn").style.display = "none";
-  }
-}
+// window.onscroll = function() {scrollFunction()};
+// function scrollFunction() {
+//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+//     document.getElementById("myBttn").style.display = "block";
+//   } else {
+//     document.getElementById("myBttn").style.display = "none";
+//   }
+// }
         
   jQuery(function($) {
   $('.main-slider-sec').slick({
@@ -1809,6 +1887,7 @@ $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var twitterTweets = document.querySelectorAll('.twitter-cards');

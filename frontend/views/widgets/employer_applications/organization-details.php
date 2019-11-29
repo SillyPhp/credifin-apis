@@ -66,7 +66,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                         <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
                             for
                             <?= $type ?></a>
-                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>
+<!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
                 </div>
                 <?php if ($shortlist_btn_display): ?>
                     <div class="sub-actions">

@@ -279,12 +279,14 @@ $this->registerCss("
 }
 .m-widget4 .m-widget4__item .m-widget4__info .m-widget4__title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     color: #575962;
+    font-family:roboto;
 }
 .m-widget4 .m-widget4__item .m-widget4__info .m-widget4__sub {
-    font-size: 11px;
+    font-size: 12px;
     color: #7b7e8a;
+    font-family:roboto;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress {
     padding-right: 2rem;
@@ -293,13 +295,16 @@ $this->registerCss("
     position: relative;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-number {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
+    font-family:roboto;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-label {
-    font-size: 11px;
+    font-size: 12px;
     float: right;
     margin-top: 0.3rem;
+    font-family:roboto;
+    font-weight: 500;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .progress {
     display: block;

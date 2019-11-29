@@ -35,6 +35,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <section class="bg-blue">
     <div class="large-container">
         <div class="row">
@@ -49,6 +50,16 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="5305796212"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
@@ -186,6 +197,15 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="6492214366"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
                 <div class="sharing-box">
                     <div class="sharing-pic">
                         <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
@@ -325,7 +345,7 @@ padding-top:0px;
 padding-bottom:30px
 }
 .blue-bg{
-padding-top:0px;
+padding-top:20px;
 padding-bottom:30px
 }
 .padd-left-0{

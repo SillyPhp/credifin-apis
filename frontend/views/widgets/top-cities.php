@@ -100,7 +100,8 @@ $this->registerCss('
 }
 .city-name{
 	font-size: 18px;
-	font-weight: bold;
+	font-weight: 500;
+	font-family: roboto;
 	padding: 10px 0 10px 0;
 }
 .city-main .city-data .count a {
@@ -124,11 +125,13 @@ $this->registerCss('
 }
 .openings{
 	font-size: 16px;
-	font-weight: bold;
+	font-weight: 500;
+	font-family: roboto;
 }
 .count{
 	color: #bdbdbd;
 	padding-top:5px;
+	font-family: roboto;
 }
 //.btn-info{
 //	background-color:#eeeeee33 !important;
