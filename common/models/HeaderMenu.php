@@ -29,7 +29,7 @@ class HeaderMenu extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['header_menu_enc_id', 'name', 'status'], 'required'],
+            [['header_menu_enc_id', 'name'], 'required'],
             [['status'], 'integer'],
             [['header_menu_enc_id', 'name'], 'string', 'max' => 100],
             [['header_menu_enc_id'], 'unique'],

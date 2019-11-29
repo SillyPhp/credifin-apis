@@ -36,7 +36,7 @@ class HeaderMenuItems extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['menu_item_enc_id', 'item_enc_id'], 'required'],
+            [['menu_item_enc_id', 'item_enc_id', 'header_enc_id'], 'required'],
             [['target'], 'string'],
             [['sequence', 'is_visible_for'], 'integer'],
             [['menu_item_enc_id', 'item_enc_id', 'parent_enc_id', 'header_enc_id', 'css_class', 'icon'], 'string', 'max' => 100],
