@@ -101,7 +101,7 @@ use yii\helpers\Url;
                                                 <?= substr($careerBlog[$i]['description'], 0,160) ?>
                                             </div>
                                             <div class="cs-vd-btn">
-                                                <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
+                                                <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">Read</a>
                                             </div>
                                         </div>
                                     </div>
