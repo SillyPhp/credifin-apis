@@ -1391,7 +1391,7 @@ class ReviewsController extends ApiBaseController
         }
 
         $options['limit'] = 3;
-
+        $options['rating'] = [3, 4, 5];
 
         if ($options['type'] == 'college') {
             $options['business_activity'] = 'College';
@@ -1402,7 +1402,8 @@ class ReviewsController extends ApiBaseController
         } elseif ($options['type'] == 'school') {
             $options['business_activity'] = 'School';
             $data = $this->__unclaimedTopReviews($options);
-        } else {
+        } elseif($options['type'] == 'organization') {
+            $options['rating'] = [4, 5];
             $data = $this->__companyReviews($options);
         }
 
@@ -1449,8 +1450,6 @@ class ReviewsController extends ApiBaseController
 
     private function __companyReviews($options)
     {
-
-        $options['rating'] = [4, 5];
 
         $cards = Organizations::find()
             ->alias('a')
@@ -1509,7 +1508,6 @@ class ReviewsController extends ApiBaseController
 
     private function __unclaimedTopReviews($options)
     {
-        $options['rating'] = [3, 4, 5];
         $card_query = UnclaimedOrganizations::find()
             ->alias('a');
         $cards = $card_query->select(['a.organization_enc_id', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'max(c.created_on) created_on', 'a.name', 'a.initials_color color', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating']);
