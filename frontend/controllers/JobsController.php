@@ -2,10 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
 use common\models\Cities;
+use common\models\Designations;
 use common\models\OrganizationLocations;
 use common\models\States;
 use Yii;
