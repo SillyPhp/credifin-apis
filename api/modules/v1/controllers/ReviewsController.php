@@ -39,7 +39,7 @@ class ReviewsController extends ApiBaseController
                 'top-reviews',
                 'view-all-reviews',
                 'review-data',
-                'latest-reviews',
+                'latest-top-reviews',
                 'top-user-reviews',
                 'most-reviewed',
             ],
@@ -1393,11 +1393,14 @@ class ReviewsController extends ApiBaseController
         $options['limit'] = 3;
 
 
-        if ($options['business_activity'] == 'College') {
+        if ($options['type'] == 'college') {
+            $options['business_activity'] = 'College';
             $data = $this->__unclaimedTopReviews($options);
-        } elseif ($options['business_activity'] == 'Educational Institute') {
+        } elseif ($options['type'] == 'institute') {
+            $options['business_activity'] = 'Educational Institute';
             $data = $this->__unclaimedTopReviews($options);
-        } elseif ($options['business_activity'] == 'School') {
+        } elseif ($options['type'] == 'school') {
+            $options['business_activity'] = 'School';
             $data = $this->__unclaimedTopReviews($options);
         } else {
             $data = $this->__companyReviews($options);
@@ -1546,48 +1549,33 @@ class ReviewsController extends ApiBaseController
         ];
     }
 
-    public function actionLatestReviews()
+    public function actionLatestTopReviews()
     {
-        $options = [];
 
-        $options['rating'] = [1, 2, 3, 4, 5];
-        $options['limit'] = 2;
-        $options['sort'] = 1;
+        $options = \Yii::$app->request->post();
 
-        $latest_reviews = $this->getReviewCards($options);
+        if ($options['type'] == 'latest') {
+            $options['rating'] = [1, 2, 3, 4, 5];
+            $options['limit'] = 2;
+            $options['sort'] = 1;
+            $data = $this->getReviewCards($options);
+        } elseif ($options['type'] == 'top_user') {
+            $options['rating'] = [4, 5];
+            $options['limit'] = 2;
+            $data = $this->getReviewCards($options);
+        } elseif ($options['type'] == 'most_reviewed') {
+            $options['rating'] = [4, 5];
+            $options['limit'] = 2;
+            $options['most_reviewed'] = 1;
+            $data = $this->getReviewCards($options);
+        }
 
-        if (!empty($latest_reviews)) {
-            return $this->response(200, $latest_reviews);
+        if (!empty($data)) {
+            return $this->response(200, $data);
         } else {
             return $this->response(404, 'Not Found');
         }
-    }
 
-    public function actionTopUserReviews()
-    {
-        $options['rating'] = [4, 5];
-        $options['limit'] = 2;
-        $top_user_reviews = $this->getReviewCards($options);
-
-        if (!empty($top_user_reviews)) {
-            return $this->response(200, $top_user_reviews);
-        } else {
-            return $this->response(404, 'Not Found');
-        }
-    }
-
-    public function actionMostReviewed()
-    {
-        $options['rating'] = [4, 5];
-        $options['limit'] = 2;
-        $options['most_reviewed'] = 1;
-        $most_reviewed = $this->getReviewCards($options);
-
-        if (!empty($most_reviewed)) {
-            return $this->response(200, $most_reviewed);
-        } else {
-            return $this->response(404, 'Not Found');
-        }
     }
 
     private function getReviewCards($options)
