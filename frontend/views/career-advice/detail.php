@@ -199,8 +199,8 @@ $this->registerCss('
     margin:20px 0 40px;
 }
 .csb-header{
-    background:url(' . Url::to('@eyAssets/images/pages/custom/ci.png') . ');
-    background-size:cover;
+//    background:url(' . Url::to('@eyAssets/images/pages/custom/ci.png') . ');
+    background-size:cover !important;
     min-height:400px;
     min-width:100%;
 }  
@@ -301,3 +301,10 @@ $this->registerCss('
 }
 ');
 ?>
+<script>
+    var pathname = window.location.pathname.split('/');
+    var bgSet = pathname[2]
+    console.log(bgSet);
+    var bg = document.getElementsByClassName('csb-header');
+    bg[0].style.background = "url(/assets/themes/ey/images/pages/custom/"+ bgSet +"-bg.png)";
+</script>
