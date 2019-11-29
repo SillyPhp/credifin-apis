@@ -74,9 +74,6 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $feedbackFormModel = new FeedbackForm();
-        $partnerWithUsModel = new PartnerWithUsForm();
-
         $job_profiles = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
@@ -211,8 +208,6 @@ class SiteController extends Controller
         $tweets = array_merge($a, $b);
 
         return $this->render('index', [
-            'feedbackFormModel' => $feedbackFormModel,
-            'partnerWithUsModel' => $partnerWithUsModel,
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
@@ -286,47 +281,56 @@ class SiteController extends Controller
 
     public function actionSendFeedback()
     {
-        $feedbackFormModel = new FeedbackForm();
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $feedbackFormModel->load(Yii::$app->request->post());
-            if ($feedbackFormModel->save()) {
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Feedback has been sent.',
-                ];
-            } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
+            $feedbackFormModel = new FeedbackForm();
+            if (Yii::$app->request->isPost) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $feedbackFormModel->load(Yii::$app->request->post());
+                if ($feedbackFormModel->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Feedback has been sent.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }else{
+                return $this->renderAjax("/widgets/feedback-form",[
+                    "feedbackFormModel" => $feedbackFormModel,
+                ]);
             }
-
         }
     }
-
     public function actionPartnerWithUs()
     {
-        $partnerWithUsModel = new PartnerWithUsForm();
         if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $partnerWithUsModel->load(Yii::$app->request->post());
-            if ($partnerWithUsModel->save()) {
-                return $response = [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Request has been sent.',
-                ];
+            $partnerWithUsModel = new PartnerWithUsForm();
+            if (Yii::$app->request->isPost) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $partnerWithUsModel->load(Yii::$app->request->post());
+                if ($partnerWithUsModel->save()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Request has been sent.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
             } else {
-                return $response = [
-                    'status' => 201,
-                    'title' => 'Error',
-                    'message' => 'An error has occurred. Please try again.',
-                ];
+                return $this->renderAjax("/widgets/partner-with-us", [
+                    "partnerWithUsModel" => $partnerWithUsModel,
+                ]);
             }
-
         }
     }
 
@@ -738,4 +742,5 @@ class SiteController extends Controller
             }
         }
     }
+
 }
