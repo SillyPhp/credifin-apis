@@ -479,7 +479,7 @@ class CollegeIndexController extends ApiBaseController
                         }])
                         ->joinWith(['organizationLocations ee' => function ($e) {
                             $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
-                            $e->joinWith(['cityEnc ff'=>function($ff){
+                            $e->joinWith(['cityEnc ff' => function ($ff) {
                                 $ff->groupBy(['ff.city_enc_id']);
                             }], false)
                                 ->orOnCondition([
@@ -499,8 +499,9 @@ class CollegeIndexController extends ApiBaseController
     public function actionCandidates()
     {
         if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
             $req['college_id'] = $this->getOrgId();
-            $candidates = UserOtherDetails::find()
+             $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->distinct()
                 ->select([
@@ -548,8 +549,15 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null])
-                ->asArray()
+                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null]);
+            if (isset($data['course_name'])) {
+                $candidates->andWhere(['cc.educational_requirement' => $data['course_name']]);
+            }
+            if (isset($data['semester'])) {
+                $candidates->andWhere(['a.semester' => $data['semester']]);
+            }
+
+            $candidates = $candidates->asArray()
                 ->all();
 
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
@@ -674,4 +682,5 @@ class CollegeIndexController extends ApiBaseController
             }
         }
     }
+
 }
