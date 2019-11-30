@@ -192,15 +192,18 @@ $this->params['header_dark'] = false;
                 </a>
             </div>
         </div>
+
+        <?= $this->render('/widgets/preloaders/services-box-preloader')?>
     </div>
 </section>
 <!---->
 <?= $this->render('/widgets/usa_and_govt_jobs');?>
+<?= $this->render('/widgets/preloaders/gov-jobs-preloader');?>
 
 <section>
     <div class="block">
         <div class="container">
-            <!--            <div class="row">-->
+        <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12">
                 <div class="tab-sec">
                     <ul class="nav nav-tabs">
@@ -529,6 +532,8 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
         </div>
+            <?= $this->render('/widgets/preloaders/featured-opportunites-preloader')?>
+        </div>
     </div>
 </section>
 
@@ -555,6 +560,11 @@ $this->params['header_dark'] = false;
             <div class="row">
                 <div class="col-md-12">
                     <div class="popular-cate" id="categories"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <?= $this->render('/widgets/preloaders/learning-categories-preloader'); ?>
                 </div>
             </div>
         </div>
