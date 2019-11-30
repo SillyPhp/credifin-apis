@@ -501,7 +501,7 @@ class CollegeIndexController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $data = Yii::$app->request->post();
             $req['college_id'] = $this->getOrgId();
-            $candidates = UserOtherDetails::find()
+             $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->distinct()
                 ->select([
@@ -553,6 +553,10 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['course_name'])) {
                 $candidates->andWhere(['cc.educational_requirement' => $data['course_name']]);
             }
+            if (isset($data['semester'])) {
+                $candidates->andWhere(['a.semester' => $data['semester']]);
+            }
+
             $candidates = $candidates->asArray()
                 ->all();
 
