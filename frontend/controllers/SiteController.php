@@ -132,6 +132,22 @@ class SiteController extends Controller
             ])
             ->asArray()
             ->all();
+        $cities = EmployerApplications::find()
+            ->alias('a')
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
+            ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
+                $x->joinWith(['locationEnc c' => function ($x) {
+                    $x->joinWith(['cityEnc d']);
+                }], false);
+            }], false)
+            ->joinWith(['applicationTypeEnc e'], false)
+            ->where([
+                'a.is_deleted' => 0
+            ])
+            ->orderBy(['total' => SORT_DESC])
+            ->groupBy(['c.city_enc_id'])
+            ->asArray()
+            ->all();
 
         $featured_jobs = ApplicationCards::jobs([
             "page" => 1,
@@ -204,6 +220,7 @@ class SiteController extends Controller
             'search_words' => $search_words,
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs,
+            'cities' => $cities,
             'featured_jobs' => $featured_jobs
         ]);
     }
@@ -730,6 +747,75 @@ class SiteController extends Controller
                     'model' => $model,
                 ]);
             }
+        }
+    }
+
+    public function actionLoadData(){
+        $type = Yii::$app->request->post('type');
+        if($type == "getGovernmentJobs") {
+            return $this->renderAjax('/widgets/usa_and_govt_jobs');
+        } elseif($type == "getTopCities"){
+            $other_jobs = (new \yii\db\Query())
+                ->distinct()
+                ->from(States::tableName() . 'as a')
+                ->select([
+                    'a.state_enc_id',
+                    'b.country_enc_id',
+                    'c.city_enc_id',
+                    'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
+                    'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
+                ])
+                ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+                ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+                ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
+                ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
+                ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
+                ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
+                ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
+                ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
+            $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
+
+            $ai_jobs = (new \yii\db\Query())
+                ->distinct()
+                ->from(States::tableName() . 'as a')
+                ->select([
+                    'a.state_enc_id',
+                    'b.country_enc_id',
+                    'c.city_enc_id',
+                    'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
+                    'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
+                ])
+                ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+                ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+                ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
+                ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
+                ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
+                ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
+                ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
+                ->andWhere(['j.is_deleted' => 0, 'l.is_deleted' => 0]);
+            $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+            $cities_jobs = (new \yii\db\Query())
+                ->from([
+                    $other_jobs_city_wise->union($ai_jobs_city_wise),
+                ])
+                ->select(['city_name', 'SUM(job_count) as jobs', 'SUM(internship_count) as internships'])
+                ->groupBy('city_enc_id')
+                ->orderBy(['jobs' => SORT_DESC])
+                ->limit(4)
+                ->all();
+            return $this->renderAjax('/widgets/top-cities',[
+                'cities_jobs' => $cities_jobs
+            ]);
+        } elseif ($type == 'getOpportunities'){
+            return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
+        } elseif ($type == 'getLearningTopics'){
+            return $this->renderAjax('/widgets/homepage_components/learning_topics');
+        } elseif ($type == 'getCompaniesWithUs'){
+            return $this->renderAjax('/widgets/companies-with-us');
+        } elseif ($type == 'getTweets'){
+            return $this->renderAjax('/widgets/companies-with-us');
+        } elseif ($type == 'getShortcuts'){
+            return $this->renderAjax('/widgets/companies-with-us');
         }
     }
 
