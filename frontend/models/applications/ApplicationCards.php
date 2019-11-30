@@ -208,7 +208,8 @@ class ApplicationCards
                 'or',
                 ['g.name' => $options['location']],
                 ['s.name' => $options['location']],
-                ['v.name' => $options['location']]
+                ['v.name' => $options['location']],
+                ['x.name' => $options['location']]
             ]);
             $cards2->andWhere([
                 'or',
@@ -256,6 +257,7 @@ class ApplicationCards
                 ['REGEXP', 'g.name',$search_pattern],
                 ['REGEXP', 'v.name',$search_pattern],
                 ['REGEXP', 's.name',$search_pattern],
+                ['REGEXP', 'x.name',$search_pattern],
                 ['REGEXP', 'l.designation',$search_pattern],
                 ['REGEXP', 'a.type',$search_pattern],
                 ['REGEXP', 'c.name',$search_pattern],
@@ -377,7 +379,7 @@ class ApplicationCards
                 'm.wage_duration as salary_duration',
                 'd.name as organization_name',
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
-                'g.name city'
+                '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
             ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
             ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
@@ -390,11 +392,14 @@ class ApplicationCards
             ->leftJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
             ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = a.application_enc_id AND e.is_deleted = 0')
             ->leftJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as t', 't.application_enc_id = a.application_enc_id')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = f.city_enc_id')
+            ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
-            ->leftJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
-            ->groupBy(['g.city_enc_id','a.application_enc_id'])
+            ->groupBy(['g.city_enc_id','x.city_enc_id','a.application_enc_id'])
             ->orderBy(['a.created_on'=>SORT_DESC]);
 
         $cards2 = (new \yii\db\Query())
@@ -488,6 +493,8 @@ class ApplicationCards
                 'or',
                 ['g.name' => $options['location']],
                 ['s.name' => $options['location']],
+                ['v.name' => $options['location']],
+                ['x.name' => $options['location']],
             ]);
             $cards2->andWhere([
                 'or',
@@ -500,24 +507,26 @@ class ApplicationCards
             $search_pattern = self::makeSQL_search_pattern($options['keyword']);
             $cards1->andFilterWhere([
                 'or',
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern],
+                ['REGEXP', 'v.name',$search_pattern],
+                ['REGEXP', 'x.name',$search_pattern],
                 ['REGEXP', 'a.type',$search_pattern],
                 ['REGEXP', 'c.name',$search_pattern],
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
-                ['REGEXP', 'a.slug',$search_pattern],
-                ['REGEXP', 'g.name',$search_pattern],
-                ['REGEXP', 's.name',$search_pattern]
+                ['REGEXP', 'a.slug',$search_pattern]
             ]);
 
             $cards2->andFilterWhere([
                 'or',
+                ['REGEXP', 'g.name',$search_pattern],
+                ['REGEXP', 's.name',$search_pattern],
                 ['REGEXP', 'a.type',$search_pattern],
                 ['REGEXP', 'c.name',$search_pattern],
                 ['REGEXP', 'i.name',$search_pattern],
                 ['REGEXP', 'd.name',$search_pattern],
-                ['REGEXP', 'a.slug',$search_pattern],
-                ['REGEXP', 'g.name',$search_pattern],
-                ['REGEXP', 's.name',$search_pattern]
+                ['REGEXP', 'a.slug',$search_pattern]
             ]);
         }
 
