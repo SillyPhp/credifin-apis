@@ -244,11 +244,10 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
         </div>
     </div>
 </section>
-
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12"> 
+            <div class="col-md-12">
                 <div class="col-md-6 col-sm-6 col-xs-6">
                     <div class="heading-style">Departments</div>
                 </div>
@@ -265,54 +264,12 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
             </div>
         </div>
         <div class="row">
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
-                    </div>
-                    <div class="agency-name">Joint Services Survival, Evasion, Resistance & Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
-                    </div>
-                    <div class="agency-name">Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
-                    </div>
-                    <div class="agency-name">Evasion, Resistance & Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
-                    </div>
-                    <div class="agency-name">Joint Services Survival,</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
+           <div id="departments_cards">
+
+           </div>
         </div>
     </div>
 </section>
-
 <section>
     <div class="container">
         <div class="row">
@@ -974,6 +931,7 @@ display:none;
 
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
+echo $this->render('/widgets/mustache/departments_usa');
 $script = <<< JS
  $(document).on('click', "#toggle", function () {
         var elem = $("#toggle").text();
@@ -998,6 +956,7 @@ $(document).on('submit','#form-search',function(e) {
 var min =0;
 var max = 8;
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
+fetchDepartments(template=$('#departments_cards'),limit=4);
 //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
 JS;
 $this->registerJs($script);
