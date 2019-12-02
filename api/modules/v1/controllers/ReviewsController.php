@@ -107,6 +107,8 @@ class ReviewsController extends ApiBaseController
 
         if ($options['quant'] == 'one') {
             $result = $primary_result->asArray()->one();
+        }elseif ($options['count'] == true){
+            $result = $primary_result->count();
         } else {
             $result = $primary_result
                 ->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $options['user_id'] . '") DESC, a.created_on DESC')])
@@ -415,6 +417,7 @@ class ReviewsController extends ApiBaseController
                 }], false)
                 ->joinWith(['designationEnc e'], false);
             $reviews->orderBy([new \yii\db\Expression('FIELD (a.created_by,"' . $candidate->user_enc_id . '") DESC, a.created_on DESC')]);
+            $count = $reviews->count();
             if ($limit) {
                 $reviews->limit($limit);
                 $reviews->offset(($page - 1) * $limit);
@@ -454,6 +457,7 @@ class ReviewsController extends ApiBaseController
             }
 
             $data['reviews'] = $result;
+            $data['count'] = $count;
             if (!empty($result)) {
                 return $this->response(200, $data);
             } else {
@@ -507,6 +511,10 @@ class ReviewsController extends ApiBaseController
 
                 $options['user_id'] = $candidate->user_enc_id;
 
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
+
                 $options['quant'] = 'all';
                 $options['limit'] = $limit;
                 $options['page'] = $page;
@@ -536,6 +544,7 @@ class ReviewsController extends ApiBaseController
                 }
 
                 $data['reviews'] = $emp_reviews;
+                $data['count'] = $count;
 
                 if (!empty($emp_reviews)) {
                     return $this->response(200, $data);
@@ -578,6 +587,9 @@ class ReviewsController extends ApiBaseController
                 $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
                 $options['condition'][] = ['in', 'a.reviewer_type', [2, 3]];
                 $options['user_id'] = $candidate->user_enc_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
                 $options['quant'] = 'all';
 
                 $options['limit'] = $limit;
@@ -639,6 +651,9 @@ class ReviewsController extends ApiBaseController
                 $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
                 $options['condition'][] = ['in', 'a.reviewer_type', [4, 5]];
                 $options['user_id'] = $candidate->user_enc_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
                 $options['quant'] = 'all';
 
                 $options['limit'] = $limit;
@@ -701,6 +716,9 @@ class ReviewsController extends ApiBaseController
                 $options['condition'][] = ['a.organization_enc_id' => $unclaimed_org['organization_enc_id'], 'a.status' => 1];
                 $options['condition'][] = ['in', 'a.reviewer_type', [6, 7]];
                 $options['user_id'] = $candidate->user_enc_id;
+                $options['count'] = true;
+                $count = $this->__unclaimedReviews($options);
+                $options['count'] = false;
                 $options['quant'] = 'all';
 
                 $options['limit'] = $limit;
@@ -733,6 +751,7 @@ class ReviewsController extends ApiBaseController
             }
 
             $data['reviews'] = $reviews_students;
+            $data['count'] = $count;
 
             if (!empty($reviews_students)) {
                 return $this->response(200, $data);
