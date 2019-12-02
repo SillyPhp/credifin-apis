@@ -190,4 +190,25 @@ class UsaJobsController extends Controller
         return $this->render('senior-executives');
     }
 
+    public function actionDepartments(){
+        return $this->render('departments');
+    }
+
+    public function actionGetDepartments()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $limit = Yii::$app->request->post('limit');
+            $d = UsaDepartments::find()
+                ->select(['Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->asArray()
+                ->orderBy(['total_applications' => SORT_DESC])
+                ->limit($limit)
+                ->all();
+            return [
+                'status'=>200,
+                'cards'=>$d
+            ];
+        }
+    }
 }
