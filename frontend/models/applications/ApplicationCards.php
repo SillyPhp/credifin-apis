@@ -46,48 +46,6 @@ class ApplicationCards
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        $user_id = Yii::$app->user->identity->user_enc_id;
-        if ($user_id) {
-            $user_preference = (new \yii\db\Query())
-                ->distinct()
-                ->from(UserPreferences::tableName() . 'as a')
-                ->select([
-                    'a.preference_enc_id preference_id',
-                    'ba.industry_enc_id industry_id',
-                    'ca.category_enc_id profile_id',
-                    'ca.slug profile_slug',
-                    'ca.icon_png profile_icon',
-                    'da.city_enc_id city_id',
-                    'daa.state_enc_id state_id',
-                    'daaa.country_enc_id country_id',
-                    'ea.skill_enc_id skill_id',
-                    'a.type',
-                    'a.timings_from',
-                    'a.timings_to',
-                    'a.salary',
-                    'a.min_expected_salary',
-                    'a.max_expected_salary',
-                    'a.experience',
-                    'a.working_days',
-                    'a.sat_frequency',
-                    'a.sun_frequency'
-                ])
-                ->leftJoin(UserPreferredIndustries::tableName() . 'as b', 'b.preference_enc_id = a.preference_enc_id')
-                ->innerJoin(Industries::tableName() . 'as ba', 'ba.industry_enc_id = b.industry_enc_id')
-                ->leftJoin(UserPreferredJobProfile::tableName() . 'as c', 'c.preference_enc_id = a.preference_enc_id')
-                ->innerJoin(Categories::tableName() . 'as ca', 'ca.category_enc_id = c.job_profile_enc_id')
-                ->leftJoin(UserPreferredLocations::tableName() . 'as d', 'd.preference_enc_id = a.preference_enc_id')
-                ->innerJoin(Cities::tableName() . 'as da', 'da.city_enc_id = d.city_enc_id')
-                ->innerJoin(States::tableName() . 'as daa', 'daa.state_enc_id = da.state_enc_id')
-                ->innerJoin(Countries::tableName() . 'as daaa', 'daaa.country_enc_id = daa.country_enc_id')
-                ->leftJoin(UserPreferredSkills::tableName() . 'as e', 'e.preference_enc_id = a.preference_enc_id')
-                ->innerJoin(Skills::tableName() . 'as ea', 'ea.skill_enc_id = e.skill_enc_id')
-                ->where(['a.is_deleted' => 0, 'a.created_by' => $user_id]);
-
-            $job_preferences = $user_preference->andWhere(['a.assigned_to' => 'Jobs'])->all();
-            $internship_preferences = $user_preference->andWhere(['a.assigned_to' => 'Internships'])->all();
-        }
-
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
@@ -748,4 +706,5 @@ class ApplicationCards
             else
                 return "";
         }
+
 }

@@ -342,6 +342,9 @@ class JobsController extends Controller
             }
             return $response;
         }
+        $cards = ApplicationCards::jobs($options=[]);
+        print_r($cards);
+        exit;
         return $this->render('list');
     }
 
