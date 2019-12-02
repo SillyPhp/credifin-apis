@@ -11,6 +11,7 @@ class HeaderComponent extends Component
 
     public function getMenuHeader($route, $menu_of = 1)
     {
+        return '';
         $children = HeaderMenuItems::find()
             ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
             ->where(['menu_of' => $menu_of])

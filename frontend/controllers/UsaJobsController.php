@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\UsaDepartments;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -45,6 +46,19 @@ class UsaJobsController extends Controller
                 $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                 $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
+                $data = UsaDepartments::find()
+                    ->select(['image','image_location'])
+                    ->where(['Value'=>$get[$i]['DepartmentName']])
+                    ->asArray()
+                    ->one();
+                if (!empty($data['image']) && !empty($data['image_location']))
+                {
+                    $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image.$data['image_location'].DIRECTORY_SEPARATOR.$data['image'];
+                }
+                else
+                {
+                    $get[$i]['logo'] = null;
+                }
                 $i++;
             }
             return json_encode($get);
@@ -93,6 +107,19 @@ class UsaJobsController extends Controller
                     $get[$i]['JobCategory'] = $val['MatchedObjectDescriptor']['JobCategory'][0]['Code'];
                     $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                     $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
+                    $data = UsaDepartments::find()
+                        ->select(['image','image_location'])
+                        ->where(['Value'=>$get[$i]['DepartmentName']])
+                        ->asArray()
+                        ->one();
+                    if (!empty($data['image']) && !empty($data['image_location']))
+                    {
+                        $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image.$data['image_location'].DIRECTORY_SEPARATOR.$data['image'];
+                    }
+                    else
+                    {
+                        $get[$i]['logo'] = null;
+                    }
                     $i++;
                 }
             }
