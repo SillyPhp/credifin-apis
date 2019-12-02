@@ -23,7 +23,7 @@
                     <div class="popular-cate" id="categories"></div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" id="loading-learning-categories">
                 <div class="col-md-12">
                     <?= $this->render('/widgets/preloaders/learning-categories-preloader'); ?>
                 </div>
@@ -31,3 +31,5 @@
         </div>
     </div>
 </section>
+<?php
+echo $this->render('/widgets/mustache/learning-categories');

@@ -195,6 +195,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <div id="test-data"></div>
+<div id="sectionIsLoading" class="sectionIsLoading"><div></div><div></div></div>
 <!---->
 <?//= $this->render('/widgets/usa_and_govt_jobs');?>
 <?//= $this->render('/widgets/preloaders/gov-jobs-preloader');?>
@@ -241,7 +242,7 @@ $this->params['header_dark'] = false;
 <!--                                                <span class="job-is ft fill">Full time</span>-->
 <!--                                            </div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="/job/business-development-executive-1901271548600570">-->
 <!--                                            <div class="job-title-sec">-->
@@ -268,7 +269,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!---->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="/job/credit-officer-credit-development-officer-28891553595039">-->
 <!--                                            <div class="job-title-sec">-->
@@ -294,7 +295,6 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                        </a>-->
 <!--                                    </div>-->
-<!--                                    <!-- Job -->-->
 <!--                                </div>-->
 <!--                                <div class="col-lg-6 col-md-6">-->
 <!--                                    <div class="job-listing wtabs">-->
@@ -319,7 +319,7 @@ $this->params['header_dark'] = false;
 <!--                                                <span class="job-is ft fill">Full time</span>-->
 <!--                                            </div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="/internship/sales-officer-29591553927078">-->
 <!--                                            <div class="job-title-sec">-->
@@ -370,7 +370,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                            <div class="intern-tag">Internship</div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                        </div>-->
@@ -427,7 +427,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                            <div class="intern-tag">Internship</div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="/internship/market-research-analyst-11301553596170">-->
 <!--                                            <div class="job-title-sec">-->
@@ -449,7 +449,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                            <div class="intern-tag">Internship</div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                </div>-->
 <!--                                <div class="col-lg-6 col-md-6">-->
 <!--                                    <div class="job-listing wtabs">-->
@@ -474,7 +474,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                            <div class="intern-tag">Internship</div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="/internship/digital-marketing-22371553238862">-->
 <!--                                            <div class="job-title-sec">-->
@@ -497,7 +497,7 @@ $this->params['header_dark'] = false;
 <!--                                            </div>-->
 <!--                                            <div class="intern-tag">Internship</div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div> Job -->
 <!--                                    <div class="job-listing wtabs">-->
 <!--                                        <a href="">-->
 <!--                                            <div class="job-title-sec">-->
@@ -520,7 +520,7 @@ $this->params['header_dark'] = false;
 <!--                                                <span class="job-is ft fill">Full time</span>-->
 <!--                                            </div>-->
 <!--                                        </a>-->
-<!--                                    </div><!-- Job -->-->
+<!--                                    </div>Job -->
 <!--                                </div>-->
 <!--                            </div>-->
 <!--                        </div>-->
@@ -656,38 +656,38 @@ $this->params['header_dark'] = false;
 <!--new section starts-->
 <?//= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
-<section class="j-tweets">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6">
-                <h1 class="heading-style" id="tweetHeading">Tweets</h1>
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="tweetLinks">
-                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>
-                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="tweet-btn">
-                    <button type="button" id="jobtweet" onclick="jobTweet()">Jobs</button>
-                    /
-                    <button type="button" id="interntweet" onclick="internTweet()">Internships</button>
-                </div>
-            </div>
-        </div>
-        <?=
-        $this->render('/widgets/twitter-masonry', [
-            'tweets' => $tweets
-        ]);
-        ?>
-        <?=
-            $this->render('/widgets/preloaders/tweet-job-preloader');
-        ?>
-    </div>
-</section>
+<!--<section class="j-tweets">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-6 col-sm-6">-->
+<!--                <h1 class="heading-style" id="tweetHeading">Tweets</h1>-->
+<!--            </div>-->
+<!--            <div class="col-md-6 col-sm-6">-->
+<!--                <div class="tweetLinks">-->
+<!--                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>-->
+<!--                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row">-->
+<!--            <div class="col-md-12">-->
+<!--                <div class="tweet-btn">-->
+<!--                    <button type="button" id="jobtweet" onclick="jobTweet()">Jobs</button>-->
+<!--                    /-->
+<!--                    <button type="button" id="interntweet" onclick="internTweet()">Internships</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        --><?//=
+//        $this->render('/widgets/twitter-masonry', [
+//            'tweets' => $tweets
+//        ]);
+//        ?>
+<!--        --><?//=
+//            $this->render('/widgets/preloaders/tweet-job-preloader');
+//        ?>
+<!--    </div>-->
+<!--</section>-->
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -695,76 +695,109 @@ if (Yii::$app->user->isGuest) {
 }
 ?>
 <!--Subscribe Widget ends-->
-<section class="search-lists">
-    <div class="container">
-        <div id="quick-links-c">
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Popular Searches</div>
-                <ul class="quick-links" id="searches">
-                    <?php foreach ($search_words as $sw) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
-                               title="<?= $sw['name'] ?>">
-                                <?= $sw['name'] ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Jobs</div>
-                <ul class="quick-links" id="jobs">
-                    <?php foreach ($job_profiles as $jp) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
-                               title="<?= $jp['name']; ?> Jobs">
-                                <?= $jp['name']; ?> Jobs
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Browse by City</div>
-                <ul class="quick-links" id="cities">
-                    <?php foreach ($cities as $c) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to($c['link'], "https"); ?>" title="Jobs in <?= $c['name']; ?>">
-                                Jobs in <?= $c['name']; ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div class="list-heading">Internships</div>
-                <ul class="quick-links" id="internships">
-                    <?php foreach ($internship_profiles as $ip) { ?>
-                        <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
-                               title="<?= $ip['name']; ?> Internships">
-                                <?= $ip['name']; ?> Internships
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-                <button type="button" class="showHideBtn">More</button>
-            </div>
-        </div>
-    </div>
-</section>
-<section class="search-lists">
-    <div class="container">
-        <?= $this->render('/widgets/preloaders/quick-links-preloader');?>
-    </div>
-</section>
+<!--<section class="search-lists">-->
+<!--    <div class="container">-->
+<!--        <div id="quick-links-c">-->
+<!--            <div class="col-md-3 col-sm-3 col-xs-6">-->
+<!--                <div class="list-heading">Popular Searches</div>-->
+<!--                <ul class="quick-links" id="searches">-->
+<!--                    --><?php //foreach ($search_words as $sw) { ?>
+<!--                        <li class="hide">-->
+<!--                            <a href="--><?//= Url::to('/search?keyword=' . $sw['name']); ?><!--"-->
+<!--                               title="--><?//= $sw['name'] ?><!--">-->
+<!--                                --><?//= $sw['name'] ?>
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    --><?php //} ?>
+<!--                </ul>-->
+<!--                <button type="button" class="showHideBtn">More</button>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-3 col-xs-6">-->
+<!--                <div class="list-heading">Jobs</div>-->
+<!--                <ul class="quick-links" id="jobs">-->
+<!--                    --><?php //foreach ($job_profiles as $jp) { ?>
+<!--                        <li class="hide">-->
+<!--                            <a href="--><?//= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?><!--"-->
+<!--                               title="--><?//= $jp['name']; ?><!-- Jobs">-->
+<!--                                --><?//= $jp['name']; ?><!-- Jobs-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    --><?php //} ?>
+<!--                </ul>-->
+<!--                <button type="button" class="showHideBtn">More</button>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-3 col-xs-6">-->
+<!--                <div class="list-heading">Browse by City</div>-->
+<!--                <ul class="quick-links" id="cities">-->
+<!--                    --><?php //foreach ($cities as $c) { ?>
+<!--                        <li class="hide">-->
+<!--                            <a href="--><?//= Url::to($c['link'], "https"); ?><!--" title="Jobs in --><?//= $c['name']; ?><!--">-->
+<!--                                Jobs in --><?//= $c['name']; ?>
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    --><?php //} ?>
+<!--                </ul>-->
+<!--                <button type="button" class="showHideBtn">More</button>-->
+<!--            </div>-->
+<!--            <div class="col-md-3 col-sm-3 col-xs-6">-->
+<!--                <div class="list-heading">Internships</div>-->
+<!--                <ul class="quick-links" id="internships">-->
+<!--                    --><?php //foreach ($internship_profiles as $ip) { ?>
+<!--                        <li class="hide">-->
+<!--                            <a href="--><?//= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?><!--"-->
+<!--                               title="--><?//= $ip['name']; ?><!-- Internships">-->
+<!--                                --><?//= $ip['name']; ?><!-- Internships-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    --><?php //} ?>
+<!--                </ul>-->
+<!--                <button type="button" class="showHideBtn">More</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</section>-->
+<!--<section class="search-lists">-->
+<!--    <div class="container">-->
+<!--        --><?//= $this->render('/widgets/preloaders/quick-links-preloader');?>
+<!--    </div>-->
+<!--</section>-->
 
 <?php
-echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
+.sectionIsLoading {
+    display: none;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: auto;
+}
+.sectionIsLoading div {
+  position: absolute;
+  border: 4px solid #00a0e3;
+  opacity: 1;
+  border-radius: 50%;
+  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.sectionIsLoading div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes sectionIsLoading {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
     background-attachment: fixed;
@@ -1839,6 +1872,7 @@ how-icon{
 
 ');
 $script = <<< JS
+$("html, body").animate({ scrollTop: 0 }, "slow");
  $('.tab-sec li a').on("click", function(){
         var tab_id = $(this).attr('data-tab');
         $('.tab-sec li a').removeClass('current');
@@ -1861,7 +1895,7 @@ var loadNth = 0;
 window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
      var doc_height = $(document).height() - $(window).height();
-  if (document.documentElement.scrollTop > doc_height - $('#footer').height() - 1200) {
+  if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
       if(load_content && loadElems[loadNth]){
         load_content = false;
         $.ajax({
@@ -1869,9 +1903,11 @@ function scrollFunction() {
             method: "POST",
             data: {type:loadElems[loadNth]},
             beforeSend:function(){
-                
+                $('#sectionIsLoading').fadeIn(500);
             },
             success: function (response) {
+                $('#sectionIsLoading').fadeOut(800);
+                $(this).animate({scrollTop : -500}, 400);
                 $('#test-data').append(response);
             },
             complete: function() {
@@ -1913,141 +1949,141 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
-    var twitterTweets = document.querySelectorAll('.twitter-cards');
-    const settings = {
-        jobs: {
-            color: "#00a0e3",
-            title: "Job Tweets",
-            viewAllLink: "/tweets/jobs",
-            postLink: "/tweets/job/create"
-        },
-        internships: {
-            color: "#00a0e3",
-            title: "Internship Tweets",
-            viewAllLink: "/tweets/internships",
-            postLink: "/tweets/internship/create"
-        }
-    };
-    window.onload = function () {
-        jobTweet();
-    }
+    // var twitterTweets = document.querySelectorAll('.twitter-cards');
+    // const settings = {
+    //     jobs: {
+    //         color: "#00a0e3",
+    //         title: "Job Tweets",
+    //         viewAllLink: "/tweets/jobs",
+    //         postLink: "/tweets/job/create"
+    //     },
+    //     internships: {
+    //         color: "#00a0e3",
+    //         title: "Internship Tweets",
+    //         viewAllLink: "/tweets/internships",
+    //         postLink: "/tweets/internship/create"
+    //     }
+    // };
+    // window.onload = function () {
+    //     jobTweet();
+    // }
+    //
+    // function jobTweet() {
+    //     document.getElementById('jobtweet').style.color = "#00a0e3";
+    //     document.getElementById('interntweet').style.color = "#000";
+    //     document.getElementById('tweetHeading').innerHTML = "Job Tweets";
+    //     document.getElementById('tweetAllLink').href = "/tweets/jobs";
+    //     document.getElementById('tweetPostLink').href = "/tweets/job/create";
+    //
+    //     for (var i = 0; i < twitterTweets.length; i++) {
+    //         if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+    //             twitterTweets[i].style.display = "none";
+    //         } else if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+    //             twitterTweets[i].style.display = "block";
+    //         }
+    //     }
+    // }
+    //
+    // function internTweet() {
+    //     document.getElementById('interntweet').style.color = "#00a0e3";
+    //     document.getElementById('jobtweet').style.color = "#000";
+    //     document.getElementById('tweetHeading').innerHTML = "Internship Tweets";
+    //     document.getElementById('tweetAllLink').href = "/tweets/internships";
+    //     document.getElementById('tweetPostLink').href = "/tweets/internship/create";
+    //
+    //     for (var i = 0; i < twitterTweets.length; i++) {
+    //         if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+    //             twitterTweets[i].style.display = "none";
+    //         } else if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+    //             twitterTweets[i].style.display = "block";
+    //         }
+    //     }
+    // }
 
-    function jobTweet() {
-        document.getElementById('jobtweet').style.color = "#00a0e3";
-        document.getElementById('interntweet').style.color = "#000";
-        document.getElementById('tweetHeading').innerHTML = "Job Tweets";
-        document.getElementById('tweetAllLink').href = "/tweets/jobs";
-        document.getElementById('tweetPostLink').href = "/tweets/job/create";
-
-        for (var i = 0; i < twitterTweets.length; i++) {
-            if (twitterTweets[i].getAttribute('data-id') == "Internships") {
-                twitterTweets[i].style.display = "none";
-            } else if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
-                twitterTweets[i].style.display = "block";
-            }
-        }
-    }
-
-    function internTweet() {
-        document.getElementById('interntweet').style.color = "#00a0e3";
-        document.getElementById('jobtweet').style.color = "#000";
-        document.getElementById('tweetHeading').innerHTML = "Internship Tweets";
-        document.getElementById('tweetAllLink').href = "/tweets/internships";
-        document.getElementById('tweetPostLink').href = "/tweets/internship/create";
-
-        for (var i = 0; i < twitterTweets.length; i++) {
-            if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
-                twitterTweets[i].style.display = "none";
-            } else if (twitterTweets[i].getAttribute('data-id') == "Internships") {
-                twitterTweets[i].style.display = "block";
-            }
-        }
-    }
-
-    expandFirst('searches');
-    expandFirst('cities');
-    expandFirst('jobs');
-    expandFirst('internships');
-
-    function expandFirst(elem) {
-        var i = 0;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k = 0;
-        while (k < listElementsLength) {
-            if (k < i + 4) {
-                if (document.getElementById(elem)) {
-                    document.getElementById(elem).children[k].classList.remove('hide');
-                }
-            } else {
-                break;
-            }
-            k += 1;
-        }
-    }
-
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
-
-    function showMoreEvent() {
-        hideMore('searches');
-        hideMore('cities');
-        hideMore('jobs');
-        hideMore('internships');
-    }
-
-    function hideMore(elem) {
-        // var i = 0;
-        // i += 5;
-        // var k = 4;
-        var ll = 0;``
-        var zz = 0;
-        var tt = 0;
-        var f = true;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (ll < listElementsLength) {
-            if (document.getElementById(elem).children[ll]) {
-                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
-                    document.getElementById(elem).children[ll].classList.remove('hide');
-                    zz += 1;
-                    f = false;
-                }
-            }
-            ll += 1;
-        }
-        if (f) {
-            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
-        }
-    }
-
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
-
-    function showLessEvent() {
-        hideLess('searches');
-        hideLess('cities');
-        hideLess('jobs');
-        hideLess('internships');
-    }
-
-    function hideLess(elem) {
-        shrinkFirst(elem);
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
-        document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
-        expandFirst(elem);
-    }
-
-    function shrinkFirst(elem) {
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        var k = 5;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.add('hide');
-            }
-            k += 1;
-        }
-    }
+    // expandFirst('searches');
+    // expandFirst('cities');
+    // expandFirst('jobs');
+    // expandFirst('internships');
+    //
+    // function expandFirst(elem) {
+    //     var i = 0;
+    //     var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+    //     var k = 0;
+    //     while (k < listElementsLength) {
+    //         if (k < i + 4) {
+    //             if (document.getElementById(elem)) {
+    //                 document.getElementById(elem).children[k].classList.remove('hide');
+    //             }
+    //         } else {
+    //             break;
+    //         }
+    //         k += 1;
+    //     }
+    // }
+    //
+    // $(document).on('click', '.showHideBtn', function () {
+    //     showMoreEvent();
+    // });
+    //
+    // function showMoreEvent() {
+    //     hideMore('searches');
+    //     hideMore('cities');
+    //     hideMore('jobs');
+    //     hideMore('internships');
+    // }
+    //
+    // function hideMore(elem) {
+    //     // var i = 0;
+    //     // i += 5;
+    //     // var k = 4;
+    //     var ll = 0;``
+    //     var zz = 0;
+    //     var tt = 0;
+    //     var f = true;
+    //     var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+    //     while (ll < listElementsLength) {
+    //         if (document.getElementById(elem).children[ll]) {
+    //             if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+    //                 document.getElementById(elem).children[ll].classList.remove('hide');
+    //                 zz += 1;
+    //                 f = false;
+    //             }
+    //         }
+    //         ll += 1;
+    //     }
+    //     if (f) {
+    //         document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+    //         document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+    //     }
+    // }
+    //
+    // $(document).on('click', '.hideElem', function () {
+    //     showLessEvent();
+    // });
+    //
+    // function showLessEvent() {
+    //     hideLess('searches');
+    //     hideLess('cities');
+    //     hideLess('jobs');
+    //     hideLess('internships');
+    // }
+    //
+    // function hideLess(elem) {
+    //     shrinkFirst(elem);
+    //     document.getElementById(elem).parentNode.children[2].innerHTML = 'More';
+    //     document.getElementById(elem).parentNode.children[2].classList.remove('hideElem');
+    //     expandFirst(elem);
+    // }
+    //
+    // function shrinkFirst(elem) {
+    //     var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
+    //     var k = 5;
+    //     while (k < listElementsLength) {
+    //         if (document.getElementById(elem)) {
+    //             document.getElementById(elem).children[k].classList.add('hide');
+    //         }
+    //         k += 1;
+    //     }
+    // }
 
 </script>

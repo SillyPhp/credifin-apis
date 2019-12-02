@@ -333,7 +333,7 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-            <?= $this->render('/widgets/preloaders/featured-opportunites-preloader')?>
+<!--            --><?//= $this->render('/widgets/preloaders/featured-opportunites-preloader')?>
         </div>
     </div>
 </section>
