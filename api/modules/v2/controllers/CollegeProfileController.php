@@ -255,23 +255,31 @@ class CollegeProfileController extends ApiBaseController
                 ->where(['college_course_enc_id' => $req['course_id']])
                 ->one();
 
-            if (!empty($course)) {
-                $course->course_name = $req['course_name'];
-                $course->course_duration = $req['course_duration'];
-                $course->updated_by = $user->user_enc_id;
-                $course->updated_on = date('Y-m-d H:i:s');
-                if ($course->update()) {
-                    $courses = CollegeCourses::find()
-                        ->select(['college_course_enc_id', 'course_name', 'course_duration'])
-                        ->where(['organization_enc_id' => $college_id])
-                        ->asArray()
-                        ->all();
-                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            $already_have = CollegeCourses::find()
+                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->one();
+
+            if (empty($already_have)) {
+                if (!empty($course)) {
+                    $course->course_name = $req['course_name'];
+                    $course->course_duration = $req['course_duration'];
+                    $course->updated_by = $user->user_enc_id;
+                    $course->updated_on = date('Y-m-d H:i:s');
+                    if ($course->update()) {
+                        $courses = CollegeCourses::find()
+                            ->select(['college_course_enc_id', 'course_name', 'course_duration'])
+                            ->where(['organization_enc_id' => $college_id])
+                            ->asArray()
+                            ->all();
+                        return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                    } else {
+                        return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                    }
                 } else {
-                    return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                    return $this->response(404);
                 }
-            } else {
-                return $this->response(404);
+            }else{
+                return $this->response(409, ['status' => 409, 'message' => 'already added']);
             }
         } else {
             return $this->response(401);

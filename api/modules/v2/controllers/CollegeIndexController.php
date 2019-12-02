@@ -439,7 +439,7 @@ class CollegeIndexController extends ApiBaseController
             $college_id = $this->getOrgId();
 
             $courses = CollegeCourses::find()
-                ->select(['college_course_enc_id', 'UPPER(course_name) course_name', 'course_duration'])
+                ->select(['college_course_enc_id', 'course_name', 'course_duration'])
                 ->where(['organization_enc_id' => $college_id])
                 ->groupBy(['course_name'])
                 ->asArray()
