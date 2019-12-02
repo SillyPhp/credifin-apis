@@ -956,7 +956,7 @@ $(document).on('submit','#form-search',function(e) {
 var min =0;
 var max = 8;
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
-fetchDepartments(template=$('#departments_cards'),limit=4);
+fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
 //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
 JS;
 $this->registerJs($script);

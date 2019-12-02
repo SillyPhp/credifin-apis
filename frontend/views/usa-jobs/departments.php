@@ -10,55 +10,15 @@ use yii\helpers\Url;
             <div class="heading-style">All Departments</div>
         </div>
         <div class="row">
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
-                    </div>
-                    <div class="agency-name">Joint Services Survival, Evasion, Resistance & Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
-                    </div>
-                    <div class="agency-name">Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
-                    </div>
-                    <div class="agency-name">Evasion, Resistance & Escape Agency</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6">
-                <div class="agency-box">
-                    <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
-                    </div>
-                    <div class="agency-name">Joint Services Survival,</div>
-                    <div class="agency-count">
-                        <a href="#">25 Jobs</a>
-                    </div>
-                </div>
+            <div id="departments_cards">
+
             </div>
         </div>
     </div>
 </section>
 
 <?php
+echo $this->render('/widgets/mustache/departments_usa');
 $this->registerCss('
 .agency-box {
     border: 1px solid #fff;
@@ -119,3 +79,7 @@ $this->registerCss('
     padding:0px 0px 20px 0px;
 }
 ');
+$script = <<<JS
+fetchDepartments(template=$('#departments_cards'),limit=20,offset=0);
+JS;
+$this->registerJs($script);
