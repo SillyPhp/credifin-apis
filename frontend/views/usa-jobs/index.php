@@ -248,13 +248,27 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 <section>
     <div class="container">
         <div class="row">
-            <div class="heading-style">Departments</div>
+            <div class="col-md-12"> 
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="heading-style">Departments</div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="type-1">
+                        <div>
+                            <a href="/usa-jobs/departments" class="btn btn-3">
+                                <span class="txt-cate">View all</span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-3 col-sm-6">
                 <div class="agency-box">
                     <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
                     </div>
                     <div class="agency-name">Joint Services Survival, Evasion, Resistance & Escape Agency</div>
                     <div class="agency-count">
@@ -265,7 +279,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
             <div class="col-md-3 col-sm-6">
                 <div class="agency-box">
                     <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
                     </div>
                     <div class="agency-name">Escape Agency</div>
                     <div class="agency-count">
@@ -276,7 +290,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
             <div class="col-md-3 col-sm-6">
                 <div class="agency-box">
                     <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
                     </div>
                     <div class="agency-name">Evasion, Resistance & Escape Agency</div>
                     <div class="agency-count">
@@ -287,7 +301,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
             <div class="col-md-3 col-sm-6">
                 <div class="agency-box">
                     <div class="agency-logo">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>">
+                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png') ?>">
                     </div>
                     <div class="agency-name">Joint Services Survival,</div>
                     <div class="agency-count">
@@ -466,12 +480,94 @@ $this->registerCss("
 	text-transform:capitalize;
 }
 
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+    
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.txt-cate {
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+
+/*<!---- view-all button css ends --->*/
 .btn {
 	margin-top: 15px;
 	text-align: right !important;
-	display: inline-block;
-	background-color: #00a0e3;
+	display: inline-block;  
 	color: white;
 	font-family: roboto;
 }
