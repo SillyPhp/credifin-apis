@@ -550,12 +550,18 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null]);
-            if (isset($data['course_name'])) {
+            if (isset($data['course_name']) && !empty($data['course_name'])) {
                 $candidates->andWhere(['cc.educational_requirement' => $data['course_name']]);
             }
-            if (isset($data['semester'])) {
+            if (isset($data['semester']) && !empty($data['semester'])) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);
             }
+
+//            if (isset($data['application_type']) && !empty($data['application_type '])) {
+//                $candidates->andWhere(['a.semester' => $data['semester']]);
+//            }
+
+
 
             $candidates = $candidates->asArray()
                 ->all();
