@@ -315,6 +315,8 @@ $this->registerCss("
 .agency-logo img {
     width: auto;
     height: auto;
+    max-height:100px;
+    max-width:100px;
 }
 .agency-name {
     text-align: center;

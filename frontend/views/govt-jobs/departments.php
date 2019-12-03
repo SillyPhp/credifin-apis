@@ -4,21 +4,21 @@ $this->params['header_dark'] = True;
 use yii\helpers\Url;
 ?>
 
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="heading-style">All Departments</div>
-        </div>
-        <div class="row">
-            <div id="departments_cards">
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="heading-style">All Departments</div>
+            </div>
+            <div class="row">
+                <div id="departments_cards">
 
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 <?php
-echo $this->render('/widgets/mustache/departments_usa');
+echo $this->render('/widgets/mustache/departments_govt');
 $this->registerCss('
 body{
     background: url(\'/assets/themes/ey/images/backgrounds/p6.png\');
