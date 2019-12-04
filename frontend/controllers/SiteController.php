@@ -133,6 +133,23 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
+        $cities = EmployerApplications::find()
+            ->alias('a')
+            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
+            ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
+                $x->joinWith(['locationEnc c' => function ($x) {
+                    $x->joinWith(['cityEnc d']);
+                }], false);
+            }], false)
+            ->joinWith(['applicationTypeEnc e'], false)
+            ->where([
+                'a.is_deleted' => 0
+            ])
+            ->orderBy(['total' => SORT_DESC])
+            ->groupBy(['c.city_enc_id'])
+            ->asArray()
+            ->all();
+
         $featured_jobs = ApplicationCards::jobs([
             "page" => 1,
             "limit" => 6
@@ -203,6 +220,7 @@ class SiteController extends Controller
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'tweets' => $tweets,
+            'cities' => $cities,
             'cities_jobs' => $cities_jobs,
             'featured_jobs' => $featured_jobs
         ]);
