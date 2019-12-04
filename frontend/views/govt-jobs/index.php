@@ -562,6 +562,7 @@ display:none;
 }
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
+echo $this->render('/widgets/mustache/departments_govt');
 $script = <<< JS
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
@@ -575,6 +576,7 @@ $(document).on('submit','#form-search',function(e) {
   var keyword = $('#search_company').val();
   fetchLocalData(template=$('#cards'),limit=50,offset,loader=true,loader_btn=false,keyword=keyword,replace=true);
 })
+fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
 JS;
 $this->registerJs($script);
 ?>
