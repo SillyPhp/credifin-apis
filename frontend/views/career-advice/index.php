@@ -249,7 +249,7 @@ body {
     bottom:10px;
     right:15px
 }
-.view-btn span{
+.view-btn span { 
     color:#333;
     font-size:15px;
 }
