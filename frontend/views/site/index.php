@@ -668,6 +668,9 @@ $this->params['header_dark'] = false;
         ?>
     </div>
 </section>
+<div id="stats_cards">
+
+</div>
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {
@@ -738,6 +741,7 @@ if (Yii::$app->user->isGuest) {
 </section>
 
 <?php
+echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
 .j-tweets{
@@ -1851,9 +1855,7 @@ $(document).on('click','#search-submit',function() {
        return false;
    }
 });
-
-
-
+fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
