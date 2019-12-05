@@ -393,7 +393,7 @@ $this->registerCss('
     display: block;
     z-index: 9;
     position: relative;
-    padding-top: 25px;
+    padding-top: 55px;
 }
 .main-img {
     position: relative;
@@ -476,6 +476,9 @@ $this->registerCss('
     right: 22px;
 }
 @media (max-width:768px){
+.main-heading-set{
+    padding-top:25px;
+}
 .anim-1{
     bottom: -148px;
     left: 10px;
@@ -575,7 +578,8 @@ $this->registerCss('
 }
 .topic-name {
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
+    font-family: roboto;
 }
 .box-content {
     padding: 10px 0;
@@ -587,13 +591,15 @@ $this->registerCss('
     text-overflow: ellipsis;
     overflow: hidden;
     display: -webkit-box;
+    font-family: roboto;
 }
 .t-answers {
     padding-top: 10px;
     font-size: 15px;
-    font-weight: bold;
+    font-weight: 500;
     border-top: 1px solid #eee;
     margin-top: 10px;
+    font-family: roboto;
 }
 .best-answers {
     float: right;

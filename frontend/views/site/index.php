@@ -148,7 +148,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/learning'); ?>">
                     <div class="service-box ser-box-yellow">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning.png') ?>"
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
                                  alt="learning">
                         </div>
                         <div class="ser-heading">Learning Hub</div>
@@ -192,37 +192,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!---->
-<section class="goven-jobs-sec">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="gov-heading">Find Latest Government Jobs</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="gov-job">
-                    <a href="/usa-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/usa-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
-                            USA Government Jobs
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="gov-job">
-                    <a href="/govt-jobs">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/indian-govt.png')?>" alt="USA Jobs">
-                        <div class="link-none">
-                            Indian Government Jobs
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/usa_and_govt_jobs');?>
 
 <section>
     <div class="block">
@@ -799,60 +769,6 @@ if (Yii::$app->user->isGuest) {
 <?php
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
-.goven-jobs-sec{
-    background:url('. Url::to('@eyAssets/images/pages/index2/gov-job-sec-bg.png') .');
-    background-repeat: no-repeat;
-    background-size:cover;
-    padding:0px 0px 40px 0px;
-}
-.gov-heading {
-    text-align: center;
-    font-size: 30px;
-    font-family: lora;
-    margin: 0px 0px 20px 0;
-}
-.gov-job {
-  overflow: hidden;
-  margin: 10px;
-  max-width: 500px;
-  height: 300px;
-  width: 100%;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
-}
-.gov-job img {
-    max-width: inherit;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    -webkit-transition: all 2s ease-out;
-    transition: all 2s ease-out;
-}
-.gov-job:hover img {
-  -webkit-transform: translateX(100px);
-  transform: translateX(100px);
-}
-.gov-job{
-    text-align:center;
-    position:relative;
-}
-.gov-job, .gov-job img{
-    border-radius: 10px;
-}
-.gov-job a:hover .link-none{
-    background: rgba(0,0,0,.3);
-    transition:.3s ease;
-    border-radius:5px;
-}
-.link-none{
-    position:absolute;
-    top:20px;
-    left:20px;
-}
-.link-none{
-    color:#fff;
-    font-size:20px;
-    padding:5px 10px;
-}
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
     background-attachment: fixed;
@@ -1267,7 +1183,7 @@ background-attachment:fixed;
 }
 .how-heading{
     font-size: 15px;
-    font-weight:300;
+    font-weight:400;
     font-family:Roboto;
 }
 .steps-row{
@@ -1544,7 +1460,7 @@ how-icon{
     -o-border-radius: 5px;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 8px;
+    margin-top: 9px;
     margin-bottom: 3px;
     border-left:none !important;
 }
@@ -1837,7 +1753,9 @@ how-icon{
     -o-border-radius: 0px 8px 8px 0px !important;
     border-radius: 0px 8px 8px 0px !important;
 }
-
+.search-job2 form button{
+    font-family:roboto;
+}
 .list-heading{
     font-size:16px;
     font-weight:500;

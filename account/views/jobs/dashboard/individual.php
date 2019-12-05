@@ -547,6 +547,9 @@ ul.tabs li{
     display: inline-block;
     padding: 10px 15px;
     cursor: pointer;
+    font-family: roboto;
+    font-size: 16px;
+    font-weight: 500;
 }
 .caption > ul.tabs > li.tab-link:hover{
     color:#00a0e3 !important;

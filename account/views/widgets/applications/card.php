@@ -114,7 +114,7 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad">
+                            <div class="col-md-6 minus-15-pad" style="font-family: roboto;">
                                 <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
                                     <?= sizeof($applications[$next]['appliedApplications']); ?>
                                     Applications
