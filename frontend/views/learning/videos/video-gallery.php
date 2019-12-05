@@ -559,13 +559,6 @@ $this->registerCss('
         margin: 0 auto;
     }
 } 
-.h-spacing{
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    font-size: 30px;
-    font-family: roboto;
-   
-}
 /*    <!-- view-all button css start -->*/
 .btn-3 {
     background-color: #424242;
@@ -708,11 +701,18 @@ $this->registerCss('
 }
 .background{
     min-height:475px;
-    padding-top: 120px;
+    padding-top: 215px;
     padding-left: 50px;
     background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
+}
+.h-spacing {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-family: lora;
+    font-weight: 700;
 }
 @media (max-width:768px){
 .background {
@@ -739,9 +739,7 @@ $this->registerCss('
 }
 .h-spacing {
     letter-spacing: 0px;
-    text-transform: uppercase;
     font-size: 20px;
-    font-family: roboto;
 }
 }
 .logo{
