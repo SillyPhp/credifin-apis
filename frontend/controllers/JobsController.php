@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\OrganizationLocations;
@@ -293,7 +294,6 @@ class JobsController extends Controller
         ]);
     }
 
-
     public function actionList()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -387,6 +387,28 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
         ]);
+    }
+
+    public function actionTemplate($view){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationEduReqTemplates b'])
+            ->joinWith(['applicationOptionsTemplates c'])
+            ->joinWith(['applicationSkillsTemplates d' => function($d){
+                $d->select(['d.application_enc_id','d.skill_enc_id','g.skill']);
+                $d->joinWith(['skillEnc g'], false);
+            }])
+            ->joinWith(['applicationTemplateJobDescriptions e' => function($e){
+                $e->select(['e.job_description_enc_id','e.application_enc_id','h.job_description']);
+                $e->joinWith(['jobDescriptionEnc h'], false);
+            }])
+            ->joinWith(['applicationTypeEnc f'])
+            ->where(['a.application_enc_id' => $view])
+            ->asArray()
+            ->one();
+        print_r($application);
+        exit();
+        return $this->render('/employer-applications/detail');
     }
 
     public function actionFetchSkills($q)
