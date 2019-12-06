@@ -10,7 +10,7 @@ use Yii\helpers\url;
                             <h1 class="whats-main-heading">Join Our WhatsApp Community</h1>
                             <div class="whats-sub-heading">Get Latest Job Updates</div>
                             <div class="whats-href">
-                                <a href= "<?= Url::to('/site/whatsapp-community') ?>">
+                                <a href= "<?= Url::to('/whatsapp-community') ?>">
                                     View Links
                                     <span><img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo-white.png') ?>"> </span>
                                 </a>
@@ -21,7 +21,7 @@ use Yii\helpers\url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel-img">
                         <div class="whats-main-img">
-                            <a href="/site/whatsapp-community">
+                            <a href="/whatsapp-community">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/whats.png') ?>" alt="">
                             </a>
                         </div>
