@@ -375,6 +375,42 @@ class InternshipsController extends Controller
         }
     }
 
+    public function actionTemplate($view){
+        if(Yii::$app->user->identity->organization) {
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Internships'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Internship'
+            ]);
+        }
+    }
+
     public function actionQuickInternship()
     {
         $this->layout = 'main-secondary';

@@ -390,25 +390,39 @@ class JobsController extends Controller
     }
 
     public function actionTemplate($view){
-        $application = ApplicationTemplates::find()
-            ->alias('a')
-            ->joinWith(['applicationEduReqTemplates b'])
-            ->joinWith(['applicationOptionsTemplates c'])
-            ->joinWith(['applicationSkillsTemplates d' => function($d){
-                $d->select(['d.application_enc_id','d.skill_enc_id','g.skill']);
-                $d->joinWith(['skillEnc g'], false);
-            }])
-            ->joinWith(['applicationTemplateJobDescriptions e' => function($e){
-                $e->select(['e.job_description_enc_id','e.application_enc_id','h.job_description']);
-                $e->joinWith(['jobDescriptionEnc h'], false);
-            }])
-            ->joinWith(['applicationTypeEnc f'])
-            ->where(['a.application_enc_id' => $view])
-            ->asArray()
-            ->one();
-        print_r($application);
-        exit();
-        return $this->render('/employer-applications/detail');
+        if(Yii::$app->user->identity->organization) {
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Job'
+            ]);
+        }
     }
 
     public function actionFetchSkills($q)
