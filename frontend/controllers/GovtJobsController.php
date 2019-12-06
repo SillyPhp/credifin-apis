@@ -16,6 +16,11 @@ class GovtJobsController extends Controller
       return $this->render('index');
     }
 
+    public function actionIndDepartmentDetail()
+    {
+        return $this->render('ind-department-detail');
+    }
+
     public function actionDetail($id)
     {
         $get = IndianGovtJobs::find()
