@@ -346,7 +346,9 @@ class SiteController extends Controller
     {
         return $this->render('about-us');
     }
-
+    public function actionWhatsappCommunity(){
+        return $this->render('whatsapp-community');
+    }
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();

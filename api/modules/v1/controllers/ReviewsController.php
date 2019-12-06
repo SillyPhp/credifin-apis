@@ -362,7 +362,7 @@ class ReviewsController extends ApiBaseController
 
         $data = [];
 
-        $limit = 3;
+        $limit = 5;
         $page = 1;
 
         //check parameter is empty or not
