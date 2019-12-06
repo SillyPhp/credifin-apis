@@ -370,7 +370,7 @@ $this->registerCss('
 }
 .wm-pos-rel-img{
     position: relative;
-    height:450px;
+    height:450px; 
 }
 .whats-abso{
     position:absolute;
