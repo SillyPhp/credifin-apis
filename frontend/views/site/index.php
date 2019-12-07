@@ -528,7 +528,7 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-
+<?= $this->render('/widgets/whatsapp-widget')?>
 <section>
     <div class="container ">
         <div class="cat-padding">
