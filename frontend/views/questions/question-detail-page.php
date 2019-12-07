@@ -83,7 +83,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                                 ?>
                             <div class="que"><a href="<?= $que['slug'] ?>"><?= $que['question'] ?></a></div>
                             <?php } } else { ?>
-                            <h3>No More Related Questions</h3>
+                            <h3 style="font-size:16px;padding-bottom: 10px;font-family: roboto;">No More Related Questions</h3>
                             <?php } ?>
                             </div>
                     </div>
@@ -100,7 +100,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                             <div class="vid-name"><a href="/learning/video/<?= $vid['slug']; ?>"><?= $vid['title']; ?></a></div>
                         </div>
                         <?php } } else { ?>
-                            <h3>No More Related Videos</h3>
+                            <h3 style="font-size:16px;padding-bottom: 10px;font-family: roboto;">No More Related Videos</h3>
                         <?php } ?>
                     </div>
                     </div>
@@ -112,6 +112,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
 <?php
 echo $this->render('/widgets/mustache/questions-answers');
 $this->registerCss('
+.ck-placeholder{font-family: roboto;}
 .answer_button
 {
 text-align:right;
@@ -128,9 +129,10 @@ body{
 	padding: 10px 10px 10px 20px;
 }	
 .question-head {
-    font-size: 42px;
-    font-weight: bold;
+    font-size: 35px;
+    font-weight: 500;
     padding: 10px 0 10px 0;
+    font-family: roboto;
 }
 .edit{
 	font-size: 13px !important;
@@ -157,6 +159,9 @@ body{
     margin: 0 10px 10px 0;
     text-decoration: none;
     -webkit-transition: color 0.2s;
+    font-family: roboto;
+    font-weight: 400;
+    font-size: 12px;
 }
 .q-tag::before {
     background: #fff;
@@ -189,15 +194,16 @@ body{
 .answers{
 	border-top: 2px solid black;
 	border-bottom: 1px solid #eee;
-	font-size: 18px;
+	font-size: 16px;
 	padding: 7px 0;
 	margin-bottom:35px;
+	font-family: roboto;
 }
 .ask-ans{
 	float: right;
 	color: #3aa4ff;
 }
-.client-side, .user-side, .commenter-side{display: flex;}
+.client-side, .user-side, .commenter-side{display: flex;padding: 15px 0px 0px 0px;}
 .client-img img, .user-img img {
 	width: 60px;
     height: 60px;
@@ -208,35 +214,41 @@ body{
     width:180px;
 }
 .client, .user{
-    margin: -6px 0 0 15px;
+    margin: 0px 0 0 15px;
 }
 .client-name, .user-name{
-	font-size: 25px;
+	font-size: 20px;
 	font-weight: bold;
+}
+.user-edit {
+    font-size: 11px;
+    font-family: roboto;
 }
 .loader_screen img
 {
-display:none;
-margin:auto
+    display:none;
+    margin:auto
 }
 .client-edit a{
     font-size: 17px;
     color: #3aa4ff;
 }
 .client-comment{
-	padding:25px 0; 
+	padding:25px 0 0 0; 
 }
 .set-font-size{
 	font-size: 18px !important;
 }
 .divide{
 	border-top: 2px solid #eee;
-	margin: 15px 0 30px 0;
 }
 .user-content {
-    padding-top: 20px;
-    font-size: 17px;
+    padding: 10px 0 10px 0;
+    padding-bottom: 25px;
+    font-size: 15px;
     text-align: justify;
+    font-family: roboto;
+    border-bottom: 2px solid #eee;
 }
 .views-field {
     display: flex;
@@ -287,6 +299,7 @@ margin:auto
 }
 .related-head{
 	font-size: 18px;
+	font-family: roboto;
 }
 .related-divider{
 	border-top: 2px solid #eee;
@@ -294,8 +307,9 @@ margin:auto
 }
 .que{
 	text-align: justify;
-	font-size: 16px;
+	font-size: 14px;
 	padding-bottom: 10px;
+    font-family: roboto;
 }
 .que a, .vid-name a{
     color:#337ab7 !important;

@@ -528,7 +528,7 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 </section>
-
+<?= $this->render('/widgets/whatsapp-widget')?>
 <section>
     <div class="container ">
         <div class="cat-padding">
@@ -562,78 +562,79 @@ $this->params['header_dark'] = false;
     'cities_jobs' => $cities_jobs
 ])?>
 <!---------------how it works-------------->
-<section class="how-it-works">
-    <div class="container">
-        <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
-        <div class="row ">
-            <div class="col-md-3">
-                <div class="fade-in one">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
-                             title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="fade-in two">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
-                             title="Get discovered by top employers" alt="Get discovered by top employers"/>
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading"> Get discovered by top employers</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="fade-in three">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>" title="Evaluate Offer"
-                             alt="Evaluate Offer"/>
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Evaluate Offer</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="fade-in four">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
-                             title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Receive Custom Job Notifications</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <?php
-        if (Yii::$app->user->isGuest) {
-            ?>
-            <div class="row">
-                <div class="signupbttns">
-                    <a href="/login" class="login-bttn" title="Login">Login</a>
-                    <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
-                </div>
-            </div>
-            <?php
-        }
-        ?>
-    </div>
-</section>
-<!--how it works ends-->
-
-<!--Subscribe Widget start-->
 <?php
-if (Yii::$app->user->isGuest) {
-    echo $this->render('/widgets/subscribe-section');
+    if(Yii::$app->user->isGuest) {
+?>
+        <section class="how-it-works">
+            <div class="container">
+                <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+                <div class="row ">
+                    <div class="col-md-3">
+                        <div class="fade-in one">
+                            <div class="how-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
+                                     title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
+                            </div>
+                            <div class="how-text-box">
+                                <div class="how-heading">Create your Exclusive Profile</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="fade-in two">
+                            <div class="how-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
+                                     title="Get discovered by top employers" alt="Get discovered by top employers"/>
+                            </div>
+                            <div class="how-text-box">
+                                <div class="how-heading"> Get discovered by top employers</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="fade-in three">
+                            <div class="how-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
+                                     title="Evaluate Offer"
+                                     alt="Evaluate Offer"/>
+                            </div>
+                            <div class="how-text-box">
+                                <div class="how-heading">Evaluate Offer</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="fade-in four">
+                            <div class="how-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
+                                     title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
+                            </div>
+                            <div class="how-text-box">
+                                <div class="how-heading">Receive Custom Job Notifications</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                if (Yii::$app->user->isGuest) {
+                    ?>
+                    <div class="row">
+                        <div class="signupbttns">
+                            <a href="/login" class="login-bttn" title="Login">Login</a>
+                            <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+        </section>
+        <?php
 }
 ?>
-<!--Subscribe Widget ends-->
+<!--how it works ends-->
+
+
 
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
@@ -667,43 +668,16 @@ if (Yii::$app->user->isGuest) {
         ?>
     </div>
 </section>
-<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
-    'feedbackFormModel' => $feedbackFormModel,
-    'partnerWithUsModel' => $partnerWithUsModel,
-]); ?>
+<div id="stats_cards">
 
-<section class="moble-bg">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-sm-6">
-                <div class="pos-rel">
-                    <div class="pos-middle">
-                        <div class="mob-heading"> Download our App today</div>
-                        <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using Empower Youth
-                            app
-                        </div>
-                        <div class="app-btn">
-                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
-                               title='Get it on Google Play'>
-                                <img alt='Get it on Google Play'
-                                     src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
-                                     title='Download Empower Youth App on Google Play'/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6">
-                <div class="pos-rel">
-                    <div class="mob-pos">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phone.png') ?>"
-                             title="Empower Youth Mobile" alt="Empower Youth Mobile">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+</div>
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -767,6 +741,7 @@ if (Yii::$app->user->isGuest) {
 </section>
 
 <?php
+echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
 .j-tweets{
@@ -777,6 +752,9 @@ $this->registerCss('
 .tweetLinks{
     text-align: right;
     margin-top:30px;
+}
+.cat-padding{
+    padding-bottom:20px;
 }
 .tweetLinks a{
     font-family: "Open Sans", sans-serif;
@@ -1877,9 +1855,7 @@ $(document).on('click','#search-submit',function() {
        return false;
    }
 });
-
-
-
+fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');

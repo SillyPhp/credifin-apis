@@ -210,26 +210,34 @@ class CollegeProfileController extends ApiBaseController
             $req = Yii::$app->request->post();
             $college_id = $this->getOrgId();
 
-            $course = new CollegeCourses();
-            $utilities = new Utilities();
-            $utilities->variables['string'] = time() . rand(100, 100000);
-            $course->college_course_enc_id = $utilities->encrypt();
-            $course->organization_enc_id = $college_id;
-            $course->course_name = $req['course_name'];
-            $course->course_duration = (int)$req['course_duration'];
-            $course->created_by = $user->user_enc_id;
-            $course->created_on = date('Y-m-d H:i:s');
-            if ($course->save()) {
-                $courses = CollegeCourses::find()
-                    ->select(['college_course_enc_id', 'course_name', 'course_duration'])
-                    ->where(['organization_enc_id' => $college_id])
-                    ->asArray()
-                    ->all();
+            $already_have = CollegeCourses::find()
+                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->one();
 
-                return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            if (empty($already_have)) {
+
+                $course = new CollegeCourses();
+                $utilities = new Utilities();
+                $utilities->variables['string'] = time() . rand(100, 100000);
+                $course->college_course_enc_id = $utilities->encrypt();
+                $course->organization_enc_id = $college_id;
+                $course->course_name = $req['course_name'];
+                $course->course_duration = (int)$req['course_duration'];
+                $course->created_by = $user->user_enc_id;
+                $course->created_on = date('Y-m-d H:i:s');
+                if ($course->save()) {
+                    $courses = CollegeCourses::find()
+                        ->select(['college_course_enc_id', 'course_name', 'course_duration'])
+                        ->where(['organization_enc_id' => $college_id])
+                        ->asArray()
+                        ->all();
+
+                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                } else {
+                    return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                }
             } else {
-                return $course->getErrors();
-                return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                return $this->response(409, ['status' => 409, 'message' => 'already added']);
             }
 
         } else {
@@ -247,23 +255,31 @@ class CollegeProfileController extends ApiBaseController
                 ->where(['college_course_enc_id' => $req['course_id']])
                 ->one();
 
-            if (!empty($course)) {
-                $course->course_name = $req['course_name'];
-                $course->course_duration = $req['course_duration'];
-                $course->updated_by = $user->user_enc_id;
-                $course->updated_on = date('Y-m-d H:i:s');
-                if ($course->update()) {
-                    $courses = CollegeCourses::find()
-                        ->select(['college_course_enc_id', 'course_name', 'course_duration'])
-                        ->where(['organization_enc_id' => $college_id])
-                        ->asArray()
-                        ->all();
-                    return $this->response(200, ['status' => 200, 'courses' => $courses]);
+            $already_have = CollegeCourses::find()
+                ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->one();
+
+            if (empty($already_have)) {
+                if (!empty($course)) {
+                    $course->course_name = $req['course_name'];
+                    $course->course_duration = $req['course_duration'];
+                    $course->updated_by = $user->user_enc_id;
+                    $course->updated_on = date('Y-m-d H:i:s');
+                    if ($course->update()) {
+                        $courses = CollegeCourses::find()
+                            ->select(['college_course_enc_id', 'course_name', 'course_duration'])
+                            ->where(['organization_enc_id' => $college_id])
+                            ->asArray()
+                            ->all();
+                        return $this->response(200, ['status' => 200, 'courses' => $courses]);
+                    } else {
+                        return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                    }
                 } else {
-                    return $this->response(409, ['status' => 409, 'message' => 'There is an error']);
+                    return $this->response(404);
                 }
-            } else {
-                return $this->response(404);
+            }else{
+                return $this->response(409, ['status' => 409, 'message' => 'already added']);
             }
         } else {
             return $this->response(401);

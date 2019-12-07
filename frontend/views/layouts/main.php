@@ -307,6 +307,8 @@ AppAssets::register($this);
                         <div class="can-foot-list">
                             <ul>
                                 <li><a href="<?= "/careers"; ?>">Careers</a></li>
+                                <li><a href="javascript:;" class="partnerWith">Partner With Us</a></li>
+                                <li><a href="javascript:;" class="giveFeedback">Feedback</a></li>
                             </ul>
                         </div>
                     </div>
@@ -880,6 +882,19 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
+});
+
+$(document).on("click", ".partnerWith", function(e){
+    e.preventDefault();
+    var elem = "<div class=\'partner-main\'></div>";
+    $("body").append(elem);
+    $(".partner-main").load("/site/partner-with-us");
+});
+$(document).on("click", ".giveFeedback", function(e){
+    e.preventDefault();
+    var elem = "<div class=\'feedback-main\'></div>";
+    $("body").append(elem);
+    $(".feedback-main").load("/site/send-feedback");
 });
 ');
 $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
