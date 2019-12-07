@@ -83,7 +83,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                                 ?>
                             <div class="que"><a href="<?= $que['slug'] ?>"><?= $que['question'] ?></a></div>
                             <?php } } else { ?>
-                            <h3>No More Related Questions</h3>
+                            <h3 style="font-size:16px;padding-bottom: 10px;font-family: roboto;">No More Related Questions</h3>
                             <?php } ?>
                             </div>
                     </div>
@@ -112,6 +112,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
 <?php
 echo $this->render('/widgets/mustache/questions-answers');
 $this->registerCss('
+.ck-placeholder{font-family: roboto;}
 .answer_button
 {
 text-align:right;
@@ -158,6 +159,9 @@ body{
     margin: 0 10px 10px 0;
     text-decoration: none;
     -webkit-transition: color 0.2s;
+    font-family: roboto;
+    font-weight: 400;
+    font-size: 12px;
 }
 .q-tag::before {
     background: #fff;
@@ -190,9 +194,10 @@ body{
 .answers{
 	border-top: 2px solid black;
 	border-bottom: 1px solid #eee;
-	font-size: 18px;
+	font-size: 16px;
 	padding: 7px 0;
 	margin-bottom:35px;
+	font-family: roboto;
 }
 .ask-ans{
 	float: right;
@@ -294,6 +299,7 @@ body{
 }
 .related-head{
 	font-size: 18px;
+	font-family: roboto;
 }
 .related-divider{
 	border-top: 2px solid #eee;
@@ -301,8 +307,9 @@ body{
 }
 .que{
 	text-align: justify;
-	font-size: 16px;
+	font-size: 14px;
 	padding-bottom: 10px;
+    font-family: roboto;
 }
 .que a, .vid-name a{
     color:#337ab7 !important;
