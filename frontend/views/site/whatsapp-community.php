@@ -298,8 +298,8 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <?= $this->render('/widgets/latest-jobs-link');?>
-                    <?= $this->render('/widgets/training-courses-link')?>
+                    <?= $this->render('/widgets/advertise-jobs-widget');?>
+                    <?= $this->render('/widgets/advertise-training-course')?>
                 </div>
             </div>
         </div>
@@ -370,7 +370,7 @@ $this->registerCss('
 }
 .wm-pos-rel-img{
     position: relative;
-    height:450px;
+    height:450px; 
 }
 .whats-abso{
     position:absolute;
