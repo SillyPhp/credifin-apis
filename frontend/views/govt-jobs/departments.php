@@ -13,6 +13,9 @@ use yii\helpers\Url;
                 <div id="departments_cards">
 
                 </div>
+                <div class="align_btn">
+                    <button id="loader" class="btn btn-success">Load More</button>
+                </div>
             </div>
         </div>
     </section>
@@ -20,6 +23,12 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/departments_govt');
 $script = <<<JS
-fetchDepartments(template=$('#departments_cards'),limit=40,offset=0);
+var limit =40;
+var offset = 0;
+$(document).on('click','#loader',function(e) {
+  e.preventDefault();
+  fetchDepartments(template=$('#departments_cards'),limit,offset+40,loader_btn=true);
+})
+fetchDepartments(template=$('#departments_cards'),limit,offset,loader_btn=false);
 JS;
 $this->registerJs($script);

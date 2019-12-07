@@ -24,7 +24,7 @@ use yii\helpers\Url;
     </script>
 <?php
 $script = <<< JS
-function fetchDepartments(template,limit,offset) {
+function fetchDepartments(template,limit,offset,loader_btn) {
   $.ajax({
   url:'/govt-jobs/get-departments',
   method:'Post',
@@ -34,18 +34,31 @@ function fetchDepartments(template,limit,offset) {
       'offset':offset,
   },
   beforeSend: function(){
-     
+     if (loader_btn)
+          { 
+              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+          }
+      if (loader) {
+            $('.img_load').css('display','block');
+        }
       },
   success:function(response) {
       if(response.status === 200) {
           template.append(Mustache.render($('#departments-card').html(),response.cards));
           utilities.initials();
       }
+      $('#loader').html('Load More');
+      $('#loader').css('display','initial');
   }   
   })
 }
 JS;
 $this->registerCss('
+.align_btn
+{
+text-align:center;
+clear:both;
+}
 body{
     background: url(\'/assets/themes/ey/images/backgrounds/p6.png\');
 }
