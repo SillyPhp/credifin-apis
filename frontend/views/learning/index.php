@@ -514,10 +514,10 @@ $this->registerCss('
 }
 }
 .best-images{
-    display:flex;
+    display:inline-block;
 }
 .best-images a{
-    margin-right:5px;   
+    display:inline-block;   
 }
 .wts-app, .fb, .tw, .male{
     width: 30px;
@@ -603,13 +603,13 @@ $this->registerCss('
 }
 .best-answers {
     float: right;
-    display:flex;
 }
 .t-answers img {
     height: 20px;
     width: 20px;
     border-radius: 25px;
     margin-right: 2px;
+    vertical-align: inherit;
 }
 .card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
    background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
