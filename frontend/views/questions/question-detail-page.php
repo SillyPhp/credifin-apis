@@ -128,9 +128,10 @@ body{
 	padding: 10px 10px 10px 20px;
 }	
 .question-head {
-    font-size: 42px;
-    font-weight: bold;
+    font-size: 35px;
+    font-weight: 500;
     padding: 10px 0 10px 0;
+    font-family: roboto;
 }
 .edit{
 	font-size: 13px !important;
@@ -197,7 +198,7 @@ body{
 	float: right;
 	color: #3aa4ff;
 }
-.client-side, .user-side, .commenter-side{display: flex;}
+.client-side, .user-side, .commenter-side{display: flex;padding: 15px 0px 0px 0px;}
 .client-img img, .user-img img {
 	width: 60px;
     height: 60px;
@@ -208,35 +209,41 @@ body{
     width:180px;
 }
 .client, .user{
-    margin: -6px 0 0 15px;
+    margin: 0px 0 0 15px;
 }
 .client-name, .user-name{
-	font-size: 25px;
+	font-size: 20px;
 	font-weight: bold;
+}
+.user-edit {
+    font-size: 11px;
+    font-family: roboto;
 }
 .loader_screen img
 {
-display:none;
-margin:auto
+    display:none;
+    margin:auto
 }
 .client-edit a{
     font-size: 17px;
     color: #3aa4ff;
 }
 .client-comment{
-	padding:25px 0; 
+	padding:25px 0 0 0; 
 }
 .set-font-size{
 	font-size: 18px !important;
 }
 .divide{
 	border-top: 2px solid #eee;
-	margin: 15px 0 30px 0;
 }
 .user-content {
-    padding-top: 20px;
-    font-size: 17px;
+    padding: 10px 0 10px 0;
+    padding-bottom: 25px;
+    font-size: 15px;
     text-align: justify;
+    font-family: roboto;
+    border-bottom: 2px solid #eee;
 }
 .views-field {
     display: flex;
