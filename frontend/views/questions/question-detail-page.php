@@ -100,7 +100,7 @@ Yii::$app->view->registerJs('var que_id = "'. $object['question_pool_enc_id'].'"
                             <div class="vid-name"><a href="/learning/video/<?= $vid['slug']; ?>"><?= $vid['title']; ?></a></div>
                         </div>
                         <?php } } else { ?>
-                            <h3>No More Related Videos</h3>
+                            <h3 style="font-size:16px;padding-bottom: 10px;font-family: roboto;">No More Related Videos</h3>
                         <?php } ?>
                     </div>
                     </div>
