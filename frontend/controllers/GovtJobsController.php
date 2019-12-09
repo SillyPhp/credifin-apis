@@ -215,7 +215,9 @@ class GovtJobsController extends Controller
                     ->offset($offset)
                     ->asArray()
                     ->all(),
-                'count'=>$d->count()
+                'total'=>$d->count(),
+                'count'=>$d->limit($limit)
+                    ->offset($offset)->count()
             ];
         }
     }

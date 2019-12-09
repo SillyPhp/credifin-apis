@@ -26,7 +26,7 @@ use yii\helpers\Url;
     </script>
 <?php
 $script = <<< JS
-function fetchDepartments(template,limit,offset,loader_btn) {
+function fetchDepartments(template,limit,offset,loader,loader_btn) {
   $.ajax({
   url:'/govt-jobs/get-departments',
   method:'Post',
@@ -45,6 +45,7 @@ function fetchDepartments(template,limit,offset,loader_btn) {
         }
       },
   success:function(response) {
+      $('.img_load').css('display','none');
       if(response.status === 200) {
           template.append(Mustache.render($('#departments-card').html(),response.cards));
           utilities.initials();
