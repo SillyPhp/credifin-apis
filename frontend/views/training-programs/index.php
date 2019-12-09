@@ -82,6 +82,14 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/training_cards/cards');
