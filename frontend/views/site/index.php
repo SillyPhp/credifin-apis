@@ -558,6 +558,10 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
+<div id="echo $this->render('/widgets/info-stats');">
+
+</div>
+
 <?= $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs
 ])?>
@@ -668,9 +672,6 @@ $this->params['header_dark'] = false;
         ?>
     </div>
 </section>
-<div id="stats_cards">
-
-</div>
 <!--Subscribe Widget start-->
 <?php
 if (Yii::$app->user->isGuest) {

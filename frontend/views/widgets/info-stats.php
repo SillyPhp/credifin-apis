@@ -103,6 +103,16 @@ $this->registerCss('
     right: -69px;
     bottom: 12px;
 }
+@media (max-width:415px){
+.boll5 {
+    right: 159px;
+    top: 305px;
+}
+.boll6 {
+    left: 205px;
+    top: 415px;
+}
+}
 ');
 $script = <<< JS
 function fetchStats(template) {

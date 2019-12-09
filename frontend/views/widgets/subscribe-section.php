@@ -48,17 +48,44 @@ use yii\helpers\Url;
 $this->registerCss('
 .w-parent {
     margin: 50px 0;
-    background-image: linear-gradient(to right,#f3f3f3ad 65%,#fff 0%);
+    background-image: linear-gradient(to right,#ddeaef 65%,#fff 0%);
     padding: 0px 0px 32px 0px;
 }
+@media (max-width:768px){
+.w-head{
+    padding-left:10px;
+    font-size:25px !important;
+}    
+.w-content{
+    padding-left:10px !important;
+}
+}
+@media (max-width:415px){
+.w-parent{
+    background-image: linear-gradient(to right,#ddeaef 100%,#fff 0%);
+    }
+.w-head{
+    padding:0px 5px;
+    font-size:23px !important;
+}
+.w-content{
+    padding:0px 10px;
+}
+.email-set{
+    padding-top:30px;
+}
+.subscribe-widget-btn{
+    padding-top:0px !important;
+}
+}
 .w-head {
-    margin-top: -25px;
-    font-size: 30px;
-    font-weight: 500;
-    font-family: Roboto;
+    margin-top: -24px;
+    font-size: 28px;
+    font-weight: 700;
+    font-family: lora;
     color: #222;
     letter-spacing: 2px;
-    line-height: 45px;
+    line-height: 50px;
 }
 .w-content {
     font-size: 15px;
@@ -72,7 +99,7 @@ $this->registerCss('
     color: #444 !important;
     border-color: transparent !important;
     right: 0;
-    padding-top: 6px;
+    padding-top: 0px;
     font-size: 45px;
     line-height: 16px;
     height: 45px;
