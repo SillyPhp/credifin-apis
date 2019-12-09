@@ -8,12 +8,18 @@ use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\Response;
+use yii\web\HttpException;
 
 class GovtJobsController extends Controller
 {
     public function actionIndex()
     {
       return $this->render('index');
+    }
+
+    public function actionIndDepartmentDetail()
+    {
+        return $this->render('ind-department-detail');
     }
 
     public function actionDetail($id)
@@ -116,7 +122,7 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $d = IndianGovtDepartments::find()
-                ->select(['Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['Value','total_applications','slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->asArray()
                 ->orderBy(['total_applications' => SORT_DESC])
                 ->limit($limit)
@@ -170,4 +176,47 @@ class GovtJobsController extends Controller
         return $this->render('departments');
     }
 
+    public function actionDept($slug)
+    {
+        if ($slug!=null) {
+            $data = IndianGovtDepartments::find()
+                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->where(['slug' => $slug])
+                ->asArray()->one();
+            if ($data)
+            {
+                return $this->render('ind-department-detail',['data'=>$data]);
+            }
+            else {
+                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+            }
+        }
+    }
+
+    public function actionDepartmentViseJobs()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $limit = Yii::$app->request->post('limit');
+            $offset = Yii::$app->request->post('offset');
+            $dept_id = Yii::$app->request->post('dept_id');
+            $d = IndianGovtJobs::find()
+                ->alias('a')
+                ->select(['a.job_enc_id id','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
+                ->joinWith(['assignedIndianJobs b'=>function($b) use($dept_id)
+                {
+                    $b->joinWith(['deptEnc c'],false);
+                    $b->andWhere(['b.dept_enc_id'=>$dept_id]);
+                }],false,'LEFT JOIN');
+
+            return [
+                'status'=>200,
+                'cards'=>$d->limit($limit)
+                    ->offset($offset)
+                    ->asArray()
+                    ->all(),
+                'count'=>$d->count()
+            ];
+        }
+    }
 }

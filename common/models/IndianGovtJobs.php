@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+
 /**
  * This is the model class for table "{{%indian_govt_jobs}}".
  *
@@ -18,6 +19,8 @@ namespace common\models;
  * @property string $created_by user who posted
  * @property string $created_on Time date
  *
+ * @property AssignedIndianJobs[] $assignedIndianJobs
+ * @property IndianGovtDepartments[] $deptEncs
  * @property Users $createdBy
  */
 class IndianGovtJobs extends \yii\db\ActiveRecord
@@ -50,6 +53,22 @@ class IndianGovtJobs extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedIndianJobs()
+    {
+        return $this->hasMany(AssignedIndianJobs::className(), ['job_enc_id' => 'job_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDeptEncs()
+    {
+        return $this->hasMany(IndianGovtDepartments::className(), ['dept_enc_id' => 'dept_enc_id'])->viaTable('{{%assigned_indian_jobs}}', ['job_enc_id' => 'job_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
