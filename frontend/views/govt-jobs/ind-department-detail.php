@@ -1,12 +1,9 @@
 <?php
 $this->params['header_dark'] = True;
-
 use yii\helpers\Url;
 
 ?>
-
-    <div class="head-img"></div>
-
+<div class="head-img"></div>
     <section>
         <div class="container">
             <div class="row">
@@ -59,10 +56,10 @@ text-align:center;
 clear:both;
 }
 .head-img{
-    background: url(\'/assets/themes/ey/images/pages/blog/articles.png\');
+    background: url(\'/assets/themes/ey/images/pages/blog/govjobdept-rd.png\');
     background-repeat: repeat;
     background-size: auto;
-    min-height: 200px;
+    min-height: 250px;
     background-size: cover;
     background-repeat: no-repeat;
 }
