@@ -209,15 +209,16 @@ class GovtJobsController extends Controller
                     $b->andWhere(['b.dept_enc_id'=>$dept_id]);
                 }],false,'LEFT JOIN');
 
+            $data = $d->limit($limit)
+                ->offset($offset)
+                ->asArray()
+                ->all();
+
             return [
                 'status'=>200,
-                'cards'=>$d->limit($limit)
-                    ->offset($offset)
-                    ->asArray()
-                    ->all(),
+                'cards'=>$data,
                 'total'=>$d->count(),
-                'count'=>$d->limit($limit)
-                    ->offset($offset)->count()
+                'count'=>sizeof($data)
             ];
         }
     }
