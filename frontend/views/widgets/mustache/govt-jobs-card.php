@@ -80,7 +80,7 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
   }   
   })
 }
-
+var match = 0;
 function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=null,replace=false) {
   $.ajax({
   url:'/govt-jobs/department-vise-jobs',
@@ -105,7 +105,8 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
       $('.img_load').css('display','none');
       $('#loader').html('Load More');
       $('#loader').css('display','initial');
-      if (body.count<12) 
+      match = match+limit;
+      if (body.count<12||match==body.count) 
           {
               $('#loader').hide();
           }
