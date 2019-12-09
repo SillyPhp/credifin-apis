@@ -34,6 +34,9 @@ use yii\helpers\Url;
             </div>
 
             <div class="col-md-12">
+                <div class="loader_screen">
+                    <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+                </div>
                 <div id="cards">
                 </div>
                 <div class="align_btn">
@@ -85,6 +88,11 @@ clear:both;
     font-weight: 700;
     margin: 55px 0px 0px 10px;
     text-transform: uppercase;
+}
+.loader_screen img
+{
+display:none;
+margin:auto
 }
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
