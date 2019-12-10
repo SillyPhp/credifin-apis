@@ -1,5 +1,5 @@
 <?php
-$this->params['header_dark'] = True;
+$this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 ?>
@@ -56,10 +56,8 @@ text-align:center;
 clear:both;
 }
 .head-img{
-    background: url(\'/assets/themes/ey/images/pages/blog/govjobdept-rd.png\');
-    background-repeat: repeat;
-    background-size: auto;
-    min-height: 250px;
+    background: url(\'/assets/themes/ey/images/pages/blog/govdept-hdr.png\');
+    min-height: 435px;
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -73,6 +71,7 @@ clear:both;
     height: 104px;
     border:2px solid #eee;
     text-align: center;
+    margin-left:10px;
 }
 .depart-logo img {
     height: 100px;
@@ -80,16 +79,22 @@ clear:both;
 }
 .depart-name {
     display: inline-block;
-    font-size: 25px;
+    font-size: 22px;
     font-family: roboto;
     font-weight: 700;
-    margin: 55px 0px 0px 10px;
+    padding: 60px 10px 0px 8px;
     text-transform: uppercase;
 }
 .loader_screen img
 {
 display:none;
 margin:auto
+}
+@media (max-width:415px){
+.depart-name{
+    font-size:15px;
+    padding: 53px 10px 0px 8px;  
+    }
 }
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
