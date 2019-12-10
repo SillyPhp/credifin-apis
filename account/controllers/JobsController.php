@@ -736,6 +736,17 @@ class JobsController extends Controller
         }
     }
 
+//    public function actionCloneTemplate($aidk){
+//        if(Yii::$app->user->identity->organization){
+//            $model = new ApplicationForm();
+//            return $this->render('/employer-applications/form', [
+//                'model' => $model,
+//                ]);
+//        } else{
+//            throw new HttpException(404, Yii::t('account', 'Page not found'));
+//        }
+//    }
+
     public function actionPreview()
     {
         $model = new ApplicationForm();
@@ -1478,6 +1489,27 @@ class JobsController extends Controller
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page Not Found.'));
+        }
+    }
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Jobs"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('jobs-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 

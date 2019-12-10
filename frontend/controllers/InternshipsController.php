@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\OrganizationLocations;

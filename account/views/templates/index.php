@@ -94,8 +94,8 @@ use yii\helpers\Url;
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs Templates'); ?></span>
                 </div>
                 <div class="actions">
-                    <?php if ($interview_processes['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
+                    <?php if (count($jobs) > 4): ?>
+                        <a href="<?= Url::toRoute('/jobs/view-templates'); ?>" data-toggle="tooltip" title="View All">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
                 </div>
@@ -104,10 +104,11 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-lg-12">
                         <?php
-                        if ($interview_processes['total'] > 0) {
-                            echo $this->render('/widgets/jobs/template-card', [
-                                'processes' => $interview_processes['data'],
-                                'per_row' => 2,
+                        if (count($jobs) > 0) {
+                            echo $this->render('/widgets/employer-applications/template-card', [
+                                'processes' => $jobs,
+                                'limit' => 4,
+                                'type' => "Jobs",
                                 'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                             ]);
                         } else {
@@ -136,8 +137,8 @@ use yii\helpers\Url;
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships Templates'); ?></span>
                 </div>
                 <div class="actions">
-                    <?php if ($interview_processes['total'] > 4): ?>
-                        <a href="<?= Url::toRoute('templates/hiring-process/index'); ?>" data-toggle="tooltip" title="View All">
+                    <?php if (count($internships) > 4): ?>
+                        <a href="<?= Url::toRoute('/internships/view-templates'); ?>" data-toggle="tooltip" title="View All">
                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     <?php endif; ?>
                 </div>
@@ -146,10 +147,11 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-lg-12">
                         <?php
-                        if ($interview_processes['total'] > 0) {
-                            echo $this->render('/widgets/internships/template-card', [
-                                'processes' => $interview_processes['data'],
-                                'per_row' => 2,
+                        if (count($internships) > 0) {
+                            echo $this->render('/widgets/employer-applications/template-card', [
+                                'processes' => $internships,
+                                'limit' => 4,
+                                'type' => "Internships",
                                 'col_width' => 'col-lg-6 col-md-6 col-sm-6',
                             ]);
                         } else {
