@@ -21,17 +21,17 @@ use Yii\helpers\url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel-img">
                         <div class="whats-main-img">
-                            <a href="/whatsapp-community">
+                            <a href= "<?= Url::to('/whatsapp-community') ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/whats.png') ?>" alt="">
                             </a>
                         </div>
                         <div class="whats-img-chat">
-                            <a href="/site/whatsapp-links">
+                            <a href= "<?= Url::to('/whatsapp-community') ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/whtsppmsg.png') ?>" alt="">
                             </a>
                         </div>
                         <div class="whats-img-chat-2">
-                            <a href="">
+                            <a href= "<?= Url::to('/whatsapp-community') ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/custom/whtsppmsg2.png') ?>" alt="">
                             </a>
                         </div>

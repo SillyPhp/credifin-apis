@@ -5,6 +5,7 @@ use yii\helpers\Url;
         {{#.}}
         <div class="col-md-3 col-sm-6">
             <div class="agency-box">
+                <a href="/govt-jobs/{{slug}}" title="{{Value}}">
                 <div class="agency-logo">
                     {{#logo}}
                     <img src="{{logo}}" alt="{{Value}}" title="{{Value}}">
@@ -14,7 +15,8 @@ use yii\helpers\Url;
                             color="{{color}}" font="35px"></canvas>
                     {{/logo}}
                 </div>
-                <div class="agency-name">{{Value}}</div>
+                </a>
+                <div class="agency-name"><a href="/govt-jobs/{{slug}}">{{Value}}</a></div>
                 <div class="agency-count">
                     <a href="#">{{total_applications}} Jobs</a>
                 </div>
@@ -24,7 +26,7 @@ use yii\helpers\Url;
     </script>
 <?php
 $script = <<< JS
-function fetchDepartments(template,limit,offset,loader_btn) {
+function fetchDepartments(template,limit,offset,loader,loader_btn) {
   $.ajax({
   url:'/govt-jobs/get-departments',
   method:'Post',
@@ -43,6 +45,7 @@ function fetchDepartments(template,limit,offset,loader_btn) {
         }
       },
   success:function(response) {
+      $('.img_load').css('display','none');
       if(response.status === 200) {
           template.append(Mustache.render($('#departments-card').html(),response.cards));
           utilities.initials();

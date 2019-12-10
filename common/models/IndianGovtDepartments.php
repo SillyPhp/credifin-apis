@@ -20,6 +20,8 @@ namespace common\models;
  * @property string $last_retrieved_on On which date Department information was Last Retrieved to database
  *
  * @property Users $lastRetrievedBy
+ * @property AssignedIndianJobs[] $assignedIndianJobs
+ * @property IndianGovtJobs[] $jobEncs
  */
 class IndianGovtDepartments extends \yii\db\ActiveRecord
 {
@@ -46,6 +48,7 @@ class IndianGovtDepartments extends \yii\db\ActiveRecord
             [['image', 'image_location'], 'string', 'max' => 50],
             [['Value'], 'unique'],
             [['slug'], 'unique'],
+            [['dept_enc_id'], 'unique'],
             [['last_retrieved_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_retrieved_by' => 'user_enc_id']],
         ];
     }
@@ -60,5 +63,21 @@ class IndianGovtDepartments extends \yii\db\ActiveRecord
     public function getLastRetrievedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_retrieved_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedIndianJobs()
+    {
+        return $this->hasMany(AssignedIndianJobs::className(), ['dept_enc_id' => 'dept_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getJobEncs()
+    {
+        return $this->hasMany(IndianGovtJobs::className(), ['job_enc_id' => 'job_enc_id'])->viaTable('{{%assigned_indian_jobs}}', ['dept_enc_id' => 'dept_enc_id']);
     }
 }
