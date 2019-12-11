@@ -7,6 +7,7 @@ namespace api\modules\v1\controllers;
 use account\models\applications\ApplicationForm;
 use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Reviews;
+use common\models\BusinessActivities;
 use common\models\Categories;
 use common\models\Designations;
 use common\models\FollowedOrganizations;
@@ -42,6 +43,7 @@ class ReviewsController extends ApiBaseController
                 'latest-top-reviews',
                 'top-user-reviews',
                 'most-reviewed',
+                'search-org',
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -1702,6 +1704,45 @@ class ReviewsController extends ApiBaseController
             'total' => $q2_count + $q1_count,
             'cards' => $q1->union($q2)->asArray()->all()
         ];
+    }
+
+    public function actionSearchOrg($type = null,$query){
+        $type = explode(",", $type);
+        $params1 = (new \yii\db\Query())
+            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+                WHEN business_activity IS NULL THEN ""
+                ELSE business_activity
+                END) as business_activity'])
+            ->from(UnclaimedOrganizations::tableName() . 'as a')
+            ->leftJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.organization_type_enc_id')
+            ->where("replace(name, '.', '') LIKE '%$query%'");
+        if ($type[0] != null) {
+            $query1 = $params1->andWhere([
+                'or',
+                ['in', 'business_activity', $type]
+            ])
+                ->andWhere(['is_deleted' => 0]);
+        } else {
+            $query1 = $params1->andWhere(['is_deleted' => 0]);
+        }
+
+        $params2 = (new \yii\db\Query())
+            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->from(Organizations::tableName() . 'as a')
+            ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
+            ->where("replace(name, '.', '') LIKE '%$query%'");
+        if ($type[0] != null) {
+            $query2 = $params2->andWhere([
+                'or',
+                ['in', 'business_activity', $type]
+            ])
+                ->andWhere(['is_deleted' => 0]);
+        } else {
+            $query2 = $params2->andWhere(['is_deleted' => 0]);
+        }
+
+        $data =  $query1->union($query2)->all();
+        return $this->response(200,['data'=>$data]);
     }
 
 
