@@ -1186,15 +1186,21 @@ class JobsController extends Controller
 
     public function actionGenrateImage()
     {
+        $output_image = 'image_final.png';
         $company_name = 'Capital Bank';
-        $script_path = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/image_genrate_script.py');
+        $font = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
+        $font2 = Url::to('@rootDirectory/assets/common/image/image_script/Gelasio-Regular.ttf');
+        $font3 = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
+        $script_path = Url::to('@rootDirectory/assets/common/image/image_script/image_genrate_script.py');
         $job_title = 'Full Stack Developer s';
         $canvas_name = 'A';
-        $icon_path = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/icon.png');
-        $temp_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/share-orignal-image.png');
-        exec('python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$icon_path.'" "'.$temp_image.'" ',$output, $return_var);
-        print_r($output);
-        print_r($return_var);
+        $icon_path = Url::to('@rootDirectory/assets/common/image/image_script/icon.png');
+        $temp_image = Url::to('@rootDirectory/assets/common/image/image_script/share-orignal-image.png');
+        $res = exec('python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ',$output, $return_var);
+        //$whole = 'python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$icon_path.'" ';
+        //print_r($output);
+        //print_r($return_var);
+        return $res;
 //        if ($res) {
 //            echo 'okk';
 //        }
