@@ -40,7 +40,7 @@ class ListController extends ApiBaseController
             ->where([
                 'a.is_deleted' => 0,
                 'a.status' => 'Active',
-                'a.is_erexx_registered' => 1
+                'a.has_placement_rights' => 1
             ])
             ->limit(6)
             ->asArray()
