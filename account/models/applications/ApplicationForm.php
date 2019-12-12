@@ -216,8 +216,6 @@ class ApplicationForm extends Model
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
-        $employerApplicationsModel->image = '1';
-        $employerApplicationsModel->image_location = '1';
         $employerApplicationsModel->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
