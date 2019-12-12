@@ -20,6 +20,8 @@ use common\models\Qualifications;
 use common\models\UnclaimedFollowedOrganizations;
 use common\models\UnclaimedOrganizations;
 use common\models\UserAccessTokens;
+use common\models\Utilities;
+use common\models\RandomColors;
 use frontend\models\reviews\EditReview;
 use frontend\models\reviews\ReviewCards;
 use yii\filters\auth\HttpBearerAuth;
@@ -109,7 +111,7 @@ class ReviewsController extends ApiBaseController
 
         if ($options['quant'] == 'one') {
             $result = $primary_result->asArray()->one();
-        }elseif ($options['count'] == true){
+        } elseif ($options['count'] == true) {
             $result = $primary_result->count();
         } else {
             $result = $primary_result
@@ -1423,7 +1425,7 @@ class ReviewsController extends ApiBaseController
         } elseif ($options['type'] == 'school') {
             $options['business_activity'] = 'School';
             $data = $this->__unclaimedTopReviews($options);
-        } elseif($options['type'] == 'organization') {
+        } elseif ($options['type'] == 'organization') {
             $options['rating'] = [4, 5];
             $data = $this->__companyReviews($options);
         }
@@ -1706,10 +1708,11 @@ class ReviewsController extends ApiBaseController
         ];
     }
 
-    public function actionSearchOrg($type = null,$query){
+    public function actionSearchOrg($type = null, $query)
+    {
         $type = explode(",", $type);
         $params1 = (new \yii\db\Query())
-            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['name', 'organization_enc_id', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
@@ -1727,7 +1730,7 @@ class ReviewsController extends ApiBaseController
         }
 
         $params2 = (new \yii\db\Query())
-            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->select(['name', 'initials_color color', 'organization_enc_id', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");
@@ -1741,9 +1744,74 @@ class ReviewsController extends ApiBaseController
             $query2 = $params2->andWhere(['is_deleted' => 0]);
         }
 
-        $data =  $query1->union($query2)->all();
-        return $this->response(200,['data'=>$data]);
+        $data = $query1->union($query2)->all();
+
+        if (!empty($data)) {
+            return $this->response(200, ['data' => $data]);
+        } else {
+            return $this->response(404, ['message' => 'org not found']);
+        }
     }
 
+    public function actionAddOrg()
+    {
+        $options = \Yii::$app->request->post();
+
+        if (!isset($options['org_name'])) {
+            return $this->response(409);
+        }
+
+        if (!isset($options['type'])) {
+            return $this->response(409);
+        } else {
+            $category = $options['type'];
+        }
+
+        if ($category == 'school') {
+            $category = 'School';
+        } elseif ($category == 'college') {
+            $category = 'College';
+        } elseif ($category == 'institute') {
+            $category = 'Educational Institute';
+        } else {
+            $category = 'Others';
+        }
+
+        $user = $this->userId();
+
+        $model = new UnclaimedOrganizations();
+        $utilitiesModel = new Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $model->organization_enc_id = $utilitiesModel->encrypt();
+        $model->organization_type_enc_id = $this->getBusinessTypeId($category);
+        $utilitiesModel->variables['name'] = $options['org_name'] . rand(1000, 100000);
+        $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
+        $utilitiesModel->variables['field_name'] = 'slug';
+        $slug = $utilitiesModel->create_slug();
+        $slug_replace_str = str_replace("-", "", $slug);
+        $model->slug = $slug_replace_str;
+        $model->website = $options['website'];
+        $model->name = $options['org_name'];
+        $model->created_by = $user->user_enc_id;
+        $model->initials_color = RandomColors::one();
+        $model->status = 1;
+        if ($model->save()) {
+            return $this->response(200,['org_id'=>$model->organization_enc_id]);
+        } else {
+            return $this->response(500,'an error occurred');
+        }
+
+    }
+
+    private function getBusinessTypeId($category)
+    {
+        $id = BusinessActivities::find()
+            ->select(['business_activity_enc_id'])
+            ->where(['business_activity' => $category])
+            ->asArray()
+            ->one();
+
+        return $id['business_activity_enc_id'];
+    }
 
 }
