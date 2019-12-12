@@ -36,7 +36,7 @@ if icon_path == '':
     draw.rectangle(logo_box,fill ="#87ceeb", outline ="#ffff")
     draw.text((110,110,120,120), canvas_name,align='center', fill='#ffff', font=font3)
     draw = ImageDraw.Draw(image)
-    image.save('image_final.png', optimize=True, quality=100)
+    image.save(sys.argv[8], optimize=True, quality=100)
     print(1)
 else:
     icon = Image.open(icon_path)
@@ -44,6 +44,6 @@ else:
     back_img = image.copy()
     back_img.paste(icon, (30,30))  
     draw = ImageDraw.Draw(back_img)
-    back_img.save(sys.argv[9], optimize=True, quality=100)
+    back_img.save(sys.argv[8], optimize=True, quality=100)
     print(1)
       	
