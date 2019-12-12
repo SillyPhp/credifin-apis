@@ -13,6 +13,14 @@ class TestCacheController extends Controller
         return 'cache';
     }
 
+    public function actionTest()
+    {
+        $script_image_location = Yii::$app->getSecurity()->generateRandomString();
+        $script_image = Yii::$app->getSecurity()->generateRandomString() . '.png';
+        $base_path = Yii::$app->params->upload_directories->employer_applications->ai->image_path.$script_image_location;
+        return $base_path.DIRECTORY_SEPARATOR.$script_image;
+    }
+
     public function actionScript()
     {
         $output_image = 'image_final.png';

@@ -287,8 +287,6 @@ class ApplicationForm extends Model
             }
         }
 
-        return $res;
-
         if ($res)
         {
           $employerApplicationsModel->image_location = $script_image_location;
@@ -1057,18 +1055,14 @@ class ApplicationForm extends Model
         $output_array = "";
         $ret_code ="";
         $script = 'sudo python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ';
-        exec($script.' 2>&1',$output_array,$ret_code);
-        return [
-            'out'=>$output_array,
-            'ret'=>$ret_code
-        ];
-//        if ($ret_code)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
+        exec($script,$output_array,$ret_code);
+        if ($ret_code)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
