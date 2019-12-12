@@ -558,9 +558,8 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<div id="echo $this->render('/widgets/info-stats');">
-
-</div>
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
 
 <?= $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs
@@ -1856,7 +1855,7 @@ $(document).on('click','#search-submit',function() {
        return false;
    }
 });
-fetchStats(template=$('#stats_cards'));
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
