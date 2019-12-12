@@ -1183,5 +1183,4 @@ class JobsController extends Controller
             'locations'=>$cards1['locations']+$unclaim_locations,
         ];
     }
-
 }

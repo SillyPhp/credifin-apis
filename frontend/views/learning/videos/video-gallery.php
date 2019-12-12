@@ -391,10 +391,10 @@ echo $this->render('/widgets/mustache/skills/video-gallery-video');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
 .best-images{
-    display:flex;
+    display:inline-block;
 }
 .best-images a{
-    margin-right:5px;   
+    display:inline-block;   
 }
 .card:hover::before{
     right: -15px;
@@ -516,6 +516,7 @@ $this->registerCss('
     font-weight: bold;
     border-top: 1px solid #eee;
     margin-top: 10px;
+    font-family:roboto;
 }
 .best-answers {
     float: right;
@@ -525,6 +526,7 @@ $this->registerCss('
     width: 20px;
     border-radius: 25px;
     margin-right: 2px;
+    vertical-align: inherit;
 }
 .card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
    background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/

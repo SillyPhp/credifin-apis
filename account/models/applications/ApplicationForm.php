@@ -611,6 +611,25 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
+            if (!empty(Yii::$app->user->identity->organization->logo)) {
+                $this->genrateImage(
+                    $employerApplicationsModel->title,
+                    Yii::$app->user->identity->organization->name,
+                    Yii::$app->params->upload_directories->organizations->logo_path . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo,
+                    Yii::$app->params->upload_directories->resume->file_path,
+                    Url::to('@rootDirectory/assets/common/image/image_script/share-orignal-image.png')
+                );
+            }
+            else
+            {
+                $this->genrateImage(
+                    $employerApplicationsModel->title,
+                    Yii::$app->user->identity->organization->name,
+                    '',
+                    Yii::$app->params->upload_directories->resume->file_path,
+                    Url::to('@rootDirectory/assets/common/image/image_script/share-orignal-image.png')
+                );
+            }
             return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
@@ -1002,5 +1021,21 @@ class ApplicationForm extends Model
             ->one();
         return $application;
 
+    }
+
+    private function genrateImage($title,$company_name,$icon_path,$output_image,$template)
+    {
+        $output_image = $output_image;
+        $company_name = $company_name;
+        $font = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
+        $font2 = Url::to('@rootDirectory/assets/common/image/image_script/Gelasio-Regular.ttf');
+        $font3 = Url::to('@rootDirectory/assets/common/image/image_script/GeoSlb712MdBTBold.ttf');
+        $script_path = Url::to('@rootDirectory/assets/common/image/image_script/image_genrate_script.py');
+        $job_title = $title;
+        $canvas_name = substr(trim($company_name),0,1);
+        $icon_path = $icon_path;
+        $temp_image = $template;
+        $res = exec('python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ',$output, $return_var);
+        return $res;
     }
 }
