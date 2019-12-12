@@ -294,8 +294,8 @@ class ApplicationForm extends Model
         }
         else
         {
-            $employerApplicationsModel->image_location = 0;
-            $employerApplicationsModel->image = 0;
+            $employerApplicationsModel->image_location = '0';
+            $employerApplicationsModel->image = '0';
         }
 
 //        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
@@ -1053,7 +1053,7 @@ class ApplicationForm extends Model
         $icon_path = $icon_path;
         $temp_image = $template;
         $script = 'sudo python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ';
-         if (exec($script,$output, $return_var))
+         if (exec($script))
         {
             return true;
         }
