@@ -284,20 +284,20 @@ class ApplicationForm extends Model
                         Url::to('@rootDirectory/assets/common/images/image_script/share-orignal-image.png')
                     );
                 }
+                return $res;
             }
-            return $res;
         }
 
-        if ($res)
-        {
-          $employerApplicationsModel->image_location = $script_image_location;
-          $employerApplicationsModel->image = $script_image;
-        }
-        else
-        {
-            $employerApplicationsModel->image_location = 0;
-            $employerApplicationsModel->image = 0;
-        }
+//        if ($res)
+//        {
+//          $employerApplicationsModel->image_location = $script_image_location;
+//          $employerApplicationsModel->image = $script_image;
+//        }
+//        else
+//        {
+//            $employerApplicationsModel->image_location = 0;
+//            $employerApplicationsModel->image = 0;
+//        }
 
 //        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
 //        if (!$image_information) {
