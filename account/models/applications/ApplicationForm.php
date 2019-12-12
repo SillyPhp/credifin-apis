@@ -1052,8 +1052,11 @@ class ApplicationForm extends Model
         $canvas_name = substr(trim($company_name),0,1);
         $icon_path = $icon_path;
         $temp_image = $template;
+        $output_array = "";
+        $ret_code ="";
         $script = 'sudo python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ';
-         if (exec($script))
+        exec($script,$output_array,$ret_code);
+        if ($ret_code)
         {
             return true;
         }
