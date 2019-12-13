@@ -416,7 +416,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 <?php
 $this->registerCss('
 .padd-top-20{
-    padding-top:30px;
+    padding-top:30px; 
 }
 /*---- new code-----*/
 .new-card-container .card {
