@@ -50,7 +50,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
     <div class="fade-bg"></div>
-    <div class="container">
+    <div id="app-main-quiz" class="container">
         <span class="sub-container" id="sub-container">
             <a href="/" style="max-width: 275px;display: block;margin: auto;border-radius: 0px;">
                 <img src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>" style="width: 100%;border-radius: 0px;"/>
@@ -108,3 +108,6 @@ $this->registerJs("function fbs_click() {
     window.open('http://www.facebook.com/sharer.php?u=' + encodeURIComponent(u) + '&t=' + encodeURIComponent(t), 'sharer', 'toolbar=0,status=0,width=626,height=436');
     return false;
 }");
+if($quiz['is_login'] == 1 && Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/login-required-modal');
+}

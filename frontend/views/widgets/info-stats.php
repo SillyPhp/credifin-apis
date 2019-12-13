@@ -1,3 +1,4 @@
+<script id="stats-card" type="text/template">
 <div class="box-parent row">
     <div class="bolls">
         <div class="boll1 bol2"></div>
@@ -9,29 +10,30 @@
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="jobs-content">
-            <div class="j-count">2000+</div>
+            <div class="j-count">{{jobs}}+</div>
             <div class="j-name">Jobs</div>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="jobs-content">
-            <div class="j-count">1500+</div>
+            <div class="j-count">{{internships}}+</div>
             <div class="j-name">Internships</div>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="jobs-content">
-            <div class="j-count">500+</div>
+            <div class="j-count">{{location}}+</div>
             <div class="j-name">Locations</div>
         </div>
     </div>
     <div class="col-md-3 col-sm-6">
         <div class="jobs-content">
-            <div class="j-count">10k+</div>
-            <div class="j-name">opportunities</div>
+            <div class="j-count">{{companies}}+</div>
+            <div class="j-name">Companies</div>
         </div>
     </div>
 </div>
+</script>
 <?php
 $this->registerCss('
 .box-parent {
@@ -101,4 +103,30 @@ $this->registerCss('
     right: -69px;
     bottom: 12px;
 }
+@media (max-width:415px){
+.boll5 {
+    right: 159px;
+    top: 305px;
+}
+.boll6 {
+    left: 205px;
+    top: 415px;
+}
+}
 ');
+$script = <<< JS
+function fetchStats(template) {
+  $.ajax({
+  url:'/jobs/get-stats',
+  method:'Post',
+  datatype:"json",
+  success:function(response) {
+      if(response.status === 200) {
+          console.log(response.cards);
+          template.append(Mustache.render($('#stats-card').html(),response.cards));
+      }
+  }   
+  })
+}
+JS;
+$this->registerJs($script);

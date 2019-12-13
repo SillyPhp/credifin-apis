@@ -376,12 +376,12 @@ class DashboardController extends Controller
     {
         if (Yii::$app->user->identity->organization) {
             $organization = Organizations::find()
-                ->select(['logo', 'logo_location', 'initials_color'])
+                ->select(['name','logo', 'logo_location', 'initials_color'])
                 ->where(['slug' => Yii::$app->user->identity->organization->slug, 'status' => 'Active', 'is_deleted' => 0])
                 ->asArray()
                 ->one();
             $companyLogoFormModel = new CompanyLogoForm();
-            return $this->render('logo-modal', [
+            return $this->renderAjax('logo-modal', [
                 'companyLogoFormModel' => $companyLogoFormModel,
                 'organization' => $organization,
             ]);
@@ -393,7 +393,7 @@ class DashboardController extends Controller
                 ->asArray()
                 ->one();
 
-            return $this->render('user-image-modal', [
+            return $this->renderAjax('user-image-modal', [
                 'userProfilePicture' => $userProfilePicture,
                 'user' => $user,
             ]);

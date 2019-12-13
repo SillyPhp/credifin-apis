@@ -50,12 +50,13 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
-                <ins class=“adsbygoogle”
-                     style=“display:block”
-                     data-ad-client=“ca-pub-2186770765824304"
-                     data-ad-slot=“5305796212”
-                     data-ad-format=“auto”
-                     data-full-width-responsive=“true”></ins>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="5305796212"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
                 <script>
                     (adsbygoogle = window.adsbygoogle || []).push({});
                 </script>
@@ -196,15 +197,6 @@ $this->params['seo_tags'] = [
             </div>
 
             <div class="col-md-3 blue-bg">
-                <ins class=“adsbygoogle”
-                     style=“display:block”
-                     data-ad-client=“ca-pub-2186770765824304"
-                     data-ad-slot=“6492214366”
-                     data-ad-format=“auto”
-                     data-full-width-responsive=“true”></ins>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
                 <div class="sharing-box">
                     <div class="sharing-pic">
                         <img src="<?= Url::to('/assets/themes/ey/images/pages/jobs/socialsharing.png');?>">
@@ -268,13 +260,6 @@ $this->params['seo_tags'] = [
 <!--                        </label>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({
-                        google_ad_client: "ca-pub-9111969809145171",
-                        enable_page_level_ads: true
-                    });
-                </script>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -288,6 +273,16 @@ $this->params['seo_tags'] = [
                     <div class="row" id="r-videos">
                     </div>
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="6492214366"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
     </div>

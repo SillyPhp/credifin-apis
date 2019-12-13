@@ -42,7 +42,7 @@ $this->params['seo_tags'] = [
 ];
 ?>
 
-    <div class="quiz-main">
+    <div id="app-main-quiz" class="quiz-main">
         <div class="fade-bg-inner"></div>
         <div id="quiz"></div>
     </div>
@@ -70,5 +70,6 @@ $script = <<<JS
     });
 JS;
 $this->registerJs($script);
-$this->registerCssFile('');
-$this->registerJs("");
+if($quiz['is_login'] == 1 && Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/login-required-modal');
+}

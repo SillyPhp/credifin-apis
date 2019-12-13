@@ -2,13 +2,18 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationSkills;
 use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
+use common\models\Designations;
 use common\models\OrganizationLocations;
 use common\models\States;
+use common\models\UnclaimedOrganizations;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -1155,4 +1160,63 @@ class JobsController extends Controller
         return $result;
     }
 
+    public function actionGetStats()
+    {
+        if (Yii::$app->request->isAjax)
+      {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+           $total_jobs = $this->getData('Jobs');
+           $total_internships = $this->getData('Internships');
+           $total = $this->getData('');
+            return [
+                'status'=>200,
+                'cards'=>['jobs'=>$total_jobs['total_applications'],'internships'=>$total_internships['total_applications'],'location'=>$total['locations'],'companies'=>$total_jobs['org']]
+            ];
+        }
+    }
+
+    private function getData($type)
+    {
+        $cards1 = ApplicationPlacementLocations::find()
+            ->alias('a')
+            ->joinWith(['applicationEnc b'=>function($b) use ($type)
+            {
+                $b->andWhere(['b.status' => 'Active', 'b.is_deleted' => 0]);
+                $b->joinWith(['applicationTypeEnc c'=>function($b) use ($type)
+                {
+                    if ($type){
+                        $b->andWhere(['c.name' => $type]);
+                    }
+                }]);
+            }],false)
+            ->joinWith(['locationEnc d'],false)
+            ->select(['SUM(a.positions) total','COUNT(d.location_enc_id) locations'])
+            ->asArray()
+            ->one();
+
+        $cards2 = ApplicationUnclaimOptions::find()
+                  ->alias('a')
+                  ->joinWith(['applicationEnc b'=>function($b) use ($type)
+                    {
+                    $b->andWhere(['b.status' => 'Active', 'b.is_deleted' => 0]);
+                    $b->joinWith(['applicationTypeEnc c'=>function($b) use ($type)
+                    {
+                    if ($type){
+                        $b->andWhere(['c.name' => $type]);
+                    }
+                    }]);
+                    }],false)
+                  ->select(['SUM(a.positions) total'])
+                  ->asArray()
+                  ->one();
+        $unclaim_locations = ApplicationPlacementCities::find()->count();
+        $org_claim = Organizations::find()->count();
+        $org_unclaim = UnclaimedOrganizations::find()->count();
+
+        return [
+            'total_applications'=>$cards1['total']+$cards2['total'],
+            'org'=>$org_claim+$org_unclaim,
+            'locations'=>$cards1['locations']+$unclaim_locations,
+        ];
+    }
 }
