@@ -11,39 +11,39 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
     ]);
 }
 
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Jobs',
-]);
+//echo $this->render('/widgets/header/secondary-header', [
+//    'for' => 'Jobs',
+//]);
 ?>
-    <div class="row">
+    <div class="row padd-top-20">
         <div class="col-md-2 col-sm-3">
             <div class="new-card-container">
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/create">
+                            <a href="/account/jobs/create">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/create" target="_blank">
+                    <a href="/account/jobs/create" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     AI Jobs
                                 </h3>
                                 <p>Create AI Jobs</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <?php
                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
@@ -51,29 +51,29 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="card">
                         <div class="face face1">
                             <div class="content">
-                                <div class="icon">
-                                    <div class="icon-white-bg">
-                                        <a href="/account/jobs/campus-placement">
+                                <a href="/account/jobs/campus-placement">
+                                    <div class="icon">
+                                        <div class="icon-white-bg">
                                             <div class="iwb-pos-abso">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"
                                                      alt="">
                                             </div>
-                                        </a>
+                                        </div>
+                                        <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
                                     </div>
-                                    <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
-                                </div>
+                                </a>
                             </div>
                         </div>
-                        <div class="face face2">
-                            <div class="content">
-                                <a href="/account/jobs/campus-placement" target="_blank">
+                        <a href="/account/jobs/campus-placement" target="_blank">
+                            <div class="face face2">
+                                <div class="content">
                                     <h3>
                                         Campus Hiring
                                     </h3>
                                     <p>Select jobs for campus hiring</p>
-                                </a>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <?php
                 }
@@ -81,56 +81,56 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/tweets/job/create">
+                            <a href="/tweets/job/create">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/tweets/job/create" target="_blank">
+                    <a href="/tweets/job/create" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     Job Tweet
                                 </h3>
                                 <p>Post Job Tweet</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/quick-job">
+                            <a href="/account/jobs/quick-job">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/quick-job" target="_blank">
+                    <a href="/account/jobs/quick-job" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     Quick Jobs
                                 </h3>
                                 <p>Create Quick Jobs</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -415,6 +415,9 @@ echo $this->render('/widgets/header/secondary-header', [
 
 <?php
 $this->registerCss('
+.padd-top-20{
+    padding-top:30px;
+}
 /*---- new code-----*/
 .new-card-container .card {
     position: relative;
