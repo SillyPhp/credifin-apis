@@ -2,39 +2,6 @@
 
 use yii\helpers\Url;
 
-$this->title = Yii::t('frontend', 'Schools Reviews | Reviews');
-
-$keywords = 'School Reviews,Top Schools in India,Best Schools in India,Top CBSE Schools in India,Top Schools in Delhi,Best Schools in Delhi,Schools in Mumbai';
-
-$description = "Here you can get reviews of top schools in India. You can also write a review of any school and help to other people to find the best School.";
-
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
-
 ?>
     <section class="cri-bg">
         <div class="container">
@@ -67,6 +34,54 @@ $this->params['seo_tags'] = [
                                 <?php endif; ?>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Top Rated Schools</div>
+                    <div id="uncliamed_top">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="share-box">
+        <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
+        <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Post Genuine Review About Your School</div>
+                    <div class="col-md-4 set style-set">
+                        <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
+                        <div class="text">Share Your Experience</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo2"><img src="<?= Url::to('@eyAssets/images/pages/review/refer-a-frnd.png')?>"></div>
+                        <div class="text">Refer a Friend</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo3"><img src="<?= Url::to('@eyAssets/images/pages/review/be-a-guide.png')?>"></div>
+                        <div class="text">Be a Guide</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Recent Reviews</div>
+                    <div id="uncliamed_recent">
+
                     </div>
                 </div>
             </div>
@@ -110,6 +125,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
     <section class="green-bg">
         <div class="container">
             <div class="pos-abso">
@@ -124,30 +140,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Recent Reviews</div>
-                    <div id="uncliamed_recent">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Rated Schools</div>
-                    <div id="uncliamed_top">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="qr-bg">
         <div class="container">
             <div class="row">
@@ -171,6 +164,15 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
 <?php
 $this->registerCss('
 .green-bg{
@@ -193,10 +195,15 @@ $this->registerCss('
     width:100%;
     transform:translate(-50%, -50%);
 }
+
+
 .gb-text{
     color:#fff;
     font-size:22px;
+    padding: 10px;
 }
+
+
 .gb-text span{
     font-weight:bold;
 }
@@ -204,7 +211,7 @@ $this->registerCss('
     width:100%;
     padding:0 0 20px 0;
     font-weight:bold;
-    font-size:30px;
+    font-size:25px;
     color:#fff;
        
 }
@@ -212,7 +219,7 @@ $this->registerCss('
     margin-top:0px !important;
 }
 .qr-bg{
-    margin-top:20px;
+//    margin-top:20px;
     background:#ecf5fe;
     padding:30px 0;
 }
@@ -657,10 +664,75 @@ float:right;
 {
 display:inline-block;
 }
-.add_org
-{
+.add_org{
 float:right;
 }
+.share-box{
+	margin: 30px 0 10px; 
+	border-radius: 5px;
+	padding: 15px 0;
+	position: relative;
+	background-color: rgba(238, 238, 238, .2);
+}
+.back1 img,.back2 img {
+    max-width: 115px;
+}
+.back1{
+	position: absolute;
+	top: 15px;
+	left: 0px;
+}
+.back2{
+	position: absolute;
+	right: 0px;
+	bottom: 20px;
+}
+.new-box-banner{
+	text-align: center;
+	font-size: 35px;
+	font-family: PT Serif;
+	padding-bottom: 30px;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+//.style-set{
+//    padding: 0 0px 0 77px;
+//}
+.logo1 img, .logo2 img, .logo3 img {
+    max-width: 180px;
+}
+//.logo2 img{
+//    max-width: 250px;
+//}
+//.logo3 img{
+//    max-width: 250px;
+//}
+.set{
+    text-align: center;
+}
+.text{
+    padding-top: 20px;
+    padding-bottom: 10px; 
+    font-family: lora;
+    font-size: 19px;
+}
+
+@media only screen and (max-width: 768px) {
+  .back1{top: 150px;}
+  .back2{top: 500px;}
+  .style-set{padding: 0px;}
+  .set{padding-bottom: 20px;}
+}
+@media only screen and (max-width: 450px) {
+	.new-box-banner{
+	    font-size: 25px;
+    }
+	.back1 img, .back2 img{max-width: 60px;}
+	.logo1 img{max-width: 150px;}
+	.logo2 img{max-width: 120px;}
+	.logo3 img{max-width: 130px;}
+}
+
 @keyframes bounce{
   0%, 75%, 100%{
     -webkit-transform: translateY(0);

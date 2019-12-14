@@ -20,7 +20,7 @@
                 var k = 0;
 
                 for(var i = 0; i < result.length; i++){
-                    var answersResult = result[i]['quizAnswers'];
+                    var answersResult = result[i]['quizAnswersPools'];
                     data['questions'][k] = {};
                     data['questions'][k]['answers'] = [];
                     for(var j = 0; j < answersResult.length; j++){
@@ -217,8 +217,8 @@
                         var path = window.location.pathname.split('/');
                         $('#elem-button-share-quiz').attr('href', 'http://www.facebook.com/sharer.php?u=' + window.location.hostname + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
                         $('#elem-button-share-quiz-twitter').attr('href', 'https://twitter.com/intent/tweet?text=' + window.location.hostname + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
-                        $('#elem-button-share-quiz-wa').attr('href', 'https://wa.me/?text=' + window.location.href + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
-                        $('#elem-button-share-quiz-wa-mob').attr('href', 'whatsapp://send?text=' + window.location.href + '/' + path[1] + '/' + path[2] + '/' + state.correct + '/' + state.total);
+                        $('#elem-button-share-quiz-wa').attr('href', 'https://wa.me/?text=' + window.location.href + '/' + state.correct + '/' + state.total);
+                        $('#elem-button-share-quiz-wa-mob').attr('href', 'whatsapp://send?text=' + window.location.href + '/' + state.correct + '/' + state.total);
                         $indicators.removeClass('show');
                         $indicators.find('li')
                             .removeClass('dark')

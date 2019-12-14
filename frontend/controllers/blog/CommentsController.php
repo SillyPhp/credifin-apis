@@ -9,6 +9,7 @@ use yii\web\HttpException;
 use yii\helpers\Url;
 use common\models\Posts;
 use common\models\PostComments;
+use common\models\Utilities;
 
 class CommentsController extends Controller
 {
@@ -41,7 +42,7 @@ class CommentsController extends Controller
             foreach ($result as $r) {
                 $a = PostComments::find()
                     ->where(['reply_to' => $r['comment_enc_id']])
-                    ->andWhere(['post_enc_id' => $r['post_enc_id']])
+                    ->andWhere(['post_enc_id' => $post['post_enc_id']])
                     ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if ($a) {

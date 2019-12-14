@@ -16,7 +16,6 @@ use frontend\models\accounts\ForgotPasswordForm;
 use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
-use frontend\models\accounts\UserEmails;
 use frontend\models\ChangePasswordForm;
 use common\models\Utilities;
 
@@ -49,6 +48,13 @@ class AccountsController extends Controller
                 ],
             ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
     }
 
     public function actionLogin()
@@ -132,12 +138,6 @@ class AccountsController extends Controller
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();
-            $business_activities = \common\models\extended\BusinessActivities::find()
-                ->select(['business_activity_enc_id', 'business_activity'])
-                ->where(['!=', 'business_activity', 'Business'])
-                ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
-                ->asArray()
-                ->all();
 
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -160,7 +160,6 @@ class AccountsController extends Controller
             }
             return $this->render('signup/organization', [
                 'model' => $model,
-                'business_activities' => $business_activities,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));

@@ -10,7 +10,7 @@ if(!empty($size)){
     <div class="<?= $col; ?>">
         <div class="whats-new-box">
             <div class="wn-box-icon">
-                <a href="/blog/{{slug}}"><img src="{{image}}"></a>
+                <a href="/blog/{{slug}}"><img src="{{image}}" alt="{{title}}"></a>
 <!--                <div class="middle">-->
 <!--                    <div class=""><a href="/blog/{{slug}}" class="wn-overlay-text">Read More</a></div>-->
 <!--                </div>-->
@@ -32,8 +32,8 @@ $this->registerCss('
     margin-bottom:20px;
 }
 .wn-box-icon{
-    max-width:255px;
-    height:100%;
+    max-width:100%;
+    height:190px;
     overflow: hidden;
     border-radius:5px 5px 0 0; 
     position:relative;
@@ -47,7 +47,7 @@ $this->registerCss('
     opacity: 1;
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     transition: .5s ease;
     backface-visibility: hidden;
 }

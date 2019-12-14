@@ -4,42 +4,6 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$this->title = Yii::t('frontend', 'Reviews | Latest Reviews');
-
-$keywords = 'Reviews,School Reviews,College Reviews,Review,Company Reviews,top 10 Companies,Top 10 Schools in India,Top 10 Colleges in India';
-
-$description = "Here's you get top listed and top reviews schools, companies, institutes, organisations, colleges of your city. you can easily
-watch the reviews and see the ratings and you can also post your reviews of any sector.";
-
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
-
 ?>
 
     <section class="head-bg">
@@ -85,7 +49,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="tc">
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/companies" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/companies"); ?>">
                             <div class="review-cat-box com-hover">
                                 <div class="rcb-icon" id="company-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/company-icon.png') ?>">
@@ -95,7 +59,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/colleges" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/colleges"); ?>">
                             <div class="review-cat-box college-hover">
                                 <div class="rcb-icon" id="college-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/college-icon.png') ?>">
@@ -105,7 +69,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/schools" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/schools"); ?>">
                             <div class="review-cat-box sch-hover">
                                 <div class="rcb-icon" id="school-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/school-icon.png') ?>">
@@ -115,7 +79,7 @@ $this->params['seo_tags'] = [
                         </a>
                     </div>
                     <div class="col-md-3">
-                        <a href="<?= Url::to("/reviews/institutes" . $referral); ?>">
+                        <a href="<?= Url::to("/reviews/institutes"); ?>">
                             <div class="review-cat-box ei-hover">
                                 <div class="rcb-icon" id="education-cont">
                                     <img src="<?= Url::to('@eyAssets/images/pages/review/ei-icon.png') ?>">
@@ -128,6 +92,9 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+<?= $this->render('/widgets/review/quick-review'); ?>
+
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Top Organizations</h1>
@@ -183,6 +150,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
     <section class="qr-bg">
         <div class="container">
             <div class="row">
@@ -201,6 +169,14 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');
@@ -1001,15 +977,6 @@ float:right;
     white-space: nowrap;
     height: 540px;
 }
-.ey-logo{
-    position:absolute;
-    top:20px;
-    left:50%;
-    transform:translateX(-50%);
-}
-.ey-logo img{
-    max-width:200px;
-}
 .log-btn{
     padding:100px
 }
@@ -1232,7 +1199,7 @@ body.modal-open{
 echo $this->render('/widgets/mustache/review-cards-company');
 echo $this->render('/widgets/mustache/review-cards-unclaimed');
 echo $this->render('/widgets/review/review-search-bar');
-echo $this->render('/widgets/review/review-search-bar');
+//echo $this->render('/widgets/review/review-search-bar');
 $script = <<< JS
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'School','offset':0},template=$('#review_school'));
 fetch_cards_top(params={'rating':[3,4,5],'limit':3,business_activity:'College','offset':0},template=$('#review_colleges'));
