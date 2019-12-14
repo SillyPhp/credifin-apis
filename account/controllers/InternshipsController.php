@@ -1247,6 +1247,28 @@ class InternshipsController extends Controller
         }
     }
 
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Internships"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('internships-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
     public function actionSubmitErexxApplications()
     {
         if (Yii::$app->request->isAjax) {

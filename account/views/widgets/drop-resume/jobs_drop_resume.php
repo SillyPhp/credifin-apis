@@ -102,7 +102,7 @@ $this->registerCss('
 .work-profile-box{
     border: 2px solid #eef1f5;
     text-align:center;
-    height:120px !important;
+    height:150px !important;
     display: table;
     width:100%;
     padding:0px 0 5px 0;
@@ -219,6 +219,15 @@ $this->registerCss('
 .work-profile-box:hover .edit-cat{
     color:#fff;
     display: block !important;
+}
+.totalResumes{
+    position:absolute;
+    bottom:0px;
+    left:10px;
+    font-size:12px; 
+}
+.work-profile-box:hover .totalResume{
+    color:#fff;
 }
 ');
 $script = <<<JS
@@ -464,6 +473,9 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
                                         <div class="work-profile">
                                             <div class="rb-cat-icon"><img src="{{icon}}" alt=""></div>
                                             {{name}}
+                                        </div>
+                                        <div class="totalResumes">
+                                            Resumes:
                                         </div>
                                     </a>
                                 </div>
