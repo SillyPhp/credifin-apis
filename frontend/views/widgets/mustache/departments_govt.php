@@ -1,25 +1,29 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <script id="departments-card" type="text/template">
         {{#.}}
         <div class="col-md-3 col-sm-6">
             <div class="agency-box">
                 <a href="/govt-jobs/{{slug}}" title="{{Value}}">
-                <div class="agency-logo">
-                    {{#logo}}
-                    <img src="{{logo}}" alt="{{Value}}" title="{{Value}}">
-                    {{/logo}}
-                    {{^logo}}
-                    <canvas class="user-icon" name="{{Value}}" width="100" height="100"
-                            color="{{color}}" font="35px"></canvas>
-                    {{/logo}}
-                </div>
+                    <div class="agency-logo">
+                        {{#logo}}
+                        <img src="{{logo}}" alt="{{Value}}" title="{{Value}}">
+                        {{/logo}}
+                        {{^logo}}
+                        <canvas class="user-icon" name="{{Value}}" width="100" height="100"
+                                color="{{color}}" font="35px"></canvas>
+                        {{/logo}}
+                    </div>
+                    <div class="agency-name">
+                        <span href="/govt-jobs/{{slug}}">{{Value}}</span>
+                    </div>
+                    <div class="agency-count">
+                        <span href="#">{{total_applications}} Jobs</span>
+                    </div>
                 </a>
-                <div class="agency-name"><a href="/govt-jobs/{{slug}}">{{Value}}</a></div>
-                <div class="agency-count">
-                    <a href="#">{{total_applications}} Jobs</a>
-                </div>
             </div>
         </div>
         {{/.}}
@@ -110,7 +114,7 @@ body{
     padding: 8px 0px 8px 0px;
     background-color:#00a0e3;
 }
-.agency-count a {
+.agency-count span {
     font-family: roboto;
     color: #fff;
     padding: 4px 6px;
