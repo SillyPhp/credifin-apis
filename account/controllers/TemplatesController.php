@@ -59,7 +59,7 @@ class TemplatesController extends Controller
                 $z->joinWith(['categoryEnc zz']);
             }], false)
             ->joinWith(['applicationTypeEnc f'], false)
-            ->where(['f.name' => $type])
+            ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
 //            ->groupBy('zz.name')
             ->asArray()
             ->all();
