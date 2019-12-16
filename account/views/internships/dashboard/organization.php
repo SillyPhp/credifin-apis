@@ -147,7 +147,7 @@ use yii\widgets\Pjax;
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships'); ?><span
                                             data-toggle="tooltip"
                                             title="Here you will find all your active internships"><i
                                                 class="fa fa-info-circle"></i></span></span>
@@ -209,7 +209,7 @@ use yii\widgets\Pjax;
                         <div class="portlet-title">
                             <div class="caption">
                                 <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Erexx Internships') ?><span
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Campus Placement Internships') ?><span
                                             data-toggle="tooltip"
                                             title="Here you will find internships that are active on Erexx"><i
                                                 class="fa fa-info-circle"></i></span></span>
@@ -250,8 +250,13 @@ use yii\widgets\Pjax;
                     </div>
                 </div>
             </div>
+
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
+                    <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
+                        'data' => $primary_fields
+                    ]); ?>
+
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
                             <div class="caption">
@@ -302,16 +307,45 @@ use yii\widgets\Pjax;
                             </div>
                         </div>
                     </div>
+
+                    <?php
+                    if ($closed_application['total'] > 0) {
+                        ?>
+                            <div class="portlet light nd-shadow">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class=" icon-social-twitter font-dark hide"></i>
+                                        <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?><span
+                                                    data-toggle="tooltip"
+                                                    title="Here you will find all companies that you are following"><i
+                                                        class="fa fa-info-circle"></i></span></span>
+                                    </div>
+                                    <div class="actions">
+                                        <?php if ($applications['total'] > 8): ?>
+                                            <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <?php
+                                    echo $this->render('/widgets/applications/closed-jobs-cards', [
+                                        'applications' => $closed_application['data'],
+                                        'model' => $model,
+                                    ]);
+                                    ?>
+                                </div>
+                            </div>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <div class="col-lg-6 col-xs-12 col-sm-12">
                     <?php
                     echo $this->render('/widgets/applied-applications/users-card', [
                         'applied_applications' => $applied_applications,
                     ]); ?>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-6 col-xs-12 col-sm-12">
+
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
                             <div class="caption">
@@ -363,46 +397,6 @@ use yii\widgets\Pjax;
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?= $this->render('/widgets/drop-resume/internships_drop_resume', [
-                        'data' => $primary_fields
-                    ]); ?>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                if ($closed_application['total'] > 0) {
-                    ?>
-                    <div class="col-lg-6 col-xs-12 col-sm-12">
-                        <div class="portlet light nd-shadow">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class=" icon-social-twitter font-dark hide"></i>
-                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Internships'); ?><span
-                                                data-toggle="tooltip"
-                                                title="Here you will find all companies that you are following"><i
-                                                    class="fa fa-info-circle"></i></span></span>
-                                </div>
-                                <div class="actions">
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <?php
-                                echo $this->render('/widgets/applications/closed-jobs-cards', [
-                                    'applications' => $closed_application['data'],
-                                    'model' => $model,
-                                ]);
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
             </div>
         </div>
     </div>
