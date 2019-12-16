@@ -13,5 +13,9 @@ class CoursesController extends Controller
     {
         return $this->render('index');
     }
+    public function actionCoursesList()
+    {
+        return $this->render('courses-list-page');
+    }
 
 }
