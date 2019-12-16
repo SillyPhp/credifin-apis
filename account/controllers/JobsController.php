@@ -9,6 +9,7 @@ use account\models\applications\ExtendsJob;
 use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
 use account\models\campus_placement\CollegePlacementForm;
+use common\models\ApplicationTemplates;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
@@ -739,7 +740,13 @@ class JobsController extends Controller
     }
 
     public function actionCloneTemplate($aidk){
-        if(Yii::$app->user->identity->organization){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Jobs'])
+            ->asArray()
+            ->one();
+        if(Yii::$app->user->identity->organization && $application){
             $model = new ApplicationForm();
             $type = 'Clone_Jobs';
             $primary_cat = $model->getPrimaryFields();
