@@ -70,7 +70,7 @@ class ListController extends ApiBaseController
                         $y->andWhere([
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
-                            'f.college_enc_id' => $college_id
+                            'f.college_enc_id' => $college_id['organization_enc_id']
                         ]);
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
