@@ -2,7 +2,9 @@
 
 namespace account\controllers;
 
+use account\models\applications\ApplicationReminderForm;
 use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationReminder;
 use common\models\DropResumeApplications;
 use common\models\OrganizationAssignedCategories;
 use common\models\ReviewedApplications;
@@ -231,8 +233,12 @@ class DashboardController extends Controller
                     $question[] = $array;
                 }
             }
-        } else{
-
+            $app_reminder_form = new ApplicationReminderForm();
+            $app_reminder = ApplicationReminder::find()
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->asArray()
+                ->all();
+        } else {
             $childs = OrganizationAssignedCategories::find()
                 ->select(['assigned_category_enc_id'])
                 ->andWhere(['organization_enc_id' => Yii::$app->user->identity->organization_enc_id])
@@ -244,8 +250,8 @@ class DashboardController extends Controller
             }
             $dropResume = DropResumeApplications::find()
                 ->alias('a')
-                ->joinWith(['userEnc b'],false)
-                ->joinWith(['dropResumeApplicationTitles h'],false)
+                ->joinWith(['userEnc b'], false)
+                ->joinWith(['dropResumeApplicationTitles h'], false)
                 ->where(['in', 'h.title', $titles])
                 ->andWhere([
                     'or',
@@ -281,6 +287,8 @@ class DashboardController extends Controller
             'total_applied' => $total_applied,
             'total_pending' => $total_pending,
             'total_shortlist_org' => $total_shortlist_org,
+            'app_reminder' => $app_reminder,
+            'app_reminder_form' => $app_reminder_form,
             'question_list' => $question,
             'dropResume' => $dropResume,
             'org_applications' => $this->__jobs(8),
@@ -313,7 +321,7 @@ class DashboardController extends Controller
         return false;
     }
 
-    public function total_applied($type=null)
+    public function total_applied($type = null)
     {
         if (!empty(Yii::$app->user->identity->organization)) {
             $total_applications = AppliedApplications::find()
@@ -376,7 +384,7 @@ class DashboardController extends Controller
     {
         if (Yii::$app->user->identity->organization) {
             $organization = Organizations::find()
-                ->select(['name','logo', 'logo_location', 'initials_color'])
+                ->select(['name', 'logo', 'logo_location', 'initials_color'])
                 ->where(['slug' => Yii::$app->user->identity->organization->slug, 'status' => 'Active', 'is_deleted' => 0])
                 ->asArray()
                 ->one();
@@ -397,6 +405,29 @@ class DashboardController extends Controller
                 'userProfilePicture' => $userProfilePicture,
                 'user' => $user,
             ]);
+        }
+    }
+
+    public function actionAddReminder()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $app_reminder = new ApplicationReminderForm();
+            if ($app_reminder->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($app_reminder->save()) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reminder added successfully.'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'message' => 'Something went wrong. Please try again.',
+                        'title' => 'Opps!!',
+                    ];
+                }
+            }
         }
     }
 
