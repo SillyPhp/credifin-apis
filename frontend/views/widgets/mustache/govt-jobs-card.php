@@ -80,6 +80,45 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
   }   
   })
 }
+var match = 0;
+function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=null,replace=false) {
+  $.ajax({
+  url:'/govt-jobs/department-vise-jobs',
+  method:'Post',
+  datatype:"jsonp",
+  data:{
+      'limit':limit,
+      'offset':offset,
+      'keywords':keyword,
+      'dept_id':dept_id,
+  },
+  beforeSend: function(){
+      if (loader_btn)
+          { 
+              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+          }
+      if (loader) {
+            $('.img_load').css('display','block');
+        }
+      },
+  success:function(body) {    
+      $('.img_load').css('display','none');
+      $('#loader').html('Load More');
+      $('#loader').css('display','initial');
+      match = match+body.count;
+      if (body.total<12||body.total==match) 
+          {
+              $('#loader').hide();
+          }
+      template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      utilities.initials();
+      if(body.total == 0){
+          $('#loader').hide();
+          template.append('<label id="no_job">The Department had Not Posted Any Job In Recents</label>');
+      }
+  }   
+  })
+}
 JS;
 $this->registerCss("
 .align_btn
@@ -93,6 +132,10 @@ clear:both;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 250px;
+}
+#no_job
+{
+    font-size: 16px;
 }
 ");
 $this->registerJs($script);

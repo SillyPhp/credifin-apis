@@ -159,9 +159,8 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-main
-{
-height:210px;
+.application-card-border-bottom{
+    height:156px;
 }
 .loader_screen img
 {

@@ -300,10 +300,6 @@ $this->registerCss("
     box-shadow: 0px 0px 20px 5px #eee !important;
     transition: .3s ease-in-out;
 }
-.agency-box:hover .agency-count a {
-    color:#fff;
-    background-color:#00a0e3;
-}
 .agency-logo {
     width: 100px;
     margin: 0 auto; 
@@ -331,18 +327,21 @@ $this->registerCss("
     overflow: hidden;
     text-overflow: ellipsis;
     height:78px;
+    margin-bottom:8px;
 }
 .agency-count {
     text-align: center;
-    padding: 5px 0px 10px 0px;
+    padding: 8px 0px 8px 0px;
+    background-color:#00a0e3;
 }
 .agency-count a {
     font-family: roboto;
-    color: #bdbdbd;
+    color: #fff;
     padding: 4px 6px;
     font-size: 14px;
     border-radius: 4px;
     margin: 0px 4px;
+    font-weight: 500;
     transition: all ease-out .3s;
 }
 .button-set{
@@ -930,7 +929,9 @@ display:none;
 @media only screen and ( max-width:834px){
   .card-box{min-height: 24em;}
 }
-
+.application-card-border-bottom{
+    height:156px;
+}
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');

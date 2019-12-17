@@ -1,17 +1,19 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
 use frontend\assets\AppSecondaryAssets;
 
+$userType = explode('/', Yii::$app->request->url)[2];
 AppSecondaryAssets::register($this);
 $this->beginPage();
 ?>
-<!DOCTYPE html>
-<html lang="<?= Yii::$app->language; ?>">
+    <!DOCTYPE html>
+    <html lang="<?= Yii::$app->language; ?>">
     <head>
         <meta charset="<?= Yii::$app->charset; ?>">
         <?= Html::csrfMetaTags(); ?>
@@ -43,32 +45,105 @@ $this->beginPage();
         <?php $this->head(); ?>
     </head>
     <body>
-        <?php $this->beginBody(); ?>
-        <div id="wrapper" class="clearfix">
-            <div class="main-content">
-                <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9"">
-                    <div class="display-table">
-                        <div class="display-table-cell">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="<?= (isset($this->params['grid_size']) ? $this->params['grid_size'] : 'col-md-6 col-md-push-3'); ?>">
-                                        <div class="text-center col-md-12 mb-60">
-                                            <a href="/">
-                                                <img width="275px" alt="<?= Yii::$app->params->site_name; ?>" src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
-                                            </a>
-                                        </div>
-                                        <?= $content; ?>
-                                    </div>
+    <?php $this->beginBody(); ?>
+    <div id="wrapper" class="clearfix">
+        <div class="main-content">
+            <section id="home" class="divider parallax fullscreen layer-overlay overlay-white-9"
+            ">
+            <div class="display-table">
+                <div class="display-table-cell">
+                    <div class="container">
+                        <div class="row">
+                            <div class="<?= (isset($this->params['grid_size']) ? $this->params['grid_size'] : 'col-md-6 col-md-push-3'); ?>">
+                                <div class="text-center col-md-12 mb-60">
+                                    <a href="/">
+                                        <img width="275px" alt="<?= Yii::$app->params->site_name; ?>"
+                                             src="<?= Url::to('@commonAssets/logos/logo.svg'); ?>">
+                                    </a>
                                 </div>
+                                <?= $content; ?>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
+            <?php
+            if ($userType == organization) {
+            ?>
+            <div class="pos-abso-individual">
+                <div class="pai-rel">
+                    <div class="pai-abso">
+                        I Want To Get Hired
+                        <div class="pai-button">
+                            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
+                               href="<?= Url::to('/signup/individual'); ?>"
+                               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <?php
+            } elseif ($userType == individual) {
+                ?>
+                <div class="pos-abso-individual">
+                    <div class="pai-rel">
+                        <div class="pai-abso">
+                            I Want To Hire
+                            <div class="pai-button">
+                                <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
+                                   href="<?= Url::to('/signup/organization'); ?>"
+                                   data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Organization'); ?></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+                ?>
+            </section>
         </div>
-        <?php
-        $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '/assets/themes/ey/images/backgrounds/lco_bg.jpg';
-        $this->registerCss('
+    </div>
+    <?php
+    $bg_img = (isset($this->params['background_image']) && !empty($this->params['background_image'])) ? $this->params['background_image'] : '/assets/themes/ey/images/backgrounds/lco_bg.jpg';
+    $this->registerCss('
+        /*---new css---*/
+        .pai-button{
+            margin-top:10px;
+        }
+        .pai-rel{
+            position:relative;
+            height:150px;
+        }
+        .pai-abso{
+            position:absolute;
+            top:50%;
+            left:50%;
+            transform: translate(-50%, -50%);
+        }
+        .pos-abso-individual{
+            position:fixed;
+            bottom:0px;
+            right:0px;
+            height:150px;
+            width:200px;
+            background: rgba(0,0,0,.1);
+            box-shadow:0 0 10px rgba(0,0,0,.3);
+            z-index:9;
+            text-align:center;
+            border-radius:10px 0 0 0;
+            color:#000;
+            font-family:roboto;
+            font-size:18px;
+            
+            animation: SlideUp 4s;
+            animation-delay:2s
+        }
+        @keyframes SlideUp{
+            from{bottom:-200px}
+            to{bottom:0px}
+        }
+        
+        /*---new css ends---*/
         body{
             background-image: url( ' . $bg_img . ' );
             background-repeat: no-repeat;
@@ -193,21 +268,21 @@ $this->beginPage();
             position: relative;
         }');
 
-        if (!empty(Yii::$app->params->google->analytics->id)) {
-            $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
-                'depends' => [\yii\web\JqueryAsset::className()],
-                'sync' => 'async',
-            ]);
+    if (!empty(Yii::$app->params->google->analytics->id)) {
+        $this->registerJsFile('https://www.googletagmanager.com/gtag/js?id=' . Yii::$app->params->google->analytics->id, [
+            'depends' => [\yii\web\JqueryAsset::className()],
+            'sync' => 'async',
+        ]);
 
-            $this->registerJs('
+        $this->registerJs('
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag("js", new Date());
             gtag("config", "' . Yii::$app->params->google->analytics->id . '");        
         ');
-        }
-        ?>
-        <?php $this->endBody(); ?>
+    }
+    ?>
+    <?php $this->endBody(); ?>
     </body>
-</html>
+    </html>
 <?php $this->endPage(); ?>
