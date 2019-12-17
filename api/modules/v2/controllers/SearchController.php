@@ -95,7 +95,7 @@ class SearchController extends ApiBaseController{
                 }])
                 ->where(['aa.college_enc_id' => $college_id, 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0]);
 
-            if (isset($name)) {
+            if (isset($name) && !empty($name)) {
                 $org->andWhere([
                     'or',
                     ['like', 'b.name', $name],
@@ -103,9 +103,9 @@ class SearchController extends ApiBaseController{
                 ]);
             }
 
-            if (isset($page)) {
-                $org->limit = 9;
-                $org->offset = ($page - 1) * 9;
+            if (isset($page) && !empty($page)) {
+                $org->limit = 1;
+                $org->offset = ($page - 1) * 1;
             }
 
             $result = $org->asArray()->all();
