@@ -412,6 +412,9 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.ps__rail-x{
+    display:block !important;
+}
 .quick > img{
     height:38px;
 }

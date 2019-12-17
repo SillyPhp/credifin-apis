@@ -287,6 +287,8 @@ class ApplicationForm extends Model
             }
         }
 
+        return $res;
+
         if ($res)
         {
           $employerApplicationsModel->image_location = $script_image_location;
@@ -294,8 +296,8 @@ class ApplicationForm extends Model
         }
         else
         {
-            $employerApplicationsModel->image_location = 0;
-            $employerApplicationsModel->image = 0;
+            $employerApplicationsModel->image_location = '0';
+            $employerApplicationsModel->image = '0';
         }
 
 //        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
@@ -1052,14 +1054,21 @@ class ApplicationForm extends Model
         $canvas_name = substr(trim($company_name),0,1);
         $icon_path = $icon_path;
         $temp_image = $template;
+        $output_array = "";
+        $ret_code ="";
         $script = 'sudo python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ';
-         if (exec($script,$output, $return_var))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        exec($script.' 2>&1',$output_array,$ret_code);
+        return [
+            'out'=>$output_array,
+            'ret'=>$ret_code
+        ];
+//        if ($ret_code)
+//        {
+//            return true;
+//        }
+//        else
+//        {
+//            return false;
+//        }
     }
 }
