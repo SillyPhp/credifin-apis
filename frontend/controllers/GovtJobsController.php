@@ -210,6 +210,7 @@ class GovtJobsController extends Controller
                 }],false,'LEFT JOIN');
 
             $data = $d->limit($limit)
+                ->orderBy(['a.created_on'=>SORT_DESC])
                 ->offset($offset)
                 ->asArray()
                 ->all();
