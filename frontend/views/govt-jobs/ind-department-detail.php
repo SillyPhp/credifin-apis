@@ -10,7 +10,7 @@ use yii\helpers\Url;
                 <div class="department">
                     <div class="depart-logo">
                         <?php if ($data['logo']): ?>
-                        <img src="<?= Url::to('@eyAssets/images/pages/blog/articles.png'); ?>" class="img_load">
+                        <img src="<?= $data['logo'] ?>" class="img_load">
                         <?php else: ?>
                             <canvas class="user-icon" name="<?= $data['Value'] ?>" width="100" height="100"
                                     color="" font="60px"></canvas>
