@@ -180,7 +180,7 @@ class GovtJobsController extends Controller
     {
         if ($slug!=null) {
             $data = IndianGovtDepartments::find()
-                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->where(['slug' => $slug])
                 ->asArray()->one();
             if ($data)
