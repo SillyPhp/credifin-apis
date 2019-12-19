@@ -63,7 +63,7 @@ use yii\helpers\Url;
                         <div class="c-preview">
                             <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>"/>
                         </div>
-                        <div class="c-amount"><i class="fas fa-rupee-sign"></i>5000</div>
+                        <div class="c-amount"><i class="fas fa-rupee-sign"></i> 5000</div>
                         <div class="buy-btn">
                             <button class="new-btn-set">Buy Now</button>
                         </div>
@@ -138,6 +138,7 @@ $this->registerCss('
     font-size: 25px;
     font-weight: 500;
     text-transform: capitalize;
+    color:#333;
 }
 .course-detail {
     font-size: 15px;
@@ -229,6 +230,13 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
 }
+.buy-btn {
+    transition: all 250ms ease-out, transform 250ms ease-out, -webkit-transform 250ms ease-out;
+}
+.buy-btn:hover {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: 0px 7px 13px rgba(0, 0, 0, 0.14);
+}
 .new-btn-set {
     width: 100%;
     color: #fff;
@@ -256,7 +264,7 @@ $this->registerCss('
     padding-left: 18px;
 }
 .req-points > ul > li {
-    list-style: disclosure-closed;
+    list-style: disc;
     font-size: 15px;
     font-family: roboto;
 }

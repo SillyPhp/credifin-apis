@@ -15,13 +15,13 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-12 mt-80 topp-pad">
+                <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
-                        <div class="jumbo-heading">the world's largest selection of Online Courses.</div>
+                        <div class="jumbo-heading">Aquire and Find best  courses from top institutes</div>
                         <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                         <div class="search-box1">
-                            <form action="<?= Url::to('/learning/search-video') ?>">
+                            <form action="<?= Url::to('#') ?>">
                                 <input type="text" placeholder="Search" name="keyword">
                                 <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
@@ -178,6 +178,9 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
+.topp-pad{
+    margin-top: 80px !important;
+}
 .newlogoset{
     max-width:500px;
     margin: 0 auto;
@@ -300,8 +303,7 @@ $this->registerCss('
     padding:0px 3px !important;
 }
 .popular-skills {
-    text-align: center;
-    padding: 60px;
+    padding: 20px 20px 40px 20px;
     background-image: linear-gradient(98deg, #ba0803, #c2582b);
     margin-top:30px;
 }
@@ -309,7 +311,6 @@ $this->registerCss('
     color:#ef9f89;
     font-size: 29px;
     text-align: center;
-    margin-bottom: 40px;
 }
 .popular-skills .popular-cards {
     text-align: center;
@@ -325,19 +326,38 @@ $this->registerCss('
     text-align: left;
     transition: all 0.3s ease;
 }
-@media screen and (max-width: 767px){
+@media screen and (max-width: 768px){
 .popular-skills .popular-cards a {
     font-size: 11px;
     padding: 12px 9px;
 }
 .popular-skills .popular-cards {
-    width: 49%;
+    width: 48%;
     margin: 1px;
 }
+.topp-pad{
+    margin-top: 10px !important;
+}
+.jumbo-heading {
+    font-size: 28px;
+    }
 }
 @media screen and (max-width: 456px){
 .popular-skills {
     padding: 18px 3px;
+    text-align: center;
+}
+.set-padding-col {
+    padding: 0px 10px !important;
+}
+.jumbo-heading {
+    font-size: 25px;
+}
+.topp-pad{
+    margin-top: 10px !important;
+}
+.main-heading-set{
+    padding:0px 0px 20px 0px !important;
 }
 }
 .course-box {
