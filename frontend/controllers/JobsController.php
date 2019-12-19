@@ -6,6 +6,7 @@ use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
+use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
@@ -298,7 +299,6 @@ class JobsController extends Controller
         ]);
     }
 
-
     public function actionList()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -392,6 +392,42 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
         ]);
+    }
+
+    public function actionTemplate($view){
+        if(Yii::$app->user->identity->organization) {
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Jobs'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Job'
+            ]);
+        }
     }
 
     public function actionFetchSkills($q)
@@ -1182,25 +1218,5 @@ class JobsController extends Controller
             'org'=>$org_claim+$org_unclaim,
             'locations'=>$cards1['locations']+$unclaim_locations,
         ];
-    }
-
-    public function actionGenrateImage()
-    {
-        $company_name = 'Capital Bank';
-        $script_path = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/image_genrate_script.py');
-        $job_title = 'Full Stack Developer s';
-        $canvas_name = 'A';
-        $icon_path = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/icon.png');
-        $temp_image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/image_script/share-orignal-image.png');
-        exec('python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$icon_path.'" "'.$temp_image.'" ',$output, $return_var);
-        print_r($output);
-        print_r($return_var);
-//        if ($res) {
-//            echo 'okk';
-//        }
-//        else
-//        {
-//            echo 'false';
-//        }
     }
 }

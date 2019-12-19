@@ -11,39 +11,39 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
     ]);
 }
 
-echo $this->render('/widgets/header/secondary-header', [
-    'for' => 'Jobs',
-]);
+//echo $this->render('/widgets/header/secondary-header', [
+//    'for' => 'Jobs',
+//]);
 ?>
-    <div class="row">
+    <div class="row padd-top-20">
         <div class="col-md-2 col-sm-3">
             <div class="new-card-container">
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/create">
+                            <a href="/account/jobs/create">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/create" target="_blank">
+                    <a href="/account/jobs/create" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     AI Jobs
                                 </h3>
                                 <p>Create AI Jobs</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <?php
                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
@@ -51,29 +51,29 @@ echo $this->render('/widgets/header/secondary-header', [
                     <div class="card">
                         <div class="face face1">
                             <div class="content">
-                                <div class="icon">
-                                    <div class="icon-white-bg">
-                                        <a href="/account/jobs/campus-placement">
+                                <a href="/account/jobs/campus-placement">
+                                    <div class="icon">
+                                        <div class="icon-white-bg">
                                             <div class="iwb-pos-abso">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png') ?>"
                                                      alt="">
                                             </div>
-                                        </a>
+                                        </div>
+                                        <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
                                     </div>
-                                    <!--                                <i class="fa fa-twitter-square" aria-hidden="true"></i>-->
-                                </div>
+                                </a>
                             </div>
                         </div>
-                        <div class="face face2">
-                            <div class="content">
-                                <a href="/account/jobs/campus-placement" target="_blank">
+                        <a href="/account/jobs/campus-placement" target="_blank">
+                            <div class="face face2">
+                                <div class="content">
                                     <h3>
                                         Campus Hiring
                                     </h3>
                                     <p>Select jobs for campus hiring</p>
-                                </a>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <?php
                 }
@@ -81,56 +81,56 @@ echo $this->render('/widgets/header/secondary-header', [
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/tweets/job/create">
+                            <a href="/tweets/job/create">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-github-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/tweets/job/create" target="_blank">
+                    <a href="/tweets/job/create" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     Job Tweet
                                 </h3>
                                 <p>Post Job Tweet</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="card">
                     <div class="face face1">
                         <div class="content">
-                            <div class="icon">
-                                <div class="icon-white-bg">
-                                    <a href="/account/jobs/quick-job">
+                            <a href="/account/jobs/quick-job">
+                                <div class="icon">
+                                    <div class="icon-white-bg">
                                         <div class="iwb-pos-abso">
                                             <img src="<?= Url::to('@eyAssets/images/pages/dashboard/quick-job-icon1.png') ?>"
                                                  alt="">
                                         </div>
-                                    </a>
+                                    </div>
+                                    <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
                                 </div>
-                                <!--                                <i class="fa fa-linkedin-square" aria-hidden="true"></i>-->
-                            </div>
+                            </a>
                         </div>
                     </div>
-                    <div class="face face2">
-                        <div class="content">
-                            <a href="/account/jobs/quick-job" target="_blank">
+                    <a href="/account/jobs/quick-job" target="_blank">
+                        <div class="face face2">
+                            <div class="content">
                                 <h3>
                                     Quick Jobs
                                 </h3>
                                 <p>Create Quick Jobs</p>
-                            </a>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -256,6 +256,101 @@ echo $this->render('/widgets/header/secondary-header', [
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
+
+                    <?= $this->render('/widgets/drop-resume/jobs_drop_resume', [
+                        'data' => $primary_fields
+                    ]); ?>
+
+                    <div class="portlet light nd-shadow">
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class=" icon-social-twitter font-dark hide"></i>
+                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?>
+                            <span data-toggle="tooltip" title="Here you will find all existing interview processes">
+                                <i class="fa fa-info-circle"></i>
+                            </span>
+                        </span>
+                            </div>
+                            <div class="actions">
+                                <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" data-toggle="tooltip"
+                                   title="Add New">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
+                                   title="Choose from Templates">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
+                                <?php if ($interview_processes['total'] > 4): ?>
+                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
+                                       title="View All">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <?php
+                                    if ($interview_processes['total'] > 0) {
+                                        echo $this->render('/widgets/processes/card', [
+                                            'processes' => $interview_processes['data'],
+                                            'per_row' => 2,
+                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
+                                        ]);
+                                    } else {
+                                        ?>
+                                        <div class="tab-empty">
+                                            <div class="tab-empty-icon">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                                     class="img-responsive" alt=""/>
+                                            </div>
+                                            <div class="tab-empty-text">
+                                                <div class="">No process to display</div>
+                                            </div>
+                                        </div>
+                                    <?php }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php
+                    if ($closed_application['total'] > 0) {
+                        ?>
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Jobs'); ?>
+                                <span data-toggle="tooltip" title="Here you will find all your closed jobs"><i
+                                            class="fa fa-info-circle"></i></span></span>
+                                </div>
+                                <div class="actions">
+                                    <?php if ($applications['total'] > 8): ?>
+                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <?php
+                                echo $this->render('/widgets/applications/closed-jobs-cards', [
+                                    'applications' => $closed_application['data'],
+                                    'model' => $model,
+                                ]);
+                                ?>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-lg-6 col-xs-12 col-sm-12">
+                    <?php
+                    echo $this->render('/widgets/applied-applications/users-card', [
+                        'applied_applications' => $applied_applications,
+                    ]);
+                    ?>
+
                     <div class="portlet light nd-shadow">
                         <div class="portlet-title">
                             <div class="caption">
@@ -308,113 +403,15 @@ echo $this->render('/widgets/header/secondary-header', [
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?php
-                    echo $this->render('/widgets/applied-applications/users-card', [
-                        'applied_applications' => $applied_applications,
-                    ]); ?>
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <div class="portlet light nd-shadow">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Interview Processes'); ?>
-                            <span data-toggle="tooltip" title="Here you will find all existing interview processes">
-                                <i class="fa fa-info-circle"></i>
-                            </span>
-                        </span>
-                            </div>
-                            <div class="actions">
-                                <a href="<?= Url::toRoute('/hiring-processes/create'); ?>" data-toggle="tooltip"
-                                   title="Add New">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                                <a href="<?= Url::toRoute('/templates/hiring-process/index'); ?>" data-toggle="tooltip"
-                                   title="Choose from Templates">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/templates.png'); ?>"></a>
-                                <?php if ($interview_processes['total'] > 4): ?>
-                                    <a href="<?= Url::toRoute('/hiring-processes'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <?php
-                                    if ($interview_processes['total'] > 0) {
-                                        echo $this->render('/widgets/processes/card', [
-                                            'processes' => $interview_processes['data'],
-                                            'per_row' => 2,
-                                            'col_width' => 'col-lg-6 col-md-6 col-sm-6',
-                                        ]);
-                                    } else {
-                                        ?>
-                                        <div class="tab-empty">
-                                            <div class="tab-empty-icon">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
-                                                     class="img-responsive" alt=""/>
-                                            </div>
-                                            <div class="tab-empty-text">
-                                                <div class="">No process to display</div>
-                                            </div>
-                                        </div>
-                                    <?php }
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-xs-12 col-sm-12">
-                    <?= $this->render('/widgets/drop-resume/jobs_drop_resume', [
-                        'data' => $primary_fields
-                    ]); ?>
-                </div>
-            </div>
-            <div class="row">
-                <?php
-                if ($closed_application['total'] > 0) {
-                    ?>
-                    <div class="col-lg-6 col-xs-12 col-sm-12">
-                        <div class="portlet light nd-shadow">
-                            <div class="portlet-title">
-                                <div class="caption">
-                                    <i class=" icon-social-twitter font-dark hide"></i>
-                                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Closed Jobs'); ?>
-                                <span data-toggle="tooltip" title="Here you will find all your closed jobs"><i
-                                            class="fa fa-info-circle"></i></span></span>
-                                </div>
-                                <div class="actions">
-                                    <?php if ($applications['total'] > 8): ?>
-                                        <a href="<?= Url::toRoute('/jobs'); ?>" data-toggle="tooltip" title="View All">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <?php
-                                echo $this->render('/widgets/applications/closed-jobs-cards', [
-                                    'applications' => $closed_application['data'],
-                                    'model' => $model,
-                                ]);
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
             </div>
         </div>
     </div>
 
 <?php
 $this->registerCss('
+.padd-top-20{
+    padding-top:30px; 
+}
 /*---- new code-----*/
 .new-card-container .card {
     position: relative;
