@@ -9,6 +9,7 @@ namespace common\models;
  * @property string $reminder_enc_id Reminder Encrypted ID
  * @property string $application_name Application Name
  * @property string $organization_name Organization Name
+ * @property string $applied_platform Platform name where job applied
  * @property string $description Reminder Description
  * @property string $link Applied Application Link
  * @property string $date Applied Application Date
@@ -36,12 +37,12 @@ class ApplicationReminder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['reminder_enc_id', 'application_name', 'organization_name', 'link', 'date', 'salary', 'status', 'created_on', 'created_by'], 'required'],
+            [['reminder_enc_id', 'application_name', 'organization_name', 'applied_platform', 'link', 'date', 'salary', 'status', 'created_on', 'created_by'], 'required'],
             [['description', 'status'], 'string'],
             [['date', 'created_on', 'last_updated_on'], 'safe'],
             [['salary'], 'number'],
             [['is_deleted'], 'integer'],
-            [['reminder_enc_id', 'application_name', 'organization_name', 'link', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['reminder_enc_id', 'application_name', 'organization_name', 'applied_platform', 'link', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['reminder_enc_id'], 'unique'],
         ];
     }
