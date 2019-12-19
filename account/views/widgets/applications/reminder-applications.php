@@ -2,6 +2,7 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use kartik\widgets\DatePicker;
+use yii\widgets\Pjax;
 
 $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Declined'];
 ?>
@@ -21,7 +22,7 @@ $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting re
             $form = ActiveForm::begin([
                 'id' => 'application-reminder-form',
                 'fieldConfig' => [
-                    'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{hint}</div>",
+                    'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}</div>",
                 ],
             ]);
             ?>
@@ -76,48 +77,65 @@ $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting re
             ?>
         </div>
         <?php
-        foreach ($app_reminder as $app) {
-            ?>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="reminderbox">
-                        <div class="innerpart">
-                            <a type="button" data-toggle="collapse" data-target="#demo">
+        Pjax::begin(['id' => 'reminders_record']);
+        if($app_reminder) {
+            foreach ($app_reminder as $app) {
+                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="reminderbox">
+                            <div class="innerpart">
+                                <a type="button" data-toggle="collapse" data-target="#<?= $app['reminder_enc_id']; ?>">
                                 <span class="review-list-toggler" href="#">
                                     <i class="fa fa-chevron-right"></i>
                                 </span>
-                                <p class="jobtitle"><?= $app['application_name'];?></p> <span class="e">at</span>
-                                <p class="comp-name"><?= $app['organization_name'];?></p>
-                                <p class="definedate"><?= $app['date'];?></p>
-                            </a>
-                        </div>
-                        <div class="innerpart1">
-                            <div class="salarybox">
-                                <input class="salarybox1" type="text" placeholder="salary" value="<?= $app['salary'];?>">
+                                    <p class="jobtitle"><?= $app['application_name']; ?></p> <span class="e">at</span>
+                                    <p class="comp-name"><?= $app['organization_name']; ?></p>
+                                    <p class="definedate"><?= $app['date']; ?></p>
+                                </a>
                             </div>
-                            <div class="listing">
-                                <select class="listing1">
-                                    <option>to do</option>
-                                    <option>i need to respond</option>
-                                    <option>got offer</option>
-                                </select>
+                            <div class="innerpart1">
+                                <div class="salarybox">
+                                    <input class="salarybox1" id="salaryField" data-key="salary"
+                                           data-id="<?= $app['reminder_enc_id']; ?>" type="text" placeholder="salary"
+                                           value="<?= $app['salary']; ?>">
+                                </div>
+                                <div class="listing">
+                                    <select id="statusField" class="listing1" data-id="<?= $app['reminder_enc_id']; ?>">
+                                        <?php
+                                        $i = 0;
+                                        foreach ($status as $st) {
+                                            if ($status[$i] == $app['status']) {
+                                                echo '<option value="' . $status[$i] . '" selected>' . $app["status"] . '</option>';
+                                            } else {
+                                                echo '<option value="' . $status[$i] . '">' . $status[$i] . '</option>';
+                                            }
+                                            $i++;
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="cross">
+                                <span id="remove-reminder" class="close" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
                             </div>
                         </div>
-                        <div class="cross">
-                            <span class="close">&times;</span>
-                        </div>
-                    </div>
-                    <div class="userdata">
-                        <div id="demo" class="collapse">
-                            <a href="#" target="_blank"><?= $app['link'];?> </a><span class="g"></span>
-                            <textarea class="boxx" name="notes" rows="5" cols="70"
-                                      placeholder="Write notes here"></textarea>
+                        <div class="userdata">
+                            <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
+                                <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
+                                <textarea class="boxx" id="descriptionField" data-key="description"
+                                          data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
+                                          placeholder="Write notes here"><?= $app['description']; ?></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <?php
+                <?php
+            }
+        } else{
+            echo '<h3>No Record found.</h3>';
         }
+        Pjax::end();
         ?>
     </div>
 </div>
@@ -248,6 +266,52 @@ $this->registerCss("
 }
 ");
 $script = <<<JS
+$(document).on('change', '#statusField', function() {
+    var val = $(this).val();
+    var r_id = $(this).attr("data-id");
+    updateFields("status",val, r_id);
+});
+$(document).on('blur','#salaryField, #descriptionField', function() {
+    var type = $(this).attr('data-key');
+    var r_id = $(this).attr("data-id");
+    var val = $(this).val();
+    updateFields(type,val, r_id);
+});
+$(document).on('click', '#remove-reminder', function() {
+    var id = $(this).attr('data-id');
+    var verify = confirm('Are you sure want to remove reminder?');
+    if(verify){
+        $.ajax({
+            url: "/account/dashboard/delete-reminder",
+            method: "POST",
+            data: {id:id},
+            success: function (response) {
+                if(response.status == 200){
+                    toastr.success(response.message, 'success');
+                    $.pjax.reload({container: "#reminders_record", async: false});
+                } else {
+                    toastr.error(response.message, 'error');   
+                }
+            }
+        });
+    }
+});
+function updateFields(field, val, id){
+    if(field == "status" || field == "description" || field == "salary"){
+        $.ajax({
+            url: "/account/dashboard/update-reminder",
+            method: "POST",
+            data: {field:field,value:val,id:id},
+            success: function (response) {
+                if(response.status == 200){
+                    toastr.success(response.message, 'success');
+                } else {
+                    toastr.error(response.message, 'error');   
+                }
+            }
+        });
+    }
+}
 $(document).on('click','.reminder-form', function(e){
     e.preventDefault();
     $('.add-reminder').toggleClass('open-form');
@@ -260,10 +324,12 @@ $(document).on('submit', '#application-reminder-form', function (event) {
         method: "POST",
         data: data,
         success: function (response) {
-            if(response.status == 201){
-                toastr.error(response.message, 'error');   
-            }if(response.status == 200){
+            if(response.status == 200){
+                $("#application-reminder-form")[0].reset();
+                $.pjax.reload({container: "#reminders_record", async: false});
                 toastr.success(response.message, 'success');
+            } else{
+                toastr.error(response.message, 'error');
             }
         }
     });

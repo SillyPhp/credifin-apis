@@ -235,7 +235,7 @@ class DashboardController extends Controller
             }
             $app_reminder_form = new ApplicationReminderForm();
             $app_reminder = ApplicationReminder::find()
-                ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->where(['created_by' => Yii::$app->user->identity->user_enc_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
         } else {
@@ -427,6 +427,80 @@ class DashboardController extends Controller
                         'title' => 'Opps!!',
                     ];
                 }
+            }
+        }
+    }
+
+    public function actionUpdateReminder()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $field = Yii::$app->request->post('field');
+            $id = Yii::$app->request->post('id');
+            $val = Yii::$app->request->post('value');
+            $rm = ApplicationReminder::find()
+                ->where(['reminder_enc_id' => $id])
+                ->asArray()
+                ->one();
+            if($rm) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(ApplicationReminder::tableName(), [$field => $val], ['reminder_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->execute();
+                if ($update) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reminder Updated successfully.'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'message' => 'Something went wrong. Please try again.',
+                        'title' => 'Opps!!',
+                    ];
+                }
+            } else{
+                return [
+                    'status' => 400,
+                    'message' => 'Something went wrong. Please try again.',
+                    'title' => 'Opps!!',
+                ];
+            }
+        }
+    }
+
+    public function actionDeleteReminder()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+            $rm = ApplicationReminder::find()
+                ->where(['reminder_enc_id' => $id])
+                ->asArray()
+                ->one();
+            if($rm) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(ApplicationReminder::tableName(), ['is_deleted' => 1], ['reminder_enc_id' => $id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->execute();
+                if ($update) {
+                    return [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Reminder Deleted successfully.'
+                    ];
+                } else {
+                    return [
+                        'status' => 201,
+                        'message' => 'Something went wrong. Please try again.',
+                        'title' => 'Opps!!',
+                    ];
+                }
+            } else{
+                return [
+                    'status' => 400,
+                    'message' => 'Something went wrong. Please try again.',
+                    'title' => 'Opps!!',
+                ];
             }
         }
     }

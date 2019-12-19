@@ -39,6 +39,7 @@ class ApplicationReminderForm extends Model
         if (!$this->validate()) {
             return false;
         }
+        $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Declined'];
         $utilitiesModel =   new Utilities();
         $applicationReminder = new ApplicationReminder();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -46,8 +47,8 @@ class ApplicationReminderForm extends Model
         $applicationReminder->application_name = $this->application_title;
         $applicationReminder->organization_name = $this->organization_name;
         $applicationReminder->link = $this->link;
-        $applicationReminder->date = $this->date;
-        $applicationReminder->status = $this->status;
+        $applicationReminder->date = date('Y-m-d', strtotime($this->date));
+        $applicationReminder->status = $status[$this->status];
         $applicationReminder->salary = $this->salary;
         $applicationReminder->created_by = Yii::$app->user->identity->user_enc_id;
         $applicationReminder->created_on = date('Y-m-d H:i:s');
