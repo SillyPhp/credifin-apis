@@ -10,6 +10,7 @@ class ApplicationReminderForm extends Model
 {
     public $application_title;
     public $organization_name;
+    public $applied_platform;
     public $salary;
     public $date;
     public $status;
@@ -22,7 +23,7 @@ class ApplicationReminderForm extends Model
 
     public function rules() {
         return [
-            [['application_title', 'organization_name', 'salary', 'date', 'status', 'link'], 'required'],
+            [['application_title', 'organization_name', 'applied_platform', 'salary', 'date', 'status', 'link'], 'required'],
         ];
     }
 
@@ -39,13 +40,14 @@ class ApplicationReminderForm extends Model
         if (!$this->validate()) {
             return false;
         }
-        $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Declined'];
+        $status = ['Applied','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Not Interested'];
         $utilitiesModel =   new Utilities();
         $applicationReminder = new ApplicationReminder();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $applicationReminder->reminder_enc_id = $utilitiesModel->encrypt();
         $applicationReminder->application_name = $this->application_title;
         $applicationReminder->organization_name = $this->organization_name;
+        $applicationReminder->applied_platform = $this->applied_platform;
         $applicationReminder->link = $this->link;
         $applicationReminder->date = date('Y-m-d', strtotime($this->date));
         $applicationReminder->status = $status[$this->status];

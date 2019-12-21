@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use kartik\widgets\DatePicker;
 use yii\widgets\Pjax;
 
-$status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Declined'];
+$status = ['Applied','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Not Interested'];
 ?>
 <div class="portlet light">
     <div class="portlet-title">
@@ -58,8 +58,11 @@ $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting re
                             ]])->label(false);
                         ?>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <?= $form->field($app_reminder_form, 'link')->textInput(['class' => 'form-control']); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?= $form->field($app_reminder_form, 'applied_platform')->textInput(['class' => 'form-control']); ?>
                     </div>
                     <div class="col-md-12">
                         <div class="btn1">
@@ -92,6 +95,7 @@ $status = ['To Do','Got offer','Got Rejected','Interview scheduled','Awaiting re
                                     <p class="jobtitle"><?= $app['application_name']; ?></p> <span class="e">at</span>
                                     <p class="comp-name"><?= $app['organization_name']; ?></p>
                                     <p class="definedate"><?= $app['date']; ?></p>
+                                    <p class="applied-platfrom">Applied from <span><?= $app['applied_platform']; ?></span></p>
                                 </a>
                             </div>
                             <div class="innerpart1">
@@ -194,14 +198,18 @@ $this->registerCss("
     font-size:17px;
     cursor:pointer;
 }
-.jobtitle, .comp-name{
-    font-family:roboto;
-    font-size:18px;
-    text-transform: capitalize;
+.jobtitle, .comp-name, .applied-platfrom{
     display:inline-block;
     font-family:roboto;
     font-size:18px;
     text-transform: capitalize;
+}
+.applied-platfrom{
+    font-size:15px;
+    padding:0px 40px;
+}
+.applied-platfrom span{
+    font-weight:bold;
 }
 .definedate{
     padding-left:5px;
