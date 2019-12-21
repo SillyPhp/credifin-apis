@@ -2,7 +2,7 @@
 
 namespace account\controllers;
 
-
+use yii\web\HttpException;
 use account\models\resumeBuilder\AddExperienceForm;
 use account\models\resumeBuilder\AddQualificationForm;
 use account\models\resumeBuilder\ResumeAchievments;
@@ -32,7 +32,6 @@ use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 use kartik\mpdf\Pdf;
-
 
 class ResumeBuilderController extends Controller
 {
@@ -679,6 +678,83 @@ class ResumeBuilderController extends Controller
                 ->all();
 
             return $school;
+        }
+    }
+
+    public function actionDownloadResume()
+    {
+        if (Yii::$app->request->isAjax) {
+            // get your HTML raw content without any layouts or scripts
+            $content = Yii::$app->request->post('html');
+            $temp = Yii::$app->request->post('css');
+            // setup kartik\mpdf\Pdf component
+            $pdf = new Pdf([
+                // set to use core fonts only
+                'mode' => Pdf::MODE_CORE,
+                // A4 paper format
+                'format' => Pdf::FORMAT_A4,
+                // portrait orientation
+                'orientation' => Pdf::ORIENT_PORTRAIT,
+                // stream to browser inline
+                'destination' => Pdf::DEST_BROWSER,
+                // your html content input
+                'content' => $content,
+                // format content from your own css file if needed or use the
+                // enhanced bootstrap css built by Krajee for mPDF formatting
+                //'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+                'cssFile' => Url::to('@rootDirectory/assets/common/cv_templates/'.$temp.'.css'),
+                // any css to be embedded if required
+                //'cssInline' => '',
+                // set mPDF properties on the fly
+                'options' => ['title' => 'Title'],
+                // call mPDF methods on the fly
+                'methods' => [
+                    //'SetHeader'=>['Header'],
+                    //'SetFooter'=>['{PAGENO}'],
+                ]
+            ]);
+
+            // return the pdf output as per the destination setting
+            return $pdf->render();
+        }
+    }
+
+    private function availableTemplate($temp)
+    {
+        $a = ['template_1','template_2'];
+        if (in_array($temp,$a))
+            return true;
+        else
+            return false;
+    }
+
+    public function actionPreviewResume($id,$temp)
+    {
+        if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
+            if ($this->availableTemplate($temp)) {
+                return $this->render('preview', ['id' => $id, 'template' => $temp]);
+            }
+        }
+        else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+    public function actionTest($temp = 'template_1')
+    {
+//        $e = fopen(Url::to('@rootDirectory/assets/common/cv_templates/template_1.css'), 'r');
+//        $v = fgets($e);
+//        foreach ($v)
+//        print_r($v);
+    }
+    public function actionGetData()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            return [
+                'status'=>200,
+                'data'=>['name'=>'sneh']
+            ];
         }
     }
 
