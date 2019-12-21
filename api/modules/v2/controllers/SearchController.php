@@ -5,6 +5,7 @@ namespace api\modules\v2\controllers;
 use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
+use common\models\ErexxEmployerApplications;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
 use Yii;
@@ -16,7 +17,8 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\filters\ContentNegotiator;
 
-class SearchController extends ApiBaseController{
+class SearchController extends ApiBaseController
+{
 
     public function behaviors()
     {
@@ -26,6 +28,7 @@ class SearchController extends ApiBaseController{
             'class' => VerbFilter::className(),
             'actions' => [
                 'companies' => ['POST', 'OPTIONS'],
+                'jobs' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -41,32 +44,34 @@ class SearchController extends ApiBaseController{
         return $behaviors;
     }
 
-    public function actionJobs(){
+    public function actionJobs()
+    {
         $req = Yii::$app->request->post();
         $options = [];
 
-        if($req['page'] && (int)$req['page'] >= 1){
+        if ($req['page'] && (int)$req['page'] >= 1) {
             $options['page'] = $req['page'];
-        }else{
+        } else {
             $options['page'] = 1;
         }
 
         $options['limit'] = 9;
 
-        if($req['keyword']){
+        if ($req['keyword']) {
             $options['keyword'] = $req['keyword'];
             return $this->response(200, $this->findJobs($options));
-        }elseif($req['slug']){
+        } elseif ($req['slug']) {
             $options['slug'] = $req['slug'];
             return $this->response(200, $this->findJobs($options));
-        }else{
+        } else {
             return $this->response(200, $this->findJobs($options));
         }
     }
 
-    public function actionCompanies($name = null, $page = null){
+    public function actionCompanies($name = null, $page = null)
+    {
 
-        if($user = $this->isAuthorized()) {
+        if ($user = $this->isAuthorized()) {
             $id = $user->user_enc_id;
             $college_id = UserOtherDetails::find()
                 ->select(['organization_enc_id'])
@@ -114,27 +119,29 @@ class SearchController extends ApiBaseController{
 
     }
 
-    public function actionInternships(){
+    public function actionInternships()
+    {
         $req = Yii::$app->request->post();
         $options = [];
 
-        if($req['page'] && (int)$req['page'] >= 1){
+        if ($req['page'] && (int)$req['page'] >= 1) {
             $options['page'] = $req['page'];
-        }else{
+        } else {
             $options['page'] = 1;
         }
 
         $options['limit'] = 9;
 
-        if($req['keyword']){
+        if ($req['keyword']) {
             $options['keyword'] = $req['keyword'];
             return $this->response(200, $this->findInternships($options));
-        }else{
+        } else {
             return $this->response(200, $this->findInternships($options));
         }
     }
 
-    private function findInternships($options = []){
+    private function findInternships($options = [])
+    {
         $cards = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -143,7 +150,7 @@ class SearchController extends ApiBaseController{
 //                'CONCAT("'. Url::to('/internship/', true). '", a.slug) link',
                 'a.slug',
                 'd.initials_color color',
-                'CONCAT("' . Url::to('/', true) .'", d.slug) organization_link',
+                'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
                 "g.name as city",
                 'a.type',
                 'c.name as title',
@@ -194,7 +201,173 @@ class SearchController extends ApiBaseController{
         return $result;
     }
 
-    private function findJobs($options = []){
+    private function findJobs($options = [])
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $id = $user->user_enc_id;
+            $college_id = UserOtherDetails::find()
+                ->select(['organization_enc_id'])
+                ->where(['user_enc_id' => $id])
+                ->asArray()
+                ->one();
+
+            $type = $options['type'];
+
+            $jobs = ErexxEmployerApplications::find()
+                ->alias('a')
+                ->distinct()
+                ->select([
+                    'bb.name',
+                    'bb.slug org_slug',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'e.name parent_category',
+                    'ee.name title',
+                    'a.employer_application_enc_id',
+                    'b.slug',
+                    'm.fixed_wage as fixed_salary',
+                    'm.wage_type salary_type',
+                    'm.max_wage as max_salary',
+                    'm.min_wage as min_salary',
+                    'm.wage_duration as salary_duration',
+                    'dd.designation',
+                    'z.name job_type'
+                ])
+                ->joinWith(['employerApplicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
+                    $b->joinWith(['interviewProcessEnc y' => function ($y) {
+                        $y->select(['y.interview_process_enc_id']);
+                        $y->joinWith(['interviewProcessFields yy' => function ($yy) {
+                            $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
+                        }]);
+                    }]);
+                    $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
+                        $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
+                        $bc->joinWith(['educationalRequirementEnc cb'], false);
+                    }]);
+                    $b->joinWith(['applicationSkills bbc' => function ($bbc) {
+                        $bbc->select(['bbc.application_enc_id', 'skill']);
+                        $bbc->joinWith(['skillEnc cbb'], false);
+                    }]);
+                    $b->joinWith(['designationEnc dd'], false);
+                    $b->joinWith(['title d' => function ($d) {
+                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc ee']);
+                    }], false);
+                    $b->joinWith(['applicationOptions m'], false);
+                    $b->joinWith(['applicationPlacementLocations f' => function ($f) {
+                        $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
+                        $f->joinWith(['locationEnc ff' => function ($z) {
+                            $z->joinWith(['cityEnc g']);
+                        }], false);
+                        $f->groupBy(['f.placement_location_enc_id']);
+                    }], true);
+                    $b->joinWith(['applicationTypeEnc z']);
+                }], true)
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+            if ($type) {
+                $jobs->andWhere(['z.name' => $type]);
+            }
+            if (isset($options['limit'])) {
+                $jobs->limit = $options['limit'];
+                $jobs->offset = ($options['page'] - 1) * $options['limit'];
+            }
+            $result = $jobs->
+            asArray()
+                ->all();
+
+
+            $i = 0;
+            foreach ($result as $val) {
+                $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+                if ($val['salary_type'] == "Fixed") {
+                    if ($val['salary_duration'] == "Monthly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Hourly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                    } elseif ($val['salary_duration'] == "Weekly") {
+                        $result[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                    } else {
+                        $result[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                    }
+                } elseif ($val['salary_type'] == "Negotiable") {
+                    if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                        }
+                    } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                        }
+                    } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
+                        if ($val['salary_duration'] == "Monthly") {
+                            $result[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Hourly") {
+                            $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        } elseif ($val['salary_duration'] == "Weekly") {
+                            $result[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                        } else {
+                            $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                        }
+                    }
+                }
+                $i++;
+            }
+
+            $resultt = [];
+            foreach ($result as $j) {
+                $data = [];
+                $locations = [];
+                $educational_requirement = [];
+                $skills = [];
+                $positions = 0;
+                $data['name'] = $j['name'];
+                $data['job_type'] = $j['job_type'];
+                $data['logo'] = $j['logo'];
+                $data['org_slug'] = $j['org_slug'];
+                $data['title'] = $j['title'];
+                $data['slug'] = $j['slug'];
+                $data['designation'] = $j['designation'];
+                $data['salary'] = $j['salary'];
+                foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
+                    array_push($locations, $l['name']);
+                    $positions += $l['positions'];
+                }
+
+                foreach ($j['employerApplicationEnc']['applicationEducationalRequirements'] as $a) {
+                    array_push($educational_requirement, $a['educational_requirement']);
+                }
+
+                foreach ($j['employerApplicationEnc']['applicationSkills'] as $s) {
+                    array_push($skills, $s['skill']);
+                }
+
+                $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
+                $data['location'] = implode(',', $locations);
+                $data['positions'] = $positions;
+                $data['education'] = implode(',', $educational_requirement);
+                $data['skills'] = implode(',', $skills);
+                array_push($resultt, $data);
+            }
+
+            return $this->response(200, ['status' => 200, 'jobs' => $resultt]);
+        } else {
+            return $this->response(401);
+        }
+
         $cards = EmployerApplications::find()
             ->alias('a')
             ->select([
@@ -205,7 +378,7 @@ class SearchController extends ApiBaseController{
                 'i.name category',
                 'l.designation',
                 'd.initials_color color',
-                'CONCAT("'. Url::to('/', true) .'", d.slug) organization_link',
+                'CONCAT("' . Url::to('/', true) . '", d.slug) organization_link',
                 "g.name as city",
                 'c.name as title',
                 'i.icon',
@@ -251,9 +424,9 @@ class SearchController extends ApiBaseController{
             'a.application_for' => 0
         ]);
 
-        if(isset($options['slug'])){
+        if (isset($options['slug'])) {
             $cards->andWhere([
-               'd.slug'=>$options['slug']
+                'd.slug' => $options['slug']
             ]);
         }
 
