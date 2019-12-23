@@ -1,7 +1,35 @@
 <?php
 $this->params['header_dark'] = false;
 use yii\helpers\Url;
-
+$separator = Yii::$app->params->seo_settings->title_separator;
+$this->title = $data['Value'];
+$keywords = $data["Value"].' Recruiment 2020,'.$data["Value"].' Jobs, Apply online for latest '.$data["Value"].' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest '.$data["Value"].' online notifications, clerk, special Latest '.$data["Value"].' jobs vacancies updated on '. date("d-M-Y").', '.$data["Value"].' jobs, '.$data["Value"].' recruitment, '.$data["Value"].' vacancies,'.$data["Value"].' Jobs,'.$data["Value"].' vacancies,'.$data["Value"].'careersc';
+$description = ''.$data["Value"].' Recruiment 2020,'.$data["Value"].' Jobs, Apply online for latest '.$data["Value"].' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest '.$data["Value"].' online notifications, clerk, special Latest '.$data["Value"].' jobs vacancies updated on '. date("d-M-Y").','.$data["Value"].' jobs, '.$data["Value"].' recruitment, '.$data["Value"].' vacancies,'.$data["Value"].' Jobs,'.$data["Value"].' vacancies,'.$data["Value"].'careersc';
+$image = Yii::$app->urlManager->createAbsoluteUrl($data['logo']);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <div class="head-img"></div>
     <section>
