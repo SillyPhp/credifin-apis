@@ -56,6 +56,7 @@ $this->registerCss('
     box-shadow: 0px 0px 3px 0px #eee;
     transition: all 250ms ease-out, transform 250ms ease-out, -webkit-transform 250ms ease-out;
     cursor:pointer;
+    margin-bottom:20px;
 }
 .cand-box:hover {
     box-shadow: 0px 7px 13px rgba(0, 0, 0, 0.14);
@@ -83,6 +84,7 @@ $this->registerCss('
     margin: 10px 0px 0px 0;
     font-family: roboto;
     text-transform: capitalize;
+    font-size: 20px;
 }
 .cand-position {
     text-align: center;
@@ -90,7 +92,7 @@ $this->registerCss('
     font-family: roboto;
     position: relative;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -107,11 +109,13 @@ $this->registerCss('
     font-family: roboto;
     font-size: 13px;
     margin-right: 4px;
+    margin-bottom:5px;
 }
 .cand-location {
     text-align: center;
     margin: 5px 0px;
     font-size:13px;
+    height: 22px;
 }
 .view-btn {
     text-align: center;
