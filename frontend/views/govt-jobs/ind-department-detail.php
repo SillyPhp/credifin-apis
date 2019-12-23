@@ -100,14 +100,13 @@ margin:auto
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
 $script = <<< JS
+var offset = 0;
 var dept_id = $('#dept_id').val();
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchDeptData(template=$('#cards'),limit,offset+12,dept_id,loader=false,loader_btn=true);
+  fetchDeptData(template=$('#cards'),limit=12,offset = offset+12,dept_id,loader=false,loader_btn=true);
 })
-var limit =12;
-var offset = 0;
-fetchDeptData(template=$('#cards'),limit,offset,dept_id,loader=true,loader_btn=false);
+fetchDeptData(template=$('#cards'),limit=12,offset=0,dept_id,loader=true,loader_btn=false);
 JS;
 
 $this->registerJs($script);
