@@ -14,11 +14,23 @@ use yii\helpers\Url;
                     <div class="col-md-3 col-sm-6">
                         <div class="cand-box">
                             <div class="cand-img">
-                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
+                                <?php
+                                if (!empty($u['image'])) {
+                                    $path = Yii::$app->params->upload_directories->users->image . $u['image_location'] . '/' . $u['image'];
+                                    ?>
+                                    <img src="<?= Url::to($path) ?>">
+                                    <?php
+                                } else {
+                                    ?>
+                                    <canvas class="user-icon" color="<?= $u['initials_color'] ?>"
+                                            name="<?= $u['fullname'] ?>>" width="100" height="100" font="35px"></canvas>
+                                    <?php
+                                }
+                                ?>
                             </div>
                             <div class="cand-detail">
-                                <h3><?= $u['first_name'] . ' ' . $u['last_name'] ?></h3>
-                                <div class="cand-position"><?= (!empty($u['userWorkExperiences'][0]['company']) && !empty($u['userWorkExperiences'][0]['title']))?$u['userWorkExperiences'][0]['title'] . ' at ' . $u['userWorkExperiences'][0]['company'] : '' ?></div>
+                                <h3><?= $u['fullname'] ?></h3>
+                                <div class="cand-position"><?= (!empty($u['userWorkExperiences'][0]['company']) && !empty($u['userWorkExperiences'][0]['title'])) ? $u['userWorkExperiences'][0]['title'] . ' at ' . $u['userWorkExperiences'][0]['company'] : '' ?></div>
                                 <div class="cand-skills">
                                     <ul>
                                         <?php
@@ -34,9 +46,11 @@ use yii\helpers\Url;
                                     </ul>
                                 </div>
                             </div>
-                            <div class="cand-location"><i class="fas fa-map-marker-alt"></i> <?= ($u['city_name'])?$u['city_name']:'' ?></div>
+                            <div class="cand-location"><i
+                                        class="fas fa-map-marker-alt"></i> <?= ($u['city_name']) ? $u['city_name'] : '' ?>
+                            </div>
                             <div class="view-btn">
-                                <a href="#">View Profile</a>
+                                <a href="/<?= $u['username'] ?>">View Profile</a>
                             </div>
                         </div>
                     </div>
