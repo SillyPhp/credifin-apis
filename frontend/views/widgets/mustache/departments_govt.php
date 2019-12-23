@@ -30,13 +30,14 @@ use yii\helpers\Url;
     </script>
 <?php
 $script = <<< JS
-function fetchDepartments(template,limit,offset,loader,loader_btn) {
+var match_dept = 0;
+function fetchDepartments(template,limit_dept,offset,loader,loader_btn) {
   $.ajax({
   url:'/govt-jobs/get-departments',
   method:'Post',
   datatype:"json",
   data:{
-      'limit':limit,
+      'limit':limit_dept,
       'offset':offset,
   },
   beforeSend: function(){
@@ -48,14 +49,21 @@ function fetchDepartments(template,limit,offset,loader,loader_btn) {
             $('.img_load').css('display','block');
         }
       },
-  success:function(response) {
+  success:function(body) {
       $('.img_load').css('display','none');
-      if(response.status === 200) {
-          template.append(Mustache.render($('#departments-card').html(),response.cards));
-          utilities.initials();
-      }
       $('#loader').html('Load More');
       $('#loader').css('display','initial');
+       match_dept = match_dept+body.count;
+      if (body.total<12||body.total==match_dept) 
+          {
+              $('#loader').hide();
+          }
+          template.append(Mustache.render($('#departments-card').html(),body.cards));
+          utilities.initials();
+          if(body == ''){
+          $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
   }   
   })
 }

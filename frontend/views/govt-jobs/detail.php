@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$link = Url::to('detail/' . $get['job_enc_id'], 'https');
+$link = Url::to('detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
