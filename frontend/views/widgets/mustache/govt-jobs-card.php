@@ -72,7 +72,12 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
           {
               $('#loader').hide();
           }
-      template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      if (replace){
+          template.html(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      }else
+          {
+              template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+          }
       utilities.initials();
       if(body == ''){
           $('#loader').hide();
