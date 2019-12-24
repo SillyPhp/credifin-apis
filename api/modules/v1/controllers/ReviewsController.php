@@ -340,7 +340,7 @@ class ReviewsController extends ApiBaseController
             $org = $unclaimed_org;
 
             $data['overall_rating'] = $emp_stats;
-            if($org['business_activity'] != 'Others') {
+            if($org['business_activity'] != 'Others' && $stats_students != null) {
                 $data['student_overall_rating'] = $stats_students;
             }
             $data['org_detail'] = $org;
@@ -349,13 +349,13 @@ class ReviewsController extends ApiBaseController
             $data['follow'] = $follow->followed == 1 ? true : false;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
-            if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute' || $org['business_activity'] == 'Others') {
+//            if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute' || $org['business_activity'] == 'Others') {
                 if (!empty($data)) {
                     return $this->response(200, $data);
                 } else {
                     return $this->response(404, 'Not Found');
                 }
-            }
+//            }
         } else {
             return $this->response(404, 'Not Found');
         }
