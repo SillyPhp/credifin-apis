@@ -751,5 +751,10 @@ class ResumeBuilderController extends Controller
             ];
         }
     }
+    public function actionTemplatePreview()
+    {
+        $this->layout = 'templates-layout';
+        return $this->render('template-preview');
+    }
 
 }
