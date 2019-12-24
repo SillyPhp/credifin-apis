@@ -93,12 +93,25 @@ class ProcessApplicationsController extends Controller
                 ->distinct()
                 ->alias('a')
                 ->where(['a.application_enc_id' => $application_id])
-                ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total'])
-                ->joinWith(['createdBy b'], false)
+                ->select(['e.resume', 'e.resume_location', 'a.applied_application_enc_id,a.status, b.username, CONCAT(b.first_name, " ", b.last_name) name, CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END image', 'COUNT(CASE WHEN c.is_completed = 1 THEN 1 END) as active', 'COUNT(c.is_completed) total', 'a.created_by'])
                 ->joinWith(['resumeEnc e'], false)
-                ->joinWith(['appliedApplicationProcesses c' => function ($b) {
-                    $b->joinWith(['fieldEnc d'], false);
-                    $b->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                ->joinWith(['appliedApplicationProcesses c' => function ($c) {
+                    $c->joinWith(['fieldEnc d'], false);
+                    $c->select(['c.applied_application_enc_id', 'c.process_enc_id', 'c.field_enc_id', 'd.field_name', 'd.icon']);
+                }])
+                ->joinWith(['createdBy b' => function ($b) {
+                    $b->joinWith(['userSkills b1' =>function($b1){
+                        $b1->groupBy('b1.user_skill_enc_id');
+                        $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id','b2.skill', 'b1.created_by']);
+                        $b1->joinWith(['skillEnc b2'], false);
+                        $b1->onCondition(['b1.is_deleted' => 0]);
+                    }]);
+                    $b->joinWith(['userWorkExperiences b11' => function($b11){
+                        $b11->select(['b11.created_by', 'b11.company', 'b11.is_current', 'b11.title']);
+                    }]);
+                    $b->joinWith(['userEducations b21' => function($b21){
+                        $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
+                    }]);
                 }])
 //                ->joinWith(['applicationEnc f' => function($e){
 //                    $e->joinWith(['interviewProcessEnc g']);
@@ -106,6 +119,10 @@ class ProcessApplicationsController extends Controller
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->all();
+
+//            print_r($applied_users);
+//            exit();
+
             $application_name = EmployerApplications::find()
                 ->alias('a')
                 ->select(['c.name job_title','a.interview_process_enc_id'])
@@ -119,6 +136,8 @@ class ProcessApplicationsController extends Controller
                 }])
                 ->asArray()
                 ->one();
+//            print_r($application_name);
+//            exit();
             $question = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->distinct()

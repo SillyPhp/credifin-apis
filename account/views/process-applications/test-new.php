@@ -5,11 +5,13 @@ use yii\helpers\Url;
 ?>
     <div class="container">
         <ul class="nav nav-tabs pr-process-tab">
-            <li class="active" style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1;?>)"><a data-filter="*" href="#">All</a></li>
+            <li class="active"
+                style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1; ?>)">
+                <a data-filter="*" href="#">All</a></li>
             <?php
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
                 ?>
-                <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1;?>)">
+                <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1; ?>)">
                     <a data-filter=".<?= $p['field_enc_id'] ?>" data-toggle="tooltip" data-placement="bottom" title=""
                        data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
@@ -70,14 +72,13 @@ use yii\helpers\Url;
                             <div class="col-md-5">
                                 <div class="pr-user-skills">
                                     <ul>
-                                        <li>Javascript</li>
-                                        <li>Java</li>
-                                        <li>Python</li>
-                                        <li>PHP</li>
-                                        <li>React</li>
-                                        <li>SASS</li>
-                                        <li>Angular.JS</li>
-                                        <li>+13</li>
+                                        <?php
+                                        foreach ($arr['createdBy']['userSkills'] as $skill) {
+                                            ?>
+                                            <li><?= $skill['skill']; ?></li>
+                                            <?php
+                                        }
+                                        ?>
                                     </ul>
                                     <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>
                                     <h4><span>Industry:</span> Design, Entry Level, Laboratory <span>+5</span></h4>
@@ -86,21 +87,19 @@ use yii\helpers\Url;
                             <div class="col-md-3 pl-0">
                                 <div class="pr-user-actions">
                                     <div class="pr-top-actions text-right">
-                                        <a href="#">View Profile</a>
-                                        <a href="#">Download Resume</a>
+                                        <a href="<?= '/' . $arr['username'] ?>">View Profile</a>
+<!--                                        <a href="#">Download Resume</a>-->
                                     </div>
                                     <ul>
-                                        <li>
-                                            <a href="#">
-                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?>"/>
-                                            </a>
-                                            <!--                            <i class="fa fa-envelope"></i>-->
-                                        </li>
+<!--                                        <li>-->
+<!--                                            <a href="#">-->
+<!--                                                <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?><!--"/>-->
+<!--                                            </a>-->
+<!--                                        </li>-->
                                         <li>
                                             <a href="#">
                                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                             </a>
-                                            <!--                            <i class="fa fa-comments-o"></i>-->
                                         </li>
                                         <!--                        <li>-->
                                         <!--                            <i class="fa fa-phone-square"></i>-->
@@ -269,7 +268,7 @@ $this->registerCss('
   background: white;
   border: 1px solid #ccc;
   border-right: none;
-  padding: 0 1em;
+  padding: 0;
   cursor: pointer;
   margin-bottom: 1em;
   color:#555;
@@ -338,13 +337,16 @@ $this->registerCss('
   border-left-color: #00a0e3;
 }
 .tooltip-inner {
-    background-color: #00acd6 !important;
+    background-color: #00a0e3 !important;
     color: #fff;
     padding:5px 10px;
     border-radius:20px !important;
 }
 .tooltip.top .tooltip-arrow {
     border-top-color: #00acd6;
+}
+.tooltip.bottom .tooltip-arrow{
+    border-bottom-color:#00a0e3;
 }
 /* Tabs css ends*/
 @media screen and (max-width: 600px){
