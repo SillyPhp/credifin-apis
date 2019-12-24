@@ -739,13 +739,7 @@ class ResumeBuilderController extends Controller
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
-    public function actionTest($temp = 'template_1')
-    {
-//        $e = fopen(Url::to('@rootDirectory/assets/common/cv_templates/template_1.css'), 'r');
-//        $v = fgets($e);
-//        foreach ($v)
-//        print_r($v);
-    }
+
     public function actionGetData()
     {
         if (Yii::$app->request->isAjax) {
