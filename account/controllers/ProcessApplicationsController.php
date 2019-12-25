@@ -112,6 +112,12 @@ class ProcessApplicationsController extends Controller
                     $b->joinWith(['userEducations b21' => function($b21){
                         $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
                     }]);
+                    $b->joinWith(['userPreferredIndustries b31' => function($b31){
+                        $b31->groupBy('b31.industry_enc_id');
+                        $b31->select(['b31.industry_enc_id', 'b32.industry', 'b31.created_by']);
+                        $b31->joinWith(['industryEnc b32'], false);
+                        $b31->onCondition(['b31.is_deleted' => 0]);
+                    }]);
                 }])
 //                ->joinWith(['applicationEnc f' => function($e){
 //                    $e->joinWith(['interviewProcessEnc g']);

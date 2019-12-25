@@ -116,7 +116,6 @@ echo $this->render('/widgets/header/secondary-header', [
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
                                                             </div>
                                                             <div class="cd-btns col-md-2">
                                                                 <?php if ($arr['status'] == 'Hired') { ?>
