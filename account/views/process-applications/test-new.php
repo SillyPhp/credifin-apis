@@ -2,6 +2,7 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+
 ?>
     <div class="container">
         <?php
@@ -12,15 +13,18 @@ use yii\widgets\Pjax;
                 style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1; ?>)">
                 <a data-filter="*" href="#">All</a></li>
             <?php
+            $k = 0;
             foreach ($application_name['interviewProcessEnc']['interviewProcessFields'] as $p) {
                 ?>
                 <li style="width:calc(100% / <?= COUNT($application_name['interviewProcessEnc']['interviewProcessFields']) + 1; ?>)">
-                    <a data-filter=".<?= $p['field_enc_id'] ?>" data-toggle="tooltip" data-placement="bottom" title=""
+                    <a data-filter=".<?= $p['field_enc_id'] . $k ?>" data-toggle="tooltip" data-placement="bottom"
+                       title=""
                        data-original-title="<?= $p['field_name'] ?>" href="#">
                         <i class="<?= $p['icon'] ?>" aria-hidden="true"></i>
                     </a>
                 </li>
                 <?php
+                $k++;
             }
             ?>
         </ul>
@@ -29,14 +33,19 @@ use yii\widgets\Pjax;
             if (!empty($fields)) {
                 foreach ($fields as $arr) {
                     $j = 0;
+                    $fieldMain = "";
+                    $tempfieldMain = "";
                     foreach ($arr['appliedApplicationProcesses'] as $p) {
-                        if ($j == $arr['active']) {
-                            $fieldMain =  $p['field_enc_id'];
+                        if ($j == $arr['active'] && $arr['status'] != 'Rejected') {
+                            $fieldMain = $p['field_enc_id'];
+                            $tempfieldMain = $p['field_enc_id'] . $j;
+                            break;
                         }
                         $j++;
                     }
+//                    print_r($fields);
                     ?>
-                    <li class="row pr-user-main <?= $fieldMain?>" data-key="<?= $fieldMain?>">
+                    <li class="row pr-user-main <?= $tempfieldMain ?>" data-key="<?= $fieldMain ?>">
                         <div class="col-md-12 col-sm-12 pr-user-inner-main">
                             <div class="col-md-4">
                                 <div class="pr-user-detail">
@@ -114,7 +123,7 @@ use yii\widgets\Pjax;
                                         }
                                         ?>
                                     </ul>
-                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>
+<!--                                    <h4><span>Occupaiton:</span> Design, Entry Level, Research <span>+7</span></h4>-->
                                     <?php
                                     $industry = [];
                                     foreach ($arr['createdBy']['userPreferredIndustries'] as $ind) {
@@ -126,7 +135,7 @@ use yii\widgets\Pjax;
                                         <h4>
                                             <span>Industry: </span>
                                             <?= rtrim($str2, ','); ?>
-<!--                                            <span>+5</span>-->
+                                            <!--                                            <span>+5</span>-->
                                         </h4>
                                         <?php
                                     }
@@ -159,18 +168,35 @@ use yii\widgets\Pjax;
                             </div>
                         </div>
                         <div class="pr-user-action-main">
-                            <div class="pr-half-height">
-                                <a href="javascript:;" class="approve" value="<?= $arr['applied_application_enc_id']; ?>" data-total="<?= $arr['total']; ?>">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
-                                </a>
-                                <!--                <i class="fa fa-thumbs-o-up"></i>-->
-                            </div>
-                            <div class="pr-half-height">
-                                <a href="javascript:;" class="reject" value="<?= $arr['applied_application_enc_id']; ?>">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
-                                </a>
-                                <!--                <i class="fa fa-thumbs-o-down"></i>-->
-                            </div>
+                            <?php if ($arr['status'] == 'Hired') { ?>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;">
+                                        Hired
+                                    </a>
+                                </div>
+                            <?php } elseif ($arr['status'] == 'Rejected') { ?>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;">
+                                        Rejected
+                                    </a>
+                                </div>
+                            <?php } else { ?>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="approve"
+                                       value="<?= $arr['applied_application_enc_id']; ?>"
+                                       data-total="<?= $arr['total']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/approve.png'); ?>"/>
+                                    </a>
+                                    <!--                <i class="fa fa-thumbs-o-up"></i>-->
+                                </div>
+                                <div class="pr-half-height">
+                                    <a href="javascript:;" class="reject"
+                                       value="<?= $arr['applied_application_enc_id']; ?>">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reject5.png'); ?>"/>
+                                    </a>
+                                    <!--                <i class="fa fa-thumbs-o-down"></i>-->
+                                </div>
+                            <?php } ?>
                         </div>
                     </li>
                     <?php
@@ -509,6 +535,9 @@ $(document).on('click', '.approve', function(e) {
                 btn.html('<img src="/assets/themes/ey/images/pages/dashboard/approve.png">');
                   hide_btn(res,total,btn,btn2,btn3); 
                   $.pjax.reload({container: '#pjax_process', async: false});
+                  setTimeout(function() {
+                    arlo_tm_portfolio();
+                  }, 1000)
             } else {
                disable(btn);
                alert('something went wrong..');
@@ -535,6 +564,10 @@ $(document).on('click','.reject',function(e){
                 btn.hide();
                 btn2.hide();
                 btn3.show();
+                $.pjax.reload({container: '#pjax_process', async: false});
+                  setTimeout(function() {
+                    arlo_tm_portfolio();
+                  }, 1000)
             }
             else {
                 alert('something went wrong..');

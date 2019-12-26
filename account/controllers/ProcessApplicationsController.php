@@ -101,19 +101,21 @@ class ProcessApplicationsController extends Controller
                 }])
                 ->joinWith(['createdBy b' => function ($b) {
                     $b->joinWith(['userSkills b1' =>function($b1){
-                        $b1->groupBy('b1.user_skill_enc_id');
+                        $b1->groupBy(['b1.user_skill_enc_id']);
                         $b1->select(['b1.skill_enc_id', 'b1.user_skill_enc_id','b2.skill', 'b1.created_by']);
                         $b1->joinWith(['skillEnc b2'], false);
                         $b1->onCondition(['b1.is_deleted' => 0]);
                     }]);
                     $b->joinWith(['userWorkExperiences b11' => function($b11){
+                        $b11->groupBy(['b11.experience_enc_id']);
                         $b11->select(['b11.created_by', 'b11.company', 'b11.is_current', 'b11.title']);
                     }]);
                     $b->joinWith(['userEducations b21' => function($b21){
+                        $b21->groupBy(['b21.education_enc_id']);
                         $b21->select(['b21.user_enc_id', 'b21.institute', 'b21.degree']);
                     }]);
                     $b->joinWith(['userPreferredIndustries b31' => function($b31){
-                        $b31->groupBy('b31.industry_enc_id');
+                        $b31->groupBy(['b31.industry_enc_id']);
                         $b31->select(['b31.industry_enc_id', 'b32.industry', 'b31.created_by']);
                         $b31->joinWith(['industryEnc b32'], false);
                         $b31->onCondition(['b31.is_deleted' => 0]);
