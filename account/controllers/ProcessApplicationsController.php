@@ -48,15 +48,9 @@ class ProcessApplicationsController extends Controller
                         $b31->onCondition(['b31.is_deleted' => 0]);
                     }]);
                 }])
-//                ->joinWith(['applicationEnc f' => function($e){
-//                    $e->joinWith(['interviewProcessEnc g']);
-//                }])
                 ->groupBy(['a.applied_application_enc_id'])
                 ->asArray()
                 ->all();
-
-//            print_r($applied_users);
-//            exit();
 
             $application_name = EmployerApplications::find()
                 ->alias('a')
@@ -71,8 +65,6 @@ class ProcessApplicationsController extends Controller
                 }])
                 ->asArray()
                 ->one();
-//            print_r($application_name);
-//            exit();
             $question = ApplicationInterviewQuestionnaire::find()
                 ->alias('a')
                 ->distinct()
@@ -83,7 +75,7 @@ class ProcessApplicationsController extends Controller
                 ->orderBy(['a.id' => SORT_DESC])
                 ->asArray()
                 ->all();
-            return $this->render('test-new', [
+            return $this->render('index', [
                 'fields' => $applied_users,
                 'que' => $question,
                 'application_name' => $application_name,
