@@ -1,5 +1,4 @@
 <script id="resume_template" type="text/template">
-<section>
     <div class="r-main">
         <div class="r-head">
             <div class="r-name">{{name}}</div>
@@ -86,7 +85,6 @@
             </div>
         </div>
     </div>
-</section>
 </script>
 <?php
 $script = <<< JS

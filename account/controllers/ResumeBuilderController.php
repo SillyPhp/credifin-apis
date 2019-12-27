@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\ResumeTemplates;
 use yii\web\HttpException;
 use account\models\resumeBuilder\AddExperienceForm;
 use account\models\resumeBuilder\AddQualificationForm;
@@ -753,8 +754,13 @@ class ResumeBuilderController extends Controller
     }
     public function actionTemplatePreview()
     {
+        $templates = ResumeTemplates::find()
+            ->select(['template_enc_id','name','template_path','thumb_image','thumb_image_location'])
+            ->where(['is_deleted'=>0])
+            ->asArray()
+            ->all();
         $this->layout = 'templates-layout';
-        return $this->render('template-preview');
+        return $this->render('template-preview',['templates'=>$templates]);
     }
 
 }
