@@ -605,7 +605,7 @@ function hiring_process(){
 hiring_process();
 $(document).on('click', '.approve', function(e) {
     e.preventDefault();
-    var field_id = $(this).parent().parentsUntil('.pr-user-main').parent().attr('data-key');  
+    var field_id = $(this).parent().parentsUntil('li').parent().attr('data-key');
     var app_id = $(this).attr('value');
     var btn = $(this);
     var btn2 = btn.next();
