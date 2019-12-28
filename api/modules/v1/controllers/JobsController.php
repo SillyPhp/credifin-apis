@@ -994,14 +994,14 @@ class JobsController extends ApiBaseController
 
             $application_data->joinWith(['applicationOptions b'], false)
                 ->joinWith(['organizationEnc w' => function ($s) {
-                $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
-            }], false);
+                    $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
+                }], false);
 
         } else {
-            $application_data->joinWith(['applicationUnclaimOptions b'])
+            $application_data->joinWith(['applicationUnclaimOptions b'],false)
                 ->joinWith(['unclaimedOrganizationEnc w' => function ($s) {
-                $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
-            }], false);
+                    $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
+                }], false);
         }
         $application_data->joinWith(['preferredIndustry x'], false);
         $data1 = $application_data->select([
@@ -1055,21 +1055,38 @@ class JobsController extends ApiBaseController
             ->asArray()
             ->one();
 
-        $data2 = $application_data->select(['b.wage_type',
-            'b.wage_duration',
-            'b.fixed_wage',
-            'b.min_wage',
-            'b.max_wage',
-            'b.fixed_wage',
-            'b.working_days',
-            'b.interview_start_date',
-            'b.interview_end_date',])
-            ->asArray()
-            ->all();
+        if ($application['organization_enc_id']) {
+            $data2 = $application_data->select(['b.wage_type',
+                'b.wage_duration',
+                'b.fixed_wage',
+                'b.min_wage',
+                'b.max_wage',
+                'b.working_days',
+                'b.interview_start_date',
+                'b.interview_end_date',])
+                ->asArray()
+                ->all();
+        } else {
+            $data2 = $application_data->select(['b.wage_type',
+                'b.wage_duration',
+                'b.fixed_wage',
+                'b.min_wage',
+                'b.max_wage',
+                'b.job_url'
+            ])
+                ->asArray()
+                ->all();
+        }
 
-        print_r($data1);
-        print_r($data2);
-        die();
+        unset($data2[0]['applicationEmployeeBenefits']);
+        unset($data2[0]['applicationEducationalRequirements']);
+        unset($data2[0]['applicationSkills']);
+        unset($data2[0]['applicationJobDescriptions']);
+        unset($data2[0]['applicationPlacementLocations']);
+        unset($data2[0]['applicationInterviewLocations']);
+        unset($data2[0]['applicationUnclaimOptions']);
+
+        $result = array_merge($data1,$data2[0]);
 
         return $result;
     }
