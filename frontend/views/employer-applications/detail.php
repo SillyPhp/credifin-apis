@@ -103,10 +103,12 @@ if ($type == 'Job') {
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
 if ($type == 'Internship') {
-    if (!empty($data2)){
+    if (!empty($data2['applicationPlacementLocations'])){
         $app_locations = $data2['applicationPlacementLocations'];
+    } else if(!empty($data1['applicationPlacementCities'])){
+        $app_locations = $data1['applicationPlacementCities'];
     } else{
-        $app_locations = (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']);
+        $app_locations = $data2['applicationPlacementCities'];
     }
     if (!empty($app_locations)) {
         $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
@@ -266,7 +268,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'wage_type' => $data2['wage_type'],
                                     'gender' => $data2['preferred_gender'],
                                     'ammount_value' => $amount,
-                                    'placement_locations' => $data2['applicationPlacementLocations'],
+                                    'placement_locations' => $app_locations,
                                 ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview', [
@@ -277,7 +279,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'gender' => (($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
                                     'wage_type' => (($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
                                     'wage_duration' => (($data1['wage_duration']) ? $data1['wage_duration'] : $data2['wage_duration']),
-                                    'placement_locations' => (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
+                                    'placement_locations' => $app_locations,
                                 ]);
                             endif;
                         } else if ($type == 'Job') {

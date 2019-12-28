@@ -12,16 +12,15 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt="Empower Youth"/></li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
-                                        alt="Empower Youth"/>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt="Empower Youth"/>
                             </li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt="Empower Youth"/></li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="Empower Youth"/>
+                            </li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt="Empower Youth"/>
+                            </li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
