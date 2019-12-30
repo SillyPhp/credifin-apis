@@ -193,8 +193,7 @@ use yii\widgets\Pjax;
                                 <?php } elseif ($arr['status'] == 'Cancelled') { ?>
                                     <div class="pr-full-height">
                                         <a href="javascript:;">
-                                            Cancelled
-<!--                                            <img src="--><?//= Url::to('@eyAssets/images/pages/dashboard/rejectedc.png'); ?><!--"/>-->
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/cbc.png'); ?>"/>
                                         </a>
                                     </div>
                                 <?php } else { ?>
