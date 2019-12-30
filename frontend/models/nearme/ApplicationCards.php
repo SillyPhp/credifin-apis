@@ -24,6 +24,7 @@ class ApplicationCards
             ->select([
                 'a.application_enc_id',
                 'a.type',
+                'GROUP_CONCAT(DISTINCT(bbb.skill) SEPARATOR ",") skill',
                 'CONCAT(i.slug) as organization_slug',
                 'a.experience',
                 'h.name as job_title',
@@ -75,6 +76,10 @@ class ApplicationCards
                 }], false);
             }], false, 'INNER JOIN');
         }
+
+        $data->joinWith(['applicationSkills bb'=>function($bb){
+            $bb->joinWith(['SkillEnc bbb']);
+        }],false);
 
         $data->joinWith(['applicationOptions as f'], false)
             ->joinWith(['title g' => function ($z) {

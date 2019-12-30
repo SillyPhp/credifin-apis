@@ -103,59 +103,87 @@ if($type == 'jobs'){
 
 <script id="cards" type="text/template">
     {{#.}}
-    <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-        <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
-             class="application-card-main">
-            {{#city_name}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city_name}}
-                </span>
-            {{/city_name}}
-            {{^city_name}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
-            {{/city_name}}
-            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                <div class="application-card-img">
-                    <a href="/{{organization_slug}}" id="organization-slug" class="{{organization_slug}}">
-                        {{#logo}}
-                        <img src="{{logo}}" id="{{logo}}" class="company-logo" alt="{{name}}">
-                        {{/logo}}
-                        {{^logo}}
-                        <canvas class="user-icon company-logo" name="{{name}}" width="80" height="80"
-                                color="{{color}}" font="35px"></canvas>
-                        {{/logo}}
-                    </a>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+             class="application-card-main shadow">
+            <div class="app-box">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="application-card-img img-main">
+                            <a href="{{organization_link}}" title="{{organization_name}}">
+                                {{#logo}}
+                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
+                                {{/logo}}
+                                {{^logo}}
+                                <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                        color="{{color}}" font="35px"></canvas>
+                                {{/logo}}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="comps-name-1 application-card-description">
+                            <span class="skill">
+                                <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
+                                    {{title}}
+                                </a>
+                            </span>
+                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
+                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                            </a>
+                        </div>
+                        {{#city}}
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}">
+                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                        </span>
+                        {{/city}}
+                        {{^city}}
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}"
+                              data-locations="">
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                        {{/city}}
+                        </span>
+                        <div class="detail-loc">
+                            <div class="application-card-description job-loc">
+                                {{#salary}}
+                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                                {{/salary}}
+                                {{^salary}}
+                                <h5 class="salary">Negotiable</h5>
+                                {{/salary}}
+                                {{#type}}
+                                <h5>{{type}}</h5>
+                                {{/type}}
+                                {{#experience}}
+                                <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                {{/experience}}
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="application-card-description">
-                    <a href="/<?= $job_type?>/{{slug}}"><h4 class="application-title">
-                            {{job_title}}</h4>
-                    </a>
-                    {{#salary}}
-                    <h5 id="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                    {{/salary}}
-                    {{^salary}}
-                    <h5 id="salary">Negotiable</h5>
-                    {{/salary}}
-                    {{#type}}
-                    <h5 class="type">{{type}}</h5>
-                    {{/type}}
-                    {{#experience}}
-                    <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                    {{/experience}}
+                <div class="row">
+                    <div class="col-md-12 p-0">
+                        <div class="tag-box">
+                            <div class="tags">
+                                {{#skill}}
+                                <span class="after">{{.}}</span>
+                                {{/skill}}
+                                {{^skill}}
+                                <span class="after">Multiple Skills</span>
+                                {{/skill}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right company-name">{{name}}</h4>
-            </div>
-
-            <div class="application-card-wrapper">
-                <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                <div class="application-card-wrapper">
+                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                class="fas fa-plus"></i>&nbsp;</a>
+                </div>
             </div>
         </div>
     </div>
