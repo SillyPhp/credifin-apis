@@ -324,7 +324,7 @@ function random_color()
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="md-checkbox-inline">
                                                         <?=
                                                         $fform->field($addExperienceForm, 'present')->checkBoxList([
@@ -344,6 +344,14 @@ function random_color()
                                                         ?>
 
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'salary')->textInput(['autocomplete' => 'off', 'data-toggle' => 'tooltip',  'title' => 'Hooray!'])->label('Salary'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'ctc')->textInput(['autocomplete' => 'off'])->label('CTC'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -727,7 +735,9 @@ function random_color()
 
 <?php
 $script = <<< JS
-
+$(document).ready(function(){
+  $('.info-icon').tooltip();
+});
 function compareDates(from,to){
     var a = new Date(from);
     var b = new Date(to);
@@ -935,6 +945,8 @@ $(document).on('submit','#add-experience-form',function(e){
     var title = $('#addexperienceform-title').val();
     var company = $('#company').val();
     var city = $('#city_id_exp').val();
+    var salary = $('#addexperienceform-salary').val();
+    var ctc = $('#addexperienceform-ctc').val();
    
     var from = $('#addexperienceform-exp_from').val();
     if($('#exp_present').prop("checked")){
@@ -958,10 +970,10 @@ $(document).on('submit','#add-experience-form',function(e){
     $.ajax({
        url: '/account/resume-builder/experience',
        method: 'POST',
-       data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description},
+       data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description,salary:salary,ctc:ctc},
         beforeSend:function(){     
-                  $('.loader-aj-main').fadeIn(1000);  
-            },
+            $('.loader-aj-main').fadeIn(1000);  
+        },
        success : function(response){
            $('.loader-aj-main').fadeOut(1000);
            var res = JSON.parse(response);
@@ -1456,6 +1468,14 @@ $('#update_school').typeahead(null, {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.info-icon {
+    position: absolute;
+    top: 32px;
+    right: 15px;
+}
+.field-addexperienceform-salary, .field-addexperienceform-ctc {
+    position: relative;
+}
 ul.widget-todo-list {
     list-style: none;
     padding: 0 20px;

@@ -116,6 +116,8 @@ class ResumeBuilderController extends Controller
             $description = Yii::$app->request->post('description');
             $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
             $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
+            $salary = Yii::$app->request->post('salary');
+            $ctc = Yii::$app->request->post('ctc');
 
 
             $utilitiesModel = new Utilities();
@@ -128,6 +130,8 @@ class ResumeBuilderController extends Controller
             $obj->city_enc_id = $city;
             $obj->from_date = $from;
             $obj->to_date = $to;
+            $obj->ctc = $ctc;
+            $obj->salary = $salary;
             $obj->is_current = $checkbox;
             $obj->created_on = date('Y-m-d h:i:s');
             $obj->created_by = Yii::$app->user->identity->user_enc_id;
