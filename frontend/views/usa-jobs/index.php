@@ -936,6 +936,8 @@ display:none;
 echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');
 $script = <<< JS
+var min =0;
+var max = 8;
  $(document).on('click', "#toggle", function () {
         var elem = $("#toggle").text();
         if (elem == "Load More") {
@@ -946,7 +948,7 @@ $script = <<< JS
     });
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchLocalData(template=$('#cards'),min+8,max+8,loader=false,loader_btn=true);
+  fetchLocalData(template=$('#cards'),min = min+8,max = max+8,loader=false,loader_btn=true);
 });
 var host = 'data.usajobs.gov';  
 var userAgent = 'snehkant93@gmail.com';  
@@ -956,8 +958,6 @@ $(document).on('submit','#form-search',function(e) {
   var keyword = $('#search_company').val();
   fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
 });
-var min =0;
-var max = 8;
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
 fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
 //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
