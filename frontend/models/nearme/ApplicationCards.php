@@ -22,18 +22,18 @@ class ApplicationCards
         $data = EmployerApplications::find()
             ->alias('a')
             ->select([
-                'a.application_enc_id',
+                'a.application_enc_id application_id',
                 'a.type',
                 'GROUP_CONCAT(DISTINCT(bbb.skill) SEPARATOR ",") skill',
                 'CONCAT(i.slug) as organization_slug',
                 'a.experience',
-                'h.name as job_title',
+                'h.name as title',
                 'CONCAT(a.slug) as slug',
                 'a.last_date',
-                'e.name as city_name',
+                'e.name as city',
                 'c.location_name',
-                'c.location_enc_id',
-                'i.name',
+                'c.location_enc_id location_id',
+                'i.name organization_name',
                 'f.wage_type',
                 'c.latitude',
                 'c.longitude',
@@ -77,9 +77,9 @@ class ApplicationCards
             }], false, 'INNER JOIN');
         }
 
-        $data->joinWith(['applicationSkills bb'=>function($bb){
-            $bb->joinWith(['SkillEnc bbb']);
-        }],false);
+//        $data->joinWith(['applicationSkills bb'=>function($bb){
+//            $bb->joinWith(['skillEnc bbb']);
+//        }],false);
 
         $data->joinWith(['applicationOptions as f'], false)
             ->joinWith(['title g' => function ($z) {

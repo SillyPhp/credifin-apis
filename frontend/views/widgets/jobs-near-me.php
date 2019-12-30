@@ -4,9 +4,9 @@ $this->params['header_dark'] = true;
 
 use yii\web\JqueryAsset;
 
-if($type == 'jobs'){
+if ($type == 'jobs') {
     $job_type = 'job';
-}elseif ($type == 'internships'){
+} elseif ($type == 'internships') {
     $job_type = 'internship';
 }
 
@@ -65,7 +65,8 @@ if($type == 'jobs'){
         </div>
 
         <div id="loading">
-            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+            <a href="#" id="loadMore"
+               class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                 <span class="load-more-text">Load More</span>
                 <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                      stroke="currentColor">
@@ -104,7 +105,7 @@ if($type == 'jobs'){
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+        <div id="card-hover" data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
@@ -400,6 +401,175 @@ $this->registerCss('
 /*Load Suggestions loader css ends */
 body {
   scroll-behavior: smooth;
+}
+/*new card css*/
+.application-card-description{
+    margin:0 0 0 14px !important;
+    width:100% !important;
+}
+.application-card-description h5{
+    margin-top:0px !important;
+    margin-bottom: 8px !important;
+}
+.application-card-main {
+    background-color: transparent !important;
+    margin-bottom: 20px !important;
+    border-radius: 10px;
+}
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
+.app-box {
+    text-align: left;
+    padding: 10px;
+    border-radius: 10px;
+    position:relative;
+    background:#fff;
+}
+.img{
+    max-width: 66px;
+}
+.cover-box{
+    display: inline-block;
+    padding-left: 13px;
+}
+.comps-name-1{
+    display: block;
+    vertical-align: middle;
+    padding-left: 12px;
+    padding-top: 15px;
+}
+.org_name{display:block;}
+.skill a{
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+}
+.comp-name{
+    font-weight: 700;
+    font-size: 15px;
+    color:#0173b2;
+    margin:0;
+    font-family:roboto;
+}
+.detail-loc{
+    margin-top:5px;
+}
+.location{
+    margin-right: 4px;
+}
+.fa-inr{
+    color:lightgray;
+    margin-right: 10px;
+
+}
+.city, .city i{
+    color: #fff;
+}
+.show-responsive{
+    display:none;
+}
+
+.job-fill{
+    padding: 5px 10px 4px !important;
+    margin: 3px !important;
+    background-color:#ff7803 !important;
+    color: #fff !important;
+    border-radius: 0px 10px 0px 10px !important;
+    float: right !important;
+    position:absolute !important;
+    right: 2px !important;
+    top: -13px !important;
+}
+
+.clear{
+    clear:both;
+}
+
+.sal{
+    margin-right: 5px;
+}
+
+.salary{
+    font-family:roboto;
+}
+
+.tag-box{
+    border-top: 1px solid lightgray;
+    padding-left:15px;
+    padding-top:10px;
+}
+
+.tags{
+    font-size: 17px;
+    color:gray;
+    font-family: Georgia !important;
+}
+.after{
+    padding-right: 25px;
+    padding-left: 16px;
+}
+.after{
+    background: #eee;
+    border-radius: 3px 0 0 3px;
+    color: #777;
+    display: inline-block;
+    height: 26px;
+    line-height: 25px;
+    padding: 0 21px 0 11px;
+    position: relative;
+    margin: 0 9px 3px 0;
+    text-decoration: none;
+    -webkit-transition: color 0.2s;
+}
+.after::after{
+    background: #fff;
+    border-bottom: 13px solid transparent;
+    border-left: 10px solid #eee;
+    border-top: 13px solid transparent;
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.city-box{
+    padding-bottom:5px;
+}
+.ADD-more{
+    background-color: #eeeeee;
+    padding: 4px 10px 4px 10px;
+    border-radius: 5px;
+}
+.img-main{
+    display: inline-block;
+}
+.comps-name-1{
+    float: none;
+    margin: 0px !important;
+}
+.more-skills{
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+@media only screen and (max-width: 360px){
+    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+}
+@media only screen and (max-width: 768px){
+    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+}
+@media only screen and (max-width: 974px){
+    .salary{ 
+        padding-left: 16px;
+    }
+    .city-box{padding-left: 18px; padding-bottom: 10px;}
+    .hide-responsive{display:none;}
+    .show-responsive{display:inline;}
+    .hide-resp{display:none;}
+
 }
 ');
 $controller = Yii::$app->controller->id;
