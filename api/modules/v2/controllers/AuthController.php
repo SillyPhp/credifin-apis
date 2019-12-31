@@ -317,6 +317,12 @@ class AuthController extends ApiBaseController
 
     public function actionSaveOtherDetail(){
 
+        if($user = $this->isAuthorized()){
+            $user_id = $user->user_enc_id;
+        }else{
+            return $this->response(401,['status'=>401,'msg'=>'unauthorized']);
+        }
+
         $data = Yii::$app->request->post();
 
         $user_other_details = new UserOtherDetails();
@@ -324,7 +330,7 @@ class AuthController extends ApiBaseController
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
         $user_other_details->organization_enc_id = $data['college'];
-        $user_other_details->user_enc_id = $data['user_enc_id'];
+        $user_other_details->user_enc_id = $user_id;
 
         $d = Departments::find()
             ->where([
@@ -391,7 +397,7 @@ class AuthController extends ApiBaseController
         }
 
         if (!$user_other_details->save()) {
-            print_r($user_other_details->getErrors());
+            return false;
         }else{
             return $this->response(201,['status'=>201,'message'=>'successfully added']);
         }
