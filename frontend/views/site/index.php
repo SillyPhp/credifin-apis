@@ -16,10 +16,10 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>
                             </li>
                             <li class="slideHome">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="Empower Youth"/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>
                             </li>
                             <li class="slideHome">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt="Empower Youth"/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
                             </li>
                         </ul>
                         <div class="job-search-sec">
@@ -126,7 +126,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer" title="Jobs"/>
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -136,8 +136,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships"
-                                 title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me" title="Internships"/>
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -147,8 +146,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/learning'); ?>">
                     <div class="service-box ser-box-yellow">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
-                                 alt="learning">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>" alt="international internships, web developer career, software engineer career">
                         </div>
                         <div class="ser-heading">Learning Hub</div>
                     </div>
@@ -158,8 +156,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews"
-                                 title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="research internship, software developer career internship websites, best learning websites" title="Reviews"/>
                         </div>
                         <div class="ser-heading">Reviews</div>
                     </div>
@@ -169,8 +166,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/training-programs'); ?>">
                     <div class="service-box ser-box-maroon">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
-                                 alt="training">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>" alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
                         </div>
                         <div class="ser-heading">Training Courses</div>
                     </div>
@@ -180,8 +176,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/career-advice'); ?>">
                     <div class="service-box ser-box-green">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="reviews">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>" alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
                         </div>
                         <div class="ser-heading">Career Advice</div>
                     </div>
