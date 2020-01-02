@@ -92,6 +92,6 @@ class ResumeData
 
     public function getResumeData()
     {
-        
+
     }
 }
