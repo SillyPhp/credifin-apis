@@ -228,19 +228,15 @@ class UsersController extends Controller
         if (Yii::$app->user->isGuest) {
             $page = 'guest-view';
         } else {
-            $chkType = UserTypes::findOne(['user_type_enc_id' => Yii::$app->user->identity->user_type_enc_id])['user_type'];
-            switch ($chkType) {
-                case 'Organization Admin':
-                case 'Super Admin':
-                case 'admin' :
+            $orgId = Users::findOne(['user_enc_id' => Yii::$app->user->identity->user_enc_id])['organization_enc_id'];
+            if ($orgId != null || $orgId != "") {
+                $page = 'view';
+            } else {
+                if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
                     $page = 'view';
-                    break;
-                default :
-                    if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
-                        $page = 'view';
-                    } else {
-                        $page = 'guest-view';
-                    }
+                } else {
+                    $page = 'guest-view';
+                }
             }
         }
         return $this->render($page, $dataProvider);
