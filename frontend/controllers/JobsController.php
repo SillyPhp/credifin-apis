@@ -305,7 +305,11 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
             $options = [];
-
+            if (Yii::$app->request->get('location')||Yii::$app->request->get('keyword'))
+            {
+                $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
+                $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {

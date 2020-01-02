@@ -132,8 +132,8 @@ class ApplicationCards
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        $job_preference = self::getPreference('Jobs');
-        $internship_preference = self::getPreference('Internships');
+        //$job_preference = self::getPreference('Jobs');
+       // $internship_preference = self::getPreference('Internships');
 
 //        $a = [
 //            'job' => $job_preference,
@@ -258,17 +258,19 @@ class ApplicationCards
             ]);
         }
         if (isset($options['location'])) {
-            $cards1->andWhere([
+            $search_location = trim($options['location'], " ");
+            $search_pattern_location = self::makeSQL_search_pattern($search_location);
+            $cards1->andFilterWhere([
                 'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']],
-                ['v.name' => $options['location']],
-                ['x.name' => $options['location']]
+                ['REGEXP','g.name',$search_pattern_location ],
+                ['REGEXP','s.name',$search_pattern_location],
+                ['REGEXP','v.name',$search_pattern_location],
+                ['REGEXP','x.name',$search_pattern_location]
             ]);
-            $cards2->andWhere([
+            $cards2->andFilterWhere([
                 'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']]
+                ['REGEXP','g.name',$search_pattern_location],
+                ['REGEXP','s.name',$search_pattern_location]
             ]);
         }
 
@@ -543,17 +545,19 @@ class ApplicationCards
             ]);
         }
         if (isset($options['location'])) {
-            $cards1->andWhere([
+            $search_location = trim($options['location'], " ");
+            $search_pattern_location = self::makeSQL_search_pattern($search_location);
+            $cards1->andFilterWhere([
                 'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']],
-                ['v.name' => $options['location']],
-                ['x.name' => $options['location']],
+                ['REGEXP','g.name',$search_pattern_location],
+                ['REGEXP','s.name',$search_pattern_location],
+                ['REGEXP','v.name',$search_pattern_location],
+                ['REGEXP','x.name',$search_pattern_location],
             ]);
-            $cards2->andWhere([
+            $cards2->andFilterWhere([
                 'or',
-                ['g.name' => $options['location']],
-                ['s.name' => $options['location']],
+                ['REGEXP','g.name',$search_pattern_location],
+                ['REGEXP','s.name',$search_pattern_location],
             ]);
         }
         if (isset($options['keyword'])) {
