@@ -433,7 +433,7 @@ class ResumeBuilderController extends Controller
         $id = Yii::$app->request->post('id');
         $editexp = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.title', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'a.experience_enc_id', 'a.description', 'b.name', 'b.city_enc_id'])
+            ->select(['a.title', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'a.experience_enc_id', 'a.description', 'b.name', 'b.city_enc_id', 'a.salary', 'a.ctc'])
             ->joinWith(['cityEnc b'])
             ->where(['a.experience_enc_id' => $id])
             ->asArray()
@@ -532,6 +532,8 @@ class ResumeBuilderController extends Controller
             $description = Yii::$app->request->post('description');
             $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
             $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
+            $ctc = Yii::$app->request->post('ctc');
+            $salary = Yii::$app->request->post('salary');
 
 
             $model = UserWorkExperience::find()
@@ -544,6 +546,8 @@ class ResumeBuilderController extends Controller
             $model->from_date = $from;
             $model->to_date = $to;
             $model->is_current = $check;
+            $model->salary = $salary;
+            $model->ctc = $ctc;
             $model->description = $description;
 
             if ($model->update()) {

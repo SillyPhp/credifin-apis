@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\Countries;
 use common\models\Industries;
 use common\models\Skills;
+use common\models\User;
 use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
@@ -14,6 +15,7 @@ use common\models\UserPreferredIndustries;
 use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredLocations;
 use common\models\UserPreferredSkills;
+use common\models\UserTypes;
 use common\models\UserWorkExperience;
 use Yii;
 use yii\web\Controller;
@@ -209,9 +211,7 @@ class UsersController extends Controller
         $job_preference = self::getPreference('Jobs', $user['user_enc_id']);
         $internship_preference = self::getPreference('Internships', $user['user_enc_id']);
 
-//        print_r($interests);
-//        exit();
-        return $this->render('view', [
+        $dataProvider = [
             'user' => $user,
             'skills' => $skills,
             'language' => $language,
@@ -223,7 +223,27 @@ class UsersController extends Controller
             'achievement' => $achievement,
             'hobbies' => $hobbies,
             'interests' => $interests,
-        ]);
+        ];
+
+        if (Yii::$app->user->isGuest) {
+            $page = 'guest-view';
+        } else {
+            $chkType = UserTypes::findOne(['user_type_enc_id' => Yii::$app->user->identity->user_type_enc_id])['user_type'];
+            switch ($chkType) {
+                case 'Organization Admin':
+                case 'Super Admin':
+                case 'admin' :
+                    $page = 'view';
+                    break;
+                default :
+                    if (Yii::$app->user->identity->user_enc_id == $user['user_enc_id']) {
+                        $page = 'view';
+                    } else {
+                        $page = 'guest-view';
+                    }
+            }
+        }
+        return $this->render($page, $dataProvider);
     }
 
     public function actionEdit()

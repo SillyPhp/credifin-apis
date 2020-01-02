@@ -443,11 +443,10 @@ function random_color()
                                                             ]])->label(false);
                                                         ?>
                                                     </div>
-
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="md-checkbox-inline">
                                                         <?=
                                                         $fform->field($addExperienceForm, 'present')->checkBoxList([
@@ -468,6 +467,14 @@ function random_color()
                                                         ?>
 
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'salary')->textInput(['autocomplete' => 'off', 'id' => 'update_salary', 'data-toggle' => 'tooltip',  'title' => 'Your CTC will not be visible to anybody else except you, we will be using this salary to improve job recommendation for you'])->label('Salary'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'ctc')->textInput(['autocomplete' => 'off', 'id' => 'update_ctc', 'data-toggle' => 'tooltip',  'title' => 'Your CTC will not be visible to anybody else except you, we will be using this CTC to improve job recommendation for you'])->label('CTC'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -1010,6 +1017,8 @@ $(document).on('submit','#update-experience-form',function(e){
         }
     }
     var description = $('#update_description').val();
+    var salary = $('#update_salary').val();
+    var ctc = $('#update_ctc').val();
     
     if(compareDates(from,to)){
         toastr.error('please enter correct dates', 'error');
@@ -1022,7 +1031,7 @@ $(document).on('submit','#update-experience-form',function(e){
         $.ajax({
             url: '/account/resume-builder/update-experience',
             method : 'POST',
-            data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description},
+            data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description,ctc:ctc,salary:salary},
             beforeSend:function(){     
                       $('.loader-aj-main').fadeIn(1000);
             },
@@ -1092,6 +1101,9 @@ $(document).on('click','.exp-pen',function(e){
               $('#update_cities').val(obj.name);
               $('#update_exp_from').val(obj.from_date);
               $('#update_exp_to').val(obj.to_date);
+              $('#update_ctc').val(obj.ctc);
+              $('#update_salary').val(obj.salary);
+              
               if(obj.is_current == 1){
                   $('#update_exp_present').prop('checked', true);
                   $('#update_exp_to').val(0);
