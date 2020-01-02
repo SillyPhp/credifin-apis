@@ -367,7 +367,7 @@ class AuthController extends ApiBaseController
             $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
             $eduReq->educational_requirement = $data['course_name'];
             $eduReq->created_on = date('Y-m-d H:i:s');
-            $eduReq->created_by = $data['user_enc_id'];
+            $eduReq->created_by = $user_id;
             if (!$eduReq->save()) {
                 return false;
             }
@@ -397,7 +397,7 @@ class AuthController extends ApiBaseController
         }
 
         if (!$user_other_details->save()) {
-            return false;
+            return $this->response(500,['status'=>500,'message'=>'an error occurred']);
         }else{
             return $this->response(201,['status'=>201,'message'=>'successfully added']);
         }
