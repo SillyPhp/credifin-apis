@@ -1,31 +1,32 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use kartik\widgets\DatePicker;
 use yii\widgets\Pjax;
 
-$status = ['Applied','Got offer','Got Rejected','Interview scheduled','Awaiting response','I need to respond','No initial response yet','Not Interested'];
+$status = ['Applied', 'Got offer', 'Got Rejected', 'Interview scheduled', 'Awaiting response', 'I need to respond', 'No initial response yet', 'Not Interested'];
 ?>
-<div class="portlet light">
-    <div class="portlet-title">
-        <div class="caption">
-            <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Reminder'); ?></span>
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class=" icon-social-twitter font-dark hide"></i>
+                <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Reminder'); ?></span>
+            </div>
+            <div class="actions">
+                <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
+            </div>
         </div>
-        <div class="actions">
-            <a href="#" class="viewall-jobs reminder-form"><?= Yii::t('account', 'Add New'); ?></a>
-        </div>
-    </div>
-    <div class="portlet-body">
-        <div class="add-reminder">
-            <?php
-            $form = ActiveForm::begin([
-                'id' => 'application-reminder-form',
-                'fieldConfig' => [
-                    'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}</div>",
-                ],
-            ]);
-            ?>
+        <div class="portlet-body">
+            <div class="add-reminder">
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'application-reminder-form',
+                    'fieldConfig' => [
+                        'template' => "<div class='form-group form-md-line-input form-md-floating-label'>{input}{label}{error}</div>",
+                    ],
+                ]);
+                ?>
                 <div class="row">
                     <div class="col-md-6">
                         <?= $form->field($app_reminder_form, 'application_title')->textInput(['class' => 'form-control']); ?>
@@ -75,42 +76,107 @@ $status = ['Applied','Got offer','Got Rejected','Interview scheduled','Awaiting 
                         </div>
                     </div>
                 </div>
-            <?php
-            ActiveForm::end();
-            ?>
-        </div>
-        <?php
-        Pjax::begin(['id' => 'reminders_record']);
-        if($app_reminder) {
-            foreach ($app_reminder as $app) {
+                <?php
+                ActiveForm::end();
                 ?>
+            </div>
+            <?php
+            Pjax::begin(['id' => 'reminders_record']);
+            if ($app_reminder) {
+                foreach ($app_reminder as $app) {
+                    ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="reminderbox">
+                                <div class="innerpart">
+                                    <a type="button" data-toggle="collapse"
+                                       data-target="#<?= $app['reminder_enc_id']; ?>">
+                                <span class="review-list-toggler" href="#">
+                                    <i class="fa fa-chevron-right"></i>
+                                </span>
+                                        <p class="jobtitle"><?= $app['application_name']; ?></p> <span
+                                                class="e">at</span>
+                                        <p class="comp-name"><?= $app['organization_name']; ?></p>
+                                        <p class="definedate"><?= $app['date']; ?></p>
+                                        <p class="applied-platfrom">Applied from
+                                            <span><?= $app['applied_platform']; ?></span></p>
+                                    </a>
+                                </div>
+                                <div class="innerpart1">
+                                    <div class="salarybox">
+                                        <input class="salarybox1" id="salaryField" data-key="salary"
+                                               data-id="<?= $app['reminder_enc_id']; ?>" type="text"
+                                               placeholder="salary"
+                                               value="<?= $app['salary']; ?>">
+                                    </div>
+                                    <div class="listing">
+                                        <select id="statusField" class="listing1"
+                                                data-id="<?= $app['reminder_enc_id']; ?>" data-key="status">
+                                            <?php
+                                            $i = 0;
+                                            foreach ($status as $st) {
+                                                if ($status[$i] == $app['status']) {
+                                                    echo '<option value="' . $status[$i] . '" selected>' . $app["status"] . '</option>';
+                                                } else {
+                                                    echo '<option value="' . $status[$i] . '">' . $status[$i] . '</option>';
+                                                }
+                                                $i++;
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="cross">
+                                    <span id="remove-reminder" class="close" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
+                                </div>
+                            </div>
+                            <div class="userdata">
+                                <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
+                                    <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
+                                    <textarea class="boxx" id="descriptionField" data-key="description"
+                                              data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
+                                              placeholder="Write notes here"><?= $app['description']; ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+            } else {
+                ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>Your Reminder will be look like this</h3>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-md-12">
                         <div class="reminderbox">
                             <div class="innerpart">
-                                <a type="button" data-toggle="collapse" data-target="#<?= $app['reminder_enc_id']; ?>">
+                                <a type="button" data-toggle="collapse"
+                                   data-target="#demo">
                                 <span class="review-list-toggler" href="#">
                                     <i class="fa fa-chevron-right"></i>
                                 </span>
-                                    <p class="jobtitle"><?= $app['application_name']; ?></p> <span class="e">at</span>
-                                    <p class="comp-name"><?= $app['organization_name']; ?></p>
-                                    <p class="definedate"><?= $app['date']; ?></p>
-                                    <p class="applied-platfrom">Applied from <span><?= $app['applied_platform']; ?></span></p>
+                                    <p class="jobtitle">Full Stack Developer</p> <span
+                                            class="e">at</span>
+                                    <p class="comp-name">Wipro</p>
+                                    <p class="definedate"><?= date("Y-m-d") ?></p>
+                                    <p class="applied-platfrom">Applied from
+                                        <span>Empower Youth</span></p>
                                 </a>
                             </div>
                             <div class="innerpart1">
                                 <div class="salarybox">
-                                    <input class="salarybox1" id="salaryField" data-key="salary"
-                                           data-id="<?= $app['reminder_enc_id']; ?>" type="text" placeholder="salary"
-                                           value="<?= $app['salary']; ?>">
+                                    <input class="salarybox1" type="text" placeholder="salary" value="25000">
                                 </div>
                                 <div class="listing">
-                                    <select id="statusField" class="listing1" data-id="<?= $app['reminder_enc_id']; ?>">
+                                    <select id="statusField" class="listing1">
                                         <?php
                                         $i = 0;
                                         foreach ($status as $st) {
-                                            if ($status[$i] == $app['status']) {
-                                                echo '<option value="' . $status[$i] . '" selected>' . $app["status"] . '</option>';
+                                            if ($status[$i] == 'Interview scheduled') {
+                                                echo '<option value="' . $status[$i] . '" selected>Interview scheduled</option>';
                                             } else {
                                                 echo '<option value="' . $status[$i] . '">' . $status[$i] . '</option>';
                                             }
@@ -120,29 +186,21 @@ $status = ['Applied','Got offer','Got Rejected','Interview scheduled','Awaiting 
                                     </select>
                                 </div>
                             </div>
-                            <div class="cross">
-                                <span id="remove-reminder" class="close" data-id="<?= $app['reminder_enc_id']; ?>">&times;</span>
-                            </div>
                         </div>
                         <div class="userdata">
-                            <div id="<?= $app['reminder_enc_id']; ?>" class="collapse">
-                                <a href="#" target="_blank"><?= $app['link']; ?> </a><span class="g"></span>
-                                <textarea class="boxx" id="descriptionField" data-key="description"
-                                          data-id="<?= $app['reminder_enc_id']; ?>" rows="5" cols="70"
-                                          placeholder="Write notes here"><?= $app['description']; ?></textarea>
+                            <div id="demo" class="collapse">
+                                <a href="#" target="_blank">https://www.applied-job-url.com </a><span class="g"></span>
+                                <textarea class="boxx" id="descriptionField" rows="5" cols="70" placeholder="Write notes here">Desscription here.</textarea>
                             </div>
                         </div>
                     </div>
                 </div>
                 <?php
             }
-        } else{
-            echo '<h3>No Record found.</h3>';
-        }
-        Pjax::end();
-        ?>
+            Pjax::end();
+            ?>
+        </div>
     </div>
-</div>
 <?php
 $this->registerCss("
  .review-list-toggler{
@@ -220,6 +278,7 @@ $this->registerCss("
 }
 .salarybox, .listing{
     display:inline-block;
+    width:49%;
 }
  .salarybox1{
     width:130px;
@@ -274,12 +333,7 @@ $this->registerCss("
 }
 ");
 $script = <<<JS
-$(document).on('change', '#statusField', function() {
-    var val = $(this).val();
-    var r_id = $(this).attr("data-id");
-    updateFields("status",val, r_id);
-});
-$(document).on('blur','#salaryField, #descriptionField', function() {
+$(document).on('change','#salaryField, #descriptionField, #statusField', function() {
     var type = $(this).attr('data-key');
     var r_id = $(this).attr("data-id");
     var val = $(this).val();

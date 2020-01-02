@@ -35,7 +35,7 @@
                 <h4 class="org_name text-right">{{Organizations}}</h4>
             </div>
             <div class="application-card-wrapper">
-                <a href="/govt-jobs/detail/{{id}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
+                <a href="/govt-jobs/detail/{{slug}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
             </div>
         </div>
     </div>
@@ -43,6 +43,7 @@
 </script>
 <?php
 $script = <<< JS
+var match_local = 0;
 function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,replace=false) {
   $.ajax({
   url:'/govt-jobs/get-data',
@@ -66,12 +67,17 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
       $('.img_load').css('display','none');
       $('#loader').html('Load More');
       $('#loader').css('display','initial');
-      body = JSON.parse(body);
-      if (replace)
+      match_local = match_local+body.count;
+      if (body.total<12||body.total==match_local) 
           {
-              template.html(Mustache.render($('#usa-jobs-card').html(),body));
+              $('#loader').hide();
           }
-      template.append(Mustache.render($('#usa-jobs-card').html(),body));
+      if (replace){
+          template.html(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      }else
+          {
+              template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+          }
       utilities.initials();
       if(body == ''){
           $('#loader').hide();

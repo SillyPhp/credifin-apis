@@ -1,38 +1,53 @@
 <script id="stats-card" type="text/template">
-<div class="box-parent row">
-    <div class="bolls">
-        <div class="boll1 bol2"></div>
-        <div class="boll2 bol2"></div>
-        <div class="boll3 bol"></div>
-        <div class="boll4 bol"></div>
-        <div class="boll5 bol2"></div>
-        <div class="boll6 bol2"></div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="jobs-content">
-            <div class="j-count">{{jobs}}+</div>
-            <div class="j-name">Jobs</div>
+    <div class="box-parent row">
+        <div class="bolls">
+            <div class="boll1 bol2"></div>
+            <div class="boll2 bol2"></div>
+            <div class="boll3 bol"></div>
+            <div class="boll4 bol"></div>
+            <div class="boll5 bol2"></div>
+            <div class="boll6 bol2"></div>
+        </div>
+        {{#jobs}}
+        <div class="col-md-3 col-sm-6">
+            <div class="jobs-content">
+                <div class="j-count">{{jobs}}+</div>
+                <div class="j-name">Jobs</div>
+            </div>
+        </div>
+        {{/jobs}}
+
+        {{#internships}}
+        <div class="col-md-3 col-sm-6">
+            <div class="jobs-content">
+                <div class="j-count">{{internships}}+</div>
+                <div class="j-name">Internships</div>
+            </div>
+        </div>
+        {{/internships}}
+
+        {{#titles}}
+        <div class="col-md-3 col-sm-6">
+            <div class="jobs-content">
+                <div class="j-count">{{titles}}+</div>
+                <div class="j-name">Profiles</div>
+            </div>
+        </div>
+        {{/titles}}
+
+        <div class="col-md-3 col-sm-6">
+            <div class="jobs-content">
+                <div class="j-count">{{location}}+</div>
+                <div class="j-name">Locations</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="jobs-content">
+                <div class="j-count">{{companies}}+</div>
+                <div class="j-name">Companies</div>
+            </div>
         </div>
     </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="jobs-content">
-            <div class="j-count">{{internships}}+</div>
-            <div class="j-name">Internships</div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="jobs-content">
-            <div class="j-count">{{location}}+</div>
-            <div class="j-name">Locations</div>
-        </div>
-    </div>
-    <div class="col-md-3 col-sm-6">
-        <div class="jobs-content">
-            <div class="j-count">{{companies}}+</div>
-            <div class="j-name">Companies</div>
-        </div>
-    </div>
-</div>
 </script>
 <?php
 $this->registerCss('
@@ -122,7 +137,6 @@ function fetchStats(template) {
   datatype:"json",
   success:function(response) {
       if(response.status === 200) {
-          console.log(response.cards);
           template.append(Mustache.render($('#stats-card').html(),response.cards));
       }
   }   
