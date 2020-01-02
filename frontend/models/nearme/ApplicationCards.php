@@ -24,7 +24,7 @@ class ApplicationCards
             ->select([
                 'a.application_enc_id application_id',
                 'a.type',
-                'GROUP_CONCAT(DISTINCT(bbb.skill) SEPARATOR ",") skill',
+//                'GROUP_CONCAT(DISTINCT(bbb.skill) SEPARATOR ",") skill',
                 'CONCAT(i.slug) as organization_slug',
                 'a.experience',
                 'h.name as title',

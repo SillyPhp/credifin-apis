@@ -41,6 +41,7 @@ if ($type == 'jobs') {
         </div>
     </div>
 </div>
+
 <div class="row m-0">
     <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
@@ -101,7 +102,6 @@ if ($type == 'jobs') {
     </div>
 </div>
 
-
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -156,10 +156,10 @@ if ($type == 'jobs') {
                                 <h5 class="salary">Negotiable</h5>
                                 {{/salary}}
                                 {{#type}}
-                                <h5>{{type}}</h5>
+                                <h5 class="type">{{type}}</h5>
                                 {{/type}}
                                 {{#experience}}
-                                <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
                             </div>
                             <div class="clear"></div>
@@ -171,10 +171,10 @@ if ($type == 'jobs') {
                         <div class="tag-box">
                             <div class="tags">
                                 {{#skill}}
-                                <span class="after">{{.}}</span>
+                                <span class="after skills">{{.}}</span>
                                 {{/skill}}
                                 {{^skill}}
-                                <span class="after">Multiple Skills</span>
+                                <span class="after skills">Multiple Skills</span>
                                 {{/skill}}
                             </div>
                         </div>
@@ -790,27 +790,35 @@ $(document).on("click","#card-hover",function() {
      }
     
      var types = $(this).find('.type').text();
-     var salary = $(this).find('#salary').text();
+     var salary = $(this).find('.salary').text();
      var lat = $(this).find('.location').attr('data-lat');
      var lon = $(this).find('.location').attr('data-long');
      var titles = $(this).find('.application-title').text();
      var locations =  $(this).find('.location').text();
      var last_date = $(this).find('.last-date').attr('id');
      var exp = $(this).find('.exp').text();
-     var company =  $(this).find('.company-name').text();
+     var company =  $(this).find('.org_name').text();
      var logo = $(this).find('.company-logo').attr('id');
      var logo_color = $(this).find('.company-logo').attr('color');
      var slug = $(this).find('.application-card-open').attr('id');
      var org_slug = $(this).find('#organization-slug').attr('class');
      var application_id = $(this).attr('data-id');
      var application_key = $(this).attr('data-key');
+     var skills = $(this).find('.skills').text();
      var job_type = '$job_type';
      if(!logo){
         logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
+     
+     if(salary == 'Negotiable'){
+         salary = '<h5 class="salary">'+salary+'</h5>';
+     }else{
+         salary = '<h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5>';
+     }
+     // var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"> <div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main shadow mb-0"> <div class="app-box"> <div class="row"> <div class="col-md-3"> <div class="application-card-img img-main"> <a href="'+org_slug+'" title="'+company+'">'+logo+'</a> </div></div><div class="col-md-9"> <div class="comps-name-1 application-card-description"> <span class="skill"> <a href="'+slug+'" title="'+titles+'" class="application-title capitalize org_name">'+titles+'</a></span> <a href="/'+org_slug+'" style="text-decoration:none;"> <h4 class="org_name comp-name org_name">'+company+'</h4> </a> </div><span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'"> <i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span> <div class="detail-loc"> <div class="application-card-description job-loc">'+salary+'<h5>'+types+'</h5><h5><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div><div class="clear"></div></div></div></div><div class="row"> <div class="col-md-12 p-0"> <div class="tag-box"> <div class="tags"><span class="after">'+skills+'</span></div></div></div></div><div class="application-card-wrapper"> <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a> <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a> </div></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
