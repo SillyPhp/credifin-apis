@@ -167,7 +167,7 @@ use yii\widgets\Pjax;
                                             <!--                                        </li>-->
                                             <li>
                                                 <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>" data-key="<?= $arr['name'];?>">
-                                                    <img src="<= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
                                                 </a>
                                             </li>
                                             <!--                        <li>-->

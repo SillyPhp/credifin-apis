@@ -239,6 +239,7 @@ element.style {
     bottom: 108px;
     right: 45px;
 }
+.right-set{right:90px !important;}
 ");
 ?>
 
@@ -411,6 +412,9 @@ $script = <<<JS
     
     //event for chat icon click
     chat_icon_button.addEventListener('click', function(){
+            if($('#chat-box').hasClass('right-set')){
+                $('#chat-box').removeClass('right-set');
+            }
             if(chat_list.classList.contains('fadeout')){
                     chat_list.classList.remove('fadeout');
                     chat_list.classList.add('fadein');
@@ -612,6 +616,7 @@ $script = <<<JS
     
     $(document).on('click', '.open_chat', function(e){
         e.preventDefault();
+        $('#chat-box').addClass('right-set');
         
         var single_user_id = $(this).attr('data-id');
         var single_user_name = $(this).attr('data-key');
@@ -887,6 +892,9 @@ $(document).on('click','.closeBtn', function(){
         $('#chat-list').removeClass('hidden');
         $('#chat-list').removeClass('fadein');
         $('#chat-list').addClass('fadeout');
+    }
+    if($('#chat-box').hasClass('right-set')){
+        $('#chat-box').removeClass('right-set');
     }
 });
 JS;
