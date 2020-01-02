@@ -12,6 +12,13 @@ use common\models\JsonMachine\JsonMachine;
 
 class UsaJobsController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex($keywords = null)
     {
         return $this->render('index', ['keywords' => $keywords]);
@@ -47,16 +54,13 @@ class UsaJobsController extends Controller
                 $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                 $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
                 $data = UsaDepartments::find()
-                    ->select(['image','image_location'])
-                    ->where(['Value'=>$get[$i]['DepartmentName']])
+                    ->select(['image', 'image_location'])
+                    ->where(['Value' => $get[$i]['DepartmentName']])
                     ->asArray()
                     ->one();
-                if (!empty($data['image']) && !empty($data['image_location']))
-                {
-                    $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image.$data['image_location'].DIRECTORY_SEPARATOR.$data['image'];
-                }
-                else
-                {
+                if (!empty($data['image']) && !empty($data['image_location'])) {
+                    $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                } else {
                     $get[$i]['logo'] = null;
                 }
                 $i++;
@@ -108,16 +112,13 @@ class UsaJobsController extends Controller
                     $get[$i]['MatchedObjectId'] = $val['MatchedObjectId'];
                     $get[$i]['Duration'] = $val['MatchedObjectDescriptor']['PositionRemuneration'][0]['RateIntervalCode'];
                     $data = UsaDepartments::find()
-                        ->select(['image','image_location'])
-                        ->where(['Value'=>$get[$i]['DepartmentName']])
+                        ->select(['image', 'image_location'])
+                        ->where(['Value' => $get[$i]['DepartmentName']])
                         ->asArray()
                         ->one();
-                    if (!empty($data['image']) && !empty($data['image_location']))
-                    {
-                        $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image.$data['image_location'].DIRECTORY_SEPARATOR.$data['image'];
-                    }
-                    else
-                    {
+                    if (!empty($data['image']) && !empty($data['image_location'])) {
+                        $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                    } else {
                         $get[$i]['logo'] = null;
                     }
                     $i++;
@@ -136,61 +137,74 @@ class UsaJobsController extends Controller
         return trim($stringSplit1);
     }
 
-    public function actionFederal(){
+    public function actionFederal()
+    {
 
         return $this->render('federal');
     }
 
-    public function actionMilitary(){
+    public function actionMilitary()
+    {
 
         return $this->render('military');
     }
 
-    public function actionIndividualsWithDisabilities(){
+    public function actionIndividualsWithDisabilities()
+    {
 
         return $this->render('individuals-with-disabilities');
     }
 
-    public function actionNativeAmericans(){
+    public function actionNativeAmericans()
+    {
         return $this->render('native-americans');
     }
 
-    public function actionStudentsRecentGraduates(){
+    public function actionStudentsRecentGraduates()
+    {
 
         return $this->render('students-recent-graduates');
     }
 
-    public function actionSpecialAuthorities(){
+    public function actionSpecialAuthorities()
+    {
 
         return $this->render('special-authorities');
     }
 
-    public function actionThePublic(){
+    public function actionThePublic()
+    {
 
         return $this->render('the-public');
     }
 
-    public function actionNationalGuardReserves(){
+    public function actionNationalGuardReserves()
+    {
         return $this->render('national-guard-reserves');
     }
 
-    public function actionPeaceCorps(){
+    public function actionPeaceCorps()
+    {
         return $this->render('peace-corps');
     }
 
-    public function actionOverseasEmployees(){
+    public function actionOverseasEmployees()
+    {
         return $this->render('overseas-employees');
     }
 
-    public function actionVeterans(){
+    public function actionVeterans()
+    {
         return $this->render('veterans');
     }
 
-    public function actionSeniorExecutives(){
+    public function actionSeniorExecutives()
+    {
         return $this->render('senior-executives');
     }
 
-    public function actionDepartments(){
+    public function actionDepartments()
+    {
         return $this->render('departments');
     }
 
@@ -201,15 +215,15 @@ class UsaJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $d = UsaDepartments::find()
-                ->select(['Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['Value', 'total_applications', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->asArray()
                 ->orderBy(['total_applications' => SORT_DESC])
                 ->limit($limit)
                 ->offset($offset)
                 ->all();
             return [
-                'status'=>200,
-                'cards'=>$d
+                'status' => 200,
+                'cards' => $d
             ];
         }
     }
