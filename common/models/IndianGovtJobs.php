@@ -13,6 +13,7 @@ namespace common\models;
  * @property string $Position job title or position
  * @property string $Eligibility qualification
  * @property string $Pdf_link link to govt cdn pdf
+ * @property string $slug slug
  * @property string $Last_date last date to apply
  * @property string $job_id unique job id for website
  * @property string $Data content
@@ -43,7 +44,7 @@ class IndianGovtJobs extends \yii\db\ActiveRecord
             [['Position', 'Eligibility', 'Data'], 'string'],
             [['created_on'], 'safe'],
             [['job_enc_id', 'created_by'], 'string', 'max' => 100],
-            [['Organizations', 'Location', 'Pdf_link', 'Last_date', 'job_id'], 'string', 'max' => 200],
+            [['Organizations', 'Location', 'Pdf_link', 'slug', 'Last_date', 'job_id'], 'string', 'max' => 200],
             [['job_enc_id'], 'unique'],
             [['job_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],

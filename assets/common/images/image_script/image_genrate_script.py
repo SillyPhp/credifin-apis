@@ -2,12 +2,12 @@ import sys
 import textwrap
 from PIL import Image, ImageDraw, ImageFont
 
-image = Image.open(sys.argv[5])
+image = Image.open(sys.argv[4])
 draw = ImageDraw.Draw(image)
 # desired size 
-font = ImageFont.truetype('http://sneh.eygb.me/assets/common/images/image_script/GeoSlb712MdBTBold.ttf', size=50)
-font2 = ImageFont.truetype('http://sneh.eygb.me/assets/common/images/image_script/Gelasio-Regular.ttf', size=28)
-font3 = ImageFont.truetype('http://sneh.eygb.me/assets/common/images/image_script/GeoSlb712MdBTBold.ttf', size=90)
+font = ImageFont.truetype(sys.argv[5], size=50)
+font2 = ImageFont.truetype(sys.argv[6], size=28)
+font3 = ImageFont.truetype(sys.argv[7], size=90)
 # starting position of the message
 bounding_box = [930, 350, 1040, 450]
 x1, y1, x2, y2 = bounding_box
@@ -16,7 +16,7 @@ rec_box = [30,280,220,370]
 p1,q1,p2,q2 = rec_box
 job_title = sys.argv[2]
 company_name = sys.argv[1]
-icon_path = sys.argv[4]
+icon_path = sys.argv[9]
 canvas_name = sys.argv[3]
 color = 'rgb(0, 0, 0)' # black color
 # draw the message on the background
@@ -36,7 +36,7 @@ if icon_path == '':
     draw.rectangle(logo_box,fill ="#87ceeb", outline ="#ffff")
     draw.text((110,110,120,120), canvas_name,align='center', fill='#ffff', font=font3)
     draw = ImageDraw.Draw(image)
-    image.save('image_final.png', optimize=True, quality=100)
+    image.save(sys.argv[8], optimize=True, quality=100)
     print(1)
 else:
     icon = Image.open(icon_path)
@@ -44,6 +44,6 @@ else:
     back_img = image.copy()
     back_img.paste(icon, (30,30))  
     draw = ImageDraw.Draw(back_img)
-    back_img.save('image_final.png', optimize=True, quality=100)
+    back_img.save(sys.argv[8], optimize=True, quality=100)
     print(1)
       	

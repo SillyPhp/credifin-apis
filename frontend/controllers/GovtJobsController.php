@@ -12,6 +12,13 @@ use yii\web\HttpException;
 
 class GovtJobsController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
       return $this->render('index');
@@ -25,38 +32,45 @@ class GovtJobsController extends Controller
     public function actionDetail($id)
     {
         $get = IndianGovtJobs::find()
-                ->select(['job_enc_id','Organizations','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
-                ->where(['job_enc_id'=>$id])
+                ->select(['job_enc_id','slug','Organizations','Location','Position','Eligibility','Last_date','Pdf_link','Data'])
+                ->where(['slug'=>$id])
                 ->asArray()
                 ->indexBy('job_enc_id')
                 ->one();
         if (empty($get))
         {
-            return 'not found';
+            return 'Application Has Either Moved Or Deleted';
         }
         return $this->render('detail',['get'=>$get]);
     }
     public function actionGetData()
     {
         if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $keywords = Yii::$app->request->post('keywords');
-            $data = IndianGovtJobs::find()
-                    ->select(['job_enc_id id','Organizations','Location','Position','Eligibility','Last_date'])
+            $d = IndianGovtJobs::find()
+                    ->select(['job_enc_id id','slug','Organizations','Location','Position','Eligibility','Last_date'])
                     ->andFilterWhere([
                         'or',
                         'Organizations LIKE "%' . $keywords . '%"',
                         'Location LIKE "%' . $keywords . '%"',
                         'Position LIKE "%' . $keywords . '%"',
                         'Eligibility LIKE "%' . $keywords . '%"'
-                    ])
-                    ->limit($limit)
+                    ]);
+
+                  $data =  $d->limit($limit)
                     ->offset($offset)
                     ->orderBy(['created_on'=>SORT_DESC])
                     ->asArray()
                     ->all();
-            return json_encode($data);
+            return [
+                'status'=>200,
+                'cards'=>$data,
+                'total'=>$d->count(),
+                'count'=>sizeof($data)
+            ];
         }
     }
     private  function utf8ize($mixed) {
@@ -70,7 +84,7 @@ class GovtJobsController extends Controller
         return $mixed;
     }
 
-    public function actionInsertData($getPath,$authkey)
+    public function actionInsertData($getPath='https://ucf5e2e25dd692700dfc18eb1159.dl.dropboxusercontent.com/cd/0/get/AuobD2HY5EzCpm_a149ldbyYyj0C2CZlBivI4RKXlIAUYsNm53tjP8ceinb6yq3VZjhZ82wgtG_XCqiHKKzRrkZ7pR8g9vXcG9_Qk0hVUY8AP7gQ1lFM5I7hmuLZxugPkIs/file?dl=1#',$authkey='@empowerXaazs')
     {
         //for inserting data
         //$authkey='@empowerXaazs';
@@ -122,15 +136,18 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $d = IndianGovtDepartments::find()
-                ->select(['Value','total_applications','slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['Value','total_applications','slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->asArray()
-                ->orderBy(['total_applications' => SORT_DESC])
-                ->limit($limit)
+                ->orderBy(['total_applications' => SORT_DESC]);
+
+                $data =$d->limit($limit)
                 ->offset($offset)
                 ->all();
             return [
                 'status'=>200,
-                'cards'=>$d
+                'cards'=>$data,
+                'total'=>$d->count(),
+                'count'=>sizeof($data)
             ];
         }
     }
@@ -180,7 +197,7 @@ class GovtJobsController extends Controller
     {
         if ($slug!=null) {
             $data = IndianGovtDepartments::find()
-                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
+                ->select(['dept_enc_id','Value','total_applications','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo'])
                 ->where(['slug' => $slug])
                 ->asArray()->one();
             if ($data)
@@ -202,7 +219,7 @@ class GovtJobsController extends Controller
             $dept_id = Yii::$app->request->post('dept_id');
             $d = IndianGovtJobs::find()
                 ->alias('a')
-                ->select(['a.job_enc_id id','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
+                ->select(['a.job_enc_id id','a.slug','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','c.Value Organizations','Location','Position','Eligibility','Last_date'])
                 ->joinWith(['assignedIndianJobs b'=>function($b) use($dept_id)
                 {
                     $b->joinWith(['deptEnc c'],false);
@@ -210,6 +227,7 @@ class GovtJobsController extends Controller
                 }],false,'LEFT JOIN');
 
             $data = $d->limit($limit)
+                ->orderBy(['a.created_on'=>SORT_DESC])
                 ->offset($offset)
                 ->asArray()
                 ->all();
@@ -222,4 +240,5 @@ class GovtJobsController extends Controller
             ];
         }
     }
+
 }

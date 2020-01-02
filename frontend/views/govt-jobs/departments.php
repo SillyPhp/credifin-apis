@@ -25,14 +25,13 @@ use yii\helpers\Url;
 
 <?php
 echo $this->render('/widgets/mustache/departments_govt');
-$script = <<<JS
-var limit =40;
+$script = <<< JS
 var offset = 0;
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchDepartments(template=$('#departments_cards'),limit,offset+40,loader=false,loader_btn=true);
+  fetchDepartments(template=$('#departments_cards'),limit_dept=40,offset = offset+40,loader=false,loader_btn=true);
 })
-fetchDepartments(template=$('#departments_cards'),limit,offset,loader=true,loader_btn=false);
+fetchDepartments(template=$('#departments_cards'),limit_dept=40,offset=0,loader=true,loader_btn=false);
 JS;
 $this->registerJs($script);
 $this->registerCss("

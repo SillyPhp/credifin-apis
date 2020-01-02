@@ -111,6 +111,7 @@ endif;
                         </div>
                     </div>
                 </div>
+
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
@@ -118,6 +119,10 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
+                <?= $this->render('/widgets/applications/reminder-applications', [
+                        'app_reminder' => $app_reminder,
+                        'app_reminder_form' => $app_reminder_form,
+                ]);?>
 
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
@@ -412,6 +417,9 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.ps__rail-x{
+    display:block !important;
+}
 .quick > img{
     height:38px;
 }
