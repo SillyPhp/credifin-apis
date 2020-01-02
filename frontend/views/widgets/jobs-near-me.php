@@ -113,7 +113,7 @@ if ($type == 'jobs') {
                         <div class="application-card-img img-main">
                             <a href="{{organization_link}}" title="{{organization_name}}">
                                 {{#logo}}
-                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
+                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}" class="company_logo" id="{{logo}}">
                                 {{/logo}}
                                 {{^logo}}
                                 <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
@@ -798,7 +798,7 @@ $(document).on("click","#card-hover",function() {
      var last_date = $(this).find('.last-date').attr('id');
      var exp = $(this).find('.exp').text();
      var company =  $(this).find('.org_name').text();
-     var logo = $(this).find('.company-logo').attr('id');
+     var logo = $(this).find('.company_logo').attr('src');
      var logo_color = $(this).find('.company-logo').attr('color');
      var slug = $(this).find('.application-card-open').attr('id');
      var org_slug = $(this).find('#organization-slug').attr('class');
@@ -806,6 +806,7 @@ $(document).on("click","#card-hover",function() {
      var application_key = $(this).attr('data-key');
      var skills = $(this).find('.skills').text();
      var job_type = '$job_type';
+     console.log(company);
      if(!logo){
         logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
