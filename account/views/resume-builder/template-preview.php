@@ -2,21 +2,24 @@
 $this->params['header_dark'] = true;
 use yii\helpers\Url;
 use yii\helpers\Html;
-//foreach ($templates as $temp)
-//{
- echo $this->render('/widgets/cv-templates'.$templates[0]['template_path'].'');
-//}
+foreach ($templates as $temp)
+{
+ echo $this->render('/widgets/cv-templates'.$temp['template_path'].'');
+}
 ?>
+    <style type="text/css" id="style_template">
+
+    </style>
     <section>
         <div class="row">
             <div class="col-md-2 temp-left">
                 <div class="templates">
                     <?php foreach ($templates as $temp){ ?>
-                        <a href="#" class="temp_selector" id="<?= $temp['template_enc_id'] ?>">
+                        <a href="#" class="temp_selector" id="<?= $temp['unique_id'] ?>">
                             <div class="temp-main">
                                 <div class="temp-logo">
                                     <?php if (empty($temp['thumb_image'])): ?>
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>"/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/mockup.png'); ?>"/>
                                     <?php endif; ?>
                             </div>
                                 <div class="temp-text"><?= $temp['name']; ?></div>
@@ -80,9 +83,17 @@ margin:auto
 $script = <<<JS
 $(document).on('click','.temp_selector',function(e) {
   e.preventDefault();
-  
+  style_load(temp=$(this).attr("id"));
 })
-fetchTemplateData(template=$('#template_display_widget'),loader=true);
+function style_load(temp) {
+    console.log(temp);
+$.get('/assets/common/cv_templates/'+temp+'.css', function(css)
+{
+$('#style_template').html(css);
+fetchTemplateData(template=$('#template_display_widget'),loader=true,path=$('#'+temp+''));
+});
+}
+style_load(temp='template_1');
 var sub_header = $('.ey-sub-menu.ey-active-menu');
 var header_height;
 if(sub_header){
@@ -93,6 +104,26 @@ if(sub_header){
 function loadSideBar() {
     $('.temp-left').css('top', header_height);
     $('.temp-left').css('height', 'calc(100vh - ' + header_height + 'px)');
+}
+function fetchTemplateData(template,loader,path) {
+  $.ajax({
+  url:'/account/resume-builder/get-data',
+  method:'Post',
+  datatype:"json",
+  beforeSend: function(){
+      template.html("");
+      if (loader) {
+            $('.img_load').css('display','block');
+        }
+      },
+  success:function(response) {
+      if(response.status === 200) {
+          $('.img_load').css('display','none');
+          template.html(Mustache.render(path.html(),response.data));
+          utilities.initials();
+      }
+  }   
+  })
 }
 loadSideBar();
 var ps = new PerfectScrollbar('.temp-left');

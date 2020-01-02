@@ -3,6 +3,7 @@
 namespace account\controllers;
 
 use common\models\ResumeTemplates;
+use frontend\models\profiles\ResumeData;
 use yii\web\HttpException;
 use account\models\resumeBuilder\AddExperienceForm;
 use account\models\resumeBuilder\AddQualificationForm;
@@ -16,7 +17,6 @@ use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
 use common\models\UserInterests;
-use common\models\Users;
 use common\models\UserSkills;
 use common\models\UserWorkExperience;
 use common\models\Utilities;
@@ -42,55 +42,14 @@ class ResumeBuilderController extends Controller
 
         $addQualificationForm = new AddQualificationForm();
         $addExperienceForm = new AddExperienceForm();
-        $user = Users::find()
-            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->asArray()
-            ->one();
-
-        $experience = UserWorkExperience::find()
-            ->alias('a')
-            ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
-            ->innerJoin(\common\models\Cities::tableName() . 'b', 'b.city_enc_id = a.city_enc_id')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $education = UserEducation::find()
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $skillist = UserSkills::find()
-            ->alias('a')
-            ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted', 'a.user_skill_enc_id'])
-            ->joinWith(['skillEnc c'], false)
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $achievements = UserAchievements::find()
-            ->alias('a')
-            ->select(['a.user_achievement_enc_id', 'a.achievement'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $hobbies = UserHobbies::find()
-            ->alias('a')
-            ->select(['a.user_hobby_enc_id', 'a.hobby'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $interests = UserInterests::find()
-            ->alias('a')
-            ->select(['a.user_interest_enc_id', 'a.interest'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
+        $obj = new ResumeData();
+        $user = $obj->getUser();
+        $experience = $obj->getExperiece();
+        $education = $obj->getEducation();
+        $skillist = $obj->getSkills();
+        $achievements = $obj->getAcheivements();
+        $hobbies = $obj->getHobbies();
+        $interests = $obj->getInterest();
         return $this->render('resume', [
             'user' => $user,
             'addQualificationForm' => $addQualificationForm,
@@ -116,8 +75,6 @@ class ResumeBuilderController extends Controller
             $description = Yii::$app->request->post('description');
             $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
             $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
-
-
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $obj = new UserWorkExperience();
@@ -152,11 +109,8 @@ class ResumeBuilderController extends Controller
 
     public function actionAchievementRemove()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $achievement_rmv = UserAchievements::findOne([
                 'user_achievement_enc_id' => $id,
                 'is_deleted' => 0,
@@ -184,9 +138,7 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $hobby_rmv = UserHobbies::findOne([
                 'user_hobby_enc_id' => $id,
                 'is_deleted' => 0,
@@ -212,11 +164,8 @@ class ResumeBuilderController extends Controller
 
     public function actionSkillRemove()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $skill_rmv = UserSkills::findOne([
                 'user_skill_enc_id' => $id,
                 'is_deleted' => 0,
@@ -244,9 +193,7 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $interest_rmv = UserInterests::findOne([
                 'user_interest_enc_id' => $id,
                 'is_deleted' => 0,
@@ -274,8 +221,6 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
-
             $achievement_name = Yii::$app->request->post('achievement_name');
             $model = new ResumeAchievments();
             $already_exits = UserAchievements::findOne([
@@ -354,9 +299,7 @@ class ResumeBuilderController extends Controller
 
     public function actionInterests()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $interest_name = Yii::$app->request->post('interest_name');
             $model = new ResumeInterests();
             $already_exits = UserInterests::findOne([
@@ -720,42 +663,29 @@ class ResumeBuilderController extends Controller
         }
     }
 
-    private function availableTemplate($temp)
-    {
-        $a = ['template_1','template_2'];
-        if (in_array($temp,$a))
-            return true;
-        else
-            return false;
-    }
-
-    public function actionPreviewResume($id,$temp)
-    {
-        if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-            if ($this->availableTemplate($temp)) {
-                return $this->render('preview', ['id' => $id, 'template' => $temp]);
-            }
-        }
-        else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
-        }
-    }
-
     public function actionGetData()
     {
-        if (Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+        //if (Yii::$app->request->isAjax) {
+           // Yii::$app->response->format = Response::FORMAT_JSON;
+        $obj = new ResumeData();
+        $user = $obj->getUser();
+        $experience = $obj->getExperiece();
+        $education = $obj->getEducation();
+        $skillist = $obj->getSkills();
+        $achievements = $obj->getAcheivements();
+        $hobbies = $obj->getHobbies();
+        $interests = $obj->getInterest();
 
-            return [
-                'status'=>200,
-                'data'=>['name'=>'sneh']
-            ];
-        }
+//            return [
+//                'status'=>200,
+//                'data'=>['name'=>'sneh']
+//            ];
+       // }
     }
-    public function actionTemplatePreview()
+    public function actionPreview()
     {
         $templates = ResumeTemplates::find()
-            ->select(['template_enc_id','name','template_path','thumb_image','thumb_image_location'])
+            ->select(['template_enc_id','name','unique_id','template_path','thumb_image','thumb_image_location'])
             ->where(['is_deleted'=>0])
             ->asArray()
             ->all();

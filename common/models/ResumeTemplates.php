@@ -10,6 +10,7 @@ namespace common\models;
  * @property string $template_enc_id
  * @property string $name
  * @property string $template_path
+ * @property string $unique_id
  * @property string $thumb_image
  * @property string $thumb_image_location
  * @property int $is_deleted
@@ -34,10 +35,10 @@ class ResumeTemplates extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['template_enc_id', 'name', 'template_path', 'created_by'], 'required'],
+            [['template_enc_id', 'name', 'template_path', 'unique_id', 'created_by'], 'required'],
             [['is_deleted'], 'integer'],
             [['created_on'], 'safe'],
-            [['template_enc_id', 'name', 'template_path'], 'string', 'max' => 200],
+            [['template_enc_id', 'name', 'template_path', 'unique_id'], 'string', 'max' => 200],
             [['thumb_image', 'thumb_image_location'], 'string', 'max' => 50],
             [['created_by'], 'string', 'max' => 100],
             [['name'], 'unique'],
