@@ -432,6 +432,7 @@ body {
     border-radius: 10px;
     position:relative;
     background:#fff;
+    min-width: 330px;
 }
 .img{
     max-width: 66px;
