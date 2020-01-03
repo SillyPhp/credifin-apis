@@ -105,18 +105,20 @@ if ($type == 'jobs') {
 <script id="cards" type="text/template">
     {{#.}}
     <div class="col-md-12 col-sm-12 col-xs-12">
-        <div id="card-hover" data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+        <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="application-card-img img-main">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
+                            <a href="{{organization_link}}" title="{{organization_name}}" id="organization-slug">
                                 {{#logo}}
-                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}" class="company_logo" id="{{logo}}">
+                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}"
+                                     class="company_logo" id="{{logo}}">
                                 {{/logo}}
                                 {{^logo}}
-                                <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                <canvas class="user-icon company-logo" name="{{organization_name}}" width="80"
+                                        height="80"
                                         color="{{color}}" font="35px"></canvas>
                                 {{/logo}}
                             </a>
@@ -130,7 +132,7 @@ if ($type == 'jobs') {
                                 </a>
                             </span>
                             <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                                <h4 class="org_name comp-name">{{organization_name}}</h4>
                             </a>
                         </div>
                         {{#city}}
@@ -167,7 +169,7 @@ if ($type == 'jobs') {
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 p-0">
+                    <div class="col-md-12 p-0 skills-main">
                         <div class="tag-box">
                             <div class="tags">
                                 {{#skill}}
@@ -415,6 +417,9 @@ body {
     background-color: transparent !important;
     margin-bottom: 20px !important;
     border-radius: 10px;
+}
+.mb-0{
+    margin-bottom: 0px !important;
 }
 .not-found{
     max-width: 400px;
@@ -733,11 +738,19 @@ function card(){
                         });                          
                         
                     }
+                    for(var i=0; i<response.length; i++){
+                        if(response[i].skill != null){
+                            response[i].skill = response[i].skill.split(',')
+                        } else {
+                            response[i].skill = [];
+                        }
+                    }
                     var template = $('#cards').html();
                     var rendered = Mustache.render(template,response);
                     $('#near-me-cards').append(rendered);
                     utilities.initials();
                     vals.num += 20;
+                    checkSkills();
                     
                     if(response.length < 20){
                         $('#loadMore').hide();
@@ -797,16 +810,15 @@ $(document).on("click","#card-hover",function() {
      var locations =  $(this).find('.location').text();
      var last_date = $(this).find('.last-date').attr('id');
      var exp = $(this).find('.exp').text();
-     var company =  $(this).find('.org_name').text();
+     var company =  $(this).find('.comp-name').text();
      var logo = $(this).find('.company_logo').attr('src');
      var logo_color = $(this).find('.company-logo').attr('color');
-     var slug = $(this).find('.application-card-open').attr('id');
-     var org_slug = $(this).find('#organization-slug').attr('class');
+     var link = $(this).find('.application-card-open').attr('href');
+     var org_link = $(this).find('#organization-slug').attr('href');
      var application_id = $(this).attr('data-id');
      var application_key = $(this).attr('data-key');
-     var skills = $(this).find('.skills').text();
+     var skills = $(this).find('.skills-main').html();
      var job_type = '$job_type';
-     console.log(company);
      if(!logo){
         logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
@@ -819,7 +831,7 @@ $(document).on("click","#card-hover",function() {
          salary = '<h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5>';
      }
      // var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"> <div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main shadow mb-0"> <div class="app-box"> <div class="row"> <div class="col-md-3"> <div class="application-card-img img-main"> <a href="'+org_slug+'" title="'+company+'">'+logo+'</a> </div></div><div class="col-md-9"> <div class="comps-name-1 application-card-description"> <span class="skill"> <a href="'+slug+'" title="'+titles+'" class="application-title capitalize org_name">'+titles+'</a></span> <a href="/'+org_slug+'" style="text-decoration:none;"> <h4 class="org_name comp-name org_name">'+company+'</h4> </a> </div><span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'"> <i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span> <div class="detail-loc"> <div class="application-card-description job-loc">'+salary+'<h5>'+types+'</h5><h5><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div><div class="clear"></div></div></div></div><div class="row"> <div class="col-md-12 p-0"> <div class="tag-box"> <div class="tags"><span class="after">'+skills+'</span></div></div></div></div><div class="application-card-wrapper"> <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a> <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a> </div></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"> <div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main shadow mb-0"> <div class="app-box"> <div class="row"> <div class="col-md-3"> <div class="application-card-img img-main"> <a href="'+org_link+'" title="'+company+'">'+logo+'</a> </div></div><div class="col-md-9"> <div class="comps-name-1 application-card-description"> <span class="skill"> <a href="'+link+'" title="'+titles+'" class="application-title capitalize org_name">'+titles+'</a></span> <a href="'+org_link+'" style="text-decoration:none;"> <h4 class="org_name comp-name org_name">'+company+'</h4> </a> </div><span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'"> <i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span> <div class="detail-loc"> <div class="application-card-description job-loc">'+salary+'<h5>'+types+'</h5><h5><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div><div class="clear"></div></div></div></div><div class="row">'+skills+'</div><div class="application-card-wrapper"> <a href="'+link+'" class="application-card-open" title="View Detail">View Detail</a> <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a> </div></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
@@ -993,6 +1005,33 @@ $(document).on('click','.jd-close', function(){
     $('.near-me-filters').css('z-index','999');
 });
 var ps = new PerfectScrollbar('.near-me-filters');
+
+function checkSkills(){
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var i = 0;
+       $(elems).each(function() {
+            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+                $(this).addClass('hidden');
+            }
+            i++;
+       });
+       var skillsMain = $(this).find('.tags');
+       var hddn = $(this).find('.after.hidden');
+       var hasMore = $(this).find('span.more-skills');
+       if(hddn.length != 0){
+           if(elems.length === hddn.length){
+               $(elems[0]).removeClass('hidden');
+               var countMore = hddn.length - 1;
+               if(countMore != 0 && hasMore.length == 0){
+                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+               }
+           } else if(hasMore.length == 0) {
+                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+           }
+       }
+    });
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
