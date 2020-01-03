@@ -22,6 +22,7 @@ class ApplicationCards
 
         $data = EmployerApplications::find()
             ->alias('a')
+            ->distinct()
             ->select([
                 'a.application_enc_id',
                 'a.type',
