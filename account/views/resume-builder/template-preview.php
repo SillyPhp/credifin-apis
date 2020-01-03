@@ -35,12 +35,32 @@ foreach ($templates as $temp)
                 <div id="template_display_widget">
 
                 </div>
+                <div class="btn_block_area">
+                  <?= Html::beginForm(['download-resume'], 'post')
+                     .Html::hiddenInput('html', '',['id'=>'html_dtn'])
+                     .Html::hiddenInput('css', '',['id'=>'css_dtn'])
+                    . Html::submitButton(
+                    'Download PDF',
+                    ['class' => 'dtn_btn btn btn-primary']
+                    )
+                    . Html::endForm();
+                    ?>
+                </div>
             </div>
         </div>
     </section>
 
 <?php
 $this->registerCss('
+.dtn_btn
+{
+display:none;
+}
+.btn_block_area
+{
+text-align:center;
+margin-top:8px;
+}
 .page-content{
     padding:0px;
 }
@@ -86,11 +106,10 @@ $(document).on('click','.temp_selector',function(e) {
   style_load(temp=$(this).attr("id"));
 })
 function style_load(temp) {
-    console.log(temp);
 $.get('/assets/common/cv_templates/'+temp+'.css', function(css)
 {
 $('#style_template').html(css);
-fetchTemplateData(template=$('#template_display_widget'),loader=true,path=$('#'+temp+''));
+fetchTemplateData(template=$('#template_display_widget'),loader=true,path=$('#'+temp+''),temp=temp);
 });
 }
 style_load(temp='template_1');
@@ -105,26 +124,53 @@ function loadSideBar() {
     $('.temp-left').css('top', header_height);
     $('.temp-left').css('height', 'calc(100vh - ' + header_height + 'px)');
 }
-function fetchTemplateData(template,loader,path) {
+function fetchTemplateData(template,loader,path,temp) {
   $.ajax({
   url:'/account/resume-builder/get-data',
   method:'Post',
   datatype:"json",
   beforeSend: function(){
+      $('.dtn_btn').css('display','none');
       template.html("");
       if (loader) {
             $('.img_load').css('display','block');
         }
       },
   success:function(response) {
+      $('.dtn_btn').css('display','inline-block');
+      $('.dtn_btn').attr('value',temp);
       if(response.status === 200) {
           $('.img_load').css('display','none');
           template.html(Mustache.render(path.html(),response.data));
           utilities.initials();
+           var html = $('#template_display_widget').html();
+           var css = temp;
+          $('#html_dtn').val(html);
+          $('#css_dtn').val(css);
       }
   }   
   })
 }
+// $(document).on('click','.dtn_btn',function(e) {
+//   e.preventDefault();
+//   var html = $('#template_display_widget').html();
+//   var css = $(this).attr('value');
+//   $.ajax({
+//   url:'/account/resume-builder/download-resume',
+//   method:'POST',
+//   datatype:"json",
+//   data:{
+//       html:html,
+//       css:css
+//   },
+//   beforeSend: function(){
+//      
+//       },
+//   success:function(response) {
+//         console.log(response);
+//       }   
+//   })
+// })
 loadSideBar();
 var ps = new PerfectScrollbar('.temp-left');
 JS;

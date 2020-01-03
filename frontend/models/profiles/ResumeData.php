@@ -90,8 +90,41 @@ class ResumeData
         return $interests;
     }
 
-    public function getResumeData()
+    public function getResumeData($id)
     {
-
+       $out = Users::find()
+           ->alias('a')
+           ->select(['a.user_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
+           ->joinWith(['userSkills b'=>function($b)
+           {
+               $b->select(['b.created_by','c.skill']);
+               $b->andWhere(['b.is_deleted' => 0]);
+               $b->joinWith(['skillEnc c'], false);
+           }])
+           ->joinWith(['userWorkExperiences d'=>function($b)
+           {
+               $b->joinWith(['cityEnc e'],false);
+               $b->select(['d.created_by','d.experience_enc_id', 'd.title', 'd.description', 'd.company', 'd.from_date', 'd.to_date', 'd.is_current','e.name city']);
+           }])
+           ->joinWith(['userAchievements f'=>function($b)
+           {
+               $b->select(['f.user_enc_id', 'f.achievement']);
+               $b->andWhere(['f.is_deleted'=>0]);
+           }])
+           ->joinWith(['userHobbies g'=>function($b)
+           {
+               $b->select(['g.user_enc_id', 'g.hobby']);
+               $b->andWhere(['g.is_deleted'=>0]);
+           }],false)
+           ->joinWith(['userInterests h'=>function($b)
+           {
+               $b->select(['h.user_enc_id', 'h.interest']);
+               $b->andWhere(['h.is_deleted'=>0]);
+           }],false)
+           ->joinWith(['userEducations i'])
+           ->where(['a.user_enc_id'=>$id])
+           ->asArray()
+           ->one();
+       return $out;
     }
 }

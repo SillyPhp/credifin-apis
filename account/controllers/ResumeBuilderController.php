@@ -627,7 +627,7 @@ class ResumeBuilderController extends Controller
 
     public function actionDownloadResume()
     {
-        if (Yii::$app->request->isAjax) {
+        //if (Yii::$app->request->isAjax) {
             // get your HTML raw content without any layouts or scripts
             $content = Yii::$app->request->post('html');
             $temp = Yii::$app->request->post('css');
@@ -660,27 +660,19 @@ class ResumeBuilderController extends Controller
 
             // return the pdf output as per the destination setting
             return $pdf->render();
-        }
+        //}
     }
 
     public function actionGetData()
     {
-        //if (Yii::$app->request->isAjax) {
-           // Yii::$app->response->format = Response::FORMAT_JSON;
-        $obj = new ResumeData();
-        $user = $obj->getUser();
-        $experience = $obj->getExperiece();
-        $education = $obj->getEducation();
-        $skillist = $obj->getSkills();
-        $achievements = $obj->getAcheivements();
-        $hobbies = $obj->getHobbies();
-        $interests = $obj->getInterest();
-
-//            return [
-//                'status'=>200,
-//                'data'=>['name'=>'sneh']
-//            ];
-       // }
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $obj = new ResumeData();
+            return [
+                'status'=>200,
+                'data'=>$obj->getResumeData(Yii::$app->user->identity->user_enc_id)
+            ];
+        }
     }
     public function actionPreview()
     {
