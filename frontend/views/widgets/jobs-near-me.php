@@ -4,9 +4,9 @@ $this->params['header_dark'] = true;
 
 use yii\web\JqueryAsset;
 
-if($type == 'jobs'){
+if ($type == 'jobs') {
     $job_type = 'job';
-}elseif ($type == 'internships'){
+} elseif ($type == 'internships') {
     $job_type = 'internship';
 }
 
@@ -41,6 +41,7 @@ if($type == 'jobs'){
         </div>
     </div>
 </div>
+
 <div class="row m-0">
     <div class="col-md-6 near-me-map pr-0" data-spy="affix" data-offset-top="138">
         <div id="map"></div>
@@ -65,7 +66,8 @@ if($type == 'jobs'){
         </div>
 
         <div id="loading">
-            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+            <a href="#" id="loadMore"
+               class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                 <span class="load-more-text">Load More</span>
                 <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                      stroke="currentColor">
@@ -100,62 +102,91 @@ if($type == 'jobs'){
     </div>
 </div>
 
-
 <script id="cards" type="text/template">
     {{#.}}
-    <div class="col-md-12 col-sm-12 col-xs-12 pt-5">
-        <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_enc_id}}"
-             class="application-card-main">
-            {{#city_name}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;{{city_name}}
-                </span>
-            {{/city_name}}
-            {{^city_name}}
-            <span class="application-card-type location" data-lat="{{latitude}}" data-long="{{longitude}}"
-                  data-locations="">
-                <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                </span>
-            {{/city_name}}
-            <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                <div class="application-card-img">
-                    <a href="/{{organization_slug}}" id="organization-slug" class="{{organization_slug}}">
-                        {{#logo}}
-                        <img src="{{logo}}" id="{{logo}}" class="company-logo" alt="{{name}}">
-                        {{/logo}}
-                        {{^logo}}
-                        <canvas class="user-icon company-logo" name="{{name}}" width="80" height="80"
-                                color="{{color}}" font="35px"></canvas>
-                        {{/logo}}
-                    </a>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div id="card-hover" data-id="{{application_enc_id}}" data-key="{{application_enc_id}}-{{location_id}}"
+             class="application-card-main shadow">
+            <div class="app-box">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="application-card-img img-main">
+                            <a href="{{organization_link}}" title="{{organization_name}}" id="organization-slug">
+                                {{#logo}}
+                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}"
+                                     class="company_logo" id="{{logo}}">
+                                {{/logo}}
+                                {{^logo}}
+                                <canvas class="user-icon company-logo" name="{{organization_name}}" width="80"
+                                        height="80"
+                                        color="{{color}}" font="35px"></canvas>
+                                {{/logo}}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="comps-name-1 application-card-description">
+                            <span class="skill">
+                                <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
+                                    {{title}}
+                                </a>
+                            </span>
+                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
+                                <h4 class="org_name comp-name">{{organization_name}}</h4>
+                            </a>
+                        </div>
+                        {{#city}}
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}">
+                             <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
+                        </span>
+                        {{/city}}
+                        {{^city}}
+                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                              data-long="{{longitude}}"
+                              data-locations="">
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        </span>
+                        {{/city}}
+                        </span>
+                        <div class="detail-loc">
+                            <div class="application-card-description job-loc">
+                                {{#salary}}
+                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                                {{/salary}}
+                                {{^salary}}
+                                <h5 class="salary">Negotiable</h5>
+                                {{/salary}}
+                                {{#type}}
+                                <h5 class="type">{{type}}</h5>
+                                {{/type}}
+                                {{#experience}}
+                                <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                {{/experience}}
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="application-card-description">
-                    <a href="/<?= $job_type?>/{{slug}}"><h4 class="application-title">
-                            {{job_title}}</h4>
-                    </a>
-                    {{#salary}}
-                    <h5 id="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
-                    {{/salary}}
-                    {{^salary}}
-                    <h5 id="salary">Negotiable</h5>
-                    {{/salary}}
-                    {{#type}}
-                    <h5 class="type">{{type}}</h5>
-                    {{/type}}
-                    {{#experience}}
-                    <h5 class="exp"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                    {{/experience}}
+                <div class="row">
+                    <div class="col-md-12 p-0 skills-main">
+                        <div class="tag-box">
+                            <div class="tags">
+                                {{#skill}}
+                                <span class="after skills">{{.}}</span>
+                                {{/skill}}
+                                {{^skill}}
+                                <span class="after skills">Multiple Skills</span>
+                                {{/skill}}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right company-name">{{name}}</h4>
-            </div>
-
-            <div class="application-card-wrapper">
-                <a href="/<?= $job_type?>/{{slug}}" class="application-card-open" id="{{slug}}">View Detail</a>
-                <a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                <div class="application-card-wrapper">
+                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
+                                class="fas fa-plus"></i>&nbsp;</a>
+                </div>
             </div>
         </div>
     </div>
@@ -373,6 +404,178 @@ $this->registerCss('
 body {
   scroll-behavior: smooth;
 }
+/*new card css*/
+.application-card-description{
+    margin:0 0 0 14px !important;
+    width:100% !important;
+}
+.application-card-description h5{
+    margin-top:0px !important;
+    margin-bottom: 8px !important;
+}
+.application-card-main {
+    background-color: transparent !important;
+    margin-bottom: 20px !important;
+    border-radius: 10px;
+}
+.mb-0{
+    margin-bottom: 0px !important;
+}
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
+.app-box {
+    text-align: left;
+    padding: 10px;
+    border-radius: 10px;
+    position:relative;
+    background:#fff;
+}
+.img{
+    max-width: 66px;
+}
+.cover-box{
+    display: inline-block;
+    padding-left: 13px;
+}
+.comps-name-1{
+    display: block;
+    vertical-align: middle;
+    padding-left: 12px;
+    padding-top: 15px;
+}
+.org_name{display:block;}
+.skill a{
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+}
+.comp-name{
+    font-weight: 700;
+    font-size: 15px;
+    color:#0173b2;
+    margin:0;
+    font-family:roboto;
+}
+.detail-loc{
+    margin-top:5px;
+}
+.location{
+    margin-right: 4px;
+}
+.fa-inr{
+    color:lightgray;
+    margin-right: 10px;
+
+}
+.city, .city i{
+    color: #fff;
+}
+.show-responsive{
+    display:none;
+}
+
+.job-fill{
+    padding: 5px 10px 4px !important;
+    margin: 3px !important;
+    background-color:#ff7803 !important;
+    color: #fff !important;
+    border-radius: 0px 10px 0px 10px !important;
+    float: right !important;
+    position:absolute !important;
+    right: 2px !important;
+    top: -13px !important;
+}
+
+.clear{
+    clear:both;
+}
+
+.sal{
+    margin-right: 5px;
+}
+
+.salary{
+    font-family:roboto;
+}
+
+.tag-box{
+    border-top: 1px solid lightgray;
+    padding-left:15px;
+    padding-top:10px;
+}
+
+.tags{
+    font-size: 17px;
+    color:gray;
+    font-family: Georgia !important;
+}
+.after{
+    padding-right: 25px;
+    padding-left: 16px;
+}
+.after{
+    background: #eee;
+    border-radius: 3px 0 0 3px;
+    color: #777;
+    display: inline-block;
+    height: 26px;
+    line-height: 25px;
+    padding: 0 21px 0 11px;
+    position: relative;
+    margin: 0 9px 3px 0;
+    text-decoration: none;
+    -webkit-transition: color 0.2s;
+}
+.after::after{
+    background: #fff;
+    border-bottom: 13px solid transparent;
+    border-left: 10px solid #eee;
+    border-top: 13px solid transparent;
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.city-box{
+    padding-bottom:5px;
+}
+.ADD-more{
+    background-color: #eeeeee;
+    padding: 4px 10px 4px 10px;
+    border-radius: 5px;
+}
+.img-main{
+    display: inline-block;
+}
+.comps-name-1{
+    float: none;
+    margin: 0px !important;
+}
+.more-skills{
+    background-color: #00a0e3;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+@media only screen and (max-width: 360px){
+    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+}
+@media only screen and (max-width: 768px){
+    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+}
+@media only screen and (max-width: 974px){
+    .salary{ 
+        padding-left: 16px;
+    }
+    .city-box{padding-left: 18px; padding-bottom: 10px;}
+    .hide-responsive{display:none;}
+    .show-responsive{display:inline;}
+    .hide-resp{display:none;}
+
+}
 ');
 $controller = Yii::$app->controller->id;
 $script = <<< JS
@@ -535,11 +738,19 @@ function card(){
                         });                          
                         
                     }
+                    for(var i=0; i<response.length; i++){
+                        if(response[i].skill != null){
+                            response[i].skill = response[i].skill.split(',')
+                        } else {
+                            response[i].skill = [];
+                        }
+                    }
                     var template = $('#cards').html();
                     var rendered = Mustache.render(template,response);
                     $('#near-me-cards').append(rendered);
                     utilities.initials();
                     vals.num += 20;
+                    checkSkills();
                     
                     if(response.length < 20){
                         $('#loadMore').hide();
@@ -592,27 +803,35 @@ $(document).on("click","#card-hover",function() {
      }
     
      var types = $(this).find('.type').text();
-     var salary = $(this).find('#salary').text();
+     var salary = $(this).find('.salary').text();
      var lat = $(this).find('.location').attr('data-lat');
      var lon = $(this).find('.location').attr('data-long');
      var titles = $(this).find('.application-title').text();
      var locations =  $(this).find('.location').text();
      var last_date = $(this).find('.last-date').attr('id');
      var exp = $(this).find('.exp').text();
-     var company =  $(this).find('.company-name').text();
-     var logo = $(this).find('.company-logo').attr('id');
+     var company =  $(this).find('.comp-name').text();
+     var logo = $(this).find('.company_logo').attr('src');
      var logo_color = $(this).find('.company-logo').attr('color');
-     var slug = $(this).find('.application-card-open').attr('id');
-     var org_slug = $(this).find('#organization-slug').attr('class');
+     var link = $(this).find('.application-card-open').attr('href');
+     var org_link = $(this).find('#organization-slug').attr('href');
      var application_id = $(this).attr('data-id');
      var application_key = $(this).attr('data-key');
+     var skills = $(this).find('.skills-main').html();
      var job_type = '$job_type';
      if(!logo){
         logo = '<canvas class="user-icon company-logo" name="'+$.trim(company)+'" width="80" height="80"color="'+logo_color+'" font="35px"></canvas>'
      }else{
         logo = '<img class="side-bar_logo" src="' + logo + '" height="40px">';
      }
-     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
+     
+     if(salary == 'Negotiable'){
+         salary = '<h5 class="salary">'+salary+'</h5>';
+     }else{
+         salary = '<h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5>';
+     }
+     // var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"><div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main in-map"><span class="application-card-type location"><i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span><div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom"><div class="application-card-img"><a href="/'+org_slug+'">'+logo+'</a></div><div class="application-card-description"><a href="/'+job_type+'/'+slug+'"><h4 class="application-title">'+titles+'</h4></a><h5><i class="fas fa-rupee-sign"></i>&nbsp;'+salary+'</h5><h5 class="type">'+types+'</h5><h5 class="exp"><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div></div><h4 class="col-md-12 org_name text-right pr-10 company-name">'+company+'</h4><div class="application-card-wrapper"><a href="/'+job_type+'/'+slug+'" class="application-card-open">View Detail</a><a href="#" class="application-card-add">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a></div></div></div>';
+     var contentString = '<div class="col-md-12 col-sm-12 col-xs-12 p-0"> <div data-id="'+application_id+'" data-key="'+application_key+'" class="application-card-main shadow mb-0"> <div class="app-box"> <div class="row"> <div class="col-md-3"> <div class="application-card-img img-main"> <a href="'+org_link+'" title="'+company+'">'+logo+'</a> </div></div><div class="col-md-9"> <div class="comps-name-1 application-card-description"> <span class="skill"> <a href="'+link+'" title="'+titles+'" class="application-title capitalize org_name">'+titles+'</a></span> <a href="'+org_link+'" style="text-decoration:none;"> <h4 class="org_name comp-name org_name">'+company+'</h4> </a> </div><span class="job-fill application-card-type location city" data-lat="'+lat+'" data-long="'+lon+'"> <i class="fas fa-map-marker-alt"></i>&nbsp;'+locations+'</span> <div class="detail-loc"> <div class="application-card-description job-loc">'+salary+'<h5>'+types+'</h5><h5><i class="far fa-clock"></i>&nbsp;'+exp+'</h5></div><div class="clear"></div></div></div></div><div class="row">'+skills+'</div><div class="application-card-wrapper"> <a href="'+link+'" class="application-card-open" title="View Detail">View Detail</a> <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a> </div></div></div></div>';
      infowindow = new google.maps.InfoWindow({
       content: contentString
      });
@@ -786,6 +1005,33 @@ $(document).on('click','.jd-close', function(){
     $('.near-me-filters').css('z-index','999');
 });
 var ps = new PerfectScrollbar('.near-me-filters');
+
+function checkSkills(){
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var i = 0;
+       $(elems).each(function() {
+            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+                $(this).addClass('hidden');
+            }
+            i++;
+       });
+       var skillsMain = $(this).find('.tags');
+       var hddn = $(this).find('.after.hidden');
+       var hasMore = $(this).find('span.more-skills');
+       if(hddn.length != 0){
+           if(elems.length === hddn.length){
+               $(elems[0]).removeClass('hidden');
+               var countMore = hddn.length - 1;
+               if(countMore != 0 && hasMore.length == 0){
+                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+               }
+           } else if(hasMore.length == 0) {
+                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+           }
+       }
+    });
+}
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
