@@ -35,7 +35,8 @@ class SchedularController extends Controller
                     'application_id' => $id,
                 ]);
         } else {
-            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+            return $this->render('candidate-detail');
+//            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -745,6 +746,26 @@ class SchedularController extends Controller
 
             return json_encode($fixed_result);
         }
+    }
+
+    public function actionGetUsersData(){
+        $interviews = InterviewCandidates::find()
+            ->alias('a')
+            ->select(['a.scheduled_interview_enc_id','f.name title'])
+            ->joinWith(['appliedApplicationEnc b' => function($b){
+//                $b->joinWith(['createdBy c']);
+                $b->joinWith(['applicationEnc d' => function($d){
+                    $d->joinWith(['title e' => function ($e) {
+                        $e->joinWith(['categoryEnc f'], false);
+                    }], false);
+                }], false);
+            }])
+            ->joinWith(['scheduledInterviewEnc c'])
+            ->where(['b.created_by' => Yii::$app->user->identity->user_enc_id])
+            ->asArray()
+            ->all();
+        print_r($interviews);
+        exit();
     }
 
     public function actionGetDataToUpdate()
