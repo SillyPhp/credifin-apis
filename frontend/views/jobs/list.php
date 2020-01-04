@@ -1,14 +1,14 @@
 <?php
 if (Yii::$app->request->get('location')){
-    $this->title = 'Jobs in '.ucwords(str_replace("-"," ",Yii::$app->request->get('location'))).' - Empoweryouth.com';
+    $this->title = 'Jobs in '.ucwords(str_replace("-"," ",Yii::$app->request->get('location'))).' | Empoweryouth.com';
 }
 elseif(Yii::$app->request->get('keyword'))
 {
-    $this->title = ucwords(str_replace("-"," ",Yii::$app->request->get('keyword'))).' Jobs - Empoweryouth.com';
+    $this->title = ucwords(str_replace("-"," ",Yii::$app->request->get('keyword'))).' Jobs | Empoweryouth.com';
 }
 else
 {
-    $this->title = 'Jobs - Empoweryouth.com';
+    $this->title = 'Jobs | Empoweryouth.com';
 }
 $this->params['header_dark'] = true;
 $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
