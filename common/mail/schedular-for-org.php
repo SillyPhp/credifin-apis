@@ -166,23 +166,15 @@ $this->registerCss('
             <div class="header-icon"><img src="<?= Url::to('@commonAssets/email_service/header-icon.png', 'https'); ?>" class="responsive"></div>
         </div>
         <div class="jboxs">
-            <div class="date-main">
-                <div class="month-detail">
-                    January
-                </div>
-                <div class="day-detail">
-                    5
-                </div>
-            </div>
             <div class="title">
-                <h2><?= $name;?> you are Invited to take interview for <span>"<?= $data['title']?>"</span> job.</h2>
+                <h2>New Interview Scheduled By Your Organization</h2>
             </div>
             <div class="clear">
                 <div class="head-main">
                     Job Title:
                 </div>
                 <div class="desc-main">
-                    <?= $data['title']?>
+                    <?= $job; ?>
                 </div>
             </div>
             <div class="clear">
@@ -196,10 +188,6 @@ $this->registerCss('
                     }
                     ?>
                 </div>
-            </div>
-            <div class="clear text-center">
-                <a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=accept','https')?>" class="link primary">Accept</a>
-                <a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=reject','https')?>" class="link danger">Decline</a>
             </div>
         </div>
 
