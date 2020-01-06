@@ -2,39 +2,9 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
-
-$this->title = Yii::t('frontend', "India’s No.1 Jobs & Internships Site");
 $this->params['header_dark'] = false;
-$keywords = 'Empower youth,Jobs,Jobs near me,Job Search,Govt Jobs,Free Job alert,Naukri,Jobs in Delhi,Jobs in Mumbai';
-$description = "India's no. 1 free Job Portal her's you can get, Pharma Jobs, Finance Jobs, IT Jobs, Engernering Jobs, Digital Marketing Jobs, Manufacturing Jobs, and many Jobs & Internships.";
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
-
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="slider">
     <div class="block no-padding">
         <div class="container fluid">
@@ -42,16 +12,15 @@ $this->params['seo_tags'] = [
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt="Empower Youth"/></li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
-                                        alt="Empower Youth"/>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>
                             </li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt="Empower Youth"/></li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>
+                            </li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
+                            </li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -62,15 +31,22 @@ $this->params['seo_tags'] = [
                                         <div class="row no-gape">
                                             <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
                                                 <div class="job-field">
-                                                    <input type="text" name="keyword" placeholder="Keywords"/>
+                                                    <input id="search-input" type="text" name="keyword"
+                                                           placeholder="Keywords"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-2  col-md-3 col-sm-4 col-xs-5">
-                                                <button type="submit">Search <i class="fas fa-search"></i></button>
+                                                <button type="submit" id="search-submit">Search <i
+                                                            class="fas fa-search"></i></button>
                                             </div>
                                         </div>
                                     </form>
                                 </div><!-- Job Search 2 -->
+                                <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
+                                    <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
+                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
+                                            href="/blog">Blogs</a>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -151,7 +127,7 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer" title="Jobs"/>
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -161,10 +137,19 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships"
-                                 title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me" title="Internships"/>
                         </div>
                         <div class="ser-heading">Internships</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/learning'); ?>">
+                    <div class="service-box ser-box-yellow">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>" alt="international internships, web developer career, software engineer career">
+                        </div>
+                        <div class="ser-heading">Learning Hub</div>
                     </div>
                 </a>
             </div>
@@ -172,10 +157,29 @@ $this->params['seo_tags'] = [
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews"
-                                 title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="research internship, software developer career internship websites, best learning websites" title="Reviews"/>
                         </div>
                         <div class="ser-heading">Reviews</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/training-programs'); ?>">
+                    <div class="service-box ser-box-maroon">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>" alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
+                        </div>
+                        <div class="ser-heading">Training Courses</div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <a href="<?= Url::to('/career-advice'); ?>">
+                    <div class="service-box ser-box-green">
+                        <div class="ser-icons">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>" alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
+                        </div>
+                        <div class="ser-heading">Career Advice</div>
                     </div>
                 </a>
             </div>
@@ -183,27 +187,8 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 <!---->
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
-<!---->
-<section class="fixed-bttn">
-    <div class="pos-ab">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="fx-heading">
-                        Its Free To Get Hired On Empower Youth
-                    </h1>
-                    <div class="post-job-bttn">
-                        <a href="/account/dashboard" id="myBttn" class="hvr-float-shadow">
-                            Get Hired
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!---->
 <section>
     <div class="block">
         <div class="container">
@@ -252,7 +237,7 @@ $this->params['seo_tags'] = [
                                             <div class="job-title-sec">
                                                 <div class="c-logo">
                                                     <a href="/dsbedutech">
-                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.png') ?>"
+                                                        <img src="<?= Url::to('@eyAssets/images/pages/index2/dsb.jpg') ?>"
                                                              alt="DSB EduTech" title="DSB EduTech"/>
                                                     </a>
                                                 </div>
@@ -353,7 +338,6 @@ $this->params['seo_tags'] = [
                                             <div class="intern-tag">Internship</div>
                                         </a>
                                     </div>
-                                    <!-- Job -->
                                     <div class="job-listing wtabs">
                                         <a href="/internship/assistant-director-98591554009460">
                                             <div class="job-title-sec">
@@ -540,112 +524,165 @@ $this->params['seo_tags'] = [
     </div>
 </section>
 
-
-<!---------------how it works-------------->
-<section class="how-it-works">
+<section>
     <div class="container">
-        <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
-        <div class="row ">
-            <div class="col-md-3">
-                <div class="fade-in one">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
-                             title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
+        <?=
+        $this->render('/widgets/featured-jobs', [
+            'featured_jobs' => $featured_jobs
+        ])
+        ?>
+    </div>
+</section>
+
+<?= $this->render('/widgets/whatsapp-widget') ?>
+<section>
+    <div class="container ">
+        <div class="cat-padding">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="heading-style">Top Learning Topics</div>
                     </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Create your Exclusive Profile</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="fade-in two">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
-                             title="Get discovered by top employers" alt="Get discovered by top employers"/>
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading"> Get discovered by top employers</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="fade-in three">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>" title="Evaluate Offer"
-                             alt="Evaluate Offer"/>
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Evaluate Offer</div>
+                    <div class="col-md-6 col-sm-12 col-xs-12">
+                        <div class="type-1">
+                            <div>
+                                <a href="/learning/categories" class="btn btn-3">
+                                    <span class="txt-cate">View all</span>
+                                    <span class="round"><i class="fas fa-chevron-right"></i></span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="fade-in four">
-                    <div class="how-icon">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
-                             title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
-                    </div>
-                    <div class="how-text-box">
-                        <div class="how-heading">Receive Custom Job Notifications</div>
-                    </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="popular-cate" id="categories"></div>
                 </div>
             </div>
         </div>
-        <?php
-        if (Yii::$app->user->isGuest) {
-            ?>
-            <div class="row">
-                <div class="signupbttns">
-                    <a href="/login" class="login-bttn" title="Login">Login</a>
-                    <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
+    </div>
+</section>
+
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
+
+<?= $this->render('/widgets/top-cities', [
+    'cities_jobs' => $cities_jobs
+]) ?>
+<!---------------how it works-------------->
+<?php
+if (Yii::$app->user->isGuest) {
+    ?>
+    <section class="how-it-works">
+        <div class="container">
+            <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+            <div class="row ">
+                <div class="col-md-3">
+                    <div class="fade-in one">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
+                                 title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Create your Exclusive Profile</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fade-in two">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
+                                 title="Get discovered by top employers" alt="Get discovered by top employers"/>
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading"> Get discovered by top employers</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fade-in three">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
+                                 title="Evaluate Offer"
+                                 alt="Evaluate Offer"/>
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Evaluate Offer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fade-in four">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
+                                 title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Receive Custom Job Notifications</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <?php
-        }
-        ?>
-    </div>
-    </div>
-</section>
+            if (Yii::$app->user->isGuest) {
+                ?>
+                <div class="row">
+                    <div class="signupbttns">
+                        <a href="/login" class="login-bttn" title="Login">Login</a>
+                        <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+    <?php
+}
+?>
 <!--how it works ends-->
+
+
 <!--new section starts-->
 <?= $this->render('/widgets/companies-with-us'); ?>
 <!--new section ends-->
-<?= $this->render('/widgets/partner-with-us-and-feedback-form', [
-    'feedbackFormModel' => $feedbackFormModel,
-    'partnerWithUsModel' => $partnerWithUsModel,
-]); ?>
-<section class="moble-bg">
+<section class="j-tweets">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6">
-                <div class="pos-rel">
-                    <div class="pos-middle">
-                        <div class="mob-heading"> Download our App today</div>
-                        <div class="mob-sub-heading"> Find your dream job or internship On-The-Go Using Empower Youth
-                            app
-                        </div>
-                        <div class="app-btn">
-                            <a href='https://play.google.com/store/apps/details?id=com.dsbedutech.empoweryouth1'
-                               title='Get it on Google Play'>
-                                <img alt='Get it on Google Play'
-                                     src='https://play.google.com/intl/en/badges/images/generic/en_badge_web_generic.png'
-                                     title='Download Empower Youth App on Google Play'/>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <h1 class="heading-style" id="tweetHeading">Tweets</h1>
             </div>
             <div class="col-md-6 col-sm-6">
-                <div class="pos-rel">
-                    <div class="mob-pos">
-                        <img src="<?= Url::to('@eyAssets/images/pages/index2/phone.png') ?>"
-                             title="Empower Youth Mobile" alt="Empower Youth Mobile">
-                    </div>
+                <div class="tweetLinks">
+                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>
+                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tweet-btn">
+                    <button type="button" id="jobtweet" onclick="jobTweet()">Jobs</button>
+                    /
+                    <button type="button" id="interntweet" onclick="internTweet()">Internships</button>
+                </div>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
+        ?>
     </div>
 </section>
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -654,7 +691,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -668,7 +705,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -695,7 +732,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="internships">
                     <?php foreach ($internship_profiles as $ip) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $ip['name']); ?>"
                                title="<?= $ip['name']; ?> Internships">
                                 <?= $ip['name']; ?> Internships
                             </a>
@@ -709,8 +746,63 @@ $this->params['seo_tags'] = [
 </section>
 
 <?php
-//echo $this->render('/widgets/employers-landing-page-floating-widget');
+echo $this->render('/widgets/info-stats');
+echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
+.j-tweets{
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
+.tweetLinks{
+    text-align: right;
+    margin-top:30px;
+}
+.cat-padding{
+    padding-bottom:20px;
+}
+.tweetLinks a{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left:5px;
+     background: #fff;
+}
+.tweetLinks a:hover{
+       background-color: #00a0e3;
+    color: #fff;
+}
+.tweet-btn{
+    padding-bottom:20px;
+    marginn-top:-10px;
+}
+.tweet-btn button{
+    background:none;
+    border:none;
+    font-size: 18px;
+    font-family: lora;  
+}
+.tweet-btn button:hover{
+    color:#00a0e3;
+}
+.job-search > span{
+    color:#fff !important;
+}
+.feature-links a{
+    color: #d5d8f3;
+    padding-right: 5px;    
+}
+.feature-links a:hover{
+    color:#ff7803;
+}
 .pos-rel{
     position:relative;
     min-height:300px;
@@ -733,9 +825,11 @@ $this->registerCss('
     max-height:300px;
 }
 .moble-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-    background-repeat:no-repeat;
-    background-size:cover;
+background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . '); 
+background-attachment:fixed;
+//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
+//    background-repeat:no-repeat;
+//    background-size:cover;
 }
 .mob-heading{
     font-size:33px;
@@ -980,7 +1074,7 @@ $this->registerCss('
 
 /*services section starts*/
 .services{
-    padding: 25px 0 25px 0; 
+    padding: 0px 0 25px 0; 
     text-align:center !important;
 }
 .service-box{ 
@@ -998,9 +1092,9 @@ $this->registerCss('
     margin: auto;
     margin-bottom:20px;
     box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
+    background-size: 100% !important;
+    background-position: 0px -8px !important;
+    background-repeat:no-repeat !important;
 }
 .service-box:hover{
     box-shadow: 0px 2px 13px 3px #ddddddb8;
@@ -1013,61 +1107,39 @@ $this->registerCss('
 }
 .ser-box-orange{
     background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
 }
 .ser-box-orange:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
     border-top:5px solid #00a0e3;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
     color:#00a0e3;
 }
 .ser-box-purple{
     background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100%;
-    background-position: 0px -8px;
-    background-repeat:no-repeat;
 }
 .ser-box-purple:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
     border-top:5px solid #5E4795;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
     color:#5E4795;
 }
-
+.ser-box-yellow{
+    background: url(' . Url::to('@eyAssets/images/pages/index2/learningbg.png') . ');
+}
+.ser-box-yellow:hover{
+    border-top: 5px solid #f8b321;
+    color:#f8b321
+}
+.ser-box-maroon{
+    background: url(' . Url::to('@eyAssets/images/pages/index2/trainingbg.png') . ');
+}
+.ser-box-maroon:hover{
+    border-top: 5px solid #c76692;
+    color:#c76692
+}
+.ser-box-green{
+    background: url(' . Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png') . ');
+}
+.ser-box-green:hover{
+    border-top: 5px solid #047c7d;
+    color:#047c7d
+}
 .ser-icons{
     text-align:center;
 }
@@ -1094,7 +1166,7 @@ $this->registerCss('
 }
 .how-heading{
     font-size: 15px;
-    font-weight:300;
+    font-weight:400;
     font-family:Roboto;
 }
 .steps-row{
@@ -1172,7 +1244,86 @@ how-icon{
 }
 
 /*---make a basic box ---*/
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.txt-cate {
+    font-size: 14px;
+    line-height: 1.45;
+}
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+/*<!---- view-all button css ends --->*/
 
 @media screen and (min-width: 993px){
     .box-border{
@@ -1212,6 +1363,10 @@ how-icon{
     }
     .job-search-sec{
         min-width:100%;
+    }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
     }
 }
 .job-field select{
@@ -1261,14 +1416,13 @@ how-icon{
     margin: 0;
     display: inline-block;
     border: 1px solid #e7e7e7;
-    
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
-
-    padding: 0 4px;
+    background: #00a0e3;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+    padding: 0 8px;
 }
 .nav.nav-tabs > li {
     float: none;
@@ -1281,19 +1435,26 @@ how-icon{
     font-weight:400;
     font-family:Roboto;
     letter-spacing: 0px;
-    padding: 15px 30px;
-    
+    padding: 12px 21px;
+    color:#fff;
     -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    -ms-border-radius: 8px;
-    -o-border-radius: 8px;
-    border-radius: 8px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 9px;
+    margin-bottom: 3px;
+    border-left:none !important;
+}
+.nav.nav-tabs > li a:hover{
+    border-color:transparent;
+    background:#fff;
+    color:#00a0e3;
 }
 .nav.nav-tabs > li a.current {
-    color: #ffffff;
-    background-color: #00a0e3;
+    color: #00a0e3 !important;
+    background-color: #fff;
     font-family:Roboto;
     font-weight:400;
 }
@@ -1575,7 +1736,9 @@ how-icon{
     -o-border-radius: 0px 8px 8px 0px !important;
     border-radius: 0px 8px 8px 0px !important;
 }
-
+.search-job2 form button{
+    font-family:roboto;
+}
 .list-heading{
     font-size:16px;
     font-weight:500;
@@ -1668,14 +1831,15 @@ $script = <<< JS
         $("#"+tab_id).addClass('current');
     });
 
-window.onscroll = function() {scrollFunction()};
-function scrollFunction() {
-  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-    document.getElementById("myBttn").style.display = "block";
-  } else {
-    document.getElementById("myBttn").style.display = "none";
-  }
-}
+
+// window.onscroll = function() {scrollFunction()};
+// function scrollFunction() {
+//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+//     document.getElementById("myBttn").style.display = "block";
+//   } else {
+//     document.getElementById("myBttn").style.display = "none";
+//   }
+// }
         
   jQuery(function($) {
   $('.main-slider-sec').slick({
@@ -1690,6 +1854,13 @@ function scrollFunction() {
 	});
 });
 
+$(document).on('click','#search-submit',function() {
+   var value = $('#search-input').val();
+   if(value == ''){
+       return false;
+   }
+});
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
@@ -1697,8 +1868,60 @@ $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
+    var twitterTweets = document.querySelectorAll('.twitter-cards');
+    const settings = {
+        jobs: {
+            color: "#00a0e3",
+            title: "Job Tweets",
+            viewAllLink: "/tweets/jobs",
+            postLink: "/tweets/job/create"
+        },
+        internships: {
+            color: "#00a0e3",
+            title: "Internship Tweets",
+            viewAllLink: "/tweets/internships",
+            postLink: "/tweets/internship/create"
+        }
+    };
+    window.onload = function () {
+        jobTweet();
+    }
+
+    function jobTweet() {
+        document.getElementById('jobtweet').style.color = "#00a0e3";
+        document.getElementById('interntweet').style.color = "#000";
+        document.getElementById('tweetHeading').innerHTML = "Job Tweets";
+        document.getElementById('tweetAllLink').href = "/tweets/jobs";
+        document.getElementById('tweetPostLink').href = "/tweets/job/create";
+
+        for (var i = 0; i < twitterTweets.length; i++) {
+            if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+                twitterTweets[i].style.display = "none";
+            } else if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+                twitterTweets[i].style.display = "block";
+            }
+        }
+    }
+
+    function internTweet() {
+        document.getElementById('interntweet').style.color = "#00a0e3";
+        document.getElementById('jobtweet').style.color = "#000";
+        document.getElementById('tweetHeading').innerHTML = "Internship Tweets";
+        document.getElementById('tweetAllLink').href = "/tweets/internships";
+        document.getElementById('tweetPostLink').href = "/tweets/internship/create";
+
+        for (var i = 0; i < twitterTweets.length; i++) {
+            if (twitterTweets[i].getAttribute('data-id') == "Jobs") {
+                twitterTweets[i].style.display = "none";
+            } else if (twitterTweets[i].getAttribute('data-id') == "Internships") {
+                twitterTweets[i].style.display = "block";
+            }
+        }
+    }
+
     expandFirst('searches');
     expandFirst('cities');
     expandFirst('jobs');
@@ -1732,18 +1955,29 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' =>
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        // var i = 0;
+        // i += 5;
+        // var k = 4;
+        var ll = 0;
+        ``
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
     $(document).on('click', '.hideElem', function () {

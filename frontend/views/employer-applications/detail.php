@@ -1,66 +1,156 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
+
 $separator = Yii::$app->params->seo_settings->title_separator;
-if ($type=='Job') {
+$slug = $org['slug'];
+$this->params['url'] = $org['website'];
+
+echo $this->render('/widgets/drop_resume', [
+    'username' => Yii::$app->user->identity->username,
+    'type' => 'application'
+]);
+$job_heading = (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name']));
+if ($type == 'Job') {
+    if (!empty($data2['interview_process_enc_id'])){
+        $app_locations = $data2['applicationPlacementLocations'];
+    } else {
+        $app_locations = (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']);
+    }
+    if (!empty($app_locations)) {
+        $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
+        $lc_data = "";
+        $locations = [];
+        foreach ($app_locations as $placements) {
+            array_push($locations, $job_heading." jobs in ".$placements["name"]);
+        }
+        $lc_data = implode(", ", array_unique($locations));
+    }
     $smililars = 'jobs';
-    if ($data2['wage_type'] == 'Fixed') {
-        if ($data2['wage_duration'] == 'Monthly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 12;
-        } elseif ($data2['wage_duration'] == 'Hourly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 40 * 52;
-        } elseif ($data2['wage_duration'] == 'Weekly') {
-            $data2['fixed_wage'] = $data2['fixed_wage'] * 52;
+    if (!empty($data2)) {
+        if ($data2['wage_type'] == 'Fixed') {
+            if ($data2['wage_duration'] == 'Monthly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 12;
+            } elseif ($data2['wage_duration'] == 'Hourly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 40 * 52;
+            } elseif ($data2['wage_duration'] == 'Weekly') {
+                $data2['fixed_wage'] = $data2['fixed_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . ' p.a.';
+        } else if ($data2['wage_type'] == 'Negotiable') {
+            if ($data2['wage_duration'] == 'Monthly') {
+                $data2['min_wage'] = $data2['min_wage'] * 12;
+                $data2['max_wage'] = $data2['max_wage'] * 12;
+            } elseif ($data2['wage_duration'] == 'Hourly') {
+                $data2['min_wage'] = $data2['min_wage'] * 40 * 52;
+                $data2['max_wage'] = $data2['max_wage'] * 40 * 52;
+            } elseif ($data2['wage_duration'] == 'Weekly') {
+                $data2['min_wage'] = $data2['min_wage'] * 52;
+                $data2['max_wage'] = $data2['max_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            if (!empty($data2['min_wage']) && !empty($data2['max_wage'])) {
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
+            } elseif (!empty($data2['min_wage'])) {
+                $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' p.a.';
+            } elseif (!empty($data2['max_wage'])) {
+                $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.a.';
+            } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
+                $amount = 'Negotiable';
+            }
         }
-        setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.a.';
-    } else if ($data2['wage_type'] == 'Negotiable') {
-        if ($data2['wage_duration'] == 'Monthly') {
-            $data2['min_wage'] = $data2['min_wage'] * 12;
-            $data2['max_wage'] = $data2['max_wage'] * 12;
-        } elseif ($data2['wage_duration'] == 'Hourly') {
-            $data2['min_wage'] = $data2['min_wage'] * 40 * 52;
-            $data2['max_wage'] = $data2['max_wage'] * 40 * 52;
-        } elseif ($data2['wage_duration'] == 'Weekly') {
-            $data2['min_wage'] = $data2['min_wage'] * 52;
-            $data2['max_wage'] = $data2['max_wage'] * 52;
-        }
-        setlocale(LC_MONETARY, 'en_IN');
-        if (!empty($data2['min_wage']) && !empty($data2['max_wage'])) {
-            $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-        } elseif (!empty($data2['min_wage'])) {
-            $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . 'p.a.';
-        } elseif (!empty($data2['max_wage'])) {
-            $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.a.';
-        } elseif (empty($data2['min_wage']) && empty($data2['max_wage'])) {
-            $amount = 'Negotiable';
+    } else {
+        if ($data1['wage_type'] == 'Fixed') {
+            if ($data1['wage_duration'] == 'Monthly') {
+                $data1['fixed_wage'] = $data1['fixed_wage'] * 12;
+            } elseif ($data1['wage_duration'] == 'Hourly') {
+                $data1['fixed_wage'] = $data1['fixed_wage'] * 40 * 52;
+            } elseif ($data1['wage_duration'] == 'Weekly') {
+                $data1['fixed_wage'] = $data1['fixed_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['fixed_wage'])) . ' p.a.';
+        } else if ($data1['wage_type'] == 'Negotiable') {
+            if ($data1['wage_duration'] == 'Monthly') {
+                $data1['min_wage'] = $data1['min_wage'] * 12;
+                $data1['max_wage'] = $data1['max_wage'] * 12;
+            } elseif ($data1['wage_duration'] == 'Hourly') {
+                $data1['min_wage'] = $data1['min_wage'] * 40 * 52;
+                $data1['max_wage'] = $data1['max_wage'] * 40 * 52;
+            } elseif ($data1['wage_duration'] == 'Weekly') {
+                $data1['min_wage'] = $data1['min_wage'] * 52;
+                $data1['max_wage'] = $data1['max_wage'] * 52;
+            }
+            setlocale(LC_MONETARY, 'en_IN');
+            if (!empty($data1['min_wage']) && !empty($data1['max_wage'])) {
+                $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
+            } elseif (!empty($data1['min_wage'])) {
+                $amount = 'From ₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' p.a.';
+            } elseif (!empty($data1['max_wage'])) {
+                $amount = 'Upto ₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.a.';
+            } elseif (empty($data1['min_wage']) && empty($data1['max_wage'])) {
+                $amount = 'Negotiable';
+            }
         }
     }
-    $this->title = $org['org_name'] . ' is hiring for ' . $data2['cat_name'] . ' with a ' . $amount . ' package.';
-    $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+    $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' with a ' . $amount . ' package.';
+    $keywords = 'Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,'.$job_heading.' Jobs,  MBA Jobs, Career, Walk-ins '.$job_heading.', '.rtrim($lc_data, ',').',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,'.$job_heading.' jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
-if ($type=='Internship') {
+if ($type == 'Internship') {
+    if (!empty($data2['applicationPlacementLocations'])){
+        $app_locations = $data2['applicationPlacementLocations'];
+    } else if(!empty($data1['applicationPlacementCities'])){
+        $app_locations = $data1['applicationPlacementCities'];
+    } else{
+        $app_locations = $data2['applicationPlacementCities'];
+    }
+    if (!empty($app_locations)) {
+        $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
+        $lc_data = "";
+        $locations = [];
+        foreach ($app_locations as $placements) {
+            array_push($locations, $job_heading." internships in ".$placements["name"]);
+        }
+        $lc_data = implode(", ", array_unique($locations));
+    }
     $smililars = 'internships';
     if ($data2['wage_type'] == 'Fixed') {
         if ($data2['wage_duration'] == 'Weekly') {
             $data2['fixed_wage'] = $data2['fixed_wage'] / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . 'p.m.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['fixed_wage'])) . ' p.m.';
     } elseif ($data2['wage_type'] == 'Negotiable' || $data2['wage_type'] == 'Performance Based') {
         if ($data2['wage_duration'] == 'Weekly') {
             $data2['min_wage'] = $data2['min_wage'] / 7 * 30;
             $data2['max_wage'] = $data2['max_wage'] / 7 * 30;
         }
         setlocale(LC_MONETARY, 'en_IN');
-        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . 'p.m.';
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data2['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data2['max_wage'])) . ' p.m.';
     }
-    $this->title = $org['org_name'] . ' is looking for ' . $data2['cat_name'] . ' interns with a stipend ' . $amount;
-    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
+
+    if ($data1['wage_type'] == 'Fixed') {
+        if ($data1['wage_duration'] == 'Weekly') {
+            $data1['fixed_wage'] = $data1['fixed_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['fixed_wage'])) . ' p.m.';
+    } elseif ($data1['wage_type'] == 'Negotiable' || $data1['wage_type'] == 'Performance Based') {
+        if ($data1['wage_duration'] == 'Weekly') {
+            $data1['min_wage'] = $data1['min_wage'] / 7 * 30;
+            $data1['max_wage'] = $data1['max_wage'] / 7 * 30;
+        }
+        setlocale(LC_MONETARY, 'en_IN');
+        $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
+    }
+    $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns with a stipend ' . $amount;
+    $keywords = 'Internships,Paid '.$job_heading.' Internships, '.rtrim($lc_data, ',').', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,'.$job_heading.' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
@@ -73,8 +163,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -97,83 +187,131 @@ if (!Yii::$app->user->isGuest) {
 ?>
 <?=
 $this->render('/widgets/employer_applications/top-banner', [
-    'org_image_location'=>$org['cover_image_location'],
-    'org_image'=>$org['cover_image'],
-    'job_title'=>(($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
-    'icon_png'=>(($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
-    'shortlist'=>$shortlist,
+    'org_image_location' => $org['cover_image_location'],
+    'org_image' => $org['cover_image'],
+    'job_title' => (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name'])),
+    'icon_png' => (($data2['icon_png']) ? ($data2['icon_png']) : ($data1['icon_png'])),
+    'shortlist' => $shortlist,
+    'shortlist_btn_display' => true
 ]);
 ?>
+<section>
+    <div class="container">
+        <div class="empty-field">
+            <input type="hidden" id="dropcv">
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="existsModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Company hasn't created any data for this feature</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Wait for company to create the feature</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+<section>
+    <div class="container">
+        <div class="empty-field">
+            <input type="hidden" id="loggedIn"
+                   value="<?= (!Yii::$app->user->identity->organization->organization_enc_id && !Yii::$app->user->isGuest) ? 'yes' : '' ?>">
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Please Login as Candidate to drop your resume</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
 <section>
     <div class="container">
         <div class="row m-0">
             <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                 <div class="job-single-sec">
                     <div class="job-single-head2">
-                        <?php if ($type=='Internship')
-                        {
+                        <?php if ($type == 'Internship') {
                             if (!empty($data2)):
-                            echo $this->render('/widgets/employer_applications/internship-overview', [
-                                'placement_offer'=>$data2['has_placement_offer'],
-                                'profile_name'=>$data2['name'],
-                                'wage_duration'=>$data2['wage_duration'],
-                                'wage_type'=>$data2['wage_type'],
-                                'max_wage'=>$data2['max_wage'],
-                                'min_wage'=>$data2['min_wage'],
-                                'gender'=>$data2['preferred_gender'],
-                                'fixed_wage'=>$data2['fixed_wage'],
-                                'placement_locations'=>$data2['applicationPlacementLocations'],
-                            ]);
-                            else:
-                                echo $this->render('/widgets/employer_applications/overview',[
-                                    'type'=>$type,
-                                    'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
-                                    'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
-                                    'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
-                                    'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
-                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
-                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
-                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
-                                    'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
+                                echo $this->render('/widgets/employer_applications/internship-overview', [
+                                    'placement_offer' => $data2['has_placement_offer'],
+                                    'profile_name' => $data2['name'],
+                                    'wage_type' => $data2['wage_type'],
+                                    'gender' => $data2['preferred_gender'],
+                                    'ammount_value' => $amount,
+                                    'placement_locations' => $app_locations,
                                 ]);
-                                endif;
-                        }
-                        else if ($type=='Job')
-                        {
-                            if (!empty($data2['interview_process_enc_id'])):
-                            echo $this->render('/widgets/employer_applications/job-overview', [
-                                'profile_name'=>$data2['name'],
-                                'industry'=>$data2['industry'],
-                                'designation'=>$data2['designation'],
-                                'job_type'=>$data2['type'],
-                                'wage_duration'=>$data2['wage_duration'],
-                                'wage_type'=>$data2['wage_type'],
-                                'max_wage'=>$data2['max_wage'],
-                                'min_wage'=>$data2['min_wage'],
-                                'gender'=>$data2['preferred_gender'],
-                                'fixed_wage'=>$data2['fixed_wage'],
-                                'experience'=>$data2['experience'],
-                                'placement_locations'=>$data2['applicationPlacementLocations'],
-                            ]);
                             else:
-                                echo $this->render('/widgets/employer_applications/overview',[
-                                    'type'=>$type,
-                                    'profile_name'=>(($data1['name']) ? $data1['name'] : $data2['name']),
-                                    'job_type'=>(($data1['type']) ? $data1['type'] : $data2['type']),
-                                    'gender'=>(($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
-                                    'wage_type'=>(($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
-                                    'max_wage'=>(($data1['max_wage']) ? $data1['max_wage'] : $data2['max_wage'] ),
-                                    'min_wage'=>(($data1['min_wage']) ? $data1['min_wage']  : $data2['min_wage']),
-                                    'fixed_wage'=>(($data1['fixed_wage'])? $data1['fixed_wage'] :  $data2['fixed_wage']),
-                                    'experience'=>(($data1['experience']) ? $data1['experience'] : $data2['experience'] ),
-                                    'placement_locations'=>(($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
-                                    'positions'=>(($data1['positions']) ? $data1['positions'] : $data2['positions']),
+                                echo $this->render('/widgets/employer_applications/overview', [
+                                    'type' => $type,
+                                    'ammount_value' => $amount,
+                                    'profile_name' => (($data1['name']) ? $data1['name'] : $data2['name']),
+                                    'job_type' => (($data1['type']) ? $data1['type'] : $data2['type']),
+                                    'gender' => (($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
+                                    'wage_type' => (($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
+                                    'wage_duration' => (($data1['wage_duration']) ? $data1['wage_duration'] : $data2['wage_duration']),
+                                    'placement_locations' => $app_locations,
+                                ]);
+                            endif;
+                        } else if ($type == 'Job') {
+                            if (!empty($data2['interview_process_enc_id'])):
+                                echo $this->render('/widgets/employer_applications/job-overview', [
+                                    'profile_name' => $data2['name'],
+                                    'industry' => $data2['industry'],
+                                    'designation' => $data2['designation'],
+                                    'job_type' => $data2['type'],
+                                    'wage_type' => $data2['wage_type'],
+                                    'gender' => $data2['preferred_gender'],
+                                    'experience' => $data2['experience'],
+                                    'ammount_value' => $amount,
+                                    'placement_locations' => $data2['applicationPlacementLocations'],
+                                ]);
+                            else:
+                                echo $this->render('/widgets/employer_applications/overview', [
+                                    'type' => $type,
+                                    'ammount_value' => $amount,
+                                    'profile_name' => (($data1['name']) ? $data1['name'] : $data2['name']),
+                                    'job_type' => (($data1['type']) ? $data1['type'] : $data2['type']),
+                                    'gender' => (($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
+                                    'wage_type' => (($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
+                                    'experience' => (($data1['experience']) ? $data1['experience'] : $data2['experience']),
+                                    'placement_locations' => (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
+                                    'positions' => (($data1['positions']) ? $data1['positions'] : $data2['positions']),
                                 ]);
                             endif;
                         } ?>
                     </div>
                     <div class="job-details">
-                        <?php if(!empty($data2['interview_process_enc_id'])) { ?>
+                        <?php if (!empty($data2['interview_process_enc_id'])) { ?>
                             <?=
                             $this->render('/widgets/employer_applications/working-days', [
                                 'working_days' => $data2['working_days']
@@ -190,11 +328,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'benefits' => $data2['applicationEmployeeBenefits']
                             ]);
                             ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/skills', [
-                                'skills' => $data2['applicationSkills']
-                            ]);
-                            ?>
+
                             <?=
                             $this->render('/widgets/employer_applications/job-description', [
                                 'job_description' => $data2['applicationJobDescriptions'],
@@ -207,33 +341,33 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'educational_requirements' => $data2['applicationEducationalRequirements'],
                             ]);
                         }
-                            ?>
+                        ?>
                         <?php
-                        if (!empty($data1['applicationSkills'])||!empty($data2['applicationSkills'])):
-                         echo $this->render('/widgets/employer_applications/skills', [
-                             'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills'] )
-                         ]);
+                        if (!empty($data1['applicationSkills']) || !empty($data2['applicationSkills'])):
+                            echo $this->render('/widgets/employer_applications/skills', [
+                                'skills' => (($data1['applicationSkills']) ? $data1['applicationSkills'] : $data2['applicationSkills'])
+                            ]);
                         endif;
                         ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/other-details', [
-                                'other_details' => (($data2['description']) ? $data2['description'] : $data1['description']) ,
-                            ]);
+                        <?=
+                        $this->render('/widgets/employer_applications/other-details', [
+                            'other_details' => (($data2['description']) ? $data2['description'] : $data1['description']),
+                        ]);
                         ?>
                     </div>
                     <div class="job-overview">
-                        <?php if(!empty($data2['applicationPlacementLocations'])): ?>
-                        <?=
-                        $this->render('/widgets/employer_applications/interview-details', [
-                            'interview_start'=>$data2['interview_start_date'],
-                            'interview_end'=>$data2['interview_end_date'],
-                            'interview_locations'=>$data2['applicationInterviewLocations'],
-                        ]);
+                        <?php if (!empty($data2['applicationPlacementLocations'])): ?>
+                            <?=
+                            $this->render('/widgets/employer_applications/interview-details', [
+                                'interview_start' => $data2['interview_start_date'],
+                                'interview_end' => $data2['interview_end_date'],
+                                'interview_locations' => $data2['applicationInterviewLocations'],
+                            ]);
                         endif;
                         ?>
                     </div>
                     <?php
-                    if(!empty($data2['applicationPlacementLocations'])) {
+                    if (!empty($data2['applicationPlacementLocations'])) {
                         echo $this->render('/widgets/employer_applications/placement-direction', [
                             'placement_locations' => $data2['applicationPlacementLocations'],
                         ]);
@@ -244,58 +378,93 @@ $this->render('/widgets/employer_applications/top-banner', [
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
                 <?php
                 if (!empty($data2)):
-                echo $this->render('/widgets/employer_applications/organization-details', [
-                    'org_logo'=>$org['logo'],
-                    'org_logo_location'=>$org['logo_location'],
-                    'org_name'=>$org['org_name'],
-                    'initial_color'=>$org['color'],
-                    'slug'=>$org['slug'],
-                    'website'=>$org['website'],
-                    'email'=>$org['email'],
-                    'type'=>$type,
-                    'applied'=>$applied,
-                    'application_slug'=>$application_details["slug"],
-                    'shortlist'=>$shortlist,
-                ]);
-                else:
-                    echo $this->render('/widgets/employer_applications/unclaim_org',[
-                        'org_logo'=>$org['logo'],
-                        'org_logo_location'=>$org['logo_location'],
-                        'org_name'=>$org['org_name'],
-                        'initial_color'=>$org['color'],
-                        'slug'=>$org['slug'],
-                        'website'=>$org['website'],
-                        'email'=>$org['email'],
-                        'job_url'=>$data1['job_url'],
-                        'type'=>$type,
-                        'applied'=>false,
-                        'application_slug'=>$application_details["slug"],
-                        'shortlist'=>$shortlist,
+                    echo $this->render('/widgets/employer_applications/organization-details', [
+                        'org_logo' => $org['logo'],
+                        'org_logo_location' => $org['logo_location'],
+                        'org_name' => $org['org_name'],
+                        'initial_color' => $org['color'],
+                        'slug' => $org['slug'],
+                        'website' => $org['website'],
+                        'type' => $type,
+                        'applied' => $applied,
+                        'application_slug' => $application_details["slug"],
+                        'shortlist' => $shortlist,
+                        'shortlist_btn_display' => true
                     ]);
-              endif;
+                else:
+                    echo $this->render('/widgets/employer_applications/unclaim_org', [
+                        'org_logo' => $org['logo'],
+                        'org_logo_location' => $org['logo_location'],
+                        'org_name' => $org['org_name'],
+                        'initial_color' => $org['color'],
+                        'slug' => $org['slug'],
+                        'cid' => $org['organization_enc_id'],
+                        'website' => $org['website'],
+                        'job_url' => $data1['job_url'],
+                        'application_id' => $data1['application_enc_id'],
+                        'type' => $type,
+                        'applied' => false,
+                        'application_slug' => $application_details["slug"],
+                        'shortlist' => $shortlist,
+                        'shortlist_btn_display' => true
+                    ]);
+                endif;
+                ?>
+                <?php
+                if (Yii::$app->user->isGuest) {
+                    echo $this->render('/widgets/best-platform');
+                }
                 ?>
             </div>
         </div>
-        <div class="row m-0">
-            <div class="col-md-12">
-                <h2 class="heading-style">Related <?= $type . 's';?></h2>
-                <div class="similar-application"></div>
+        <?php
+        if (!empty($data2)) {
+            ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="blogbox"></div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+        <?php if ($settings["showRelatedOpportunities"]): ?>
+            <div class="row m-0">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
+                    <div class="similar-application"></div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id'])?$data2['application_enc_id']:$data1['application_enc_id']), 'btn_class' => 'apply-btn']);
+        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id']) ? $data2['application_enc_id'] : $data1['application_enc_id']), 'btn_class' => 'apply-btn', 'organization_enc_id' => $org['organization_enc_id']]);
     }
     ?>
 </section>
+<?php
+if ($settings["showNewPositionsWidget"]):
+    ?>
+    <section>
+        <div class="container">
+            <?=
+            $this->render('/widgets/new-position');
+            ?>
+        </div>
+    </section>
+<?php endif; ?>
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");
         copyText.select();
         document.execCommand("copy");
         toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
     }
 </script>
 <?php
@@ -430,8 +599,9 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px;
+        background-color:#fff;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -451,7 +621,6 @@ $this->registerCss("
         width: 100%;
         height: 100%;
         content: '';
-//        z-index: -1;
         background: #00000078;
         opacity: 0.8;
     }
@@ -626,7 +795,6 @@ $this->registerCss("
     .job-details {
         float: left;
         width: 100%;
-//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
@@ -856,8 +1024,6 @@ $this->registerCss("
         border-color: #4FCE5D;
     }
     .job-single-head.style2 {
-//        float: left;
-//        width: 100%;
         display: inherit;
         text-align: center;
         border: none;
@@ -873,11 +1039,6 @@ $this->registerCss("
         display: inline-block;
         width: auto;
         border: none;
-//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-//        -o-box-shadow: 0px 0px 20px 7px #ddd;
-//        box-shadow: 0px 0px 20px 7px #ddd;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -977,26 +1138,27 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-        background: #00a0e3;
-        -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        font-family: Open Sans;
-        font-size: 13px;
-        color: #fff;
-        width: 175px;
-        height: auto;
-        padding: 15px 6px;
-        text-align: center;
-        margin:auto;
-    }
+    display:inline-block !important;    
+    background: #00a0e3;
+    -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color: #fff;
+    width: 175px;
+    height: auto;
+    padding: 15px 6px;
+    text-align: center;
+    margin:auto;
+}
     .apply-job-btn:hover {
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
@@ -1294,12 +1456,29 @@ $this->registerCss("
     /* Profile icons css ends */
     ");
 $this->registerJs("
+
+var slugg = '$slug'; 
+var data = {slug: slugg};
+$.ajax({
+    type: 'POST',
+    url: '/drop-resume/check-resume',
+    data : data,
+    success: function(response){
+        $('#dropcv').val(response.message);
+    }
+});
+
  $(document).on('click','#close_btn',function()
  {
     $('.fader').css('display','none');
     $(this).parent().removeClass('show');
 });
 loader = false;
-getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
+//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
+if (!empty($data2)) {
+$this->registerJs("
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
+");
+}
 ?>

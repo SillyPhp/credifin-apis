@@ -117,25 +117,29 @@ a:hover{
 /*Dashboard main css ends*/
 /*Dashboard button css starts*/
 .custom-buttons{
-    width:100%;
-    background:#00a0e3 !important;
-    font-size: 10px !important;
-    padding: 8px 0px !important;
-    margin-bottom:20px;
+    width: 100%;
+    font-size: 11px !important;
+    padding: 9px 0px !important;
+    margin-bottom: 20px;
+    border-radius: 6px !important;
+    background: linear-gradient(45deg, #00a0e3, #89d8f9);
+    border: none;
      -webkit-border-radius: 6px !important;
     -moz-border-radius: 6px !important;
     -ms-border-radius: 6px !important;
     -o-border-radius: 6px !important;
     border-radius: 6px !important;
+    box-shadow:none !important;
 }
 .custom-buttons:hover{
-    color: #ffffff;
-    box-shadow:0 0 10px rgba(0,0,0,.5) !important;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -ms-transition:.3s all;
-    -o-transition:.3s all;
+    color: #fff;
+    background: linear-gradient(45deg, #89d8f9, #00a0e3);
+    transition:.4s all;
+    -webkit-transition:.4s all;
+    -moz-transition:.4s all;
+    -ms-transition:.4s all;
+    -o-transition:.4s all;
+    box-shadow:none !important;
 }
 /*Dashboard button css ends*/
 
@@ -175,15 +179,17 @@ a:hover{
     padding-top:10px;
     text-decoration:none;
     font-size:16px;
+    font-family: roboto;
 }
 .hr-com-name:hover{
     text-decoration:none;
 }
 .hr-com-field{
     padding-top:2px;
-    font-weight:bold;
+    font-weight:500;
     font-size:14px;
     color:#080808;
+    font-family: roboto;
 }
 .hr-com-name, .hr-com-field{
     text-overflow: ellipsis;
@@ -202,7 +208,7 @@ a:hover{
     padding-right:0px !important;
 }
 .j-grid > a {
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 11px;
     color: #00a0e3;
     border: 1px solid #00a0e3;
@@ -431,7 +437,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
 .p-category > a span {
     float: left;
     width: 100%;
-    font-family: Open Sans;
+    font-family: roboto;
     font-size: 15px;
     color: #202020;
     margin-top: 18px;
@@ -442,6 +448,7 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
     font-size: 13px;
     margin: 0;
     margin-top: 3px !important;
+    font-family: roboto;
 }
 .p-category:hover a {
     border-color:transparent;
@@ -557,4 +564,53 @@ a.viewall-jobs:visited, a.viewall-jobs:focus{
 .btn.green{
     border-color: #00A0E3 !important;
     color: #00A0E3 !important;
+}
+
+
+.widget-thumb .widget-thumb-heading{
+    font-size: 14px !important;
+    font-family: roboto !important;
+    font-weight: 500 !important;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    padding-top: 10px !important;
+    font-size: 25px !important;
+}
+.portlet.light > .portlet-title > .caption > .caption-subject{
+    font-family: roboto !important;
+    font-weight: 500 !important;
+}
+.font-weight-semibold, .content{
+    font-family: roboto;
+}
+.widget-profile-info .profile-info .profile-footer{
+    font-family: roboto;
+}
+.card-title, .module-active, .module-active-row{
+    font-family: roboto;
+}
+.new-card-container .card .face.face2 .content h3 {
+    font-size: 20px !important;
+    font-family: roboto !important;
+    font-weight: 500 !important;
+}
+.new-card-container .card .face.face2 .content p{
+    font-size:13px !important;
+}
+.btn:not(.md-skip):not(.bs-select-all):not(.bs-deselect-all){
+    font-family:roboto;
+    font-weight:500 !important;
+}
+.dashboard-stat .details .desc{
+    font-family:roboto;
+}
+.table thead tr th {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    font-family: roboto;
+}
+.table td, .table th {
+    font-size: 14px !important;
+    font-family: roboto;
+    font-weight: 400 !important;
 }

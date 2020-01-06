@@ -43,8 +43,8 @@ class QuickJob extends Model
     public function rules()
     {
         return [
-            [['job_title', 'skills','positions','exp', 'city','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
-            [['description', 'fixed_wage', 'min_salary', 'max_salary'], 'safe'],
+            [['job_title', 'skills','positions','exp','description','city','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
+            [['fixed_wage', 'min_salary', 'max_salary'], 'safe'],
             [['url'], 'url', 'defaultScheme' => 'http'],
             [['job_title', 'company_name'], 'string', 'max' => 50],
             [['positions'], 'integer', 'max' => 100000],

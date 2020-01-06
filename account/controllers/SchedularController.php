@@ -273,7 +273,7 @@ class SchedularController extends Controller
 
                 $this->sendComapanyMail();
                 if ($res['interviewer_options']) {
-                    $this->sendInterviewerMail($save[2], $res['interviewer_options']);
+                    $this->sendInterviewerMail($save[2], $res['interviewer_options'], $save[0], $res['timings']);
                 }
                 if($res['type'] == 'fixed'){
                     $this->findCandidates($save[1],$save[0]->application_enc_id);
@@ -282,7 +282,8 @@ class SchedularController extends Controller
                 }
                 return [
                     'status' => 200,
-                    'response' => $res
+                    'response' => $res,
+                    'data' => $save
                 ];
             } else {
                 return [
@@ -319,8 +320,17 @@ class SchedularController extends Controller
         }
     }
 
-    private function sendInterviewerMail($interviewer, $type)
+    private function sendInterviewerMail($interviewer, $type, $data, $timing)
     {
+        $job = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'c.name'])
+            ->joinWith(['title b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.application_enc_id' => $data])
+            ->asArray()
+            ->one();
         foreach ($interviewer as $i) {
             $mail = Yii::$app->mail;
             $mail->receivers = [];
@@ -330,11 +340,11 @@ class SchedularController extends Controller
             ];
             if ($type == 'zero') {
                 $mail->subject = 'you are selected to take interview';
-                $mail->data = ['job' => 'scipy'];
-                $mail->template = 'interview-schedular';
+                $mail->data = ['data' => $job, 'timing' => $timing, 'name'=> $i['name']];
+                $mail->template = 'schedular-for-interviewers';
             } elseif ($type == 'one') {
                 $mail->subject = 'you are selected to take interview';
-                $mail->data = ['job' => 'scipy', 'id' => $i['interviewer_enc_id']];
+                $mail->data = ['job' => $job, 'id' => $i['interviewer_enc_id']];
                 $mail->template = 'request-for-acceptance';
             }
             if ($mail->send()) {
@@ -761,7 +771,7 @@ class SchedularController extends Controller
                 }], false);
             }])
             ->joinWith(['scheduledInterviewEnc c'])
-            ->where(['b.created_by' => Yii::$app->user->identity->user_enc_id])
+//            ->where(['b.created_by' => Yii::$app->user->identity->user_enc_id])
             ->asArray()
             ->all();
         print_r($interviews);

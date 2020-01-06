@@ -1,39 +1,11 @@
 <?php
-$this->title = Yii::t('frontend', 'Jobs');
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode("&");
-
-$keywords = 'Govt jobs,Jobs,Empower youth,Jobs near me,Jobs in Bangalore, IT Jobs,Job Vacancies,Fresher Jobs,Web Development Jobs,Jobs in Delhi,Bank Jobs';
-$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
-$this->params['seo_tags'] = [
-    'rel' => [
-        'canonical' => Yii::$app->request->getAbsoluteUrl(),
-    ],
-    'name' => [
-        'keywords' => $keywords,
-        'description' => $description,
-        'twitter:card' => 'summary_large_image',
-        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
-        'twitter:image' => $image,
-    ],
-    'property' => [
-        'og:locale' => 'en',
-        'og:type' => 'website',
-        'og:site_name' => 'Empower Youth',
-        'og:url' => Yii::$app->request->getAbsoluteUrl(),
-        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'og:description' => $description,
-        'og:image' => $image,
-        'fb:app_id' => '973766889447403'
-    ],
-];
 ?>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -64,6 +36,23 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+                <div class="container">
+                    <a href="/jobs/profiles" data-hover="Desultory">All Jobs</a>
+                    <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+                    <a href="/jobs/compare" data-hover="Sumptuous">Compare Jobs</a>
+                    <a href="/jobs/near-me" data-hover="Scintilla">Jobs Near Me</a>
+                    <a href="/tweets/jobs" data-hover="Propinquity">Job Tweets</a>
+                </div>
+            </nav>
+        </div>
+    </div>
+</section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -86,6 +75,17 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
+
+<?=
+$this->render('/widgets/top-cities', [
+    'cities_jobs' => $cities_jobs,
+    'type' => 'jobs'
+])
+?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -107,6 +107,27 @@ $this->params['seo_tags'] = [
         <div class="col-md-12">
             <div class="blogbox"></div>
         </div>
+    </div>
+</section>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
+<section class="j-tweets">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6">
+                <h1 class="heading-style">Job Tweets</h1>
+            </div>
+            <div class="col-md-6 col-sm-6">
+                <div class="tweetLinks">
+                    <a href="/tweets/jobs" id="tweetAllLink">View All</a>
+                    <a href="/tweets/job/create" id="tweetPostLink">Post Tweet</a>
+                </div>
+            </div>
+        </div>
+        <?=
+        $this->render('/widgets/twitter-masonry', [
+            'tweets' => $tweets,
+        ]);
+        ?>
     </div>
 </section>
 <section>
@@ -133,6 +154,13 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -141,7 +169,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="searches">
                     <?php foreach ($search_words as $sw) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/search?keyword=' . $sw['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/search?keyword=' . $sw['name']); ?>"
                                title="<?= $sw['name'] ?>">
                                 <?= $sw['name'] ?>
                             </a>
@@ -155,7 +183,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="jobs">
                     <?php foreach ($job_profiles as $jp) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&location=&keyword=' . $jp['name']); ?>"
                                title="<?= $jp['name']; ?> Jobs">
                                 <?= $jp['name']; ?> Jobs
                             </a>
@@ -169,7 +197,7 @@ $this->params['seo_tags'] = [
                 <ul class="quick-links" id="b-cities">
                     <?php foreach ($cities as $c) { ?>
                         <li class="hide">
-                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name'] . $referral); ?>"
+                            <a href="<?= Url::to('/jobs/list?company=&keyword=&location=' . $c['name']); ?>"
                                title="Jobs in <?= $c['name']; ?>">
                                 Jobs in <?= $c['name']; ?>
                             </a>
@@ -188,20 +216,49 @@ echo $this->render('/widgets/blogs/whats-new', [
 ]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/info-stats');
 $this->registerCss('
+.j-tweets{
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
+    background-attachment: fixed;
+    padding-bottom:20px;
+}
+.tweetLinks{
+    text-align: right;
+    margin-top:30px;
+}
+.tweetLinks a{
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    padding: 13px 32px;
+    border-radius: 4px;
+    -o-transition: .3s all;
+    -ms-transition: .3s all;
+    -moz-transition: .3s all;
+    -webkit-transition: .3s all;
+    transition: .3s all;
+    color: #222;
+    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    margin-left:5px;
+    background: #fff;
+}
+.tweetLinks a:hover{
+       background-color: #00a0e3;
+    color: #fff;
+}
 .text-white1{
     color:white;
     font-family:Roboto;
-    }
+}
 .text-white2{
     color:white;
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .form-control{
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -235,8 +292,6 @@ $this->registerCss('
     padding:0;
     font-size:14px;
 }
-
-
 .wn-box-details{
     min-height:100px !important;
 }
@@ -484,7 +539,7 @@ $this->registerCss('
 }
 /* animated menu css starts */
 .nav1{
-    padding:60px 0;
+    padding:40px 0 30px;
     text-align:center;
 }
 .nav1 a {
@@ -498,7 +553,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 14px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -512,7 +567,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family: roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;
@@ -572,6 +628,18 @@ $this->registerCss('
 @media only screen and (max-width: 992px){
     .nav1 a{font-size: 10px;
     margin: 15px 10px;}
+}
+@media only screen and (max-width: 768px){
+    .nav1 a {
+        margin: 15px 10px 50px;
+    }
+    .nav1{
+        padding:40px 0 0px;
+        text-align:center;
+    }
+    .mt-20{
+        margin-top:0px !important;
+    }
 }
 /* animated menu css ends */
 .search-job{font-family:lobster; font-size:35px; padding-bottom:0px; color:#fff;}
@@ -777,7 +845,12 @@ $this->registerCss('
     .form-inline .input-group{
         width:98%;
     }
+    .tweetLinks {
+        text-align: right;
+        margin-bottom: 30px;
+    }
 }
+
 ');
 $script = <<<JS
 var city = new Bloodhound({
@@ -810,6 +883,15 @@ loader = false;
 getCategories();
 getCards();
 addToReviewList();
+
+$(window).on('load', function() {
+    var head = $(".posted-tweet iframe").contents().find("head");
+    var css = '<style type="text/css">' +
+              '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
+              '</style>';
+    jQuery(head).append(css);
+});
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -828,8 +910,8 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
 
     function expandFirst(elem) {
         var i = 0;
-        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         var k = 0;
+        var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (k < listElementsLength) {
             if (k < i + 4) {
                 if (document.getElementById(elem)) {
@@ -853,18 +935,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        // var i = 0;
+        // i += 5;
+        // var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
     $(document).on('click', '.hideElem', function () {

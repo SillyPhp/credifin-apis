@@ -49,7 +49,7 @@ class UserPreferences extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['preference_enc_id', 'type', 'assigned_to', 'timings_from', 'timings_to', 'min_expected_salary', 'max_expected_salary', 'experience', 'working_days', 'created_on', 'created_by'], 'required'],
+            [['preference_enc_id', 'created_by'], 'required'],
             [['type', 'assigned_to', 'experience', 'sat_frequency', 'sun_frequency'], 'string'],
             [['timings_from', 'timings_to', 'created_on', 'last_updated_on'], 'safe'],
             [['salary', 'min_expected_salary', 'max_expected_salary'], 'number'],
@@ -57,8 +57,6 @@ class UserPreferences extends \yii\db\ActiveRecord
             [['preference_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['working_days'], 'string', 'max' => 30],
             [['preference_enc_id'], 'unique'],
-            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
-            [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
 
@@ -110,3 +108,4 @@ class UserPreferences extends \yii\db\ActiveRecord
         return $this->hasMany(UserPreferredSkills::className(), ['preference_enc_id' => 'preference_enc_id']);
     }
 }
+

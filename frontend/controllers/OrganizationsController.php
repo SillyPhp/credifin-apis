@@ -60,6 +60,13 @@ class OrganizationsController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
@@ -1217,7 +1224,7 @@ class OrganizationsController extends Controller
     {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['a.review_enc_id', 'f.feedback_type', '(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);

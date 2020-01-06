@@ -60,6 +60,11 @@ $this->registerCss("
     -webkit-transform: scale(.9);
     transform: scale(.9);
 }
+@media only screen and (max-width: 460px){
+    .category{
+        min-height: 240px;
+    }
+}
 @media only screen and (max-width: 425px){
     .category{
         min-height: 250px;

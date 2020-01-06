@@ -3,9 +3,14 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
+use account\models\applications\ApplicationTemplateDataProvider;
 use account\models\applications\ExtendsJob;
+use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
+use common\models\ApplicationTemplates;
 use common\models\DropResumeApplications;
+use common\models\ErexxCollaborators;
+use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
@@ -35,6 +40,34 @@ use account\models\applications\ApplicationForm;
 class InternshipsController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        return parent::beforeAction($action);
+    }
+    public function actionQuickInternship()
+    {
+        if (Yii::$app->user->identity->organization->organization_enc_id):
+            $model = new ShortJobs();
+            $type = 'Internships';
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields($type);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save($type)) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
+    }
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -83,13 +116,18 @@ class InternshipsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -163,13 +201,18 @@ class InternshipsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
-                if ($model->saveValues($type)) {
+                if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
                 } else {
                     return false;
                 }
@@ -191,6 +234,59 @@ class InternshipsController extends Controller
         }
     }
 
+    public function actionCloneTemplate($aidk){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Internships'])
+            ->asArray()
+            ->one();
+        if(Yii::$app->user->identity->organization && $application){
+            $model = new ApplicationForm();
+            $type = 'Clone_Internships';
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $session_token = Yii::$app->request->post('n');
+                if ($application_id = $model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
+                } else {
+                    return false;
+                }
+            } else {
+                $obj = new ApplicationTemplateDataProvider();
+                $model = $obj->setValues($model, $aidk);
+                return $this->render('/employer-applications/form', [
+                    'model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found'));
+        }
+    }
+
     public function actionEdit($aidk)
     {
         if (Yii::$app->user->identity->organization) {
@@ -204,13 +300,17 @@ class InternshipsController extends Controller
             $placement_locations = $model->getOrganizationLocations();
             $interview_locations = $model->getOrganizationLocations(2);
             if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
                 if ($obj->update($model, $aidk, $type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
                         $session->remove($session_token);
                     }
-                    return true;
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                    ];
                 } else {
                     return false;
                 }
@@ -252,7 +352,7 @@ class InternshipsController extends Controller
     {
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'k.applied_application_enc_id','g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'b.application_enc_id', 'c.name type', 'k.applied_application_enc_id', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -264,7 +364,7 @@ class InternshipsController extends Controller
                 $b->joinWith(['organizationEnc g']);
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
                 $b->groupBy(['h.application_enc_id']);
             }], false)
@@ -281,13 +381,13 @@ class InternshipsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'k.applied_application_enc_id','e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['a.application_enc_id', 'j.name type', 'a.id', 'a.created_on', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'k.applied_application_enc_id', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -321,7 +421,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
+            ->andWhere(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -357,7 +457,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted'=>0])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->asArray()
@@ -409,7 +509,6 @@ class InternshipsController extends Controller
         }
     }
 
-
     public function actionPendingDelete()
     {
         if (Yii::$app->request->isPost) {
@@ -434,13 +533,11 @@ class InternshipsController extends Controller
                 ->execute();
             if ($update) {
                 return true;
-            } else
-            {
+            } else {
                 return false;
             }
         }
     }
-
 
     public function actionShortlistDelete()
     {
@@ -637,13 +734,13 @@ class InternshipsController extends Controller
     {
         $shortlist_jobs = ShortlistedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.created_on','k.applied_application_enc_id', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.created_on', 'k.applied_application_enc_id', 'a.shortlisted_enc_id', 'b.slug', 'd.name', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.shortlisted' => 1])
-            ->joinWith(['applicationEnc b'=>function($a){
+            ->joinWith(['applicationEnc b' => function ($a) {
                 $a->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
-            }],false)
+            }], false)
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Organizations::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
@@ -673,13 +770,13 @@ class InternshipsController extends Controller
             ->count();
         $applied_applications = AppliedApplications::find()
             ->alias('a')
-            ->select(['j.name type', 'a.id', 'a.application_enc_id as app_id','a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
+            ->select(['j.name type', 'a.id', 'a.application_enc_id as app_id', 'a.status', 'a.created_by', 'd.name as title', 'b.slug', 'e.name as org_name', 'f.icon', 'SUM(g.positions) as positions'])
             ->innerJoin(EmployerApplications::tableName() . 'as b', 'b.application_enc_id = a.application_enc_id')
             ->where(['or',
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -702,7 +799,7 @@ class InternshipsController extends Controller
                 ['a.status' => 'Pending'],
                 ['a.status' => 'Accepted']
             ])
-            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted'=>0])
+            ->andwhere(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
             ->innerJoin(AssignedCategories::tableName() . 'as c', 'c.assigned_category_enc_id = b.title')
             ->innerJoin(Categories::tableName() . 'as d', 'd.category_enc_id = c.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as f', 'f.category_enc_id = c.parent_enc_id')
@@ -751,7 +848,7 @@ class InternshipsController extends Controller
 
         $review_list = ReviewedApplications::find()
             ->alias('a')
-            ->select(['a.id', 'a.review_enc_id', 'a.review', 'k.applied_application_enc_id','b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
+            ->select(['a.id', 'a.review_enc_id', 'a.review', 'k.applied_application_enc_id', 'b.application_enc_id', 'c.name type', 'g.name as org_name', 'g.establishment_year', 'SUM(h.positions) as positions', 'd.parent_enc_id', 'd.category_enc_id', 'e.name title', 'b.slug', 'f.name parent_category', 'f.icon', 'f.icon_png'])
             ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.review' => 1])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->distinct();
@@ -764,7 +861,7 @@ class InternshipsController extends Controller
                 $b->joinWith(['applicationPlacementLocations h']);
                 $b->groupBy(['h.application_enc_id']);
                 $b->joinWith(['appliedApplications k' => function ($y) {
-                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id,'k.is_deleted'=>0]);
+                    $y->onCondition(['k.created_by' => Yii::$app->user->identity->user_enc_id, 'k.is_deleted' => 0]);
                 }], false);
             }], false)
             ->having(['type' => 'Internships'])
@@ -803,7 +900,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted','a.is_deleted'=>0])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->limit(8)
@@ -821,7 +918,7 @@ class InternshipsController extends Controller
             ->innerJoin(Categories::tableName() . 'as h', 'h.category_enc_id = e.parent_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = c.application_type_enc_id')
             ->innerJoin(ApplicationPlacementLocations::tableName() . 'as k', 'k.application_enc_id = c.application_enc_id')
-            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted','a.is_deleted'=>0])
+            ->where(['b.user_enc_id' => Yii::$app->user->identity->user_enc_id, 'a.status' => 'Accepted', 'a.is_deleted' => 0])
             ->having(['type' => 'Internships'])
             ->groupBy('a.applied_application_enc_id')
             ->count();
@@ -945,6 +1042,7 @@ class InternshipsController extends Controller
         return $this->render('dashboard/organization', [
             'questionnaire' => $this->__questionnaire(4),
             'applications' => $this->__internships(8),
+            'erexx_applications' => $this->__erexxInternships(8),
             'closed_application' => $this->__closedinternships(8),
             'interview_processes' => $this->__interviewProcess(4),
             'applied_applications' => $userApplied->getUserDetails('Internships', 10),
@@ -959,7 +1057,7 @@ class InternshipsController extends Controller
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => 'Internships', 'b.parent_enc_id' => NULL])
             ->asArray()
@@ -974,6 +1072,20 @@ class InternshipsController extends Controller
         ]);
     }
 
+    public function actionActiveInternships()
+    {
+        return $this->render('list/organization', [
+            'applications' => $this->__internships(),
+        ]);
+    }
+
+    public function actionActiveErexxInternships()
+    {
+        return $this->render('list/organization', [
+            'applications' => $this->__erexxInternships(),
+        ]);
+    }
+
     private function __internships($limit = NULL)
     {
         $options = [
@@ -981,6 +1093,61 @@ class InternshipsController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
+//                'a.application_for' => 1,
+            ],
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 1]
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __internshipss($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'internships',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+                'a.application_for' => 1,
+            ],
+            'having' => [
+                '>=', 'a.last_date', date('Y-m-d')
+            ],
+            'orderBy' => [
+                'a.published_on' => SORT_DESC,
+            ],
+            'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
+        ];
+
+        $applications = new \account\models\applications\Applications();
+        return $applications->getApplications($options);
+    }
+
+    private function __erexxInternships($limit = NULL)
+    {
+        $options = [
+            'applicationType' => 'internships',
+            'where' => [
+                'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
+                'a.status' => 'Active',
+            ],
+            'andWhere' => ['or',
+                ['a.application_for' => 0],
+                ['a.application_for' => 2]
             ],
             'having' => [
                 '>=', 'a.last_date', date('Y-m-d')
@@ -1087,6 +1254,210 @@ class InternshipsController extends Controller
             'total' => $total_applications,
             'list' => $candidate_applications,
         ];
+    }
+
+    public function actionCampusPlacement()
+    {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+
+            $colleges = Organizations::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.organization_enc_id','a.organization_enc_id college_enc_id','a.name', 'a.initials_color color','CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo','e.name city'])
+                ->innerJoinWith(['businessActivityEnc b' => function ($b) {
+                    $b->onCondition(["b.business_activity" => "College"]);
+                }], false)
+                ->joinWith(['organizationOtherDetails c' => function ($c) {
+                    $c->joinWith(['locationEnc e'], true);
+                }], false)
+                ->where([
+                    "a.has_placement_rights" => 1,
+                    "a.status" => "Active",
+                    "a.is_deleted" => 0,
+                ])
+                ->asArray()
+                ->all();
+
+//            $colleges = ErexxCollaborators::find()
+//                ->alias('a')
+//                ->distinct()
+//                ->select(['a.college_enc_id', 'b.name', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+//                ->joinWith(['collegeEnc b' => function ($b) {
+//                    $b->select(['b.organization_enc_id', 'e.name as location', 'COUNT(c.user_enc_id) as students']);
+//                    $b->joinWith(['userOtherDetails c'], false);
+//                    $b->joinWith(['organizationOtherDetails d' => function ($d) {
+//                        $d->joinWith(['locationEnc e'], false);
+//                    }], false);
+//                }])
+//                ->where(['a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'a.college_approvel' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+//                ->asArray()
+//                ->all();
+
+            return $this->render('campus-placement', [
+                'applications' => $this->__internshipss(),
+                'colleges' => $colleges,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+    }
+
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Internships"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('internships-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionSubmitErexxApplications()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            foreach ($data['applications'] as $app) {
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errexApplication = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errexApplication->application_enc_id = $utilitiesModel->encrypt();
+                    $errexApplication->employer_application_enc_id = $app;
+                    $errexApplication->college_enc_id = $clg;
+                    $errexApplication->created_on = date('Y-m-d H:i:s');
+                    $errexApplication->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errexApplication->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                if (!$this->__updateApplicationFor($app, $data['subscribed-to-all'])) {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occured. Please Try again later.',
+                    ];
+                }
+            }
+
+            $this->__addCollege($data['colleges']);
+
+            return $response = [
+                'status' => 200,
+                'title' => 'Success',
+                'message' => 'Application added for Campus Placement',
+            ];
+        }
+    }
+
+    public function actionApplicationCollegesSubmit()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $data = Yii::$app->request->post();
+            $application = EmployerApplications::find()
+                ->where(['application_enc_id' => $data['app_id']])
+                ->one();
+            $application->application_for = 0;
+            $application->last_updated_by = Yii::$app->user->identity->user_enc_id;
+            if ($data['college'] == 1) {
+                $application->for_all_colleges = 1;
+                if ($application->update()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Application added for Campus Placement',
+                    ];
+                }
+            }
+            if ($data['college'] == 0) {
+                $application->update();
+                foreach ($data['colleges'] as $clg) {
+                    $utilitiesModel = new Utilities();
+                    $errex_application = new ErexxEmployerApplications();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $errex_application->application_enc_id = $utilitiesModel->encrypt();
+                    $errex_application->employer_application_enc_id = $data['app_id'];
+                    $errex_application->college_enc_id = $clg;
+                    $errex_application->created_on = date('Y-m-d H:i:s');
+                    $errex_application->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$errex_application->save()) {
+                        return $response = [
+                            'status' => 201,
+                            'title' => 'Error',
+                            'message' => 'An error has occured. Please Try again later.',
+                        ];
+                    }
+                }
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Application added for Campus Placement',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'An error has occured. Please Try again later.',
+                ];
+            }
+        }
+    }
+
+    private function __updateApplicationFor($app, $for)
+    {
+        if($for) {
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'for_all_colleges' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->execute();
+        } else{
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['application_for' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $app])
+                ->execute();
+        }
+        if ($update) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
+        }
     }
 
 }

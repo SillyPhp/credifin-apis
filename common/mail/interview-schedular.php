@@ -175,6 +175,8 @@ $this->registerCss('
                 </div>
             </div>
             <div class="title">
+<!--                --><?//= $data; ?>
+                <?php print_r($data);?>
                 <h2>John Doe invited you to <span>"Webinar about Webinar Invitations"</span></h2>
             </div>
             <div class="clear">
@@ -182,7 +184,7 @@ $this->registerCss('
                     Job Title:
                 </div>
                 <div class="desc-main">
-                    <?= $data['job']?>
+                    <?php print_r($timing); ?>
                 </div>
             </div>
             <div class="clear">
