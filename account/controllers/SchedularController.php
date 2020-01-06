@@ -313,7 +313,7 @@ class SchedularController extends Controller
         ];
         $mail->subject = 'New Interview Scheduled By Your Organization';
         $mail->data = ['job' => $data['title'], 'timing' => $timing];
-        $mail->template = 'interview-schedular';
+        $mail->template = 'schedular-for-org';
         if ($mail->send()) {
             $mail_logs = new EmailLogs();
             $utilitiesModel = new \common\models\Utilities();
