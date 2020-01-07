@@ -34,7 +34,7 @@ $script = <<<JS
     function getUserCards(off_set){
         off_set = off_set * 20;
         $.ajax({
-            url: '/candidates/git-candidate?offset=' + off_set,
+            url: '/candidates?offset=' + off_set,
             type: 'POST',
             beforeSend: function () {
                 $('.load-more-spinner').css('visibility', 'visible');

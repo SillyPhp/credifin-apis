@@ -178,7 +178,7 @@ $this->params['header_dark'] = false;
                         Find right candidate for your job
                     </div>
                     <div class="post-job-bttn">
-                        <a href="/candidates/git-candidate" id="myBttn" class="hvr-float-shadow">
+                        <a href="/candidates/index" id="myBttn" class="hvr-float-shadow">
                             View Candidates
                         </a>
                     </div>

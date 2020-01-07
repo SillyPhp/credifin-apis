@@ -26,7 +26,7 @@ class CandidatesController extends Controller
         return $this->render('features');
     }
 
-    public function actionGitCandidate($offset = null)
+    public function actionIndex($offset = null)
     {
         $data = Users::find()
             ->alias('a')
@@ -115,14 +115,11 @@ class CandidatesController extends Controller
             $j++;
         }
 
-//        print_r($users);
-//        exit();
-//        print_r(count($users));exit();
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $users;
         } else {
-            return $this->render('git-candidate', [
+            return $this->render('index', [
                 'users' => $users
             ]);
         }

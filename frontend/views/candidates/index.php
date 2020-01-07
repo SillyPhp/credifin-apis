@@ -4,7 +4,7 @@ $this->params['header_dark'] = true;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-echo $this->render('/widgets/mustache/git-candidates');
+echo $this->render('/widgets/mustache/candidates');
 ?>
     <section>
         <div class="container">
@@ -49,7 +49,7 @@ echo $this->render('/widgets/mustache/git-candidates');
         </div>
     </section>
 <?php
-echo $this->render('/widgets/users/preloaders/git-candidates');
+echo $this->render('/widgets/users/preloaders/candidates');
 $this->registerCss('
 #loadMore {
     display : none;
