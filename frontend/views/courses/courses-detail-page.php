@@ -27,6 +27,11 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-sm-8">
+                    <div class="video-sec">
+                        <div class="video-thumb">
+                            <img src="<?= Url::to('/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'); ?>"/>
+                        </div>
+                    </div>
                     <div class="about-course">
                         <div class="course-heading">About this course</div>
                         <div class="course-detail">This course introduces you to important concepts and terminology for
@@ -68,7 +73,7 @@ use yii\helpers\Url;
                 <div class="col-md-4 col-sm-4">
                     <div class="buy-box">
                         <div class="c-preview">
-                            <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>"/>
+                            <img src="<?= Url::to('/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'); ?>"/>
                         </div>
                         <div class="c-amount"><i class="fas fa-rupee-sign"></i> 5000</div>
                         <div class="buy-btn">
@@ -84,7 +89,7 @@ use yii\helpers\Url;
                         <div class="get-coupon input-group">
                             <input type="text" id="value-save" class="form-control set-form" value="">
                             <div class="input-group-btn">
-                                <button class="clipboard btn btn-default get-btn"  onClick="valueSave();">
+                                <button class="clipboard btn btn-default get-btn" onClick="valueSave();">
                                     <i class="fa fa-clipboard" aria-hidden="true"></i>Copy to Clipboard
                                 </button>
                             </div>
@@ -111,6 +116,7 @@ use yii\helpers\Url;
         function myFunction() {
             document.getElementById("coupon").style.display = "block";
         }
+
         function valueSave() {
             var copyText = document.getElementById("value-save");
             copyText.select();
@@ -240,22 +246,36 @@ $this->registerCss('
     font-size: 15px;
     font-family: roboto;
 }
+.video-sec {
+    border: 1px solid #eee;
+    margin-top: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px #eee;
+}
+.video-thumb {
+    width: 100%;
+    height: 400px;
+}
+.video-thumb img{
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
 .buy-box {
     border: 1px solid #eee;
-    padding: 10px 20px;
+    padding:20px;
     border-radius: 5px;
     box-shadow: 0px 0px 5px 0px #eee;
     margin-top: 10px;
 }
 .c-preview {
     margin: 0 auto;
-    margin-top: 20px;
     line-height: 100px;
     text-align: center;
 }
 .c-preview img{
     height:auto;
-    width:auto;
+    width:100%;
 }
 .c-amount {
     text-align: center;
