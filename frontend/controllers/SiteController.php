@@ -10,6 +10,8 @@ use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
+use common\models\SocialGroups;
+use common\models\SocialLinks;
 use common\models\States;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
@@ -348,7 +350,23 @@ class SiteController extends Controller
         return $this->render('about-us');
     }
     public function actionWhatsappCommunity(){
-        return $this->render('whatsapp-community');
+        $data = SocialGroups::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function($b){
+                $b->select(['b.*', 'b1.name platform_name', 'b1.icon', 'b1.icon_location']);
+                $b->joinWith(['platformEnc b1' => function($b1){
+                    $b1->andWhere(['b1.is_deleted' => 0]);
+                }],false);
+                $b->andWhere(['b.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('a.group_enc_id')
+            ->asArray()
+            ->all();
+
+        return $this->render('whatsapp-community',[
+            'data' => $data
+        ]);
     }
     public function actionContactUs()
     {

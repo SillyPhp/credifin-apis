@@ -1,5 +1,7 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
     <section class="whatsapp-bg">
         <div class="container">
@@ -32,274 +34,152 @@ use yii\helpers\Url;
                                 <div class="click-note">Click on links to join the groups</div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-heading">Location Groups</div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/GeCRLWt8p83BxmlUveG2q9">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Delhi Recruiter</span>
-                                        </div>
-                                    </a>
+                        <?php
+                        foreach ($data as $d) {
+                            ?>
+                            <div class="row marginTop">
+                                <div class="col-md-12">
+                                    <div class="form-heading"><?= $d['name'] ?></div>
                                 </div>
+                                <?php
+                                foreach ($d['socialLinks'] as $social) {
+                                    ?>
+                                    <div class="col-md-3 col-sm-4">
+                                        <div class="gr-link">
+                                            <a href="<?= $social['link'] ?>">
+                                                <div class="wab-icon">
+                                                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/themes/ey/images/pages/custom/whatsapp-logo.png') ?>"
+                                                         alt="">
+                                                </div>
+                                                <div class="wab-name">
+                                                    <span><?= $social['title'] ?></span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
                             </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/ISa8rLtClTZBAAIi9GWfNU">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Pune Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/L81bXsDo8zdITty0Xsk3ZU">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Jalandhar Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/FGSXOgTumrRLhBEvlBXwKY">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Gurgaon Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/Du1ZAnA3PrsITCXyA7moHh">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Noida Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/ExuA1Ynv98xFF24Q5Dr2R0">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Mumbai Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/BomoGjrxgu7JQIqj7YaXjY">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Bathinda Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/HjZtxJXsRJRI6GERBW2A3a">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Panipat Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/LNgr8QUCa7h7CHWizCEshc">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Up Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/IJhCSYL6AgM8rh7ectZRpp">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Punjab Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/BMa4FafwoeDGYJREVtuLXr">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Chandigarh Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/FRlHZIzFRZRK679UFTWaDA">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span>Ludhiana Recruiter</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row marginTop">
-                            <div class="col-md-12">
-                                <div class="form-heading">Category Groups</div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/Fa6asX5YHSa7SA1ZbKfzQN">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Government Job Updates</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Worldwide Job</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row marginTop">
-                            <div class="col-md-12">
-                                <div class="form-heading">Profile Groups</div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/EsYR8OAUodR6BpzL9dLtp0 ">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> IT Jobs</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/ClLwm5ikzECLVIFUKQXSVo">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Accounting Jobs</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/B5B0wEIZX6j9LhFh576PXe">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Marketing Jobs</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/E0sLcOyF2HSJpwYB5P0TIa">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Engeneering Jobs</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-4">
-                                <div class="gr-link">
-                                    <a href="https://chat.whatsapp.com/IX08MxIPWom0acMyI7xzGA">
-                                        <div class="wab-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?>"
-                                                 alt="">
-                                        </div>
-                                        <div class="wab-name">
-                                            <span> Business Development Jobs</span>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                            <?php
+                        }
+                        ?>
 
-                        </div>
+
+                        <!--                        <div class="row marginTop">-->
+                        <!--                            <div class="col-md-12">-->
+                        <!--                                <div class="form-heading">Category Groups</div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/Fa6asX5YHSa7SA1ZbKfzQN">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Government Job Updates</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Worldwide Job</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </div>-->
+                        <!--                        <div class="row marginTop">-->
+                        <!--                            <div class="col-md-12">-->
+                        <!--                                <div class="form-heading">Profile Groups</div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/EsYR8OAUodR6BpzL9dLtp0 ">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> IT Jobs</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/ClLwm5ikzECLVIFUKQXSVo">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Accounting Jobs</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/B5B0wEIZX6j9LhFh576PXe">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Marketing Jobs</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/E0sLcOyF2HSJpwYB5P0TIa">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Engeneering Jobs</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                            <div class="col-md-3 col-sm-4">-->
+                        <!--                                <div class="gr-link">-->
+                        <!--                                    <a href="https://chat.whatsapp.com/IX08MxIPWom0acMyI7xzGA">-->
+                        <!--                                        <div class="wab-icon">-->
+                        <!--                                            <img src="-->
+                        <? //= Url::to('@eyAssets/images/pages/custom/whatsapp-logo.png') ?><!--"-->
+                        <!--                                                 alt="">-->
+                        <!--                                        </div>-->
+                        <!--                                        <div class="wab-name">-->
+                        <!--                                            <span> Business Development Jobs</span>-->
+                        <!--                                        </div>-->
+                        <!--                                    </a>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!---->
+                        <!--                        </div>-->
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <?= $this->render('/widgets/advertise-jobs-widget');?>
-                    <?= $this->render('/widgets/advertise-training-course')?>
+                    <?= $this->render('/widgets/advertise-jobs-widget'); ?>
+                    <?= $this->render('/widgets/advertise-training-course') ?>
                 </div>
             </div>
         </div>
