@@ -62,7 +62,7 @@ class GovtJobsController extends Controller
 
                   $data =  $d->limit($limit)
                     ->offset($offset)
-                    ->orderBy(['created_on'=>SORT_DESC])
+                    ->orderBy(['job_id'=>SORT_DESC])
                     ->asArray()
                     ->all();
             return [
