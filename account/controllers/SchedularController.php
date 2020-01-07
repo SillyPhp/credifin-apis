@@ -286,7 +286,7 @@ class SchedularController extends Controller
                 if($res['type'] == 'fixed'){
                     $this->findCandidates($save[1],$save[0]->application_enc_id);
                 }elseif ($res['type'] == 'flexible'){
-                    $this->findCandidatesFlexible($save[0]->scheduled_interview_enc_id);
+                    $this->findCandidatesFlexible($save[0]->scheduled_interview_enc_id, $job, $res['timing']);
                 }
                 return [
                     'status' => 200,
@@ -352,7 +352,7 @@ class SchedularController extends Controller
         }
     }
 
-    private function sendCandidateMail($applied_candidate){
+    private function sendCandidateMail($applied_candidate, $data, $time){
 
         $candidates = [];
         $user = [];
@@ -367,14 +367,14 @@ class SchedularController extends Controller
         $mail->receivers = [];
         $mail->receivers = $candidates;
         $mail->subject = 'interview scheduled by company for scipy';
-        $mail->data = ['job' => 'scipy job'];
+        $mail->data = ['data' => $data, 'time' => $time];
         $mail->template = 'interview-schedular';
         if ($mail->send()) {
 
         }
     }
 
-    private function findCandidatesFlexible($id){
+    private function findCandidatesFlexible($id, $data, $time){
             $candidate = InterviewCandidates::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id','CONCAT(c.first_name, " ", c.last_name) name','c.email'])
@@ -386,7 +386,7 @@ class SchedularController extends Controller
                 ->all();
 
             if(!empty($candidate)){
-                $this->sendCandidateMail($candidate);
+                $this->sendCandidateMail($candidate, $data, $time);
             }
     }
 
