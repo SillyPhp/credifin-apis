@@ -170,6 +170,22 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
+    <section class="fixed-bttn">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="fx-heading">
+                        Find right candidate for your job
+                    </div>
+                    <div class="post-job-bttn">
+                        <a href="/candidates/git-candidate" id="myBttn" class="hvr-float-shadow">
+                            View Candidates
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 
