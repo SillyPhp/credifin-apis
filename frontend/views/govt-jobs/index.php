@@ -159,9 +159,8 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-main
-{
-height:210px;
+.application-card-border-bottom{
+    height:156px;
 }
 .loader_screen img
 {
@@ -564,19 +563,18 @@ display:none;
 echo $this->render('/widgets/mustache/govt-jobs-card');
 echo $this->render('/widgets/mustache/departments_govt');
 $script = <<< JS
+var offset = 0;
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchLocalData(template=$('#cards'),limit,offset+12,loader=false,loader_btn=true);
+  fetchLocalData(template=$('#cards'),limit=12,offset=offset+12,loader=false,loader_btn=true);
 })
-var limit =12;
-var offset = 0;
-fetchLocalData(template=$('#cards'),limit,offset,loader=true,loader_btn=false);
+fetchLocalData(template=$('#cards'),limit=12,offset=0,loader=true,loader_btn=false);
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  fetchLocalData(template=$('#cards'),limit=50,offset,loader=true,loader_btn=false,keyword=keyword,replace=true);
+  fetchLocalData(template=$('#cards'),limit=50,offset=0,loader=true,loader_btn=false,keyword=keyword,replace=true);
 })
-fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit_dept=4,offset=0);
 JS;
 $this->registerJs($script);
 ?>

@@ -1,8 +1,6 @@
 <?php
-$this->params['header_dark'] = false;
-
 use yii\helpers\Url;
-
+$this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $data['Value'] . " Jobs";
 $keywords = $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ', ' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careers';
@@ -72,7 +70,7 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
-    <input type="hidden" name="dept_id" id="dept_id" value="<?= $data['dept_enc_id']; ?>">
+    <input type="hidden" name="dept_id" id="dept_id" value="<?= $data['Code']; ?>">
 <?php
 echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
@@ -86,7 +84,7 @@ text-align:center;
 clear:both;
 }
 .head-img{
-    background: url(\'/assets/themes/ey/images/pages/blog/govdept-hdr.png\');
+    background: url(\'/assets/themes/ey/images/pages/blog/usa-dep-hdr-1.png\');
     min-height: 435px;
     background-size: cover;
     background-repeat: no-repeat;
@@ -128,15 +126,14 @@ margin:auto
     }
 }
 ');
-echo $this->render('/widgets/mustache/govt-jobs-card');
+echo $this->render('/widgets/mustache/usa-jobs-card');
 $script = <<< JS
 var offset = 0;
 var dept_id = $('#dept_id').val();
-$(document).on('click','#loader',function(e) {
-  e.preventDefault();
-  fetchDeptData(template=$('#cards'),limit=12,offset = offset+12,dept_id,loader=false,loader_btn=true);
-})
-fetchDeptData(template=$('#cards'),limit=12,offset=0,dept_id,loader=true,loader_btn=false);
+var host = 'data.usajobs.gov';  
+var userAgent = 'snehkant93@gmail.com';  
+var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
+fetch_usa_cards_dept(host,userAgent,authKey,template=$('#cards'),Department=dept_id);
 JS;
 
 $this->registerJs($script);

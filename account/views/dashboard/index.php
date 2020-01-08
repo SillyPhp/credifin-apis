@@ -29,8 +29,6 @@ endif;
                 'services' => $services,
             ]);
             ?>
-            <?= $this->render('/widgets/user-ques'); ?>
-            <?= $this->render('/widgets/features'); ?>
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -113,6 +111,7 @@ endif;
                         </div>
                     </div>
                 </div>
+
                 <?=
                 $this->render('/widgets/applications/dashboard-applied-applications', [
                     'applied' => $applied,
@@ -120,6 +119,10 @@ endif;
                     'shortlist_org' => $shortlist_org,
                     'viewed' => $viewed
                 ]); ?>
+                <?= $this->render('/widgets/applications/reminder-applications', [
+                        'app_reminder' => $app_reminder,
+                        'app_reminder_form' => $app_reminder_form,
+                ]);?>
 
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
@@ -344,30 +347,6 @@ endif;
                         <?php }
                         Pjax::end();
                         ?>
-                    </div>
-                </div>
-                <div class="portlet light nd-shadow">
-                    <div class="portlet-title">
-                        <div class="caption">
-                            <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Applicants'); ?><span
-                                        data-toggle="tooltip" title="Applicants for jobs and internships"><i
-                                            class="fa fa-info-circle"></i></span></span>
-                        </div>
-                        <div class="actions">
-                            <div class="set-im">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="portlet-body">
-                        <div class="row ">
-                            <div class="col-md-12">
-                                <div class="o-hidden" id="applicants">
-                                  <?= $this->render('/widgets/dashboard-candidate-card')?>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             <?php endif; ?>
@@ -643,8 +622,5 @@ $script = <<<JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
-var ps = new PerfectScrollbar('#applicants');
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
-$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
