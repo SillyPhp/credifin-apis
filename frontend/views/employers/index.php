@@ -110,6 +110,75 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+    <section class="great-bg">
+        <div class="container">
+            <div class="row">
+                <div class="head-about">
+                    <h3>What's Great About Us?</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/Efficiency.png') ?>">
+                        </div>
+                        <h4>Enhance your Efficiency and Effectiveness</h4>
+                        <div class="about-text">Receive multiple offers from top-level organizations and properly recruited for joining an organization.</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/showcase-progress.png') ?>">
+                        </div>
+                        <h4>Showcase Your Employer Brand</h4>
+                        <div class="about-text">Showcasing our unique cultural differentiators, and then working to amplify it so you can position yourself as a top place to work.</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/track-progress.png') ?>">
+                        </div>
+                        <h4>Track Progress</h4>
+                        <div class="about-text">Track your application process in simple steps & stay up-to-date.</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
+                        </div>
+                        <h4>Free For All</h4>
+                        <div class="about-text">You can live chat with your freelancers to get constant updates on the progress of your work.</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
+                        </div>
+                        <h4>Live Interview Schedule</h4>
+                        <div class="about-text">You can live chat with your freelancers to get constant updates on the progress of your work.</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="about-box">
+                        <div class="bx-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/livechat.png') ?>">
+                        </div>
+                        <h4>Live Chat</h4>
+                        <div class="about-text">You can easily live chat with our Employers to get help & for more other queries.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="great-red">
+                <a href="/candidates/features">View More</a>
+            </div>
+        </div>
+    </section>
+
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
@@ -170,7 +239,6 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-
 <?= $this->render('/widgets/companies-with-us'); ?>
 
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [
@@ -180,6 +248,109 @@ $this->params['header_dark'] = false;
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.great-red{
+    text-align: center;
+    position: relative;
+    max-width: 170px;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.great-red a{
+    background:#333;
+    color:#fff;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: 0.6s;
+    overflow: hidden;
+    padding: 10px 22px;
+}
+.great-red a:before {
+  content: \'\';
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  width: 60px;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0.5;
+  filter: blur(30px);
+  transform: translateX(-100px) skewX(-15deg);
+}
+.great-red a:after {
+  content: \'\';
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  width: 30px;
+  height: 100%;
+  left: 30px;
+  top: 0;
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(-100px) skewX(-15deg);
+}
+.great-red a:hover {
+  background: #338033;
+  cursor: pointer;
+}
+.great-red a:hover:before {
+  transform: translateX(115px) skewX(-15deg);
+  opacity: 0.6;
+  transition: 0.5s;
+}
+.great-red a:hover:after {
+  transform: translateX(115px) skewX(-15deg);
+  opacity: 1;
+  transition: 0.5s;
+}
+.great-red a:focus {
+  outline: 0;
+}
+.great-bg{
+    padding-bottom: 20px;
+}
+.head-about{
+    text-align:center;
+}
+.head-about h3 {
+    font-weight: 700;
+    font-family: roboto;
+    font-size: 30px;
+}
+.about-box {
+    padding: 20px 10px;
+    margin: 15px 0px;
+    height: 200px;
+    text-align:center;
+    background:#fff;
+    transition: ease-out .5s;
+    cursor: pointer;
+}
+.about-box:hover{
+    box-shadow: 0px 0px 15px 2px #eee;
+}
+@media(max-width:768px){
+.about-box {
+    height:230px;
+}
+}
+.bx-img {
+    width: 50px;
+    height: 55px;
+    margin: 0 auto;
+}
+.about-box h4{
+    margin: 0px 0px 5px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: roboto;
+}
+.about-text {
+    font-size: 15px;
+    font-family: roboto;
+}
 .hwn{
     text-align:center;
     padding:30px 0 50px;
