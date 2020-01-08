@@ -356,11 +356,9 @@ margin:auto;
     font-size:19px;
 }
 .job-single-head2 {
-        float: left;
         width: 100%;
-//        padding-bottom: 30px;
-//        border-bottom: 1px solid #e8ecec;
-    }
+//        float: left;
+}
 .job-single-head2 > span {
         float: left;
         width: 100%;
@@ -374,8 +372,8 @@ margin:auto;
         color: #202020;
     }
 .job-overview {
-    float: left;
     width: 100%;
+//    float: left;
 }
 .job-overview > h3 {
     float: left;
@@ -465,10 +463,10 @@ margin:auto;
     padding: 15px;
     border-radius: 5px;
     text-align: justify;
-    float:left;
     box-shadow: 0 0 10px 0px #eee;
     clear:both;
     width:100%;
+//    float:left;
 }
 .d-head {
     font-size: 22px;
@@ -476,7 +474,7 @@ margin:auto;
     font-family:roboto;
     color: #00a0e3;
     padding: 25px 0 5px 5px;
-    float:left;
+//    float:left;
 }
 .summary{
     font-size:18px;
