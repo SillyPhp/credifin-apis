@@ -4,15 +4,17 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
 ?>
-    <section class="background" style="background: url('<?= $parentId['banner']?>');">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="heading-style h-spacing"><?= $parentId['name'];?></h2>
+<section class="background" style="background: url('<?= $parentId['banner'] ?>');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-3">
+                <div class="h-text">
+                    <div class="h-spacing"><?= $parentId['name']; ?></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section class="topics-main">-->
 <!--        <div class="container">-->
@@ -225,26 +227,26 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section class="videos-main">
-        <div class="container">
-            <div class="row">
-                <div class=" col-md-12">
-                    <div class="heading-style">Top Videos</div>
-                </div>
+<section class="videos-main">
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12">
+                <div class="heading-style">Top Videos</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Other Videos-->
+    <div class="videorows">
+        <div class="videorow container">
+            <div class="col-md-12 row1 v-padding">
+
+                <div id="gallery-video"></div>
             </div>
         </div>
 
-        <!--Other Videos-->
-        <div class="videorows">
-            <div class="videorow container">
-                <div class="col-md-12 row1 v-padding">
-
-                    <div id="gallery-video"></div>
-
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section>-->
 <!--        <div class="container">-->
@@ -270,8 +272,23 @@ use yii\helpers\Html;
 <!--            </div>-->
 <!--        </div>-->
 <!--    </section>-->
-
+<?php if (!empty($object)): ?>
     <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Related Questions</div>
+                </div>
+            </div>
+            <div class="question-list">
+                <?= $this->render('/widgets/questions_gallery_view', [
+                    'object' => $object
+                ]); ?>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+    <section id="r-jobs-main">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -282,7 +299,7 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section>
+    <section id="r-internships-main">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -293,77 +310,77 @@ use yii\helpers\Html;
         </div>
     </section>
 
-    <section class="bg-black">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Quiz'); ?></h3>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <div class="type-1">
-                        <div>
-                            <a href="<?= Url::to('/site/all-quiz'); ?>" class="btn btn-3">
-                                <span class="txt"><?= Yii::t('frontend', 'View all Quizzes'); ?></span>
-                                <span class="round"><i class="fas fa-chevron-right"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?>" alt="World Cup 2019 Quiz"
-                                 class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?>"
-                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="q-box">
-                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">
-                            <img src="<?= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?>"
-                                 alt="Yuvraj Singh Quiz" class="q-box-img">
-                            <div class="q-box-hover">
-                                <div class="text2">Take Quiz</div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section class="bg-black">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>-->
+<!--                    <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;">--><?//= Yii::t('frontend', 'Quiz'); ?><!--</h3>-->
+<!--                </div>-->
+<!--                <div class="col-md-6 col-sm-6">-->
+<!--                    <div class="type-1">-->
+<!--                        <div>-->
+<!--                            <a href="--><?//= Url::to('/site/all-quiz'); ?><!--" class="btn btn-3">-->
+<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all Quizzes'); ?><!--</span>-->
+<!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="World Cup 2019 Quiz" href="/quiz/world-cup-2019">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/vol_1.png') ?><!--" alt="World Cup 2019 Quiz"-->
+<!--                                 class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="World Cup 2019 Quiz vol-2" href="/quiz/world-cup-2019-vol-2">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/quiz-vol2.jpg') ?><!--"-->
+<!--                                 alt="World Cup 2019 Quiz vol-2" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-4">-->
+<!--                    <div class="q-box">-->
+<!--                        <a title="Yuvraj Singh Quiz" href="/quiz/yuvraj-singh-quiz">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/quiz/yuvi-quiz.png') ?><!--"-->
+<!--                                 alt="Yuvraj Singh Quiz" class="q-box-img">-->
+<!--                            <div class="q-box-hover">-->
+<!--                                <div class="text2">Take Quiz</div>-->
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">Blogs</div>
-                        </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading-style">Blogs</div>
                     </div>
-                    <div id="whats-new" class="row">
-                    </div>
+                </div>
+                <div id="whats-new" class="row">
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
@@ -371,13 +388,179 @@ echo $this->render('/widgets/blogs/whats-new', [
     'is_ajax' => true,
 ]);
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
-
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
-.h-spacing{
-    letter-spacing: 4px;
-    word-spacing: 10px;
-    text-transform: uppercase;
+.best-images{
+    display:inline-block;
 }
+.best-images a{
+    display:inline-block;   
+}
+.card:hover::before{
+    right: -15px;
+    bottom: -15px;
+    curser: pointer;
+    transition: .5s ease;
+}
+.card::before {
+  background-image: var(--gradient-1);
+  border-radius: 15px;
+  box-shadow: 2px 0px 20px rgba(0, 0, 0, .1);
+  bottom: 30px;
+  left: -15px;
+  position: absolute;
+  right: 35px;
+  content:"";
+  top: 20px; 
+  transition: .5s ease;
+}
+
+.show{
+	padding: 10px;
+	border: none;
+	display: block;
+	margin: auto;
+	font-size: 15px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: white;
+	border-radius: 5px;
+}
+.card__block--main {
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 2px 5px 25px rgba(0, 0, 0, .15);
+  height: 260px;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+}
+#privacy
+{
+  border-radius: 13px;
+}
+.fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.male{  background-color: #0077b5;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+    position: absolute;
+    top: 100%;
+    right: -13px;
+    background-color: #eee;
+    padding: 0px;
+    border-radius: 10px;
+    height:0px;
+    overflow:hidden;
+    -moz-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+.sharing-links{
+    float: right;
+    position: absolute;
+    top: 10%;
+    right: 5%;
+    width: 20px;
+    text-align: right;
+    height: 25px;
+}
+.sharing-links:hover .set{
+    height:110px;
+    padding: 5px;
+}
+.head{
+    display:flex;
+}
+.user-img {
+    margin: 5px 0 0 0;
+}
+.user-img img {
+    border: 1px solid #eee;
+    width: 35px;
+    height: 35px;
+    border-radius: 25px;
+}
+.user-topic{
+    margin: 8px 0 0 7px;
+}
+.topic-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+.box-content {
+    padding: 10px 0;
+    font-size: 16px;
+    text-align: justify;
+    height: 148px;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+}
+.t-answers {
+    padding-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+    margin-top: 10px;
+    font-family:roboto;
+}
+.best-answers {
+    float: right;
+}
+.t-answers img {
+    height: 20px;
+    width: 20px;
+    border-radius: 25px;
+    margin-right: 2px;
+    vertical-align: inherit;
+}
+.card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
+   background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
+}
+.card-box:nth-child(2n) .card::before, .card-box:nth-child(11n) .card::before{
+   background-image:linear-gradient( 135deg, #ffa3b8 10%, #ff6386 100%); /*pink*/
+}
+.card-box:nth-child(3n) .card::before {
+    background-image:linear-gradient( 135deg, #FFD3A5 10%, #FD6585 100%); 
+}
+.card-box:nth-child(4n) .card::before {
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card-box:nth-child(6n) .card::before,.card-box:nth-child(12n) .card::before  {
+   background-image:linear-gradient( 135deg, #8bf4bb 10%, #4f9b94 100%); /*Green*/
+}
+.card-box:nth-child(5n) .card::before, .card-box:nth-child(8n) .card::before {
+   background-image:linear-gradient( 135deg, #e85b56 10%, #6f2347 100%); 
+}
+ .card-box:nth-child(10n) .card::before{
+   background-image:linear-gradient( 135deg, #b875e8 10%, #5f3d8c 100%); 
+}
+.card {
+    position: relative;
+    padding-top: 35px;
+    max-width: 90%;
+    margin: 0px auto;
+    margin-bottom:10px;
+}
+@media only screen and (max-width: 1200px) and (min-width:992px){
+    .card{
+        margin: 0 auto;
+    }
+} 
 /*    <!-- view-all button css start -->*/
 .btn-3 {
     background-color: #424242;
@@ -520,11 +703,46 @@ $this->registerCss('
 }
 .background{
     min-height:475px;
-    padding-top: 120px;
+    padding-top: 215px;
     padding-left: 50px;
     background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
+}
+.h-spacing {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-family: lora;
+    font-weight: 700;
+}
+@media (max-width:768px){
+.background {
+    min-height: 310px;
+    padding-top: 75px;
+    padding-left: 50px;
+    background-size: 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right bottom !Important;
+}
+}
+@media (max-width: 500px){
+.background {
+    min-height: 250px;
+    padding-top: 134px;
+    padding-left: 0px;
+    background-size:auto 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right top !Important;
+}
+.h-text{
+    text-align: center;
+    background:#fff;
+}
+.h-spacing {
+    letter-spacing: 0px;
+    font-size: 20px;
+}
 }
 .logo{
     width: 140px;
@@ -948,29 +1166,60 @@ $this->registerCss('
 
 $script = <<< JS
 function fillData(){
+    var path = window.location.pathname.split('/');
     $.ajax({
         type: 'POST',
         async: false,
         url: '/learning/videos/get-category-job',
-        data: {
-            'keyword' : 'it'
-        },
+        data: {'keyword' : path['4']},
         success: function(result){
-                var application_card = $('#application-card').html();
-                var jobs_render = Mustache.render(application_card, result.jobs);
-                $('.jobs-list').html(jobs_render);
-            
-                var application_card = $('#application-card').html();
-                var internships_render = Mustache.render(application_card, result.internships);
-                $('.internships-list').html(internships_render);
-            
+            var application_card = $('#application-card').html();
+            var jobs_render = Mustache.render(application_card, result.jobs);
+            $('.jobs-list').html(jobs_render);
+            var application_card = $('#application-card').html();
+            var internships_render = Mustache.render(application_card, result.internships);
+            $('.internships-list').html(internships_render);
+            if(result.jobs.length == 0){
+                $('#r-jobs-main').hide();
+            } 
+            if(result.internships.length == 0){
+                $('#r-internships-main').hide();
+            }
             utilities.initials();
         }
     })
 }
 fillData();
+$(document).on('click','.application-card-add', function(event){
+    event.preventDefault();
+    var c_user = "$c_user"
+    if(c_user == ""){
+        $('#loginModal').modal('show');
+        return false;
+    }
+    var itemid = $(this).closest('.application-card-main').attr('data-id');
+    $.ajax({
+        url: "/jobs/item-id",
+        method: "POST",
+        data: {'itemid': itemid},
+        beforeSend:function(){
+//            $('.loader-aj-main').fadeIn(1000);  
+        },
+        success: function (response) {
+            if (response.status == '200' || response.status == 'short') {
+                toastr.success('Added to your Review list', 'Success');
+            } else if (response.status == 'unshort') {
+                toastr.success('Delete from your Review list', 'Success');
+            } else {
+                toastr.error('Please try again Later', 'Error');
+            }
+        }
+    });
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script id="application-card" type="text/template">
     {{#.}}

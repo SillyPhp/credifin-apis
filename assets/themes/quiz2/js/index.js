@@ -685,7 +685,7 @@
             ind['answers'] = [];
             ind['question'] = datares[i]['question'];
 
-            var dataans = data['results'][i]['quizAnswers'];
+            var dataans = data['results'][i]['quizAnswersPools'];
             for(var j = 0; j < dataans.length; j++){
               ind['answers'].push(dataans[j]['answer']);
               if(dataans[j]['is_answer'] == "1"){

@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = true;
 ?>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <div id="loading_img">
 </div>
 <section class="head-bg">
@@ -104,6 +104,9 @@ if($type == 'internships') {
     <?php
 }
 $this->registerCss("
+.fullwidth-page > #wrapper.clearfix > .main-content{
+    padding-top:0px !important;
+}
 .re-twitte{
 	position:fixed;
 	width:225px;
@@ -134,6 +137,65 @@ $this->registerCss("
     margin: auto;
     display: block;
 }
+.tweet-org-logo{
+   display: inline-block;
+    height: 50px;
+    width: 50px;
+    float: left;
+    position: relative;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    overflow: hidden;
+}
+.tweet-org-description{
+    display:inline-block;
+    width: calc(100% - 52px);
+    padding-left:10px;
+}
+.tweet-org-logo img, .tweet-org-logo canvas{
+    max-width: 40px;
+    max-height: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.tweet-org-logo canvas{
+    max-width: 50px !important;
+    max-height: 50px !important;
+}
+twitter-widget[style]{
+    position: static;
+    visibility: visible;
+    display: block;
+    transform: rotate(0deg);
+    max-width: 100%;
+    width: 100% !important;
+    min-width: 100% !important;
+    margin-top: 69px;
+    margin-bottom: 10px;
+}
+@media only screen and (min-width:992px and max-width:1200px){
+    .tweet-main{
+        width: 100% !important;
+    }
+    twitter-widget[style]{
+        position: static;
+        visibility: visible;
+        display: block;
+        transform: rotate(0deg);
+        max-width: 100%;
+        width: 100% !important;
+        min-width: 100% !important;
+        margin-top: 69px;
+        margin-bottom: 10px;
+    }
+}
+
+.posted-tweet {
+    margin-top: 69px !important;
+}
+
 body{
     background:url('" . Url::to('@eyAssets/images/backgrounds/p6.png') . "');
 }
@@ -215,15 +277,13 @@ body{
     background: #fff;
     color: #999;
     }
-.search-bar
-{
-box-shadow:4px 6px 20px rgba(73, 72, 72, 0.5);
-border: 1px solid #ddd;
+.search-bar{
+    box-shadow:4px 6px 20px rgba(73, 72, 72, 0.5);
+    border: 1px solid #ddd;
     background: #fff;
 }
-#main_cnt
-{
-margin-top:20px
+#main_cnt{
+    margin-top:20px
 }
 .tweet-org-deatail{
     width:100%;
@@ -242,13 +302,6 @@ margin-top:20px
     display:inline-block;
     width: calc(100% - 52px);
     padding-left:10px;
-}
-.tweet-org-logo img, .tweet-org-logo canvas{
-    width:100%;
-    height:100%;
-    border-radius:50%;
-    border:1px solid #ddd;
-    margin-top: 3px;
 }
 .tweet-org-description *{
     text-overflow: ellipsis;
@@ -433,6 +486,9 @@ float:right;
     bottom: 0px;
     left: 20%;
 }
+//.container blockquote  {
+//    display: none;
+//}
 @media only screen and (max-width: 550px){
     .overlay-image {
         max-width: 115px;
@@ -452,7 +508,19 @@ var city = new Bloodhound({
         }
   }
 });
-            
+twttr.ready(function (twttr) {
+    // At this point the widget.js file had been loaded.
+    // We can now make use of the twttr events
+    twttr.events.bind('loaded', function (event) {
+         // At this point all tweets have been fully loaded
+         // and rendered and you we can proceed with our Javascript
+        $.each($(".container blockquote"),function() {
+          // console.log($(this).closest(".tweet-main").css("display","none"));
+        })
+    });
+});
+
+    
 $('#cities').typeahead(null, {
   name: 'cities',
   highlight: true,       

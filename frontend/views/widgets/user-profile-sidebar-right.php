@@ -18,12 +18,14 @@ use yii\widgets\Pjax;
                     }
                     $name = Yii::$app->user->identity->organization->name;
                     $color = Yii::$app->user->identity->organization->initials_color;
+                    $email = Yii::$app->user->identity->organization->email;
                 } else {
                     if (Yii::$app->user->identity->image) {
                         $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                     }
                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                     $color = Yii::$app->user->identity->initials_color;
+                    $email = Yii::$app->user->identity->email;
                 }
                 if ($image):
                     ?>
@@ -34,8 +36,8 @@ use yii\widgets\Pjax;
                 <?php endif; ?>
             </div>
             <?php Pjax::end(); ?>
-            <h3 class="capitalize"><?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name ?></h3>
-            <p><?= Yii::$app->user->identity->email ?></p>
+            <h3 class="capitalize"><?= $name; ?></h3>
+            <p><?= $email ?></p>
         </div>
         <div class="tree_widget-sec">
             <ul>

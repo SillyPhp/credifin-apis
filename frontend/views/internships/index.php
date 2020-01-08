@@ -96,6 +96,11 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
+<div id="stats_cards">
+
+</div>
+
 <?=
 $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
@@ -169,6 +174,15 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -222,6 +236,7 @@ $this->render('/widgets/top-cities',[
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
@@ -639,7 +654,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 16px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -653,7 +668,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family:roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;
@@ -819,6 +835,7 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
+fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

@@ -10,7 +10,7 @@ $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $org['org_name'] . ' is Providing Training Program for ' . $data['cat_name'];
 $keywords = 'Trainings,Trainings in Ludhiana,Trainings in Jalandhar,Trainings in Chandigarh,Government Trainings,IT Trainings,Top 10 Websites for Training Programs,Top lists of Trainings Program sites,Trainings Program services in india,top 50 Trainings Program portals in india,Trainings Program in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/training-sharing.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -127,7 +127,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     <div class="row marg">
                                     <div class="col-md-12">
                                         <div class="batch">Batch <?= ($key+1) ?></div>
-                                        <div class="row sett">
+                                        <div class="sett">
                                             <div class="week-days">
                                                 <ul>
                                                     <li class="<?= in_array(1, $working_days_data) ? 'active' : '' ?>">
@@ -162,7 +162,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                             </div>
                                                 <div class="time-bar-inner col-md-12 col-sm-12 col-xs-12">
                                                     <div class="working-time-from">
-                                                        <?= date("H:i", strtotime($batches['start_time'])); ?> To <?= date("H:i", strtotime($batches['end_time'])); ?>
+                                                        <?= date("h:i A", strtotime($batches['start_time'])); ?> To <?= date("h:i A", strtotime($batches['end_time'])); ?>
                                                     </div>
                                                 </div>
                                         </div>
@@ -281,12 +281,12 @@ $this->registerCss("
     @media only screen and (max-width: 768px) and (min-width: 360px) {
         .week-days ul{margin-left:15px;}
         }
-    
+    .week-days{padding-top:15px;}
     .week-days ul li{
         position:relative;
         list-style:none;
         display:none;
-        width:100px;
+        width:94px;
         height:100px;
         line-height:100px;
         text-align:center;
@@ -428,7 +428,7 @@ $this->registerCss("
     .loc-batches{display:none;}
     .loc-batches:first-child{display:block;}
     .overlay-top {
-        width: 70%;
+        width: 80%;
         margin: auto;
         margin-top: -150px;
         float: none;
@@ -587,8 +587,8 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px; 
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}

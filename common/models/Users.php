@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -114,6 +112,10 @@ use Yii;
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates0
  * @property CandidateJobTitle[] $candidateJobTitles
  * @property CandidateRecords[] $candidateRecords
+ * @property CareerAdvise[] $careerAdvises
+ * @property CareerAdvise[] $careerAdvises0
+ * @property CareerQuestions[] $careerQuestions
+ * @property CareerQuestions[] $careerQuestions0
  * @property Categories[] $categories
  * @property Categories[] $categories0
  * @property CategoriesList[] $categoriesLists
@@ -352,6 +354,9 @@ use Yii;
  * @property WhatsappInvitationMessages[] $whatsappInvitationMessages0
  * @property WhatsappInvitations[] $whatsappInvitations
  * @property WhatsappInvitations[] $whatsappInvitations0
+ * @property YoutubeChannels[] $youtubeChannels
+ * @property YoutubeChannels[] $youtubeChannels0
+ * @property YoutubeChannels[] $youtubeChannels1
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -926,6 +931,38 @@ class Users extends \yii\db\ActiveRecord
     public function getCandidateRecords()
     {
         return $this->hasMany(CandidateRecords::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises0()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerQuestions()
+    {
+        return $this->hasMany(CareerQuestions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerQuestions0()
+    {
+        return $this->hasMany(CareerQuestions::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -2830,6 +2867,30 @@ class Users extends \yii\db\ActiveRecord
     public function getWhatsappInvitations0()
     {
         return $this->hasMany(WhatsappInvitations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels0()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels1()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['author_enc_id' => 'user_enc_id']);
     }
 
     /**

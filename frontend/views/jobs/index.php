@@ -5,6 +5,7 @@ use yii\helpers\Url;
 
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -35,6 +36,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -50,6 +52,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -72,12 +75,17 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
+
 <?=
-    $this->render('/widgets/top-cities',[
-        'cities_jobs' => $cities_jobs,
-        'type' => 'jobs'
-    ])
+$this->render('/widgets/top-cities', [
+    'cities_jobs' => $cities_jobs,
+    'type' => 'jobs'
+])
 ?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -101,6 +109,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -145,7 +154,13 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -194,8 +209,6 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-
-
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3 col-sm-6',
@@ -203,9 +216,10 @@ echo $this->render('/widgets/blogs/whats-new', [
 ]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -232,20 +246,19 @@ $this->registerCss('
        background-color: #00a0e3;
     color: #fff;
 }
-
 .text-white1{
     color:white;
     font-family:Roboto;
-    }
+}
 .text-white2{
     color:white;
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .form-control{
     font-family:Roboto;
     font-weight:300;
-    }
+}
 .search-lists{
     padding:20px 0 50px;
     text-transform:capitalize;
@@ -279,8 +292,6 @@ $this->registerCss('
     padding:0;
     font-size:14px;
 }
-
-
 .wn-box-details{
     min-height:100px !important;
 }
@@ -542,7 +553,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 14px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -556,7 +567,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family: roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;
@@ -879,6 +891,7 @@ $(window).on('load', function() {
               '</style>';
     jQuery(head).append(css);
 });
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -931,7 +944,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
         while (ll < listElementsLength) {
-            if(document.getElementById(elem).children[ll]) {
+            if (document.getElementById(elem).children[ll]) {
                 if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
                     document.getElementById(elem).children[ll].classList.remove('hide');
                     zz += 1;
@@ -940,7 +953,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             }
             ll += 1;
         }
-        if(f) {
+        if (f) {
             document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
             document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
         }

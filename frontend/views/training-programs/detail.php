@@ -627,7 +627,7 @@ $this->registerCss('
 }
 
 .overlay-top {
-    width: 70%;
+    width: 80%;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -856,8 +856,8 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 }
 
 #logo_img {
-    width: 90px;
-    height: 90px;
+    width: 115px;
+    height: 115px;
 }
 
 .block .container {
