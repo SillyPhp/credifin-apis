@@ -3,6 +3,10 @@
 namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\ValidateUser;
+use common\models\Departments;
+use common\models\EducationalRequirements;
+use common\models\UserOtherDetails;
+use http\Env\Response;
 use Yii;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
@@ -287,6 +291,7 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'user_type' => $user_detail['user_type'],
+            'user_other_detail'=> $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
             'college' => $user_detail['org_name'],
             'college_enc_id' => $user_detail['organization_enc_id'],
@@ -300,5 +305,101 @@ class AuthController extends ApiBaseController
             'access_token_expiry_time' => $find_user['access_token_expiration'],
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
         ];
+    }
+
+    private function userOtherDetail($user_id){
+        $user_other_detail = UserOtherDetails::find()
+            ->where(['user_enc_id'=>$user_id])
+            ->exists();
+
+        return $user_other_detail;
+    }
+
+    public function actionSaveOtherDetail(){
+
+        if($user = $this->isAuthorized()){
+            $user_id = $user->user_enc_id;
+        }else{
+            return $this->response(401,['status'=>401,'msg'=>'unauthorized']);
+        }
+
+        $data = Yii::$app->request->post();
+
+        $user_other_details = new UserOtherDetails();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
+        $user_other_details->organization_enc_id = $data['college'];
+        $user_other_details->user_enc_id = $user_id;
+
+        $d = Departments::find()
+            ->where([
+                'name' => $data['department']
+            ])
+            ->one();
+
+        if ($d) {
+            $user_other_details->department_enc_id = $d->department_enc_id;
+        } else {
+            $department = new Departments();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $department->department_enc_id = $utilitiesModel->encrypt();
+            $department->name = $data['department'];
+            if (!$department->save()) {
+                return false;
+            }
+            $user_other_details->department_enc_id = $department->department_enc_id;
+        }
+
+        $e = EducationalRequirements::find()
+            ->where([
+                'educational_requirement' => $data['course_name']
+            ])
+            ->one();
+
+        if ($e) {
+            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
+        } else {
+            $eduReq = new EducationalRequirements();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
+            $eduReq->educational_requirement = $data['course_name'];
+            $eduReq->created_on = date('Y-m-d H:i:s');
+            $eduReq->created_by = $user_id;
+            if (!$eduReq->save()) {
+                return false;
+            }
+            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
+        }
+
+        $user_other_details->semester = $data['semester'];
+        $user_other_details->starting_year = $data['starting_year'];
+        $user_other_details->ending_year = $data['ending_year'];
+        $user_other_details->university_roll_number = $data['roll_number'];
+
+
+        if ($data['job_start_month']) {
+            $user_other_details->job_start_month = $data['job_start_month'];
+        }
+
+        if ($data['job_year']) {
+            $user_other_details->job_year = $data['job_year'];
+        }
+
+        if ($data['internship_duration']) {
+            $user_other_details->internship_duration = $data['internship_duration'];
+        }
+
+        if ($data['internship_start_date']) {
+            $user_other_details->internship_start_date = $date = date('Y-m-d', strtotime($data['internship_start_date']));
+        }
+
+        if (!$user_other_details->save()) {
+            return $this->response(500,['status'=>500,'message'=>'an error occurred']);
+        }else{
+            return $this->response(201,['status'=>201,'message'=>'successfully added']);
+        }
     }
 }

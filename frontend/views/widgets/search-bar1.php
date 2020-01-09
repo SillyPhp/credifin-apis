@@ -14,7 +14,7 @@ use yii\helpers\Url;
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
-                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword'); Yii::$app->request->get('company');?>" class="form-control">
+                                <input type="text" name="keyword" value="<?=str_replace("-"," ",Yii::$app->request->get('keyword')); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
                                         <input type="text" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
@@ -26,7 +26,7 @@ use yii\helpers\Url;
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
-                                    <input type="text" name="location" id="cities" value="<?=Yii::$app->request->get('location')?>" class="form-control">
+                                    <input type="text" name="location" id="cities" value="<?=str_replace("-"," ",Yii::$app->request->get('location'))?>" class="form-control">
                                 <?php }else{ ?>
                                     <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
