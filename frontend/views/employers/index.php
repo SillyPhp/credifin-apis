@@ -180,13 +180,7 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-    <section class="fixed-bttn">
-        <div class="container">
-            <div class="row">
 
-            </div>
-        </div>
-    </section>
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 

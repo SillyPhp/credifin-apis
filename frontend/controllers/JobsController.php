@@ -308,7 +308,7 @@ class JobsController extends Controller
             if (Yii::$app->request->get('location')||Yii::$app->request->get('keyword'))
             {
                 $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
-                $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
+                $parameters['location'] = str_replace("-"," ",Yii::$app->request->get('location'));
             }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];

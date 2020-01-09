@@ -158,22 +158,22 @@ use yii\widgets\Pjax;
                                             ?>
                                             <a href="<?= $cv ?>">Download Resume</a>
                                         </div>
-<!--                                        <ul>-->
+                                        <ul>
                                             <!--                                        <li>-->
                                             <!--                                            <a href="#">-->
                                             <!--                                                <img src="-->
 <!--                                            <= Url::to('@eyAssets/images/pages/dashboard/email2.png') ?>"/>-->
                                             <!--                                            </a>-->
                                             <!--                                        </li>-->
-<!--                                            <li>-->
-<!--                                                <a href="#">-->
-<!--                                                    <img src="<= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>-->
-<!--                                                </a>-->
-<!--                                            </li>-->
+                                            <li>
+                                                <a href="#" class="open_chat" data-id="<?= $arr['created_by']; ?>" data-key="<?= $arr['name'];?>">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/chat-button-blue.png') ?>"/>
+                                                </a>
+                                            </li>
                                             <!--                        <li>-->
                                             <!--                            <i class="fa fa-phone-square"></i>-->
                                             <!--                        </li>-->
-<!--                                        </ul>-->
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
