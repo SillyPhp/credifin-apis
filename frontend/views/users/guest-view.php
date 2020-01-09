@@ -111,6 +111,19 @@ $this->params['header_dark'] = false;
                     </ul>
                 </div>
             </div>
+            <div class="log-btn1">
+                <?php
+                if (!Yii::$app->user->identity->user_enc_id) {
+                    ?>
+                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="btn btn-info new-set">Login to view complete profile</a>
+                    <?php
+                } else {
+                    ?>
+                    <div class="log-text1">You have to be an organization user to view the details</div>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
     </section>
     <section class="detail-section">
@@ -135,7 +148,10 @@ $this->params['header_dark'] = false;
                         ?>
                     </div>
                     <div class="apply-job-detail">
-                        <p><?= Html::encode($user['description']); ?></p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                            voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
                     </div>
                     <div class="apply-job-detail">
                         <h5>Skills</h5>
@@ -143,7 +159,7 @@ $this->params['header_dark'] = false;
                             <?php
                             if ($skills) {
                                 foreach ($skills as $sk) { ?>
-                                    <li><?= $sk['skills']; ?></li>
+                                    <li>XXXXXX XXXXXXXX</li>
                                     <?php
                                 }
                             } else {
@@ -158,7 +174,7 @@ $this->params['header_dark'] = false;
                             <?php
                             if ($language) {
                                 foreach ($language as $lg) { ?>
-                                    <li><?= $lg['language']; ?></li>
+                                    <li>XXXXXX</li>
                                     <?php
                                 }
                             } else {
@@ -175,13 +191,13 @@ $this->params['header_dark'] = false;
                         foreach ($education as $edu) {
                             ?>
                             <div class="set">
-                                <div class="uni-name s-text"><i class="fas fa-university"></i><?= $edu['institute'] ?>
+                                <div class="uni-name s-text"><i class="fas fa-university"></i>XXXXXX XXXX XXXX
                                 </div>
                                 <div class="quelification s-text"><i
-                                            class="fas fa-user-graduate"></i><?= $edu['degree'] . ' (' . $edu['field'] . ')' ?>
+                                            class="fas fa-user-graduate"></i>XXXXXXX XXXXXXXXXX (XXXXXXXXX)
                                 </div>
                                 <div class="s-time s-text"><i
-                                            class="fas fa-clock"></i><?= date("Y", strtotime($edu['from_date'])) . ' - ' . date("Y", strtotime($edu['to_date'])) ?>
+                                            class="fas fa-clock"></i> XXXX - XXXX
                                 </div>
                             </div>
                             <?php
@@ -195,12 +211,12 @@ $this->params['header_dark'] = false;
                             ?>
                             <div class="set">
                                 <div class="uni-name s-text"><i
-                                            class="fas fa-hotel"></i><?= $exp['company'] . ', ' . $exp['city_name'] ?>
+                                            class="fas fa-hotel"></i>XXXX XXXXXXX XXXXXXX XXX XXX , XXXXXXXXX
                                 </div>
-                                <div class="quelification s-text"><i class="fas fa-briefcase"></i><?= $exp['title'] ?>
+                                <div class="quelification s-text"><i class="fas fa-briefcase"></i> XXX XXXXXXXXXX
                                 </div>
                                 <div class="s-time s-text"><i
-                                            class="fas fa-calendar-alt"></i><?= date("d/m/Y", strtotime($exp['from_date'])) . ' to ' . date("d/m/Y", strtotime($exp['to_date'])) ?>
+                                            class="fas fa-calendar-alt"></i> XX/XX/XXXX to XX/XX/XXXX
                                 </div>
                             </div>
                             <?php
@@ -213,7 +229,7 @@ $this->params['header_dark'] = false;
                             <?php
                             foreach ($achievement as $achive) {
                                 ?>
-                                <li><?= $achive['achievement'] ?></li>
+                                <li>XXXXXXXX XXXXX</li>
                                 <?php
                             }
                             ?>
@@ -225,7 +241,7 @@ $this->params['header_dark'] = false;
                             <?php
                             foreach ($hobbies as $hobby) {
                                 ?>
-                                <li><?= $hobby['hobby'] ?></li>
+                                <li>XXXXXXXXX</li>
                                 <?php
                             }
                             ?>
@@ -237,7 +253,7 @@ $this->params['header_dark'] = false;
                             <?php
                             foreach ($interests as $intrst) {
                                 ?>
-                                <li><?= $intrst['interest'] ?></li>
+                                <li>XXXXXXXXXXX</li>
                                 <?php
                             }
                             ?>
@@ -253,27 +269,27 @@ $this->params['header_dark'] = false;
                     <div class="prefer-detail">
                         <ul>
                             <li><span class="set-width">Profile</span><span
-                                        class="position"><?= $job_preference['profiles_name'] ?></span>
+                                        class="position">XXXXXXXXXXXX, XXXXXX</span>
                             </li>
                             <li><span class="set-width">Type</span><span
-                                        class="position"><?= $job_preference['type'] ?></span></li>
+                                        class="position">XXXX XXXX</span></li>
                             <li><span class="set-width">City</span><span
-                                        class="position"><?= $job_preference['cities'] ?></span>
+                                        class="position">XXXXXXXX, XXXXXXX, XXXXXXXXXX</span>
                             </li>
                             <li><span class="set-width">Skills</span><span
-                                        class="position"><?= $job_preference['skills'] ?></span>
+                                        class="position">XXXXX, XXXXXXXXXXXX, XXXXXXXXXX, XXXX</span>
                             </li>
                             <li><span class="set-width">Industry</span><span
-                                        class="position"><?= $job_preference['industry'] ?></span>
+                                        class="position">XXXXXXXXXXXX, XXXXXXXX & XXXXXXX XXX XXX, XXXXX</span>
                             </li>
                             <li><span class="set-width">Experience</span><span
-                                        class="position"><?= $job_preference['exp'] ?> year('s)</span>
+                                        class="position">X-X year('s)</span>
                             </li>
                             <li><span class="set-width">Working Days</span><span
-                                        class="position"><?= ($job_preference['sun_frequency']) ? 'Sun,' : '' ?> Mon, Tue, Wed, Thu, Fri<?= ($job_preference['sat_frequency']) ? ', Sat' : '' ?></span>
+                                        class="position">XXX, XXX, XXX, XXX, XXX, XXX, XXX</span>
                             </li>
                             <li><span class="set-width">Timings</span><span
-                                        class="position"><?= date("g:i A", strtotime($job_preference['from'])) . ' to ' . date("g:i A", strtotime($job_preference['to'])) ?> </span>
+                                        class="position">XX:XX AM to XX:XX PM </span>
                             </li>
                         </ul>
                     </div>
@@ -287,25 +303,25 @@ $this->params['header_dark'] = false;
                     <div class="prefer-detail">
                         <ul>
                             <li><span class="set-width">Profile</span><span
-                                        class="position"><?= $internship_preference['profiles_name'] ?></span>
+                                        class="position">XXXXXXXXXXXX, XXXXXX</span>
                             </li>
                             <li><span class="set-width">Type</span><span
-                                        class="position"><?= $internship_preference['type'] ?></span></li>
+                                        class="position">XXXX XXXX</span></li>
 
                             <li><span class="set-width">City</span><span
-                                        class="position"><?= $internship_preference['cities'] ?></span>
+                                        class="position">XXXXXXXX, XXXXXXX, XXXXXXXXXX</span>
                             </li>
                             <li><span class="set-width">Skills</span><span
-                                        class="position"><?= $internship_preference['skills'] ?></span>
+                                        class="position">XXXXX, XXXXXXXXXXXX, XXXXXXXXXX, XXXX</span>
                             </li>
                             <li><span class="set-width">Industry</span><span
-                                        class="position"><?= $internship_preference['industry'] ?></span>
+                                        class="position">XXXXXXXXXXXX, XXXXXXXX & XXXXXXX XXX XXX, XXXX</span>
                             </li>
                             <li><span class="set-width">Working Days</span><span
-                                        class="position"><?= ($internship_preference['sun_frequency']) ? 'Sun,' : '' ?> Mon, Tue, Wed, Thu, Fri<?= ($internship_preference['sat_frequency']) ? ', Sat' : '' ?></span>
+                                        class="position">XXX, XXX, XXX, XXX, XXX, XXX, XXX</span>
                             </li>
                             <li><span class="set-width">Timings</span><span
-                                        class="position"><?= date("g:i A", strtotime($internship_preference['from'])) . ' to ' . date("g:i A", strtotime($internship_preference['to'])) ?> </span>
+                                        class="position">XX:XX AM to XX:XX PM </span>
                             </li>
                         </ul>
                     </div>
@@ -319,10 +335,36 @@ $this->params['header_dark'] = false;
     </section>
 <?php
 $this->registerCss('
-//.detail-section{
-//    filter: blur(5px);
-//    -webkit-filter: blur(5px);
-//}
+.log-btn1 a{
+    position: absolute;
+    left: 50%;
+    bottom: -20px;
+    z-index: 999;
+    transform: translate(-50%); 
+}
+.log-text1{
+    position: absolute;
+    left: 50%;
+    bottom: -20px; 
+    z-index: 999;
+    transform: translate(-50%); 
+    font-size: 18px;
+    font-family: roboto;
+    padding: 5px 20px !important;
+    color: red;
+    border: 1px solid;
+    background: #fff;
+}
+.new-set {
+    font-size: 18px;
+    font-family: roboto;
+    padding: 5px 20px !important;
+//    color: red;
+}
+.detail-section{
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+}
 .education-head {
     font-size: 18px;
     font-weight: 500;
