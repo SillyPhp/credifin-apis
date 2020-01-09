@@ -71,7 +71,6 @@ function FetchEventAndRenderCalendar(){
                     designation:v.designation,
                 })
             });
-            console.log(events);
             GenerateCalendar(events);
         }
     })
@@ -93,7 +92,6 @@ function GenerateCalendar(events){
         events: events,
         eventClick: function (calEvent, jsEvent, view) {
             selectedEvent = calEvent;
-            console.log(calEvent);
             if(calEvent.status == 2){
                 $('#btnAccept').text('Already Applied');
                 $('#btnAccept').attr("disabled", true);
@@ -106,6 +104,7 @@ function GenerateCalendar(events){
             $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
             $('#pDetails').html('<b>Profile: </b>' + calEvent.profile);
             $('#time_slots').empty();
+            
             $.each(calEvent.time , function (index) {
                     $("#time_slots").append(GetOption(calEvent.time[index]['from'],calEvent.time[index]['to'], calEvent.time[index]['interview_date_timing_enc_id']));
                 });
@@ -257,7 +256,6 @@ $('#btnSave').click(function() {
 })
 
 function SaveEvent(data){
-    console.log(data);
     $('#myModalSave').modal('hide');
     // $.ajax({
     //     type: 'POST',
