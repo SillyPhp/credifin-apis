@@ -133,6 +133,11 @@ class Cards
             ]);
         }
 
+        if (isset($options['organization_id'])) {
+            $cards1->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+            $cards2->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+        }
+
         if (isset($options['slug'])) {
             $cards1->andWhere([
                 'or',
@@ -392,6 +397,12 @@ class Cards
                 ['like', 'd.name', $options['company']]
             ]);
         }
+
+        if (isset($options['organization_id'])) {
+            $cards1->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+            $cards2->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+        }
+
         if (isset($options['slug'])) {
             $cards1->andWhere([
                 'or',
