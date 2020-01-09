@@ -74,6 +74,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $feedbackFormModel = new FeedbackForm();
+        $partnerWithUsModel = new PartnerWithUsForm();
+
         $job_profiles = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
@@ -217,6 +220,8 @@ class SiteController extends Controller
         $tweets = array_merge($a, $b);
 
         return $this->render('index', [
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
