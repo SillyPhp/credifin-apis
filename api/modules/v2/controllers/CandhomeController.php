@@ -208,7 +208,7 @@ class CandhomeController extends ApiBaseController
         }
     }
 
-    public function actionAppliedApplicΩations()
+    public function actionAppliedApplications()
     {
         if ($user = $this->isAuthorized()) {
             $id = $user->user_enc_id;

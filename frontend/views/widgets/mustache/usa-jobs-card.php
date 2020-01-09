@@ -65,6 +65,33 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
   }   
   })
 }
+
+function fetch_usa_cards_dept(host,userAgent,authKey,template,Department)
+{
+  $.ajax({
+  url:'/usa-jobs/get-dept-cards',
+  method:'POST',
+  data:{
+      'Department':Department
+  },
+  datatype:"jsonp",
+    beforeSend: function(){
+            $('.img_load').css('display','block');
+        },
+  success:function(body) {   
+      $('.img_load').css('display','none');
+      body = JSON.parse(body);
+      template.html(''); 
+      template.append(Mustache.render($('#usa-jobs-card').html(),body));
+      utilities.initials();
+      $('#loader').hide();
+      if(body == null){
+          $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
+  }   
+  })
+}
 function fetchLocalData(template,min,max,loader,loader_btn) {
   $.ajax({
   url:'/usa-jobs/get-data',
