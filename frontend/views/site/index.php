@@ -803,53 +803,6 @@ $this->registerCss('
 .feature-links a:hover{
     color:#ff7803;
 }
-.pos-rel{
-    position:relative;
-    min-height:300px;
-    width:100%;
-    text-align:center;
-} 
-.pos-middle{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:100%
-}
-.mob-pos{
-    position:absolute;
-    bottom:0;
-    left:30px;
-}
-.mob-pos img{
-    max-height:300px;
-}
-.moble-bg{
-background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . '); 
-background-attachment:fixed;
-//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-//    background-repeat:no-repeat;
-//    background-size:cover;
-}
-.mob-heading{
-    font-size:33px;
-    color:#000;
-    font-family:Roboto;
-        font-weight:500;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-sub-heading{
-    font-size:18px;
-    color:#000;
-    font-family:Roboto;
-    font-weight:300;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-imgs img{
-    max-height: 300px;
-}
 .app-btn{
     max-width:200px;
     margin:0 auto;
@@ -924,88 +877,6 @@ background-attachment:fixed;
    padding-left:0px !important; 
    padding-right:0px !important; 
 }
-/*try now sec*/
-.fixed-bttn{
-    min-height:400px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
-    background-size: cover;
-    position:relative;
-    background-repeat:no-repeat;
-}
-.pos-ab{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-.fx-heading{
-  text-transform:capitalize;
-    font-size:35px;
-    text-align:center;
-    padding:0 0 20px 0;
-    color:#666666;
-    font-family:lobster;
-}
-.post-job-bttn a{
-    background:#00a0e3;
-    color:#fff;
-    border-radius:5px;
-    text-transform: uppercase;
-    padding:10px 20px;
-    font-size:18px;
-    box-shadow:0 0 10px rgba(66, 63, 63, .5);
-    -webkit-transition:.3s all;
-   transition:.3s all;
-   text-align:center;
-   margin:0 auto;
-   max-width:300px;
-   font-weight:400;
-   font-family:Roboto;
-}
-.post-job-bttn a:hover{
-   box-shadow:none;
-   -webkit-transition:.3s all;
-   transition:.3s all;
-}
-.hvr-float-shadow {
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  position: relative;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
-}
-.hvr-float-shadow:before {
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
-  content: \'\';
-  top: 100%;
-  left: 5%;
-  height: 10px;
-  width: 90%;
-  opacity: 0;
-  background: -webkit-radial-gradient(center, ellipse, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform, opacity;
-  transition-property: transform, opacity;
-}
-.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
-  -webkit-transform: translateY(-5px);
-  transform: translateY(-5px);
-}
-.hvr-float-shadow:hover:before, .hvr-float-shadow:focus:before, .hvr-float-shadow:active:before {
-  opacity: 1;
-  -webkit-transform: translateY(5px);
-  transform: translateY(5px);
-}
-/*try now ends*/
-
 .header-boxs{
     max-width:850px;
     margin:0 auto;
@@ -1064,14 +935,6 @@ background-attachment:fixed;
 .box-border:hover .overlay {
     height: 20%;
 }
-
-
-/*how we are different*/
-.different{
-    overflow-x:hidden
-}
-/*how we are different ends*/
-
 /*services section starts*/
 .services{
     padding: 0px 0 25px 0; 
@@ -1509,13 +1372,11 @@ how-icon{
 }
 .job-style-bx .job-is {
     margin: 0;
-    
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     border-radius: 4px;
-
     color: #ffffff;
 }
 .tab-sec .tab-content {
@@ -1769,10 +1630,7 @@ how-icon{
     font-size:14px;
 }
 
-@media only screen and (max-width: 992px){
-    .mob-pos{
-        left: 30px;
-    }    
+@media only screen and (max-width: 992px){  
      .how-icon{
         text-align:center;
         padding:0 0 20px 0;
@@ -1782,20 +1640,7 @@ how-icon{
         font-size:20px
     }
 }
-@media only screen and (max-width: 768px){
-    .mob-pos{
-        left: 50%;
-        transform:translateX(-50%);
-    }    
-}
 @media only screen and (max-width:500px){
-    .pos-rel{
-        min-height: 225px;        
-    }
-    .mob-heading{
-        font-size: 26px;
-        padding: 20px 0 0 0;
-    }
     .c-logo{
         width:100% !important ;
         text-align:center;
@@ -1830,16 +1675,6 @@ $script = <<< JS
         $(this).addClass('current');
         $("#"+tab_id).addClass('current');
     });
-
-
-// window.onscroll = function() {scrollFunction()};
-// function scrollFunction() {
-//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-//     document.getElementById("myBttn").style.display = "block";
-//   } else {
-//     document.getElementById("myBttn").style.display = "none";
-//   }
-// }
         
   jQuery(function($) {
   $('.main-slider-sec').slick({
@@ -1955,11 +1790,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     }
 
     function hideMore(elem) {
-        // var i = 0;
-        // i += 5;
-        // var k = 4;
         var ll = 0;
-        ``
         var zz = 0;
         var tt = 0;
         var f = true;
