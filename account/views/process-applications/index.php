@@ -302,6 +302,7 @@ li{list-style: none;}
 }
 .pr-user-icon img{
     width: 100%;
+    height:100%;
 }
 .pr-user-detail h5{
   font-size:14px;
@@ -634,6 +635,7 @@ $(document).on('click', '.approve', function(e) {
                   $.pjax.reload({container: '#pjax_process', async: false});
                   setTimeout(function() {
                     hiring_process();
+                    utilities.initials();
                   }, 1000)
             } else {
                disable(btn);
