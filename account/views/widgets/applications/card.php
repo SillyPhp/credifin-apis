@@ -52,6 +52,10 @@ if (!empty($total_applications)) {
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
+                            <button type="button" class="j-closed" data-toggle="tooltip" title="Closed Job"
+                                    value="<?= $applications[$next]['application_enc_id']; ?>">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
                         </div>
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
@@ -248,6 +252,31 @@ $(document).on('click','.j-delete',function(e){
                 $.pjax.reload({container: "#pjax_active_jobs", async: false});
                   if(data==true) {
                       toastr.success('Deleted Successfully', 'Success');
+                    }
+                   else {
+                      toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                   }
+                 }
+          });
+    }
+});
+
+$(document).on('click','.j-closed',function(e){
+     e.preventDefault();
+     var main_card =$(this).parentsUntil(".hr-company-box").closest(".box-main-col");
+     if (window.confirm("Do you really want to Delete the current Application?")) { 
+        main_card.remove();
+        var data = $(this).attr('value');
+        var url = "/account/jobs/close-application";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            success:function(data){
+                $.pjax.reload({container: "#pjax_active_jobs", async: false});
+                  if(data==true) {
+                      $.pjax.reload({container: "#pjax_closed_jobs", async: false});
+                      toastr.success('Closed Successfully', 'Success');
                     }
                    else {
                       toastr.error('Something went wrong. Please try again.', 'Opps!!');
