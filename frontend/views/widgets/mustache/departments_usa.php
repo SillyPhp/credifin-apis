@@ -5,7 +5,7 @@ use yii\helpers\Url;
     {{#.}}
 <div class="col-md-3 col-sm-6">
              <div class="agency-box">
-                 <a href="/usa-jobs/{{slug}}" title="{{Value}}">
+                 <a href="/usa-jobs/department/{{slug}}" title="{{Value}}">
                     <div class="agency-logo">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{Value}}" title="{{Value}}">
@@ -17,7 +17,7 @@ use yii\helpers\Url;
                     </div>
                     <div class="agency-name">{{Value}}</div>
                     <div class="agency-count">
-                        <a href="/usa-jobs/{{slug}}">{{total_applications}} Jobs</a>
+                        <a href="/usa-jobs/department/{{slug}}">{{total_applications}} Jobs</a>
                     </div>
                  </a>
              </div>
