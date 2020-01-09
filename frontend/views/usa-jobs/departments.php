@@ -10,8 +10,14 @@ use yii\helpers\Url;
             <div class="heading-style">All Departments</div>
         </div>
         <div class="row">
+            <div class="loader_screen">
+                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+            </div>
             <div id="departments_cards">
 
+            </div>
+            <div class="align_btn">
+                <button id="loader" class="btn btn-success">Load More</button>
             </div>
         </div>
     </div>
@@ -83,8 +89,18 @@ body{
     text-align:center;
     padding:0px 0px 20px 0px;
 }
+.loader_screen img
+{
+display:none;
+margin:auto
+}
 ');
 $script = <<<JS
-fetchDepartments(template=$('#departments_cards'),limit=20,offset=0);
+var offset = 0;
+$(document).on('click','#loader',function(e) {
+  e.preventDefault();
+  fetchDepartments(template=$('#departments_cards'),limit=20,offset=offset+20,loader=false,loader_btn=true);
+})
+fetchDepartments(template=$('#departments_cards'),limit=20,offset=0,loader=true,loader_btn=false);
 JS;
 $this->registerJs($script);
