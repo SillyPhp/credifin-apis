@@ -270,15 +270,23 @@ class SchedularController extends Controller
 
             $save = $this->saveData($res);
             if ($save) {
-
-                $this->sendComapanyMail();
+                $job = EmployerApplications::find()
+                    ->alias('a')
+                    ->select(['a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'c.name'])
+                    ->joinWith(['title b' => function ($b) {
+                        $b->joinWith(['categoryEnc c'], false);
+                    }], false)
+                    ->where(['a.application_enc_id' => $save[0]->application_enc_id])
+                    ->asArray()
+                    ->one();
+                $this->sendComapanyMail($job, $res['timings']);
                 if ($res['interviewer_options']) {
-                    $this->sendInterviewerMail($save[2], $res['interviewer_options'], $save[0], $res['timings']);
+                    $this->sendInterviewerMail($save[2], $res['interviewer_options'], $job, $res['timings']);
                 }
                 if($res['type'] == 'fixed'){
                     $this->findCandidates($save[1],$save[0]->application_enc_id);
                 }elseif ($res['type'] == 'flexible'){
-                    $this->findCandidatesFlexible($save[0]->scheduled_interview_enc_id);
+                    $this->findCandidatesFlexible($save[0]->scheduled_interview_enc_id, $job, $res['timing']);
                 }
                 return [
                     'status' => 200,
@@ -295,7 +303,7 @@ class SchedularController extends Controller
         }
     }
 
-    private function sendComapanyMail()
+    private function sendComapanyMail($data, $timing)
     {
         $mail = Yii::$app->mail;
         $mail->receivers = [];
@@ -303,9 +311,9 @@ class SchedularController extends Controller
             "name" => Yii::$app->user->identity->organization->name,
             "email" => Yii::$app->user->identity->organization->email,
         ];
-        $mail->subject = 'new interview scheduled by your organization';
-        $mail->data = ['job' => 'scipy job'];
-        $mail->template = 'interview-schedular';
+        $mail->subject = 'New Interview Scheduled By Your Organization';
+        $mail->data = ['job' => $data['title'], 'timing' => $timing];
+        $mail->template = 'schedular-for-org';
         if ($mail->send()) {
             $mail_logs = new EmailLogs();
             $utilitiesModel = new \common\models\Utilities();
@@ -322,15 +330,6 @@ class SchedularController extends Controller
 
     private function sendInterviewerMail($interviewer, $type, $data, $timing)
     {
-        $job = EmployerApplications::find()
-            ->alias('a')
-            ->select(['a.title', 'b.assigned_category_enc_id', 'b.category_enc_id', 'c.name'])
-            ->joinWith(['title b' => function ($b) {
-                $b->joinWith(['categoryEnc c'], false);
-            }], false)
-            ->where(['a.application_enc_id' => $data])
-            ->asArray()
-            ->one();
         foreach ($interviewer as $i) {
             $mail = Yii::$app->mail;
             $mail->receivers = [];
@@ -339,12 +338,12 @@ class SchedularController extends Controller
                 'email' => $i['email']
             ];
             if ($type == 'zero') {
-                $mail->subject = 'you are selected to take interview';
-                $mail->data = ['data' => $job, 'timing' => $timing, 'name'=> $i['name']];
+                $mail->subject = 'You are selected to take interview';
+                $mail->data = ['data' => $data, 'timing' => $timing, 'name'=> $i['name']];
                 $mail->template = 'schedular-for-interviewers';
             } elseif ($type == 'one') {
                 $mail->subject = 'you are selected to take interview';
-                $mail->data = ['job' => $job, 'id' => $i['interviewer_enc_id']];
+                $mail->data = ['job' => $data, 'id' => $i['interviewer_enc_id'], 'timing' => $timing, 'name'=> $i['name']];
                 $mail->template = 'request-for-acceptance';
             }
             if ($mail->send()) {
@@ -353,7 +352,7 @@ class SchedularController extends Controller
         }
     }
 
-    private function sendCandidateMail($applied_candidate){
+    private function sendCandidateMail($applied_candidate, $data, $time){
 
         $candidates = [];
         $user = [];
@@ -368,14 +367,14 @@ class SchedularController extends Controller
         $mail->receivers = [];
         $mail->receivers = $candidates;
         $mail->subject = 'interview scheduled by company for scipy';
-        $mail->data = ['job' => 'scipy job'];
+        $mail->data = ['data' => $data, 'time' => $time];
         $mail->template = 'interview-schedular';
         if ($mail->send()) {
 
         }
     }
 
-    private function findCandidatesFlexible($id){
+    private function findCandidatesFlexible($id, $data, $time){
             $candidate = InterviewCandidates::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id','CONCAT(c.first_name, " ", c.last_name) name','c.email'])
@@ -387,7 +386,7 @@ class SchedularController extends Controller
                 ->all();
 
             if(!empty($candidate)){
-                $this->sendCandidateMail($candidate);
+                $this->sendCandidateMail($candidate, $data, $time);
             }
     }
 

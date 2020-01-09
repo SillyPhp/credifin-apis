@@ -166,33 +166,17 @@ $this->registerCss('
             <div class="header-icon"><img src="<?= Url::to('@commonAssets/email_service/header-icon.png', 'https'); ?>" class="responsive"></div>
         </div>
         <div class="jboxs">
-            <div class="date-main">
-                <div class="month-detail">
-                    January
-                </div>
-                <div class="day-detail">
-                    5
-                </div>
-            </div>
             <div class="title">
-                <h2>John Doe invited you to <span>"Webinar about Webinar Invitations"</span></h2>
+                <h2>New Interview Scheduled By Your Organization</h2>
             </div>
             <div class="clear">
                 <div class="head-main">
                     Job Title:
                 </div>
                 <div class="desc-main">
-                    <?= $data['title']; ?>
+                    <?= $job; ?>
                 </div>
             </div>
-<!--            <div class="clear">-->
-<!--                <div class="head-main">-->
-<!--                    Salary:-->
-<!--                </div>-->
-<!--                <div class="desc-main">-->
-<!--                    3,00,000 p.a.-->
-<!--                </div>-->
-<!--            </div>-->
             <div class="clear">
                 <div class="head-main">
                     when:
@@ -204,10 +188,6 @@ $this->registerCss('
                     }
                     ?>
                 </div>
-            </div>
-            <div class="clear text-center">
-                <a class="link primary" href="<?= Url::to('/account/dashboard', 'https'); ?>">Accept</a>
-                <a class="link danger" href="<?= Url::to('/account/dashboard', 'https'); ?>">Decline</a>
             </div>
         </div>
 
