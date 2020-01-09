@@ -5,6 +5,7 @@ use yii\helpers\Url;
 
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -35,6 +36,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -50,6 +52,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -73,9 +76,8 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<div id="stats_cards">
-
-</div>
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
 
 <?=
 $this->render('/widgets/top-cities', [
@@ -83,6 +85,7 @@ $this->render('/widgets/top-cities', [
     'type' => 'jobs'
 ])
 ?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -106,7 +109,7 @@ $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/usa_and_govt_jobs');?>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -888,7 +891,7 @@ $(window).on('load', function() {
               '</style>';
     jQuery(head).append(css);
 });
-fetchStats(template=$('#stats_cards'));
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

@@ -155,6 +155,7 @@ class SiteController extends Controller
             "limit" => 6
         ]);
 
+//        print_r($featured_jobs);exit();
         $other_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
