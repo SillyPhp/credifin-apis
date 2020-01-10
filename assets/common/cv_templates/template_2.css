@@ -1,0 +1,76 @@
+.r-main {
+    max-width: 700px;
+    margin: 0 auto;
+    border: 1px solid #592222;
+    display:flex;
+}
+.r-left {
+    width: 230px;
+    display: inline-block;
+    background-color:#592222;
+    color:#fff;
+}
+.r-right {
+    width: 470px;
+    display: inline-block;
+}
+.user-name {
+    font-size: 30px;
+    padding: 20px;
+    text-align: center;
+    text-transform: capitalize;
+}
+.p-info-head {
+    text-align: center;
+    font-size: 18px;
+    background: #8f2f2f;
+    color:#fff;
+}
+.p-info, .r-skills, .r-languages{
+    padding: 10px 20px 20px 20px;
+}
+.r-phone-no, .r-email, .r-birth {
+    margin-bottom: 10px;
+}
+.ph-head, .e-head, .b-head {
+    font-size: 17px;
+    font-weight: 500;
+    font-family: roboto;
+}
+.ph-inner, .e-inner, .b-inner, .r-skill, .r-lang, .e-date, .e-loc, .ed-date, .ed-loc, .hobbies {
+    font-size: 15px;
+    font-family: roboto;
+}
+.r-head {
+    padding: 10px 20px;
+    text-align: justify;
+    font-family: roboto;
+}
+.info-head {
+    padding: 2px 10px;
+    font-size: 17px;
+    font-weight: 500;
+    font-family: roboto;
+    background-color:#592222;
+    margin: 0px 10px;
+    color:#fff;
+}
+.e-main {
+    padding: 10px 20px;
+}
+.e-date, .ed-date {
+    display: inline-block;
+}
+.e-loc, .ed-loc{
+    padding: 0px 0px 0px 30px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+.e-record {
+    display: flex;
+    padding-bottom:15px;
+}
+.set-to{
+    display:block;
+}
