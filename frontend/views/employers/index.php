@@ -219,6 +219,57 @@ if (Yii::$app->user->isGuest) {
         <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
 
+    <section class="emp-back">
+        <div class="container">
+            <div class="row">
+                <div class="emp-main">
+                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span></h3>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">75<span class="smaller">%</span></span>
+                                    <div class="pie">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers consider a company's<span> employer brand before</span> even applying for a job</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">69<span class="smaller">%</span></span>
+                                    <div class="pie pie2">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers will <span>not accept</span> a job with a company if that company has a <span>bad reputation</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">80<span class="smaller">%</span></span>
+                                    <div class="pie pie3">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers rely on <span>social media</span> and company review sites as important <span>research resources</span> when looking for work</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="how-it-works">
         <div class="container">
             <div class="row">
@@ -268,6 +319,139 @@ if (Yii::$app->user->isGuest) {
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.emp-main {
+    text-align:center;
+    margin: 0px 0px 30px 0px;
+}
+.emp-main h3 {
+    font-size: 30px;
+    font-family: roboto;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 30px;
+    padding:0px 105px;
+}
+.emp-main h3 span{
+    font-weight: 400;
+}
+.emp-text {
+    font-size: 16px;
+    font-family: roboto;
+    margin: 15px 0px;
+    text-align: center;
+}
+.emp-text span {
+    font-weight:700;
+}
+@media (max-width:768px){
+.emp-main h3 {
+    font-size: 23px;
+    padding:0px 20px;
+}
+}
+@media (max-width:415px){
+.emp-main h3 {
+    font-size: 20px;
+    padding:0px 10px;
+}
+.set-size {
+     margin-bottom: 20px;
+}
+}
+.set-size {
+  font-size: 10em;
+}
+.pie-wrapper {
+  height: 1em;
+  width: 1em;
+  margin: 15px;
+  position: relative;
+}
+.pie-wrapper:nth-child(3n + 1) {
+  clear: both;
+  margin:0 auto;
+}
+.pie-wrapper .pie {
+  height: 100%;
+  width: 100%;
+  clip: rect(0, 1em, 1em, 0.5em);
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.pie-wrapper .pie .half-circle {
+  height: 100%;
+  width: 100%;
+  border: 0.1em solid #00a0e3;
+  border-radius: 50%;
+  clip: rect(0, 0.5em, 1em, 0);
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.pie-wrapper .label {
+  background: #34495e;
+  border-radius: 50%;
+  bottom: 0.4em;
+  color: #ecf0f1;
+  cursor: default;
+  display: block;
+  font-size: 0.25em;
+  left: 0.4em;
+  line-height: 2.8em;
+  position: absolute;
+  right: 0.4em;
+  text-align: center;
+  top: 0.4em;
+}
+.pie-wrapper .label .smaller {
+  color: #00a0e3;
+  font-size: .45em;
+  vertical-align: bottom;
+}
+.pie-wrapper .shadow {
+  height: 100%;
+  width: 100%;
+  border: 0.1em solid #eee;
+  border-radius: 50%;
+}
+.pie-wrapper.style-2 .label {
+  background: transparent;
+  color: #00a0e3;
+}
+.pie-wrapper.style-2 .label .smaller {
+  color: #00a0e3;
+}
+.pie-wrapper.progress-75 .pie {
+  clip: rect(auto, auto, auto, auto);
+}
+.pie-wrapper.progress-75 .pie .half-circle {
+  border-color: #00a0e3;
+}
+.pie-wrapper.progress-75 .pie .left-side {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+.pie-wrapper.progress-75 .pie .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.pie-wrapper.progress-75 .pie2 .left-side {
+  -webkit-transform: rotate(250deg);
+          transform: rotate(250deg);
+}
+.pie-wrapper.progress-75 .pie2 .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.pie-wrapper.progress-75 .pie3 .left-side {
+  -webkit-transform: rotate(290deg);
+          transform: rotate(290deg);
+}
+.pie-wrapper.progress-75 .pie3 .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
 .hwn{
     text-align:center;
     padding:30px 0 50px;
