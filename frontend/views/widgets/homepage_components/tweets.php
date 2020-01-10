@@ -20,18 +20,33 @@
                 </div>
             </div>
         </div>
-        <?=
-        $this->render('/widgets/twitter-masonry', [
-            'tweets' => $tweets
-        ]);
-        ?>
-<!--        --><?//=
-//        $this->render('/widgets/preloaders/tweet-job-preloader');
-//        ?>
+        <div class="data-main">
+            <!--        --><? //=
+            //        $this->render('/widgets/twitter-masonry', [
+            //            'tweets' => $tweets
+            //        ]);
+            //        ?>
+            <?=
+            $this->render('/widgets/preloaders/tweet-job-preloader');
+            ?>
+        </div>
     </div>
 </section>
-<script>
-    var twitterTweets = document.querySelectorAll('.twitter-cards');
+<?php
+$script = <<<JS
+var twitterTweets;
+    $.ajax({
+        method: "POST",
+        url : '/site/get-tweets-data',
+        async: false,
+        success: function(response) {
+            setTimeout(function() {
+                $(".data-main").html(response);
+                twitterTweets = document.querySelectorAll('.twitter-cards');
+                jobTweet();
+            },2000);
+        }
+    });
     const settings = {
         jobs: {
             color: "#00a0e3",
@@ -78,7 +93,5 @@
             }
         }
     }
-    // window.onload = function () {
-        jobTweet();
-    // }
-</script>
+JS;
+$this->registerJs($script);

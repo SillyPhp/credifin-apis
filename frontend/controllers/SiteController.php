@@ -813,12 +813,7 @@ class SiteController extends Controller
         } elseif ($type == 'getCompaniesWithUs'){
             return $this->renderAjax('/widgets/companies-with-us');
         } elseif ($type == 'getTweets'){
-            $a = $this->_getTweets(null, null, "Jobs", 4, "");
-            $b = $this->_getTweets(null, null, "Internships", 4, "");
-            $tweets = array_merge($a, $b);
-            return $this->renderAjax('/widgets/homepage_components/tweets',[
-                'tweets' => $tweets,
-            ]);
+            return $this->renderAjax('/widgets/homepage_components/tweets');
         } elseif ($type == 'getShortcuts'){
             $job_profiles = AssignedCategories::find()
                 ->alias('a')
@@ -901,6 +896,15 @@ class SiteController extends Controller
                 'cities' => $cities,
             ]);
         }
+    }
+
+    public function actionGetTweetsData(){
+        $a = $this->_getTweets(null, null, "Jobs", 4, "");
+        $b = $this->_getTweets(null, null, "Internships", 4, "");
+        $tweets = array_merge($a, $b);
+        return $this->renderAjax('/widgets/twitter-masonry', [
+            'tweets' => $tweets
+        ]);
     }
 
 }

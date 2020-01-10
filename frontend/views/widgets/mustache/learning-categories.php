@@ -4,7 +4,7 @@
         <a href="/learning/videos/category/{{slug}}">
             <div class="newset">
                 <div class="imag">
-                    <img src="{{icon}}">
+                    <img src="{{icon}}" alt="{{name}}" />
                 </div>
                 <div class="txt">{{name}}</div>
             </div>
