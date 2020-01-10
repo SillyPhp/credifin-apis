@@ -1948,6 +1948,7 @@ $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <script>
     // var twitterTweets = document.querySelectorAll('.twitter-cards');
     // const settings = {

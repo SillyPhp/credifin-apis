@@ -240,9 +240,9 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-        <div id="page-loading" class="page-loading">
-            <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
-        </div>
+<!--        <div id="page-loading" class="page-loading">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+<!--        </div>-->
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -874,7 +874,7 @@ if (!$this->params['header_dark']) {
             }); ");
 }
 $this->registerJs('
-$(".page-loading").fadeOut();
+//$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");

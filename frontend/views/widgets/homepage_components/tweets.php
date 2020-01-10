@@ -21,11 +21,11 @@
             </div>
         </div>
         <div class="data-main">
-            <!--        --><? //=
-            //        $this->render('/widgets/twitter-masonry', [
-            //            'tweets' => $tweets
-            //        ]);
-            //        ?>
+<!--                    --><?//=
+//                    $this->render('/widgets/twitter-masonry', [
+//                        'tweets' => $tweets
+//                    ]);
+//                    ?>
             <?=
             $this->render('/widgets/preloaders/tweet-job-preloader');
             ?>
@@ -40,11 +40,12 @@ var twitterTweets;
         url : '/site/get-tweets-data',
         async: false,
         success: function(response) {
-            setTimeout(function() {
                 $(".data-main").html(response);
+            setTimeout(function() {
                 twitterTweets = document.querySelectorAll('.twitter-cards');
+                twttr.widgets.load();
                 jobTweet();
-            },2000);
+            },1000);
         }
     });
     const settings = {
