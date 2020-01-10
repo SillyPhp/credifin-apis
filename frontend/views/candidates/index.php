@@ -172,7 +172,8 @@ $this->registerCss('
     margin: 10px 0;
 	padding:0;
 	min-height:74px;
-	height: 100px;
+	height:120px;
+	overflow:hidden;
 }
 .paid-candidate-box-extra ul li {
     list-style: none;

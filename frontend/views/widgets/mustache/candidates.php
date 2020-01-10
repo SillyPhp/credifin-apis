@@ -14,7 +14,9 @@
                 </div>
                 <div class="paid-candidate-box-extra">
                     <ul>
-                        {{{skills}}}
+                        {{#skills}}
+                            {{{.}}}
+                        {{/skills}}
                     </ul>
                 </div>
                 <div class="paid-candidate-box-exp">
