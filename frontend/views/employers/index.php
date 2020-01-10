@@ -110,6 +110,7 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+
     <section class="great-bg">
         <div class="container">
             <div class="row">
@@ -151,7 +152,7 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
                         </div>
                         <h4>Free For All</h4>
-                        <div class="about-text">You can live chat with your freelancers to get constant updates on the progress of your work.</div>
+                        <div class="about-text">You can apply for jobs and have your learning courses without giving any penny.</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6">
@@ -160,7 +161,7 @@ $this->params['header_dark'] = false;
                             <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
                         </div>
                         <h4>Live Interview Schedule</h4>
-                        <div class="about-text">You can live chat with your freelancers to get constant updates on the progress of your work.</div>
+                        <div class="about-text">Automates  scheduling of live interactions between interviewer and interview.</div>
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-6">
@@ -174,7 +175,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <div class="great-red">
-                <a href="/candidates/features">View More</a>
+                <a href="/candidates/features">View All Features</a>
             </div>
         </div>
     </section>
@@ -251,13 +252,13 @@ $this->registerCss('
 .great-red{
     text-align: center;
     position: relative;
-    max-width: 170px;
+    max-width: 175px;
     margin: 0 auto;
     margin-top: 15px;
     margin-bottom: 10px;
 }
 .great-red a{
-    background:#333;
+    background:#00a0e3;
     color:#fff;
     font-size: 16px;
     border-radius: 4px;
@@ -292,16 +293,16 @@ $this->registerCss('
   transform: translateX(-100px) skewX(-15deg);
 }
 .great-red a:hover {
-  background: #338033;
+  background: #00a0e3;
   cursor: pointer;
 }
 .great-red a:hover:before {
-  transform: translateX(115px) skewX(-15deg);
+  transform: translateX(150px) skewX(-15deg);
   opacity: 0.6;
   transition: 0.5s;
 }
 .great-red a:hover:after {
-  transform: translateX(115px) skewX(-15deg);
+  transform: translateX(150px) skewX(-15deg);
   opacity: 1;
   transition: 0.5s;
 }
