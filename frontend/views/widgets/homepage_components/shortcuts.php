@@ -1,8 +1,11 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
 <section class="search-lists">
     <div class="container">
+        <?= $this->render('/widgets/preloaders/quick-links-preloader'); ?>
         <div id="quick-links-c">
             <div class="col-md-3 col-sm-3 col-xs-6">
                 <div class="list-heading">Popular Searches</div>
@@ -62,6 +65,16 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<?php
+$this->registerCss('#quick-links-c{display:none;}');
+$script = <<<JS
+setTimeout(function() {
+    $('.loading-main').remove();
+    $('#quick-links-c').slideDown(500);
+}, 2000);
+JS;
+$this->registerJs($script);
+?>
 <script>
     expandFirst('searches');
     expandFirst('cities');
@@ -99,7 +112,8 @@ use yii\helpers\Url;
         // var i = 0;
         // i += 5;
         // var k = 4;
-        var ll = 0;``
+        var ll = 0;
+        ``
         var zz = 0;
         var tt = 0;
         var f = true;

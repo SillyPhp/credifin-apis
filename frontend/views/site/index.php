@@ -1882,15 +1882,6 @@ $("html, body").animate({ scrollTop: 0 }, "slow");
     });
 
 var load_content = true;
-var loadElems = [
-    'getGovernmentJobs',
-    'getOpportunities',
-    'getLearningTopics',
-    'getTopCities',
-    'getCompaniesWithUs',
-    'getTweets',
-    'getShortcuts'
-];
 var loadNth = 0;
 window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
@@ -1940,6 +1931,35 @@ $(document).on('click','#search-submit',function() {
 });
 
 JS;
+if (!Yii::$app->user->isGuest) {
+    $this->registerJs("
+    var loadElems = [
+        'getGovernmentJobs',
+        'getOpportunities',
+        'getLearningTopics',
+        'getTopCities',
+        'getCompaniesWithUs',
+        'getTweets',
+        'getShortcuts'
+    ];
+    ");
+} else{
+    $this->registerJs("
+    var loadElems = [
+        'getGovernmentJobs',
+        'getOpportunities',
+        'getWhatsappCommunity',
+        'getLearningTopics',
+        'getStats',
+        'getTopCities',
+        'getHowItWorks',
+        'getCompaniesWithUs',
+        'getTweets',
+        'getNewsletter',
+        'getShortcuts'
+    ];
+    ");
+}
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 //$this->registerCssFile('https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet');
