@@ -821,6 +821,18 @@ class SiteController extends Controller
             return $this->renderAjax('/widgets/homepage_components/featured_opportunities');
         } elseif ($type == 'getLearningTopics'){
             return $this->renderAjax('/widgets/homepage_components/learning_topics');
+        } elseif ($type == 'getWhatsappCommunity'){
+            return $this->renderAjax('/widgets/whatsapp-widget');
+        } elseif ($type == 'getStats'){
+            return $this->renderAjax('/widgets/info-stats');
+        } elseif ($type == 'getHowItWorks'){
+            if (Yii::$app->user->isGuest) {
+                return $this->renderAjax('/widgets/homepage_components/how-it-works');
+            }
+        } elseif ($type == 'getNewsletter'){
+            if (Yii::$app->user->isGuest) {
+                return $this->renderAjax('/widgets/subscribe-section');
+            }
         } elseif ($type == 'getCompaniesWithUs'){
             return $this->renderAjax('/widgets/companies-with-us');
         } elseif ($type == 'getTweets'){

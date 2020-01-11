@@ -1,3 +1,4 @@
+<div id="stats_cards"></div>
 <script id="stats-card" type="text/template">
     <div class="box-parent row">
         <div class="bolls">
@@ -137,10 +138,11 @@ function fetchStats(template) {
   datatype:"json",
   success:function(response) {
       if(response.status === 200) {
-          template.append(Mustache.render($('#stats-card').html(),response.cards));
+          template.html(Mustache.render($('#stats-card').html(),response.cards));
       }
   }   
   })
 }
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);

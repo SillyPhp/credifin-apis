@@ -101,12 +101,11 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<div id="stats_cards">
 
-</div>
+<?php
+echo $this->render('/widgets/info-stats');
 
-<?=
-$this->render('/widgets/top-cities',[
+echo $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
@@ -257,7 +256,6 @@ if (Yii::$app->user->isGuest) {
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
@@ -856,7 +854,6 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
-fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

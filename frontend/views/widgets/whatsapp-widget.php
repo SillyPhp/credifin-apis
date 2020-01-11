@@ -1,5 +1,5 @@
 <?php
-use Yii\helpers\url;
+use yii\helpers\Url;
 ?>
     <section class="whatsapp-bg">
         <div class="container">
