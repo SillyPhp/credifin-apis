@@ -5,6 +5,7 @@ use yii\helpers\Url;
 
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -35,6 +36,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -50,6 +52,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -70,24 +73,26 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
-        <?=
-            $this->render('/widgets/preloaders/active-profiles');
-        ?>
+<!--        --><?//= $this->render('/widgets/preloaders/active-profiles'); ?>
     </div>
 </section>
+
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
+
 <?=
 $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ])
 ?>
-<section>
-    <div class="container">
-        <?=
-        $this->render('/widgets/preloaders/top-cities-preloader');
-        ?>
-    </div>
-</section>
+<!--<section>-->
+<!--    <div class="container">-->
+<!--        --><?//=
+//        $this->render('/widgets/preloaders/top-cities-preloader');
+//        ?>
+<!--    </div>-->
+<!--</section>-->
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -111,7 +116,7 @@ $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/usa_and_govt_jobs');?>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -130,9 +135,9 @@ $this->render('/widgets/top-cities', [
             'tweets' => $tweets,
         ]);
         ?>
-        <?=
-            $this->render('/widgets/preloaders/tweet-job-preloader')
-        ?>
+<!--        --><?//=
+//            $this->render('/widgets/preloaders/tweet-job-preloader')
+//        ?>
     </div>
 </section>
 <section>
@@ -141,9 +146,9 @@ $this->render('/widgets/top-cities', [
             <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
-            <?=
-            $this->render('/widgets/preloaders/featured-employers');
-            ?>
+<!--            --><?//=
+//            $this->render('/widgets/preloaders/featured-employers');
+//            ?>
         </div>
     </div>
 </section>
@@ -160,11 +165,18 @@ $this->render('/widgets/top-cities', [
                 </div>
             </div>
         </div>
-        <?=
-            $this->render('/widgets/preloaders/blog-preloader');
-        ?>
+<!--        --><?//=
+//            $this->render('/widgets/preloaders/blog-preloader');
+//        ?>
     </div>
 </section>
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -211,12 +223,12 @@ $this->render('/widgets/top-cities', [
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
-        <?=
-            $this->render('/widgets/preloaders/quick-links-preloader',[
-                    'size'=> 'col-md-4 col-sm-4 col-xs-6',
-                    'f_loop' => 3
-            ])
-        ?>
+<!--        --><?//=
+//            $this->render('/widgets/preloaders/quick-links-preloader',[
+//                    'size'=> 'col-md-4 col-sm-4 col-xs-6',
+//                    'f_loop' => 3
+//            ])
+//        ?>
     </div>
 </section>
 <?php
@@ -226,6 +238,7 @@ echo $this->render('/widgets/blogs/whats-new', [
 ]);
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
     background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
@@ -900,6 +913,7 @@ $(window).on('load', function() {
               '</style>';
     jQuery(head).append(css);
 });
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

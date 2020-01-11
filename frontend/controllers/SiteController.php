@@ -10,6 +10,8 @@ use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
+use common\models\SocialGroups;
+use common\models\SocialLinks;
 use common\models\States;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
@@ -74,6 +76,13 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
+            return Yii::$app->runAction('employers/index');
+        }
+
+//        $feedbackFormModel = new FeedbackForm();
+//        $partnerWithUsModel = new PartnerWithUsForm();
+
 //        $job_profiles = AssignedCategories::find()
 //            ->alias('a')
 //            ->select(['a.*', 'd.category_enc_id', 'd.name'])
@@ -132,28 +141,8 @@ class SiteController extends Controller
 //            ])
 //            ->asArray()
 //            ->all();
-//        $cities = EmployerApplications::find()
-//            ->alias('a')
-//            ->select(['d.name', 'COUNT(c.city_enc_id) as total', 'c.city_enc_id', 'CONCAT("/", LOWER(e.name), "/list?location=", d.name) as link'])
-//            ->innerJoinWith(['applicationPlacementLocations b' => function ($x) {
-//                $x->joinWith(['locationEnc c' => function ($x) {
-//                    $x->joinWith(['cityEnc d']);
-//                }], false);
-//            }], false)
-//            ->joinWith(['applicationTypeEnc e'], false)
-//            ->where([
-//                'a.is_deleted' => 0
-//            ])
-//            ->orderBy(['total' => SORT_DESC])
-//            ->groupBy(['c.city_enc_id'])
-//            ->asArray()
-//            ->all();
 
-        $featured_jobs = ApplicationCards::jobs([
-            "page" => 1,
-            "limit" => 6
-        ]);
-//
+
 //        $other_jobs = (new \yii\db\Query())
 //            ->distinct()
 //            ->from(States::tableName() . 'as a')
@@ -172,7 +161,7 @@ class SiteController extends Controller
 //            ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
 //            ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
 //            ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
-////        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
+//        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
 //        $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
 
 
@@ -221,7 +210,7 @@ class SiteController extends Controller
 //            'tweets' => $tweets,
 //            'cities_jobs' => $cities_jobs,
 //            'cities' => $cities,
-            'featured_jobs' => $featured_jobs
+//            'featured_jobs' => $featured_jobs
         ]);
     }
 
@@ -306,13 +295,14 @@ class SiteController extends Controller
                         'message' => 'An error has occurred. Please try again.',
                     ];
                 }
-            }else{
-                return $this->renderAjax("/widgets/feedback-form",[
+            } else {
+                return $this->renderAjax("/widgets/feedback-form", [
                     "feedbackFormModel" => $feedbackFormModel,
                 ]);
             }
         }
     }
+
     public function actionPartnerWithUs()
     {
         if (Yii::$app->request->isAjax) {
@@ -344,6 +334,27 @@ class SiteController extends Controller
     public function actionAboutUs()
     {
         return $this->render('about-us');
+    }
+
+    public function actionWhatsappCommunity()
+    {
+        $data = SocialGroups::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function ($b) {
+                $b->select(['b.*', 'b1.name platform_name', 'b1.icon', 'b1.icon_location']);
+                $b->joinWith(['platformEnc b1' => function ($b1) {
+                    $b1->andWhere(['b1.is_deleted' => 0]);
+                }], false);
+                $b->andWhere(['b.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('a.group_enc_id')
+            ->asArray()
+            ->all();
+
+        return $this->render('whatsapp-community', [
+            'data' => $data
+        ]);
     }
 
     public function actionContactUs()

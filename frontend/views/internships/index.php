@@ -100,6 +100,11 @@ use yii\helpers\Url;
         ?>
     </div>
 </section>
+
+<div id="stats_cards">
+
+</div>
+
 <?=
 $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
@@ -186,6 +191,15 @@ $this->render('/widgets/top-cities',[
         <?= $this->render('/widgets/preloaders/blog-preloader');?>
     </div>
 </section>
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -243,6 +257,7 @@ $this->render('/widgets/top-cities',[
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
+echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
@@ -841,6 +856,7 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
+fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

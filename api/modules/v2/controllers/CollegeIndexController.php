@@ -439,7 +439,7 @@ class CollegeIndexController extends ApiBaseController
             $college_id = $this->getOrgId();
 
             $courses = CollegeCourses::find()
-                ->select(['college_course_enc_id', 'UPPER(course_name) course_name', 'course_duration'])
+                ->select(['college_course_enc_id', 'course_name', 'course_duration'])
                 ->where(['organization_enc_id' => $college_id])
                 ->groupBy(['course_name'])
                 ->asArray()
@@ -479,7 +479,7 @@ class CollegeIndexController extends ApiBaseController
                         }])
                         ->joinWith(['organizationLocations ee' => function ($e) {
                             $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
-                            $e->joinWith(['cityEnc ff'=>function($ff){
+                            $e->joinWith(['cityEnc ff' => function ($ff) {
                                 $ff->groupBy(['ff.city_enc_id']);
                             }], false)
                                 ->orOnCondition([
@@ -499,8 +499,9 @@ class CollegeIndexController extends ApiBaseController
     public function actionCandidates()
     {
         if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post();
             $req['college_id'] = $this->getOrgId();
-            $candidates = UserOtherDetails::find()
+             $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->distinct()
                 ->select([
@@ -548,8 +549,21 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null])
-                ->asArray()
+                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null]);
+            if (isset($data['course_name']) && !empty($data['course_name'])) {
+                $candidates->andWhere(['cc.educational_requirement' => $data['course_name']]);
+            }
+            if (isset($data['semester']) && !empty($data['semester'])) {
+                $candidates->andWhere(['a.semester' => $data['semester']]);
+            }
+
+//            if (isset($data['application_type']) && !empty($data['application_type '])) {
+//                $candidates->andWhere(['a.semester' => $data['semester']]);
+//            }
+
+
+
+            $candidates = $candidates->asArray()
                 ->all();
 
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
@@ -674,4 +688,5 @@ class CollegeIndexController extends ApiBaseController
             }
         }
     }
+
 }
