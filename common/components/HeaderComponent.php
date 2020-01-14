@@ -10,30 +10,42 @@ use yii\base\Component;
 class HeaderComponent extends Component
 {
 
-    public function getMenuHeader($route, $menu_of = 1)
+    public function getMenuHeader($route, $menu_of = 1, $name = 'Common')
     {
         return '';
-        $children = AssignedHeader::find()
-            ->alias('a')
-            ->joinWith(['headerEnc b' => function ($b) {
-                $b->joinWith(['headerMenuEnc c' => function ($c) {
-//                    $c->joinWith(['itemEnc d']);
-                    $c->innerJoinWith(['parentEnc e']);
-                }]);
-            }])
-//            ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
-//            ->where(['menu_of' => $menu_of])
-//            ->orderBy(['sequence' => SORT_ASC])
-            ->groupBy('a.assigned_header_enc_id')
-            ->asArray()
-            ->all();
-        return $children;
-
-        foreach ($children as $all) {
-            if (in_array($route, $all)) {
-                $menu = $all['menu_item_enc_id'];
-            }
-        }
+//        $header = HeaderMenuItems::find()
+//            ->alias('a')
+//            ->innerJoinWith(['headerEnc b'], false)
+//            ->innerJoinWith(['parentEnc c' => function($c){
+//                $c->joinWith(['']);
+//            }])
+//            ->where(['b.name' => $name, 'b.status' => 1])
+//            ->groupBy(['a.parent_enc_id'])
+//            ->asArray()
+//            ->all();
+//        print_r($header);
+//        exit();
+//        $children = AssignedHeader::find()
+//            ->alias('a')
+//            ->joinWith(['headerEnc b' => function ($b) {
+//                $b->joinWith(['headerMenuEnc c' => function ($c) {
+////                    $c->joinWith(['itemEnc d']);
+//                    $c->innerJoinWith(['parentEnc e']);
+//                }]);
+//            }])
+////            ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
+////            ->where(['menu_of' => $menu_of])
+////            ->orderBy(['sequence' => SORT_ASC])
+//            ->groupBy('a.assigned_header_enc_id')
+//            ->asArray()
+//            ->all();
+//        return $children;
+//
+//        foreach ($children as $all) {
+//            if (in_array($route, $all)) {
+//                $menu = $all['menu_item_enc_id'];
+//            }
+//        }
         return $this->findChild($children, $menu);
     }
 

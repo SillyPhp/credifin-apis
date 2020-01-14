@@ -16,9 +16,9 @@ namespace common\models;
  * @property int $sequence Sequence
  * @property int $is_visible_for 0 for All, 1 for Candidate and 2 for Companies
  *
- * @property HeaderMenu $headerMenu
  * @property MenuItems $itemEnc
  * @property MenuItems $parentEnc
+ * @property HeaderMenu $headerEnc
  */
 class HeaderMenuItems extends \yii\db\ActiveRecord
 {
@@ -43,15 +43,8 @@ class HeaderMenuItems extends \yii\db\ActiveRecord
             [['item_enc_id'], 'unique'],
             [['item_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => MenuItems::className(), 'targetAttribute' => ['item_enc_id' => 'item_enc_id']],
             [['parent_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => MenuItems::className(), 'targetAttribute' => ['parent_enc_id' => 'item_enc_id']],
+            [['header_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => HeaderMenu::className(), 'targetAttribute' => ['header_enc_id' => 'header_menu_enc_id']],
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHeaderMenu()
-    {
-        return $this->hasOne(HeaderMenu::className(), ['header_menu_enc_id' => 'header_enc_id']);
     }
 
     /**
@@ -68,5 +61,13 @@ class HeaderMenuItems extends \yii\db\ActiveRecord
     public function getParentEnc()
     {
         return $this->hasOne(MenuItems::className(), ['item_enc_id' => 'parent_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHeaderEnc()
+    {
+        return $this->hasOne(HeaderMenu::className(), ['header_menu_enc_id' => 'header_enc_id']);
     }
 }
