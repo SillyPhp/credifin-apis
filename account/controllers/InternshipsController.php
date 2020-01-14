@@ -3,9 +3,11 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
+use account\models\applications\ApplicationTemplateDataProvider;
 use account\models\applications\ExtendsJob;
 use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
+use common\models\ApplicationTemplates;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
@@ -229,6 +231,59 @@ class InternshipsController extends Controller
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionCloneTemplate($aidk){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Internships'])
+            ->asArray()
+            ->one();
+        if(Yii::$app->user->identity->organization && $application){
+            $model = new ApplicationForm();
+            $type = 'Clone_Internships';
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $session_token = Yii::$app->request->post('n');
+                if ($application_id = $model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
+                } else {
+                    return false;
+                }
+            } else {
+                $obj = new ApplicationTemplateDataProvider();
+                $model = $obj->setValues($model, $aidk);
+                return $this->render('/employer-applications/form', [
+                    'model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found'));
         }
     }
 
@@ -1044,9 +1099,9 @@ class InternshipsController extends Controller
                 ['a.application_for' => 0],
                 ['a.application_for' => 1]
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1113,11 +1168,11 @@ class InternshipsController extends Controller
             'applicationType' => 'internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
+                'a.status' => 'Closed',
             ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '<', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1244,6 +1299,28 @@ class InternshipsController extends Controller
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+    }
+
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Internships"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('internships-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 

@@ -2,7 +2,9 @@
 
 namespace account\controllers;
 
-
+use common\models\ResumeTemplates;
+use frontend\models\profiles\ResumeData;
+use yii\web\HttpException;
 use account\models\resumeBuilder\AddExperienceForm;
 use account\models\resumeBuilder\AddQualificationForm;
 use account\models\resumeBuilder\ResumeAchievments;
@@ -15,7 +17,6 @@ use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
 use common\models\UserInterests;
-use common\models\Users;
 use common\models\UserSkills;
 use common\models\UserWorkExperience;
 use common\models\Utilities;
@@ -33,7 +34,6 @@ use yii\web\UploadedFile;
 use yii\widgets\ActiveForm;
 use kartik\mpdf\Pdf;
 
-
 class ResumeBuilderController extends Controller
 {
 
@@ -42,55 +42,14 @@ class ResumeBuilderController extends Controller
 
         $addQualificationForm = new AddQualificationForm();
         $addExperienceForm = new AddExperienceForm();
-        $user = Users::find()
-            ->where(['user_enc_id' => Yii::$app->user->identity->user_enc_id])
-            ->asArray()
-            ->one();
-
-        $experience = UserWorkExperience::find()
-            ->alias('a')
-            ->select(['a.experience_enc_id', 'a.title', 'a.description', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'b.name city'])
-            ->innerJoin(\common\models\Cities::tableName() . 'b', 'b.city_enc_id = a.city_enc_id')
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->orderBy(['a.id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $education = UserEducation::find()
-            ->where(['created_by' => Yii::$app->user->identity->user_enc_id])
-            ->orderBy(['id' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $skillist = UserSkills::find()
-            ->alias('a')
-            ->select(['a.created_by', 'a.user_skill_enc_id', 'c.skill_enc_id', 'c.skill', 'a.created_on', 'a.is_deleted', 'a.user_skill_enc_id'])
-            ->joinWith(['skillEnc c'], false)
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $achievements = UserAchievements::find()
-            ->alias('a')
-            ->select(['a.user_achievement_enc_id', 'a.achievement'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $hobbies = UserHobbies::find()
-            ->alias('a')
-            ->select(['a.user_hobby_enc_id', 'a.hobby'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
-        $interests = UserInterests::find()
-            ->alias('a')
-            ->select(['a.user_interest_enc_id', 'a.interest'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.is_deleted' => 0])
-            ->asArray()
-            ->all();
-
+        $obj = new ResumeData();
+        $user = $obj->getUser();
+        $experience = $obj->getExperiece();
+        $education = $obj->getEducation();
+        $skillist = $obj->getSkills();
+        $achievements = $obj->getAcheivements();
+        $hobbies = $obj->getHobbies();
+        $interests = $obj->getInterest();
         return $this->render('resume', [
             'user' => $user,
             'addQualificationForm' => $addQualificationForm,
@@ -116,6 +75,8 @@ class ResumeBuilderController extends Controller
             $description = Yii::$app->request->post('description');
             $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
             $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
+            $salary = Yii::$app->request->post('salary');
+            $ctc = Yii::$app->request->post('ctc');
 
 
             $utilitiesModel = new Utilities();
@@ -128,6 +89,8 @@ class ResumeBuilderController extends Controller
             $obj->city_enc_id = $city;
             $obj->from_date = $from;
             $obj->to_date = $to;
+            $obj->ctc = $ctc;
+            $obj->salary = $salary;
             $obj->is_current = $checkbox;
             $obj->created_on = date('Y-m-d h:i:s');
             $obj->created_by = Yii::$app->user->identity->user_enc_id;
@@ -152,11 +115,8 @@ class ResumeBuilderController extends Controller
 
     public function actionAchievementRemove()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $achievement_rmv = UserAchievements::findOne([
                 'user_achievement_enc_id' => $id,
                 'is_deleted' => 0,
@@ -184,9 +144,7 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $hobby_rmv = UserHobbies::findOne([
                 'user_hobby_enc_id' => $id,
                 'is_deleted' => 0,
@@ -212,11 +170,8 @@ class ResumeBuilderController extends Controller
 
     public function actionSkillRemove()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $skill_rmv = UserSkills::findOne([
                 'user_skill_enc_id' => $id,
                 'is_deleted' => 0,
@@ -244,9 +199,7 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
             $id = Yii::$app->request->post('id');
-
             $interest_rmv = UserInterests::findOne([
                 'user_interest_enc_id' => $id,
                 'is_deleted' => 0,
@@ -274,8 +227,6 @@ class ResumeBuilderController extends Controller
     {
 
         if (Yii::$app->request->isAjax) {
-
-
             $achievement_name = Yii::$app->request->post('achievement_name');
             $model = new ResumeAchievments();
             $already_exits = UserAchievements::findOne([
@@ -354,9 +305,7 @@ class ResumeBuilderController extends Controller
 
     public function actionInterests()
     {
-
         if (Yii::$app->request->isAjax) {
-
             $interest_name = Yii::$app->request->post('interest_name');
             $model = new ResumeInterests();
             $already_exits = UserInterests::findOne([
@@ -429,7 +378,7 @@ class ResumeBuilderController extends Controller
         $id = Yii::$app->request->post('id');
         $editexp = UserWorkExperience::find()
             ->alias('a')
-            ->select(['a.title', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'a.experience_enc_id', 'a.description', 'b.name', 'b.city_enc_id'])
+            ->select(['a.title', 'a.company', 'a.from_date', 'a.to_date', 'a.is_current', 'a.experience_enc_id', 'a.description', 'b.name', 'b.city_enc_id', 'a.salary', 'a.ctc'])
             ->joinWith(['cityEnc b'])
             ->where(['a.experience_enc_id' => $id])
             ->asArray()
@@ -528,6 +477,8 @@ class ResumeBuilderController extends Controller
             $description = Yii::$app->request->post('description');
             $from = Yii::$app->formatter->asDate($from, 'yyyy-MM-dd');
             $to = Yii::$app->formatter->asDate($to, 'yyyy-MM-dd');
+            $ctc = Yii::$app->request->post('ctc');
+            $salary = Yii::$app->request->post('salary');
 
 
             $model = UserWorkExperience::find()
@@ -540,6 +491,8 @@ class ResumeBuilderController extends Controller
             $model->from_date = $from;
             $model->to_date = $to;
             $model->is_current = $check;
+            $model->salary = $salary;
+            $model->ctc = $ctc;
             $model->description = $description;
 
             if ($model->update()) {
@@ -680,6 +633,66 @@ class ResumeBuilderController extends Controller
 
             return $school;
         }
+    }
+
+    public function actionDownloadResume()
+    {
+        //if (Yii::$app->request->isAjax) {
+            // get your HTML raw content without any layouts or scripts
+            $content = Yii::$app->request->post('html');
+            $temp = Yii::$app->request->post('css');
+            // setup kartik\mpdf\Pdf component
+            $pdf = new Pdf([
+                // set to use core fonts only
+                'mode' => Pdf::MODE_CORE,
+                // A4 paper format
+                'format' => Pdf::FORMAT_A4,
+                // portrait orientation
+                'orientation' => Pdf::ORIENT_PORTRAIT,
+                // stream to browser inline
+                'destination' => Pdf::DEST_BROWSER,
+                // your html content input
+                'content' => $content,
+                // format content from your own css file if needed or use the
+                // enhanced bootstrap css built by Krajee for mPDF formatting
+                //'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+                'cssFile' => Url::to('@rootDirectory/assets/common/cv_templates/'.$temp.'.css'),
+                // any css to be embedded if required
+                //'cssInline' => '',
+                // set mPDF properties on the fly
+                'options' => ['title' => 'Title'],
+                // call mPDF methods on the fly
+                'methods' => [
+                    //'SetHeader'=>['Header'],
+                    //'SetFooter'=>['{PAGENO}'],
+                ]
+            ]);
+
+            // return the pdf output as per the destination setting
+            return $pdf->render();
+        //}
+    }
+
+    public function actionGetData()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $obj = new ResumeData();
+            return [
+                'status'=>200,
+                'data'=>$obj->getResumeData(Yii::$app->user->identity->user_enc_id)
+            ];
+        }
+    }
+    public function actionPreview()
+    {
+        $templates = ResumeTemplates::find()
+            ->select(['template_enc_id','name','unique_id','template_path','thumb_image','thumb_image_location'])
+            ->where(['is_deleted'=>0])
+            ->asArray()
+            ->all();
+        $this->layout = 'templates-layout';
+        return $this->render('template-preview',['templates'=>$templates]);
     }
 
 }

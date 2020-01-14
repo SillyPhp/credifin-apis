@@ -16,7 +16,7 @@ use Yii\helpers\Url;
             <?php
             if (!empty($featured_job['logo'])){
                 ?>
-                <img class="img" src="<?= $featured_job['logo'] ?> alt=" error">
+                <img class="img" src="<?= $featured_job['logo'] ?>" alt="<?= $featured_job['organization_name'] ?>">
             <?php
                 }else{
             ?>
@@ -51,22 +51,22 @@ use Yii\helpers\Url;
                     </div>
                 </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="tag-box">
-                            <div class="tag">
-                            <span class="tags">
-                                <span class="after">html</span>
-                                <span class="after">css</span>
-                                <span class="after">php</span>
-                                <span class="after hide-resp">java</span>
-                                <span class="after hide-resp">jquary</span>
-                                <span class="ADD-more"><i class="fa fa-plus" aria-hidden="true"></i></span>
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="tag-box">-->
+<!--                            <div class="tag">-->
+<!--                            <span class="tags">-->
+<!--                                <span class="after">html</span>-->
+<!--                                <span class="after">css</span>-->
+<!--                                <span class="after">php</span>-->
+<!--                                <span class="after hide-resp">java</span>-->
+<!--                                <span class="after hide-resp">jquary</span>-->
+<!--                                <span class="ADD-more"><i class="fa fa-plus" aria-hidden="true"></i></span>-->
+<!--                            </span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
             </div>
             </div>
             <?php

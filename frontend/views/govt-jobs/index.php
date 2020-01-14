@@ -28,8 +28,39 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 <!--        <div class="overlay-image i-4"><img src="--><?//= Url::to('@eyAssets/images/pages/tw-jobs/tweet4.png');?><!--"/></div>-->
     </div>
 </section>
+
 <section>
     <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="heading-style">Departments</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/govt-jobs/departments" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="departments_cards">
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Jobs</div>
+            </div>
+        </div>
         <div class="row">
             <div class="loader_screen">
                 <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
@@ -44,9 +75,92 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
 </section>
 <?php
 $this->registerCss("
-.application-card-main
-{
-height:210px;
+/*    <!-- view-all button css start -->*/
+.btn-3 {
+    background-color: #424242;
+}
+.btn-3 .round {
+    background-color: #737478;
+}
+.type-1{
+    float:right;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.type-1 div a {
+    text-decoration: none;
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+    padding: 12px 53px 12px 23px;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: relative;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    display: inline-block;
+    
+}
+.type-1 div a span {
+    position: relative;
+    z-index: 3;
+}
+.type-1 div a .round {
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+    -moz-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    z-index: 2;
+}
+.type-1 div a .round i {
+    position: absolute;
+    top: 50%;
+    margin-top: -6px;
+    left: 50%;
+    margin-left: -4px;
+    color: #333332;
+    -moz-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+}
+
+.txt-cate {
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.type-1 a:hover {
+    padding-left: 48px;
+    padding-right: 28px;
+}
+.type-1 a:hover .round {
+    width: calc(100% - 6px);
+    -moz-border-radius: 30px;
+    -webkit-border-radius: 30px;
+    border-radius: 30px;
+}
+.type-1 a:hover .round i {
+    left: 12%;
+    color: #FFF;
+}
+
+/*<!---- view-all button css ends --->*/
+.application-card-border-bottom{
+    height:156px;
 }
 .loader_screen img
 {
@@ -447,19 +561,20 @@ display:none;
 }
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
+echo $this->render('/widgets/mustache/departments_govt');
 $script = <<< JS
+var offset = 0;
 $(document).on('click','#loader',function(e) {
   e.preventDefault();
-  fetchLocalData(template=$('#cards'),limit,offset+12,loader=false,loader_btn=true);
+  fetchLocalData(template=$('#cards'),limit=12,offset=offset+12,loader=false,loader_btn=true);
 })
-var limit =12;
-var offset = 0;
-fetchLocalData(template=$('#cards'),limit,offset,loader=true,loader_btn=false);
+fetchLocalData(template=$('#cards'),limit=12,offset=0,loader=true,loader_btn=false);
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  fetchLocalData(template=$('#cards'),limit=50,offset,loader=true,loader_btn=false,keyword=keyword,replace=true);
+  fetchLocalData(template=$('#cards'),limit=50,offset=0,loader=true,loader_btn=false,keyword=keyword,replace=true);
 })
+fetchDepartments(template=$('#departments_cards'),limit_dept=4,offset=0);
 JS;
 $this->registerJs($script);
 ?>

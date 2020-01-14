@@ -12,16 +12,15 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                        alt="Empower Youth"/></li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
-                                        alt="Empower Youth"/>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>" alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>
                             </li>
-                            <li class="slideHome"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
-                                        alt="Empower Youth"/></li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>" alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>
+                            </li>
+                            <li class="slideHome">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>" alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
+                            </li>
                         </ul>
                         <div class="job-search-sec">
                             <div class="job-search style2">
@@ -45,7 +44,8 @@ $this->params['header_dark'] = false;
                                 </div><!-- Job Search 2 -->
                                 <span class="feature-links">Search For: <a href="/jobs">Jobs</a>,
                                     <a href="/internships">Internships</a>, <a href="/training-programs">Training Courses</a>,
-                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a href="/blog">Blogs</a>
+                                    <a href="/reviews">Reviews</a>, <a href="/learning">Learning Content</a>, <a
+                                            href="/blog">Blogs</a>
                                 </span>
                             </div>
                         </div>
@@ -127,7 +127,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/jobs'); ?>">
                     <div class="service-box">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="Jobs" title="Jobs"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>" alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer" title="Jobs"/>
                         </div>
                         <div class="ser-heading">Jobs</div>
                     </div>
@@ -137,8 +137,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/internships'); ?>">
                     <div class="service-box ser-box-orange">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="Internships"
-                                 title="Internships"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>" alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me" title="Internships"/>
                         </div>
                         <div class="ser-heading">Internships</div>
                     </div>
@@ -148,8 +147,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/learning'); ?>">
                     <div class="service-box ser-box-yellow">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
-                                 alt="learning">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>" alt="international internships, web developer career, software engineer career">
                         </div>
                         <div class="ser-heading">Learning Hub</div>
                     </div>
@@ -159,8 +157,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/reviews'); ?>">
                     <div class="service-box ser-box-purple">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="Reviews"
-                                 title="Reviews"/>
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>" alt="research internship, software developer career internship websites, best learning websites" title="Reviews"/>
                         </div>
                         <div class="ser-heading">Reviews</div>
                     </div>
@@ -170,8 +167,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/training-programs'); ?>">
                     <div class="service-box ser-box-maroon">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
-                                 alt="training">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>" alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
                         </div>
                         <div class="ser-heading">Training Courses</div>
                     </div>
@@ -181,8 +177,7 @@ $this->params['header_dark'] = false;
                 <a href="<?= Url::to('/career-advice'); ?>">
                     <div class="service-box ser-box-green">
                         <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="reviews">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>" alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
                         </div>
                         <div class="ser-heading">Career Advice</div>
                     </div>
@@ -192,7 +187,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 <!---->
-<?= $this->render('/widgets/usa_and_govt_jobs');?>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 
 <section>
     <div class="block">
@@ -529,6 +524,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
+<?= $this->render('/widgets/whatsapp-widget') ?>
 <section>
     <div class="container ">
         <div class="cat-padding">
@@ -558,82 +554,84 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
-<?= $this->render('/widgets/top-cities',[
+<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
+<div id="stats_cards"></div>
+
+<?= $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs
-])?>
+]) ?>
 <!---------------how it works-------------->
 <?php
-    if(Yii::$app->user->isGuest) {
-?>
-        <section class="how-it-works">
-            <div class="container">
-                <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
-                <div class="row ">
-                    <div class="col-md-3">
-                        <div class="fade-in one">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
-                                     title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Create your Exclusive Profile</div>
-                            </div>
+if (Yii::$app->user->isGuest) {
+    ?>
+    <section class="how-it-works">
+        <div class="container">
+            <div class="hiw-heading">Take your career to the next level. <p>Join Empower Youth Today.</p></div>
+            <div class="row ">
+                <div class="col-md-3">
+                    <div class="fade-in one">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/create-profile.png') ?>"
+                                 title="Create your Exclusive Profile" alt="Create your Exclusive Profile"/>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in two">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
-                                     title="Get discovered by top employers" alt="Get discovered by top employers"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading"> Get discovered by top employers</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in three">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
-                                     title="Evaluate Offer"
-                                     alt="Evaluate Offer"/>
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Evaluate Offer</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fade-in four">
-                            <div class="how-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
-                                     title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
-                            </div>
-                            <div class="how-text-box">
-                                <div class="how-heading">Receive Custom Job Notifications</div>
-                            </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Create your Exclusive Profile</div>
                         </div>
                     </div>
                 </div>
-                <?php
-                if (Yii::$app->user->isGuest) {
-                    ?>
-                    <div class="row">
-                        <div class="signupbttns">
-                            <a href="/login" class="login-bttn" title="Login">Login</a>
-                            <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
+                <div class="col-md-3">
+                    <div class="fade-in two">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/discover.png') ?>"
+                                 title="Get discovered by top employers" alt="Get discovered by top employers"/>
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading"> Get discovered by top employers</div>
                         </div>
                     </div>
-                    <?php
-                }
-                ?>
+                </div>
+                <div class="col-md-3">
+                    <div class="fade-in three">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/evaluate.png') ?>"
+                                 title="Evaluate Offer"
+                                 alt="Evaluate Offer"/>
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Evaluate Offer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fade-in four">
+                        <div class="how-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/index2/recive.png') ?>"
+                                 title="Receive Custom Job Notifications" alt="Receive Custom Job Notifications">
+                        </div>
+                        <div class="how-text-box">
+                            <div class="how-heading">Receive Custom Job Notifications</div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
-        <?php
+            <?php
+            if (Yii::$app->user->isGuest) {
+                ?>
+                <div class="row">
+                    <div class="signupbttns">
+                        <a href="/login" class="login-bttn" title="Login">Login</a>
+                        <a href="/signup/individual" class="sign-up" title="Sign Up">Sign Up</a>
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+    <?php
 }
 ?>
 <!--how it works ends-->
-
 
 
 <!--new section starts-->
@@ -738,10 +736,11 @@ if (Yii::$app->user->isGuest) {
 </section>
 
 <?php
+echo $this->render('/widgets/info-stats');
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -793,53 +792,6 @@ $this->registerCss('
 }
 .feature-links a:hover{
     color:#ff7803;
-}
-.pos-rel{
-    position:relative;
-    min-height:300px;
-    width:100%;
-    text-align:center;
-} 
-.pos-middle{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:100%
-}
-.mob-pos{
-    position:absolute;
-    bottom:0;
-    left:30px;
-}
-.mob-pos img{
-    max-height:300px;
-}
-.moble-bg{
-background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .'); 
-background-attachment:fixed;
-//    background:url(' . Url::to('@eyAssets/images/pages/index2/mobile-app-bg.png') . ');
-//    background-repeat:no-repeat;
-//    background-size:cover;
-}
-.mob-heading{
-    font-size:33px;
-    color:#000;
-    font-family:Roboto;
-        font-weight:500;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-sub-heading{
-    font-size:18px;
-    color:#000;
-    font-family:Roboto;
-    font-weight:300;
-    text-transform:capitalize;
-    width:100%;
-}
-.mob-imgs img{
-    max-height: 300px;
 }
 .app-btn{
     max-width:200px;
@@ -915,88 +867,6 @@ background-attachment:fixed;
    padding-left:0px !important; 
    padding-right:0px !important; 
 }
-/*try now sec*/
-.fixed-bttn{
-    min-height:400px;
-    background:url(' . Url::to('@eyAssets/images/pages/index2/get-hired-bg.jpg') . '); 
-    background-size: cover;
-    position:relative;
-    background-repeat:no-repeat;
-}
-.pos-ab{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-}
-.fx-heading{
-  text-transform:capitalize;
-    font-size:35px;
-    text-align:center;
-    padding:0 0 20px 0;
-    color:#666666;
-    font-family:lobster;
-}
-.post-job-bttn a{
-    background:#00a0e3;
-    color:#fff;
-    border-radius:5px;
-    text-transform: uppercase;
-    padding:10px 20px;
-    font-size:18px;
-    box-shadow:0 0 10px rgba(66, 63, 63, .5);
-    -webkit-transition:.3s all;
-   transition:.3s all;
-   text-align:center;
-   margin:0 auto;
-   max-width:300px;
-   font-weight:400;
-   font-family:Roboto;
-}
-.post-job-bttn a:hover{
-   box-shadow:none;
-   -webkit-transition:.3s all;
-   transition:.3s all;
-}
-.hvr-float-shadow {
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  position: relative;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
-}
-.hvr-float-shadow:before {
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
-  content: \'\';
-  top: 100%;
-  left: 5%;
-  height: 10px;
-  width: 90%;
-  opacity: 0;
-  background: -webkit-radial-gradient(center, ellipse, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0) 80%);
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform, opacity;
-  transition-property: transform, opacity;
-}
-.hvr-float-shadow:hover, .hvr-float-shadow:focus, .hvr-float-shadow:active {
-  -webkit-transform: translateY(-5px);
-  transform: translateY(-5px);
-}
-.hvr-float-shadow:hover:before, .hvr-float-shadow:focus:before, .hvr-float-shadow:active:before {
-  opacity: 1;
-  -webkit-transform: translateY(5px);
-  transform: translateY(5px);
-}
-/*try now ends*/
-
 .header-boxs{
     max-width:850px;
     margin:0 auto;
@@ -1055,14 +925,6 @@ background-attachment:fixed;
 .box-border:hover .overlay {
     height: 20%;
 }
-
-
-/*how we are different*/
-.different{
-    overflow-x:hidden
-}
-/*how we are different ends*/
-
 /*services section starts*/
 .services{
     padding: 0px 0 25px 0; 
@@ -1111,21 +973,21 @@ background-attachment:fixed;
     color:#5E4795;
 }
 .ser-box-yellow{
-    background: url('.Url::to('@eyAssets/images/pages/index2/learningbg.png').');
+    background: url(' . Url::to('@eyAssets/images/pages/index2/learningbg.png') . ');
 }
 .ser-box-yellow:hover{
     border-top: 5px solid #f8b321;
     color:#f8b321
 }
 .ser-box-maroon{
-    background: url('.Url::to('@eyAssets/images/pages/index2/trainingbg.png').');
+    background: url(' . Url::to('@eyAssets/images/pages/index2/trainingbg.png') . ');
 }
 .ser-box-maroon:hover{
     border-top: 5px solid #c76692;
     color:#c76692
 }
 .ser-box-green{
-    background: url('.Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png').');
+    background: url(' . Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png') . ');
 }
 .ser-box-green:hover{
     border-top: 5px solid #047c7d;
@@ -1500,13 +1362,11 @@ how-icon{
 }
 .job-style-bx .job-is {
     margin: 0;
-    
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     -ms-border-radius: 4px;
     -o-border-radius: 4px;
     border-radius: 4px;
-
     color: #ffffff;
 }
 .tab-sec .tab-content {
@@ -1760,10 +1620,7 @@ how-icon{
     font-size:14px;
 }
 
-@media only screen and (max-width: 992px){
-    .mob-pos{
-        left: 30px;
-    }    
+@media only screen and (max-width: 992px){  
      .how-icon{
         text-align:center;
         padding:0 0 20px 0;
@@ -1773,20 +1630,7 @@ how-icon{
         font-size:20px
     }
 }
-@media only screen and (max-width: 768px){
-    .mob-pos{
-        left: 50%;
-        transform:translateX(-50%);
-    }    
-}
 @media only screen and (max-width:500px){
-    .pos-rel{
-        min-height: 225px;        
-    }
-    .mob-heading{
-        font-size: 26px;
-        padding: 20px 0 0 0;
-    }
     .c-logo{
         width:100% !important ;
         text-align:center;
@@ -1821,16 +1665,6 @@ $script = <<< JS
         $(this).addClass('current');
         $("#"+tab_id).addClass('current');
     });
-
-
-// window.onscroll = function() {scrollFunction()};
-// function scrollFunction() {
-//   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-//     document.getElementById("myBttn").style.display = "block";
-//   } else {
-//     document.getElementById("myBttn").style.display = "none";
-//   }
-// }
         
   jQuery(function($) {
   $('.main-slider-sec').slick({
@@ -1851,9 +1685,7 @@ $(document).on('click','#search-submit',function() {
        return false;
    }
 });
-
-
-
+fetchStats(template = $('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
@@ -1948,10 +1780,7 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
     }
 
     function hideMore(elem) {
-        // var i = 0;
-        // i += 5;
-        // var k = 4;
-        var ll = 0;``
+        var ll = 0;
         var zz = 0;
         var tt = 0;
         var f = true;
