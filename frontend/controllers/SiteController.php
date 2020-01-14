@@ -10,6 +10,8 @@ use common\models\Cities;
 use common\models\EmployerApplications;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
+use common\models\SocialGroups;
+use common\models\SocialLinks;
 use common\models\States;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
@@ -74,6 +76,13 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
+            return Yii::$app->runAction('employers/index');
+        }
+
+        $feedbackFormModel = new FeedbackForm();
+        $partnerWithUsModel = new PartnerWithUsForm();
+
         $job_profiles = AssignedCategories::find()
             ->alias('a')
             ->select(['a.*', 'd.category_enc_id', 'd.name'])
@@ -150,12 +159,6 @@ class SiteController extends Controller
             ->asArray()
             ->all();
 
-        $featured_jobs = ApplicationCards::jobs([
-            "page" => 1,
-            "limit" => 6
-        ]);
-
-//        print_r($featured_jobs);exit();
         $other_jobs = (new \yii\db\Query())
             ->distinct()
             ->from(States::tableName() . 'as a')
@@ -174,13 +177,7 @@ class SiteController extends Controller
             ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
             ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
             ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
-//        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
         $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
-
-
-//        $quick_jobs_city_wise = $other_jobs_city_wise->andWhere(['e.unclaimed_organization_enc_id' => null, 'e.interview_process_enc_id' => null]);
-//        $mis_jobs_city_wise = $other_jobs_city_wise->andWhere(['g.user_of' => 'MIS'])->andWhere(['not', ['e.unclaimed_organization_enc_id' => null]]);
-//        $free_jobs_city_wise = $other_jobs_city_wise->andWhere(['not', ['g.user_of' => 'MIS']])->andWhere(['not', ['e.unclaimed_organization_enc_id' => null]]);
 
         $ai_jobs = (new \yii\db\Query())
             ->distinct()
@@ -217,13 +214,14 @@ class SiteController extends Controller
         $tweets = array_merge($a, $b);
 
         return $this->render('index', [
+            'feedbackFormModel' => $feedbackFormModel,
+            'partnerWithUsModel' => $partnerWithUsModel,
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'tweets' => $tweets,
             'cities' => $cities,
             'cities_jobs' => $cities_jobs,
-            'featured_jobs' => $featured_jobs
         ]);
     }
 
@@ -308,13 +306,14 @@ class SiteController extends Controller
                         'message' => 'An error has occurred. Please try again.',
                     ];
                 }
-            }else{
-                return $this->renderAjax("/widgets/feedback-form",[
+            } else {
+                return $this->renderAjax("/widgets/feedback-form", [
                     "feedbackFormModel" => $feedbackFormModel,
                 ]);
             }
         }
     }
+
     public function actionPartnerWithUs()
     {
         if (Yii::$app->request->isAjax) {
@@ -347,9 +346,28 @@ class SiteController extends Controller
     {
         return $this->render('about-us');
     }
-    public function actionWhatsappCommunity(){
-        return $this->render('whatsapp-community');
+
+    public function actionWhatsappCommunity()
+    {
+        $data = SocialGroups::find()
+            ->alias('a')
+            ->joinWith(['socialLinks b' => function ($b) {
+                $b->select(['b.*', 'b1.name platform_name', 'b1.icon', 'b1.icon_location']);
+                $b->joinWith(['platformEnc b1' => function ($b1) {
+                    $b1->andWhere(['b1.is_deleted' => 0]);
+                }], false);
+                $b->andWhere(['b.is_deleted' => 0]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('a.group_enc_id')
+            ->asArray()
+            ->all();
+
+        return $this->render('whatsapp-community', [
+            'data' => $data
+        ]);
     }
+
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();

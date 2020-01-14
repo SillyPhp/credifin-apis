@@ -10,7 +10,7 @@
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="/govt-jobs/detail/{{id}}" title="{{Organizations}}">
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Organizations}}">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{Organizations}}" title="{{Organizations}}">
                         {{/logo}}
@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="/govt-jobs/detail/{{id}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
                     {{#Last_date}}
                     <h5><i class="far fa-calendar-alt"></i>&nbsp;Last_date: {{Last_date}}</h5>
                     {{/Last_date}}
