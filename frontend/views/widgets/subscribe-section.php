@@ -16,9 +16,9 @@ use yii\helpers\Url;
                     <div class="col-md-5 col-sm-6">
                         <form id="subscribe-newsletter">
                             <div class="email-set" style="display: flex;">
-                                <input type="email" class="form-control" id="subscription-email" name="email"
+                                <input type="email" class="form-control form-control-set" id="subscription-email" name="email"
                                        placeholder="ENTER E-MAIL ADDRESS" required>
-                                <button type="submit" class="btn btn-primary subscribe-widget-btn">
+                                <button type="submit" class="set-s-btn btn-primary subscribe-widget-btn">
                                     &rarr;
                                     <!--                                    <article class="right-arrow">-->
                                     <!--                                        <span class="arrow"></span>-->
@@ -46,19 +46,73 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registerCss('
+.form-control-set{
+    height: 45px !important;
+}
+.set-s-btn{
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid
+    transparent;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    white-space: nowrap;
+    padding: 10px 21px;
+    font-size: 14px;
+    line-height: 1.42857;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .w-parent {
     margin: 50px 0;
-    background-image: linear-gradient(to right,#f3f3f3ad 65%,#fff 0%);
+    background-image: linear-gradient(to right,#ddeaef 65%,#fff 0%);
     padding: 0px 0px 32px 0px;
 }
+@media (max-width:768px){
+.w-head{
+    padding-left:10px;
+    font-size:25px !important;
+}    
+.w-content{
+    padding-left:10px !important;
+}
+}
+@media (max-width:415px){
+.w-parent{
+    background-image: linear-gradient(to right,#ddeaef 100%,#fff 0%);
+    }
+.w-head{
+    padding:0px 5px;
+    font-size:23px !important;
+}
+.w-content{
+    padding:0px 10px;
+}
+.email-set{
+    padding-top:30px;
+}
+.subscribe-widget-btn{
+    padding-top:0px !important;
+}
+}
 .w-head {
-    margin-top: -25px;
-    font-size: 30px;
-    font-weight: 500;
-    font-family: Roboto;
+    margin-top: -24px;
+    font-size: 28px;
+    font-weight: 700;
+    font-family: lora;
     color: #222;
     letter-spacing: 2px;
-    line-height: 45px;
+    line-height: 50px;
 }
 .w-content {
     font-size: 15px;
@@ -72,7 +126,7 @@ $this->registerCss('
     color: #444 !important;
     border-color: transparent !important;
     right: 0;
-    padding-top: 6px;
+    padding-top: 0px;
     font-size: 45px;
     line-height: 16px;
     height: 45px;

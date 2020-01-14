@@ -100,8 +100,12 @@ use yii\helpers\Url;
         ?>
     </div>
 </section>
-<?=
-$this->render('/widgets/top-cities',[
+
+
+<?php
+echo $this->render('/widgets/info-stats');
+
+echo $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
@@ -186,6 +190,15 @@ $this->render('/widgets/top-cities',[
         <?= $this->render('/widgets/preloaders/blog-preloader');?>
     </div>
 </section>
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <section class="search-lists">
     <div class="container">
         <div class="row">

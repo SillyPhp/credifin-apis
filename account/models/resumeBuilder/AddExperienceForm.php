@@ -17,10 +17,13 @@ class AddExperienceForm extends Model {
     public $present;
     public $description;
     public $city_id;
+    public $salary;
+    public $ctc;
 
     public function rules() {
         return [
             [['location', 'company', 'title', 'exp_from', 'city_id', 'description'], 'required'],
+            [['salary', 'ctc'], 'integer'],
 //            ['present', 'boolean'],
             [['company'], 'string', 'max' => 50],
             [

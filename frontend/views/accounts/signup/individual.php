@@ -43,6 +43,11 @@ $form = ActiveForm::begin([
 ]);
 ?>
     <div class="row">
+        <div class="col-md-12">
+            <legend><?= Yii::t('frontend', 'I Want To Get Hired'); ?></legend>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-6">
             <?= $form->field($model, 'first_name')->textInput(['class' => 'capitalize form-control', 'autocomplete' => 'off', 'placeholder' => $model->getAttributeLabel('first_name')]); ?>
         </div>
@@ -82,12 +87,6 @@ $form = ActiveForm::begin([
     <div class="row">
         <div class="col-md-12">
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
-        </div>
-    </div>
-    <div class="row pt-20">
-        <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn" href="/signup/organization"
-               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Organization'); ?></a>
         </div>
     </div>
 <?php ActiveForm::end(); ?>

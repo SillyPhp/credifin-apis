@@ -339,14 +339,6 @@ AppAssets::register($this);
                                     </ul>
                                 </div>
                             </div>
-                            <!--                            <div class="col-md-12 col-sm-12">-->
-                            <!--                                <div class="quick-btns">-->
-                            <!--                                    <ul class="qb">-->
-                            <!--                                        <li><a href="-->
-                            <? //= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
-                            <!--                                    </ul>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -572,30 +564,6 @@ $this->registerCss('
     color:#00a0e3 !important;
     transition:.3s all;
 }
-.feed-btn a{
-    border:2px solid #00a0e3;
-    color:#00a0e3;
-    padding:5px 10px;
-    border-radius:20px;
-    margin-top:20px !important;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
- .feed-btn a:hover{
-    color:#fff;
-    background:#00a0e3;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
-.menuzord-brand{
-    position:relative;
- }
 .logo-beta{
     font-size: 11px;
     position: absolute;
@@ -609,12 +577,6 @@ $this->registerCss('
      bottom: -2px; 
      right: -15px;
      color: #444;
- }
-.add-padding nav .menuzord-brand .logo_beta{
-    color:#fff;
- }
-.add-padding nav .menuzord-brand .logo-beta{
-    color:#fff;
  }
 .page-loading {
     background-color: #ffffff;
@@ -661,12 +623,6 @@ $this->registerCss('
     .my-profiles-sec span{
         margin-top:1px !important;
     }
-    .menuzord .showhide em{
-        background-color: #777;
-    }
-    .add-padding .menuzord .showhide em{
-        background-color:#fff;
-    }
 }
 /*footer css*/
 .useful-links ul li{
@@ -694,9 +650,6 @@ $this->registerCss('
 } 
 .footer-widget{
     margin: 0 auto;
-}
-.icons-ss{
-    padding-top:15px;
 }
 .widget .styled-icons li a {
     margin-bottom: 0;
@@ -731,9 +684,6 @@ $this->registerCss('
     margin-top:7px;
   }
 /*footer-css-ends*/
-.fullheight {
-    background-size: contain !important;
-}
 .main-content{
     min-height: 70%;
     min-height: -webkit-calc(100vh - 355px);
@@ -767,10 +717,6 @@ $this->registerCss('
         text-align: left !important;
     }
 }
-.menuzord-brand img{
-    max-height:42px;
-    margin-left:20px;
-}
 .my-profiles-sec span{
     line-height:normal;
     margin-top:5px;
@@ -791,18 +737,6 @@ $this->registerCss('
     -ms-border-radius: 50% !important;
     -o-border-radius: 50% !important;
     border-radius: 50% !important;
-}
-.footer-list li{
-    float: left;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0px;
-    position: relative;
-    padding-left: 10px;
-    line-height: 21px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #888888;
 }
 @media only screen and (max-width: 768px){
     .footer-widget {
