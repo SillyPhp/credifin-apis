@@ -1892,6 +1892,7 @@ var loadElems = [
     'getShortcuts'
 ];
 var loadNth = 0;
+var errorNth = 0;
 window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
      var doc_height = $(document).height() - $(window).height();
@@ -1909,10 +1910,18 @@ function scrollFunction() {
                 $('#sectionIsLoading').fadeOut(800);
                 $(this).animate({scrollTop : -500}, 400);
                 $('#test-data').append(response);
+                loadNth++;
+                errorNth = 0;
             },
             complete: function() {
                 load_content = true;
-                loadNth++;
+            },
+            error: function(xhr, textStatus, errorThrown){
+               scrollFunction();
+               errorNth++;
+               if(errorNth == 3){
+                   loadNth++;
+               }
             }
         });
       }
