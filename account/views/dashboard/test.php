@@ -95,18 +95,37 @@ function GenerateCalendar(events){
             if(calEvent.status == 2){
                 $('#btnAccept').text('Already Applied');
                 $('#btnAccept').attr("disabled", true);
+                $('#btnAccept').css("pointer-events", "none");
+                $('#time_slots').attr("disabled", true);
+                $('#time_slots').css("pointer-events", "none");
+                $('#btnDelete').hide();
+            }else if(calEvent.status == 3){
+                $('#btnAccept').text('Rejected');
+                $('#btnAccept').attr("disabled", true);
+                $('#btnAccept').css("pointer-events", "none");
+                $('#time_slots').attr("disabled", true);
+                $('#time_slots').css("pointer-events", "none");
                 $('#btnDelete').hide();
             }else{
                 $('#btnAccept').attr("disabled", false);
                 $('#btnDelete').show();
                 $('#btnAccept').text('Accept');
+                $('#time_slots').attr("disabled", false);
+                $('#time_slots').css("pointer-events", "auto");
             }
             $('#myModal #eventTitle').text(calEvent.title + ' - ' + calEvent.designation);
             $('#pDetails').html('<b>Profile: </b>' + calEvent.profile);
             $('#time_slots').empty();
             
             $.each(calEvent.time , function (index) {
-                    $("#time_slots").append(GetOption(calEvent.time[index]['from'],calEvent.time[index]['to'], calEvent.time[index]['interview_date_timing_enc_id']));
+                var date = calEvent.time[index]['date'];
+                var time = calEvent.time[index]['time'];
+                $("#time_slots").append('<optgroup label='+ date +'>');
+                    $.each(time,function(index) {
+                      $("#time_slots").append(GetOption(time[index]['from'],time[index]['to'], time[index]['interview_date_timing_enc_id']));
+                    })
+                $("#time_slots").append('<optgroup>');
+                    
                 });
             $('#myModal').modal();
         },
@@ -141,6 +160,7 @@ function GenerateCalendar(events){
 function GetOption(from,to, value) {
     return "<option value = '" + value + "'>" + from + " - " + to + "</option>"
 }
+
 
 $('#btnAccept').click(function() {
     acceptInterview();

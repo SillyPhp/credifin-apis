@@ -88,7 +88,7 @@ class SchedularController extends Controller
             $applications->where([
                 'a.organization_enc_id' => $id,
                 'a.is_deleted' => 0,
-            ]);
+            ])->andWhere(['<>','a.interview_process_enc_id','null']);
         } else {
             $applications->where([
                 'a.organization_enc_id' => $id,

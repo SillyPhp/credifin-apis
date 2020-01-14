@@ -809,9 +809,6 @@ class DashboardController extends Controller
                     WHEN g.interview_mode = 2 THEN j.name
                     END) as interview_at',
                 'o.interview_date',
-                'p.from',
-                'p.to',
-                'p.interview_date_timing_enc_id',
                 'q.name interview_type',
                 'a.applied_application_enc_id',
                 'a.interview_candidate_enc_id',
@@ -830,16 +827,17 @@ class DashboardController extends Controller
                 }]);
             }], false)
             ->joinWith(['scheduledInterviewEnc g' => function ($g) {
-                $g->joinWith(['scheduledInterviewTypeEnc q']);
+                $g->joinWith(['interviewDates o' => function ($aa) {
+                    $aa->joinWith(['interviewDateTimings p']);
+                }]);
+                $g->joinWith(['scheduledInterviewTypeEnc q'], false);
                 $g->joinWith(['interviewLocationEnc h' => function ($h) {
                     $h->joinWith(['locationEnc i' => function ($i) {
                         $i->joinWith(['cityEnc j']);
                     }]);
-                }]);
-            }], false)
+                }], false);
+            }], true)
             ->where(['q.name' => 'flexible'])
-            ->innerJoin(InterviewDates::tableName() . 'as o', 'o.scheduled_interview_enc_id = a.scheduled_interview_enc_id')
-            ->innerJoin(InterviewDateTimings::tableName() . 'as p', 'p.interview_date_enc_id = o.interview_date_enc_id')
             ->asArray()
             ->all();
 
@@ -852,6 +850,7 @@ class DashboardController extends Controller
 
             $fixed_interview = $this->FixedInterview();
             $flexible_interview = $this->FlexibleInterview();
+
 
             $all = InterviewCandidates::find()
                 ->select(['interview_date_timing_enc_id'])
@@ -868,57 +867,50 @@ class DashboardController extends Controller
             $i = 0;
             $old_id = null;
             $date = [];
+            $d = [];
             $time_from_to = [];
             $time = [];
             $fixed_result = [];
             $fixed_data = [];
             foreach ($fixed_interview as $f) {
-                if ($f['status'] != 3) {
-                    $fixed_data['EventId'] = $f['scheduled_interview_enc_id'];
-                    $fixed_data['Subject'] = $f['job_title'];
-                    $fixed_data['Profile'] = $f['profile'];
-                    $fixed_data['designation'] = $f['designation'];
+                if ($f['status'] == 3) {
+                    $fixed_data['ThemeColor'] = 'red';
+                } elseif ($f['status'] == 2) {
+                    $fixed_data['ThemeColor'] = 'green';
+                } else {
                     $fixed_data['ThemeColor'] = 'blue';
-                    $fixed_data['type'] = $f['interview_type'];
-                    $interview_date = $f['interview_date'];
-                    $fixed_data['Start'] = $interview_date;
-                    $fixed_data['End'] = $interview_date;
-                    $fixed_data['applied_application_enc_id'] = $f['applied_application_enc_id'];
-                    $fixed_data['process_field_enc_id'] = $f['process_field_enc_id'];
-                    $fixed_data['status'] = $f['status'];
-//                    if ($f['scheduled_interview_enc_id'] == $old_id) {
-//                        $old_id = $f['scheduled_interview_enc_id'];
-//                        $i++;
-//                    } else {
-//                        $old_id = $f['scheduled_interview_enc_id'];
-//                        $i = 0;
-//                    }
-//                    $ti = $f['interviewDates'][$i]['interviewDateTimings'];
-//                    foreach ($ti as $t) {
-//                        if (!in_array($t['interview_date_timing_enc_id'], $select_time)) {
-//                            $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
-//                            $time_from_to['from'] = date("g:i a", strtotime($t['from']));
-//                            $time_from_to['to'] = date("g:i a", strtotime($t['to']));
-//                            array_push($time, $time_from_to);
-//                        }
-//                    }
-                    $date = [];
-                    foreach ($f['interviewDates'] as $d) {
-                        foreach ($d['interviewDateTimings'] as $t) {
-                            if (!in_array($t['interview_date_timing_enc_id'], $select_time)) {
-                                $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
-                                $time_from_to['from'] = date("g:i a", strtotime($t['from']));
-                                $time_from_to['to'] = date("g:i a", strtotime($t['to']));
-                                array_push($time, $time_from_to);
-                            }
-                        }
-                        $date[$d['interview_date']] = $time;
-                    }
-                    $fixed_data['time'] = $date;
-                    $time = [];
-
-                    array_push($fixed_result, $fixed_data);
                 }
+                $fixed_data['EventId'] = $f['scheduled_interview_enc_id'];
+                $fixed_data['Subject'] = $f['job_title'];
+                $fixed_data['Profile'] = $f['profile'];
+                $fixed_data['designation'] = $f['designation'];
+                $fixed_data['type'] = $f['interview_type'];
+                $interview_date = $f['interview_date'];
+                $fixed_data['Start'] = $interview_date;
+                $fixed_data['End'] = $interview_date;
+                $fixed_data['applied_application_enc_id'] = $f['applied_application_enc_id'];
+                $fixed_data['process_field_enc_id'] = $f['process_field_enc_id'];
+                $fixed_data['status'] = $f['status'];
+                foreach ($f['interviewDates'] as $dd) {
+                    $d['date'] = $dd['interview_date'];
+                    foreach ($dd['interviewDateTimings'] as $t) {
+                        if (!in_array($t['interview_date_timing_enc_id'], $select_time)) {
+                            $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
+                            $time_from_to['from'] = date("g:i a", strtotime($t['from']));
+                            $time_from_to['to'] = date("g:i a", strtotime($t['to']));
+                            array_push($time, $time_from_to);
+                        }
+                    }
+                    $d['time'] = $time;
+                    array_push($date, $d);
+                    $d = [];
+                    $time = [];
+                }
+                $fixed_data['time'] = $date;
+                $time = [];
+                $date = [];
+
+                array_push($fixed_result, $fixed_data);
             }
 
             $time_from_to = [];
@@ -927,28 +919,41 @@ class DashboardController extends Controller
             $result = [];
             $data = [];
             foreach ($flexible_interview as $f) {
-                if ($f['status'] != 3) {
-                    $data['EventId'] = $f['scheduled_interview_enc_id'];
-                    $data['Subject'] = $f['job_title'];
-                    $data['Profile'] = $f['profile'];
-                    $data['designation'] = $f['designation'];
+                if ($f['status'] == 3) {
+                    $data['ThemeColor'] = 'red';
+                } elseif ($f['status'] == 2) {
+                    $data['ThemeColor'] = 'green';
+                } else {
                     $data['ThemeColor'] = 'blue';
-                    $interview_date = $f['interview_date'];
-                    $data['Start'] = $interview_date;
-                    $data['End'] = $interview_date;
-                    $data['type'] = $f['interview_type'];
-                    $data['applied_application_enc_id'] = $f['applied_application_enc_id'];
-                    $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
-                    $data['process_field_enc_id'] = $f['process_field_enc_id'];
-                    $data['status'] = $f['status'];
-                    $time_from_to['interview_date_timing_enc_id'] = $f['interview_date_timing_enc_id'];
-                    $time_from_to['from'] = date("g:i a", strtotime($f['from']));
-                    $time_from_to['to'] = date("g:i a", strtotime($f['to']));
-                    array_push($time, $time_from_to);
-                    $data['time'] = $time;
-                    $time = [];
-                    array_push($result, $data);
                 }
+                $data['EventId'] = $f['scheduled_interview_enc_id'];
+                $data['Subject'] = $f['job_title'];
+                $data['Profile'] = $f['profile'];
+                $data['designation'] = $f['designation'];
+                $interview_date = $f['interview_date'];
+                $data['Start'] = $interview_date;
+                $data['End'] = $interview_date;
+                $data['type'] = $f['interview_type'];
+                $data['applied_application_enc_id'] = $f['applied_application_enc_id'];
+                $data['interview_c_enc_id'] = $f['interview_candidate_enc_id'];
+                $data['process_field_enc_id'] = $f['process_field_enc_id'];
+                $data['status'] = $f['status'];
+                foreach ($f['scheduledInterviewEnc']['interviewDates'] as $dd) {
+                    $d['date'] = $dd['interview_date'];
+                    foreach ($dd['interviewDateTimings'] as $t) {
+                        $time_from_to['interview_date_timing_enc_id'] = $t['interview_date_timing_enc_id'];
+                        $time_from_to['from'] = date("g:i a", strtotime($t['from']));
+                        $time_from_to['to'] = date("g:i a", strtotime($t['to']));
+                        array_push($time, $time_from_to);
+                    }
+                    $d['time'] = $time;
+                    array_push($date, $d);
+                    $d = [];
+                    $time = [];
+                }
+                $data['time'] = $date;
+                $date = [];
+                array_push($result, $data);
             }
 
             $data = array_merge($fixed_result, $result);
