@@ -6,8 +6,8 @@
 
     var interviewer_op = false;
     var interviewers_detail = true;
-    var time = true ;
-    var total_hours = 0 ;
+    var time = true;
+    var total_hours = 0;
     var total_minutes = 0;
 
     results.mode = "online";
@@ -23,7 +23,7 @@
             url: "/account/schedular/find-applications",
             type: "POST",
             async: false,
-            data: {'_csrf-common': $('meta[name="csrf-token"]').attr("content"),'application_id':id},
+            data: {'_csrf-common': $('meta[name="csrf-token"]').attr("content"), 'application_id': id},
             beforeSend: function () {
                 $('#schedular-loader').fadeIn(1000);
             },
@@ -91,7 +91,7 @@
         if (this.childNodes[1].getAttribute('id') == "headingThree") {
             var result = {};
 
-            if(!validate_data()){
+            if (!validate_data()) {
                 return false;
             }
 
@@ -192,7 +192,7 @@
                 alert('You have to choose atleast one time span');
                 return false;
             }
-            if(!check_candidate_time()){
+            if (!check_candidate_time()) {
                 alert('Your selected time is low');
                 return false;
             }
@@ -218,9 +218,9 @@
             $('#rounds').remove();
             $('#newrounds').attr('id', 'rounds');
             $('#rounds li').first().remove();
-            $('#rounds, #rounds li').css('height','50px');
-            $('#rounds li').css('display','block');
-            $('#rounds li').css('padding-top','15px');
+            $('#rounds, #rounds li').css('height', '50px');
+            $('#rounds li').css('display', 'block');
+            $('#rounds li').css('padding-top', '15px');
             $('#select-application-process').html('');
             var application_id = $('#rounds li').attr('value');
             results.application_id = $('#rounds li').attr('value');
@@ -363,7 +363,7 @@
 
     //timepicker call for click on timepicker
     $(document).on('focus', '.timepicker-24', function () {
-        $(this).timepicker({defaultTime:'value'});
+        $(this).timepicker({defaultTime: 'value'});
     });
 
     $(document).on('focus', '.timepicker-duration', function () {
@@ -440,6 +440,42 @@
             });
         }
         // console.log(dates);
+        var total_candidates = $('#candidates').val();
+        var min = $('#min').val();
+        var from = $('.time_from').val();
+        var to = $('.time_to').val();
+
+        var a = from.split(':');
+        console.log(a);
+        console.log(a[0]);
+        console.log(a[1]);
+        console.log(a.replace(' AM',''));
+        return false;
+
+//Parse In
+        var parseIn = function(date_time){
+            var d = new Date();
+            d.setHours(date_time.substring(11,13));
+            d.setMinutes(date_time.substring(14,16));
+            console.log(d);
+        }
+
+//make list
+        var getTimeIntervals = function (time1, time2) {
+            var arr = [];
+            while(time1 < time2){
+                arr.push(time1.toTimeString().substring(0,5));
+                time1.setMinutes(time1.getMinutes() + min);
+            }
+            return arr;
+        }
+
+        startTime = parseIn(startTime);
+        endTime = parseIn(endTime);
+
+        var intervals = getTimeIntervals(startTime, endTime);
+
+        console.log(intervals);
 
         dates_count = dates.length;
         var time_slots = $('#dates').html();
@@ -454,6 +490,17 @@
 
         results.dates = dates;
     }
+
+    Date.prototype.addMinutes = function (minutes) {
+        this.setMinutes(this.getMinutes() + minutes);
+        return this;
+    };
+
+    Date.prototype.subMinutes = function (minutes) {
+        this.setMinutes(this.getMinutes() - minutes);
+        return this;
+    };
+
 
     //add more date
     $(document).on('click', '#add-more', function (e) {
@@ -526,7 +573,7 @@
 
         if (interview_type == 'fixed') {
             $('.btn-next').css('display', 'none');
-            $('#select-application-process').css('display','none');
+            $('#select-application-process').css('display', 'none');
             var html_no_candidates = $('#number-of-candidates').html();
             var output_cand = Mustache.render(html_no_candidates);
             $('#canddidate').append(output_cand);
@@ -542,7 +589,7 @@
 
         } else {
             $('.btn-next').css('display', 'none');
-            $('#select-application-process').css('display','block');
+            $('#select-application-process').css('display', 'block');
             if ($('#number_candidate_cont')) {
                 $('#number_candidate_cont').remove();
             }
@@ -557,10 +604,10 @@
 
         }
         setTimeout(function () {
-            if(pre_selected){
+            if (pre_selected) {
                 getApplications(pre_selected);
                 load_script(true);
-            }else{
+            } else {
                 getApplications();
                 load_script();
             }
@@ -590,7 +637,7 @@
         });
     }
 
-    function validateInterviewer(){
+    function validateInterviewer() {
         $('.abc').each(function () {
             if ($(this).val() === "" || $(this).val() == null) {
                 $(this).next('.i-error').text('This field is required.');
@@ -604,7 +651,7 @@
 
 
     //notify interviewer or request
-    $(document).on('change','.interviewer_option',function () {
+    $(document).on('change', '.interviewer_option', function () {
         results.interviewer_options = $(this).val();
         $('.interviewer-option-error').text('');
         // console.log($(this).val());
@@ -630,25 +677,25 @@
         var second = $('.abc-email');
         var third = $('.abc-number');
 
-        if(first.val() == "" && second.val() == "" && third.val() == ""){
+        if (first.val() == "" && second.val() == "" && third.val() == "") {
             $('.abc').next('.i-error').text('');
             $('.interviewer-option-error').text('');
             interviewers_detail = true;
             interviewer_op = false;
         } else {
             interviewer_op = true;
-            if(!validateInterviewer()){
+            if (!validateInterviewer()) {
                 interviewers_detail = false;
             }
-            if(first.val() != "" && second.val() != "" && third.val() != ""){
+            if (first.val() != "" && second.val() != "" && third.val() != "") {
                 interviewers_detail = true;
             }
         }
 
         validateDetails();
 
-        if(interviewer_op){
-            if(results.interviewer_options == '' || results.interviewer_options == null){
+        if (interviewer_op) {
+            if (results.interviewer_options == '' || results.interviewer_options == null) {
                 $('.interviewer-option-error').text('Please select one option.');
                 return false;
             }
@@ -687,7 +734,7 @@
                 success: function (data) {
                     $('#schedular-loader').fadeOut(1000);
                     if (data.status == 200) {
-                        console.log(data);
+                        // console.log(data);
                         toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
                         // window.location.href = "/account/schedular/update-interview";
                     } else {
@@ -731,17 +778,17 @@
 
 
     function validate_data() {
-        if($('#min').val() == ''){
+        if ($('#min').val() == '') {
             $('.min-error').text('This field is required.');
             return false;
         }
 
-        if($('#candidates').val() == ''){
+        if ($('#candidates').val() == '') {
             $('.candidate-error').text('This field is required.');
             return false;
         }
 
-        if($('#room').val() == ''){
+        if ($('#room').val() == '') {
             $('.room-error').text('This field is required.');
             return false;
         }
@@ -749,15 +796,15 @@
         return true;
     }
 
-    $(document).on('change','#min',function () {
+    $(document).on('change', '#min', function () {
         $('.min-error').text('');
     });
 
-    $(document).on('change','#candidates',function () {
+    $(document).on('change', '#candidates', function () {
         $('.candidate-error').text('');
     });
 
-    $(document).on('change','#room',function () {
+    $(document).on('change', '#room', function () {
         $('.room-error').text('');
     });
 
@@ -768,14 +815,14 @@
 
         var candidate_time = (total_candidates * min) / 60;
 
-        console.log((candidate_time / interview_room) + 'candidate time');
-        console.log((total_hours + (total_minutes / 60)) + 'total time');
+        // console.log((candidate_time / interview_room) + 'candidate time');
+        // console.log((total_hours + (total_minutes / 60)) + 'total time');
 
         var total_time = total_hours + (total_minutes / 60);
         candidate_time = candidate_time / interview_room;
-        if(total_time < candidate_time){
+        if (total_time < candidate_time) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
