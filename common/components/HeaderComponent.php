@@ -10,21 +10,17 @@ use yii\base\Component;
 class HeaderComponent extends Component
 {
 
-    public function getMenuHeader($route, $menu_of = 1, $name = 'Common')
+    public function getMenuHeader($route, $menu_of = 1)
     {
-        return '';
-//        $header = HeaderMenuItems::find()
-//            ->alias('a')
-//            ->innerJoinWith(['headerEnc b'], false)
-//            ->innerJoinWith(['parentEnc c' => function($c){
-//                $c->joinWith(['']);
-//            }])
-//            ->where(['b.name' => $name, 'b.status' => 1])
-//            ->groupBy(['a.parent_enc_id'])
-//            ->asArray()
-//            ->all();
+//        return '';
+        $header = AssignedHeader::find()
+            ->select(['header_enc_id'])
+            ->where(['route' => $route])
+            ->asArray()
+            ->one();
 //        print_r($header);
-//        exit();
+        print_r($this->getMenuList($header['header_enc_id']));
+        exit();
 //        $children = AssignedHeader::find()
 //            ->alias('a')
 //            ->joinWith(['headerEnc b' => function ($b) {
@@ -91,6 +87,23 @@ class HeaderComponent extends Component
 
         return $menuItems->asArray()->all();
     }
+
+    public function getMenuList($header_id, $parent = null, $level = 0)
+    {
+        $model = HeaderMenuItems::find()->alias('a')
+            ->select(['a.item_enc_id', 'b.name'])
+            ->where(['a.header_enc_id' => $header_id])
+            ->andWhere(['a.parent_enc_id' => $parent])
+            ->joinWith(['itemEnc b'], false)
+            ->asArray()->all();
+        foreach ($model as $key) {
+            array_push($this->data , $key['name']);
+            $this->getMenuList($header_id, $key['item_enc_id'], $level + 1);
+        }
+        return $this->data;
+    }
+
+    private $data = [];
 
     private function _getParents()
     {

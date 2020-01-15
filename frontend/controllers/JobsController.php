@@ -63,7 +63,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+//        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -1188,8 +1188,8 @@ class JobsController extends Controller
         ];
     }
 
-//    public function actionTest(){
-//        print_r(Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute));
-//        exit();
-//    }
+    public function actionTest(){
+        print_r(Yii::$app->header->getMenuHeader('jobs'));
+        exit();
+    }
 }
