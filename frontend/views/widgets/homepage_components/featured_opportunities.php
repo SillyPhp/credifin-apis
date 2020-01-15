@@ -337,3 +337,13 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<?php
+$this->registerJs("
+$('.tab-sec li a').on('click', function(){
+    var tab_id = $(this).attr('data-tab');
+    $('.tab-sec li a').removeClass('current');
+    $('.tab-content').removeClass('current');
+    $(this).addClass('current');
+    $('#'+tab_id).addClass('current');
+});
+");
