@@ -49,8 +49,17 @@ $.ajax({
     success: function(response) {
         if(response.status === 200) {
             if(response.result.length > 0){
-                var contributor = $('#video-categories').html();
-                $("#categories").html(Mustache.render(contributor, response.result));
+                var loaderElem = $("#loading-learning-categories");
+                if(loaderElem.length){
+                    setTimeout(function() {
+                        loaderElem.remove();
+                        var contributor = $('#video-categories').html();
+                        $("#categories").html(Mustache.render(contributor, response.result));
+                    },2000);
+                } else {
+                    var contributor = $('#video-categories').html();
+                    $("#categories").html(Mustache.render(contributor, response.result));
+                }
             }
         }
     }

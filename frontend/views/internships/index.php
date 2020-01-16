@@ -94,19 +94,30 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
+
+        <?=
+            $this->render('/widgets/preloaders/active-profiles')
+        ?>
     </div>
 </section>
 
-<div id="stats_cards">
 
-</div>
+<?php
+echo $this->render('/widgets/info-stats');
 
-<?=
-$this->render('/widgets/top-cities',[
+echo $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
+<section>
+    <div class="container">
+    <?=
+    $this->render('/widgets/preloaders/top-cities-preloader')
+    ?>
+    </div>
+</section>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -147,6 +158,9 @@ $this->render('/widgets/top-cities',[
             'tweets' => $tweets
         ]);
         ?>
+        <?=
+            $this->render('/widgets/preloaders/tweet-job-preloader')
+        ?>
     </div>
 </section>
 <section>
@@ -156,6 +170,7 @@ $this->render('/widgets/top-cities',[
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/featured-employers')?>
     </div>
 </section>
 
@@ -172,6 +187,7 @@ $this->render('/widgets/top-cities',[
                 </div>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/blog-preloader');?>
     </div>
 </section>
 
@@ -229,6 +245,10 @@ if (Yii::$app->user->isGuest) {
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/quick-links-preloader',[
+                'size' =>'col-md-4 col-sm-4 col-xs-6',
+                'f_loop' => 3
+        ])?>
     </div>
 </section>
 
@@ -236,7 +256,6 @@ if (Yii::$app->user->isGuest) {
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
     background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
@@ -835,7 +854,6 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
-fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
