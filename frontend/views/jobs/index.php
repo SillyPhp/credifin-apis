@@ -73,12 +73,9 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
-<!--        --><?//= $this->render('/widgets/preloaders/active-profiles'); ?>
     </div>
 </section>
 
-<!--use to show stats like Job count , profile/title count of jobs, location count of jobs and conpanies count for jobs-->
-<!--<div id="stats_cards"></div>-->
 
 <?php
 echo $this->render('/widgets/info-stats');
@@ -88,13 +85,6 @@ echo $this->render('/widgets/top-cities', [
     'type' => 'jobs'
 ])
 ?>
-<!--<section>-->
-<!--    <div class="container">-->
-<!--        --><?//=
-//        $this->render('/widgets/preloaders/top-cities-preloader');
-//        ?>
-<!--    </div>-->
-<!--</section>-->
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -137,9 +127,6 @@ echo $this->render('/widgets/top-cities', [
             'tweets' => $tweets,
         ]);
         ?>
-<!--        --><?//=
-//            $this->render('/widgets/preloaders/tweet-job-preloader')
-//        ?>
     </div>
 </section>
 <section>
@@ -148,9 +135,6 @@ echo $this->render('/widgets/top-cities', [
             <div class="col-md-12">
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
-<!--            --><?//=
-//            $this->render('/widgets/preloaders/featured-employers');
-//            ?>
         </div>
     </div>
 </section>
@@ -167,9 +151,6 @@ echo $this->render('/widgets/top-cities', [
                 </div>
             </div>
         </div>
-<!--        --><?//=
-//            $this->render('/widgets/preloaders/blog-preloader');
-//        ?>
     </div>
 </section>
 <!--Subscribe Widget start-->
@@ -225,12 +206,6 @@ if (Yii::$app->user->isGuest) {
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
-<!--        --><?//=
-//            $this->render('/widgets/preloaders/quick-links-preloader',[
-//                    'size'=> 'col-md-4 col-sm-4 col-xs-6',
-//                    'f_loop' => 3
-//            ])
-//        ?>
     </div>
 </section>
 <?php

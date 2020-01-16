@@ -54,8 +54,4 @@ $this->registerCss('
     margin-top:10px;
 }
 ');
-$script = <<<JS
-
-JS;
-$this->registerJs($script);
 ?>

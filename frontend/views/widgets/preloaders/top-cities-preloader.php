@@ -25,7 +25,6 @@ if (isset($size)) {
                                 <div class="loader anim"></div> <div class="loader anim"></div>
                             </div>
                         </div>
-                        <!--                        <div class="btn btn-info"><a href="">View Jobs</a></div>-->
                     </div>
                 </div>
                 <?php
@@ -53,8 +52,4 @@ $this->registerCss('
     display:inline-block;
 }
 ');
-$script = <<<JS
-
-JS;
-$this->registerJs($script);
 ?>

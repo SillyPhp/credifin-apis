@@ -21,11 +21,6 @@
             </div>
         </div>
         <div class="data-main">
-<!--                    --><?//=
-//                    $this->render('/widgets/twitter-masonry', [
-//                        'tweets' => $tweets
-//                    ]);
-//                    ?>
             <?=
             $this->render('/widgets/preloaders/tweet-job-preloader');
             ?>

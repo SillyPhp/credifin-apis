@@ -28,7 +28,7 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="col-md-4 col-sm-4">
-            <div class="ai-job quick">
+            <div class="ai-job ai-quick">
                 <div class="ai-img">
                     <img src="<?= Url::to('@eyAssets/images/pages/jobs/quick-jobs.png') ?>">
                 </div>
@@ -76,7 +76,7 @@ $this->registerCss('
 .parent{
     margin:80px 0px 40px 0;
 }
-.quick{
+.ai-quick{
     margin-top: 90px !important;
 }
 .ai-job {
@@ -122,7 +122,7 @@ $this->registerCss('
     width:78%;
     margin-bottom:70px;
 }
-.quick{
+.ai-quick{
     margin-top: 0px;
 }
 }

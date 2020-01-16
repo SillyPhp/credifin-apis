@@ -39,19 +39,6 @@ if (isset($size)) {
             ?>
         </div>
     </div>
-<!--    <script id="q-links-popular" type="text/template">-->
-<!--        <div class="list-heading">Popular Searches</div>-->
-<!--        <ul class="quick-links" id="searches">-->
-<!--            {{#.}}-->
-<!--            <li class="hide">-->
-<!--                <a href="/search?keyword={{name}}" title="{{name}}">-->
-<!--                    {{name}}-->
-<!--                </a>-->
-<!--            </li>-->
-<!--            {{/.}}-->
-<!--        </ul>-->
-<!--        <button type="button" class="showHideBtn">More</button>-->
-<!--    </script>-->
 <?php
 $this->registerCss('
 .showHideBtn > .loader.anim{
@@ -73,8 +60,6 @@ function getLocations() {
             if(response.status === 200) {
                 var location_data = $('#q-links-popular').html();
                 $(".head-office").html(Mustache.render(location_data, response.locations));
-                
-                // renderLocations(response.locations);
             }
         }
     });
