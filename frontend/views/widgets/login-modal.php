@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+use borales\extensions\phoneInput\PhoneInput;
 
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
@@ -87,10 +88,10 @@ use yii\bootstrap\ActiveForm;
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
                                 <div class="indi-btn">
-                                    <a href="/signup/individual">Individual</a>
+                                    <a href="/signup/individual">Individual / Candidate</a>
                                 </div>
                                 <div class="organ-btn">
-                                    <a href="/signup/organization">Organization</a>
+                                    <a href="/signup/organization">Organization / Companies</a>
                                 </div>
                                 <div class="new-user">
                                     Existing User?
@@ -101,13 +102,29 @@ use yii\bootstrap\ActiveForm;
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
 </div>
 <?php
 $this->registerCss('
+.individual-form::-webkit-scrollbar { 
+    width: 0 !important 
+}
+.individual-form { 
+    overflow: -moz-scrollbars-none; 
+}
+.individual-form { 
+    -ms-overflow-style: none; 
+}
+.individual-form{
+    overflow: hidden;
+    overflow-y: scroll;
+    padding-top:50px;
+    max-height:76vh; 
+}
+.intl-tel-input{
+    display:block !important;
+}
 ::placeholder{
     color:#999;
 }
@@ -141,7 +158,7 @@ $this->registerCss('
     border-radius: 5px;
     text-transform: capitalize;
     font-size: 15px;
-    width: 160px;
+    width: 245px;
     margin: auto;
     margin-top: 5px;
     display: block;

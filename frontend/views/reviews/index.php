@@ -102,6 +102,11 @@ use yii\bootstrap\ActiveForm;
                 <div id="review_container_compnay">
                 </div>
             </div>
+            <div>
+                <?=
+                $this->render('/widgets/preloaders/review-box-preloader');
+                ?>
+            </div>
         </div>
     </section>
     <section class="top-com-bg">
@@ -169,6 +174,14 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');

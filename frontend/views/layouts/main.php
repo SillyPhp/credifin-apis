@@ -72,16 +72,18 @@ AppAssets::register($this);
         <div id="header-main"
              class="header-nav-wrapper <?= ($this->params['header_dark']) ? 'navbar-scrolltofixed bg-theme-colored border-bottom-theme-color-2-1px' : ''; ?>">
             <?php
-//            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
+            //            if (Yii::$app->user->isGuest && empty($this->params['sub_header'])) {
             if (Yii::$app->user->isGuest) {
                 ?>
                 <div class="secondary-top-header">
                     <div class="secondary-top-header-left">
                         <span>
-                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a href="/internships/quick-internship"><strong>Internship</strong></a>
+                            <i class="far fa-check-circle"></i><a href="/jobs/quick-job">Post quick <strong>Job</strong></a>or<a
+                                    href="/internships/quick-internship"><strong>Internship</strong></a>
                         </span>
                         <span>
-                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
+                            <i class="fab fa-twitter"></i><a href="/tweets/job/create">Post <strong>Job</strong></a>or<a
+                                    href="/tweets/internship/create"><strong>Internship Tweet</strong></a>
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
@@ -113,7 +115,9 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('/widgets/top-header-beta'); ?>
+                                <?= $this->render('@common/widgets/top-header-beta', [
+                                    'for' => 'Frontend'
+                                ]); ?>
                             </div>
                             <div class="ey-nav-actions">
                                 <div class="ey-menu-login">
@@ -227,7 +231,7 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('/widgets/top-header-mobile'); ?>
+                            <?= $this->render('@common/widgets/top-header-mobile'); ?>
                         </div>
                     </div>
                 </div>
@@ -236,9 +240,9 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-        <div id="page-loading" class="page-loading">
-            <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
-        </div>
+<!--        <div id="page-loading" class="page-loading">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+<!--        </div>-->
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -291,7 +295,8 @@ AppAssets::register($this);
                                         <li><a href="<?= "/reviews/companies"; ?>">Company Reviews</a></li>
                                         <li><a href="<?= "/reviews/colleges"; ?>">College Reviews</a></li>
                                         <li><a href="<?= "/reviews/schools"; ?>">School Reviews</a></li>
-                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a></li>
+                                        <li><a href="<?= "/reviews/institutes"; ?>">Educational Institute Reviews</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -302,6 +307,8 @@ AppAssets::register($this);
                         <div class="can-foot-list">
                             <ul>
                                 <li><a href="<?= "/careers"; ?>">Careers</a></li>
+                                <li><a href="javascript:;" class="partnerWith">Partner With Us</a></li>
+                                <li><a href="javascript:;" class="giveFeedback">Feedback</a></li>
                             </ul>
                         </div>
                     </div>
@@ -324,20 +331,14 @@ AppAssets::register($this);
                                         <li><a href="https://www.instagram.com/empoweryouth.in" target="_blank"
                                                class="overig"><i
                                                         class="fab fa-instagram"></i></a></li>
-                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank" class="overpt"><i
+                                        <li><a href="https://www.pinterest.com/empoweryouthin" target="_blank"
+                                               class="overpt"><i
                                                         class="fab fa-pinterest"></i></a></li>
                                         <li><a href="https://www.linkedin.com/company/empoweryouth" target="_blank"
                                                class="overlink"><i class="fab fa-linkedin-in"></i></a></li>
                                     </ul>
                                 </div>
                             </div>
-<!--                            <div class="col-md-12 col-sm-12">-->
-<!--                                <div class="quick-btns">-->
-<!--                                    <ul class="qb">-->
-<!--                                        <li><a href="--><?//= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -371,8 +372,18 @@ AppAssets::register($this);
         </div>
         <div class="footer-bottom">
             <div class="container pt-20 pb-20">
-                <div class="col-md-12 col-sm-12 text-center">
-                    <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 footer-bottom-links">
+                        <a href="<?= Url::to('/terms-conditions'); ?>">
+                            Terms &amp; Conditions
+                        </a>
+                        <a href="<?= Url::to('/privacy-policy'); ?>">
+                            Privacy Policy
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-sm-12 text-right">
+                        <p class="font-11 copyright-text"><?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name . ' ' . Yii::t('frontend', 'All Rights Reserved') . '.'; ?></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -387,6 +398,17 @@ AppAssets::register($this);
 </div>
 <?php
 $this->registerCss('
+.footer-bottom-links a{
+    color:#fff;
+    margin-right: 20px;
+    font-size: 12px;
+    display: inline-block;
+    width: auto !important;
+    margin-top: 7px;
+}
+.footer-bottom-links a:hover{
+    color:#c7c7c7;
+}
 .foot-heading{
     font-family: lora;
     font-size:20px;
@@ -486,7 +508,7 @@ $this->registerCss('
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top:-2px;
+    margin-top: 0px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -542,30 +564,6 @@ $this->registerCss('
     color:#00a0e3 !important;
     transition:.3s all;
 }
-.feed-btn a{
-    border:2px solid #00a0e3;
-    color:#00a0e3;
-    padding:5px 10px;
-    border-radius:20px;
-    margin-top:20px !important;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
- .feed-btn a:hover{
-    color:#fff;
-    background:#00a0e3;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
-.menuzord-brand{
-    position:relative;
- }
 .logo-beta{
     font-size: 11px;
     position: absolute;
@@ -579,12 +577,6 @@ $this->registerCss('
      bottom: -2px; 
      right: -15px;
      color: #444;
- }
-.add-padding nav .menuzord-brand .logo_beta{
-    color:#fff;
- }
-.add-padding nav .menuzord-brand .logo-beta{
-    color:#fff;
  }
 .page-loading {
     background-color: #ffffff;
@@ -631,12 +623,6 @@ $this->registerCss('
     .my-profiles-sec span{
         margin-top:1px !important;
     }
-    .menuzord .showhide em{
-        background-color: #777;
-    }
-    .add-padding .menuzord .showhide em{
-        background-color:#fff;
-    }
 }
 /*footer css*/
 .useful-links ul li{
@@ -664,9 +650,6 @@ $this->registerCss('
 } 
 .footer-widget{
     margin: 0 auto;
-}
-.icons-ss{
-    padding-top:15px;
 }
 .widget .styled-icons li a {
     margin-bottom: 0;
@@ -701,9 +684,6 @@ $this->registerCss('
     margin-top:7px;
   }
 /*footer-css-ends*/
-.fullheight {
-    background-size: contain !important;
-}
 .main-content{
     min-height: 70%;
     min-height: -webkit-calc(100vh - 355px);
@@ -737,10 +717,6 @@ $this->registerCss('
         text-align: left !important;
     }
 }
-.menuzord-brand img{
-    max-height:42px;
-    margin-left:20px;
-}
 .my-profiles-sec span{
     line-height:normal;
     margin-top:5px;
@@ -761,18 +737,6 @@ $this->registerCss('
     -ms-border-radius: 50% !important;
     -o-border-radius: 50% !important;
     border-radius: 50% !important;
-}
-.footer-list li{
-    float: left;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0px;
-    position: relative;
-    padding-left: 10px;
-    line-height: 21px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #888888;
 }
 @media only screen and (max-width: 768px){
     .footer-widget {
@@ -818,9 +782,10 @@ if (Yii::$app->user->isGuest) {
         window.addEventListener("scroll", header_main);
         var lastScrollTop = 50;
         function header_main() {
+            var h_element = $(".ey-mobile-content");
             var st = $(this).scrollTop();
             var check_h_type = document.getElementById("header-main");
-            if(st > lastScrollTop) {
+            if(st > lastScrollTop || h_element.hasClass("ey-mobile-show")) {
                 check_h_type.classList.remove("header-show");
             } else {
                 check_h_type.classList.add("header-show");
@@ -843,7 +808,7 @@ if (!$this->params['header_dark']) {
             }); ");
 }
 $this->registerJs('
-$(".page-loading").fadeOut();
+//$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");
@@ -851,6 +816,19 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).next(".ey-sub-menu").addClass("ey-active-menu");
         $(this).children("i").css("display", "none");
       }
+});
+
+$(document).on("click", ".partnerWith", function(e){
+    e.preventDefault();
+    var elem = "<div class=\'partner-main\'></div>";
+    $("body").append(elem);
+    $(".partner-main").load("/site/partner-with-us");
+});
+$(document).on("click", ".giveFeedback", function(e){
+    e.preventDefault();
+    var elem = "<div class=\'feedback-main\'></div>";
+    $("body").append(elem);
+    $(".feedback-main").load("/site/send-feedback");
 });
 ');
 $this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);

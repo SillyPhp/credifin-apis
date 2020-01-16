@@ -119,13 +119,17 @@ $this->registerCss('
 .ac-subheading{
     margin-top:-15px;
     font-family:Roboto;
-    font-weight:300;
+    font-weight:400;
 }
 .all-coms a{
     color:#00a0e3;
 }
+.all-coms{
+    font-family: roboto;
+}
 .all-coms a:hover{
-    font-weight:bold;
+    font-weight:500;
+    font-family: roboto;
     margin-left:10px;
     transition:.3s ease;
 }
@@ -155,7 +159,8 @@ $this->registerCss('
     display:none;
     line-height:20px;
     max-width:109px;
-    font-weight:bold;
+    font-weight:500;
+    font-family: roboto;
     text-align:center;
     color:#00a0e3;
 }

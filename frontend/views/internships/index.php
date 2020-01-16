@@ -94,14 +94,30 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
+
+        <?=
+            $this->render('/widgets/preloaders/active-profiles')
+        ?>
     </div>
 </section>
-<?=
-$this->render('/widgets/top-cities',[
+
+
+<?php
+echo $this->render('/widgets/info-stats');
+
+echo $this->render('/widgets/top-cities',[
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
+<section>
+    <div class="container">
+    <?=
+    $this->render('/widgets/preloaders/top-cities-preloader')
+    ?>
+    </div>
+</section>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -142,6 +158,9 @@ $this->render('/widgets/top-cities',[
             'tweets' => $tweets
         ]);
         ?>
+        <?=
+            $this->render('/widgets/preloaders/tweet-job-preloader')
+        ?>
     </div>
 </section>
 <section>
@@ -151,6 +170,7 @@ $this->render('/widgets/top-cities',[
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/featured-employers')?>
     </div>
 </section>
 
@@ -167,8 +187,18 @@ $this->render('/widgets/top-cities',[
                 </div>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/blog-preloader');?>
     </div>
 </section>
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -215,6 +245,10 @@ $this->render('/widgets/top-cities',[
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
+        <?= $this->render('/widgets/preloaders/quick-links-preloader',[
+                'size' =>'col-md-4 col-sm-4 col-xs-6',
+                'f_loop' => 3
+        ])?>
     </div>
 </section>
 
@@ -639,7 +673,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 16px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -653,7 +687,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family:roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;

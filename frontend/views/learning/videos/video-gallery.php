@@ -4,15 +4,17 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 use yii\helpers\Html;
 ?>
-    <section class="background" style="background: url('<?= $parentId['banner']?>');">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h2 class="heading-style h-spacing"><?= $parentId['name'];?></h2>
+<section class="background" style="background: url('<?= $parentId['banner'] ?>');">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-3">
+                <div class="h-text">
+                    <div class="h-spacing"><?= $parentId['name']; ?></div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section class="topics-main">-->
 <!--        <div class="container">-->
@@ -225,26 +227,26 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section class="videos-main">
-        <div class="container">
-            <div class="row">
-                <div class=" col-md-12">
-                    <div class="heading-style">Top Videos</div>
-                </div>
+<section class="videos-main">
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-12">
+                <div class="heading-style">Top Videos</div>
+            </div>
+        </div>
+    </div>
+
+    <!--Other Videos-->
+    <div class="videorows">
+        <div class="videorow container">
+            <div class="col-md-12 row1 v-padding">
+
+                <div id="gallery-video"></div>
             </div>
         </div>
 
-        <!--Other Videos-->
-        <div class="videorows">
-            <div class="videorow container">
-                <div class="col-md-12 row1 v-padding">
-
-                    <div id="gallery-video"></div>
-
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
+</section>
 
 <!--    <section>-->
 <!--        <div class="container">-->
@@ -280,7 +282,7 @@ use yii\helpers\Html;
             </div>
             <div class="question-list">
                 <?= $this->render('/widgets/questions_gallery_view', [
-                    'object'=>$object
+                    'object' => $object
                 ]); ?>
             </div>
         </div>
@@ -364,21 +366,21 @@ use yii\helpers\Html;
 <!--        </div>-->
 <!--    </section>-->
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 col-sm-12">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="heading-style">Blogs</div>
-                        </div>
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading-style">Blogs</div>
                     </div>
-                    <div id="whats-new" class="row">
-                    </div>
+                </div>
+                <div id="whats-new" class="row">
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
 <?php
 echo $this->render('/widgets/blogs/whats-new', [
@@ -388,6 +390,12 @@ echo $this->render('/widgets/blogs/whats-new', [
 echo $this->render('/widgets/mustache/skills/video-gallery-video');
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+.best-images{
+    display:inline-block;
+}
+.best-images a{
+    display:inline-block;   
+}
 .card:hover::before{
     right: -15px;
     bottom: -15px;
@@ -405,6 +413,18 @@ $this->registerCss('
   content:"";
   top: 20px; 
   transition: .5s ease;
+}
+
+.show{
+	padding: 10px;
+	border: none;
+	display: block;
+	margin: auto;
+	font-size: 15px;
+	font-family: roboto;
+	background-color: #00a0e3;
+	color: white;
+	border-radius: 5px;
 }
 .card__block--main {
   background-color: #fff;
@@ -496,6 +516,7 @@ $this->registerCss('
     font-weight: bold;
     border-top: 1px solid #eee;
     margin-top: 10px;
+    font-family:roboto;
 }
 .best-answers {
     float: right;
@@ -505,6 +526,7 @@ $this->registerCss('
     width: 20px;
     border-radius: 25px;
     margin-right: 2px;
+    vertical-align: inherit;
 }
 .card-box:nth-child(1n) .card::before, card-box:nth-child(7n) .card::before {
    background-image:linear-gradient( 135deg, #9cd6ff 10%, #0c9aff 100%); /*blue*/
@@ -539,11 +561,6 @@ $this->registerCss('
         margin: 0 auto;
     }
 } 
-.h-spacing{
-    letter-spacing: 4px;
-    word-spacing: 10px;
-    text-transform: uppercase;
-}
 /*    <!-- view-all button css start -->*/
 .btn-3 {
     background-color: #424242;
@@ -686,11 +703,46 @@ $this->registerCss('
 }
 .background{
     min-height:475px;
-    padding-top: 120px;
+    padding-top: 215px;
     padding-left: 50px;
     background-size: auto 100% !Important;
     background-repeat: no-repeat !Important;
     background-position: right bottom !Important;
+}
+.h-spacing {
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-size: 30px;
+    font-family: lora;
+    font-weight: 700;
+}
+@media (max-width:768px){
+.background {
+    min-height: 310px;
+    padding-top: 75px;
+    padding-left: 50px;
+    background-size: 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right bottom !Important;
+}
+}
+@media (max-width: 500px){
+.background {
+    min-height: 250px;
+    padding-top: 134px;
+    padding-left: 0px;
+    background-size:auto 100% !Important;
+    background-repeat: no-repeat !Important;
+    background-position: right top !Important;
+}
+.h-text{
+    text-align: center;
+    background:#fff;
+}
+.h-spacing {
+    letter-spacing: 0px;
+    font-size: 20px;
+}
 }
 .logo{
     width: 140px;

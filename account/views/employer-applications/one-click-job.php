@@ -1,4 +1,5 @@
 <?php
+
 use kartik\time\TimePicker;
 use kartik\date\DatePicker;
 use yii\bootstrap\ActiveForm;
@@ -6,6 +7,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
+
 $url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
 $Initscript = <<< JS
@@ -21,15 +23,15 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>
-                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create Job In Minutes'); ?></span>
+                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create '.(($type=="Jobs")?"Job":"Internship").' In Minutes'); ?></span>
                     </div>
                 </div>
                 <?php
                 if (Yii::$app->session->hasFlash('success')):
-                    echo '<label class="orange">'.Yii::$app->session->getFlash('success').'</label>';
+                    echo '<label class="orange">' . Yii::$app->session->getFlash('success') . '</label>';
                 else:
                     Yii::$app->session->hasFlash('error');
-                    echo '<label class="orange">'.Yii::$app->session->getFlash('error').'</label>';
+                    echo '<label class="orange">' . Yii::$app->session->getFlash('error') . '</label>';
                 endif;
                 ?>
                 <div class="portlet-body">
@@ -38,20 +40,20 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                     ]); ?>
                     <div class="row">
                         <div class="col-md-12">
-                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile'])->label(false); ?>
+                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")?"Job":"Internship").' Profile'])->label(false); ?>
                         </div>
                     </div>
-                   <div class="row">
+                    <div class="row">
                         <div class="col-md-4">
-                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => 'Job Title'])->label(false); ?>
+                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => (($type=="Jobs")?"Job":"Internship").' Title'])->label(false); ?>
                         </div>
                         <div class="col-md-4">
-                            <?=  $form->field($model, 'gender')->dropDownList([
+                            <?= $form->field($model, 'gender')->dropDownList([
                                 0 => 'No Preference',
                                 1 => 'Male',
                                 2 => 'Female',
                                 3 => 'Transgender',
-                            ],['prompt'=>'Select Gender'])->label(false); ?>
+                            ], ['prompt' => 'Select Gender'])->label(false); ?>
                         </div>
                         <div class="col-md-4">
                             <?= $form->field($model, 'exp')->dropDownList([
@@ -63,7 +65,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                 '5-10' => '5-10 Years',
                                 '10-20' => '10-20 Years',
                                 '20+' => 'More Than 20 Years',
-                            ],['prompt'=>'Select Experience'])->label(false); ?>
+                            ], ['prompt' => 'Select Experience'])->label(false); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -99,7 +101,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                         <div class="col-md-12">
                             <?= $form->field($model, 'location')->widget(Select2::classname(), [
                                 'options' => ['placeholder' => 'Select Cities', 'multiple' => true, 'class' => 'form-control'],
-                                'data' => (($list) ? $list : [1=>'']),
+                                'data' => (($list) ? $list : [1 => '']),
                                 'pluginOptions' => [
                                     'allowClear' => true,
                                     'minimumInputLength' => 1,
@@ -163,7 +165,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <?= $form->field($model, 'job_type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
                         </div>
                         <div class="col-md-6">
-                            <?= $form->field($model, 'positions')->textInput(['placeholder'=>'No Of Openings'])->label(false); ?>
+                            <?= $form->field($model, 'positions')->textInput(['placeholder' => 'No Of Openings'])->label(false); ?>
                         </div>
                     </div>
                     <strong>Required Skills</strong>
@@ -184,7 +186,8 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                                     <li class="tagAdd taglist">
                                         <div class="skill_wrapper">
                                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
-                                            <input type="text" id="search-skill" class="skill-input" placeholder="Pick Some Skills">
+                                            <input type="text" id="search-skill" class="skill-input"
+                                                   placeholder="Pick Some Skills">
                                         </div>
                                     </li>
                                 </ul>
@@ -207,14 +210,29 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                             <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
                         </div>
                     </div>
-                    </div>
-                    <?php ActiveForm::end(); ?>
                 </div>
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
 <?php
 $this->registerCss("
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/quickjob.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.page-container-bg-solid .page-content{
+    background: transparent !important;
+}
+.portlet.light {
+    background-color: #ffffffe3 !important;
+}
+.text-center {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
 .typeahead,
 .tt-query,
  {
@@ -645,7 +663,7 @@ let appEditor;
 });
 JS;
 $this->registerJs($script);
-$this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");
+$this->registerCssFile("/assets/themes/jobhunt/css/icons.css");
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -90,7 +90,7 @@ class ForgotPassword extends Component
             )
                 ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
                 ->setTo([$user['email'] => $user['name']])
-                ->setSubject(Yii::t('frontend', 'Reset Your Password'));
+                ->setSubject(Yii::t('app', 'Reset Your Password'));
 
             if ($mail->send()) {
                 return true;

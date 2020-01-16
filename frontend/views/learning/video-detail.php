@@ -35,6 +35,7 @@ $this->params['seo_tags'] = [
     ],
 ];
 ?>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <section class="bg-blue">
     <div class="large-container">
         <div class="row">
@@ -49,6 +50,16 @@ $this->params['seo_tags'] = [
                     <div id="top-category"></div>
 
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="5305796212"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
 
             <input type="hidden" id="video-id" value="<?= $video_detail['youtube_video_id']; ?>">
@@ -192,19 +203,19 @@ $this->params['seo_tags'] = [
                     </div>
                     <!--                        <div class="share-it">Share :-</div>-->
                     <div class="fb-share">
-                        <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=http://https://www.empoweryouth.com/learning/video/slug"><button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button></a>
                     </div>
                     <div class="tw-share">
-                        <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+                        <a href="https://twitter.com/home?status=https://www.empoweryouth.com/learning/video/slug"> <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button></a>
                     </div>
                     <div class="li-share">
-                        <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+                        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/learning/video/slug">  <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button></a>
                     </div>
                     <div class="wa-share">
-                        <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+                        <a href="wa.me/?text=https://www.empoweryouth.com/learning/video/slug"><button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp </button></a>
                     </div>
                     <div class="mail-share">
-                        <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+                        <a href="mailto:someone@example.com?Subject=Hello&body=https://www.empoweryouth.com/learning/video/slug" target="_top"> <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button></a>
                     </div>
                 </div>
 <!--                <div class="rate-video">-->
@@ -249,13 +260,6 @@ $this->params['seo_tags'] = [
 <!--                        </label>-->
 <!--                    </div>-->
 <!--                </div>-->
-                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                <script>
-                    (adsbygoogle = window.adsbygoogle || []).push({
-                        google_ad_client: "ca-pub-9111969809145171",
-                        enable_page_level_ads: true
-                    });
-                </script>
                 <div class="top-video">
                     <div class="row">
                         <div class="col-md-12">
@@ -269,6 +273,16 @@ $this->params['seo_tags'] = [
                     <div class="row" id="r-videos">
                     </div>
                 </div>
+                <br/>
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-2186770765824304"
+                     data-ad-slot="6492214366"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
             </div>
         </div>
     </div>
@@ -1212,6 +1226,19 @@ left:10px;
     width:147px;
 }
 }
+
+@media only screen and (min-width: 1400px) and (max-width:2000px)  {
+  .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+   width: 154px;
+}
+}
+@media only screen and (min-width: 1200px) and (max-width:1350px)  {
+  .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
+   width: 127px;
+}
+}
+
+
 ');
 
 $script = <<<JS

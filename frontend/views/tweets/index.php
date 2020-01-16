@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 
 $this->params['header_dark'] = true;
 ?>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <div id="loading_img">
 </div>
 <section class="head-bg">
@@ -104,6 +104,9 @@ if($type == 'internships') {
     <?php
 }
 $this->registerCss("
+.fullwidth-page > #wrapper.clearfix > .main-content{
+    padding-top:0px !important;
+}
 .re-twitte{
 	position:fixed;
 	width:225px;
@@ -483,6 +486,9 @@ float:right;
     bottom: 0px;
     left: 20%;
 }
+//.container blockquote  {
+//    display: none;
+//}
 @media only screen and (max-width: 550px){
     .overlay-image {
         max-width: 115px;
@@ -502,7 +508,19 @@ var city = new Bloodhound({
         }
   }
 });
-            
+twttr.ready(function (twttr) {
+    // At this point the widget.js file had been loaded.
+    // We can now make use of the twttr events
+    twttr.events.bind('loaded', function (event) {
+         // At this point all tweets have been fully loaded
+         // and rendered and you we can proceed with our Javascript
+        $.each($(".container blockquote"),function() {
+          // console.log($(this).closest(".tweet-main").css("display","none"));
+        })
+    });
+});
+
+    
 $('#cities').typeahead(null, {
   name: 'cities',
   highlight: true,       

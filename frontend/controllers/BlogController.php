@@ -18,6 +18,13 @@ use common\models\Categories;
 class BlogController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $postsModel = new Posts();
