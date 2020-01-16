@@ -118,7 +118,6 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </div>
-    <!--    --><? //= $this->render('/widgets/preloaders/header-box-preloader') ?>
 </section>
 
 <!--------services section starts-------->
