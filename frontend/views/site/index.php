@@ -1222,6 +1222,7 @@ if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
         'getGovernmentJobs',
+        'getFeaturedJobs',
         'getOpportunities',
         'getWhatsappCommunity',
         'getLearningTopics',
@@ -1236,6 +1237,7 @@ if (!Yii::$app->user->isGuest) {
     $this->registerJs("
     var loadElems = [
         'getGovernmentJobs',
+        'getFeaturedJobs',
         'getOpportunities',
         'getWhatsappCommunity',
         'getLearningTopics',
