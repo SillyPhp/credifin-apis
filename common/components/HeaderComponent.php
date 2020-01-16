@@ -12,37 +12,36 @@ class HeaderComponent extends Component
 
     public function getMenuHeader($route, $menu_of = 1)
     {
-//        return '';
         $header = AssignedHeader::find()
             ->select(['header_enc_id'])
             ->where(['route' => $route])
             ->asArray()
             ->one();
-//        print_r($header);
-        print_r($this->getMenuList($header['header_enc_id']));
-        exit();
-//        $children = AssignedHeader::find()
-//            ->alias('a')
-//            ->joinWith(['headerEnc b' => function ($b) {
-//                $b->joinWith(['headerMenuEnc c' => function ($c) {
-////                    $c->joinWith(['itemEnc d']);
-//                    $c->innerJoinWith(['parentEnc e']);
-//                }]);
-//            }])
-////            ->select(['menu_item_enc_id', 'name', 'parent_enc_id', 'route'])
-////            ->where(['menu_of' => $menu_of])
-////            ->orderBy(['sequence' => SORT_ASC])
-//            ->groupBy('a.assigned_header_enc_id')
-//            ->asArray()
-//            ->all();
-//        return $children;
-//
-//        foreach ($children as $all) {
-//            if (in_array($route, $all)) {
-//                $menu = $all['menu_item_enc_id'];
-//            }
-//        }
-        return $this->findChild($children, $menu);
+        return $this->getMenuList($header['header_enc_id']);
+    }
+
+    public function getMenuList($header_id, $parent = null)
+    {
+        $model = HeaderMenuItems::find()->alias('a')
+            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id'])
+            ->where(['a.header_enc_id' => $header_id])
+            ->andWhere(['a.parent_enc_id' => $parent])
+            ->innerJoinWith(['itemEnc b'], false)
+            ->orderBy(['a.sequence' => SORT_ASC])
+            ->asArray()->all();
+        $arr = [];
+        foreach ($model as $key) {
+            if ($key['parent_enc_id'] == $parent) {
+                $c = [];
+                $element = $this->getMenuList($header_id, $key['item_enc_id']);
+                $c['value'] = $key;
+                if ($element) {
+                    $c['childs'] = $element;
+                }
+                $arr[] = $c;
+            }
+        }
+        return $arr;
     }
 
     private function findChild($children, $parentValue = 0)
@@ -87,23 +86,6 @@ class HeaderComponent extends Component
 
         return $menuItems->asArray()->all();
     }
-
-    public function getMenuList($header_id, $parent = null, $level = 0)
-    {
-        $model = HeaderMenuItems::find()->alias('a')
-            ->select(['a.item_enc_id', 'b.name'])
-            ->where(['a.header_enc_id' => $header_id])
-            ->andWhere(['a.parent_enc_id' => $parent])
-            ->joinWith(['itemEnc b'], false)
-            ->asArray()->all();
-        foreach ($model as $key) {
-            array_push($this->data , $key['name']);
-            $this->getMenuList($header_id, $key['item_enc_id'], $level + 1);
-        }
-        return $this->data;
-    }
-
-    private $data = [];
 
     private function _getParents()
     {
