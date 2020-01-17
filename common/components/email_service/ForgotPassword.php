@@ -6,6 +6,7 @@ use common\models\Users;
 use common\models\Organizations;
 use common\models\UserVerificationTokens;
 use Yii;
+use yii\helpers\Url;
 use DateTime;
 use yii\base\Component;
 use common\models\Utilities;
@@ -82,7 +83,7 @@ class ForgotPassword extends Component
         $userVerificationModel->verification_type = 1;
         $userVerificationModel->created_by = $data['id'];
         if ($userVerificationModel->validate() && $userVerificationModel->save()) {
-            $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/reset-password/' . $userVerificationModel->token]);
+            $user['link'] = Url::to('/reset-password/' . $userVerificationModel->token,'https');
 
             Yii::$app->mailer->htmlLayout = 'layouts/email';
             $mail = Yii::$app->mailer->compose(
