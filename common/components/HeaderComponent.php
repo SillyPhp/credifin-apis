@@ -23,14 +23,33 @@ class HeaderComponent extends Component
     public function getMenuList($header_id, $parent = null)
     {
         $model = HeaderMenuItems::find()->alias('a')
-            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id'])
+            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id','b.route'])
             ->where(['a.header_enc_id' => $header_id])
-            ->andWhere(['a.parent_enc_id' => $parent])
-            ->innerJoinWith(['itemEnc b'], false)
+            ->andWhere(['a.parent_enc_id' => $parent]);
+        if(Yii::$app->user->identity->organization->organization_enc_id){
+            $model->andWhere([
+                'or',
+                ['a.is_visible_for' => 0],
+                ['a.is_visible_for' => 2]
+            ]);
+        } elseif (Yii::$app->user->identity->type->user_type === 'Individual'){
+            $model->andWhere([
+                'or',
+                ['a.is_visible_for' => 0],
+                ['a.is_visible_for' => 1]
+            ]);
+        } else{
+            $model->andWhere([
+                'or',
+                ['a.is_visible_for' => 0]
+            ]);
+        }
+        $result = $model->innerJoinWith(['itemEnc b'], false)
             ->orderBy(['a.sequence' => SORT_ASC])
             ->asArray()->all();
+
         $arr = [];
-        foreach ($model as $key) {
+        foreach ($result as $key) {
             if ($key['parent_enc_id'] == $parent) {
                 $c = [];
                 $element = $this->getMenuList($header_id, $key['item_enc_id']);
