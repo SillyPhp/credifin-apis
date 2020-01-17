@@ -44,7 +44,9 @@ use yii\helpers\Url;
                                         <div class="col-md-12">
                                             <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
                                                 <div class="img-box">
-                                                    <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                        <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                    </a>
                                                 </div>
                                             </a>
                                         </div>
@@ -69,7 +71,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <?php
-                    if($count == 2){
+                    if ($count == 2) {
                         break;
                     }
                     $count++;
@@ -89,16 +91,20 @@ use yii\helpers\Url;
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="ca-vb-icon">
-                                            <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                            <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">
+                                                <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-md-9">
                                         <div class="ca-vd-details">
                                             <div class="heading-text">
-                                                <?= $careerBlog[$i]['title'] ?>
+                                                <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">
+                                                    <?= $careerBlog[$i]['title'] ?>
+                                                </a>
                                             </div>
                                             <div class="box-des">
-                                                <?= substr($careerBlog[$i]['description'], 0,160) ?>
+                                                <?= substr($careerBlog[$i]['description'], 0, 160) ?>
                                             </div>
                                             <div class="cs-vd-btn">
                                                 <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">Read</a>
@@ -306,5 +312,5 @@ $this->registerCss('
     var bgSet = pathname[2]
     console.log(bgSet);
     var bg = document.getElementsByClassName('csb-header');
-    bg[0].style.background = "url(/assets/themes/ey/images/pages/custom/"+ bgSet +"-bg.png)";
+    bg[0].style.background = "url(/assets/themes/ey/images/pages/custom/" + bgSet + "-bg.png)";
 </script>
