@@ -131,6 +131,7 @@ class SchedularController extends Controller
             ->where([
                 'interview_process_enc_id' => $interview_process['interview_process_enc_id']
             ])
+            ->andWhere(['<>','field_name','Get Applications'])
             ->asArray()
             ->all();
     }

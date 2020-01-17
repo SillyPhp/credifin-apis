@@ -200,7 +200,7 @@ $this->registerCss('
                 <div class="desc-main">
                     <?php
                     foreach ($timing as $time => $val){
-                        echo $time . ' , ' . $val . '<br/>';
+                        echo $time . ' = ' . $val[0]['from']. ' - ' .$val[0]['to'] . '<br/>';
                     }
                     ?>
                 </div>

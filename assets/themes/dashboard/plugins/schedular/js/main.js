@@ -295,7 +295,7 @@
 
         //interview dates datepicker
         $('.date-picker').datepicker({
-            format: 'dd-MM-yyyy',
+            format: 'dd MM',
             multidate: true,
             startDate: '-0m'
         });
@@ -440,42 +440,48 @@
             });
         }
         // console.log(dates);
-        var total_candidates = $('#candidates').val();
-        var min = $('#min').val();
-        var from = $('.time_from').val();
-        var to = $('.time_to').val();
-
-        var a = from.split(':');
-        console.log(a);
-        console.log(a[0]);
-        console.log(a[1]);
-        console.log(a.replace(' AM',''));
-        return false;
-
-//Parse In
-        var parseIn = function(date_time){
-            var d = new Date();
-            d.setHours(date_time.substring(11,13));
-            d.setMinutes(date_time.substring(14,16));
-            console.log(d);
-        }
-
-//make list
-        var getTimeIntervals = function (time1, time2) {
-            var arr = [];
-            while(time1 < time2){
-                arr.push(time1.toTimeString().substring(0,5));
-                time1.setMinutes(time1.getMinutes() + min);
-            }
-            return arr;
-        }
-
-        startTime = parseIn(startTime);
-        endTime = parseIn(endTime);
-
-        var intervals = getTimeIntervals(startTime, endTime);
-
-        console.log(intervals);
+//         var total_candidates = $('#candidates').val();
+//         var min = $('#min').val();
+//         var from = $('.time_from').val();
+//         var to = $('.time_to').val();
+//
+//         var end = from.split(':');
+//
+//         var endTime = new Date();
+//         endTime.setHours(end[0]);
+//         endTime.setMinutes(end[1].substring(0,2));
+//         endTime.setMinutes(parseInt(min) * parseInt(total_candidates));
+//
+//         var f = getTwentyFourHourTime(from);
+//         var t = getTwentyFourHourTime(to);
+//
+// //Input
+//         var startTime = "2016-08-10 "+f;
+//
+// //Parse In
+//         var parseIn = function(date_time){
+//             var d = new Date();
+//             d.setHours(date_time.substring(11,13));
+//             d.setMinutes(date_time.substring(14,16));
+//
+//             return d;
+//         };
+//
+// //make list
+//         var getTimeIntervals = function (time1, time2) {
+//             var arr = [];
+//             while(time1 <= time2){
+//                 arr.push(time1.toTimeString().substring(0,5));
+//                 time1.setMinutes(time1.getMinutes() + parseInt(min));
+//             }
+//             return arr;
+//         }
+//
+//         startTime = parseIn(startTime);
+//
+//         var intervals = getTimeIntervals(startTime, endTime);
+//
+//         console.log(intervals);
 
         dates_count = dates.length;
         var time_slots = $('#dates').html();
@@ -491,15 +497,10 @@
         results.dates = dates;
     }
 
-    Date.prototype.addMinutes = function (minutes) {
-        this.setMinutes(this.getMinutes() + minutes);
-        return this;
-    };
-
-    Date.prototype.subMinutes = function (minutes) {
-        this.setMinutes(this.getMinutes() - minutes);
-        return this;
-    };
+    function getTwentyFourHourTime(amPmString) {
+        var d = new Date("1/1/2013 " + amPmString);
+        return d.getHours() + ':' + d.getMinutes();
+    }
 
 
     //add more date
