@@ -39,16 +39,18 @@ class QuickJob extends Model
     public $exp;
     public $skills;
     public $positions;
+    public $country = 'India';
+    public $currency;
 
     public function rules()
     {
         return [
-            [['job_title', 'skills','positions','exp','description','city','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
+            [['job_title', 'skills','positions','exp','description','city','currency','country','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
             [['fixed_wage', 'min_salary', 'max_salary'], 'safe'],
             [['url'], 'url', 'defaultScheme' => 'http'],
             [['job_title', 'company_name'], 'string', 'max' => 50],
             [['positions'], 'integer', 'max' => 100000],
-            [['job_title', 'company_name'], 'trim'],
+            [['job_title','url','company_name','email','positions','fixed_wage','min_salary','max_salary'], 'trim'],
             ['email', 'email'],
         ];
     }
@@ -178,6 +180,7 @@ class QuickJob extends Model
             $unclaimOptions->unclaim_options_enc_id = $utilitiesModel->encrypt();
             $unclaimOptions->application_enc_id = $employerApplication->application_enc_id;
             $unclaimOptions->email = $this->email;
+            $unclaimOptions->currency_enc_id = $this->currency;
             $unclaimOptions->positions = $this->positions;
             $unclaimOptions->job_url = $this->url;
             $unclaimOptions->wage_type = $wage_type;
