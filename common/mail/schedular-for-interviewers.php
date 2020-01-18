@@ -182,7 +182,7 @@ $this->registerCss('
                     Job Title:
                 </div>
                 <div class="desc-main">
-                    <?= $data('name'); ?>
+<!--                    --><?//= $data('name'); ?>
                 </div>
             </div>
 <!--            <div class="clear">-->
@@ -198,11 +198,11 @@ $this->registerCss('
                     when:
                 </div>
                 <div class="desc-main">
-                    <?php
-                    foreach ($timing as $time => $val){
-                        echo $time . ' , ' . $val . '<br/>';
-                    }
-                    ?>
+<!--                    --><?php
+//                    foreach ($timing as $time => $val){
+//                        echo $time . ' , ' . $val . '<br/>';
+//                    }
+//                    ?>
                 </div>
             </div>
         </div>
