@@ -50,7 +50,7 @@
                                                                     <li class="ey-head-sub-menu-icon">
                                                                         <a href="<?= $children['value']['route']; ?>">
                                                                             <div>
-                                                                                <span class="ey-services-icons ai"></span>
+                                                                                <span class="ey-services-icons ai" style="background: url('<?= $children['value']['icon'];?>');"></span>
                                                                             </div>
                                                                             <span><?= $children['value']['name']; ?></span>
                                                                         </a>

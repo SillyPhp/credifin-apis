@@ -23,7 +23,7 @@ class HeaderComponent extends Component
     public function getMenuList($header_id, $parent = null)
     {
         $model = HeaderMenuItems::find()->alias('a')
-            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id','b.route'])
+            ->select(['a.item_enc_id', 'b.name', 'a.parent_enc_id','b.route','a.icon'])
             ->where(['a.header_enc_id' => $header_id])
             ->andWhere(['a.parent_enc_id' => $parent]);
         if(Yii::$app->user->identity->organization->organization_enc_id){
