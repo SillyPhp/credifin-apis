@@ -124,19 +124,27 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                         </div>
                         <div class="col-md-6">
                             <div id="fixed_stip">
-                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15','placeholder'=>'Fixed Salary (Per Annum)'])->label(false); ?>
+                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15','placeholder'=>'Fixed Salary'])->label(false); ?>
                             </div>
                             <div id="min_max">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder'=>'Min Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder'=>'Min Salary'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder'=>'Max Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder'=>'Max Salary'])->label(false) ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'wage_duration')->dropDownList([
+                            'Annually' => 'Per Annum',
+                            'Monthly' => 'Per Month',
+                        ])->label(false); ?>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
