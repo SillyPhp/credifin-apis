@@ -6,8 +6,14 @@
             <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
                 <div class="ey-mobile-item-main">
                     <a href="<?= $grandParents['value']['route']; ?>"><?= $grandParents['value']['name']; ?></a>
+                    <?php
+                    if ($grandParents['childs']) {
+                    ?>
                     <span aria-hidden="true" class="ey-mobile-menu-toggler">
                     <i class="fa fa-arrow-down"></i>
+                    <?php
+                    }
+                    ?>
                 </span>
                 </div>
                 <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
@@ -21,20 +27,20 @@
                                         <a href="<?= $parents['value']['route'] ?>">
                                             <?= $parents['value']['name'] ?>
                                         </a>
-                                            <?php
-                                            if ($parents['childs']) {
-                                                foreach ($parents['childs'] as $children) {
-                                                    if ($children) {
-                                                        ?>
-                                                        <span aria-hidden="true" class="ey-mobile-menu-item-toggler">
+                                        <?php
+                                        if ($parents['childs']) {
+                                            foreach ($parents['childs'] as $children) {
+                                                if ($children) {
+                                                    ?>
+                                                    <span aria-hidden="true" class="ey-mobile-menu-item-toggler">
                                                             <i class="fa fa-arrow-down"></i>
                                                         </span>
-                                                        <?php
-                                                        break;
-                                                    }
+                                                    <?php
+                                                    break;
                                                 }
                                             }
-                                            ?>
+                                        }
+                                        ?>
                                     </div>
                                     <div class="ey-mobile-sub-menu-container">
                                         <div class="ey-mobile-sub-nav-items">

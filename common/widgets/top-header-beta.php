@@ -6,15 +6,23 @@
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
                 <a href="<?= $grandParents['value']['route']; ?>">
                     <?= $grandParents['value']['name']; ?>
-                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                    <?php
+                    if ($grandParents['childs']) {
+                        ?>
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <?php
+                    }
+                    ?>
                 </a>
-                <div class="ey-sub-menu">
-                    <div class="container-fluid">
-                        <div class="large-container container">
-                            <nav class="ey-sub-nav-main">
-                                <ul class="ey-sub-nav-items">
-                                    <?php
-                                    if ($grandParents['childs']) {
+                <?php
+                if ($grandParents['childs']) {
+                    ?>
+                    <div class="ey-sub-menu">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <?php
                                         foreach ($grandParents['childs'] as $parents) {
                                             ?>
                                             <li class="
@@ -57,32 +65,34 @@
                                             </li>
                                             <?php
                                         }
-                                    }
-                                    ?>
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/govt-jobs">Indian Govt. Jobs</a>-->
-                                    <!--                                    </li>-->
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/usa-jobs">USA Govt. Jobs</a>-->
-                                    <!--                                    </li>-->
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/organizations">Explore Companies</a>-->
-                                    <!--                                    </li>-->
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/jobs/compare">Compare Jobs</a>-->
-                                    <!--                                    </li>-->
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/organizations/explore">Featured Companies</a>-->
-                                    <!--                                    </li>-->
-                                    <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                    <!--                                        <a href="/tweets/jobs">Job Tweets</a>-->
-                                    <!--                                    </li>-->
-                                </ul>
-                            </nav>
-                            <div class="ey-header-sub-menu-container"></div>
+                                        ?>
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/govt-jobs">Indian Govt. Jobs</a>-->
+                                        <!--                                    </li>-->
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/usa-jobs">USA Govt. Jobs</a>-->
+                                        <!--                                    </li>-->
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/organizations">Explore Companies</a>-->
+                                        <!--                                    </li>-->
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/jobs/compare">Compare Jobs</a>-->
+                                        <!--                                    </li>-->
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/organizations/explore">Featured Companies</a>-->
+                                        <!--                                    </li>-->
+                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
+                                        <!--                                        <a href="/tweets/jobs">Job Tweets</a>-->
+                                        <!--                                    </li>-->
+                                    </ul>
+                                </nav>
+                                <div class="ey-header-sub-menu-container"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    <?php
+                }
+                ?>
             </li>
             <?php
         }
