@@ -6,10 +6,17 @@ use kartik\select2\Select2;
 use yii\web\JsExpression;
 $this->params['grid_size'] = 'col-md-8 col-md-offset-2';
 $url = \yii\helpers\Url::to(['/cities/career-city-list']);
-$url2 = \yii\helpers\Url::to(['/jobs/fetch-skills']);
+$url2 = \yii\helpers\Url::to(['/cities/country-list']);
 Yii::$app->view->registerJs('var doc_type = "'. $doc_type.'"',  \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var typ = "'. $typ.'"',  \yii\web\View::POS_HEAD);
 $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector-form-job.png';
+Yii::$app->view->registerJs('var cid = "' . \common\models\Countries::findOne(['name' => $model->country])->country_enc_id . '"', \yii\web\View::POS_HEAD);
+$Initscript = <<< JS
+function cities_url(){
+    return "/cities/career-city-list?cid="+cid;
+}
+JS;
+$this->registerJs($Initscript, yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12 set-overlay">
     <div class="row">
@@ -100,15 +107,15 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                         </div>
                         <div class="col-md-6">
                             <div id="fixed_stip">
-                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15','placeholder'=>'Fixed Salary (Per Annum)'])->label(false); ?>
+                                <?= $form->field($model, 'fixed_wage')->textInput(['autocomplete' => 'off', 'maxlength' => '15','placeholder'=>'Fixed Stipend'])->label(false); ?>
                             </div>
                             <div id="min_max">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder'=>'Min Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'min_salary')->textInput(['placeholder'=>'Min Stipend'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder'=>'Max Salary (Per Annum)'])->label(false) ?>
+                                        <?= $form->field($model, 'max_salary')->textInput(['placeholder'=>'Max Stipend'])->label(false) ?>
                                     </div>
                                 </div>
                             </div>
@@ -116,16 +123,26 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <?= $form->field($model, 'city')->widget(Select2::classname(), [
-                            'options' => ['placeholder' => 'Select Cities','multiple'=>true, 'class'=>'form-control'],
+                        <?= $form->field($model, 'wage_duration')->dropDownList([
+                            'Monthly' => 'Per Month',
+                            'Weekly' => 'Per Week',
+                        ])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'country')->widget(Select2::classname(), [
+                            'initValueText' => $model->country,
+                            'value' => $model->country, // set the initial display text
+                            'options' => ['placeholder' => 'Search for a Country ...'],
                             'pluginOptions' => [
-                                'allowClear' => true,
+                                'allowClear' => false,
                                 'minimumInputLength' => 1,
                                 'language' => [
                                     'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
                                 ],
                                 'ajax' => [
-                                    'url' => $url,
+                                    'url' => $url2,
                                     'dataType' => 'json',
                                     'data' => new JsExpression('function(params) { return {q:params.term}; }')
                                 ],
@@ -133,7 +150,42 @@ $this->params['background_image'] = '/assets/themes/ey/images/backgrounds/vector
                                 'templateResult' => new JsExpression('function(city) { return city.text; }'),
                                 'templateSelection' => new JsExpression('function (city) { return city.text; }'),
                             ],
+                            'pluginEvents' => [
+                                'change' => 'function(results){
+                                           cid = results.target.value;
+                                         }'
+                            ],
                         ])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'city')->widget(Select2::classname(), [
+                            'options' => ['placeholder' => 'Select Cities', 'multiple' => true, 'class' => 'form-control'],
+                            'data' => (($list) ? $list : [1 => '']),
+                            'pluginOptions' => [
+                                'allowClear' => true,
+                                'minimumInputLength' => 1,
+                                'language' => [
+                                    'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
+                                ],
+                                'ajax' => [
+                                    'url' => new JsExpression('cities_url'),
+                                    'dataType' => 'json',
+                                    'data' => new JsExpression('function(params) { 
+                                       return {q:params.term}; 
+                                        }')
+                                ],
+                                'escapeMarkup' => new JsExpression('function (markup) { return markup; }'),
+                                'templateResult' => new JsExpression('function(city) { return city.text; }'),
+                                'templateSelection' => new JsExpression('function (city) { return city.text; }'),
+                            ],
+                        ])->label(false); ?>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <?= $form->field($model, 'currency')->inline()->dropDownList($currencies)->label(false); ?>
                     </div>
                 </div>
                 <div class="row">
@@ -381,6 +433,10 @@ setTimeout(function() {
 $(".close-m-mo").on("click", function() {
   $('.m-modal').attr('class', 'm-modal');
   $('.m-modal, .m-cover').addClass("hidden");
+});
+$('#create_job_form').on('beforeValidate', function (event, messages, deferreds) {
+    appEditor.updateSourceElement();
+    return true;
 });
 JS;
 $this->registerJs($script);
