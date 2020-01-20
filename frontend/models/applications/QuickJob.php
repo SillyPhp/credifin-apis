@@ -41,11 +41,12 @@ class QuickJob extends Model
     public $positions;
     public $country = 'India';
     public $currency;
+    public $wage_duration;
 
     public function rules()
     {
         return [
-            [['job_title', 'skills','positions','exp','description','city','currency','country','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
+            [['job_title', 'skills','positions','wage_duration','exp','description','city','currency','country','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
             [['fixed_wage', 'min_salary', 'max_salary'], 'safe'],
             [['url'], 'url', 'defaultScheme' => 'http'],
             [['job_title', 'company_name'], 'string', 'max' => 50],
@@ -182,6 +183,7 @@ class QuickJob extends Model
             $unclaimOptions->email = $this->email;
             $unclaimOptions->currency_enc_id = $this->currency;
             $unclaimOptions->positions = $this->positions;
+            $unclaimOptions->wage_duration = $this->wage_duration;
             $unclaimOptions->job_url = $this->url;
             $unclaimOptions->wage_type = $wage_type;
             $unclaimOptions->fixed_wage = (($this->fixed_wage) ? str_replace(',', '', $this->fixed_wage) : null);
