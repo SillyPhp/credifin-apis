@@ -1,8 +1,3 @@
-<?php
-print_r($data);
-exit();
-?>
-
 <nav class="ey-main-menu-nav">
     <ul class="ey-menu-inner-main">
         <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
