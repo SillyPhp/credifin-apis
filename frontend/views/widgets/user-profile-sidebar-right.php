@@ -59,12 +59,24 @@ use yii\widgets\Pjax;
                     <li class="inner-child">
                         <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i
                                     class="far fa-money-bill-alt"></i>Shorlisted
-                            Job</a>
+                            Jobs</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
-                                    class="far fa-paper-plane"></i>Applied Job</a>
+                                    class="far fa-paper-plane"></i>Applied Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/preferences" title="" class="tree-toggler">
+                            <i class="fas fa-cog"></i>
+                            My Preferences
+                        </a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/resume-builder" title="" class="tree-toggler">
+                            <i class="far fa-address-card"></i>
+                            Build Resume
+                        </a>
                     </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
