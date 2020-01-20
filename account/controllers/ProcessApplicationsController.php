@@ -79,6 +79,7 @@ class ProcessApplicationsController extends Controller
                 'fields' => $applied_users,
                 'que' => $question,
                 'application_name' => $application_name,
+                'application_id'=>$application_id,
             ]);
         } else {
             $applied_user = AppliedApplications::find()
