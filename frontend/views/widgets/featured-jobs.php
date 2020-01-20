@@ -23,27 +23,27 @@ use yii\helpers\Url;
                 <div id="featured-job-cards"></div>
             </div>
         </div>
-        <div class="fj-form">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="fj-sub-heading">Get Latest Updates in you inbox</div>
-                </div>
-                <div class="col-md-6">
-                    <div class="fj-sub-form">
-                        <form id="subs_news">
-                            <div class="row">
-                                <div class="col-md-9">
-                                    <input type="text" name="email" class="fj-input" placeholder="Your Email">
-                                </div>
-                                <div class="col-md-3">
-                                    <button type="submit" class="fj-btn">Notify Me</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!--        <div class="fj-form">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6">-->
+<!--                    <div class="fj-sub-heading">Get Latest Updates in you inbox</div>-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <div class="fj-sub-form">-->
+<!--                        <form id="subs_news">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input type="text" name="email" class="fj-input" placeholder="Your Email">-->
+<!--                                </div>-->
+<!--                                <div class="col-md-3">-->
+<!--                                    <button type="submit" class="fj-btn">Notify Me</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </section>
 <?php
