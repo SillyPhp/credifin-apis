@@ -87,7 +87,7 @@ AppAssets::register($this);
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
-                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/employers">Employer Zone</a>
                         <a href="/signup/organization" class="org-signup">Signup as Company</a>
                         <a href="/signup/individual">Signup as Candidate</a>
                     </div>
@@ -503,15 +503,15 @@ $this->registerCss('
 }
 
 .secondary-top-header{
-    height:30px;
-    margin-top:-32px;
+    height:32px;
+    margin-top:-34px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top: 0px;
+    margin-top: -2px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -530,8 +530,8 @@ $this->registerCss('
 }
 .secondary-top-header-right a{
     float: right;
-    height: 30px;
-    line-height: 30px;
+    height: 32px;
+    line-height: 32px;
     padding: 0px 10px;
     margin-left: 5px;
 }
@@ -550,6 +550,13 @@ $this->registerCss('
 }
 @media screen and (max-width: 1015px) and (min-width: 0px) {
     .secondary-top-header-left{display:none;}
+}
+.secondary-top-header-right a:first-child{
+    background-color: #f07704;
+}
+.secondary-top-header-right a:first-child:hover{
+    color:#fff !important;
+    background-color: #dc6b00;
 }
 .send_mail{
     word-wrap: break-word;

@@ -89,7 +89,6 @@ $this->registerJs($script);
         while (k < listElementsLength) {
             if (k < i + 4) {
                 if (document.getElementById(elem)) {
-                    if(elem == 'searches'){console.log(document.getElementById(elem).children);}
                     document.getElementById(elem).children[k].classList.remove('hide');
                 }
             } else {
