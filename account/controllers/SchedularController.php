@@ -367,7 +367,7 @@ class SchedularController extends Controller
         $mail = Yii::$app->mail;
         $mail->receivers = [];
         $mail->receivers = $candidates;
-        $mail->subject = 'interview scheduled by company for scipy';
+        $mail->subject = 'interview scheduled by company for ' . $data['name'];
         $mail->data = ['data' => $data, 'time' => $time];
         $mail->template = 'interview-schedular';
         if ($mail->send()) {
