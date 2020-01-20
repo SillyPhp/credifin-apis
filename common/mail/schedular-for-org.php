@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+
 $this->registerCss('
     body{
         margin:0 auto;
@@ -142,6 +144,9 @@ $this->registerCss('
     .danger{
         background-color: #d62424;
     }
+    .capitalize {
+      text-transform: capitalize;
+    }
 ', ['media' => 'screen']);
 $this->registerCss('
 @media only screen and (max-width:500px ){
@@ -173,8 +178,8 @@ $this->registerCss('
                 <div class="head-main">
                     Job Title:
                 </div>
-                <div class="desc-main">
-                    <?= $job; ?>
+                <div class="desc-main capitalize">
+                    <?= $data['data']['name']; ?>
                 </div>
             </div>
             <div class="clear">
@@ -183,9 +188,15 @@ $this->registerCss('
                 </div>
                 <div class="desc-main">
                     <?php
-//                    foreach ($timing as $time => $val){
-//                        echo $time . ' = ' . $val[0]['from']. ' - ' .$val[0]['to'] . '<br/>';
-//                    }
+                    foreach ($data['timing'] as $time => $val){
+                        $slabs = ArrayHelper::map($val, 'from', 'to');
+                        $t = "";
+                        foreach ($slabs as $key => $sval){
+                            $t .= $key . ' to ' . $sval . ',';
+                        }
+
+                        echo $time . ' :- ' . rtrim($t, ',') . '<br/>';
+                    }
                     ?>
                 </div>
             </div>

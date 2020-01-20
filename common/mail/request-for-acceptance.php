@@ -1,6 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
+
 $this->registerCss('
     body{
         margin:0 auto;
@@ -142,6 +144,9 @@ $this->registerCss('
     .danger{
         background-color: #d62424;
     }
+    .capitalize {
+      text-transform: capitalize;
+    }
 ', ['media' => 'screen']);
 $this->registerCss('
 @media only screen and (max-width:500px ){
@@ -166,23 +171,15 @@ $this->registerCss('
             <div class="header-icon"><img src="<?= Url::to('@commonAssets/email_service/header-icon.png', 'https'); ?>" class="responsive"></div>
         </div>
         <div class="jboxs">
-            <div class="date-main">
-                <div class="month-detail">
-                    January
-                </div>
-                <div class="day-detail">
-                    5
-                </div>
-            </div>
             <div class="title">
-                <h2><?= $name;?> you are Invited to take interview for <span>"<?= $data['title']?>"</span> job.</h2>
+                <h2 class="capitalize"><?= $data['name'];?> you are Invited to take interview for <span>"<?= $data['data']['name']; ?>"</span> job.</h2>
             </div>
             <div class="clear">
                 <div class="head-main">
                     Job Title:
                 </div>
-                <div class="desc-main">
-                    <?= $data['title']?>
+                <div class="desc-main capitalize">
+                    <?= $data['data']['name']; ?>
                 </div>
             </div>
             <div class="clear">
@@ -191,8 +188,14 @@ $this->registerCss('
                 </div>
                 <div class="desc-main">
                     <?php
-                    foreach ($timing as $time => $val){
-                        echo $time . ' , ' . $val . '<br/>';
+                    foreach ($data['timing'] as $time => $val){
+                        $slabs = ArrayHelper::map($val, 'from', 'to');
+                        $t = "";
+                        foreach ($slabs as $key => $sval){
+                            $t .= $key . ' to ' . $sval . ',';
+                        }
+
+                        echo $time . ' :- ' . rtrim($t, ',') . '<br/>';
                     }
                     ?>
                 </div>
