@@ -116,7 +116,8 @@ AppAssets::register($this);
                             </div>
                             <div class="ey-menu-main">
                                 <?= $this->render('@common/widgets/top-header-beta', [
-                                    'for' => 'Frontend'
+                                    'for' => 'Frontend',
+                                    'data' => $this->params['sub_header']
                                 ]); ?>
                             </div>
                             <div class="ey-nav-actions">
@@ -231,7 +232,9 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile'); ?>
+                            <?= $this->render('@common/widgets/top-header-mobile',[
+                                'data' => $this->params['sub_header']
+                            ]); ?>
                         </div>
                     </div>
                 </div>

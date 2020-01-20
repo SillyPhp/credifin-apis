@@ -1188,4 +1188,9 @@ class JobsController extends Controller
             'locations'=>$cards1['locations']+$unclaim_locations,
         ];
     }
+
+    public function actionTest(){
+        print_r(Yii::$app->header->getMenuHeader('jobs'));
+        exit();
+    }
 }
