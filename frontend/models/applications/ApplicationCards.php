@@ -187,6 +187,8 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
@@ -232,6 +234,7 @@ class ApplicationCards
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Jobs', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
@@ -265,12 +268,15 @@ class ApplicationCards
                 ['REGEXP','g.name',$search_pattern_location ],
                 ['REGEXP','s.name',$search_pattern_location],
                 ['REGEXP','v.name',$search_pattern_location],
-                ['REGEXP','x.name',$search_pattern_location]
+                ['REGEXP','x.name',$search_pattern_location],
+                ['REGEXP','ct.name',$search_pattern_location],
+                ['REGEXP','cy.name',$search_pattern_location]
             ]);
             $cards2->andFilterWhere([
                 'or',
                 ['REGEXP','g.name',$search_pattern_location],
-                ['REGEXP','s.name',$search_pattern_location]
+                ['REGEXP','s.name',$search_pattern_location],
+                ['REGEXP','ct.name',$search_pattern_location]
             ]);
         }
 
@@ -453,6 +459,8 @@ class ApplicationCards
             ->leftJoin(Cities::tableName() . 'as x', 'x.city_enc_id = t.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
             ->leftJoin(States::tableName() . 'as v', 'v.state_enc_id = x.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
+            ->leftJoin(Countries::tableName() . 'as cy', 'cy.country_enc_id = v.country_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy(['g.city_enc_id', 'x.city_enc_id', 'a.application_enc_id'])
@@ -488,6 +496,7 @@ class ApplicationCards
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
             ->leftJoin(Cities::tableName() . 'as g', 'g.city_enc_id = x.city_enc_id')
             ->leftJoin(States::tableName() . 'as s', 's.state_enc_id = g.state_enc_id')
+            ->leftJoin(Countries::tableName() . 'as ct', 'ct.country_enc_id = s.country_enc_id')
             ->where(['j.name' => 'Internships', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
@@ -553,11 +562,14 @@ class ApplicationCards
                 ['REGEXP','s.name',$search_pattern_location],
                 ['REGEXP','v.name',$search_pattern_location],
                 ['REGEXP','x.name',$search_pattern_location],
+                ['REGEXP','ct.name',$search_pattern_location],
+                ['REGEXP','cy.name',$search_pattern_location],
             ]);
             $cards2->andFilterWhere([
                 'or',
                 ['REGEXP','g.name',$search_pattern_location],
                 ['REGEXP','s.name',$search_pattern_location],
+                ['REGEXP','ct.name',$search_pattern_location]
             ]);
         }
         if (isset($options['keyword'])) {
