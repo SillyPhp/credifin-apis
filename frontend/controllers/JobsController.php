@@ -454,6 +454,7 @@ class JobsController extends Controller
             $data = new ApplicationForm();
             $primary_cat = $data->getPrimaryFields();
             $job_type = $data->getApplicationTypes();
+            $currencies = $data->getCurrency();
             if ($model->load(Yii::$app->request->post())) {
                 if ($model->save($typ)) {
                     Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
@@ -462,7 +463,7 @@ class JobsController extends Controller
                 }
                 return $this->refresh();
             }
-            return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        return $this->render('quick-job', ['typ' => $typ,'currencies'=>$currencies,'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else :
             return $this->redirect('/account/jobs/quick-job');
         endif;
