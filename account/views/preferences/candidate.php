@@ -15,6 +15,7 @@ $intern_primary_cat = ArrayHelper::map($internprimaryfields, 'category_enc_id', 
     <div class="container">
         <div class="portlet light">
             <div class="portlet-title tabbable-line">
+                <?= $this->render("@common/widgets/candidate-actions-navbar");?>
                 <div class="tabbable-line">
                     <ul class="nav nav-tabs ">
                         <li class="active">
