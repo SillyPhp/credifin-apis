@@ -273,12 +273,12 @@ class SiteController extends Controller
             if ($subscribersForm->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $result = $subscribersForm->save();
-                if ($result == 'exists') {
+                if ($result === 'exists') {
                     $response = [
                         'status' => 203,
                         'message' => Yii::t('frontend', 'You are Already subscribed.'),
                     ];
-                } elseif ($result == true) {
+                } elseif ($result) {
                     $response = [
                         'status' => 200,
                         'message' => Yii::t('frontend', 'You are successfully subscribed.'),
