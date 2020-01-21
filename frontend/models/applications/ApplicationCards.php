@@ -270,13 +270,16 @@ class ApplicationCards
                 ['REGEXP','v.name',$search_pattern_location],
                 ['REGEXP','x.name',$search_pattern_location],
                 ['REGEXP','ct.name',$search_pattern_location],
-                ['REGEXP','cy.name',$search_pattern_location]
+                ['REGEXP','cy.name',$search_pattern_location],
+                ['REGEXP','ct.abbreviation',$search_pattern_location],
+                ['REGEXP','cy.abbreviation',$search_pattern_location],
             ]);
             $cards2->andFilterWhere([
                 'or',
                 ['REGEXP','g.name',$search_pattern_location],
                 ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location]
+                ['REGEXP','ct.name',$search_pattern_location],
+                ['REGEXP','ct.abbreviation',$search_pattern_location],
             ]);
         }
 
@@ -564,12 +567,15 @@ class ApplicationCards
                 ['REGEXP','x.name',$search_pattern_location],
                 ['REGEXP','ct.name',$search_pattern_location],
                 ['REGEXP','cy.name',$search_pattern_location],
+                ['REGEXP','ct.abbreviation',$search_pattern_location],
+                ['REGEXP','cy.abbreviation',$search_pattern_location],
             ]);
             $cards2->andFilterWhere([
                 'or',
                 ['REGEXP','g.name',$search_pattern_location],
                 ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location]
+                ['REGEXP','ct.name',$search_pattern_location],
+                ['REGEXP','ct.abbreviation',$search_pattern_location],
             ]);
         }
         if (isset($options['keyword'])) {
