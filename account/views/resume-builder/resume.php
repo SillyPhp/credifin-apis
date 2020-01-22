@@ -23,6 +23,7 @@ function random_color()
     <div class="row">
 
         <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+            <?= $this->render("@common/widgets/candidate-actions-navbar");?>
             <div class="col-md-12 col-sm-12">
                 <div class="row bg-lighter shadow round working">
                     <div class="col-md-8 col-sm-8">

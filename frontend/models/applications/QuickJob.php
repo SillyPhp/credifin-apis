@@ -216,7 +216,6 @@ class QuickJob extends Model
                         ->alias('a')
                         ->select(['a.skill_enc_id'])
                         ->where(['skill' => $skill]);
-
                     $skills_set = $data_skill->asArray()->one();
                     if (!empty($skills_set)) {
                         $applicationSkillsModel = new ApplicationSkills();
