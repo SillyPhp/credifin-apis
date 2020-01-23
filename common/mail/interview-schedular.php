@@ -216,8 +216,7 @@ $this->registerCss('
                 </div>
             </div>
             <div class="clear text-center">
-                <a class="link primary" href="<?= Url::to('/account/dashboard', 'https'); ?>">Accept</a>
-                <a class="link danger" href="<?= Url::to('/account/dashboard', 'https'); ?>">Decline</a>
+                <a class="link primary" href="<?= Url::to('/account/dashboard/calendar', 'https'); ?>">view</a>
             </div>
         </div>
 
