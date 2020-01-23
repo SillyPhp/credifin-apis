@@ -411,7 +411,6 @@ class ReviewsController extends ApiBaseController
 
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->distinct()
                 ->where(['a.organization_enc_id' => $org_enc_id, 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
