@@ -463,7 +463,7 @@ class JobsController extends Controller
                 }
                 return $this->refresh();
             }
-        return $this->render('quick-job', ['typ' => $typ,'currencies'=>$currencies,'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('quick-job', ['typ' => $typ, 'currencies' => $currencies, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else :
             return $this->redirect('/account/jobs/quick-job');
         endif;
@@ -1218,14 +1218,19 @@ class JobsController extends Controller
             ->asArray()
             ->count();
 
-        $usaGov = UsaDepartments::find()
-            ->select('SUM(total_applications) as total')
-            ->asArray()
-            ->one();
-        $indianGov = IndianGovtDepartments::find()
-            ->select('SUM(total_applications) as total')
-            ->asArray()
-            ->one();
+        if ($type == 'Jobs') {
+            $usaGov = UsaDepartments::find()
+                ->select('SUM(total_applications) as total')
+                ->asArray()
+                ->one();
+            $indianGov = IndianGovtDepartments::find()
+                ->select('SUM(total_applications) as total')
+                ->asArray()
+                ->one();
+        } else {
+            $usaGov['total'] = 0;
+            $indianGov['total'] = 0;
+        }
 
         return [
             'total_applications' => $cards1['total'] + $cards2['total'] + $twitter + $usaGov['total'] + $indianGov['total'],
@@ -1233,10 +1238,5 @@ class JobsController extends Controller
             'locations' => $cards1['locations'] + $unclaim_locations,
             'titles' => $titles_count,
         ];
-    }
-
-    public function actionTest(){
-        print_r(Yii::$app->header->getMenuHeader('jobs'));
-        exit();
     }
 }
