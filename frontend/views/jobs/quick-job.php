@@ -143,6 +143,8 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                         <?= $form->field($model, 'wage_duration')->dropDownList([
                             'Annually' => 'Per Annum',
                             'Monthly' => 'Per Month',
+                            'Weekly' => 'Per Weekly',
+                            'Hourly' => 'Per Hourly',
                         ])->label(false); ?>
                     </div>
                 </div>
