@@ -124,8 +124,10 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                 <div class="row">
                     <div class="col-md-12">
                         <?= $form->field($model, 'wage_duration')->dropDownList([
+                            'Annually' => 'Per Annum',
                             'Monthly' => 'Per Month',
-                            'Weekly' => 'Per Week',
+                            'Weekly' => 'Per Weekly',
+                            'Hourly' => 'Per Hourly',
                         ])->label(false); ?>
                     </div>
                 </div>
