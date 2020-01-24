@@ -46,7 +46,7 @@
                         <div class="detail-loc">
                             <div class="application-card-description job-loc">
                                 {{#salary}}
-                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                                <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
                                 {{^salary}}
                                 <h5 class="salary">Negotiable</h5>
