@@ -36,17 +36,15 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
-    <div class="row">
-        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
-            <div class="">
-                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
-                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
-                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
-                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
-                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
-            </div>
-        </nav>
-    </div>
+    <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+        <div class="">
+            <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+            <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+            <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+            <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+            <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
+        </div>
+    </nav>
 </section>
 <section>
     <div class="container">
@@ -94,10 +92,6 @@ use yii\helpers\Url;
         <div class="col-md-12">
             <div class="categories"></div>
         </div>
-
-        <?=
-            $this->render('/widgets/preloaders/active-profiles')
-        ?>
     </div>
 </section>
 
@@ -105,18 +99,11 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/info-stats');
 
-echo $this->render('/widgets/top-cities',[
+echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
-<section>
-    <div class="container">
-    <?=
-    $this->render('/widgets/preloaders/top-cities-preloader')
-    ?>
-    </div>
-</section>
 
 <section class="bg-lighter">
     <div class="container">
@@ -158,9 +145,6 @@ echo $this->render('/widgets/top-cities',[
             'tweets' => $tweets
         ]);
         ?>
-        <?=
-            $this->render('/widgets/preloaders/tweet-job-preloader')
-        ?>
     </div>
 </section>
 <section>
@@ -170,7 +154,6 @@ echo $this->render('/widgets/top-cities',[
                 <?= $this->render('/widgets/mustache/featured-employers-carousel'); ?>
             </div>
         </div>
-        <?= $this->render('/widgets/preloaders/featured-employers')?>
     </div>
 </section>
 
@@ -187,7 +170,6 @@ echo $this->render('/widgets/top-cities',[
                 </div>
             </div>
         </div>
-        <?= $this->render('/widgets/preloaders/blog-preloader');?>
     </div>
 </section>
 
@@ -245,10 +227,6 @@ if (Yii::$app->user->isGuest) {
                 <button type="button" class="showHideBtn">More</button>
             </div>
         </div>
-        <?= $this->render('/widgets/preloaders/quick-links-preloader',[
-                'size' =>'col-md-4 col-sm-4 col-xs-6',
-                'f_loop' => 3
-        ])?>
     </div>
 </section>
 
@@ -258,7 +236,7 @@ echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
