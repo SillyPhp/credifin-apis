@@ -5,61 +5,57 @@
              class="application-card-main shadow">
             <div class="app-box">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="application-card-img img-main">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
-                                {{#logo}}
-                                <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
-                                {{/logo}}
-                                {{^logo}}
-                                <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
-                                        color="{{color}}" font="35px"></canvas>
-                                {{/logo}}
-                            </a>
-                        </div>
+                    <div class="application-card-img">
+                        <a href="{{organization_link}}" title="{{organization_name}}">
+                            {{#logo}}
+                            <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
+                            {{/logo}}
+                            {{^logo}}
+                            <canvas class="user-icon" name="{{organization_name}}" width="80" height="80"
+                                    color="{{color}}" font="35px"></canvas>
+                            {{/logo}}
+                        </a>
                     </div>
-                    <div class="col-md-9">
-                        <div class="comps-name-1 application-card-description">
+                    <div class="comps-name-1 application-card-description">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
-                            </a>
-                        </div>
-                        {{#city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}">
+                        <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
+                            <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                        </a>
+                    </div>
+                    {{#city}}
+                    <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                          data-long="{{longitude}}">
                              <i class="fas fa-map-marker-alt"></i>&nbsp;{{city}}
                         </span>
-                        {{/city}}
-                        {{^city}}
-                        <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
-                              data-long="{{longitude}}"
-                              data-locations="">
+                    {{/city}}
+                    {{^city}}
+                    <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
+                          data-long="{{longitude}}"
+                          data-locations="">
                         <i class="fas fa-map-marker-alt"></i>&nbsp;All India
                         </span>
-                        {{/city}}
-                        </span>
-                        <div class="detail-loc">
-                            <div class="application-card-description job-loc">
-                                {{#salary}}
-                                <h5 class="salary">{{salary}}</h5>
-                                {{/salary}}
-                                {{^salary}}
-                                <h5 class="salary">Negotiable</h5>
-                                {{/salary}}
-                                {{#type}}
-                                <h5>{{type}}</h5>
-                                {{/type}}
-                                {{#experience}}
-                                <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
-                                {{/experience}}
-                            </div>
-                            <div class="clear"></div>
+                    {{/city}}
+                    </span>
+                    <div class="detail-loc application-card-description">
+                        <div class="job-loc">
+                            {{#salary}}
+                            <h5 class="salary">{{salary}}</h5>
+                            {{/salary}}
+                            {{^salary}}
+                            <h5 class="salary">Negotiable</h5>
+                            {{/salary}}
+                            {{#type}}
+                            <h5 class="salary">{{type}}</h5>
+                            {{/type}}
+                            {{#experience}}
+                            <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                            {{/experience}}
                         </div>
+                        <div class="clear"></div>
                     </div>
                 </div>
                 <div class="row">
@@ -268,10 +264,6 @@ function checkSkills(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.application-card-description{
-    margin:0 0 0 14px !important;
-    width:100% !important;
-}
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;
@@ -301,9 +293,7 @@ $this->registerCss('
     padding-left: 13px;
 }
 .comps-name-1{
-    display: block;
-    vertical-align: middle;
-    padding-left: 12px;
+    padding-left: 15px;
     padding-top: 15px;
 }
 .org_name{display:block;}
@@ -345,8 +335,8 @@ $this->registerCss('
     border-radius: 0px 10px 0px 10px !important;
     float: right !important;
     position:absolute !important;
-    right: 2px !important;
-    top: -13px !important;
+    right: -4px !important;
+    top: -3px !important;
 }
 
 .clear{
@@ -407,29 +397,16 @@ $this->registerCss('
     padding: 4px 10px 4px 10px;
     border-radius: 5px;
 }
-.img-main{
-    display: inline-block;
-}
-.comps-name-1{
-    float: none;
-    margin: 0px !important;
-}
 .more-skills{
     background-color: #00a0e3;
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
 }
-@media only screen and (max-width: 360px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
-}
-@media only screen and (max-width: 768px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+.salary{ 
+    padding-left: 16px;
 }
 @media only screen and (max-width: 974px){
-    .salary{ 
-        padding-left: 16px;
-    }
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}
