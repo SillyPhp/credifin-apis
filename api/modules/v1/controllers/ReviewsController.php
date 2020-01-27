@@ -411,7 +411,6 @@ class ReviewsController extends ApiBaseController
 
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->distinct()
                 ->where(['a.organization_enc_id' => $org_enc_id, 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -460,6 +459,12 @@ class ReviewsController extends ApiBaseController
                 ->all();
 
             for ($i = 0; $i < count($result); $i++) {
+                if($result[$i]['created_by'] == $candidate->user_enc_id){
+                    $result[$i]['user_review'] = true;
+                }else{
+                    $result[$i]['user_review'] = false;
+                }
+                $result[$i]['link'] = Url::to($org['slug'].'/reviews','https');
                 $result[$i]['rating'] = $rating[$i];
             }
 
@@ -493,6 +498,7 @@ class ReviewsController extends ApiBaseController
                         'c.name profile',
                         'd.designation',
                         'a.created_on',
+                        'a.created_by',
                         'a.reviewer_type',
                         'a.show_user_details',
                         'b.first_name',
@@ -548,6 +554,12 @@ class ReviewsController extends ApiBaseController
                 $emp_rating = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($emp_reviews); $i++) {
+                    if($emp_reviews[$i]['created_by'] == $candidate->user_enc_id){
+                        $emp_reviews[$i]['user_review'] = true;
+                    }else{
+                        $emp_reviews[$i]['user_review'] = false;
+                    }
+                    $emp_reviews[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $emp_reviews[$i]['rating'] = $emp_rating[$i];
                 }
 
@@ -574,6 +586,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -625,6 +638,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
@@ -640,6 +659,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -690,6 +710,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
@@ -705,6 +731,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -756,6 +783,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
