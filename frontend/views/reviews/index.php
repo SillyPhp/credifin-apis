@@ -102,11 +102,6 @@ use yii\bootstrap\ActiveForm;
                 <div id="review_container_compnay">
                 </div>
             </div>
-            <div>
-                <?=
-                $this->render('/widgets/preloaders/review-box-preloader');
-                ?>
-            </div>
         </div>
     </section>
     <section class="top-com-bg">
@@ -374,7 +369,7 @@ $this->registerCss('
     z-index: -1;
 }
 .cm-btns {
-    margin-top:10px;
+    margin-top:10px !important;
 }  
 .color-blue a:hover{
     color:#00a0e3;

@@ -7,6 +7,7 @@ use common\models\ApplicationSkills;
 use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
 use common\models\Countries;
+use common\models\Currencies;
 use common\models\Skills;
 use common\models\States;
 use common\models\TrainingProgramApplication;
@@ -145,7 +146,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -177,6 +178,7 @@ class ApplicationCards
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
+            ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = m.currency_enc_id')
             ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
             ->leftJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->leftJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
@@ -197,7 +199,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
@@ -229,6 +231,7 @@ class ApplicationCards
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
+            ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = v.currency_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
@@ -368,46 +371,47 @@ class ApplicationCards
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+            $currency = (($val['html_code'])?$val['html_code']:'₹ ');
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 12 . ' p.a.';
+                    $result[$i]['salary'] = $currency.$val['fixed_salary'] * 12 . ' p.a.';
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 40 * 52 . ' p.a.';
+                    $result[$i]['salary'] = $currency.$val['fixed_salary'] . ' Per Hour';
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = $val['fixed_salary'] * 52 . ' p.a.';
+                    $result[$i]['salary'] = $currency.$val['fixed_salary'].' Per Week';
                 } else {
-                    $result[$i]['salary'] = $val['fixed_salary'] . ' p.a.';
+                    $result[$i]['salary'] = $currency.$val['fixed_salary'] . ' p.a.';
                 }
             } elseif ($val['salary_type'] == "Negotiable") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary'] * 12 . " - ₹" . (string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)$val['min_salary'] * 12 . " - ".$currency. (string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . " - ₹" . (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 52) . " - ₹" . (string)($val['max_salary'] * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = (string)($val['min_salary']) . " - ₹" . (string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' p.a.';
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['min_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)$val['min_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 40 * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['min_salary'] * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = (string)($val['min_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' p.a.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = (string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = (string)($val['max_salary'] * 40 * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = (string)($val['max_salary'] * 52) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = (string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' p.a.';
                     }
                 }
             }
@@ -430,7 +434,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -452,6 +456,7 @@ class ApplicationCards
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationOptions::tableName() . 'as m', 'm.application_enc_id = a.application_enc_id')
+            ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = m.currency_enc_id')
             ->innerJoin(Organizations::tableName() . 'as d', 'd.organization_enc_id = a.organization_enc_id')
             ->leftJoin(Designations::tableName() . 'as l', 'l.designation_enc_id = a.designation_enc_id')
             ->leftJoin(Industries::tableName() . 'as h', 'h.industry_enc_id = a.preferred_industry')
@@ -472,7 +477,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
@@ -494,6 +499,7 @@ class ApplicationCards
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
             ->innerJoin(ApplicationUnclaimOptions::tableName() . 'as v', 'v.application_enc_id = a.application_enc_id')
+            ->leftJoin(Currencies::tableName() . 'as xt', 'xt.currency_enc_id = v.currency_enc_id')
             ->innerJoin(ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
             ->innerJoin(UnclaimedOrganizations::tableName() . 'as d', 'd.organization_enc_id = a.unclaimed_organization_enc_id')
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as x', 'x.application_enc_id = a.application_enc_id AND x.is_deleted = 0')
@@ -631,46 +637,47 @@ class ApplicationCards
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
+            $currency = (($val['html_code'])?$val['html_code']:'₹ ');
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = round($val['fixed_salary']) . ' p.m.';
+                    $result[$i]['salary'] = $currency.round($val['fixed_salary']) . ' p.m.';
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = round($val['fixed_salary'] * 730) . ' p.m.';
+                    $result[$i]['salary'] = $currency.round($val['fixed_salary']) . ' Per Hour';
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = round((int)$val['fixed_salary'] / 7 * 30) . ' p.m.';
+                    $result[$i]['salary'] = $currency.round((int)$val['fixed_salary'] / 7 * 30) . ' p.m.';
                 } else {
-                    $result[$i]['salary'] = round((int)$val['fixed_salary'] / 12) . ' p.m.';
+                    $result[$i]['salary'] = $currency.round((int)$val['fixed_salary'] / 12) . ' p.m.';
                 }
             } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = round((string)$val['min_salary']) . " - ₹" . round((string)$val['max_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)$val['min_salary']) . " - ".$currency. round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = round((string)($val['min_salary'] * 730)) . " - ₹" . round((string)($val['max_salary'] * 730)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)($val['min_salary'])) . " - ".$currency. round((string)($val['max_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = round((int)($val['min_salary'] / 7 * 30)) . " - ₹" . round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['min_salary'] / 7 * 30)) . " - " .$currency. round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = round((int)($val['min_salary']) / 12) . " - ₹" . round((int)($val['max_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['min_salary']) / 12) . " - ".$currency. round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = round((string)$val['min_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)$val['min_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = round((string)($val['min_salary'] * 730)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)($val['min_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = round((int)($val['min_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['min_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = round((int)($val['min_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['min_salary']) / 12) . ' p.m.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = round((string)$val['max_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = round((string)($val['max_salary'] * 730)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((string)($val['max_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = round((int)($val['max_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency.round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 }
             }
