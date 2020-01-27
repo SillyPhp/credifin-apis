@@ -2,9 +2,9 @@
     {{#.}}
     <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
-            <a href="javascript:;" class="shortlist-main">
+            <span class="shortlist-main" id="{{user_enc_id}}">
                 <i class="far fa-star"></i>
-            </a>
+            </span>
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
@@ -32,6 +32,7 @@
     </div>
     {{/.}}
 </script>
+
 
 <?php
 $this->registerCss('
