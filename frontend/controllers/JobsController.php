@@ -1235,8 +1235,11 @@ class JobsController extends Controller
         ];
     }
 
-    public function actionTest(){
-        print_r(Yii::$app->header->getMenuHeader('jobs'));
-        exit();
-    }
+//    public function actionTest(){
+//        $per = Yii::$app->notification->orgSendMail('zkDKX91qa7majL9wozJj76QVx4NmBW');
+////        $per = Yii::$app->notification->orgSendMail(Yii::$app->user->identity->organization_enc_id);
+//
+//        print_r($per);
+//        exit();
+//    }
 }
