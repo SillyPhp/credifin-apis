@@ -932,6 +932,13 @@ display:none;
 .application-card-border-bottom{
     height:156px;
 }
+.application-card-img{
+    margin-left:0px;
+    margin-top:25px;
+}
+.application-card-description{
+    margin:20px 0 0 15px !important;
+}
 ");
 echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');

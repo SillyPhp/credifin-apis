@@ -559,6 +559,13 @@ display:none;
         max-width: 115px;
     }
 }
+.application-card-img{
+    margin-left:0px;
+    margin-top:25px;
+}
+.application-card-description{
+    margin:20px 0 0 15px !important;
+}
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');
 echo $this->render('/widgets/mustache/departments_govt');
