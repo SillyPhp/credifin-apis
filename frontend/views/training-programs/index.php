@@ -260,6 +260,13 @@ a.company-inner {
     left: 12%;
     color: #FFF;
 }
+.application-card-img{
+    margin-left:0px;
+    margin-top:25px;
+}
+.application-card-description{
+    margin:20px 0 0 15px !important;
+}
 ');
 $script = <<< JS
 loader = false;
