@@ -62,6 +62,17 @@ use yii\helpers\Url;
                             <?= Yii::t('account', 'Create Quick Job'); ?>
                         </a>
                     </div>
+                    <?php
+                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                        ?>
+                        <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                            <a class="btn btn-primary custom-buttons" href="/account/jobs/campus-placement">
+                                <?= Yii::t('account', 'Campus Hiring'); ?>
+                            </a>
+                        </div>
+                        <?php
+                    }
+                    ?>
                 <?php elseif ($for == 'Internships'): ?>
                     <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                         <a class="btn btn-primary custom-buttons"
@@ -74,6 +85,17 @@ use yii\helpers\Url;
                             <?= Yii::t('account', 'Create Internship'); ?>
                         </a>
                     </div>
+                    <?php
+                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                        ?>
+                        <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
+                            <a class="btn btn-primary custom-buttons" href="/account/internships/campus-placement">
+                                <?= Yii::t('account', 'Campus Hiring'); ?>
+                            </a>
+                        </div>
+                        <?php
+                    }
+                    ?>
                 <?php elseif ($for == 'Trainings'): ?>
                     <div class="col-md-2 col-sm-3 col-xs-6 pull-right">
                         <a class="btn btn-primary custom-buttons"

@@ -5,18 +5,18 @@ use yii\helpers\Url;
 
 ?>
 <section class="csb-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="csb-pos-rel">
-                    <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
-                </div>
-            </div>
-        </div>
+    <div class="csb-pos-rel">
+        <div class="csb-header-text"><?= $careerBlog[0]['cat'] ?></div>
+    </div>
+</section>
+<section>
+    <div class="visible_in_mobile">
+        <div class="csb-header-text-mobile"><?= $careerBlog[0]['cat'] ?></div>
     </div>
 </section>
 <section>
     <div class="container">
+
         <?php
         if (empty($careerBlog)) {
             ?>
@@ -44,7 +44,9 @@ use yii\helpers\Url;
                                         <div class="col-md-12">
                                             <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
                                                 <div class="img-box">
-                                                    <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                    <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">
+                                                        <img class="blog-img" src="<?= $c['image'] ?>" alt="Error">
+                                                    </a>
                                                 </div>
                                             </a>
                                         </div>
@@ -56,7 +58,7 @@ use yii\helpers\Url;
                                                     </a>
                                                 </div>
                                                 <div class="box-des">
-                                                    <?= $c['description'] ?>
+                                                    <?= substr($c['description'], 0, 160) ?>
                                                 </div>
                                                 <div class="cs-read-btn">
                                                     <a href="/career-advice/<?= $c['category'] ?>/<?= $c['slug'] ?>">Read</a>
@@ -69,36 +71,43 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <?php
+                    if ($count == 2) {
+                        break;
+                    }
                     $count++;
                 }
                 ?>
             </div>
-            <?php if (count($careerBlog) > 6) { ?>
+            <?php if (count($careerBlog) > 3) { ?>
                 <div class="divider"></div>
                 <div class="row">
                     <div class="col-md-8">
                         <?php
                         //                        $count = 0;
-                        for ($i = 6; $i < count($careerBlog); $i++) {
+                        for ($i = 3; $i < count($careerBlog); $i++) {
 //                            $count++
                             ?>
                             <div class="vertical-blog">
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="ca-vb-icon">
-                                            <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                            <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">
+                                                <img src="<?= $careerBlog[$i]['image'] ?>" alt="">
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-md-9">
                                         <div class="ca-vd-details">
                                             <div class="heading-text">
-                                                <?= $careerBlog[$i]['title'] ?>
+                                                <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">
+                                                    <?= $careerBlog[$i]['title'] ?>
+                                                </a>
                                             </div>
                                             <div class="box-des">
-                                                <?= $careerBlog[$i]['description'] ?>
+                                                <?= substr($careerBlog[$i]['description'], 0, 160) ?>
                                             </div>
                                             <div class="cs-vd-btn">
-                                                <a href="<?= $careerBlog[$i]['link'] ?>">Read</a>
+                                                <a href="/career-advice/<?= $careerBlog[$i]['category'] ?>/<?= $careerBlog[$i]['slug'] ?>">Read</a>
                                             </div>
                                         </div>
                                     </div>
@@ -117,6 +126,43 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+@media only screen and (max-width:500px){
+    .csb-header{
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        max-height: 300px !important;
+        min-height: 300px !important;
+        background-position: center !important;
+    }
+}  
+@media only screen and (max-width:992px){
+    .csb-header-text{
+        display:none;
+    }
+    .visible_in_mobile{
+        display:block !important;
+    }
+    .heading-style{
+        display:none;
+    }
+    .csb-header-text-mobile{
+        color:#000;
+        font-family:Lobster;
+        font-size:30px;
+    }
+} 
+.visible_in_mobile{
+    display:none;
+}
+.csb-header-text-mobile{
+    background:#00a0e3;
+    color:#fff;
+    font-family:lobster;
+    font-size:40px;
+    width:100%;
+    text-align:center;
+    
+}
 .noResult{
     font-family:Lobster;
     font-weight:bold;
@@ -159,24 +205,26 @@ $this->registerCss('
     margin:20px 0 40px;
 }
 .csb-header{
-    background:url(' . Url::to('@eyAssets/images/pages/custom/cabloghdr.png') . ');
-    background-size:cover;
+//    background:url(' . Url::to('@eyAssets/images/pages/custom/ci.png') . ');
+    background-size:cover !important;
     min-height:400px;
     min-width:100%;
 }  
 .csb-pos-rel{
-text-align:right;
-    height:400px;
+    text-align:right;
+    width:100%;
+    min-height:400px;
     position:relative;
 }  
 .csb-header-text{
+    background:#00a0e3;
+    bottom:0;
+    color:#fff;
+    font-family:lobster;
+    font-size:40px;
+    width:100%;
+    text-align:center;
     position:absolute;
-    right:10%;
-    top:50%;
-    transform:translateY(-50%);
-    color:#000;
-    font-family:Lobster;
-    font-size:50px;
 }
 .new-box{
     margin-bottom: 20px;
@@ -259,3 +307,10 @@ text-align:right;
 }
 ');
 ?>
+<script>
+    var pathname = window.location.pathname.split('/');
+    var bgSet = pathname[2]
+    console.log(bgSet);
+    var bg = document.getElementsByClassName('csb-header');
+    bg[0].style.background = "url(/assets/themes/ey/images/pages/custom/" + bgSet + "-bg.png)";
+</script>

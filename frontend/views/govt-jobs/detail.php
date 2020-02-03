@@ -3,11 +3,11 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$link = Url::to('detail/' . $familyid . '/' . $objectid, 'https');
+$link = Url::to('detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
-$this->title = $get['DepartmentName'] . ' is hiring for ' . $get['PositionTitle'];
-$keywords = 'Jobs,Jobs in Usa';
+$this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
+$keywords = 'Jobs,Jobs in India';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
@@ -44,17 +44,12 @@ $this->params['seo_tags'] = [
                 <div class="col-md-12">
                     <div class="inner-header">
                         <div class="agency-name-top">
-                            <h1><?= $get['DepartmentName'] ?></h1>
+                            <h1><?= $get['Organizations'] ?></h1>
                         </div>
-                        <div class="job-title"><?= $get['PositionTitle'] ?></div>
+                        <div class="job-title"><?= $get['Position'] ?></div>
                         <div class="job-statistic">
-                            <div class="job-time"><?= $get['PositionSchedule'][0]['Name'] ?></div>
                             <div class="job-location"><i
-                                        class="fas fa-map-marker-alt marg"></i> <?= $get['PositionLocationDisplay'] ?>
-                            </div>
-                            <div class="job-valid"><i
-                                        class="fas fa-suitcase marg"></i><?= $get['UserArea']['Details']['TotalOpenings'] ?>
-                                vacancy
+                                        class="fas fa-map-marker-alt marg"></i> <?= $get['Location'] ?>
                             </div>
                         </div>
                     </div>
@@ -63,35 +58,15 @@ $this->params['seo_tags'] = [
         </div>
     </div>
 </section>
-
-<!--    <section>-->
-<!--        <div class="container padd-top-0">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-4 col-sm-12 col-xs-12 col-md-offset-9">-->
-<!--                    <div class="follow-btn">-->
-<!--                        <button class="follow">Apply</button>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
-
 <section id="us-sub-header">
     <div class="row">
         <div class="col-md-12">
             <div id="s-header" class="nav-bar">
                 <ul>
                     <li><a href="#overview">Overview</a></li>
-                    <li><a href="#duties">Duties</a></li>
-                    <li><a href="#requirements">Qualification And Other Details</a></li>
+                    <li><a href="#duties">Description</a></li>
+                    <li><a href="#requirements">Qualification</a></li>
                     <li><a href="#locations">Locations</a></li>
-                    <?php
-                    if ($get['UserArea']['Details']['AgencyMarketingStatement']) {
-                        ?>
-                        <li><a href="#requireddocuments">Agency Overview</a></li>
-                        <?php
-                    }
-                    ?>
                 </ul>
             </div>
         </div>
@@ -107,51 +82,41 @@ $this->params['seo_tags'] = [
                         <div class="d-head " id="overview">Overview</div>
                         <ul class="set-sticky">
                             <li><i class="fas fa-calendar-alt"></i></i>
-                                <h3>Opening & Closing Dates</h3>
-                                <span><?= date("d-m-Y", strtotime($get['PositionStartDate'])) ?> to <?= date("d-m-Y", strtotime($get['PositionEndDate'])) ?></span>
+                                <h3>Closing Dates</h3>
+                                <span><?= $get['Last_date'] ?></span>
                             </li>
-                            <li><i class="fas fa-puzzle-piece"></i>
-                                <h3>Pay scale & Grade</h3><span>
-                                    <?php if ($get['UserArea']['Details']['LowGrade'] != $get['UserArea']['Details']['HighGrade']):
-                                        echo $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['LowGrade'] . "-" . $get['UserArea']['Details']['HighGrade'];
-                                    else:
-                                        echo $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['HighGrade'];
-                                    endif;
-                                    ?>
-                                </span></li>
-                            <li><i class="fas fa-money-bill-alt"></i>
-                                <h3>Salary</h3><span><i
-                                            class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MinimumRange'] ?> to <i
-                                            class="fas fa-dollar-sign custm"></i> <?= $get['PositionRemuneration'][0]['MaximumRange'] . " " . $get['PositionRemuneration'][0]['RateIntervalCode'] ?></span>
+                            <li><i class="fas fa-user"></i></i>
+                                <h3>Positions</h3>
+                                <span><?= $get['Position'] ?></span>
                             </li>
-                            <li><i class="fas fa-suitcase"></i>
-                                <h3>Service</h3><span>Excepted</span></li>
-                            <li><i class="fas fa-mars-double"></i>
-                                <h3>Appointment Type</h3><span><?= $get['PositionOfferingType'][0]['Name'] ?></span>
-                            </li>
-                            <li><i class="fas fa-network-wired"></i></i>
-                                <h3>Work Schedule</h3><span><?= $get['PositionSchedule'][0]['Name'] ?></span></li>
                         </ul>
                     </div>
                 </div>
-                <div class="d-head" id="duties">Duties</div>
+                <div class="d-head" id="duties">Details</div>
                 <div class="duties-tab set-sticky">
                     <div class="summary">Summary</div>
-                    <div class="d-content"><?= $get['UserArea']['Details']['JobSummary'] ?>
+                    <div id="gv-summary" class="d-content">
+                        <?php
+                        $data = ltrim($get['Data'],"[");
+                        $data = rtrim($data,"]");
+                        echo $data;
+                          ?>
                     </div>
                 </div>
+                <?php if (!empty($get['Eligibility'])){ ?>
                 <div class="d-head" id="requirements">Qualification And Other Details</div>
                 <div class="requirements-tab set-sticky">
-                    <div class="d-content">
-                        <?= $get['QualificationSummary'] ?>
+                    <div class="d-content tags-bar">
+                        <span><?= $get['Eligibility'] ?></span>
                     </div>
                 </div>
+                <?php } ?>
                 <div class="d-head" id="locations">Locations</div>
                 <div class="location-tab set-sticky">
                     <div class="location-set">
                         <div style="margin-bottom: 8px;">
                             <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
-                            <span><?= $get['PositionLocation'][0]['LocationName'] ?></span>
+                            <span><?= $get['Location'] ?></span>
                         </div>
                         <?php if (count($get['PositionLocation']) > 1): ?>
                             <div id="show-more">
@@ -166,46 +131,13 @@ $this->params['seo_tags'] = [
                         <?php endif; ?>
                     </div>
                 </div>
-                <?php
-                if ($get['UserArea']['Details']['AgencyMarketingStatement']) {
-                    ?>
-                    <div class="d-head" id="requireddocuments">Agency Overview</div>
-                    <div class="required-doc-tab set-sticky">
-                        <div class="d-content">
-                            <?= $get['UserArea']['Details']['AgencyMarketingStatement']; ?>
-                        </div>
-                    </div>
-                    <?php
-                }
-                ?>
             </div>
             <div class="col-md-4">
                 <div class="agency-info">
-                    <div class="agency">Agency Information</div>
-                    <div class="agency-name"><i class="fas fa-user user-set"></i><?= $get['OrganizationName'] ?></div>
-                    <!--                    <div class="phone">-->
-                    <!--                        <div class="agency-num"><i class="fas fa-mobile-alt user-set"></i>Phone</div>-->
-                    <!--                        <span class="d-content">+984616161</span>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="email">-->
-                    <!--                        <div class="agency-email"><i class="fas fa-envelope user-set"></i>E-mail</div>-->
-                    <!--                        <span class="d-content">abc@gmail.com</span>-->
-                    <!--                    </div>-->
-                    <!--                    <div class="adress">-->
-                    <!--                        <div class="agency-adress"><i class="fas fa-map-marker-alt user-set"></i>Address</div>-->
-                    <!--                        <span class="d-content">Government Office, 441 street nw, room no.145, washington, united states</span>-->
-                    <!--                    </div>-->
+                    <div class="agency">Official Notification</div>
                     <div class="a-divider"></div>
-                    <div class="announcement">
-                        <span class="announcement-name">Announcement number</span>
-                        <span class="annousncement-num"><?= $get['PositionID'] ?></span>
-                    </div>
-                    <div class="Control">
-                        <span class="announcement-name">Control number</span>
-                        <span class="annousncement-num"><?= $objectid; ?></span>
-                    </div>
                     <div class="follow-btn">
-                        <a class="follow app_btn" href="<?= $get['ApplyURI'][0] ?>" target="_blank">Apply On Website</a>
+                        <a class="follow app_btn" href="<?= $get['Pdf_link'] ?>" target="_blank">Detailed Advertisement</a>
                     </div>
                 </div>
                 <div class="sharing-box">
@@ -244,12 +176,28 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>
 </section>
 <?php
 $this->registerCss('
+.tags-bar > span {
+    float: left;
+    background: #f4f5fa;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+    border-radius: 8px;
+    font-family: Open Sans;
+    font-size: 13px;
+    padding: 7px 17px;
+    margin-right: 15px;
+    margin-bottom: 5px;
+    position: relative;
+}
 .app_btn
 {
 display:block;
@@ -392,7 +340,6 @@ margin:auto;
     margin-top: 67px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
 }
 .agency{
@@ -409,11 +356,9 @@ margin:auto;
     font-size:19px;
 }
 .job-single-head2 {
-        float: left;
         width: 100%;
-//        padding-bottom: 30px;
-//        border-bottom: 1px solid #e8ecec;
-    }
+//        float: left;
+}
 .job-single-head2 > span {
         float: left;
         width: 100%;
@@ -427,8 +372,8 @@ margin:auto;
         color: #202020;
     }
 .job-overview {
-    float: left;
     width: 100%;
+//    float: left;
 }
 .job-overview > h3 {
     float: left;
@@ -518,10 +463,10 @@ margin:auto;
     padding: 15px;
     border-radius: 5px;
     text-align: justify;
-    float:left;
     box-shadow: 0 0 10px 0px #eee;
     clear:both;
     width:100%;
+//    float:left;
 }
 .d-head {
     font-size: 22px;
@@ -529,7 +474,7 @@ margin:auto;
     font-family:roboto;
     color: #00a0e3;
     padding: 25px 0 5px 5px;
-    float:left;
+//    float:left;
 }
 .summary{
     font-size:18px;
@@ -594,9 +539,9 @@ margin:auto;
     margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
     background-color:#1d759a;
+    margin-bottom: 20px;
 }
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     padding: 10px 0;
@@ -640,6 +585,10 @@ margin:auto;
 }
 #us-sub-header{
     height:52px;
+}
+#gv-summary th, #gv-summary  td {
+    border: 1px solid #ddd;
+    padding: 5px 13px;
 }
 @media only screen and (max-width: 768px){
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {

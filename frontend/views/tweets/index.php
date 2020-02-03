@@ -104,6 +104,9 @@ if($type == 'internships') {
     <?php
 }
 $this->registerCss("
+.fullwidth-page > #wrapper.clearfix > .main-content{
+    padding-top:0px !important;
+}
 .re-twitte{
 	position:fixed;
 	width:225px;
@@ -490,6 +493,16 @@ float:right;
     .overlay-image {
         max-width: 115px;
     }
+    .masonry { 
+        -webkit-column-count: 1;
+      -moz-column-count:1;
+      column-count: 1;
+      column-gap: 0em;
+       margin: 0em;
+        -moz-column-gap: 0em;
+        -webkit-column-gap: 0em;
+        column-gap: 0em;
+    }
 }
 ");
 $script = <<< JS
@@ -512,7 +525,7 @@ twttr.ready(function (twttr) {
          // At this point all tweets have been fully loaded
          // and rendered and you we can proceed with our Javascript
         $.each($(".container blockquote"),function() {
-          console.log($(this).closest(".tweet-main").css("display","none"));
+          // console.log($(this).closest(".tweet-main").css("display","none"));
         })
     });
 });

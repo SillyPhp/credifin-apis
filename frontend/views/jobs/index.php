@@ -5,6 +5,7 @@ use yii\helpers\Url;
 
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <section class="backgrounds">
     <div class="container">
         <div class="row">
@@ -35,6 +36,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row">
@@ -50,6 +52,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
         <div class="row mt-20">
@@ -72,8 +75,12 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?=
-$this->render('/widgets/top-cities', [
+
+
+<?php
+echo $this->render('/widgets/info-stats');
+
+echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'jobs'
 ])
@@ -101,7 +108,7 @@ $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/usa-jobs');?>
+<?= $this->render('/widgets/usa_and_govt_jobs'); ?>
 <section class="j-tweets">
     <div class="container">
         <div class="row">
@@ -146,6 +153,13 @@ $this->render('/widgets/top-cities', [
         </div>
     </div>
 </section>
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -537,7 +551,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 14px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -551,7 +565,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family: roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;

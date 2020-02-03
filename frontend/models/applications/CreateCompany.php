@@ -32,7 +32,7 @@ class CreateCompany extends Model
           [['contact'],'string','max'=>15],
           [['name','email','website','description'],'trim'],
           ['email','email'],
-          [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpg, gif'],
+          [['logo'], 'file', 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024, 'extensions' => 'png, jpeg, jpg, gif'],
       ];
   }
 
@@ -65,8 +65,7 @@ class CreateCompany extends Model
               return false;
           }
           $source_path = $base_path . DIRECTORY_SEPARATOR . $model->logo;
-          $destinationPath = Yii::$app->params->empower_youth->upload_directories->unclaimed_organizations->logo_path . $model->logo_location;
-          if (!$this->logo->saveAs($source_path)|| !Yii::$app->utilities->recurseCopy($source_path, $destinationPath, $model->logo)) {
+          if (!$this->logo->saveAs($source_path)) {
               return false;
           }
       }

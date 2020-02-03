@@ -59,49 +59,6 @@ use yii\helpers\Html;
     <div class="TweetModal-content">
         <div class="row">
         <span class="Tweetclose">&times;</span>
-<!--            <div class="col-md-6 col-sm-6">-->
-<!--                <div class="tweet-org-logo tweetTextWhite">-->
-<!--                    --><?php //if (!empty($tweet['logo'])): ?>
-<!--                        <img src="--><?//= $tweet['logo'] ?><!--"/>-->
-<!--                    --><?php //else: ?>
-<!--                        <canvas class="user-icon" name="--><?//= $tweet['org_name'] ?><!--" width="150"-->
-<!--                                height="150"-->
-<!--                                color="--><?//= $tweet['color'] ?><!--" font="70px"></canvas>-->
-<!--                    --><?php //endif; ?>
-<!--                </div>-->
-<!--                <div class="tweet-org-description tweetTextWhite">-->
-<!--                    <h2>--><?//= ucwords($tweet['job_title']) ?><!--</h2>-->
-<!--                    <h4>--><?//= ucwords($tweet['org_name']) ?><!--</h4>-->
-<!--                    <p>--><?//= $tweet['job_type'] ?><!--</p>-->
-<!--                </div>-->
-<!--                <div class="tweetSalary">-->
-<!--                    <div class="ts-Skills">Job Profile: <span class="ts-salary">Information Technology</span> </div>-->
-<!--                </div>-->
-<!--                <div class="tweetSkills">-->
-<!--                    <div class="ts-Skills">Skills Required</div>-->
-<!--                    <ul>-->
-<!--                        <li>Html</li>-->
-<!--                        <li>JavaScript</li>-->
-<!--                        <li>CSS3</li>-->
-<!--                        <li>Bootstarp</li>-->
-<!--                        <li>Php</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div class="tweetSalary">-->
-<!--                    <div class="ts-Skills">Salary Offered: <span class="ts-salary">3.5 Lakh CTC</span> </div>-->
-<!--                </div>-->
-<!--                <div class="tweetSkills">-->
-<!--                    <div class="ts-Skills">Cities</div>-->
-<!--                    <ul>-->
-<!--                        <li>Ludhiana</li>-->
-<!--                        <li>Patiala</li>-->
-<!--                        <li>Mohali</li>-->
-<!--                    </ul>-->
-<!--                </div>-->
-<!--                <div class="tweet-apply">-->
-<!--                    <button class="ts-btn">Click to Apply</button>-->
-<!--                </div>-->
-<!--            </div>-->
             <div class="col-md-12 col-sm-12">
                 <div class="mar-center">
                     <div id="clickedTweet"></div>
@@ -118,11 +75,6 @@ use yii\helpers\Html;
 $script = <<< JS
 $(document).on('load', function() {
     $('.posted-tweet .EmbeddedTweet').attr('style', 'min-width: 100%');
-    // var head = $(".posted-tweet iframe").contents().find("head");
-    // var css = '<style type="text/css">' +
-    //           '.EmbeddedTweet{border: none !important;border-radius: 0 !important;}; ' +
-    //           '</style>';
-    // jQuery(head).append(css);
 });
 JS;
 $this->registerJs($script);

@@ -6,7 +6,8 @@ use yii\helpers\Url;
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-microphone font-dark hide"></i>
-                <span class="caption-subject bold font-dark uppercase">Applied Application</span>
+                <span class="caption-subject bold font-dark uppercase">Applied Application<span data-toggle="tooltip" title="Here you will find all applications you have applied on"><i class="fa fa-info-circle"></i></span>
+                </span>
             </div>
         </div>
         <div class="portlet-body">
@@ -71,7 +72,7 @@ use yii\helpers\Url;
                         <div class="col-md-12">
                             <div class="tab-empty">
                                 <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapp.png'); ?>" class="img-responsive" alt=""/>
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>" class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
                                     <div class="">You haven't applied yet on any application</div>
@@ -90,7 +91,8 @@ use yii\helpers\Url;
     <div class="portlet-title tabbable-line">
         <div class="caption">
             <i class=" icon-social-twitter font-dark hide"></i>
-            <span class="caption-subject font-dark bold uppercase">Questionnaires</span>
+            <span class="caption-subject font-dark bold uppercase">Questionnaires<span data-toggle="tooltip" title="Here you will find all pending questionnaires that are to be filled"><i class="fa fa-info-circle"></i></span>
+            </span>
         </div>
     </div>
     <div class="portlet-body">
@@ -116,7 +118,7 @@ use yii\helpers\Url;
                     <div class="col-md-12">
                         <div class="tab-empty">
                             <div class="tab-empty-icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnare.png'); ?>" class="img-responsive" alt=""/>
+                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/questionnaires.png'); ?>" class="img-responsive" alt=""/>
                             </div>
                             <div class="tab-empty-text">
                                 <div class="">No Questionnaires</div>
@@ -135,10 +137,12 @@ use yii\helpers\Url;
                 <div class="portlet-title tabbable-line">
                     <div class="caption">
                         <i class=" icon-social-twitter font-dark hide"></i>
-                        <span class="caption-subject font-dark bold uppercase">Followed Companies</span>
+                        <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following"><i class="fa fa-info-circle"></i></span>
+                        </span>
                     </div>
                     <div class="actions">
-                        <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
+                        <a href="<?= Url::to('/account/organization/shortlisted') ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
                     </div>
                 </div>
                 <div class="portlet-body">
@@ -146,6 +150,7 @@ use yii\helpers\Url;
                         <?=
                         $this->render('/widgets/organization/card', [
                             'organization_data' => $shortlist_org,
+                            'column_size' => 'col-md-4',
                         ]);
                         ?>
                     </div>
@@ -153,7 +158,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-
+<?php
+    if($viewed == 0){
+?>
     <div class="portlet light portlet-fit nd-shadow">
         <div class="portlet-title" style="border-bottom:none;">
             <div class="check-icon">
@@ -212,12 +219,21 @@ use yii\helpers\Url;
         </div>
     </div>
 <?php
+    }
 $this->registerCss("
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
+.portlet.light.portlet-fit > .portlet-title{
+    padding:0px;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    max-width:250px; 
     margin:0 auto;
 }
 .tab-empty-text{
@@ -263,12 +279,14 @@ $this->registerCss("
 }
 .m-widget4 .m-widget4__item .m-widget4__info .m-widget4__title {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     color: #575962;
+    font-family:roboto;
 }
 .m-widget4 .m-widget4__item .m-widget4__info .m-widget4__sub {
-    font-size: 11px;
+    font-size: 12px;
     color: #7b7e8a;
+    font-family:roboto;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress {
     padding-right: 2rem;
@@ -277,13 +295,16 @@ $this->registerCss("
     position: relative;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-number {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
+    font-family:roboto;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .m-widget17__progress-label {
-    font-size: 11px;
+    font-size: 12px;
     float: right;
     margin-top: 0.3rem;
+    font-family:roboto;
+    font-weight: 500;
 }
 .m-widget4.m-widget4--progress .m-widget4__progress .m-widget4__progress-wrapper .progress {
     display: block;
@@ -436,6 +457,8 @@ $(document).on('click','.cancel-app',function(e)
               })
         }
        });
-
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);

@@ -7,7 +7,7 @@
             {{/image}}
             {{^image}}
             <canvas class="user-icon" name="{{full_name}}" color="{{initials_color}}"
-                    width="80" height="80" font="35px"></canvas>
+                    width="60" height="60" font="25px" border-radius="6px;"></canvas>
             {{/image}}
         </div>
         <div class="user">

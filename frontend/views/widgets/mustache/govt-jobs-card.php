@@ -10,21 +10,21 @@
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="{{organization_link}}" title="{{Company}}">
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Organizations}}">
                         {{#logo}}
-                        <img src="{{logo}}" alt="{{Company}}" title="{{Company}}">
+                        <img src="{{logo}}" alt="{{Organizations}}" title="{{Organizations}}">
                         {{/logo}}
                         {{^logo}}
-                        <canvas class="user-icon" name="{{Company}}" width="80" height="80"
+                        <canvas class="user-icon" name="{{Organizations}}" width="80" height="80"
                                 color="{{color}}" font="35px"></canvas>
                         {{/logo}}
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="{{link}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
-                    {{#Last Date}}
-                    <h5><i class="far fa-calendar-alt"></i>&nbsp;Last Date: {{Last Date}}</h5>
-                    {{/Last Date}}
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
+                    {{#Last_date}}
+                    <h5><i class="far fa-calendar-alt"></i>&nbsp;Last_date: {{Last_date}}</h5>
+                    {{/Last_date}}
                     {{#Eligibility}}
                     <h5><i class="fas fa-map-marker-alt"></i>{{Eligibility}}</h5>
                     {{/Eligibility}}
@@ -32,10 +32,10 @@
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <h4 class="org_name text-right">{{Company}}</h4>
+                <h4 class="org_name text-right">{{Organizations}}</h4>
             </div>
             <div class="application-card-wrapper">
-                <a href="/govt-jobs/detail/{{Job Url}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
+                <a href="/govt-jobs/detail/{{slug}}" class="application-card-open" title="View Detail" target="_blank">View Detail</a>
             </div>
         </div>
     </div>
@@ -43,14 +43,16 @@
 </script>
 <?php
 $script = <<< JS
-function fetchLocalData(template,min,max,loader,loader_btn) {
+var match_local = 0;
+function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,replace=false) {
   $.ajax({
   url:'/govt-jobs/get-data',
   method:'Post',
   datatype:"jsonp",
   data:{
-      'min':min,
-      'max':max
+      'limit':limit,
+      'offset':offset,
+      'keywords':keyword
   },
   beforeSend: function(){
       if (loader_btn)
@@ -65,11 +67,60 @@ function fetchLocalData(template,min,max,loader,loader_btn) {
       $('.img_load').css('display','none');
       $('#loader').html('Load More');
       $('#loader').css('display','initial');
-      body = JSON.parse(body);
-      template.append(Mustache.render($('#usa-jobs-card').html(),body));
+      match_local = match_local+body.count;
+      if (body.total<12||body.total==match_local) 
+          {
+              $('#loader').hide();
+          }
+      if (replace){
+          template.html(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      }else
+          {
+              template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+          }
       utilities.initials();
-      if(body == null){
+      if(body == ''){
           $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
+  }   
+  })
+}
+var match = 0;
+function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=null,replace=false) {
+  $.ajax({
+  url:'/govt-jobs/department-vise-jobs',
+  method:'Post',
+  datatype:"jsonp",
+  data:{
+      'limit':limit,
+      'offset':offset,
+      'keywords':keyword,
+      'dept_id':dept_id,
+  },
+  beforeSend: function(){
+      if (loader_btn)
+          { 
+              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+          }
+      if (loader) {
+            $('.img_load').css('display','block');
+        }
+      },
+  success:function(body) {    
+      $('.img_load').css('display','none');
+      $('#loader').html('Load More');
+      $('#loader').css('display','initial');
+      match = match+body.count;
+      if (body.total<12||body.total==match) 
+          {
+              $('#loader').hide();
+          }
+      template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      utilities.initials();
+      if(body.total == 0){
+          $('#loader').hide();
+          template.append('<label id="no_job">The Department had Not Posted Any Job In Recents</label>');
       }
   }   
   })
@@ -87,6 +138,10 @@ clear:both;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 250px;
+}
+#no_job
+{
+    font-size: 16px;
 }
 ");
 $this->registerJs($script);

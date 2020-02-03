@@ -22,6 +22,7 @@ namespace common\models;
  * @property string $cover_image User Cover Image
  * @property string $cover_image_location User Cover Image Location
  * @property string $description User Info
+ * @property string $objective Objective
  * @property string $facebook Facebook URL
  * @property string $google Google+ URL
  * @property string $twitter Twitter URL
@@ -377,14 +378,13 @@ class Users extends \yii\db\ActiveRecord
             [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'phone', 'initials_color'], 'required'],
             [['dob', 'created_on', 'last_updated_on'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_deleted'], 'integer'],
-            [['user_of', 'status'], 'string'],
+            [['description', 'objective', 'user_of', 'status'], 'string'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 200],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'experience'], 'string', 'max' => 15],
             [['initials_color'], 'string', 'max' => 7],
-            [['description'], 'string', 'max' => 500],
             [['user_enc_id'], 'unique'],
             [['username'], 'unique'],
             [['email'], 'unique'],
@@ -2891,5 +2891,13 @@ class Users extends \yii\db\ActiveRecord
     public function getYoutubeChannels1()
     {
         return $this->hasMany(YoutubeChannels::className(), ['author_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherInfo()
+    {
+        return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
     }
 }

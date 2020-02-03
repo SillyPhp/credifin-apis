@@ -25,9 +25,9 @@ return [
             'baseUrl' => '/api',
             'enableCookieValidation' => false,
             'enableCsrfValidation' => false,
-//            'parsers' => [
-//                'application/json' => 'yii\web\JsonParser',
-//            ]
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
         'user' => [
             'identityClass' => 'api\modules\v1\models\Candidates',

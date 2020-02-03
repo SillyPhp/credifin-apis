@@ -36,17 +36,15 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
-    <div class="row">
-        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
-            <div class="">
-                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
-                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
-                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
-                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
-                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
-            </div>
-        </nav>
-    </div>
+    <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+        <div class="">
+            <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+            <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+            <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+            <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+            <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
+        </div>
+    </nav>
 </section>
 <section>
     <div class="container">
@@ -96,12 +94,17 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?=
-$this->render('/widgets/top-cities',[
+
+
+<?php
+echo $this->render('/widgets/info-stats');
+
+echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -169,6 +172,15 @@ $this->render('/widgets/top-cities',[
         </div>
     </div>
 </section>
+
+<!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+<!--Subscribe Widget ends-->
+
 <section class="search-lists">
     <div class="container">
         <div class="row">
@@ -224,7 +236,7 @@ echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -639,7 +651,7 @@ $this->registerCss('
     letter-spacing: 1px;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(255,255,255,0.3);
-    font-size: 16px;	
+    font-size: 15px;	
 }
 .nav1 a:hover,
 .nav1 a:focus {
@@ -653,7 +665,8 @@ $this->registerCss('
 .cl-effect-18 a {
     padding: 0 5px;
     color: #afafaf;
-    font-weight: 700;
+    font-weight: 500;
+    font-family:roboto;
     -webkit-transition: color 0.3s;
     -moz-transition: color 0.3s;
     transition: color 0.3s;

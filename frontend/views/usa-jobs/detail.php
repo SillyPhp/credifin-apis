@@ -205,7 +205,12 @@ $this->params['seo_tags'] = [
                         <span class="annousncement-num"><?= $objectid; ?></span>
                     </div>
                     <div class="follow-btn">
+                        <?php if (Yii::$app->user->isGuest): ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="follow app_btn"><i
+                                    class="fas fa-paper-plane"></i>Login to apply</a>
+                        <?php else : ?>
                         <a class="follow app_btn" href="<?= $get['ApplyURI'][0] ?>" target="_blank">Apply On Website</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="sharing-box">
@@ -244,6 +249,7 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>
@@ -392,7 +398,6 @@ margin:auto;
     margin-top: 67px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
 }
 .agency{
@@ -594,9 +599,9 @@ margin:auto;
     margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
     background-color:#1d759a;
+    margin-bottom: 20px;
 }
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     padding: 10px 0;

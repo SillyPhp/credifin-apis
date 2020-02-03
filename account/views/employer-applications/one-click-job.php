@@ -23,7 +23,7 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                 <div class="portlet-title">
                     <div class="caption">
                         <i class="icon-users font-dark"></i>
-                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create Job In Minutes'); ?></span>
+                        <span class="caption-subject font-dark sbold uppercase"><?= Yii::t('account', 'Create '.(($type=="Jobs")?"Job":"Internship").' In Minutes'); ?></span>
                     </div>
                 </div>
                 <?php
@@ -40,12 +40,12 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
                     ]); ?>
                     <div class="row">
                         <div class="col-md-12">
-                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose Job Profile'])->label(false); ?>
+                            <?= $form->field($model, 'job_profile')->dropDownList($primary_cat, ['prompt' => 'Choose '.(($type=="Jobs")?"Job":"Internship").' Profile'])->label(false); ?>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => 'Job Title'])->label(false); ?>
+                            <?= $form->field($model, 'job_title')->textInput(['class' => 'capitalize form-control', 'id' => 'job_title', 'placeholder' => (($type=="Jobs")?"Job":"Internship").' Title'])->label(false); ?>
                         </div>
                         <div class="col-md-4">
                             <?= $form->field($model, 'gender')->dropDownList([
@@ -215,9 +215,24 @@ $this->registerJs($Initscript, yii\web\View::POS_HEAD);
             </div>
         </div>
     </div>
-    </div>
 <?php
 $this->registerCss("
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/quickjob.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.page-container-bg-solid .page-content{
+    background: transparent !important;
+}
+.portlet.light {
+    background-color: #ffffffe3 !important;
+}
+.text-center {
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
 .typeahead,
 .tt-query,
  {
@@ -648,7 +663,7 @@ let appEditor;
 });
 JS;
 $this->registerJs($script);
-$this->registerCssFile("@web/assets/themes/jobhunt/css/icons.css");
+$this->registerCssFile("/assets/themes/jobhunt/css/icons.css");
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@root/assets/vendor/ckeditor/ckeditor.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
