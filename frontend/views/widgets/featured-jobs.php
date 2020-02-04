@@ -1,48 +1,53 @@
 <?php
+
 use yii\helpers\Url;
+
 ?>
- <div class="row">
-    <div class="col-md-12">
-        <div class="widget-heading">
-            <span><img src="" alt=""></span>
-            <span>Prefered Jobs</span>
-            <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="widget-heading">
+                    <span><img src="" alt=""></span>
+                    <span>Prefered Jobs</span>
+                    <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
                 <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
                     <i class="fab fa-whatsapp-square"></i> Join Us
                 </a>
             </span>
-        </div>
-    </div>
-</div>
-    <div class="row">
-        <?=
-            $this->render('/widgets/new-jobs-box',[
-                'featured_jobs' => $featured_jobs
-            ])
-        ?>
-    </div>
-    <div class="fj-form">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="fj-sub-heading">Get Latest Updates in you inbox</div>
-            </div>
-            <div class="col-md-6">
-                <div class="fj-sub-form">
-                    <form id="subs_news">
-                        <div class="row">
-                            <div class="col-md-9">
-                                <input type="text" name="email" class="fj-input" placeholder="Your Email">
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="fj-btn">Notify Me</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="featured-job-cards"></div>
+            </div>
+        </div>
+<!--        <div class="fj-form">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-6">-->
+<!--                    <div class="fj-sub-heading">Get Latest Updates in you inbox</div>-->
+<!--                </div>-->
+<!--                <div class="col-md-6">-->
+<!--                    <div class="fj-sub-form">-->
+<!--                        <form id="subs_news">-->
+<!--                            <div class="row">-->
+<!--                                <div class="col-md-9">-->
+<!--                                    <input type="text" name="email" class="fj-input" placeholder="Your Email">-->
+<!--                                </div>-->
+<!--                                <div class="col-md-3">-->
+<!--                                    <button type="submit" class="fj-btn">Notify Me</button>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
+</section>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .widget-heading{
     text-align:center;
@@ -86,6 +91,8 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
+getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/index');
+console.log('roclj');
 $('#subs_news').submit(function(event) {
     event.preventDefault();
      var formData = $(this).serialize();

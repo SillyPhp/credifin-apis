@@ -339,7 +339,14 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
-        width: 100%;
+        width: 100% !important;
+    }
+    .job-single-head.style2 .job-thumb{
+        margin-top:0px;
+        margin-left:10px;
+    }
+    .overlay-top{
+        padding-bottom:10px;
     }
     .job-thumb{max-width: 125px;}
     .job-head-info{

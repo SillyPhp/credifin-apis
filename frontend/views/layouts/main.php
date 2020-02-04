@@ -87,7 +87,7 @@ AppAssets::register($this);
                         </span>
                     </div>
                     <div class="secondary-top-header-right">
-                        <a href="/employers"><i class="fas fa-user-circle"></i> Employer Zone</a>
+                        <a href="/employers">Employer Zone</a>
                         <a href="/signup/organization" class="org-signup">Signup as Company</a>
                         <a href="/signup/individual">Signup as Candidate</a>
                     </div>
@@ -115,8 +115,9 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('@common/widgets/top-header-beta', [
-                                    'for' => 'Frontend'
+                                <?= $this->render('@common/widgets/top-header-beta-bk', [
+                                    'for' => 'Frontend',
+//                                    'data' => $this->params['sub_header']
                                 ]); ?>
                             </div>
                             <div class="ey-nav-actions">
@@ -231,7 +232,9 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile'); ?>
+                            <?= $this->render('@common/widgets/top-header-mobile-bk',[
+//                                'data' => $this->params['sub_header']
+                            ]); ?>
                         </div>
                     </div>
                 </div>
@@ -240,9 +243,9 @@ AppAssets::register($this);
         <?= (!$this->params['header_dark']) ? '</div>' : ''; ?>
     </header>
     <div class="main-content">
-        <div id="page-loading" class="page-loading">
-            <img src="<?= Url::to('@eyAssets/images/loader/loader-main.gif'); ?>" alt="Loading..">
-        </div>
+<!--        <div id="page-loading" class="page-loading">-->
+<!--            <img src="--><?//= Url::to('@eyAssets/images/loader/loader-main.gif'); ?><!--" alt="Loading..">-->
+<!--        </div>-->
         <?php
         //        if (isset($this->params['sub_header']) && !empty($this->params['sub_header'])) {
         //            echo $this->render('/widgets/sub-header', [
@@ -339,14 +342,6 @@ AppAssets::register($this);
                                     </ul>
                                 </div>
                             </div>
-                            <!--                            <div class="col-md-12 col-sm-12">-->
-                            <!--                                <div class="quick-btns">-->
-                            <!--                                    <ul class="qb">-->
-                            <!--                                        <li><a href="-->
-                            <? //= "/careers"; ?><!--" class="career-btn">Careers</a></li>-->
-                            <!--                                    </ul>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <div class="send_mail">
                                     <a class="" href="mailto:info@empoweryouth.com"><i
@@ -508,15 +503,15 @@ $this->registerCss('
 }
 
 .secondary-top-header{
-    height:30px;
-    margin-top:-32px;
+    height:32px;
+    margin-top:-34px;
     line-height: 30px;
     display: block;
     transition: margin 500ms;
     background-color: rgba(0, 0, 0, 0.4);
 }
 .header-show .secondary-top-header{
-    margin-top: 0px;
+    margin-top: -2px;
 }
 .animated-active .header-show .secondary-top-header{
     background-color: rgba(0, 0, 0, 0.2);
@@ -535,8 +530,8 @@ $this->registerCss('
 }
 .secondary-top-header-right a{
     float: right;
-    height: 30px;
-    line-height: 30px;
+    height: 32px;
+    line-height: 32px;
     padding: 0px 10px;
     margin-left: 5px;
 }
@@ -556,6 +551,13 @@ $this->registerCss('
 @media screen and (max-width: 1015px) and (min-width: 0px) {
     .secondary-top-header-left{display:none;}
 }
+.secondary-top-header-right a:first-child{
+    background-color: #f07704;
+}
+.secondary-top-header-right a:first-child:hover{
+    color:#fff !important;
+    background-color: #dc6b00;
+}
 .send_mail{
     word-wrap: break-word;
     display:block;
@@ -572,30 +574,6 @@ $this->registerCss('
     color:#00a0e3 !important;
     transition:.3s all;
 }
-.feed-btn a{
-    border:2px solid #00a0e3;
-    color:#00a0e3;
-    padding:5px 10px;
-    border-radius:20px;
-    margin-top:20px !important;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
- .feed-btn a:hover{
-    color:#fff;
-    background:#00a0e3;
-    -webkit-transition: .3s all;
-    -moz-transition: .3s all;
-    -ms-transition: .3s all;
-    -o-transition: .3s all;
-    transition: .3s all;
- }
-.menuzord-brand{
-    position:relative;
- }
 .logo-beta{
     font-size: 11px;
     position: absolute;
@@ -609,12 +587,6 @@ $this->registerCss('
      bottom: -2px; 
      right: -15px;
      color: #444;
- }
-.add-padding nav .menuzord-brand .logo_beta{
-    color:#fff;
- }
-.add-padding nav .menuzord-brand .logo-beta{
-    color:#fff;
  }
 .page-loading {
     background-color: #ffffff;
@@ -661,12 +633,6 @@ $this->registerCss('
     .my-profiles-sec span{
         margin-top:1px !important;
     }
-    .menuzord .showhide em{
-        background-color: #777;
-    }
-    .add-padding .menuzord .showhide em{
-        background-color:#fff;
-    }
 }
 /*footer css*/
 .useful-links ul li{
@@ -694,9 +660,6 @@ $this->registerCss('
 } 
 .footer-widget{
     margin: 0 auto;
-}
-.icons-ss{
-    padding-top:15px;
 }
 .widget .styled-icons li a {
     margin-bottom: 0;
@@ -731,9 +694,6 @@ $this->registerCss('
     margin-top:7px;
   }
 /*footer-css-ends*/
-.fullheight {
-    background-size: contain !important;
-}
 .main-content{
     min-height: 70%;
     min-height: -webkit-calc(100vh - 355px);
@@ -767,10 +727,6 @@ $this->registerCss('
         text-align: left !important;
     }
 }
-.menuzord-brand img{
-    max-height:42px;
-    margin-left:20px;
-}
 .my-profiles-sec span{
     line-height:normal;
     margin-top:5px;
@@ -791,18 +747,6 @@ $this->registerCss('
     -ms-border-radius: 50% !important;
     -o-border-radius: 50% !important;
     border-radius: 50% !important;
-}
-.footer-list li{
-    float: left;
-    width: 100%;
-    margin: 0;
-    margin-bottom: 0px;
-    position: relative;
-    padding-left: 10px;
-    line-height: 21px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #888888;
 }
 @media only screen and (max-width: 768px){
     .footer-widget {
@@ -874,7 +818,7 @@ if (!$this->params['header_dark']) {
             }); ");
 }
 $this->registerJs('
-$(".page-loading").fadeOut();
+//$(".page-loading").fadeOut();
 var thispageurl = window.location.pathname;
 $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
     var attr = $(this).attr("href");

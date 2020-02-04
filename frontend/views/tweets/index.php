@@ -493,6 +493,16 @@ float:right;
     .overlay-image {
         max-width: 115px;
     }
+    .masonry { 
+        -webkit-column-count: 1;
+      -moz-column-count:1;
+      column-count: 1;
+      column-gap: 0em;
+       margin: 0em;
+        -moz-column-gap: 0em;
+        -webkit-column-gap: 0em;
+        column-gap: 0em;
+    }
 }
 ");
 $script = <<< JS

@@ -42,6 +42,13 @@ $this->registerCss('
 .main-content{
     min-height:100vh !important;
 }
+.application-card-img{
+    margin-left:0px;
+    margin-top:30px;
+}
+.application-card-description{
+    margin:20px 0 0 15px !important;
+}
 ');
 ?>
 

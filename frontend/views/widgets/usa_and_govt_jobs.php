@@ -88,4 +88,13 @@ $this->registerCss('
     font-size:20px;
     padding:5px 10px;
 }
+@media (max-width:415px){
+.gov-heading{
+    font-size:25px;
+}
+.gov-job{
+    margin:0;
+    margin-bottom:10px;
+}
+}
 ');

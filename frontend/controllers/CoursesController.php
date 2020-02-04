@@ -19,7 +19,7 @@ class CoursesController extends Controller
         return $this->render('courses-list-page');
     }
 
-    public function actionCoursesDetail()
+    public function actionCoursesDetail($id)
     {
         return $this->render('courses-detail-page');
     }

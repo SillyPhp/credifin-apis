@@ -4,114 +4,120 @@ $this->params['header_dark'] = true;
 use yii\helpers\Url;
 
 ?>
-
-
-    <section class="bg-set-clr">
-        <div class="container">
-            <div class="row">
-                <div class="set-line-main">
-                    <div class="c-heading">AWS Certified Solutions Architect - Associate 2020</div>
-                    <div class="c-suggestion">Want to pass the AWS Solutions Architect - Associate Exam?</div>
-                    <div class="c-created">Created by :<span>Ryan Kroonenburg, Faye Ellis</span></div>
-                    <div class="c-lang">Languages : <span>English</span></div>
-                    <div class="cart">
-                        <span><i class="fas fa-cart-plus" title="Add To Cart"></i>Add To Cart</span>
-                        <span><i class="far fa-heart" title="Add To Wishlist"></i>Wishlist</span>
+<div id="detail-main"></div>
+    <script id="detail-app" type="text/template">
+        {{#.}}
+        <section class="bg-set-clr">
+            <div class="container">
+                <div class="row">
+                    <div class="set-line-main">
+                        <div class="c-heading">{{title}}</div>
+                        <div class="c-suggestion">{{headline}}</div>
+                        <div class="c-created">Created by :<span>{{#visible_instructors}}{{display_name}}{{/visible_instructors}}</span></div>
+                        <div class="c-lang">Languages : <span>{{#locale}}{{locale.title}}{{/locale}}</span></div>
+                        <div class="cart">
+                            <span><i class="fas fa-cart-plus" title="Add To Cart"></i>Add To Cart</span>
+                            <span><i class="far fa-heart" title="Add To Wishlist"></i>Wishlist</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8 col-sm-8">
-                    <div class="video-sec">
-                        <div class="video-thumb">
-                            <img src="<?= Url::to('/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'); ?>"/>
-                        </div>
-                    </div>
-                    <div class="about-course">
-                        <div class="course-heading">About this course</div>
-                        <div class="course-detail">This course introduces you to important concepts and terminology for
-                            working with Google Cloud Platform (GCP). You learn about, and compare, many of the
-                            computing and storage services available in Google Cloud Platform, including Google App
-                            Engine, Google Compute Engine, Google Kubernetes Engine, Google Cloud Storage, Google Cloud
-                            SQL, and BigQuery. You learn about important resource and policy management tools,
-                        </div>
-                    </div>
-                    <div class="learn-box">
-                        <h3>What you will learn</h3>
-                        <div class="points">
-                            <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>
-                            <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>
-                            <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>
-                        </div>
-                    </div>
-                    <div class="skills-box">
-                        <h3>skills you will gain</h3>
-                        <div class="points">
-                            <div class="skills-cards">html</div>
-                            <div class="skills-cards">html</div>
-                            <div class="skills-cards">html</div>
-                        </div>
-                    </div>
-                    <div class="c-requirements">
-                        <h3>Requirements</h3>
-                        <div class="req-points">
-                            <ul>
-                                <li>Absolutely no experience is required. We will start from the basics and gradually
-                                    build up your knowledge. Everything is in the course.
-                                </li>
-                                <li>You will need Microsoft Excel 2010, 2013, or 2016</li>
-                                <li>You will need Microsoft PowerPoint 2010, 2013, or 2016</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4">
-                    <div class="buy-box">
-                        <div class="c-preview">
-                            <img src="<?= Url::to('/assets/themes/ey/images/pages/candidate-profile/Girls2.jpg'); ?>"/>
-                        </div>
-                        <div class="c-amount"><i class="fas fa-rupee-sign"></i> 5000</div>
-                        <div class="buy-btn">
-                            <button class="new-btn-set">Buy Now</button>
-                        </div>
-                        <div class="discount-set">
-                            <button onclick="myFunction()" class="coupon-code">Apply Promo Code</button>
-                        </div>
-                        <div class="coupon-modal" id="coupon">
-                            <input class="form-control set-marg" type="text">
-                            <button class="coupon-btn-set">Apply</button>
-                        </div>
-                        <div class="get-coupon input-group">
-                            <input type="text" id="value-save" class="form-control set-form" value="">
-                            <div class="input-group-btn">
-                                <button class="clipboard btn btn-default get-btn" onClick="valueSave();">
-                                    <i class="fa fa-clipboard" aria-hidden="true"></i>Copy to Clipboard
-                                </button>
+        <section>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8 col-sm-8">
+                        <div class="video-sec">
+                            <div class="video-thumb">
+                                <img src="{{image_750x422}}"/>
                             </div>
                         </div>
-                        <div class="c-includes">
-                            <div class="include-head">This Course Includes</div>
-                            <div class="include-inner">
+                        <div class="about-course">
+                            <div class="course-heading">About this course</div>
+                            <div class="course-detail">
+                                {{{description}}}
+                            </div>
+                        </div>
+                        <div class="learn-box">
+                            <h3>What you will learn</h3>
+                            <div class="points">
+                                <div class="learning-cards"><i class="fas fa-check-circle"></i>
+                                    {{#what_you_will_learn_data.items}}
+                                        {{.}}
+                                    {{/what_you_will_learn_data.items}}
+                                </div>
+<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
+<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
+                            </div>
+                        </div>
+<!--                        <div class="skills-box">-->
+<!--                            <h3>Skills you will gain</h3>-->
+<!--                            <div class="points">-->
+<!--                                <div class="skills-cards">html</div>-->
+<!--                                <div class="skills-cards">html</div>-->
+<!--                                <div class="skills-cards">html</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="c-requirements">
+                            <h3>Requirements</h3>
+                            <div class="req-points">
                                 <ul>
-                                    <li>17 hours on-demand video</li>
-                                    <li>2 articles</li>
-                                    <li>462 downloadable resources</li>
-                                    <li>Full lifetime access</li>
-                                    <li>Certificate of Completion</li>
+                                    {{#requirements_data.items}}
+                                        <li>
+                                            {{.}}
+                                        </li>
+                                    {{/requirements_data.items}}
+<!--                                    <li>You will need Microsoft Excel 2010, 2013, or 2016</li>-->
+<!--                                    <li>You will need Microsoft PowerPoint 2010, 2013, or 2016</li>-->
                                 </ul>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4 col-sm-4">
+                        <div class="buy-box">
+                            <div class="c-preview">
+                                <img src="{{image_304x171}}"/>
+                            </div>
+                            <div class="c-amount">{{#is_paid}}<i class="fas fa-rupee-sign"></i>{{/is_paid}} {{price}}</div>
+                            <div class="buy-btn">
+                                <button class="new-btn-set">Enroll Now</button>
+                            </div>
+<!--                            <div class="discount-set">-->
+<!--                                <button onclick="myFunction()" class="coupon-code">Apply Promo Code</button>-->
+<!--                            </div>-->
+<!--                            <div class="coupon-modal" id="coupon">-->
+<!--                                <input class="form-control set-marg" type="text">-->
+<!--                                <button class="coupon-btn-set">Apply</button>-->
+<!--                            </div>-->
+                            <div class="get-coupon input-group">
+                                <input type="text" id="value-save" class="form-control set-form" value="">
+                                <div class="input-group-btn">
+                                    <button class="clipboard btn btn-default get-btn" onClick="valueSave();">
+                                        <i class="fa fa-clipboard" aria-hidden="true"></i>Copy to Clipboard
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="c-includes">
+                                <div class="include-head">This Course Includes</div>
+                                <div class="include-inner">
+                                    <ul>
+                                        <li>{{content_info}} on-demand video</li>
+                                        {{#num_article_assets}}<li>{{num_article_assets}} articles</li>{{/num_article_assets}}
+                                        {{#num_additional_assets}}<li>{{num_additional_assets}} downloadable resources</li>{{/num_additional_assets}}
+                                        {{#num_coding_exercises}}<li>{{num_coding_exercises}} Exercises</li>{{/num_coding_exercises}}
+<!--                                        <li>Full lifetime access</li>-->
+                                        {{#has_certificate}}<li>Certificate of Completion</li>{{/has_certificate}}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+        {{/.}}
+    </script>
     <script>
         function myFunction() {
             document.getElementById("coupon").style.display = "block";
@@ -200,7 +206,7 @@ $this->registerCss('
 .learning-cards {
     text-align: left;
     display: inline-flex;
-    width: 48%;
+    width: 100%;
     margin: 5px;
     font-size: 16px;
     text-transform: capitalize;
@@ -393,3 +399,36 @@ $this->registerCss('
     margin: 10px 0px;
 }
 ');
+$script = <<< JS
+function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+var id = getUrlVars()["id"];
+$.ajax({
+    method: "GET",
+    url : 'https://www.udemy.com/api-2.0/courses/' + id + '?fields[course]=@all',
+    beforeSend: function(request) {
+        request.setRequestHeader("Accept", "application/json, text/plain, */*");
+        request.setRequestHeader("Authorization", "Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==");
+        request.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+    },
+    // headers: {
+    //     'Accept':'application/json, text/plain, */*',
+    //     'Authorization':'Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==',
+    //     'Content-Type':'application/json;charset=utf-8'
+    // },
+    success: function(response) {
+        if(response) {
+            var template = $('#detail-app').html();
+            var rendered = Mustache.render(template,response);
+            $('#detail-main').append(rendered);
+        }
+    }
+});
+JS;
+$this->registerJs($script);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

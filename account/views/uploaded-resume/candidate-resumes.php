@@ -105,7 +105,7 @@ use yii\helpers\Url;
                                                                 <div class="paid-candidate-box-exp">
                                                                     <?php if (!empty($u['userEnc']['city_name'])) { ?>
                                                                         <div class="desination"><i
-                                                                                    class="fa fa-map-marker"></i><?= $u['userEnc']['city_name'] ?>
+                                                                                    class="fa fa-map-marker"></i> <?= $u['userEnc']['city_name'] ?>
                                                                         </div>
                                                                     <?php } ?>
                                                                     <?php
@@ -179,7 +179,11 @@ use yii\helpers\Url;
                                         </div>
                                     <?php } ?>
                                     </div>
-
+                                    <div>
+                                        <?=
+                                        $this->render('@frontend/views/widgets/preloaders/candidate-resume');
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -351,9 +355,9 @@ $this->registerCss('
     margin: 10px 0;
 	padding:0;
 	min-height:74px;
+	height: 115px;
 }
 .paid-candidate-box-extra ul li {
-    display: inline-block;
     list-style: none;
     padding:3px 15px;
     border: 1px solid #b9c5ce;
@@ -361,6 +365,11 @@ $this->registerCss('
     margin: 5px;
     font-weight: 500;
     color: #657180;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-inline-box;
+    overflow: hidden;
 }
 .paid-candidate-box-extra ul li.more-skill{
 	color:#ffffff;
@@ -445,6 +454,9 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
   font-weight: 400;
   margin-bottom:0px;
 }
+.p-category-main:hover .checkbox-label:before {
+    top:-5px !important;
+} 
 .checkbox-label:before {
   content: "";
   position: absolute;
