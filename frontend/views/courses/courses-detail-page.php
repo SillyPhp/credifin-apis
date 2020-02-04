@@ -409,20 +409,24 @@ function getUrlVars() {
 }
 var id = getUrlVars()["id"];
 $.ajax({
-    method: "GET",
-    url : 'https://www.udemy.com/api-2.0/courses/' + id + '?fields[course]=@all',
-    beforeSend: function(request) {
-        request.setRequestHeader("Accept", "application/json, text/plain, */*");
-        request.setRequestHeader("Authorization", "Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==");
-        request.setRequestHeader("Content-Type", "application/json;charset=utf-8");
-    },
+    method: "POST",
+    // url : 'https://www.udemy.com/api-2.0/courses/' + id + '?fields[course]=@all',
+    url : '/courses/get-data',
+    data:{id:id},
+    // dataType:"json",
+    // beforeSend: function(request) {
+    //     request.setRequestHeader("Accept", "application/json, text/plain, */*");
+    //     request.setRequestHeader("Authorization", "Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==");
+    //     request.setRequestHeader("Content-Type", "application/json;charset=utf-8");
+    // },
     // headers: {
-    //     'Accept':'application/json, text/plain, */*',
-    //     'Authorization':'Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==',
-    //     'Content-Type':'application/json;charset=utf-8'
+        //'Accept':'application/json, text/plain, */*',
+        // 'Authorization':'Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==',
+        //'Content-Type':'application/json;charset=utf-8'
     // },
     success: function(response) {
         if(response) {
+            console.log(response);
             var template = $('#detail-app').html();
             var rendered = Mustache.render(template,response);
             $('#detail-main').append(rendered);
