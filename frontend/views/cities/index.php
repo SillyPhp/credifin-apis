@@ -11,7 +11,8 @@ $this->params['header_dark'] = false;
                 <div class="col-md-12">
                     <div class="main-heading">
                         <div class="pos-center">
-                            <div class="main-text"><i class="fas fa-map-marker-alt"></i>  Ludhiana, Punjab, India</div>
+                            <div class="main-text"><i class="fas fa-map-marker-alt"></i> <?= implode(',', $city) ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -26,42 +27,66 @@ $this->params['header_dark'] = false;
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box1">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/job.png') ?>">
-                            <span class="count"><?= $job_count?>+</span>
+                            <?php if ($job_count) { ?>
+                                <span class="count"><?= $job_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $job_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Jobs</span>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box2">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/company.png') ?>">
-                            <span class="count"><?= $org_count?>+</span>
+                            <?php if ($org_count) { ?>
+                                <span class="count"><?= $org_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $org_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Companies</span>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box3">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/internship.png') ?>">
-                            <span class="count"><?= $internship_count?>+</span>
+                            <?php if ($internship_count) { ?>
+                                <span class="count"><?= $internship_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $internship_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Internships</span>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box4">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/institute.png') ?>">
-                            <span class="count"><?= $institute_count?>+</span>
+                            <?php if ($institute_count) { ?>
+                                <span class="count"><?= $institute_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $institute_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Institutes</span>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box5">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/school.png') ?>">
-                            <span class="count"><?= $school_count?>+</span>
+                            <?php if ($school_count) { ?>
+                                <span class="count"><?= $school_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $school_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Schools</span>
                         </div>
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <div class="box-des box6">
                             <img src="<?= Url::to('@eyAssets/images/pages/cities/college1.png') ?>">
-                            <span class="count"><?= $college_count ?>+</span>
+                            <?php if ($college_count) { ?>
+                                <span class="count"><?= $college_count ?>+</span>
+                            <?php } else { ?>
+                                <span class="count"><?= $college_count ?></span>
+                            <?php } ?>
                             <span class="box-text">Colleges</span>
                         </div>
                     </div>
@@ -72,304 +97,280 @@ $this->params['header_dark'] = false;
 
 
     <section>
-        <div class="container">
+        <div class="container job-cards">
             <div class="row">
                 <div class=" col-md-12">
                     <div class="heading-style">Related Jobs</div>
                 </div>
             </div>
-            <?php echo $this->render('/widgets/mustache/application-card', [
-                'type' => 'Jobs',
-            ]);?>
+            <?php echo $this->render('/widgets/mustache/cities/application-cards', [
+                'type' => 'jobs',
+                'city' => $city['city']
+            ]); ?>
         </div>
     </section>
 
     <section>
-        <div class="container">
+        <div class="container internship-cards">
             <div class="row">
                 <div class=" col-md-12">
                     <div class="heading-style">Related Internships</div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-6 col-xs-12 pt-5">
-                <div class="application-card-main">
-                        <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;
-                      </span>
-
-                    <span class="application-card-type location">
-                            <i class="fas fa-map-marker-alt"></i>&nbsp;All India
-                        </span>
-                    <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
-                        <div class="application-card-img">
-                            <a href="" title="">
-                                <img src="https://www.empoweryouth.com/images/organizations/logo/RD5x8awsjAU9zZVE3ScxAbsfphlaNgKgATbEU3Y6i0P4HKNPbP/W10EsCvmo-75qtYr9L77yP1BrP6Q2I5c/WYn1kN3q6R6KAGmB3mNVoglZbMv0OE.png">
-                            </a>
-                        </div>
-                        <div class="application-card-description">
-                            <a href="" title=""><h4 class="application-title">web design</h4></a>
-                            <!--                            <h5><i class="fas fa-rupee-sign"></i>&nbsp;60000</h5>-->
-                            <h5>negotiable</h5>
-                            <h5>Full Time</h5>
-                            <!--                            <h5><i class="far fa-clock"></i>&nbsp;2years</h5>-->
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <h4 class="org_name text-right">tech adaptive</h4>
-                    </div>
-                    <div class="application-card-wrapper">
-                        <a href="" class="application-card-open" title="View Detail">View Detail</a>
-                        <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
-                    </div>
-                </div>
-            </div>
+            <?php echo $this->render('/widgets/mustache/cities/application-cards', [
+                'type' => 'internships',
+                'city' => $city['city']
+            ]); ?>
         </div>
     </section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Institutes</div>
-                </div>
-                <div class="padd-top-20">
-                    <div id="companies-card"></div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="com-box">
-                        <a href="">
-                            <div class="com-icon">
-                                <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                                </div>
-                                <div class="follow">
-                                    <button><i class="fa fa-heart-o"></i></button>
-                                </div>
-                                <!--                                <div class="featured">Featured</div>-->
-                            </div>
-                            <div class="com-det">
-                                <div class="com-name">Emity Institute</div>
-                                <div class="com-cate"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/l.png') ?>">
-                                    <span class="a">Ludhiana</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="com-box">
-                        <a href="">
-                            <div class="com-icon">
-                                <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                                </div>
-                                <div class="follow">
-                                    <button><i class="fa fa-heart-o"></i></button>
-                                </div>
-                                <!--                                <div class="featured">Featured</div>-->
-                            </div>
-                            <div class="com-det">
-                                <div class="com-name">Emity Institute</div>
-                                <div class="com-cate"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/l.png') ?>">
-                                    <span class="a">Ludhiana</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="com-box">
-                        <a href="">
-                            <div class="com-icon">
-                                <div class="icon"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                                </div>
-                                <div class="follow">
-                                    <button><i class="fa fa-heart-o"></i></button>
-                                </div>
-                                <!--                                <div class="featured">Featured</div>-->
-                            </div>
-                            <div class="com-det">
-                                <div class="com-name">Emity Institute</div>
-                                <div class="com-cate"><img
-                                        src="<?= Url::to('@eyAssets/images/pages/training-detail-page/l.png') ?>">
-                                    <span class="a">Ludhiana</span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!--    <section>-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <div class="heading-style">Institutes</div>-->
+    <!--                </div>-->
+    <!--                <div class="padd-top-20">-->
+    <!--                    <div id="companies-card"></div>-->
+    <!--                </div>-->
+    <!---->
+    <!--                --><?php //foreach ($institutes as $i) { ?>
+    <!--                    <div class="col-md-4 col-sm-6 col-xs-12">-->
+    <!--                        <div class="com-box">-->
+    <!--                            <a href="">-->
+    <!--                                <div class="com-icon">-->
+    <!--                                    <div class="icon"><img-->
+    <!--                                                src="--><? //= $i['image'] ?><!--">-->
+    <!--                                    </div>-->
+    <!--                                    <div class="follow">-->
+    <!--                                        <button><i class="fa fa-heart-o"></i></button>-->
+    <!--                                    </div>-->
+    <!--                                    <!--                                <div class="featured">Featured</div>-->-->
+    <!--                                </div>-->
+    <!--                                <div class="com-det">-->
+    <!--                                    <div class="com-name">--><? //= $i['name']?><!--</div>-->
+    <!--                                    <div class="com-cate"><img-->
+    <!--                                                src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/l.png') ?><!--">-->
+    <!--                                        <span class="a">Ludhiana</span>-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+    <!--                            </a>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                --><?php //} ?>
+    <!---->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
 
+<?php if (!empty($college)) { ?>
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Colleges</h1>
             <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <div class="com-review-box uncliamed_height fivestar-box">
-                        <div class="com-logo">
-                            <a href="#">
-                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            </a>
-                            <a href="#">
-                                <canvas class="user-icon" name="name" width="100" height="100"
-                                        color="color" font="35px">
-                                </canvas>
-                            </a>
-                        </div>
-                        <div class="pos-rel">
-                            <div class="com-name"><a href="#">name</a></div>
-                        </div>
-                        <div class="com-loc"></div>
-                        <div class="com-dep"></div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="rating"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="stars">rating</div>
-                            <div class="reviews-rate">total_reviews </div>
-                        </div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="2"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="reviews-rate"> Currently No Review</div>
-                        </div>
-                        <div class="row">
-                            <div class="cm-btns padd-0">
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-blue">
-                                        <a href="#">View Profile</a>
+                <?php foreach ($college as $c) { ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="com-review-box uncliamed_height fivestar-box">
+                            <div class="com-logo">
+                                <?php if ($c['image']) { ?>
+                                    <a href="#">
+                                        <img src="<?= $c['image'] ?>">
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="#">
+                                        <canvas class="user-icon" name="<?= $c['name'] ?>" width="100" height="100"
+                                                color="<?= $c['initials_color'] ?>" font="35px">
+                                        </canvas>
+                                    </a>
+                                <?php } ?>
+                            </div>
+                            <div class="pos-rel">
+                                <div class="com-name"><a href="#"><?= $c['name'] ?></a></div>
+                            </div>
+                            <?php if ($c['organizationReviews'] != null) { ?>
+                                <div class="com-loc"></div>
+                                <div class="com-dep"></div>
+                                <div class="com-rating">
+                                    <div class="starr"
+                                         data-score="<?= $c['organizationReviews'][0]['average_rating'] ?>"></div>
+                                </div>
+
+                                <div class="rating">
+                                    <div class="stars"><?= $c['organizationReviews'][0]['average_rating'] ?></div>
+                                    <div class="reviews-rate">
+                                        of <?= $c['organizationReviews'][0]['reviews_count'] ?> reviews
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-orange">
-                                        <a href="#">Read Reviews</a>
+                                <div class="com-rating">
+                                    <div class="average-star" data-score="2"></div>
+                                </div>
+                            <?php } else { ?>
+                                <div class="rating">
+                                    <div class="reviews-rate no-review"> Currently No Review</div>
+                                </div>
+                            <?php } ?>
+                            <div class="row">
+                                <div class="cm-btns padd-0">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-blue">
+                                            <a href="<?= Url::to('/' . $c['slug']) ?>">View Profile</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-orange">
+                                            <a href="<?= Url::to('/' . $c['slug'] . '/reviews') ?>">Read Reviews</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php } ?>
             </div>
         </div>
     </section>
+<?php } ?>
 
+<?php if (!empty($school)) { ?>
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Schools</h1>
             <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <div class="com-review-box uncliamed_height fivestar-box">
-                        <div class="com-logo">
-                            <a href="#">
-                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            </a>
-                            <a href="#">
-                                <canvas class="user-icon" name="name" width="100" height="100"
-                                        color="color" font="35px">
-                                </canvas>
-                            </a>
-                        </div>
-                        <div class="pos-rel">
-                            <div class="com-name"><a href="#">name</a></div>
-                        </div>
-                        <div class="com-loc"></div>
-                        <div class="com-dep"></div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="rating"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="stars">rating</div>
-                            <div class="reviews-rate">total_reviews </div>
-                        </div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="2"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="reviews-rate"> Currently No Review</div>
-                        </div>
-                        <div class="row">
-                            <div class="cm-btns padd-0">
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-blue">
-                                        <a href="#">View Profile</a>
+                <?php foreach ($school as $s) { ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="com-review-box uncliamed_height fivestar-box">
+                            <div class="com-logo">
+                                <?php if ($s['image']) { ?>
+                                    <a href="#">
+                                        <img src="<?= $s['image'] ?>">
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="#">
+                                        <canvas class="user-icon" name="<?= $s['name'] ?>" width="100" height="100"
+                                                color="<?= $s['initials_color'] ?>" font="35px">
+                                        </canvas>
+                                    </a>
+                                <?php } ?>
+                            </div>
+                            <div class="pos-rel">
+                                <div class="com-name"><a href="#"><?= $s['name'] ?></a></div>
+                            </div>
+                            <?php if ($s['organizationReviews'] != null) { ?>
+                                <div class="com-loc"></div>
+                                <div class="com-dep"></div>
+                                <div class="com-rating">
+                                    <div class="average-star"
+                                         data-score="<?= $s['organizationReviews'][0]['average_rating'] ?>"></div>
+                                </div>
+
+                                <div class="rating">
+                                    <div class="stars"><?= $s['organizationReviews'][0]['average_rating'] ?>
+                                    </div>
+                                    <div class="reviews-rate">
+                                        of <?= $s['organizationReviews'][0]['reviews_count'] ?> reviews
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-orange">
-                                        <a href="#">Read Reviews</a>
+                                <div class="com-rating">
+                                    <div class="average-star" data-score="2"></div>
+                                </div>
+                            <? } else { ?>
+                                <div class="rating">
+                                    <div class="reviews-rate no-review"> Currently No Review</div>
+                                </div>
+                            <?php } ?>
+                            <div class="row">
+                                <div class="cm-btns padd-0">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-blue">
+                                            <a href="<?= Url::to('/' . $s['slug']) ?>">View Profile</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-orange">
+                                            <a href="<?= Url::to('/' . $s['slug'] . '/reviews') ?>">Read Reviews</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php } ?>
             </div>
         </div>
     </section>
+<?php } ?>
 
+<?php if (!empty($institutes)) { ?>
     <section class="top-com">
         <div class="container">
             <h1 class="heading-style">Educational Institutes</h1>
             <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <div class="com-review-box uncliamed_height fivestar-box">
-                        <div class="com-logo">
-                            <a href="#">
-                                <img src="<?= Url::to('@eyAssets/images/pages/training-detail-page/small.jpg') ?>">
-                            </a>
-                            <a href="#">
-                                <canvas class="user-icon" name="name" width="100" height="100"
-                                        color="color" font="35px">
-                                </canvas>
-                            </a>
-                        </div>
-                        <div class="pos-rel">
-                            <div class="com-name"><a href="#">name</a></div>
-                        </div>
-                        <div class="com-loc"></div>
-                        <div class="com-dep"></div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="5"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="stars">5</div>
-                            <div class="reviews-rate"> to 2 </div>
-                        </div>
-                        <div class="com-rating">
-                            <div class="average-star" data-score="2"></div>
-                        </div>
-                        <div class="rating">
-                            <div class="reviews-rate"> Currently No Review</div>
-                        </div>
-                        <div class="row">
-                            <div class="cm-btns padd-0">
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-blue">
-                                        <a href="#">View Profile</a>
+                <?php foreach ($institutes as $i) { ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="com-review-box uncliamed_height fivestar-box">
+                            <div class="com-logo">
+                                <?php if ($i['image']) { ?>
+                                    <a href="#">
+                                        <img src="<?= $i['image'] ?>">
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="#">
+                                        <canvas class="user-icon" name="<?= $i['name'] ?>" width="100" height="100"
+                                                color="<?= $i['initials_color'] ?>" font="35px">
+                                        </canvas>
+                                    </a>
+                                <?php } ?>
+                            </div>
+                            <div class="pos-rel">
+                                <div class="com-name"><a href="#"><?= $i['name'] ?></a></div>
+                            </div>
+                            <?php if ($i['organizationReviews'] != null) { ?>
+                                <div class="com-loc"></div>
+                                <div class="com-dep"></div>
+                                <div class="com-rating">
+                                    <div class="starr"
+                                         data-score="<?= $i['organizationReviews'][0]['average_rating'] ?>"></div>
+                                </div>
+                                <div class="rating">
+                                    <div class="stars"><?= $i['organizationReviews'][0]['average_rating'] ?></div>
+                                    <div class="reviews-rate">
+                                        of <?= $i['organizationReviews'][0]['reviews_count'] ?> reviews
                                     </div>
                                 </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <div class="color-orange">
-                                        <a href="#">Read Reviews</a>
+                                <div class="com-rating">
+                                    <div class="average-star" data-score="2"></div>
+                                </div>
+                            <?php } else { ?>
+                                <div class="rating">
+                                    <div class="reviews-rate no-review"> Currently No Review</div>
+                                </div>
+                            <?php } ?>
+                            <div class="row">
+                                <div class="cm-btns padd-0">
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-blue">
+                                            <a href="<?= Url::to('/' . $i['slug']) ?>">View Profile</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6 col-xs-6">
+                                        <div class="color-orange">
+                                            <a href="<?= Url::to('/' . $i['slug'] . '/reviews') ?>">Read Reviews</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php } ?>
             </div>
         </div>
     </section>
+<?php } ?>
 
 <?php
+$c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+.no-review{height:55px;line-height:50px;}
 .backgrounds{
 //    background-size: 100% 520px;
     background-image: url("' . Url::to("@eyAssets/images/pages/cities/instituteheader1.png") . '");
@@ -694,6 +695,103 @@ color: initial;
    
 ');
 $script = <<<JS
-    getCards();
+
+    function renderCards(cards){
+            var card = $('#application-card').html();
+            var cardsLength = cards.length;
+           
+            for(var i=0; i<cards.length; i++){
+                if(cards[i].skill != null){
+                    cards[i].skill = cards[i].skill.split(',')
+                } else {
+                    cards[i].skill = [];
+                }
+            }
+            var noRows = Math.ceil(cardsLength / 3);
+            var j = 0;
+            for(var i = 1; i <= noRows; i++){
+                $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
+                j+=3;
+            }
+            checkSkills();
+    }
+    
+    function getCards(city,type) {
+        $.ajax({
+            method: "POST",
+            url : 'index',
+            data: {city:city,type:type},
+            async:false,
+            success: function(response) {
+                response = JSON.parse(response);
+                if(response.status === 200) {
+                    renderCards(response.cards);
+                    utilities.initials();
+                }
+            }
+        })
+    }
+        
+        function checkSkills(){
+            $('.application-card-main').each(function(){
+               var elems = $(this).find('.after');
+               var i = 0;
+               $(elems).each(function() {
+                    if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+                        $(this).addClass('hidden');
+                    }
+                    i++;
+               });
+               var skillsMain = $(this).find('.tags');
+               var hddn = $(this).find('.after.hidden');
+               var hasMore = $(this).find('span.more-skills');
+               if(hddn.length != 0){
+                   if(elems.length === hddn.length){
+                       $(elems[0]).removeClass('hidden');
+                       var countMore = hddn.length - 1;
+                       if(countMore != 0 && hasMore.length == 0){
+                           skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+                       }
+                   } else if(hasMore.length == 0) {
+                        skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+                   }
+               }
+            });
+        }
+    
+    
+    $(document).on('click','.application-card-add', function(event){
+            event.preventDefault();
+            var c_user = "$c_user"
+            if(c_user == ""){
+                $('#loginModal').modal('show');
+                return false;
+            }
+            var itemid = $(this).closest('.application-card-main').attr('data-id');
+            $.ajax({
+                url: "/jobs/item-id",
+                method: "POST",
+                data: {'itemid': itemid},
+                success: function (response) {
+                    if (response.status == '200' || response.status == 'short') {
+                        toastr.success('Added to your Review list', 'Success');
+                    } else if (response.status == 'unshort') {
+                        toastr.success('Delete from your Review list', 'Success');
+                    } else {
+                        toastr.error('Please try again Later', 'Error');
+                    }
+                }
+            });
+        });
+$.fn.raty.defaults.path = '/assets/vendor/raty-master/images';
+$('.starr').raty({
+  readOnly: true,
+  hints:['','','','',''],
+ score: function() {
+   return $(this).attr('data-score');
+ }
+});
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

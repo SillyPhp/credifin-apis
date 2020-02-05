@@ -4,8 +4,10 @@ namespace frontend\controllers;
 
 use common\models\EmployerApplications;
 use common\models\Organizations;
+use common\models\UnclaimedOrganizations;
 use frontend\models\applications\ApplicationCards;
 use Yii;
+use yii\helpers\Url;
 use common\models\Cities;
 use common\models\States;
 use common\models\Countries;
@@ -98,21 +100,65 @@ class CitiesController extends Controller
         }
     }
 
-    public function actionIndex()
+    public function actionIndex($location)
     {
         $school = 'School';
         $college = 'College';
         $institute = 'Educational Institute';
-        $city = 'Ludhiana';
+        $city = $location;
 
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+
+            $city = Yii::$app->request->post('city');
+            $type = Yii::$app->request->post('type');
+
+            $options = [];
+            $options['limit'] = 6;
+
+            if ($city) {
+                $options['location'] = $city;
+            }
+
+            if ($type == 'jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } elseif ($type == 'internships') {
+                $cards = ApplicationCards::internships($options);
+            }
+
+            if (count($cards) > 0) {
+                return json_encode([
+                    'status' => 200,
+                    'cards' => $cards,
+                ]);
+            }
+        }
+
+        $full_location = Cities::find()
+            ->alias('a')
+            ->select(['a.name city','b.name state','c.name country'])
+            ->innerJoinWith(['stateEnc b' => function ($b) {
+                $b->innerJoinWith(['countryEnc c']);
+            }],false)
+            ->where(['a.name' => $city])
+            ->asArray()
+            ->one();
+
+        // get jobs and internships counts
         $jobs_count = $this->getJobsCount($city, 'Jobs');
         $internships_count = $this->getJobsCount($city, 'Internships');
+
+        // get org,college,school and institute count
         $org_count = $this->getCompanyCount($city);
         $college_count = $this->getCompanyCount($city, $college);
         $school_count = $this->getCompanyCount($city, $school);
         $institute_count = $this->getCompanyCount($city, $institute);
-        $jobs = $this->getJobs($city,'jobs');
-        $internships = $this->getJobs($city,'internships');
+
+        // getting company, school, college and institute data
+        $companies = $this->getInstitutes($city);
+        $institutes = $this->getInstitutes($city, $institute);
+        $college = $this->getInstitutes($city, $college);
+        $school = $this->getInstitutes($city, $school);
+
 
         return $this->render('index', [
             'job_count' => $jobs_count,
@@ -121,8 +167,11 @@ class CitiesController extends Controller
             'college_count' => $college_count,
             'school_count' => $school_count,
             'institute_count' => $institute_count,
-            'jobs'=>$jobs,
-            'internships'=>$internships
+            'companies' => $companies,
+            'institutes' => $institutes,
+            'school' => $school,
+            'college' => $college,
+            'city' => $full_location
         ]);
     }
 
@@ -173,27 +222,42 @@ class CitiesController extends Controller
         $result = $organizations->asArray()
             ->all();
 
+        $unclaimed_org = UnclaimedOrganizations::find()
+            ->alias('a')
+            ->select([])
+            ->where([''])
+            ->asArray()
+            ->all();
+
         return $result[0]['count'];
     }
 
-    private function getJobs($city, $type)
+    private function getInstitutes($city, $type = null)
     {
-        $options = [];
-        $options['limit'] = 6;
-
-        if ($city) {
-            $options['location'] = $city;
+        $organizations = Organizations::find()
+            ->alias('a')
+            ->distinct()
+            ->select(['a.organization_enc_id', 'a.name', 'a.initials_color', 'a.slug', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END image'])
+            ->joinWith(['organizationLocations b' => function ($b) {
+                $b->joinWith(['cityEnc c']);
+            }], false)
+            ->joinWith(['organizationReviews e' => function ($e) {
+                $e->select(['e.organization_enc_id', 'ROUND(AVG(e.average_rating)) average_rating', 'count(e.review_enc_id) reviews_count']);
+            }])
+            ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'c.name' => $city]);
+        if ($type != null) {
+            $organizations->joinWith(['businessActivityEnc d'], false)
+                ->andWhere(['d.business_activity' => $type]);
+        } else {
+            $organizations->joinWith(['businessActivityEnc d'], false)->andWhere(['not in', 'd.business_activity', ['School', 'College', 'Educational Institute']]);
         }
+        $result =
+            $organizations
+                ->limit(6)
+                ->asArray()
+                ->all();
 
-        if ($type == 'jobs') {
-            $cards = ApplicationCards::jobs($options);
-        }elseif ($type == 'internships'){
-            $cards = ApplicationCards::internships($options);
-        }
-
-        if (count($cards) > 0) {
-            return $cards;
-        }
+        return $result;
     }
 
 }
