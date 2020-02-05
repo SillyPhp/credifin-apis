@@ -131,8 +131,46 @@ use yii\helpers\Url;
             //alert("Copied the text: " + copyText.value);
         }
     </script>
+    <div id="sectionIsLoading" class="sectionIsLoading">
+        <div></div>
+        <div></div>
+    </div>
 <?php
 $this->registerCss('
+.sectionIsLoading {
+    display: block;
+    position: relative;
+    width: 80px;
+    height: 50vh;
+    margin: auto;
+    margin-top: 25vh;
+}
+.sectionIsLoading div {
+  position: absolute;
+  border: 4px solid #00a0e3;
+  opacity: 1;
+  border-radius: 50%;
+  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.sectionIsLoading div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes sectionIsLoading {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
 .bg-set-clr {
     background-color:#505763;
     color:#fff;
@@ -409,20 +447,18 @@ function getUrlVars() {
 }
 var id = getUrlVars()["id"];
 $.ajax({
-    method: "GET",
-    url : 'https://www.udemy.com/api-2.0/courses/' + id + '?fields[course]=@all',
-    beforeSend: function(request) {
-        request.setRequestHeader("Accept", "application/json, text/plain, */*");
-        request.setRequestHeader("Authorization", "Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==");
-        request.setRequestHeader("Content-Type", "application/json;charset=utf-8");
-    },
-    // headers: {
-    //     'Accept':'application/json, text/plain, */*',
-    //     'Authorization':'Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ==',
-    //     'Content-Type':'application/json;charset=utf-8'
-    // },
+    method: "POST",
+    url : '/courses/get-data',
+    data:{id:id},
     success: function(response) {
-        if(response) {
+        $('#sectionIsLoading').fadeOut(800);
+            response = JSON.parse(response);
+        if(response.detail == "Not found.") {
+            $('#detail-main').css('text-align', 'center');
+            $('#detail-main').css('min-height', '60vh');
+            $('#detail-main').css('margin-top', '15vh');
+            $('#detail-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+        } else{
             var template = $('#detail-app').html();
             var rendered = Mustache.render(template,response);
             $('#detail-main').append(rendered);
