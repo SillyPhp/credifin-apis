@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\helpers\Html;
 
 $this->params['header_dark'] = false;
 ?>
@@ -329,7 +329,6 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 
