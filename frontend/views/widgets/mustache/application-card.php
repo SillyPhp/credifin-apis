@@ -1,6 +1,6 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-12 col-xs-12">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
