@@ -130,6 +130,13 @@ margin:auto
     padding: 53px 10px 0px 8px;  
     }
 }
+.application-card-img {
+    margin-left: 0px;
+    margin-top: 30px;
+}
+.application-card-description {
+    margin: 20px 0 0 15px !important;
+}
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
 $script = <<< JS

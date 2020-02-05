@@ -193,7 +193,6 @@ if ($type == 'jobs') {
     {{/.}}
 </script>
 
-
 <?php
 $this->registerCss('
 .near-me-map{
@@ -469,7 +468,6 @@ body {
 .fa-inr{
     color:lightgray;
     margin-right: 10px;
-
 }
 .city, .city i{
     color: #fff;
@@ -477,7 +475,6 @@ body {
 .show-responsive{
     display:none;
 }
-
 .job-fill{
     padding: 5px 10px 4px !important;
     margin: 3px !important;
@@ -489,25 +486,20 @@ body {
     right: 2px !important;
     top: -13px !important;
 }
-
 .clear{
     clear:both;
 }
-
 .sal{
     margin-right: 5px;
 }
-
 .salary{
     font-family:roboto;
 }
-
 .tag-box{
     border-top: 1px solid lightgray;
     padding-left:15px;
     padding-top:10px;
 }
-
 .tags{
     font-size: 17px;
     color:gray;
@@ -576,6 +568,14 @@ body {
     .show-responsive{display:inline;}
     .hide-resp{display:none;}
 
+}
+@media only screen and (max-width: 500px){
+    .near-me-map.affix{
+        position:relative !important;
+        width:100%;
+        top:0;
+        padding-right:15px !important;
+    }
 }
 ');
 $controller = Yii::$app->controller->id;
