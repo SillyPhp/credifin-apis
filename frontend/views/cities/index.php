@@ -124,60 +124,21 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-    <!--    <section>-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="heading-style">Institutes</div>-->
-    <!--                </div>-->
-    <!--                <div class="padd-top-20">-->
-    <!--                    <div id="companies-card"></div>-->
-    <!--                </div>-->
-    <!---->
-    <!--                --><?php //foreach ($institutes as $i) { ?>
-    <!--                    <div class="col-md-4 col-sm-6 col-xs-12">-->
-    <!--                        <div class="com-box">-->
-    <!--                            <a href="">-->
-    <!--                                <div class="com-icon">-->
-    <!--                                    <div class="icon"><img-->
-    <!--                                                src="--><? //= $i['image'] ?><!--">-->
-    <!--                                    </div>-->
-    <!--                                    <div class="follow">-->
-    <!--                                        <button><i class="fa fa-heart-o"></i></button>-->
-    <!--                                    </div>-->
-    <!--                                    <!--                                <div class="featured">Featured</div>-->-->
-    <!--                                </div>-->
-    <!--                                <div class="com-det">-->
-    <!--                                    <div class="com-name">--><? //= $i['name']?><!--</div>-->
-    <!--                                    <div class="com-cate"><img-->
-    <!--                                                src="--><? //= Url::to('@eyAssets/images/pages/training-detail-page/l.png') ?><!--">-->
-    <!--                                        <span class="a">Ludhiana</span>-->
-    <!--                                    </div>-->
-    <!--                                </div>-->
-    <!--                            </a>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                --><?php //} ?>
-    <!---->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
-
-<?php if (!empty($college)) { ?>
+<?php if (!empty($companies)) { ?>
     <section class="top-com">
         <div class="container">
-            <h1 class="heading-style">Colleges</h1>
+            <h1 class="heading-style">Companies</h1>
             <div class="row">
-                <?php foreach ($college as $c) { ?>
+                <?php foreach ($companies as $c) { ?>
                     <div class="col-md-4 col-sm-6">
                         <div class="com-review-box uncliamed_height fivestar-box">
                             <div class="com-logo">
                                 <?php if ($c['image']) { ?>
-                                    <a href="#">
+                                    <a href="<?= Url::to('/' . $c['slug']) ?>">
                                         <img src="<?= $c['image'] ?>">
                                     </a>
                                 <?php } else { ?>
-                                    <a href="#">
+                                    <a href="<?= Url::to('/' . $c['slug']) ?>">
                                         <canvas class="user-icon" name="<?= $c['name'] ?>" width="100" height="100"
                                                 color="<?= $c['initials_color'] ?>" font="35px">
                                         </canvas>
@@ -185,7 +146,8 @@ $this->params['header_dark'] = false;
                                 <?php } ?>
                             </div>
                             <div class="pos-rel">
-                                <div class="com-name"><a href="#"><?= $c['name'] ?></a></div>
+                                <div class="com-name"><a href="<?= Url::to('/' . $c['slug']) ?>"><?= $c['name'] ?></a>
+                                </div>
                             </div>
                             <?php if ($c['organizationReviews'] != null) { ?>
                                 <div class="com-loc"></div>
@@ -231,6 +193,82 @@ $this->params['header_dark'] = false;
     </section>
 <?php } ?>
 
+<?php if (!empty($college)) { ?>
+    <section class="top-com">
+        <div class="container">
+            <h1 class="heading-style">Colleges</h1>
+            <div class="row">
+                <?php foreach ($college as $c) { ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="com-review-box uncliamed_height fivestar-box">
+                            <div class="com-logo">
+                                <?php if ($c['image']) { ?>
+                                    <a href="javascript:;">
+                                        <img src="<?= $c['image'] ?>">
+                                    </a>
+                                <?php } else { ?>
+                                    <a href="javascript:;">
+                                        <canvas class="user-icon" name="<?= $c['name'] ?>" width="100" height="100"
+                                                color="<?= $c['initials_color'] ?>" font="35px">
+                                        </canvas>
+                                    </a>
+                                <?php } ?>
+                            </div>
+                            <div class="pos-rel">
+                                <div class="com-name"><a href="javascript:;"><?= $c['name'] ?></a></div>
+                            </div>
+                            <?php if ($c['organizationReviews'] != null) { ?>
+                                <div class="com-loc"></div>
+                                <div class="com-dep"></div>
+                                <div class="com-rating">
+                                    <div class="starr"
+                                         data-score="<?= $c['organizationReviews'][0]['average_rating'] ?>"></div>
+                                </div>
+
+                                <div class="rating">
+                                    <div class="stars"><?= $c['organizationReviews'][0]['average_rating'] ?></div>
+                                    <div class="reviews-rate">
+                                        of <?= $c['organizationReviews'][0]['reviews_count'] ?> reviews
+                                    </div>
+                                </div>
+                                <div class="com-rating">
+                                    <div class="average-star" data-score="2"></div>
+                                </div>
+                            <?php } else { ?>
+                                <div class="rating">
+                                    <div class="reviews-rate no-review"> Currently No Review</div>
+                                </div>
+                            <?php } ?>
+                            <div class="row">
+                                <div class="cm-btns padd-0">
+                                    <?php if ($c['org_type'] == 'claimed') { ?>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-blue">
+                                                <a href="<?= Url::to('/' . $c['slug']) ?>">View Profile</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $c['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
+                                        </div>
+                                    <?php } else { ?>
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $c['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </section>
+<?php } ?>
+
 <?php if (!empty($school)) { ?>
     <section class="top-com">
         <div class="container">
@@ -241,11 +279,11 @@ $this->params['header_dark'] = false;
                         <div class="com-review-box uncliamed_height fivestar-box">
                             <div class="com-logo">
                                 <?php if ($s['image']) { ?>
-                                    <a href="#">
+                                    <a href="javascript:;">
                                         <img src="<?= $s['image'] ?>">
                                     </a>
                                 <?php } else { ?>
-                                    <a href="#">
+                                    <a href="javascript:;">
                                         <canvas class="user-icon" name="<?= $s['name'] ?>" width="100" height="100"
                                                 color="<?= $s['initials_color'] ?>" font="35px">
                                         </canvas>
@@ -253,13 +291,13 @@ $this->params['header_dark'] = false;
                                 <?php } ?>
                             </div>
                             <div class="pos-rel">
-                                <div class="com-name"><a href="#"><?= $s['name'] ?></a></div>
+                                <div class="com-name"><a href="javascript:;"><?= $s['name'] ?></a></div>
                             </div>
                             <?php if ($s['organizationReviews'] != null) { ?>
                                 <div class="com-loc"></div>
                                 <div class="com-dep"></div>
                                 <div class="com-rating">
-                                    <div class="average-star"
+                                    <div class="starr"
                                          data-score="<?= $s['organizationReviews'][0]['average_rating'] ?>"></div>
                                 </div>
 
@@ -280,16 +318,24 @@ $this->params['header_dark'] = false;
                             <?php } ?>
                             <div class="row">
                                 <div class="cm-btns padd-0">
-                                    <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <div class="color-blue">
-                                            <a href="<?= Url::to('/' . $s['slug']) ?>">View Profile</a>
+                                    <?php if ($s['org_type'] == 'claimed') { ?>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-blue">
+                                                <a href="<?= Url::to('/' . $s['slug']) ?>">View Profile</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <div class="color-orange">
-                                            <a href="<?= Url::to('/' . $s['slug'] . '/reviews') ?>">Read Reviews</a>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $s['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php } else { ?>
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $s['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -310,11 +356,11 @@ $this->params['header_dark'] = false;
                         <div class="com-review-box uncliamed_height fivestar-box">
                             <div class="com-logo">
                                 <?php if ($i['image']) { ?>
-                                    <a href="#">
+                                    <a href="javascript:;">
                                         <img src="<?= $i['image'] ?>">
                                     </a>
                                 <?php } else { ?>
-                                    <a href="#">
+                                    <a href="javascript:;">
                                         <canvas class="user-icon" name="<?= $i['name'] ?>" width="100" height="100"
                                                 color="<?= $i['initials_color'] ?>" font="35px">
                                         </canvas>
@@ -322,7 +368,7 @@ $this->params['header_dark'] = false;
                                 <?php } ?>
                             </div>
                             <div class="pos-rel">
-                                <div class="com-name"><a href="#"><?= $i['name'] ?></a></div>
+                                <div class="com-name"><a href="javascript:;"><?= $i['name'] ?></a></div>
                             </div>
                             <?php if ($i['organizationReviews'] != null) { ?>
                                 <div class="com-loc"></div>
@@ -347,16 +393,24 @@ $this->params['header_dark'] = false;
                             <?php } ?>
                             <div class="row">
                                 <div class="cm-btns padd-0">
-                                    <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <div class="color-blue">
-                                            <a href="<?= Url::to('/' . $i['slug']) ?>">View Profile</a>
+                                    <?php if ($i['org_type'] == 'claimed') { ?>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-blue">
+                                                <a href="<?= Url::to('/' . $i['slug']) ?>">View Profile</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-6 col-xs-6">
-                                        <div class="color-orange">
-                                            <a href="<?= Url::to('/' . $i['slug'] . '/reviews') ?>">Read Reviews</a>
+                                        <div class="col-md-6 col-sm-6 col-xs-6">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $i['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
                                         </div>
-                                    </div>
+                                    <?php } else { ?>
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <div class="color-orange">
+                                                <a href="<?= Url::to('/' . $i['slug'] . '/reviews') ?>">Read Reviews</a>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
