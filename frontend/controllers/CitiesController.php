@@ -58,13 +58,14 @@ class CitiesController extends Controller
             return $cities;
         }
     }
+
     public function actionCountryList($q = null)
     {
         if (!is_null($q)) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Countries::find()
                 ->alias('a')
-                ->select(['a.name text','a.country_enc_id id'])
+                ->select(['a.name text', 'a.country_enc_id id'])
                 ->where('a.name LIKE "' . $q . '%"')
                 ->limit(20)
                 ->asArray()
@@ -74,24 +75,43 @@ class CitiesController extends Controller
         }
     }
 
-    public function actionCareerCityList($q = null,$cid='b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09')
+    public function actionCareerCityList($q = null, $cid = 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09')
     {
         if (!is_null($q)) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Cities::find()
                 ->alias('a')
-                ->select(['a.name text','a.city_enc_id id'])
+                ->select(['a.name text', 'a.city_enc_id id'])
                 ->where('a.name LIKE "' . $q . '%"')
-                ->joinWith(['stateEnc b'=>function($b) use ($cid)
-                {
+                ->joinWith(['stateEnc b' => function ($b) use ($cid) {
                     $b->joinWith(['countryEnc c']);
                     $b->andWhere(['c.country_enc_id' => $cid]);
-                }],false)
+                }], false)
                 ->limit(20)
                 ->asArray()
                 ->all();
             $out['results'] = array_values($data);
             return $out;
+        }
+    }
+
+    public function actionGetCityEnc($location)
+    {
+        if (Yii::$app->request->isPost) {
+            $location = explode(", ", $location);
+            $cityId = Cities::find()
+                ->alias('z')
+                ->select(['z.city_enc_id', 'z.state_enc_id','a.country_enc_id'])
+                ->joinWith(['stateEnc a' => function($a) use($location){
+                    $a->joinWith(['countryEnc b' => function($b) use($location){
+                        $b->andWhere(['b.name' => $location[2]]);
+                    }]);
+                    $a->andWhere(['a.name' => $location[1]]);
+                }])
+                ->andWhere(['z.name' => $location[0]])
+                ->asArray()
+                ->one();
+            return $cityId['city_enc_id'];
         }
     }
 

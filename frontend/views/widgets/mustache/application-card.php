@@ -112,7 +112,7 @@ function renderCards(cards, container){
     // showSkills();
 }
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, city_id = "") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -126,6 +126,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     }
     
     data['type'] = type;
+    data['city_enc_id'] = city_id;
     $.ajax({
         method: "POST",
         url : url,
