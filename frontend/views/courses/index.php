@@ -4,7 +4,7 @@ $this->params['header_dark'] = false;
 use yii\helpers\Url;
 
 ?>
-    <section style="background: #061540; overflow: hidden;">
+    <section style="background: #061540;">
         <div class="container headsec">
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
@@ -22,7 +22,7 @@ use yii\helpers\Url;
                         <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                         <div class="search-box1">
                             <form action="<?= Url::to('#') ?>">
-                                <input type="text" placeholder="Search" name="keyword">
+                                <input type="text" placeholder="Search" name="keyword" id="get-courses-list">
                                 <button type="submit"><i class="fas fa-search"></i></button>
                             </form>
                         </div>
@@ -234,7 +234,12 @@ $this->registerCss('
     border-radius:10px 0 0 10px;
     width: calc(100% - 38px);
 }
-
+.search-box1 .search_init input{
+    width: 100%;
+}
+.search_init{
+    width: calc(100% - 38px);
+}
 .search-box1 input:focus{
     outline: none;
     border:0px;
@@ -242,6 +247,7 @@ $this->registerCss('
 }
 .search-box1 button {
     float: right;
+    width:38px;
     padding: 9px 10px;
     background: #fff;
     font-size: 18px;
@@ -444,6 +450,149 @@ $this->registerCss('
     right: 0;
     top: 0;
 }
+.search_init input{
+    color:#999;
+}
+.search_menu {
+  display:none;
+  position: absolute;
+  top: 100%;
+  left: 0px;
+  z-index: 100;
+  width: 100%;
+  margin: 0px 0;
+  text-align:left;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 0px 0px 6px 6px;
+     -moz-border-radius: 0px 0px 6px 6px;
+          border-radius: 0px 0px 6px 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.ss-suggestion {
+    padding: 4px 15px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #222;
+    border-bottom: 1px solid #dddddda3;
+}
+.ss-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.ss-suggestion.ss-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
 ');
+$script = <<<JS
+var xhr;
 
+function getResult(q){
+    if(xhr && xhr.readyState != 4){
+        xhr.abort();
+    }
+    xhr = $.ajax({
+        url: '/cities/city-list?q=' + q,
+        success: function(data) {
+            $('.search_menu').show();
+            $('.search_menu').html("");
+            for(var i=0;i<data.length;i++){
+                $('.search_menu').append('<div class="ss-suggestion">' + data[i].text + '</div>');
+            }
+        }
+    });
+};
+function initializeSearch(){
+    var html = $('#get-courses-list').get().map(function(v){return v.outerHTML}).join('');
+    var pp = $('#get-courses-list').parent();
+    $('<span class="search_init" style="position:relative;display:inline-block;"></span>').insertBefore('#get-courses-list');
+    $('#get-courses-list').remove();
+    pp.children('.search_init').append(html);
+    pp.children('.search_init').append('<div class="search_menu"></div>');
+    pp.children('.search_init').children('#get-courses-list').attr('autocomplete','off');
+    pp.children('.search_init').children('#get-courses-list').keyup(function(e) {
+        var getVal = $(this).val();
+        if(getVal != "" && e.which != 37 && e.which != 38 && e.which != 39 && e.which != 40){
+            getResult(getVal);
+        }
+    });
+    pp.children('.search_init').children('#get-courses-list').blur(function() {
+        $('.search_menu').hide();
+    });
+    pp.children('.search_init').children('#get-courses-list').focus(function() {
+        showMenu($(this));
+    });
+    pp.children('.search_init').children('#get-courses-list').keydown(function(e) {
+        switch(e.which) {
+            case 38:
+                selectPrev();
+            break;
+    
+            case 40:
+                selectNext();
+            break;
+    
+            default: return; // exit this handler for other keys
+        }
+    });
+}
+function selectPrev() {
+    var pSelected = true;
+    $('.ss-suggestion').each(function() {
+        if($(this).hasClass("ss-cursor")){
+            pSelected = false;
+            $(this).removeClass('ss-cursor');
+            if($(this).prev()){
+                $('#get-courses-list').val($(this).prev().text());
+                $(this).prev().addClass('ss-cursor');
+            }
+            return false;
+        }
+    });
+    if(pSelected){
+        $('#get-courses-list').val($('.ss-suggestion:last-child').text());
+        $('.ss-suggestion:last-child').addClass('ss-cursor');
+    }
+    // var top = $(".ss-cursor").offset().top - $(".search_menu").offset().top;
+    // $('.search_menu').animate({
+    //     scrollTop: top
+    // });
+}
+function selectNext() {
+    var nSelected = true;
+    $('.ss-suggestion').each(function() {
+        if($(this).hasClass("ss-cursor")){
+            nSelected = false;
+            $(this).removeClass('ss-cursor');
+            if($(this).next()){
+                $('#get-courses-list').val($(this).next().text());
+                $(this).next().addClass('ss-cursor');
+            }
+            return false;
+        }
+    });
+    if(nSelected){
+        $('#get-courses-list').val($('.ss-suggestion:first-child').text());
+        $('.ss-suggestion:first-child').addClass('ss-cursor');
+    }
+    // var top = $(".ss-cursor").offset().top - $(".search_menu").offset().top;
+    // $('.search_menu').animate({
+    //     scrollTop: top
+    // });
+}
+function showMenu(){
+    if($('.search_menu').children()){
+        $('.search_menu').show();
+    }
+}
+initializeSearch();
+JS;
+$this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
