@@ -84,51 +84,6 @@ class GovtJobsController extends Controller
         return $mixed;
     }
 
-    public function actionInsertData($getPath='https://ucf5e2e25dd692700dfc18eb1159.dl.dropboxusercontent.com/cd/0/get/AuobD2HY5EzCpm_a149ldbyYyj0C2CZlBivI4RKXlIAUYsNm53tjP8ceinb6yq3VZjhZ82wgtG_XCqiHKKzRrkZ7pR8g9vXcG9_Qk0hVUY8AP7gQ1lFM5I7hmuLZxugPkIs/file?dl=1#',$authkey='@empowerXaazs')
-    {
-        //for inserting data
-        //$authkey='@empowerXaazs';
-        if ($authkey !='@empowerXaazs'){
-            return 'permision denied';
-        }
-        $csv = [];
-        $i = 0;
-        $path = $getPath;
-        ini_set('auto_detect_line_endings', TRUE);
-        if (($handle = fopen($path, "r")) !== false) {
-            $columns = fgetcsv($handle, 1000, ",");
-            while (($row = fgetcsv($handle)) !== false) {
-                $csv[] = array_combine($columns, $row);
-                $i++;
-            }
-            ini_set('auto_detect_line_endings', FALSE);
-            fclose($handle);
-        }
-        $csv = $this->utf8ize($csv);
-        $len = count($csv);
-        for ($k=0;$k<$len;$k++)
-        {
-          $jobsModel = new IndianGovtJobs();
-          $utilitiesModel = new Utilities();
-          $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-          $jobsModel->job_enc_id = $utilitiesModel->encrypt();
-          $jobsModel->created_by = Yii::$app->user->identity->user_enc_id;
-          $jobsModel->Organizations = $csv[$k]['Company'];
-          $jobsModel->Location = $csv[$k]['Location'];
-          $jobsModel->Position = $csv[$k]['Position'];
-          $jobsModel->Eligibility = $csv[$k]['Eligibility'];
-          $jobsModel->Pdf_link = $csv[$k]['Pdf_link'];
-          $jobsModel->Last_date = $csv[$k]['Last Date'];
-          $jobsModel->job_id = $csv[$k]['Job_Id'];
-          $jobsModel->Data = $csv[$k]['Data'];
-          if (!$jobsModel->save())
-          {
-              print_r($jobsModel->getErrors());
-          }
-        }
-        return 'Done';
-    }
-
     public function actionGetDepartments()
     {
         if (Yii::$app->request->isAjax) {
@@ -150,42 +105,6 @@ class GovtJobsController extends Controller
                 'count'=>sizeof($data)
             ];
         }
-    }
-
-    public function actionInsertDept($getPath,$authkey)
-    {
-        if ($authkey !='@empowerXaazs'){
-            return 'permision denied';
-        }
-        $csv = [];
-        $i = 0;
-        $path = $getPath;
-        ini_set('auto_detect_line_endings', TRUE);
-        if (($handle = fopen($path, "r")) !== false) {
-            $columns = fgetcsv($handle, 1000, ",");
-            while (($row = fgetcsv($handle)) !== false) {
-                $csv[] = array_combine($columns, $row);
-                $i++;
-            }
-            ini_set('auto_detect_line_endings', FALSE);
-            fclose($handle);
-        }
-        $csv = $this->utf8ize($csv);
-        $len = count($csv);
-        for ($k=0;$k<$len;$k++)
-        {
-            $jobsModel = new IndianGovtDepartments();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $jobsModel->dept_enc_id = $utilitiesModel->encrypt();
-            $jobsModel->slug = $csv[$k]['Slug'];
-            $jobsModel->Value = $csv[$k]['Company'];
-            if (!$jobsModel->save())
-            {
-                print_r($jobsModel->getErrors());
-            }
-        }
-        return 'Done';
     }
 
     public function actionDepartments()
@@ -240,5 +159,4 @@ class GovtJobsController extends Controller
             ];
         }
     }
-
 }
