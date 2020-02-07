@@ -18,7 +18,7 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
-                        <div class="jumbo-heading">Aquire and Find best  courses from top institutes</div>
+                        <div class="jumbo-heading">Aquire and Find best courses from top institutes</div>
                         <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                         <div class="search-box1">
                             <form action="<?= Url::to('#') ?>">
@@ -137,28 +137,29 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="heading-style">Courses</div>
             </div>
-            <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <a href="#">
-                        <div class="course-box">
-                            <div class="course-upper">
-                                <div class="course-logo">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?>"/>
-                                </div>
-                                <div class="course-provider">udemy</div>
-                                <div class="course-description">
-                                    <div class="course-name">html</div>
-                                    <div class="course-duration"><i class="far fa-clock"></i>3 months</div>
-                                    <div class="course-fees"><i class="fas fa-rupee-sign"></i>15000</div>
-                                    <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>
-                                </div>
-                            </div>
-                            <div class="course-skills">
-                                <div class="skills-set">html</div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+            <div class="row" id="card-main">
+                <!--                <div class="col-md-4 col-sm-6">-->
+                <!--                    <a href="#">-->
+                <!--                        <div class="course-box">-->
+                <!--                            <div class="course-upper">-->
+                <!--                                <div class="course-logo">-->
+                <!--                                    <img src="-->
+                <?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
+                <!--                                </div>-->
+                <!--                                <div class="course-provider">udemy</div>-->
+                <!--                                <div class="course-description">-->
+                <!--                                    <div class="course-name">html</div>-->
+                <!--                                    <div class="course-duration"><i class="far fa-clock"></i>3 months</div>-->
+                <!--                                    <div class="course-fees"><i class="fas fa-rupee-sign"></i>15000</div>-->
+                <!--                                    <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>-->
+                <!--                                </div>-->
+                <!--                            </div>-->
+                <!--                            <div class="course-skills">-->
+                <!--                                <div class="skills-set">html</div>-->
+                <!--                            </div>-->
+                <!--                        </div>-->
+                <!--                    </a>-->
+                <!--                </div>-->
             </div>
         </div>
     </section>
@@ -175,6 +176,38 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+    <script id="course-card" type="text/template">
+        {{#.}}
+        <div class="col-md-4 col-sm-6">
+            <a href="{{url}}">
+                <div class="course-box">
+                    <div class="course-upper">
+                        <div class="course-logo">
+                            <img src="{{image_240x135}}"/>
+                        </div>
+                        <div class="course-provider">udemy</div>
+                        <div class="course-description">
+                            <div class="course-name">{{title}}</div>
+                            <!--                            <div class="course-duration"><i class="far fa-clock"></i>3 months</div>-->
+                            <div class="course-fees"><i class="fas fa-rupee-sign"></i>{{price}}</div>
+                            <!--                            <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>-->
+                            <div class="course-start"><i class="far fa-user"></i>
+                                <span class="c-author">
+                                    {{#visible_instructors}}
+                                        {{display_name}},
+                                    {{/visible_instructors}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="course-skills">
+                        <div class="skills-set">html</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {{/.}}
+    </script>
 <?php
 echo $this->render('/widgets/mustache/learning-categories');
 $this->registerCss('
@@ -401,10 +434,15 @@ $this->registerCss('
     margin-bottom: 5px;
     overflow:hidden;
 }
+.course-logo img{
+    width:100%;
+    height:100%;
+}
 .course-description {
     display:inline-block;
     margin: 22px 10px 10px 23px;
     font-family:roboto;
+    width: calc(100% - 115px);
 }
 .course-duration > i, .course-fees > i, .course-start > i{
     margin-right:5px;
@@ -463,11 +501,9 @@ $this->registerCss('
   margin: 0px 0;
   text-align:left;
   background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 0px 0px 6px 6px;
-     -moz-border-radius: 0px 0px 6px 6px;
-          border-radius: 0px 0px 6px 6px;
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
   -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
      -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
           box-shadow: 0 5px 10px rgba(0,0,0,.2);
@@ -490,8 +526,41 @@ $this->registerCss('
   color: #fff;
   background-color: #0097cf;
 }
+.ss-spinner {
+    position: absolute;
+    color: #222;
+    z-index: 999;
+    right: 0;
+    top: 10px;
+    font-size: 18px;
+    display: none;
+}
 ');
 $script = <<<JS
+$.ajax({
+    method: "POST",
+    url : window.location.href,
+    success: function(response) {
+            response = JSON.parse(response);
+        if(response.detail == "Not found.") {
+            console.log('cards not found');
+        } else{
+            var template = $('#course-card').html();
+            var rendered = Mustache.render(template,response.results);
+            $('#card-main').append(rendered);
+            $('.c-author').each(function() {
+                // $(this).text().slice(0,-1);
+                var strVal = $.trim($(this).text());
+                var lastChar = strVal.slice(-1);
+                if (lastChar == ',') { // check last character is string
+                    strVal = strVal.slice(0, -1); // trim last character
+                    $(this).text(strVal);
+                }
+            });
+        }
+    }
+});
+
 var xhr;
 
 function getResult(q){
@@ -499,100 +568,107 @@ function getResult(q){
         xhr.abort();
     }
     xhr = $.ajax({
-        url: '/cities/city-list?q=' + q,
+        url: '/courses/search?q=' + q,
+        beforeSend: function(){
+            $('.ss-spinner').show();
+            $('.search_menu').hide();
+        },
         success: function(data) {
             $('.search_menu').show();
+            $('.ss-spinner').hide();
             $('.search_menu').html("");
-            for(var i=0;i<data.length;i++){
-                $('.search_menu').append('<div class="ss-suggestion">' + data[i].text + '</div>');
+            data = JSON.parse(data);
+            for(var i=0;i<data.results.length;i++){
+                $('.search_menu').append('<div class="ss-suggestion">' + data.results[i].title + '</div>');
             }
         }
     });
 };
-function initializeSearch(){
-    var html = $('#get-courses-list').get().map(function(v){return v.outerHTML}).join('');
-    var pp = $('#get-courses-list').parent();
-    $('<span class="search_init" style="position:relative;display:inline-block;"></span>').insertBefore('#get-courses-list');
-    $('#get-courses-list').remove();
+function initializeSearch(el){
+    var html = $(el).get().map(function(v){return v.outerHTML}).join('');
+    var pp = $(el).parent();
+    $('<span class="search_init" style="position:relative;display:inline-block;"></span>').insertBefore(el);
+    $(el).remove();
     pp.children('.search_init').append(html);
+    pp.children('.search_init').append('<i class="ss-spinner fas fa-circle-notch fa-spin fa-fw"></i>');
     pp.children('.search_init').append('<div class="search_menu"></div>');
-    pp.children('.search_init').children('#get-courses-list').attr('autocomplete','off');
-    pp.children('.search_init').children('#get-courses-list').keyup(function(e) {
+    pp.children('.search_init').children(el).attr('autocomplete','off');
+    pp.children('.search_init').children(el).keyup(function(e) {
         var getVal = $(this).val();
         if(getVal != "" && e.which != 37 && e.which != 38 && e.which != 39 && e.which != 40){
             getResult(getVal);
         }
     });
-    pp.children('.search_init').children('#get-courses-list').blur(function() {
+    pp.children('.search_init').children(el).blur(function() {
         $('.search_menu').hide();
     });
-    pp.children('.search_init').children('#get-courses-list').focus(function() {
+    pp.children('.search_init').children(el).focus(function() {
         showMenu($(this));
     });
-    pp.children('.search_init').children('#get-courses-list').keydown(function(e) {
+    pp.children('.search_init').children(el).keydown(function(e) {
         switch(e.which) {
             case 38:
-                selectPrev();
+                selectPrev(el);
             break;
     
             case 40:
-                selectNext();
+                selectNext(el);
             break;
     
-            default: return; // exit this handler for other keys
+            default: return;
         }
     });
 }
-function selectPrev() {
+function selectPrev(el) {
     var pSelected = true;
     $('.ss-suggestion').each(function() {
         if($(this).hasClass("ss-cursor")){
             pSelected = false;
             $(this).removeClass('ss-cursor');
             if($(this).prev()){
-                $('#get-courses-list').val($(this).prev().text());
+                $(el).val($(this).prev().text());
                 $(this).prev().addClass('ss-cursor');
             }
             return false;
         }
     });
     if(pSelected){
-        $('#get-courses-list').val($('.ss-suggestion:last-child').text());
+        $(el).val($('.ss-suggestion:last-child').text());
         $('.ss-suggestion:last-child').addClass('ss-cursor');
     }
-    // var top = $(".ss-cursor").offset().top - $(".search_menu").offset().top;
-    // $('.search_menu').animate({
-    //     scrollTop: top
-    // });
+    scrollToSelected();
 }
-function selectNext() {
+function selectNext(el) {
     var nSelected = true;
     $('.ss-suggestion').each(function() {
         if($(this).hasClass("ss-cursor")){
             nSelected = false;
             $(this).removeClass('ss-cursor');
             if($(this).next()){
-                $('#get-courses-list').val($(this).next().text());
+                $(el).val($(this).next().text());
                 $(this).next().addClass('ss-cursor');
             }
             return false;
         }
     });
     if(nSelected){
-        $('#get-courses-list').val($('.ss-suggestion:first-child').text());
+        $(el).val($('.ss-suggestion:first-child').text());
         $('.ss-suggestion:first-child').addClass('ss-cursor');
     }
-    // var top = $(".ss-cursor").offset().top - $(".search_menu").offset().top;
-    // $('.search_menu').animate({
-    //     scrollTop: top
-    // });
+    scrollToSelected();
+}
+function scrollToSelected() {
+  $(".search_menu").scrollTop(0);
+  if($('.ss-cursor').length != 0){
+    $(".search_menu").scrollTop($('.ss-cursor:first').offset().top-$(".search_menu").height()-$('.search_menu').offset().top+$(".ss-cursor:first").height()+20);
+  }
 }
 function showMenu(){
     if($('.search_menu').children()){
         $('.search_menu').show();
     }
 }
-initializeSearch();
+initializeSearch('#get-courses-list');
 JS;
 $this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
