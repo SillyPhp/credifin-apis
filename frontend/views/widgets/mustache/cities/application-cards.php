@@ -1,6 +1,6 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-12 col-xs-12">
+    <div class="col-md-4 col-sm-6 col-xs-12">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
@@ -82,187 +82,10 @@
     </div>
     {{/.}}
 </script>
+
+
 <?php
-$c_user = Yii::$app->user->identity->user_enc_id;
-$script = <<<JS
-let loader = false;
-let draggable = false;
-let review_list_draggable = false;
-let page = 0;
-function renderCards(cards, container){
-    var card = $('#application-card').html();
-    var cardsLength = cards.length;
-    if(cardsLength%3 !==0 && loader === true) {
-        $('#loadMore').hide();
-    }
-    for(var i=0; i<cards.length; i++){
-        if(cards[i].skill != null){
-            cards[i].skill = cards[i].skill.split(',')
-        } else {
-            cards[i].skill = [];
-        }
-    }
-    var noRows = Math.ceil(cardsLength / 3);
-    var j = 0;
-    for(var i = 1; i <= noRows; i++){
-        $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
-    checkSkills();
-    // showSkills();
-}
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
-    let data = {};
-    page += 1;
-    const searchParams = new URLSearchParams(window.location.search);
-    if(searchParams.has('page')) {
-        searchParams.set("page", page);
-    } else {
-        searchParams.append("page", page);
-    }
-    for(var pair of searchParams.entries()) {
-        data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
-    }
-    
-    data['type'] = type;
-    $.ajax({
-        method: "POST",
-        url : url,
-        data: data,
-        beforeSend: function(){
-           // $('.loader-main').show();
-           $('.load-more-text').css('visibility', 'hidden');
-           $('.load-more-spinner').css('visibility', 'visible');
-        },
-        success: function(response) {
-            $('.loader-main').hide();
-            $('#loadMore').addClass("loading_more");
-            $('.load-more-text').css('visibility', 'visible');
-            $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
-                renderCards(response.cards, container);
-                utilities.initials();
-            } else {
-                if(loader === true) {
-                    if(page === 1) {
-                        $(container).append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
-                    }
-                    $('#loadMore').hide();
-                    load_more_cards = false;
-                }
-            }
-        }
-    }).done(function(){
-        if(draggable === true) {
-            $.each($('.application-card-main'), function(){
-                $(this).draggable({
-                    helper: "clone",
-                    drag: function() {
-                        var default_elem = $('.application-card-main.ui-draggable.ui-draggable-handle:first-child').width();
-                        $('.ui-draggable-dragging').css('width', default_elem + 'px');
-                        $('#sticky').addClass('drag-on');
-                        $('#review-internships').addClass('drop-on');
-                        utilities.initials();
-                     },
-                     stop: function() { 
-                        $('#sticky').removeClass('drag-on');
-                        $('#review-internships').removeClass('drop-on');
-                     },
-                });
-            });
-        }
-    });
-}
-
-function addToReviewList(){
-    if(loader === false){
-        $(document).on('click','.application-card-add', function(event){
-            event.preventDefault();
-            var c_user = "$c_user"
-            if(c_user == ""){
-                $('#loginModal').modal('show');
-                return false;
-            }
-            var itemid = $(this).closest('.application-card-main').attr('data-id');
-            $.ajax({
-                url: "/jobs/item-id",
-                method: "POST",
-                data: {'itemid': itemid},
-                beforeSend:function(){
-        //            $('.loader-aj-main').fadeIn(1000);  
-                },
-                success: function (response) {
-                    if (response.status == '200' || response.status == 'short') {
-                        toastr.success('Added to your Review list', 'Success');
-                    } else if (response.status == 'unshort') {
-                        toastr.success('Delete from your Review list', 'Success');
-                    } else {
-                        toastr.error('Please try again Later', 'Error');
-                    }
-                }
-            });
-        });
-    }
-}
-
-function getReviewList(sidebarpage){
-    if(draggable === true){
-        var type ='$type';
-        $.ajax({
-            method: "POST",
-            url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
-            data:{type:type},
-            success: function(response) {
-                reviewlists(response);
-                check_list();
-                utilities.initials();
-            }
-        }).done(function(){
-            if(review_list_draggable === true) {
-                $.each($('.draggable-item'), function(){
-                    $(this).draggable({
-                        helper: "clone",
-                        drag: function() { 
-                            $('.ps').addClass('ps-visible');
-                         },
-                         stop: function() { 
-                            $('.ps').removeClass('ps-visible');
-                         },
-                    });
-                });
-            }
-        });
-    }
-}
-function checkSkills(){
-    $('.application-card-main').each(function(){
-       var elems = $(this).find('.after');
-       var i = 0;
-       $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
-                $(this).addClass('hidden');
-            }
-            i++;
-       });
-       var skillsMain = $(this).find('.tags');
-       var hddn = $(this).find('.after.hidden');
-       var hasMore = $(this).find('span.more-skills');
-       if(hddn.length != 0){
-           if(elems.length === hddn.length){
-               $(elems[0]).removeClass('hidden');
-               var countMore = hddn.length - 1;
-               if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
-               }
-           } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
-           }
-       }
-    });
-}
-JS;
-$this->registerJs($script);
 $this->registerCss('
 .application-card-description h5{
     margin-top:0px !important;
@@ -416,4 +239,22 @@ $this->registerCss('
 /*cards-box css*/
 
 ');
+$script = <<<JS
+
+    var type = '$type';
+    var city = '$city';
+    
+    if(type == 'jobs'){
+        container = '.job-cards';
+    }else{
+        container = '.internship-cards'
+    }
+    
+    getCards(city,type);
+    
+JS;
+$this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>

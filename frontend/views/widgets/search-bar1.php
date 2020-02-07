@@ -244,7 +244,7 @@ var getParams = function (url) {
         if(Object.keys(getParams(window.location.href))[0]!=""){
             $.each(getParams(window.location.href), function(name, value) {
                 value = value.split('+').join(" ");
-                if(!($.trim(value)==="")){
+                if(!($.trim(value)==="") && value != "undefined"){
                     results.push(value);
        
                     $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fas fa-times'></i></a></span>");

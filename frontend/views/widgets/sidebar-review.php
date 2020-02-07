@@ -177,6 +177,16 @@ li.draggable-item.ui-sortable-placeholder {
 }
 .secondary-top-header{display:none !important;}
 .review-list-hint, .review-list-toggler{display:none;}
+@media only screen and (max-width: 991px) and (min-width: 768px)  {
+    .profile-sidebar {
+        margin-top: 40px;
+    }
+}
+@media only screen and (max-width: 991px) {
+    .stickyheader{
+        display:none;
+    }
+}
 @media only screen and (max-width: 767px) {
     .sidebar-review-bar{
 //        display:none;

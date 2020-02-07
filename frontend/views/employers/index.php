@@ -119,68 +119,83 @@ if (Yii::$app->user->isGuest) {
             </div>
             <div class="row">
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/Efficiency.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/Efficiency.png') ?>">
+                            </div>
+                            <h4>Enhance your Efficiency and Effectiveness</h4>
+                            <div class="about-text">Receive multiple offers from top-level organizations and properly
+                                recruited for joining an organization.
+                            </div>
                         </div>
-                        <h4>Enhance your Efficiency and Effectiveness</h4>
-                        <div class="about-text">Receive multiple offers from top-level organizations and properly
-                            recruited for joining an organization.
-                        </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/showcase-progress.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/showcase-progress.png') ?>">
+                            </div>
+                            <h4>Showcase Your Employer Brand</h4>
+                            <div class="about-text">Showcasing our unique cultural differentiators, and then working to
+                                amplify it so you can position yourself as a top place to work.
+                            </div>
                         </div>
-                        <h4>Showcase Your Employer Brand</h4>
-                        <div class="about-text">Showcasing our unique cultural differentiators, and then working to
-                            amplify it so you can position yourself as a top place to work.
-                        </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/track-progress.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/track-progress.png') ?>">
+                            </div>
+                            <h4>Track Progress</h4>
+                            <div class="about-text">Track your application process in simple steps & stay up-to-date.
+                            </div>
                         </div>
-                        <h4>Track Progress</h4>
-                        <div class="about-text">Track your application process in simple steps & stay up-to-date.</div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
+                            </div>
+                            <h4>Free For All</h4>
+                            <div class="about-text">You can apply for jobs and have your learning courses without giving
+                                any
+                                penny.
+                            </div>
                         </div>
-                        <h4>Free For All</h4>
-                        <div class="about-text">You can apply for jobs and have your learning courses without giving any
-                            penny.
-                        </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
+                            </div>
+                            <h4>Live Interview Schedule</h4>
+                            <div class="about-text">Automates scheduling of live interactions between interviewer and
+                                interview.
+                            </div>
                         </div>
-                        <h4>Live Interview Schedule</h4>
-                        <div class="about-text">Automates scheduling of live interactions between interviewer and
-                            interview.
-                        </div>
-                    </div>
+                    </a>
                 </div>
                 <div class="col-md-4 col-sm-6">
-                    <div class="about-box">
-                        <div class="bx-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/livechat.png') ?>">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/livechat.png') ?>">
+                            </div>
+                            <h4>Live Chat</h4>
+                            <div class="about-text">You can easily live chat with our Employers to get help & for more
+                                other
+                                queries.
+                            </div>
                         </div>
-                        <h4>Live Chat</h4>
-                        <div class="about-text">You can easily live chat with our Employers to get help & for more other
-                            queries.
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
             <div class="great-red">
@@ -223,7 +238,8 @@ if (Yii::$app->user->isGuest) {
         <div class="container">
             <div class="row">
                 <div class="emp-main">
-                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span></h3>
+                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span>
+                    </h3>
                     <div class="row">
                         <div class="col-md-4 col-sm-4">
                             <div class="set-size charts-container">
@@ -235,7 +251,9 @@ if (Yii::$app->user->isGuest) {
                                     </div>
                                     <div class="shadow"></div>
                                 </div>
-                                <div class="emp-text">of job seekers consider a company's<span> employer brand before</span> even applying for a job</div>
+                                <div class="emp-text">of job seekers consider a
+                                    company's<span> employer brand before</span> even applying for a job
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-4">
@@ -248,7 +266,8 @@ if (Yii::$app->user->isGuest) {
                                     </div>
                                     <div class="shadow"></div>
                                 </div>
-                                <div class="emp-text">of job seekers will <span>not accept</span> a job with a company if that company has a <span>bad reputation</span></div>
+                                <div class="emp-text">of job seekers will <span>not accept</span> a job with a company
+                                    if that company has a <span>bad reputation</span></div>
                             </div>
                         </div>
                         <div class="col-md-4 col-sm-4">
@@ -261,7 +280,9 @@ if (Yii::$app->user->isGuest) {
                                     </div>
                                     <div class="shadow"></div>
                                 </div>
-                                <div class="emp-text">of job seekers rely on <span>social media</span> and company review sites as important <span>research resources</span> when looking for work</div>
+                                <div class="emp-text">of job seekers rely on <span>social media</span> and company
+                                    review sites as important <span>research resources</span> when looking for work
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -308,7 +329,6 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-
 
 <?= $this->render('/widgets/companies-with-us'); ?>
 
