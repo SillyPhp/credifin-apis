@@ -1,6 +1,6 @@
 <script id="git_candidates" type="text/template">
     {{#.}}
-    <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
+    <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
