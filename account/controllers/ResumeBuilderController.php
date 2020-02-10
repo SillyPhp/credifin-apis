@@ -39,27 +39,17 @@ class ResumeBuilderController extends Controller
 
     public function actionIndex()
     {
-
+        $user_id = Yii::$app->user->identity->user_enc_id;
         $addQualificationForm = new AddQualificationForm();
         $addExperienceForm = new AddExperienceForm();
         $obj = new ResumeData();
         $user = $obj->getUser();
-        $experience = $obj->getExperiece();
-        $education = $obj->getEducation();
-        $skillist = $obj->getSkills();
-        $achievements = $obj->getAcheivements();
-        $hobbies = $obj->getHobbies();
-        $interests = $obj->getInterest();
+        $resume_data = $obj->getResumeData($user_id);
         return $this->render('resume', [
             'user' => $user,
             'addQualificationForm' => $addQualificationForm,
             'addExperienceForm' => $addExperienceForm,
-            'experience' => $experience,
-            'education' => $education,
-            'skills' => $skillist,
-            'achievements' => $achievements,
-            'hobbies' => $hobbies,
-            'interests' => $interests,
+            'resume_data' => $resume_data,
         ]);
     }
 
