@@ -2,11 +2,7 @@
 
 namespace frontend\controllers;
 
-use common\models\BusinessActivities;
 use common\models\EmployerApplications;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationLocations;
-use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
 use frontend\models\applications\ApplicationCards;
@@ -46,7 +42,6 @@ class CitiesController extends Controller
     public function actionCityList($q = null, $id = null)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-//        $out = ['results' => ['id' => '', 'text' => '']];
         if (!is_null($q)) {
             $cities = Cities::find()
                 ->alias('a')
@@ -58,11 +53,6 @@ class CitiesController extends Controller
                 ->limit(20)
                 ->asArray()
                 ->all();
-//            $out['results'] = array_values($cities);
-//        } elseif ($id > 0) {
-//            $out['results'] = ['id' => $id, 'text' => Cities::find($id)->name];
-//        }
-//        return $out;
 
             return $cities;
         }
