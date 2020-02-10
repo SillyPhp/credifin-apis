@@ -6,99 +6,229 @@ use yii\helpers\Url;
 
 echo $this->render('/widgets/mustache/candidates');
 ?>
-
-    <!--Modal-->
-    <div id="shortList" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" id="profiles">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="submit" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Choose Applications to Shortlist for</h4>
-                </div>
-                <div class="modal-body">
-                    <?php
-                    if (count($available_applications) > 0) {
-                        foreach ($available_applications as $a) {
-                            ?>
-                            <div class="row padd10">
-                                <div class="col-md-12 text-center">
-                                    <div class="radio_questions">
-                                        <div class="inputGroup process_radio">
-                                            <input type="radio" name="applications" id="<?= $a['application_enc_id'] ?>"
-                                                   value="<?= $a['application_enc_id'] ?>" class="application_list">
-                                            <label for="<?= $a['application_enc_id'] ?>">
-                                                <?= $a['name'] ?>
-                                            </label>
-                                        </div>
-                                    </div>
+<section>
+    <div class="container">
+        <div class="col-md-3 col-sm-4 mobile-hidden" id="filters">
+            <form>
+                <div class="filters">
+                    <div class="f-ratings">
+                        <div class="filter-head-main">Filter Candidates</div>
+                        <div class="overall-box-heading">Select Salary</div>
+                        <div class="form-group form-md-checkboxes">
+                            <div class="md-checkbox-list">
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox1"
+                                           class="md-check">
+                                    <label for="checkbox1">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">0 to 5k</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="4" id="checkbox2"
+                                           class="md-check">
+                                    <label for="checkbox2">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fourstars rating-stars">5k to 15k</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="3" id="checkbox3"
+                                           class="md-check">
+                                    <label for="checkbox3">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="threestars rating-stars">15k to 25k</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="2" id="checkbox4"
+                                           class="md-check">
+                                    <label for="checkbox4">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="twostars rating-stars">25k to 50k</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="1" id="checkbox5"
+                                           class="md-check">
+                                    <label for="checkbox5">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="onestars rating-stars">50k to 80k</div>
+                                    </label>
                                 </div>
                             </div>
-                            <?php
-                        }
-                    }
-                    ?>
-
+                        </div>
+                        <div class="overall-box-heading">Select Location</div>
+                        <div class="form-group form-md-checkboxes">
+                            <div class="md-checkbox-list">
+                                <div class="filter-search">
+                                    <div class="f-search-loc">
+                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox6"
+                                           class="md-check">
+                                    <label for="checkbox6">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Ludhiana</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox7"
+                                           class="md-check">
+                                    <label for="checkbox7">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Chandigarh</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overall-box-heading">Select Position</div>
+                        <div class="form-group form-md-checkboxes">
+                            <div class="md-checkbox-list">
+                                <div class="filter-search">
+                                    <div class="f-search-loc">
+                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox8"
+                                           class="md-check">
+                                    <label for="checkbox8">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Web Designer</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox9"
+                                           class="md-check">
+                                    <label for="checkbox9">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Web Developer</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="overall-box-heading">Select Skills</div>
+                        <div class="form-group form-md-checkboxes">
+                            <div class="md-checkbox-list">
+                                <div class="filter-search">
+                                    <div class="f-search-loc">
+                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox10"
+                                           class="md-check">
+                                    <label for="checkbox10">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Php</div>
+                                    </label>
+                                </div>
+                                <div class="md-checkbox">
+                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox11"
+                                           class="md-check">
+                                    <label for="checkbox11">
+                                        <span></span>
+                                        <span class="check"></span>
+                                        <span class="box"></span>
+                                        <div class="fivestars rating-stars">Html</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="modal-footer">
-                    <?php if (count($available_applications) > 0) { ?>
-                        <button id="submitData" type="submit" class="btn btn-primary" data-dismiss="modal">Submit
-                        </button>
-                    <?php } else { ?>
-                        <a class="btn btn-primary" href="/account/<?= $type ?>/create">Create New <?= $type ?></a>
-                    <?php } ?>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
+            </form>
         </div>
-    </div>
-
-    <section>
-        <div class="container">
+        <div class="col-md-9">
             <div class="row" id="user_cards">
 
             </div>
-            <div class="col-md-12 col-sm-12">
-                <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
-                <a href="#" id="loadMore"
-                   class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
-                    <span class="load-more-text">Load More</span>
-                    <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
-                         stroke="currentColor">
-                        <g fill="none" fill-rule="evenodd">
-                            <g transform="translate(1 1)" stroke-width="2">
-                                <circle cx="8.90684" cy="50" r="5">
-                                    <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
-                                             calcMode="linear" repeatCount="indefinite"></animate>
-                                    <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
-                                             calcMode="linear" repeatCount="indefinite"></animate>
-                                </circle>
-                                <circle cx="25.0466" cy="8.99563" r="5">
-                                    <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
-                                             values="5;50;50;5" calcMode="linear"
-                                             repeatCount="indefinite"></animate>
-                                    <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
-                                             values="27;49;5;27" calcMode="linear"
-                                             repeatCount="indefinite"></animate>
-                                </circle>
-                                <circle cx="47.0466" cy="46.0044" r="5">
-                                    <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
-                                             calcMode="linear" repeatCount="indefinite"></animate>
-                                    <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
-                                             values="49;5;27;49" calcMode="linear"
-                                             repeatCount="indefinite"></animate>
-                                </circle>
-                            </g>
-                        </g>
-                    </svg>
-                </a>
-            </div>
+            <?php
+            echo $this->render('/widgets/users/preloaders/candidates');
+            ?>
         </div>
-    </section>
+        <div class="col-md-12 col-sm-12">
+            <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
+            <a href="#" id="loadMore"
+               class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+                <span class="load-more-text">Load More</span>
+                <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
+                     stroke="currentColor">
+                    <g fill="none" fill-rule="evenodd">
+                        <g transform="translate(1 1)" stroke-width="2">
+                            <circle cx="8.90684" cy="50" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="25.0466" cy="8.99563" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
+                                         values="5;50;50;5" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
+                                         values="27;49;5;27" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="47.0466" cy="46.0044" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
+                                         values="49;5;27;49" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                        </g>
+                    </g>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
 <?php
-echo $this->render('/widgets/users/preloaders/candidates');
 $this->registerCss('
+#filters{
+    height:100vh;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 105px;
+}
+.filter-head-main {
+    font-size: 18px;
+    font-family: roboto;
+    text-align: center;
+    padding: 5px 0px 5px 0;
+    font-weight: 500;
+    color:#00a0e3;
+}
+.md-checkbox label > .check {
+    top: 0px;
+}
 #loadMore {
     display : none;
 }
@@ -220,7 +350,7 @@ $this->registerCss('
     margin: 10px 0;
 	padding:0;
 	min-height:74px;
-	height:120px;
+	height:108px;
 	overflow:hidden;
 }
 .paid-candidate-box-extra ul li {
@@ -405,136 +535,276 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
     background-color: #00a0e3;
     border-color: #00a0e3;
 }
-//modal css
-.checkbox-input {
-  display: none;
+.filter-btns{
+    display:none;
 }
-.checkbox-label {
-  vertical-align: top;
-  width: 100%;
-  cursor: pointer;
-  font-weight: 400;
-  margin-bottom:0px;
+.empty{
+    text-align:center;
+    display:none;
 }
-.p-category-main:hover .checkbox-label:before {
-    top:-5px !important;
-} 
-.checkbox-label:before {
-  content: "";
-  position: absolute;
-  top: 80px;
-  left: 15px;
-  width: 35px;
-  height: 35px;
-  opacity: 0;
-  background-color: #2196F3;
-  background-repeat: no-repeat; 
-  background-size: 30px;
-  border-radius: 8px 0;
-//  -webkit-transform: translate(0%, -50%);
-//  transform: translate(0%, -50%);
-  transition: all 0.4s ease;
-  z-index:999;
-  
+.es-btn{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    
 }
-.checkbox-input:checked + .checkbox-label:before {
-  top: 0;
-  opacity: 1;
-
+.es-btn button{
+    background:#00a0e3;
+    border:1px solid #00a0e3;
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: #fff;  
+    font-family: roboto;
 }
-.checkox-input:checked + .checkbox-label{
-   transform: translateY(-5px);
-    -webkit-transform: translateY(-5px);
-	cursor:pointer;
+.es-btn button:hover{
+    box-shadow: 0 0 10px rgba(0,0,0,.5);
+    transition:.3s all;
+    -moz-transition:.3s all;
+    -webkit-transition:.3s all;
+    -ms-transition:.3s all;
 }
-.checkbox-input:checked + .checkbox-label .checkbox-text span {
-  -webkit-transform: translate(0, -8px);
-  transform: translate(0, -8px);
+.es-text{
+     font-family: roboto;
+    font-size: 20px;
+    padding-top: 20px;
+    font-weight:bold;
 }
-.radio_questions {
-    max-width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 36px;
-    position: relative;
+.es-text2{
+     font-family: roboto;
 }
-.inputGroup {
-    background-color: #fff;
+.btn_add_new_org{
+    margin-top:15px;
+}
+.add_new_org1{
+    padding:10px 15px;
+    background:#fff;
+    color:#00a0e3;
+    border: 2px solid #eee;
+    border-radius:10px;
+    font-weight:500 !important;
+    font-family:roboto;
+}
+.add_new_org1:hover{
+    color:#00a0e3;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+}
+.search-bar{
+    width:100%;
+    background:#fff;
+    border-radius:10px;
+    display:flex;
+    padding:5px 5px;
+    border:2px solid #eee;
+    color:#bcbaba
+    margin-top:20px;
+}
+.main-headings{
+    text-align:center;
+    font-size:25px;
+    padding-bottom:10px;
+    font-family:lora;
+}
+.s-input{
+    width:94%;
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    color:#bcbaba;
+    font-size: 16px;
+    font-family: roboto;
+    font-weight: 500;
+}
+input::placeholder{
+    color:#bcbaba;
+}
+form input[type="text"]:focus{
+    outline:none;
+    border:none !important;
+    box-shadow:none;
+}
+.s-btn{
+    width:5%;
+     padding:10px 15px;
+    border:none;
+    background:none;
+    color:#bcbaba;
+    font-size: 16px;    
+}
+#loading_img
+{
+  display:none;
+}
+#loading_img img
+{
+    margin-left: auto;
+    margin-right: auto;
     display: block;
-    margin: 10px 0;
-    position: relative;
+    width:100px;
+    height:100px
 }
-.inputGroup input {
-    width: 32px;
-    height: 32px;
-    order: 1;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    visibility: hidden;
+.fader{
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  display:none;
+  z-index:99;
+  background-color:#fff;
+  opacity:0.7;
 }
-.inputGroup input:checked ~ label {
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,.3) !important;
-}
-.inputGroup label {
-    padding: 6px 75px 10px 25px;
-    width: 96%;
+#loading_img.show
+{
     display: block;
-    margin: auto;
-    text-align: left;
-    color: #3C454C !important;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    transition: color 1ms ease-out;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid #eee;
-}
-.inputGroup input:checked ~ label:before {
-    transform: translate(-50%, -50%) scale3d(56, 56, 1);
+    position: fixed;
+    z-index: 100;
     opacity: 1;
-}
-.inputGroup label:before {
-    width: 100%;
-    height: 10px;
-    border-radius: 50%;
-    content: \'\';
-    background-color: #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale3d(1, 1, 1);
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    z-index: -1;
-    box-shadow: 0 0 10px rgba(0,0,0,.5) !important;
-}
-.inputGroup input:checked ~ label:after {
-    background-color: #00a0e3;
-    border-color: #00a0e3;
-}
-.process_radio label:after {
-    width: 32px;
-    height: 32px;
-    content: \'\';
-    border: 2px solid #D1D7DC;
-    background-color: #fff;
     background-repeat: no-repeat;
-    background-position: 2px 3px;
-    background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
-    border-radius: 50%;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    left: 10%;
+    right: 0;
     top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    transition: all 200ms ease-in;
+}
+.padd-0{
+    margin-left:15px !important;
+    margin-right:15px !important;
+}
+.cm-btns{
+    margin-top:10px;
+    padding-top:5px;
+    border-top:1px solid #eee;
+    text-transform: capitalize;
+}
+.color-blue a{
+    color:#bcbaba;
+}
+.color-blue a:hover{
+    color:#00a0e3;
+}
+.color-orange a{
+    color:#bcbaba;
+}
+.color-orange a:hover{
+    color:#ff7803;
+}
+.related-company{
+    padding-top:50px;
+}    
+.rh-header{
+    background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
+    background-size:100% 300px;
+    background-repeat: no-repeat;
+    padding:130px 0 35px 0;
+    color:#fff;
+    margin-bottom:20px;
+} 
+.header{
+    text-align: left;
+}
+.num-companies{
+    font-size: 25px;
+}
+.num-companies span{
+    font-weight: bold;
+}
+.filter-search{
+    padding-bottom: 20px;
+}
+.f-main-heading{
+    display: flex;
+}
+.show-search{
+    margin-left: 15px;
+    margin-top: 5px;
+}
+.show-search button{
+    background: transparent;
+    border:none;
+    font-size: 15px;
+    color: #666;
+    float:right;
+}
+.show-search button:hover{
+    color:#00a0e3;
+}
+.f-search, .f-search-loc, .f-search-1{
+   border:1px solid #eee; 
+   padding:5px 15px;
+   border-radius:10px;   
+}
+.f-search input, .f-search-loc input, .f-search-1 input {
+    border:none;
+    font-size: 14px;
+}
+.f-search input::placeholder, .f-search-loc input::placeholder, .f-search-1 input::placeholder{
+    color:#999;
+}
+.f-search i, .f-search-loc i, .f-search-1 i{
+    float:right;
+    padding-top:3px;
+    color:#999;
+}
+.fivestars i{
+    color:#fd7100 !important; 
+}
+.fourstars i.active{
+    color:#fa8f01 !important; 
+}
+.threestars i.active{
+    color:#fcac01 !important; 
+}
+.twostars i.active{
+    color:#fabf37 !important; 
+}
+.onestars i.active{
+    color:#ffd478 !important; 
+}
+.md-checkbox label>.box{
+    top:6px;
+    border: 2px solid #ddd;
+}
+.md-checkbox-list .md-checkbox{
+    margin-bottom:-10px;
+}
+.f-ratings{
+    padding:5px 15px;
+    border:1px solid #eee;
+    border-radius:10px;
+    width: 260px;
+    overflow-y: scroll;
+    height: 500px;
+    position:relative;
+}
+.overall-box-heading{
+    font-size:16px;
+    padding-top:5px;
+    font-weight:500;
+    font-family:roboto;
+}
+.rating-stars{
+    font-size:16px;
+    font-weight:lighter;  
+    padding:4px;  
+}
+@media only screen and (max-width: 834px){
+.pos-relative-mobile{
+    position:relative;
+    overflow:scroll;
+}
+.mobile-hidden{
+    display:none;
+    position:absolute;
+    background:#fff;
+    top:0px;
+    right:0px;
+    z-index:9999;
+    border:1px solid #eee;
+    border-top:none;
+    border-bottom:none;
+    border-right:none;
+}
 }
 
 ');
@@ -543,9 +813,6 @@ $script = <<<JS
     var load_more_cards = true;
     var loading = true;
     var offset = 0;
-    var user_id = null;
-    var app_id = null;
-    
     $(document).ready(function() {
         loading = false;
             getUserCards(0);
@@ -567,35 +834,6 @@ $script = <<<JS
         }
     });
     
-    $(document).on('click','.shortlist-main',function(event) {
-        event.preventDefault();
-        user_id = $(this).attr('id');
-        
-        $.ajax({
-            type:"POST",
-            url:"candidates/get-data",
-            data: {user_id:user_id},
-            success:function (response) {
-                var res = JSON.parse(response);
-                if(res["status"] == 404){
-                    $('#shortList').modal('toggle');
-                }else{
-                    for(var i =0;i < res.length; i++){
-                        $('.application_list').each(function() {
-                            if($(this).attr('id') == res[i]['application_enc_id']){
-                                $(this).attr('name', 'already-checked-' + i);
-                                $(this).prop('checked', true);
-                                $(this).prop('disabled', true);
-                            }
-                        })
-                    }
-                    $('#shortList').modal('toggle');
-                }
-
-            }
-        });
-    });
-    
     $(window).scroll(function() { //detact scroll
         if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)){ //scrolled to bottom of the page
             if(load_more_cards && loading){
@@ -604,32 +842,22 @@ $script = <<<JS
             }
         }
     });
-    
-    document.getElementById('submitData').addEventListener('click', function(){
-        var applications = document.getElementsByName('applications');
-        var selected_value;
-        for(var i = 0; i < applications.length; i++){
-            if(applications[i].checked){
-                app_id = applications[i].value;
-            }
-        }
-        
-        $.ajax({
-            type:"POST",
-            url:"candidates/shortlist",
-            data: {user_id:user_id,app_id:app_id},
-            success:function (response) {
-                if(JSON.parse(response)["status"] == 200){
-                    toastr.success('successfully shortlisted', 'success'); 
-                }else{
-                    toastr.error('an error occurred', 'error'); 
-                }
-
-            }
-        });
-    });
+var ps = new PerfectScrollbar('.f-ratings');
 JS;
 $this->registerJs($script);
-$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/css/components-md.min.css');
+$this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
+$this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
+
+<script>
+    document.getElementById('show-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'block';
+    });
+    document.getElementById('hide-filter').addEventListener("click", function () {
+        var s = document.getElementsByClassName('mobile-hidden');
+        s[0].style.display = 'none';
+    });
+</script>
 

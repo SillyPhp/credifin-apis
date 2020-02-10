@@ -1,6 +1,6 @@
 <script id="git_candidates" type="text/template">
     {{#.}}
-    <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
+    <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
             <span class="shortlist-main" id="{{user_enc_id}}">
                 <i class="far fa-star"></i>
