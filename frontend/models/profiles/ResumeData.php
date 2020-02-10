@@ -97,7 +97,7 @@ class ResumeData
            ->select(['a.user_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
            ->joinWith(['userSkills b'=>function($b)
            {
-               $b->select(['b.created_by','c.skill','c.skill_enc_id']);
+               $b->select(['b.created_by','c.skill','b.user_skill_enc_id']);
                $b->andWhere(['b.is_deleted' => 0]);
                $b->joinWith(['skillEnc c'], false);
            }])
