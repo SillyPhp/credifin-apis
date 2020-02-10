@@ -114,7 +114,7 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="locations">Locations</div>
                 <div class="location-tab set-sticky">
                     <div class="location-set">
-                        <div style="margin-bottom: 8px;">
+                        <div>
                             <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
                             <span><?= $get['Location'] ?></span>
                         </div>
@@ -184,7 +184,6 @@ $this->params['seo_tags'] = [
 <?php
 $this->registerCss('
 .tags-bar > span {
-    float: left;
     background: #f4f5fa;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -479,12 +478,11 @@ margin:auto;
 .summary{
     font-size:18px;
     font-weight:500;
-    padding: 10px 0 5px 0;
+    padding: 0 0 5px 0;
     font-family:roboto;
 }   
 .d-content {
     font-size: 15px;
-    padding:0 0 15px 0;
     font-family:roboto;
 }
 .d-points > ul {
