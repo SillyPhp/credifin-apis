@@ -340,7 +340,6 @@ class ApplicationCards
             $cards2->andWhere(['like', 'd.slug', $options['slug']]);
         }
 
-        $options['location'] = 'DSB Law Group Ludhiana';
         if (isset($options['location'])) {
             $search_location = trim($options['location'], " ");
             $search_pattern_location = self::makeSQL_search_pattern($search_location);
