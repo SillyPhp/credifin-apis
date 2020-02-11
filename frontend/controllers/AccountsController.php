@@ -241,9 +241,13 @@ class AccountsController extends Controller
         }
         $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->forgotPassword()) {
+            if ($model->forgotPassword() === true) {
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
+                ]);
+            } elseif($model->forgotPassword() === 'User Not Exist') {
+                return $this->render('/site/message', [
+                    'message' => 'Enter Valid Email Address.'
                 ]);
             } else {
                 return $this->render('/site/message', [
