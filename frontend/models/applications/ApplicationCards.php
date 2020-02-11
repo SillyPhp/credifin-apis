@@ -128,13 +128,12 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
-        $type = $options['type'];
         if (isset($options['limit'])) {
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        $job_preference = self::getPreference($type);
+        $job_preference = self::getPreference('Jobs');
         if (empty($job_preference)) {
             $cityId = $options['city_enc_id'];
         } else {
