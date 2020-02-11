@@ -2,6 +2,9 @@
     {{#.}}
     <div class="col-lg-3 col-md-3 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
+            <span class="shortlist-main" id="{{user_enc_id}}">
+                <i class="far fa-star"></i>
+            </span>
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
@@ -30,7 +33,29 @@
     {{/.}}
 </script>
 
+
 <?php
+$this->registerCss('
+.shortlist-main{
+    position: absolute;
+    right: 0;
+    padding: 1px 6px;
+    z-index:9;
+    color: #FFF;
+    font-size: 18px;
+}
+.shortlist-main:before {
+    content: "";
+    right: -60px;
+    top: 0;
+    position: absolute;
+    border-left: 42px solid transparent;
+    border-bottom: 52px solid #00A0E3;
+    border-right: 70px solid transparent;
+    transform: rotate(50deg);
+    z-index:-1;
+}
+');
 $script = <<<JS
     
     function getUserCards(off_set){
