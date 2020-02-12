@@ -30,13 +30,19 @@ class CoursesController extends Controller
         return $this->render('index');
     }
 
-    public function actionCoursesList($keyword = null , $cat = null, $page = 1)
+    public function actionCoursesList()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $cat = Yii::$app->request->post('cat');
+            $keyword = Yii::$app->request->post('keyword');
+            $page = Yii::$app->request->post('page');
             if($keyword || $cat){
-                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=20&search=" .$keyword. "&category=".$cat;
+                if($cat){
+                    $keyword = $cat;
+                }
+                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=21&search=" .$keyword;
             } else {
-                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=20";
+                $url = "https://www.udemy.com/api-2.0/courses/?page=".$page."&page_size=21";
             }
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
