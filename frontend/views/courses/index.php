@@ -19,7 +19,6 @@ use yii\helpers\Url;
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
                         <div class="jumbo-heading">Aquire and Find best courses from top institutes</div>
-                        <!--                    <div class="jumbo-subheading"> Learn Something <span class="jumbo-heading">New Everyday</span></div>-->
                         <div class="search-box1">
                             <form action="<?= Url::to('/courses/courses-list') ?>">
                                 <input type="text" placeholder="Search" name="keyword" id="get-courses-list">
@@ -32,75 +31,6 @@ use yii\helpers\Url;
         </div>
     </section>
 
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="heading-style">Courses By top providers</div>-->
-<!--            </div>-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--                <div class="col-md-2 col-sm-3 set-padding-col">-->
-<!--                    <a href="#">-->
-<!--                        <div class="pro-box">-->
-<!--                            <div class="pro-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="pro-name">udemy</div>-->
-<!--                        </div>-->
-<!--                    </a>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
     <section>
         <div class="container">
             <div class="row">
@@ -116,9 +46,7 @@ use yii\helpers\Url;
 
     <section class="popular-skills">
         <h3>Popular Categories</h3>
-        <div class="container" id="popular-category">
-
-        </div>
+        <div class="container" id="popular-category"></div>
     </section>
 
     <section>
@@ -126,30 +54,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="heading-style">Courses</div>
             </div>
-            <div class="row" id="card-main">
-                <!--                <div class="col-md-4 col-sm-6">-->
-                <!--                    <a href="#">-->
-                <!--                        <div class="course-box">-->
-                <!--                            <div class="course-upper">-->
-                <!--                                <div class="course-logo">-->
-                <!--                                    <img src="-->
-                <?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-                <!--                                </div>-->
-                <!--                                <div class="course-provider">udemy</div>-->
-                <!--                                <div class="course-description">-->
-                <!--                                    <div class="course-name">html</div>-->
-                <!--                                    <div class="course-duration"><i class="far fa-clock"></i>3 months</div>-->
-                <!--                                    <div class="course-fees"><i class="fas fa-rupee-sign"></i>15000</div>-->
-                <!--                                    <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                            <div class="course-skills">-->
-                <!--                                <div class="skills-set">html</div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </a>-->
-                <!--                </div>-->
-            </div>
+            <div class="row" id="card-main"></div>
         </div>
     </section>
 
@@ -352,85 +257,38 @@ $this->registerCss('
     transition: all 0.3s ease;
 }
 @media screen and (max-width: 768px){
-.popular-skills .popular-cards a {
-    font-size: 11px;
-    padding: 12px 9px;
-}
-.popular-skills .popular-cards {
-    width: 48%;
-    margin: 1px;
-}
-.topp-pad{
-    margin-top: 10px !important;
-}
-.jumbo-heading {
-    font-size: 28px;
+    .popular-skills .popular-cards a {
+        font-size: 11px;
+        padding: 12px 9px;
+    }
+    .popular-skills .popular-cards {
+        width: 48%;
+        margin: 1px;
+    }
+    .topp-pad{
+        margin-top: 10px !important;
+    }
+    .jumbo-heading {
+        font-size: 28px;
     }
 }
 @media screen and (max-width: 456px){
-.popular-skills {
-    padding: 18px 3px;
-    text-align: center;
-}
-.set-padding-col {
-    padding: 0px 10px !important;
-}
-.jumbo-heading {
-    font-size: 25px;
-}
-.topp-pad{
-    margin-top: 10px !important;
-}
-.main-heading-set{
-    padding:0px 0px 20px 0px !important;
-}
-}
-.search_init input{
-    color:#999;
-}
-.search_menu {
-  display:none;
-  position: absolute;
-  top: 100%;
-  left: 0px;
-  z-index: 100;
-  width: 100%;
-  margin: 0px 0;
-  text-align:left;
-  background-color: #fff;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          max-height:158px;
-          overflow-y:auto;
-}
-.ss-suggestion {
-    padding: 4px 15px;
-    font-size: 12px;
-    line-height: 24px;
-    color: #222;
-    border-bottom: 1px solid #dddddda3;
-}
-.ss-suggestion:hover {
-  cursor: pointer;
-  color: #fff;
-  background-color: #0097cf;
-}
-.ss-suggestion.ss-cursor {
-  color: #fff;
-  background-color: #0097cf;
-}
-.ss-spinner {
-    position: absolute;
-    color: #222;
-    z-index: 999;
-    right: 0;
-    top: 10px;
-    font-size: 18px;
-    display: none;
+    .popular-skills {
+        padding: 18px 3px;
+        text-align: center;
+    }
+    .set-padding-col {
+        padding: 0px 10px !important;
+    }
+    .jumbo-heading {
+        font-size: 25px;
+    }
+    .topp-pad{
+        margin-top: 10px !important;
+    }
+    .main-heading-set{
+        padding:0px 0px 20px 0px !important;
+    }
 }
 ');
 $script = <<<JS
@@ -473,134 +331,9 @@ $.ajax({
         }
     }
 });
-
-var xhr;
-
-function getResult(q){
-    if(xhr && xhr.readyState != 4){
-        xhr.abort();
-    }
-    xhr = $.ajax({
-        url: '/courses/search?q=' + q,
-        beforeSend: function(){
-            $('.ss-spinner').show();
-            $('.search_menu').hide();
-        },
-        success: function(data) {
-            $('.search_menu').show();
-            $('.ss-spinner').hide();
-            $('.search_menu').html("");
-            data = JSON.parse(data);
-            for(var i=0;i<data.results.length;i++){
-                $('.search_menu').append('<div class="ss-suggestion" id="' + data.results[i].id + '">' + data.results[i].title + '</div>');
-            }
-        }
-    });
-};
-function initializeSearch(el){
-    var html = $(el).get().map(function(v){return v.outerHTML}).join('');
-    var pp = $(el).parent();
-    $('<span class="search_init" style="position:relative;display:inline-block;"></span>').insertBefore(el);
-    $(el).remove();
-    pp.children('.search_init').append(html);
-    pp.children('.search_init').append('<i class="ss-spinner fas fa-circle-notch fa-spin fa-fw"></i>');
-    pp.children('.search_init').append('<div class="search_menu"></div>');
-    pp.children('.search_init').children(el).attr('autocomplete','off');
-    pp.children('.search_init').children(el).keyup(function(e) {
-        var getVal = $(this).val();
-        if(getVal != "" && e.which != 37 && e.which != 38 && e.which != 39 && e.which != 40){
-            getResult(getVal);
-        }
-    });
-    pp.children('.search_init').children(el).blur(function() {
-        $('.search_menu').hide();
-    });
-    pp.children('.search_init').children(el).focus(function() {
-        showMenu($(this));
-    });
-    pp.children('.search_init').children(el).keydown(function(e) {
-        switch(e.which) {
-            case 13:
-                e.preventDefault();
-                previewCourse(el);
-            break;
-            
-            case 38:
-                selectPrev(el);
-            break;
-    
-            case 40:
-                selectNext(el);
-            break;
-    
-            default: return;
-        }
-    });
-}
-function previewCourse() {
-    if($('.ss-cursor').length != 0){
-         var id = $('.ss-cursor').attr('id');
-         window.location.replace('/courses/detail/' + id);
-    } else{
-         var val = $('#get-courses-list').val();
-         window.location.replace('/courses/courses-list?keyword=' + val );
-    }
-}
-$(document).on('click', '.ss-suggestion', function(e) {
-    e.preventDefault();
-    var id = $(this).attr('id');
-    window.location.replace('/courses/courses-detail?id=' + id);
-});
-function selectPrev(el) {
-    var pSelected = true;
-    $('.ss-suggestion').each(function() {
-        if($(this).hasClass("ss-cursor")){
-            pSelected = false;
-            $(this).removeClass('ss-cursor');
-            if($(this).prev()){
-                $(el).val($(this).prev().text());
-                $(this).prev().addClass('ss-cursor');
-            }
-            return false;
-        }
-    });
-    if(pSelected){
-        $(el).val($('.ss-suggestion:last-child').text());
-        $('.ss-suggestion:last-child').addClass('ss-cursor');
-    }
-    scrollToSelected();
-}
-function selectNext(el) {
-    var nSelected = true;
-    $('.ss-suggestion').each(function() {
-        if($(this).hasClass("ss-cursor")){
-            nSelected = false;
-            $(this).removeClass('ss-cursor');
-            if($(this).next()){
-                $(el).val($(this).next().text());
-                $(this).next().addClass('ss-cursor');
-            }
-            return false;
-        }
-    });
-    if(nSelected){
-        $(el).val($('.ss-suggestion:first-child').text());
-        $('.ss-suggestion:first-child').addClass('ss-cursor');
-    }
-    scrollToSelected();
-}
-function scrollToSelected() {
-  $(".search_menu").scrollTop(0);
-  if($('.ss-cursor').length != 0){
-    $(".search_menu").scrollTop($('.ss-cursor:first').offset().top-$(".search_menu").height()-$('.search_menu').offset().top+$(".ss-cursor:first").height()+20);
-  }
-}
-function showMenu(){
-    if($('.search_menu').children()){
-        $('.search_menu').show();
-    }
-}
-initializeSearch('#get-courses-list');
+initializeSearch('#get-courses-list', "/courses/search?q=");
 JS;
 $this->registerJs($script);
+$this->registerCssFile('/assets/themes/search/css/main.css');
+$this->registerJsFile('/assets/themes/search/js/main.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

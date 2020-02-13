@@ -7,26 +7,22 @@
                     <div class="course-logo">
                         <img src="{{image_240x135}}"/>
                     </div>
-<!--                    <div class="course-provider">udemy</div>-->
                     <div class="course-description">
                         <div class="course-name">{{title}}</div>
-                        <!--                            <div class="course-duration"><i class="far fa-clock"></i>3 months</div>-->
                         <div class="course-fees"><i class="fas fa-dollar-sign"></i>
                             {{#price_detail}}
                                 {{amount}}
                             {{/price_detail}}</div>
-                        <!--                            <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>-->
                         <div class="course-start"><i class="far fa-user"></i>
                             <span class="c-author">
-                                    {{#visible_instructors}}
-                                        {{display_name}},
-                                    {{/visible_instructors}}
-                                </span>
+                                {{#visible_instructors}}
+                                    {{display_name}},
+                                {{/visible_instructors}}
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="course-skills">
-<!--                    <div class="skills-set">html</div>-->
                     <h4 class="text-right m-0">Udemy</h4>
                 </div>
             </div>

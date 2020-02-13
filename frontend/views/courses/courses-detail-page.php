@@ -24,11 +24,6 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-sm-8">
-<!--                        <div class="video-sec">-->
-<!--                            <div class="video-thumb">-->
-<!--                                <img src="{{image_750x422}}"/>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="about-course">
                             <div class="course-heading">About this course</div>
                             <div class="course-detail">
@@ -43,18 +38,8 @@ use yii\helpers\Url;
                                         {{.}}
                                     {{/what_you_will_learn_data.items}}
                                 </div>
-<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
-<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
                             </div>
                         </div>
-<!--                        <div class="skills-box">-->
-<!--                            <h3>Skills you will gain</h3>-->
-<!--                            <div class="points">-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="c-requirements">
                             <h3>Requirements</h3>
                             <div class="req-points">
@@ -64,8 +49,6 @@ use yii\helpers\Url;
                                             {{.}}
                                         </li>
                                     {{/requirements_data.items}}
-<!--                                    <li>You will need Microsoft Excel 2010, 2013, or 2016</li>-->
-<!--                                    <li>You will need Microsoft PowerPoint 2010, 2013, or 2016</li>-->
                                 </ul>
                             </div>
                         </div>
@@ -79,21 +62,6 @@ use yii\helpers\Url;
                             <div class="buy-btn">
                                 <a href="https://udemy.com/{{url}}" target="_blank" class="new-btn-set">Enroll Now</a>
                             </div>
-<!--                            <div class="discount-set">-->
-<!--                                <button onclick="myFunction()" class="coupon-code">Apply Promo Code</button>-->
-<!--                            </div>-->
-<!--                            <div class="coupon-modal" id="coupon">-->
-<!--                                <input class="form-control set-marg" type="text">-->
-<!--                                <button class="coupon-btn-set">Apply</button>-->
-<!--                            </div>-->
-<!--                            <div class="get-coupon input-group">-->
-<!--                                <input type="text" id="value-save" class="form-control set-form" value="">-->
-<!--                                <div class="input-group-btn">-->
-<!--                                    <button class="clipboard btn btn-default get-btn" onClick="valueSave();">-->
-<!--                                        <i class="fa fa-clipboard" aria-hidden="true"></i>Copy to Clipboard-->
-<!--                                    </button>-->
-<!--                                </div>-->
-<!--                            </div>-->
                             <div class="c-includes">
                                 <div class="include-head">This Course Includes</div>
                                 <div class="include-inner">
@@ -102,7 +70,6 @@ use yii\helpers\Url;
                                         {{#num_article_assets}}<li>{{num_article_assets}} articles</li>{{/num_article_assets}}
                                         {{#num_additional_assets}}<li>{{num_additional_assets}} downloadable resources</li>{{/num_additional_assets}}
                                         {{#num_coding_exercises}}<li>{{num_coding_exercises}} Exercises</li>{{/num_coding_exercises}}
-<!--                                        <li>Full lifetime access</li>-->
                                         {{#has_certificate}}<li>Certificate of Completion</li>{{/has_certificate}}
                                     </ul>
                                 </div>
@@ -113,19 +80,6 @@ use yii\helpers\Url;
             </div>
         </section>
         {{/.}}
-    </script>
-    <script>
-        // function myFunction() {
-        //     document.getElementById("coupon").style.display = "block";
-        // }
-
-        // function valueSave() {
-        //     var copyText = document.getElementById("value-save");
-        //     copyText.select();
-        //     copyText.setSelectionRange(0, 99999)
-        //     document.execCommand("copy");
-        //     //alert("Copied the text: " + copyText.value);
-        // }
     </script>
     <div id="sectionIsLoading" class="sectionIsLoading">
         <div></div>

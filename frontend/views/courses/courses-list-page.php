@@ -24,29 +24,7 @@ use yii\helpers\Url;
         <div class="row">
             <div class="heading-style">Courses</div>
         </div>
-        <div class="row" id="list-main">
-<!--            <div class="col-md-4 col-sm-6">-->
-<!--                <a href="#">-->
-<!--                    <div class="course-box">-->
-<!--                        <div class="course-upper">-->
-<!--                            <div class="course-logo">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/learning-corner/element-image.png'); ?><!--"/>-->
-<!--                            </div>-->
-<!--                            <div class="course-provider">udemy</div>-->
-<!--                            <div class="course-description">-->
-<!--                                <div class="course-name">html</div>-->
-<!--                                <div class="course-duration"><i class="far fa-clock"></i>3 months</div>-->
-<!--                                <div class="course-fees"><i class="fas fa-rupee-sign"></i>15000</div>-->
-<!--                                <div class="course-start"><i class="far fa-calendar-check"></i>15/10/12</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                        <div class="course-skills">-->
-<!--                            <div class="skills-set">html</div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </a>-->
-<!--            </div>-->
-        </div>
+        <div class="row" id="list-main"></div>
         <?= $this->render('/widgets/preloader-application-card'); ?>
         <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
             <span class="load-more-text">Load More</span>
