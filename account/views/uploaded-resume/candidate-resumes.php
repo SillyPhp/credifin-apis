@@ -179,11 +179,6 @@ use yii\helpers\Url;
                                         </div>
                                     <?php } ?>
                                     </div>
-                                    <div>
-                                        <?=
-                                        $this->render('@frontend/views/widgets/preloaders/candidate-resume');
-                                        ?>
-                                    </div>
                                 </div>
                             </div>
                         </div>

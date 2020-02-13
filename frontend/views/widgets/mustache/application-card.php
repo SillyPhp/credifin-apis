@@ -1,6 +1,6 @@
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-12 col-xs-12">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
@@ -112,7 +112,7 @@ function renderCards(cards, container){
     // showSkills();
 }
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, city_id = "") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -126,6 +126,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     }
     
     data['type'] = type;
+    data['city_enc_id'] = city_id;
     $.ajax({
         method: "POST",
         url : url,

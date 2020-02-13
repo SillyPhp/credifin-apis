@@ -1,16 +1,49 @@
 <?php
 $this->params['header_dark'] = false;
+
 use yii\helpers\Url;
 
+$separator = Yii::$app->params->seo_settings->title_separator;
+$this->title = $data['Value'];
+$keywords = $data["Value"] . ' Recruiment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ', ' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careersc';
+$description = '' . $data["Value"] . ' Recruiment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ',' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careersc';
+$this->title = $data['Value'] . " Jobs";
+$keywords = $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ', ' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careers';
+$description = '' . $data["Value"] . ' Recruitment 2020,' . $data["Value"] . ' Jobs, Apply online for latest ' . $data["Value"] . ' jobs, online Exam across India, relationship executive, manager, assistant & Deputy manager.Get latest ' . $data["Value"] . ' online notifications, clerk, special Latest ' . $data["Value"] . ' jobs vacancies updated on ' . date("d-M-Y") . ',' . $data["Value"] . ' jobs, ' . $data["Value"] . ' recruitment, ' . $data["Value"] . ' vacancies,' . $data["Value"] . ' Jobs,' . $data["Value"] . ' vacancies,' . $data["Value"] . 'careers';
+$image = Yii::$app->urlManager->createAbsoluteUrl($data['logo']);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<div class="head-img"></div>
+    <div class="head-img"></div>
     <section>
         <div class="container">
             <div class="row">
                 <div class="department">
                     <div class="depart-logo">
                         <?php if ($data['logo']): ?>
-                        <img src="<?= $data['logo'] ?>" class="img_logo">
+                            <img src="<?= $data['logo'] ?>" class="img_logo">
                         <?php else: ?>
                             <canvas class="user-icon" name="<?= $data['Value'] ?>" width="100" height="100"
                                     color="" font="60px"></canvas>
@@ -42,7 +75,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-<input type="hidden" name="dept_id" id="dept_id" value="<?= $data['dept_enc_id']; ?>">
+    <input type="hidden" name="dept_id" id="dept_id" value="<?= $data['dept_enc_id']; ?>">
 <?php
 echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
@@ -96,6 +129,13 @@ margin:auto
     font-size:15px;
     padding: 53px 10px 0px 8px;  
     }
+}
+.application-card-img {
+    margin-left: 0px;
+    margin-top: 30px;
+}
+.application-card-description {
+    margin: 20px 0 0 15px !important;
 }
 ');
 echo $this->render('/widgets/mustache/govt-jobs-card');
