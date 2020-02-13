@@ -540,7 +540,7 @@ function initializeSearch(el){
 function previewCourse() {
     if($('.ss-cursor').length != 0){
          var id = $('.ss-cursor').attr('id');
-         window.location.replace('/courses/courses-detail?id=' + id);
+         window.location.replace('/courses/detail/' + id);
     } else{
          var val = $('#get-courses-list').val();
          window.location.replace('/courses/courses-list?keyword=' + val );

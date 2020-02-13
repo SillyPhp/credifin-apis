@@ -135,6 +135,11 @@ $this->registerCss('
 .search-box1 button:hover {
     color: #ff7803; 
 }
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
+}
 ');
 $script = <<<JS
 $(window).animate({scrollTop:0}, '300');
@@ -150,7 +155,6 @@ var keyword = getUrlVars()["keyword"];
 var page = 1;
 var loading = true;
 var load_more_cards = true;
-console.log(window.location.href);
 $(window).scroll(function() {
     if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){
         if(load_more_cards && loading){
@@ -182,6 +186,10 @@ function getCourseList(){
             if(response.count == 0) {
                 $('#loadMore').hide();
                 load_more_cards = false;
+                var alreadyExist = $('#list-main').children().length;
+                if(alreadyExist == 0){
+                    $('#list-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+                }
             } else{
                 page++;
                 var template = $('#course-card').html();

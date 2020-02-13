@@ -61,7 +61,7 @@ class CoursesController extends Controller
         return $this->render('courses-list-page');
     }
 
-    public function actionCoursesDetail($id)
+    public function actionDetail($uid)
     {
         return $this->render('courses-detail-page');
     }
