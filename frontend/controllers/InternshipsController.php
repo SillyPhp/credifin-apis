@@ -653,6 +653,12 @@ class InternshipsController extends Controller
 
     }
 
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'internships'
+        ]);
+    }
+
     private function getApplicationInfo($id)
     {
         $data = $this->getApplication($id);
