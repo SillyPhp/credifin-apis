@@ -37,13 +37,13 @@
     padding: 15px 0px 5px 0px;
 }
 .skills > ul > li{
-    list-style:inside;
+    list-style:disclosure-closed;
     font-size: 16px;
     text-transform: capitalize;
 }
 .works, .education{
     display:flex;
-    padding-bottom:15px;
+    padding-bottom:10px;
 }
 span.work2, span.edu2 {
     display: block;
