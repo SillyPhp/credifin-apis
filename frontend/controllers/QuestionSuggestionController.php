@@ -1,8 +1,8 @@
 <?php
 
 namespace frontend\controllers;
-use common\models\IndianGovtDepartments;
-use common\models\IndianGovtJobs;
+use common\models\SuggestionGroup;
+use common\models\SuggestionQuestionnaire;
 use common\models\Utilities;
 use Yii;
 use yii\web\Controller;
@@ -14,6 +14,6 @@ class QuestionSuggestionController extends Controller
 {
     public function actionIndex()
     {
-      return $this->render('index');
+        return $this->render('index');
     }
 }
