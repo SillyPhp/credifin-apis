@@ -18,6 +18,7 @@ use common\models\UserPreferredIndustries;
 use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredLocations;
 use common\models\UserPreferredSkills;
+use frontend\models\profiles\ResumeData;
 use Yii;
 use yii\helpers\Url;
 use yii\db\Expression;
@@ -88,9 +89,7 @@ class ApplicationCards
                 ->asArray()
                 ->one();
             $skills = [];
-            $cities = [];
-            $states = [];
-            $countries = [];
+            $locations = [];
             $profiles = [];
             $industries = [];
             foreach ($p['userPreferredIndustries'] as $inds) {
@@ -103,17 +102,14 @@ class ApplicationCards
                 array_push($skills, $s['skill']);
             }
             foreach ($p['userPreferredLocations'] as $l) {
-                array_push($cities, $l['city_name']);
-                array_push($states, $l['state_name']);
-                array_push($countries, $l['country_name']);
+                $loc = $l['city_name'] . ", " . $l['state_name'] . ", " . $l['country_name'];
+                array_push($locations, $loc);
             }
             return [
                 'profiles' => array_unique($profiles),
                 'industries' => array_unique($industries),
                 'skills' => array_unique($skills),
-                'cities' => array_unique($cities),
-                'states' => array_unique($states),
-                'countries' => array_unique($countries),
+                'locations' => array_unique($locations),
                 'working_days' => $p['working_days'],
                 'experience' => $p['experience'],
                 'min_expected_salary' => $p['min_expected_salary'],
@@ -128,30 +124,73 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($options)
     {
+        $locations = [];
+        $resumeSkills = [];
+        $jobTitles = [];
+
+        $userId = Yii::$app->user->identity->user_enc_id;
+        $controllerId = Yii::$app->controller->id;
+        $actionId = Yii::$app->controller->action->id;
+        switch ([$controllerId, $actionId]) {
+            case ['jobs', 'index'] :
+            case ['jobs', ''] :
+                if (!empty($options['location'])) {
+                    $optLocations = explode(", ", $options['location']);
+                    foreach ($optLocations as $loc) {
+                        array_push($locations, $loc);
+                    }
+                }
+                if ($userId) {
+                    $resumeModel = new ResumeData();
+                    $resumeData = $resumeModel->getResumeData($userId);
+                    $job_preference = self::getPreference('Jobs');
+
+                    if (!empty($job_preference) || !empty($resumeData)) {
+                        if (!empty($job_preference['locations'])) {
+                            foreach ($job_preference['locations'] as $loc) {
+                                $expLoc = explode(", ", $loc);
+                                foreach ($expLoc as $el) {
+                                    array_push($locations, $el);
+                                }
+                            }
+                        }
+                        if (!empty($resumeData['userSkills'])) {
+                            $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
+                        }
+                        if (!empty($resumeData['userWorkExperiences'])) {
+                            foreach ($resumeData['userWorkExperiences'] as $exp) {
+                                array_push($jobTitles, $exp['title']);
+                                array_push($locations, $exp['city'], $exp['state'], $exp['country']);
+                            }
+                        }
+
+                        $locations = array_unique($locations);
+                        $profiles = $job_preference['profiles'];
+                        $industries = $job_preference['industries'];
+                        $skills = array_unique(array_merge($job_preference['skills'], $resumeSkills));
+                        $working_days = $job_preference['working_days'];
+                        $experience = $job_preference['experience'];
+                        $min_expected_salary = $job_preference['min_expected_salary'];
+                        $max_expected_salary = $job_preference['max_expected_salary'];
+                        $timings_from = $job_preference['timings_from'];
+                        $timings_to = $job_preference['timings_to'];
+                        $salary = $job_preference['salary'];
+                        $work_type = $job_preference['work_type'];
+
+                    }
+                }
+                break;
+            default :
+                if (!empty($options['location'])) {
+                    $optLocation = $options['location'];
+                }
+        }
+
         if (isset($options['limit'])) {
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        $job_preference = self::getPreference('Jobs');
-        if (empty($job_preference)) {
-            $cityId = $options['city_enc_id'];
-        } else {
-            $profiles = $job_preference['profiles'];
-            $industries = $job_preference['industries'];
-            $skills = $job_preference['skills'];
-            $cities = $job_preference['cities'];
-            $states = $job_preference['states'];
-            $countries = $job_preference['countries'];
-            $working_days = $job_preference['working_days'];
-            $experience = $job_preference['experience'];
-            $min_expected_salary = $job_preference['min_expected_salary'];
-            $max_expected_salary = $job_preference['max_expected_salary'];
-            $timings_from = $job_preference['timings_from'];
-            $timings_to = $job_preference['timings_to'];
-            $salary = $job_preference['salary'];
-            $work_type = $job_preference['work_type'];
-        }
 
         $cards1 = (new \yii\db\Query())
             ->distinct()
@@ -252,18 +291,19 @@ class ApplicationCards
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
-        if (isset($profiles) && !empty($profiles)) {
-            $cards1->orWhere([
+        if (!empty($profiles)) {
+            $cards1->andWhere([
                 'or',
                 ['in', 'c.name', $profiles],
                 ['in', 'i.name', $profiles],
             ]);
-            $cards2->orWhere([
+            $cards2->andWhere([
                 'or',
                 ['in', 'c.name', $profiles],
                 ['in', 'i.name', $profiles],
             ]);
         }
+
 
         if (isset($industries) && !empty($industries)) {
             $cards1->orWhere(['in', 'h.industry', $industries]);
@@ -273,13 +313,18 @@ class ApplicationCards
             $cards1->orWhere(['in', 'y.skill', $skills]);
             $cards2->orWhere(['in', 'y.skill', $skills]);
         }
-        if (isset($cities) && !empty($cities)) {
+
+        if (isset($jobTitles) && !empty($jobTitles)) {
             $cards1->orWhere([
                 'or',
-                ['in', 'g.name', $cities],
-                ['in', 'x.name', $cities],
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
             ]);
-            $cards2->orWhere(['in', 'g.name', $cities]);
+            $cards2->orWhere([
+                'or',
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
+            ]);
         }
 
         if (isset($working_days)) {
@@ -321,14 +366,6 @@ class ApplicationCards
             $cards2->orWhere(['a.type' => $work_type]);
         }
 
-        if (isset($cityId)) {
-            $cards1->orWhere(['or',
-                ['f.city_enc_id' => $cityId],
-                ['t.city_enc_id' => $cityId]
-            ]);
-            $cards2->orWhere(['g.city_enc_id' => $cityId]);
-        }
-
         if (isset($options['company'])) {
             $cards1->andWhere(['like', 'd.name', $options['company']]);
             $cards2->andWhere(['like', 'd.name', $options['company']]);
@@ -337,29 +374,6 @@ class ApplicationCards
         if (isset($options['slug']) && !empty($options['slug'])) {
             $cards1->andWhere(['like', 'd.slug', $options['slug']]);
             $cards2->andWhere(['like', 'd.slug', $options['slug']]);
-        }
-
-        if (isset($options['location'])) {
-            $search_location = trim($options['location'], " ");
-            $search_pattern_location = self::makeSQL_search_pattern($search_location);
-            $cards1->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern_location],
-                ['REGEXP', 's.name', $search_pattern_location],
-                ['REGEXP', 'v.name', $search_pattern_location],
-                ['REGEXP', 'x.name', $search_pattern_location],
-                ['REGEXP', 'ct.name', $search_pattern_location],
-                ['REGEXP', 'cy.name', $search_pattern_location],
-                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
-                ['REGEXP', 'cy.abbreviation', $search_pattern_location],
-            ]);
-            $cards2->andFilterWhere([
-                'or',
-                ['REGEXP', 'g.name', $search_pattern_location],
-                ['REGEXP', 's.name', $search_pattern_location],
-                ['REGEXP', 'ct.name', $search_pattern_location],
-                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
-            ]);
         }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
@@ -414,6 +428,70 @@ class ApplicationCards
                 ['REGEXP', 'a.slug', $search_pattern]
             ]);
         }
+        if (isset($optLocation)) {
+            $search_location = trim($optLocation, " ");
+            $search_pattern_location = self::makeSQL_search_pattern($search_location);
+            $cards1->andFilterWhere([
+                'or',
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'v.name', $search_pattern_location],
+                ['REGEXP', 'x.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'cy.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'cy.abbreviation', $search_pattern_location],
+            ]);
+            $cards2->andFilterWhere([
+                'or',
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+            ]);
+        }
+        if (!empty($locations)) {
+            $cityIds = [];
+            $stateIds = [];
+            $countryIds = [];
+            foreach ($locations as $loc) {
+                $chkCountries = Countries::findOne(['name' => $loc]);
+                if ($chkCountries) {
+                    array_push($countryIds, $chkCountries['country_enc_id']);
+                }
+                $chkStates = States::findOne(['name' => $loc]);
+                if ($chkStates) {
+                    array_push($stateIds, $chkStates['state_enc_id']);
+                }
+                $chkCities = Cities::findOne(['name' => $loc]);
+                if ($chkCities) {
+                    array_push($cityIds, $chkCities['city_enc_id']);
+                }
+            }
+            if (!empty($cityIds)) {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['in', 'g.city_enc_id', $cityIds],
+                    ['in', 'x.city_enc_id', $cityIds],
+                ]);
+                $cards2->andFilterWhere(['in', 'g.city_enc_id', $cityIds]);
+            } elseif (!empty($stateIds)) {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 's.state_enc_id', $stateIds],
+                    ['in', 'v.state_enc_id', $stateIds],
+                ]);
+                $cards2->andWhere(['in', 's.state_enc_id', $stateIds]);
+            } else {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 'ct.country_enc_id', $countryIds],
+                    ['in', 'cy.country_enc_id', $countryIds],
+                ]);
+                $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
+            }
+        }
+
         $result = null;
         if (isset($options['similar_jobs'])) {
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);

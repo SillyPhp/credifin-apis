@@ -145,13 +145,13 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $city_id = Yii::$app->request->post('city_enc_id');
+            $location = Yii::$app->request->post('location');
             $type = Yii::$app->request->post('type');
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
             $options['type'] = $type;
-            $options['city_enc_id'] = $city_id;
+            $options['location'] = $location;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
                 $response = [
