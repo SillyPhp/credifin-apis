@@ -26,6 +26,11 @@
                     </div>
                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                         <div class="ey-mobile-sub-menu-heading">
+                            <a href="/jobs/international">International Jobs</a>
+                        </div>
+                    </div>
+                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                        <div class="ey-mobile-sub-menu-heading">
                             <a href="/organizations">Explore Companies</a>
                         </div>
                     </div>
