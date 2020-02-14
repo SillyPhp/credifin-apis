@@ -20,6 +20,9 @@
                                     <a href="/usa-jobs">USA Govt. Jobs</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">
+                                    <a href="/jobs/international">International Jobs</a>
+                                </li>
+                                <li class="ey-head-sub-menu-has-child">
                                     <a href="/organizations">Explore Companies</a>
                                 </li>
                                 <li class="ey-head-sub-menu-has-child">

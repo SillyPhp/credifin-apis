@@ -297,4 +297,23 @@ class CitiesController extends Controller
         return $result;
     }
 
+    public function actionGetCityEnc($location)
+    {
+        if (Yii::$app->request->isPost) {
+            $location = explode(", ", $location);
+            $cityId = Cities::find()
+                ->alias('z')
+                ->select(['z.city_enc_id', 'z.state_enc_id','a.country_enc_id'])
+                ->joinWith(['stateEnc a' => function($a) use($location){
+                    $a->joinWith(['countryEnc b' => function($b) use($location){
+                        $b->andWhere(['b.name' => $location[2]]);
+                    }]);
+                    $a->andWhere(['a.name' => $location[1]]);
+                }])
+                ->andWhere(['z.name' => $location[0]])
+                ->asArray()
+                ->one();
+            return $cityId['city_enc_id'];
+        }
+    }
 }
