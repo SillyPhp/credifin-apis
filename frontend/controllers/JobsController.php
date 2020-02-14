@@ -145,10 +145,13 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $city_id = Yii::$app->request->post('city_enc_id');
             $type = Yii::$app->request->post('type');
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
+            $options['type'] = $type;
+            $options['city_enc_id'] = $city_id;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
                 $response = [
@@ -1065,6 +1068,12 @@ class JobsController extends Controller
             return $response;
         }
         return $this->render('working-profile');
+    }
+
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'jobs'
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)

@@ -26,7 +26,7 @@ class AuthController extends ApiBaseController
                 'signup' => ['POST'],
                 'login' => ['POST'],
                 'refresh-access-token' => ['POST'],
-                'forgot-password'=>['POST']
+                'forgot-password' => ['POST']
             ]
         ];
         return $behaviors;
@@ -71,14 +71,16 @@ class AuthController extends ApiBaseController
         }
     }
 
-    private function userValid($model)
+    private function userValid($username)
     {
-        $usernamesModel = new Usernames();
-        $usernamesModel->username = $model->username;
-        if (!$usernamesModel->validate()) {
-            return false;
-        } else {
+        $user_exists = Usernames::find()
+            ->where(['username' => $username])
+            ->exists();
+
+        if ($user_exists) {
             return true;
+        } else {
+            return false;
         }
     }
 
@@ -211,15 +213,15 @@ class AuthController extends ApiBaseController
             'username' => 'Username already taken'
         ];
 
-        if (!$this->userValid($params)) {
+        $username = $params['username'];
+        $password = $params['password'];
+        $source = $params['source'];
+
+        if ($this->userValid($username)) {
             if ($params['password'] == '' && $params['password'] == null) {
                 return $this->response(409, $already_taken);
             }
         }
-
-        $username = $params['username'];
-        $password = $params['password'];
-        $source = $params['source'];
 
         if (!isset($password) && isset($username)) {
             $user = Candidates::find()
@@ -260,20 +262,21 @@ class AuthController extends ApiBaseController
         return $this->response(405);
     }
 
-    public function actionForgotPassword(){
+    public function actionForgotPassword()
+    {
         $email = Yii::$app->request->post('email');
         $model = new ForgotPasswordForm();
         $user = Users::find()
-            ->select(['user_enc_id','email'])
-            ->where(['status'=>'Active','is_deleted'=>0])
-            ->andWhere(['or',['email'=>$email],['username'=>$email]])
+            ->select(['user_enc_id', 'email'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
+            ->andWhere(['or', ['email' => $email], ['username' => $email]])
             ->asArray()
             ->one();
 
         $model->email = $user['email'];
-        if(empty($user)){
-            $this->response(404,['message'=>'not found']);
-        }else {
+        if (empty($user)) {
+            $this->response(404, ['message' => 'not found']);
+        } else {
             if ($model) {
                 if ($model->forgotPassword()) {
                     return $this->response(200, ['message' => 'An email with instructions has been sent to your email address (please also check your spam folder).']);

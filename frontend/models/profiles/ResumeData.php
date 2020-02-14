@@ -97,7 +97,7 @@ class ResumeData
            ->select(['a.user_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
            ->joinWith(['userSkills b'=>function($b)
            {
-               $b->select(['b.created_by','c.skill']);
+               $b->select(['b.created_by','c.skill','b.user_skill_enc_id']);
                $b->andWhere(['b.is_deleted' => 0]);
                $b->joinWith(['skillEnc c'], false);
            }])
@@ -108,19 +108,19 @@ class ResumeData
            }])
            ->joinWith(['userAchievements f'=>function($b)
            {
-               $b->select(['f.user_enc_id', 'f.achievement']);
+               $b->select(['f.user_enc_id', 'f.achievement','f.user_achievement_enc_id']);
                $b->andWhere(['f.is_deleted'=>0]);
            }])
            ->joinWith(['userHobbies g'=>function($b)
            {
-               $b->select(['g.user_enc_id', 'g.hobby']);
+               $b->select(['g.user_enc_id', 'g.hobby','g.user_hobby_enc_id']);
                $b->andWhere(['g.is_deleted'=>0]);
-           }],false)
+           }])
            ->joinWith(['userInterests h'=>function($b)
            {
-               $b->select(['h.user_enc_id', 'h.interest']);
+               $b->select(['h.user_enc_id', 'h.interest','h.user_interest_enc_id']);
                $b->andWhere(['h.is_deleted'=>0]);
-           }],false)
+           }])
            ->joinWith(['userEducations i'])
            ->where(['a.user_enc_id'=>$id])
            ->asArray()
