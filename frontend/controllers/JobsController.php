@@ -1070,6 +1070,12 @@ class JobsController extends Controller
         return $this->render('working-profile');
     }
 
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'jobs'
+        ]);
+    }
+
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
     {
         $tweets1 = (new \yii\db\Query())
