@@ -169,6 +169,14 @@ use yii\bootstrap\ActiveForm;
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 <?php
 echo $this->render('/widgets/mustache/review-cards');
 echo $this->render('/widgets/mustache/latest-reviews');
@@ -361,7 +369,7 @@ $this->registerCss('
     z-index: -1;
 }
 .cm-btns {
-    margin-top:10px;
+    margin-top:10px !important;
 }  
 .color-blue a:hover{
     color:#00a0e3;

@@ -14,7 +14,22 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
+$job_heading = (($data2['cat_name']) ? ($data2['cat_name']) : ($data1['cat_name']));
 if ($type == 'Job') {
+    if (!empty($data2['interview_process_enc_id'])){
+        $app_locations = $data2['applicationPlacementLocations'];
+    } else {
+        $app_locations = (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']);
+    }
+    if (!empty($app_locations)) {
+        $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
+        $lc_data = "";
+        $locations = [];
+        foreach ($app_locations as $placements) {
+            array_push($locations, $job_heading." jobs in ".$placements["name"]);
+        }
+        $lc_data = implode(", ", array_unique($locations));
+    }
     $smililars = 'jobs';
     if (!empty($data2)) {
         if ($data2['wage_type'] == 'Fixed') {
@@ -84,10 +99,26 @@ if ($type == 'Job') {
         }
     }
     $this->title = $org['org_name'] . ' is hiring for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' with a ' . $amount . ' package.';
-    $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
+    $keywords = $org['org_name'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,'.$job_heading.' Jobs,  MBA Jobs, Career, Walk-ins '.$job_heading.', '.rtrim($lc_data, ',').',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,'.$job_heading.' jobs in india for freshers';
     $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 }
 if ($type == 'Internship') {
+    if (!empty($data2['applicationPlacementLocations'])){
+        $app_locations = $data2['applicationPlacementLocations'];
+    } else if(!empty($data1['applicationPlacementCities'])){
+        $app_locations = $data1['applicationPlacementCities'];
+    } else{
+        $app_locations = $data2['applicationPlacementCities'];
+    }
+    if (!empty($app_locations)) {
+        $location = ArrayHelper::map($app_locations, 'city_enc_id', 'name');
+        $lc_data = "";
+        $locations = [];
+        foreach ($app_locations as $placements) {
+            array_push($locations, $job_heading." internships in ".$placements["name"]);
+        }
+        $lc_data = implode(", ", array_unique($locations));
+    }
     $smililars = 'internships';
     if ($data2['wage_type'] == 'Fixed') {
         if ($data2['wage_duration'] == 'Weekly') {
@@ -119,7 +150,7 @@ if ($type == 'Internship') {
         $amount = '₹' . utf8_encode(money_format('%!.0n', $data1['min_wage'])) . ' - ' . '₹' . utf8_encode(money_format('%!.0n', $data1['max_wage'])) . ' p.m.';
     }
     $this->title = $org['org_name'] . ' is looking for ' . (($data2['cat_name']) ? $data2['cat_name'] : $data1['cat_name']) . ' interns with a stipend ' . $amount;
-    $keywords = 'Internships,internships in Ludhiana,Paid Internships,Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,Internships near me';
+    $keywords = $org['org_name'] . ' internships,Internships,Paid '.$job_heading.' Internships, '.rtrim($lc_data, ',').', Summer Internships,top Internship sites,Top Free Internship Sevices in India,top Internship sites for students,top Internship sites for students,'.$job_heading.' Internships near me';
     $description = 'Empower Youth Provides Internships To Students In Various Departments To Get On Job Training And Chance To Get Recruit In Reputed Organisations.';
 }
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
@@ -237,7 +268,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'wage_type' => $data2['wage_type'],
                                     'gender' => $data2['preferred_gender'],
                                     'ammount_value' => $amount,
-                                    'placement_locations' => $data2['applicationPlacementLocations'],
+                                    'placement_locations' => $app_locations,
                                 ]);
                             else:
                                 echo $this->render('/widgets/employer_applications/overview', [
@@ -248,7 +279,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                     'gender' => (($data1['preferred_gender']) ? $data1['preferred_gender'] : $data2['preferred_gender']),
                                     'wage_type' => (($data1['wage_type']) ? $data1['wage_type'] : $data2['wage_type']),
                                     'wage_duration' => (($data1['wage_duration']) ? $data1['wage_duration'] : $data2['wage_duration']),
-                                    'placement_locations' => (($data1['applicationPlacementCities']) ? $data1['applicationPlacementCities'] : $data2['applicationPlacementCities']),
+                                    'placement_locations' => $app_locations,
                                 ]);
                             endif;
                         } else if ($type == 'Job') {
@@ -297,11 +328,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                                 'benefits' => $data2['applicationEmployeeBenefits']
                             ]);
                             ?>
-                            <?=
-                            $this->render('/widgets/employer_applications/skills', [
-                                'skills' => $data2['applicationSkills']
-                            ]);
-                            ?>
+
                             <?=
                             $this->render('/widgets/employer_applications/job-description', [
                                 'job_description' => $data2['applicationJobDescriptions'],
@@ -358,7 +385,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'initial_color' => $org['color'],
                         'slug' => $org['slug'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'type' => $type,
                         'applied' => $applied,
                         'application_slug' => $application_details["slug"],
@@ -374,7 +400,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                         'slug' => $org['slug'],
                         'cid' => $org['organization_enc_id'],
                         'website' => $org['website'],
-                        'email' => $org['email'],
                         'job_url' => $data1['job_url'],
                         'application_id' => $data1['application_enc_id'],
                         'type' => $type,
@@ -385,15 +410,36 @@ $this->render('/widgets/employer_applications/top-banner', [
                     ]);
                 endif;
                 ?>
+                <?php
+                if (Yii::$app->user->isGuest) {
+                    echo $this->render('/widgets/best-platform');
+                }
+                ?>
             </div>
         </div>
-        <?php if($settings["showRelatedOpportunities"]):?>
-        <div class="row m-0">
-            <div class="col-md-12">
-                <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
-                <div class="similar-application"></div>
+        <?php
+        if (!empty($data2)) {
+            ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
+                </div>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="blogbox"></div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+        <?php if ($settings["showRelatedOpportunities"]): ?>
+            <div class="row m-0">
+                <div class="col-md-12">
+                    <h2 class="heading-style">Related <?= $type . 's'; ?></h2>
+                    <div class="similar-application"></div>
+                </div>
+            </div>
         <?php endif; ?>
     </div>
     <?php
@@ -403,15 +449,15 @@ $this->render('/widgets/employer_applications/top-banner', [
     ?>
 </section>
 <?php
-    if($settings["showNewPositionsWidget"]):
-?>
-<section>
-    <div class="container">
-        <?=
+if ($settings["showNewPositionsWidget"]):
+    ?>
+    <section>
+        <div class="container">
+            <?=
             $this->render('/widgets/new-position');
-        ?>
-    </div>
-</section>
+            ?>
+        </div>
+    </section>
 <?php endif; ?>
 <script>
     function copyToClipboard() {
@@ -419,7 +465,6 @@ $this->render('/widgets/employer_applications/top-banner', [
         copyText.select();
         document.execCommand("copy");
         toastr.success("", "Copied");
-        // alert("Copied the text: " + copyText.value);
     }
 </script>
 <?php
@@ -554,8 +599,9 @@ $this->registerCss("
         display:none;
     }
     #logo_img{
-        width: 90px;
-        height: 90px; 
+        width: 115px;
+        height: 115px;
+        background-color:#fff;
     }
     .block .container{padding:0}
     .block.remove-top{padding-top:0}
@@ -575,7 +621,6 @@ $this->registerCss("
         width: 100%;
         height: 100%;
         content: '';
-//        z-index: -1;
         background: #00000078;
         opacity: 0.8;
     }
@@ -750,7 +795,6 @@ $this->registerCss("
     .job-details {
         float: left;
         width: 100%;
-//        padding-top: 20px;
     }
     .job-details h3 {
         float: left;
@@ -980,8 +1024,6 @@ $this->registerCss("
         border-color: #4FCE5D;
     }
     .job-single-head.style2 {
-//        float: left;
-//        width: 100%;
         display: inherit;
         text-align: center;
         border: none;
@@ -997,11 +1039,6 @@ $this->registerCss("
         display: inline-block;
         width: auto;
         border: none;
-//        -webkit-box-shadow: 0px 0px 20px 7px #ddd;
-//        -moz-box-shadow: 0px 0px 20px 7px #ddd;
-//        -ms-box-shadow: 0px 0px 20px 7px #ddd;
-//        -o-box-shadow: 0px 0px 20px 7px #ddd;
-//        box-shadow: 0px 0px 20px 7px #ddd;
         -webkit-border-radius: 50%;
         -moz-border-radius: 50%;
         -ms-border-radius: 50%;
@@ -1101,26 +1138,27 @@ $this->registerCss("
         margin-top: 1px;
     }
     .apply-job-btn {
-        background: #00a0e3;
-        -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
-        -webkit-border-radius: 2px;
-        -moz-border-radius: 2px;
-        -ms-border-radius: 2px;
-        -o-border-radius: 2px;
-        border-radius: 2px;
-        font-family: Open Sans;
-        font-size: 13px;
-        color: #fff;
-        width: 175px;
-        height: auto;
-        padding: 15px 6px;
-        text-align: center;
-        margin:auto;
-    }
+    display:inline-block !important;    
+    background: #00a0e3;
+    -webkit-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -moz-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -ms-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -o-box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color: #fff;
+    width: 175px;
+    height: auto;
+    padding: 15px 6px;
+    text-align: center;
+    margin:auto;
+}
     .apply-job-btn:hover {
         -webkit-border-radius: 8px;
         -moz-border-radius: 8px;
@@ -1207,7 +1245,6 @@ $this->registerCss("
         font-size: 13px;
         padding: 7px 17px;
         margin-right: 15px;
-        margin-bottom:5px;
         position: relative;
     }
     .shortlist_job,.shortlist_job:hover{
@@ -1436,6 +1473,11 @@ $.ajax({
     $(this).parent().removeClass('show');
 });
 loader = false;
-getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
+//getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
+if (!empty($data2)) {
+$this->registerJs("
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
+");
+}
 ?>

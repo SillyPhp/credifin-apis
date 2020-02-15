@@ -2,7 +2,9 @@
 
 namespace api\modules\v1\controllers;
 
+use api\modules\v1\models\ForgotPasswordForm;
 use common\models\Usernames;
+use common\models\Users;
 use common\models\UserTypes;
 use Yii;
 use api\modules\v1\models\IndividualSignup;
@@ -23,7 +25,8 @@ class AuthController extends ApiBaseController
             'actions' => [
                 'signup' => ['POST'],
                 'login' => ['POST'],
-                'refresh-access-token' => ['POST']
+                'refresh-access-token' => ['POST'],
+                'forgot-password' => ['POST']
             ]
         ];
         return $behaviors;
@@ -65,6 +68,19 @@ class AuthController extends ApiBaseController
             return false;
         } else {
             return true;
+        }
+    }
+
+    private function userValid($username)
+    {
+        $user_exists = Usernames::find()
+            ->where(['username' => $username])
+            ->exists();
+
+        if ($user_exists) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -193,9 +209,19 @@ class AuthController extends ApiBaseController
 
         $params = \Yii::$app->request->post();
 
+        $already_taken = [
+            'username' => 'Username already taken'
+        ];
+
         $username = $params['username'];
         $password = $params['password'];
         $source = $params['source'];
+
+        if ($this->userValid($username)) {
+            if ($params['password'] == '' && $params['password'] == null) {
+                return $this->response(409, $already_taken);
+            }
+        }
 
         if (!isset($password) && isset($username)) {
             $user = Candidates::find()
@@ -235,6 +261,32 @@ class AuthController extends ApiBaseController
         }
         return $this->response(405);
     }
+
+    public function actionForgotPassword()
+    {
+        $email = Yii::$app->request->post('email');
+        $model = new ForgotPasswordForm();
+        $user = Users::find()
+            ->select(['user_enc_id', 'email'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
+            ->andWhere(['or', ['email' => $email], ['username' => $email]])
+            ->asArray()
+            ->one();
+
+        $model->email = $user['email'];
+        if (empty($user)) {
+            $this->response(404, ['message' => 'not found']);
+        } else {
+            if ($model) {
+                if ($model->forgotPassword()) {
+                    return $this->response(200, ['message' => 'An email with instructions has been sent to your email address (please also check your spam folder).']);
+                } else {
+                    return $this->response(500, ['message' => 'An error has occurred. Please try again.']);
+                }
+            }
+        }
+    }
+
 
 //    public function actionRefreshAccessToken(){
 //        if(\Yii::$app->request->post('refresh_token')){

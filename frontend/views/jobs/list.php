@@ -1,9 +1,18 @@
 <?php
-$this->title = Yii::t('frontend', 'Jobs');
+if (Yii::$app->request->get('location')){
+    $this->title = 'Jobs in '.ucwords(str_replace("-"," ",Yii::$app->request->get('location')));
+}
+elseif(Yii::$app->request->get('keyword'))
+{
+    $this->title = ucwords(str_replace("-"," ",Yii::$app->request->get('keyword'))).' Jobs';
+}
+else
+{
+    $this->title = 'Jobs';
+}
 $this->params['header_dark'] = true;
-
 $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
-$description = '';
+$description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
@@ -61,7 +70,7 @@ $this->registerCss('
                 ?>
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
-                    <?= $this->render('/widgets/preloader-application-card'); ?>
+                    <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                         <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>
                             <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"

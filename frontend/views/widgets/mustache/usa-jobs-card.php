@@ -10,7 +10,7 @@
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="{{organization_link}}" title="{{DepartmentName}}">
+                    <a href="/usa-jobs/detail/{{JobCategory}}/{{MatchedObjectId}}" title="{{DepartmentName}}">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                         {{/logo}}
@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="{{link}}" title="{{PositionTitle}}"><h4 class="application-title">{{PositionTitle}}</h4></a>
+                    <a href="/usa-jobs/detail/{{JobCategory}}/{{MatchedObjectId}}" title="{{PositionTitle}}"><h4 class="application-title">{{PositionTitle}}</h4></a>
                     <h5><i class="fas fa-dollar-sign"></i>{{MinimumRange}} - <i class="fas fa-dollar-sign"></i>{{MaximumRange}} {{Duration}}</h5>
                     <h5><i class="far fa-calendar-alt"></i>&nbsp;Last Date: {{ApplicationCloseDate}}</h5>
                     <h5><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>
@@ -46,6 +46,33 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
   method:'POST',
   data:{
       'Keyword':keywords
+  },
+  datatype:"jsonp",
+    beforeSend: function(){
+            $('.img_load').css('display','block');
+        },
+  success:function(body) {   
+      $('.img_load').css('display','none');
+      body = JSON.parse(body);
+      template.html(''); 
+      template.append(Mustache.render($('#usa-jobs-card').html(),body));
+      utilities.initials();
+      $('#loader').hide();
+      if(body == null){
+          $('#loader').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+      }
+  }   
+  })
+}
+
+function fetch_usa_cards_dept(host,userAgent,authKey,template,Department)
+{
+  $.ajax({
+  url:'/usa-jobs/get-dept-cards',
+  method:'POST',
+  data:{
+      'Department':Department
   },
   datatype:"jsonp",
     beforeSend: function(){

@@ -15,6 +15,8 @@ class TemplatesController extends Controller
             return $this->render('index', [
                 'questionnaire' => $this->__questionnaire(4),
                 'interview_processes' => $this->__interviewProcess(4),
+                'jobs' => $this->__getApplications("Jobs"),
+                'internships' => $this->__getApplications("Internships"),
             ]);
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
@@ -46,5 +48,22 @@ class TemplatesController extends Controller
 
         $processess = new \account\models\templates\TemplateHiringProcess();
         return $processess->getProcesses($options);
+    }
+
+    private function __getApplications($type = 'Jobs')
+    {
+        $application = \common\models\ApplicationTemplates::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+            ->joinWith(['title0 z' => function ($z) {
+                $z->joinWith(['categoryEnc zz']);
+            }], false)
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
+//            ->groupBy('zz.name')
+            ->asArray()
+            ->all();
+
+        return $application;
     }
 }
