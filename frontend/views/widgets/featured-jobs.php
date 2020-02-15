@@ -3,14 +3,14 @@
 use yii\helpers\Url;
 
 ?>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c" async></script>
+
 <section>
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="widget-heading">
                     <span><img src="" alt=""></span>
-                    <span id="demo">Prefered Jobs</span>
+                    <span>Prefered Jobs</span>
                     <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
                 <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
                     <i class="fab fa-whatsapp-square"></i> Join Us
@@ -92,10 +92,98 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-var vals = {
-    lat: null,
-    long: null,
-};
+
+ var x, lat, lng, city, state, country, geocoder, latlng, loc;
+ $(document).ready(function() {
+     getLocation();
+ });
+ function result() {
+     loc = city + ', ' + state + ', ' + country;
+     // alert(loc);
+     getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/index',loc);
+ }
+function ipLookUp () {
+    city = localStorage.getItem("city");
+    state = localStorage.getItem("state");
+    country = localStorage.getItem("country");
+    if(city || state){
+        result();
+    } else {
+        $.getJSON('https://ipapi.co/json', function(data){
+            console.error(data);
+            city = data.city;
+            state = data.region;
+            country = data.country_name;
+            result();
+        });
+    }
+}
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        x = "Geolocation is not supported by this browser.";
+        ipLookUp();
+        console.error(x);
+    }
+}
+function showPosition(position) {
+    lat = position.coords.latitude;
+    lng = position.coords.longitude;
+    // inprange = parseInt($('#range_3').prop("value") * 1000);
+    geocodeLatLng(lat, lng);
+}
+function showError(error) {
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            x = "User denied the request for Geolocation.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x = "Location information is unavailable.";
+            break;
+        case error.TIMEOUT:
+            x = "The request to get user location timed out.";
+            break;
+        case error.UNKNOWN_ERROR:
+            x = "An unknown error occurred.";
+            break;
+    }
+    ipLookUp();
+    console.error(x);
+}
+function geocodeLatLng(lat, lng) {
+    geocoder = new google.maps.Geocoder();
+    latlng = new google.maps.LatLng(lat, lng);
+    geocoder.geocode({'latLng': latlng}, function(results, status) {
+        if (status === 'OK') {
+            console.log(results);
+            for (var i = 0; i < results[0].address_components.length; i++) {
+                for (var b = 0; b < results[0].address_components[i].types.length; b++) {
+                    switch (results[0].address_components[i].types[b]) {
+                        case 'locality':
+                            city = results[0].address_components[i].long_name;
+                            break;
+                        case 'administrative_area_level_1':
+                            state = results[0].address_components[i].long_name;
+                            break;
+                        case 'country':
+                            country = results[0].address_components[i].long_name;
+                            break;
+                    }
+                }
+            }
+            localStorage.setItem("city", city);
+            localStorage.setItem("state", state);
+            localStorage.setItem("country", country);
+        }
+        city = localStorage.getItem("city");
+        state = localStorage.getItem("state");
+        country = localStorage.getItem("country");
+        result();
+    });
+}
+
+
 
 $('#subs_news').submit(function(event) {
     event.preventDefault();
@@ -107,76 +195,19 @@ $('#subs_news').submit(function(event) {
   })
 });
 
-var x = document.getElementById("demo");
-
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition, showError);
-  } else { 
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
-
-function showPosition(position) {
-    vals.lat = position.coords.latitude;
-    vals.long = position.coords.longitude;
-    vals.inprange = parseInt($('#range_3').prop("value") * 1000);
-    geocodeLatLng(vals.lat,vals.long);
-  // x.innerHTML = "Latitude: " + position.coords.latitude + 
-  // "<br>Longitude: " + position.coords.longitude;
-}
-
-function showError(error) {
-  switch(error.code) {
-    case error.PERMISSION_DENIED:
-      x.innerHTML = "User denied the request for Geolocation.";
-      break;
-    case error.POSITION_UNAVAILABLE:
-      x.innerHTML = "Location information is unavailable.";
-      break;
-    case error.TIMEOUT:
-      x.innerHTML = "The request to get user location timed out.";
-      break;
-    case error.UNKNOWN_ERROR:
-      x.innerHTML = "An unknown error occurred.";
-      break;
-  }
-}
-
-//address from lat and long
-function geocodeLatLng(lat,long) {
-    var geocoder = new google.maps.Geocoder();
-    var latlng = {lat: lat, lng: long};
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === 'OK') {
-        if (results[7]) {
-            localStorage.setItem("location", results[7].formatted_address);
-        } else if(results[8]){
-            localStorage.setItem("location", results[8].formatted_address);
-        }
-      }
-    });
-    var location = localStorage.getItem("location");
-    getCityEnc(location);
-}
-
-function getCityEnc(location){
-    $.ajax({
-        url : '/cities/get-city-enc?location='+location,
-        method : 'POST',
-        success : function(res) {
-            if(res){
-                localStorage.setItem("user_city_id", res);
-            }
-            var cityId = localStorage.getItem("user_city_id");
-            getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/index', city_id = cityId);           
-        }
-    });
-}
-
-$(document).ready(function() {
-  getLocation();
-});
+// function getCityEnc(location){
+//     $.ajax({
+//         url : '/cities/get-city-enc?location='+location,
+//         method : 'POST',
+//         success : function(res) {
+//             if(res){
+//                 localStorage.setItem("user_city_id", res);
+//             }
+//             var cityId = localStorage.getItem("user_city_id");
+//             getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/index', city_id = cityId);           
+//         }
+//     });
+// }
 
 JS;
 $this->registerJS($script);
