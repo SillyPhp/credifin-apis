@@ -23,7 +23,7 @@ namespace common\models;
  * @property Users $lastUpdatedBy
  * @property Users $createdBy
  * @property QuizQuestionsPool[] $quizQuestionsPools
- * @property Quizs[] $quizs
+ * @property Quizzes[] $quizzes
  */
 class QuizPool extends \yii\db\ActiveRecord
 {
@@ -89,8 +89,8 @@ class QuizPool extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuizs()
+    public function getQuizzes()
     {
-        return $this->hasMany(Quizs::className(), ['quiz_pool_enc_id' => 'quiz_pool_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['quiz_pool_enc_id' => 'quiz_pool_enc_id']);
     }
 }
