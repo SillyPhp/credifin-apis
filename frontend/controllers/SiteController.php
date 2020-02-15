@@ -820,4 +820,11 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionUserFeedbackPage(){
+        $feedbackFormModel = new FeedbackForm();
+        return $this->render('user-feedback-page',[
+            'feedbackFormModel' => $feedbackFormModel,
+        ]);
+    }
+
 }

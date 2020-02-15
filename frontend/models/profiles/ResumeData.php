@@ -94,7 +94,7 @@ class ResumeData
     {
        $out = Users::find()
            ->alias('a')
-           ->select(['a.user_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
+           ->select(['a.user_enc_id','a.city_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
            ->joinWith(['userSkills b'=>function($b)
            {
                $b->select(['b.created_by','c.skill','b.user_skill_enc_id']);
@@ -103,8 +103,12 @@ class ResumeData
            }])
            ->joinWith(['userWorkExperiences d'=>function($b)
            {
-               $b->joinWith(['cityEnc e'],false);
-               $b->select(['d.created_by','d.experience_enc_id', 'd.title', 'd.description', 'd.company', 'd.from_date', 'd.to_date', 'd.is_current','e.name city']);
+               $b->joinWith(['cityEnc e' => function($e){
+                   $e->joinWith(['stateEnc e1' => function($e1){
+                       $e1->joinWith(['countryEnc e2']);
+                   }]);
+               }],false);
+               $b->select(['d.created_by','d.experience_enc_id', 'd.title', 'd.description', 'd.company', 'd.from_date', 'd.to_date', 'd.is_current','e.name city','e1.name state','e2.name country']);
            }])
            ->joinWith(['userAchievements f'=>function($b)
            {
