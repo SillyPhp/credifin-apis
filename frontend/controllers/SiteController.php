@@ -63,6 +63,7 @@ class SiteController extends Controller
 
     public function beforeAction($action)
     {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
         $route = ltrim(Yii::$app->request->url, '/');
         if ($route === "") {
             $route = "/";

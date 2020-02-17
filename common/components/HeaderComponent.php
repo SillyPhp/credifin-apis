@@ -12,12 +12,12 @@ class HeaderComponent extends Component
 
     public function getMenuHeader($route, $menu_of = 1)
     {
-//        $header = AssignedHeader::find()
-//            ->select(['header_enc_id'])
-//            ->where(['route' => $route])
-//            ->asArray()
-//            ->one();
-//        return $this->getMenuList($header['header_enc_id']);
+        $header = AssignedHeader::find()
+            ->select(['header_enc_id'])
+            ->where(['route' => $route])
+            ->asArray()
+            ->one();
+        return $this->getMenuList($header['header_enc_id']);
     }
 
     public function getMenuList($header_id, $parent = null)
