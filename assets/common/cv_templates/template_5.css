@@ -1,0 +1,134 @@
+.r-parent {
+    border: 1px solid lightcoral;
+    padding: 0;
+}
+.r-left{
+    padding:10px 0;
+}
+.r-head{
+    background-color:lightcoral;
+    padding: 10px 15px;
+    color:#fff;
+    margin-bottom:10px;
+}
+.r-head-data {
+    border: 2px solid #eee;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 20px;
+    text-align: center;
+    background-color:cadetblue;
+    color:#fff;
+    border: 2px solid #fff;
+    margin-right: 25%;
+}
+.user-name {
+    font-size: 25px;
+    font-family: roboto;
+}
+.user-work {
+    font-size: 18px;
+    font-family: roboto;
+}
+.user-inf {
+    font-size: 16px;
+    font-family: roboto;
+    font-weight: 400;
+}
+.user-photo{
+    text-align: center;
+    padding: 25px 0px;
+}
+.user-photo img{
+    width: 100px;
+    height: auto;
+}
+.heading-set {
+    border-bottom: 2px solid lightcoral;
+    padding-left: 15px;
+    color:lightcoral;
+    font-size:20px;
+    font-weight:500;
+    text-transform: uppercase;
+}
+.user-pos {
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: lightcoral;
+}
+.user-cmp, .user-ye, .user-loc {
+    font-size: 16px;
+    text-transform: capitalize;
+}
+.hed{
+    text-align: center;
+    font-size: 18px;
+    border-bottom: 2px solid lightcoral;
+    text-transform: uppercase;
+    color:lightcoral;
+}
+.u-txt, .user-detail > ul > li{
+    font-size:15px;
+    font-family:roboto;
+    text-align:left;
+}
+.u-txt > i{
+    color:lightcoral;
+}
+.user-detail {
+    padding:10px 20px 15px 20px;
+    text-align: center;
+}
+.user-detail > ul > li{
+    background: lightcoral;
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 8px;
+    margin: 2px;
+    color:#fff;
+}
+.user-detail > ul{
+    padding: 0;
+}
+.user-year{
+    padding-bottom: 10px;
+}
+.right-head {
+    color: black;
+    font-family:roboto;
+}
+.user-inner-d {
+    padding: 10px 0px 0px 0px;
+}
+.user-year span{
+    font-size: 16px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: 500;
+}
+.user-desc {
+    font-size: 15px;
+    font-weight: 400;
+    text-align: left;
+    text-transform: none;
+    padding-bottom: 10px;
+}
+.both{
+    display: flex;
+    justify-content: space-between;
+    color: lightcoral;
+}
+.user-loc{
+    padding-right:33px;
+}
+.user-uni {
+    font-size: 18px;
+    font-family: roboto;
+    text-transform: none;
+}
+.langs {
+    font-size: 18px;
+    font-weight: 400;
+    text-transform: none;
+}

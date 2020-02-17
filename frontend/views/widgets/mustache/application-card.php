@@ -1,3 +1,16 @@
+<?php
+$controller_id = Yii::$app->controller->id;
+$action_id = Yii::$app->controller->action->id;
+switch ([$controller_id, $action_id]){
+    case ['site', 'load-data'] :
+    case ['jobs', 'index'] :
+    case ['jobs', ''] :
+        $btn_id = 'featured-application-card-add';
+        break;
+    default :
+        $btn_id = 'application-card-add';
+}
+?>
 <script id="application-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-12 col-xs-12">
@@ -74,8 +87,7 @@
                 </div>
                 <div class="application-card-wrapper">
                     <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
+                    <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
         </div>
@@ -176,66 +188,37 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     });
 }
 
-function addToReviewList(){
-    if(loader === false){
-        $(document).on('click','.application-card-add', function(event){
-            event.preventDefault();
-            var c_user = "$c_user"
-            if(c_user == ""){
-                $('#loginModal').modal('show');
-                return false;
-            }
-            var itemid = $(this).closest('.application-card-main').attr('data-id');
-            $.ajax({
-                url: "/jobs/item-id",
-                method: "POST",
-                data: {'itemid': itemid},
-                beforeSend:function(){
-        //            $('.loader-aj-main').fadeIn(1000);  
-                },
-                success: function (response) {
-                    if (response.status == '200' || response.status == 'short') {
-                        toastr.success('Added to your Review list', 'Success');
-                    } else if (response.status == 'unshort') {
-                        toastr.success('Delete from your Review list', 'Success');
-                    } else {
-                        toastr.error('Please try again Later', 'Error');
-                    }
-                }
-            });
-        });
+$(document).on('click', '.featured-application-card-add', function(event) {
+    event.preventDefault();
+    var c_user = "$c_user";
+    if(c_user === ""){
+        $('#loginModal').modal('show');
+    } else{
+        var itemid = $(this).closest('.application-card-main').attr('data-id');
+        getFeaturedCard(itemid);
     }
+});
+
+function getFeaturedCard(itemid) {
+    $.ajax({
+        method: "POST",
+        url: "/jobs/item-id",
+        data: {'itemid': itemid}
+    }).done(function(data) {
+        if(data.status === 200){
+            toastr.success(data.message, 'Success');
+        } else if(data.status === 201) {
+            toastr.error(data.message, 'Error');
+        } else if (data.status === 'short') {
+            toastr.success(data.message, 'Reviewed Success');
+        } else if (data.status === 'unshort') {
+            toastr.success(data.message, 'Unreviewd Success');
+        } else if (data === 'error') {
+            toastr.info('Please Login first..');
+        }
+    });
 }
 
-function getReviewList(sidebarpage){
-    if(draggable === true){
-        var type ='$type';
-        $.ajax({
-            method: "POST",
-            url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
-            data:{type:type},
-            success: function(response) {
-                reviewlists(response);
-                check_list();
-                utilities.initials();
-            }
-        }).done(function(){
-            if(review_list_draggable === true) {
-                $.each($('.draggable-item'), function(){
-                    $(this).draggable({
-                        helper: "clone",
-                        drag: function() { 
-                            $('.ps').addClass('ps-visible');
-                         },
-                         stop: function() { 
-                            $('.ps').removeClass('ps-visible');
-                         },
-                    });
-                });
-            }
-        });
-    }
-}
 function checkSkills(){
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');

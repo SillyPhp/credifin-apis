@@ -16,27 +16,27 @@
                 <div class="r-skills">
                     <div class="skill-head">Skills</div>
                     <div class="skills">
-                        <ul>
+                        <ul style="padding-left: 18px;">
                             {{#userSkills}}
                             <li>{{skill}}</li>
                             {{/userSkills}}
                         </ul>
                     </div>
                     <div class="work-head">Work History</div>
+                    {{#userWorkExperiences}}
                     <div class="works">
-                        {{#userWorkExperiences}}
                         <div class="w-date">
                             <span class="work1">{{from_date}}</span> {{#is_current}} - <span class="work2">current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}
                         </div>
                         <div class="w-position">
                             <div class="w-name">{{title}}</div>
                             <div class="w-location">{{company}}</div>
-                            <ul>
+                            <ul style="padding-left: 0px;">
                                 <li>{{description}}</li>
                             </ul>
                         </div>
-                        {{/userWorkExperiences}}
                     </div>
+                    {{/userWorkExperiences}}
                     <div class="education-head">Education</div>
                     {{#userEducations}}
                     <div class="education">
@@ -51,7 +51,7 @@
                     {{/userEducations}}
                     <div class="archievements-head">Achievements</div>
                     <div class="skills">
-                        <ul>
+                        <ul style="padding-left: 18px;">
                             {{#userAchievements}}
                             <li>{{achievement}}</li>
                             {{/userAchievements}}
