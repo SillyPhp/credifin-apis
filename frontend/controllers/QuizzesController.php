@@ -75,6 +75,8 @@ class QuizzesController extends Controller
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $page = Yii::$app->request->post('page');
+            $limit = Yii::$app->request->post('limit');
             $quizes = Quizzes::find()
                 ->alias('a')
                 ->select(['CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END image', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
@@ -86,7 +88,9 @@ class QuizzesController extends Controller
                     'a.is_deleted' => 0
                 ])
                 ->groupBy('a.quiz_enc_id')
+                ->offset(($page - 1) * $limit)
                 ->asArray()
+                ->limit($limit)
                 ->all();
 
             return [
