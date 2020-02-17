@@ -294,7 +294,37 @@ $('#review-internships').on('scroll',function(){
         getReviewList(sidebarpage);
     }
 });
-                
+
+function getReviewList(sidebarpage){
+    if(draggable === true){
+        var type ='$type';
+        $.ajax({
+            method: "POST",
+            url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
+            data:{type:type},
+            success: function(response) {
+                reviewlists(response);
+                check_list();
+                utilities.initials();
+            }
+        }).done(function(){
+            if(review_list_draggable === true) {
+                $.each($('.draggable-item'), function(){
+                    $(this).draggable({
+                        helper: "clone",
+                        drag: function() { 
+                            $('.ps').addClass('ps-visible');
+                         },
+                         stop: function() { 
+                            $('.ps').removeClass('ps-visible');
+                         },
+                    });
+                });
+            }
+        });
+    }
+}
+
 function reviewlists(response){
         
     $(".loader-inner-main").hide();
@@ -410,7 +440,7 @@ function Ajax_call(itemid) {
 }
 
 $(document).on('click', '.application-card-add', function(event) {
-    var c_user = "$c_user"
+    var c_user = "$c_user";
     if(c_user == ""){
         $('#loginModal').modal('show');
     } else{

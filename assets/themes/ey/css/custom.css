@@ -401,7 +401,7 @@ button, input, optgroup, select, textarea {
 .application-card-open{
     background-color: #202c45;
 }
-.application-card-add{
+.application-card-add, .featured-application-card-add{
     background-color: #ed4303;
 }
 .org_name{
