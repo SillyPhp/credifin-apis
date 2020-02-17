@@ -51,7 +51,7 @@ class IndividualSignup extends Model
             ['phone', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'phone number already registered'],
 
             [['username'], 'string', 'length' => [3, 20]],
-            [['username'], 'match', 'pattern' => '/^[a-zA-Z][a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
+            [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             ['username', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'username already taken'],
 
             ['starting_year', 'safe'],
