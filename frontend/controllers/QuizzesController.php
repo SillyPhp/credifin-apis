@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\db\Expression;
 use yii\web\Response;
+use yii\web\HttpException;
 
 class QuizzesController extends Controller
 {
@@ -96,6 +97,9 @@ class QuizzesController extends Controller
     {
         $temp = Quizzes::find()
             ->alias('a')
+            ->innerJoinWith(['quizPoolEnc b' => function($b) {
+                $b->innerJoinWith(['quizQuestionsPools z']);
+            }], false)
             ->where([
                 'a.slug' => $slug,
                 'a.status' => 1,
@@ -171,69 +175,71 @@ class QuizzesController extends Controller
                 ];
             }
         }
-        if ($temp['template'] == 1) {
-            $this->layout = 'quiz-main';
-            return $this->render('cricket-quiz', [
-                'score' => $s,
-                'total' => $t,
-                'quiz' => $temp
-            ]);
-        } elseif ($temp['template'] == 2) {
-            $this->layout = 'quiz2-main';
-            return $this->render('cricket-quiz-2', [
-                'score' => $s,
-                'total' => $t,
-                'quiz' => $temp
-            ]);
-        } elseif ($temp['template'] == 3) {
-            $this->layout = 'quiz3-main';
-            return $this->render('quiz-3', [
-                'score' => $s,
-                'total' => $t,
-                'quiz' => $temp
-            ]);
-        } elseif ($temp['template'] == 4) {
-            $this->layout = 'quiz4-main';
-            return $this->render('quiz-4', [
-                'score' => $s,
-                'total' => $t,
-                'quiz' => $temp
-            ]);
-        } elseif ($temp['template'] == 5) {
-            $this->layout = 'quiz5-main';
-            return $this->render('quiz-5', [
-                'score' => $s,
-                'total' => $t,
-                'quiz' => $temp
-            ]);
-        } elseif ($temp['template'] == 6) {
-            $this->layout = 'quiz6-main';
-            $result = QuizSubmittedAnswers::find()
-                ->select(['answer_enc_id'])
-                ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->count();
-            if ($result == 0 && $result <= $temp['num_of_ques']) {
-                return $this->render('college-quiz', [
-                    'quiz' => $this->_getQuestion([],$slug),
+        switch ($temp['template']) {
+            case 1:
+                $this->layout = 'quiz-main';
+                return $this->render('cricket-quiz', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
                 ]);
-            } else {
-                $noOfQuestion = Quizzes::find()
-                    ->select('num_of_ques')
-                    ->where(['slug' => $slug])
-                    ->asArray()
-                    ->one();
-                return $this->render('college-quiz', [
-                    'result' => $this->_getQuizResult($slug),
-                    'noOfQuestion' => $noOfQuestion,
+                break;
+            case 2:
+                $this->layout = 'quiz2-main';
+                return $this->render('cricket-quiz-2', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
                 ]);
-            }
-//            return $this->render('college-quiz', [
-//                'score' => $s,
-//                'total' => $t,
-//                'quiz' => $temp
-//            ]);
-        } else{
-            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+                break;
+            case 3:
+                $this->layout = 'quiz3-main';
+                return $this->render('quiz-3', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 4:
+                $this->layout = 'quiz4-main';
+                return $this->render('quiz-4', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 5:
+                $this->layout = 'quiz5-main';
+                return $this->render('quiz-5', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 6:
+                $this->layout = 'quiz6-main';
+                $result = QuizSubmittedAnswers::find()
+                    ->select(['answer_enc_id'])
+                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                    ->count();
+                if ($result == 0 && $result <= $temp['num_of_ques']) {
+                    return $this->render('college-quiz', [
+                        'quiz' => $this->_getQuestion([],$slug),
+                    ]);
+                } else {
+                    $noOfQuestion = Quizzes::find()
+                        ->select('num_of_ques')
+                        ->where(['slug' => $slug])
+                        ->asArray()
+                        ->one();
+                    return $this->render('college-quiz', [
+                        'result' => $this->_getQuizResult($slug),
+                        'noOfQuestion' => $noOfQuestion,
+                    ]);
+                }
+                break;
+            default :
+                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
 
