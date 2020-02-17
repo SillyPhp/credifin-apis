@@ -48,11 +48,11 @@ class DashboardController extends Controller
         ];
     }
 
-//    public function beforeAction($action)
-//    {
-//        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
-//        return parent::beforeAction($action);
-//    }
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute,2);
+        return parent::beforeAction($action);
+    }
 
     private $_condition;
 
