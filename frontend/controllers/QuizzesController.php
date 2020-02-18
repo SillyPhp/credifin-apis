@@ -42,7 +42,8 @@ class QuizzesController extends Controller
                 ])
                 ->groupBy('a.quiz_enc_id')
                 ->asArray()
-                ->limit(8);
+                ->limit(12)
+                ->all();
             return $this->render('quiz-landing-page', [
                 'data' => $categories,
                 'quiz' => $quizes
@@ -80,9 +81,9 @@ class QuizzesController extends Controller
             $quizes = Quizzes::find()
                 ->alias('a')
                 ->select(['CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END image', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
-//            ->innerJoinWith(['quizPoolEnc b' => function($b) {
-//                $b->innerJoinWith(['quizQuestionsPools z']);
-//            }], false)
+            ->innerJoinWith(['quizPoolEnc b' => function($b) {
+                $b->innerJoinWith(['quizQuestionsPools z']);
+            }], false)
                 ->where([
                     'a.display' => 1,
                     'a.is_deleted' => 0
