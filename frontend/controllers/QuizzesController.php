@@ -42,7 +42,7 @@ class QuizzesController extends Controller
                 ])
                 ->groupBy('a.quiz_enc_id')
                 ->asArray()
-                ->all();
+                ->limit(8);
             return $this->render('quiz-landing-page', [
                 'data' => $categories,
                 'quiz' => $quizes
@@ -72,24 +72,36 @@ class QuizzesController extends Controller
     }
 
     public function actionAll(){
-        $quizes = Quizzes::find()
-            ->alias('a')
-            ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
-            ->innerJoinWith(['quizQuestions b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0
-                ]);
-                $x->groupBy(['b.quiz_enc_id']);
-            }], false)
-            ->where([
-                'a.display' => 1,
-                'a.is_deleted' => 0
-            ])
-            ->asArray()
-            ->all();
+
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $page = Yii::$app->request->post('page');
+            $limit = Yii::$app->request->post('limit');
+            $quizes = Quizzes::find()
+                ->alias('a')
+                ->select(['CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END image', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
+//            ->innerJoinWith(['quizPoolEnc b' => function($b) {
+//                $b->innerJoinWith(['quizQuestionsPools z']);
+//            }], false)
+                ->where([
+                    'a.display' => 1,
+                    'a.is_deleted' => 0
+                ])
+                ->groupBy('a.quiz_enc_id')
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->limit($limit)
+                ->all();
+
+            return [
+                'status' => 200,
+                'title' => 'Success',
+                'data' => $quizes
+            ];
+        }
 
         return $this->render('all', [
-            'data' => $quizes
+//            'data' => $quizes
         ]);
     }
 

@@ -52,44 +52,109 @@ $this->params['seo_tags'] = [
                     <div class="heading-style">All Quizzes</div>
                 </div>
             </div>
-            <div class="row">
-                <?php foreach ($data as $d) { ?>
-                    <div class="col-md-3 col-sm-6">
-                        <div class="quiz-box">
-                            <div class="quiz-icon">
-                                <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?>">
-                            </div>
-                            <div class="quiz-title">
-                                <?= $d['name']; ?>
-                            </div>
-                            <div class="quiz-ques">
-                                Total Questions : <?= $d['cnt']; ?>
-                            </div>
-
-                            <div class="take-quiz">
-                                <a href="<?= $d['slug']; ?>">Take Quiz</a>
-                            </div>
-                            <div class="quiz-social-links">
-                                <ul class="menu-sl bottomRight">
-                                    <li class="share-sl top">
-                                        <i class="fa fa-share-alt"></i>
-                                        <ul class="submenu">
-                                            <li><a href="<?= Url::to('http://www.facebook.com/sharer.php?u=' . $d['slug']);?>" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>
-                                            <li><a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $d['slug']);?>" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href="<?= Url::to('mailto:?&body=' . $d['slug']);?>" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>
-                                            <li id="elem-button-share-quiz-wa"><a href="<?= Url::to('https://wa.me/?text=' . $d['slug']);?>" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
-                                            <li id="elem-button-share-quiz-wa-mob"><a href="<?= Url::to('whatsapp://send?text=' . $d['slug']);?>" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-
-                            </div>
-                        </div>
-                    </div>
-                <?php } ?>
+            <div class="row" id="quiz-list-main">
+<!--                --><?php //foreach ($data as $d) { ?>
+<!--                    <div class="col-md-3 col-sm-6">-->
+<!--                        <div class="quiz-box">-->
+<!--                            <div class="quiz-icon">-->
+<!--                                <img src="--><?//= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?><!--">-->
+<!--                            </div>-->
+<!--                            <div class="quiz-title">-->
+<!--                                --><?//= $d['name']; ?>
+<!--                            </div>-->
+<!--                            <div class="quiz-ques">-->
+<!--                                Total Questions : --><?//= $d['cnt']; ?>
+<!--                            </div>-->
+<!---->
+<!--                            <div class="take-quiz">-->
+<!--                                <a href="--><?//= $d['slug']; ?><!--">Take Quiz</a>-->
+<!--                            </div>-->
+<!--                            <div class="quiz-social-links">-->
+<!--                                <ul class="menu-sl bottomRight">-->
+<!--                                    <li class="share-sl top">-->
+<!--                                        <i class="fa fa-share-alt"></i>-->
+<!--                                        <ul class="submenu">-->
+<!--                                            <li><a href="--><?//= Url::to('http://www.facebook.com/sharer.php?u=' . $d['slug']);?><!--" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>-->
+<!--                                            <li><a href="--><?//= Url::to('https://twitter.com/intent/tweet?text=' . $d['slug']);?><!--" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>-->
+<!--                                            <li><a href="--><?//= Url::to('mailto:?&body=' . $d['slug']);?><!--" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>-->
+<!--                                            <li id="elem-button-share-quiz-wa"><a href="--><?//= Url::to('https://wa.me/?text=' . $d['slug']);?><!--" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
+<!--                                            <li id="elem-button-share-quiz-wa-mob"><a href="--><?//= Url::to('whatsapp://send?text=' . $d['slug']);?><!--" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
+<!--                                        </ul>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!---->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                --><?php //} ?>
             </div>
+            <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+                <span class="load-more-text">Load More</span>
+                <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
+                     stroke="currentColor">
+                    <g fill="none" fill-rule="evenodd">
+                        <g transform="translate(1 1)" stroke-width="2">
+                            <circle cx="8.90684" cy="50" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="25.0466" cy="8.99563" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
+                                         values="5;50;50;5" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
+                                         values="27;49;5;27" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                            <circle cx="47.0466" cy="46.0044" r="5">
+                                <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
+                                         calcMode="linear" repeatCount="indefinite"></animate>
+                                <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
+                                         values="49;5;27;49" calcMode="linear"
+                                         repeatCount="indefinite"></animate>
+                            </circle>
+                        </g>
+                    </g>
+                </svg>
+            </a>
         </div>
     </section>
+    <script id="quiz-card" type="text/template">
+        {{#.}}
+        <div class="col-md-3 col-sm-6">
+            <div class="quiz-box">
+                <div class="quiz-icon">
+                    <img src="{{image}}"/>
+                </div>
+                <div class="quiz-title">
+                    {{name}}
+                </div>
+                <div class="quiz-ques">
+                    Total Questions : {{cnt}}
+                </div>
+                <div class="take-quiz">
+                    <a href="{{slug}}">Take Quiz</a>
+                </div>
+                <div class="quiz-social-links">
+                    <ul class="menu-sl bottomRight">
+                        <li class="share-sl top">
+                            <i class="fa fa-share-alt"></i>
+                            <ul class="submenu">
+                                <li><a href="http://www.facebook.com/sharer.php?u={{slug}}" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="https://twitter.com/intent/tweet?text={{slug}}" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="mailto:?&body={{slug}}" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>
+                                <li id="elem-button-share-quiz-wa"><a href="https://wa.me/?text={{slug}}" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
+                                <li id="elem-button-share-quiz-wa-mob"><a href="whatsapp://send?text={{slug}}" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {{/.}}
+    </script>
 <?php
 $this->registerCss('
 .header-main-icon{
@@ -414,7 +479,56 @@ setTimeout(function(){
         $(this).addClass('active');
     });
   },1000);
+
+var loading = true;
+var load_more_cards = true;
+$(window).scroll(function() {
+    if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){
+        if(load_more_cards && loading){
+            loading = false;
+            getQuizzes();
+        }
+    }
+});
+
+var page, limit;
+page = 1;
+limit = 4;
+
+function getQuizzes(){
+    $.ajax({
+        method: "POST",
+        url : window.location.href,
+        data:{page:page,limit:limit},
+        beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+        success: function(response) {
+            if(response.data.length != 0) {
+                var template = $('#quiz-card').html();
+                $('#loadMore').addClass("loading_more");
+                $('.load-more-text').css('visibility', 'visible');
+                $('.load-more-spinner').css('visibility', 'hidden');
+                var rendered = Mustache.render(template,response.data);
+                $('#quiz-list-main').append(rendered);
+                page++;
+            } else{
+                $('#quiz-list-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+            }
+        },
+        complete: function() {
+            loading = true;
+        }
+    });
+}
+$(document).on('click','.loading_more', function(e){
+    e.preventDefault();
+    getQuizzes();
+});
+getQuizzes();
 JS;
 $this->registerJs($script);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
