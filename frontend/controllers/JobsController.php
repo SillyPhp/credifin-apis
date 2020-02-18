@@ -101,18 +101,20 @@ class JobsController extends Controller
     }
 
     public function actionTest(){
-        $mail = Yii::$app->mail;
-        $mail->receivers = [];
-        $mail->receivers[] = [
-            "name" => "Tarandeep Singh",
-            "email" => "vasishtshshank@outlook.com",
-        ];
-        $mail->subject = 'complete-profile';
-        $mail->data = ['job' => ""];
-        $mail->template = 'complete-profile';
-        if ($mail->send()) {
-            return "ok";
-        }
+        $per = Yii::$app->notification->orgProfileMail();
+        print_r($per);
+        exit();
+//        $mail->receivers = [];
+//        $mail->receivers[] = [
+//            "name" => "Kashish",
+//            "email" => "kashishbudhiraja16781@gmail.com",
+//        ];
+//        $mail->subject = 'complete-profile';
+//        $mail->data = ['job' => ""];
+//        $mail->template = 'thank-you';
+//        if ($mail->send()) {
+//            return "ok";
+//        }
     }
     public function actionJobsApply()
     {
