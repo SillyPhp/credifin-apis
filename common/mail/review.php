@@ -61,16 +61,17 @@ img + div{
     text-align:center;
 }
 .editProfile a{
-    background: #ff575a;
+    background: #00a0e3;
     color:#fff;
     padding:8px 20px;
     text-decoration: none;
     border-radius:8px;
 }
 .mail-text{
-    text-align:center;
+    text-align:left;
     max-width:450px;
     margin: 0 auto;
+    color:#000;
 }
 .text-bold{
     margin-top:30px;
@@ -94,7 +95,7 @@ p{
 .heading-bold{
     font-size:20px;
     font-weight:bold;
-    text-transform: capitalize;
+    text-transform:capitalize;
 }
 .text{
     padding-left:20px;
@@ -143,44 +144,16 @@ p{
     </div>
     <div>
         <div class="banner">
-            <img src="<?= Url::to('@commonAssets/email_service/complete-profile/editprofile-hdr1.png', 'https'); ?>">
+            <img src="<?= Url::to('@commonAssets/email_service/review/reviews-hdr.png', 'https'); ?>">
         </div>
-    </div>
-    <div class="editProfile">
-        <a href="">Edit Profile</a>
     </div>
     <div class="mail-text">
-        <div class="text-bold mb1">SET IT, FORGET IT</div>
-        <p>We recommend that Its Important to build complete profile & update your preferences.</p>
-
-        <div class="display-flex">
-            <div class="icon">
-                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/buildresume.png', true); ?>">
-            </div>
-            <div class="text">
-                <div class="heading-bold">Write about yourself</div>
-                <p class="font14">If you haven’t yet uploaded your details to help hosts get to know you before inviting you into their company.</p>
-            </div>
-        </div>
-        <div class="display-flex">
-            <div class="icon">
-                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/verifyinfo.png', true); ?>">
-            </div>
-            <div class="text">
-                <div class="heading-bold">Verify your information</div>
-                <p class="font14">Consider connecting your social networks and quickly verify your email or phone number to
-                    help build trust in Empower Youth.</p>
-            </div>
-        </div>
-        <div class="display-flex">
-            <div class="icon">
-                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/writeabt.png', true); ?>">
-            </div>
-            <div class="text">
-                <div class="heading-bold">Build your resume</div>
-                <p class="font14">Build your prominent resume with us. Add work Experience and the required information.</p>
-            </div>
-        </div>
+        <div class="text-bold mb1">Thank you so much for joining us.</div>
+        <p>We feel so grateful if you can share your currently working company review with us. That helps us to improve our audience satisfaction by writing a quick review by you.</p>
+        <p>Your this one step will be very appreciable from us.</p>
+    </div>
+    <div class="editProfile">
+        <a href="https://www.empoweryouth.com">Write a Review</a>
     </div>
     <div class="border3">
         <div class="end"><img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', true); ?>"></div>
