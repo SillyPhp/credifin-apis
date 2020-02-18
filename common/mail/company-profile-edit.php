@@ -94,7 +94,7 @@ p{
 .heading-bold{
     font-size:20px;
     font-weight:bold;
-    text-transform: capitalize;
+    text-transform:capitalize;
 }
 .text{
     padding-left:20px;
@@ -143,7 +143,7 @@ p{
     </div>
     <div>
         <div class="banner">
-            <img src="<?= Url::to('@commonAssets/email_service/complete-profile/editprofile-hdr1.png', 'https'); ?>">
+            <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/company-profile-hdr.png', 'https'); ?>">
         </div>
     </div>
     <div class="editProfile">
@@ -155,11 +155,11 @@ p{
 
         <div class="display-flex">
             <div class="icon">
-                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/buildresume.png', true); ?>">
+                <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/write-abt-comp.png', true); ?>">
             </div>
             <div class="text">
                 <div class="heading-bold">Write about yourself</div>
-                <p class="font14">If you haven’t yet uploaded your details to help hosts get to know you before inviting you into their company.</p>
+                <p class="font14">If you haven’t yet uploaded your details to help Candidates know you before inviting into your company.</p>
             </div>
         </div>
         <div class="display-flex">
@@ -168,17 +168,16 @@ p{
             </div>
             <div class="text">
                 <div class="heading-bold">Verify your information</div>
-                <p class="font14">Consider connecting your social networks and quickly verify your email or phone number to
-                    help build trust in Empower Youth.</p>
+                <p class="font14"> Consider connecting your social networks and quickly verify your email or phone number to help build trust in Empower Youth.</p>
             </div>
         </div>
         <div class="display-flex">
             <div class="icon">
-                <img src="<?= Url::to('@commonAssets/email_service/complete-profile/writeabt.png', true); ?>">
+                <img src="<?= Url::to('@commonAssets/email_service/edit-profile-company/update-job.png', true); ?>">
             </div>
             <div class="text">
-                <div class="heading-bold">Build your resume</div>
-                <p class="font14">Build your prominent resume with us. Add work Experience and the required information.</p>
+                <div class="heading-bold">Do update the jobs</div>
+                <p class="font14">Update the vacancies and latest openings. create quick, AI, & tweet jobs that will ease candidates to applied for. and Select jobs for campus hiring.</p>
             </div>
         </div>
     </div>

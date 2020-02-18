@@ -132,8 +132,7 @@ img + div{
     text-align: center;
     }
 .end img{
-    width:100%;
-    max-width: 160px;
+    width: 160px;
 }
 .copyright{
     color:#000;
