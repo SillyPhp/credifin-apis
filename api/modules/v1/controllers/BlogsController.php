@@ -67,9 +67,8 @@ class BlogsController extends ApiBaseController
 
     public function actionBlogsHome()
     {
-
         $featured = Posts::find()
-            ->select(['featured_image_alt', 'featured_image_title', 'title', 'slug', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, "/", featured_image) image'])
+            ->select(['title', 'slug', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", featured_image_location, "/", featured_image) image'])
             ->where(['status' => 'Active', 'is_deleted' => 0])
             ->orderby(['created_on' => SORT_ASC])
             ->limit(8)
@@ -78,7 +77,7 @@ class BlogsController extends ApiBaseController
 
         $popular_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -87,7 +86,7 @@ class BlogsController extends ApiBaseController
             ->andWhere(['not', ['c.name' => 'Quotes']])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
-            ->limit(4)
+            ->limit(3)
             ->asArray()
             ->all();
 
@@ -99,7 +98,7 @@ class BlogsController extends ApiBaseController
 
         $whats_new_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -109,7 +108,7 @@ class BlogsController extends ApiBaseController
             ->andWhere(['not', ['c.name' => 'Quotes']])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
-            ->limit(6)
+            ->limit(3)
             ->asArray()
             ->all();
 
@@ -119,7 +118,7 @@ class BlogsController extends ApiBaseController
 
         $trending_posts = Posts::find()
             ->alias('a')
-            ->select(['a.post_enc_id', 'a.title', 'a.slug', 'a.excerpt', 'c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->select(['a.post_enc_id', 'a.title', 'a.slug','c.name', 'CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
             ->innerJoinWith(['postCategories b' => function ($b) {
                 $b->innerJoinWith(['categoryEnc c'], false);
             }], false)
@@ -129,7 +128,7 @@ class BlogsController extends ApiBaseController
             ->andWhere(['not', ['c.name' => 'Quotes']])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
-            ->limit(12)
+            ->limit(3)
             ->asArray()
             ->all();
 
@@ -262,7 +261,7 @@ class BlogsController extends ApiBaseController
         }
 
         $posts = Posts::find()->alias('a')
-            ->select(['a.*', 'a.slug', 'd.first_name', 'd.last_name'])
+            ->select(['a.title','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image', 'a.slug'])
             ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
