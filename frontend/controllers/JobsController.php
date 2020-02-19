@@ -132,6 +132,12 @@ class JobsController extends Controller
             return "ok";
         }
     }
+
+    public function actionTest2(){
+       $per = Yii::$app->notification->orgProfileMail();
+       print_r($per);
+       exit();
+    }
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();

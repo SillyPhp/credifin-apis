@@ -2,7 +2,13 @@
 
 namespace common\components;
 
+use common\models\EmployeeBenefits;
+use common\models\OrganizationEmployees;
+use common\models\OrganizationImages;
+use common\models\OrganizationProducts;
+use common\models\Organizations;
 use Yii;
+use yii\db\Query;
 use yii\base\Component;
 use common\models\EmailLogs;
 use common\models\Users;
@@ -151,15 +157,20 @@ class NotificationEmailsComponent extends Component
     }
 
     public function orgProfileMail( ){
-        $data = Users::find()
-            ->alias('a')
-            ->select(['a.user_enc_id', 'a.organization_enc_id', 'a.email', 'b.email as organization_email', 'b.name as organization_name', 'CASE WHEN c.benefit_enc_id IS NOT NULL THEN COUNT(distinct c.benefit_enc_id) ELSE 0 END benefit', 'CASE WHEN d.employee_enc_id IS NOT NULL THEN COUNT(distinct d.employee_enc_id) ELSE 0 END team' ,'CASE WHEN e.image_enc_id IS NOT NULL THEN COUNT(distinct e.image_enc_id) ELSE 0 END gallery', 'CASE WHEN f.product_enc_id IS NOT NULL THEN COUNT(distinct f.product_enc_id) ELSE 0 END product'])
-            ->innerJoinWith(['organizationEnc b' => function($b){
-                $b->joinWith(['employeeBenefits c'], false);
-                $b->joinWith(['organizationEmployees d'], false);
-                $b->joinWith(['organizationImages e'], false);
-                $b->joinWith(['organizationProducts f'], false);
-            }])
+        $data = (new Query())
+            ->from(['a' => Users::tableName()])
+            ->select(['a.user_enc_id', 'a.organization_enc_id', 'a.email', 'b.logo', 'b.tag_line', 'b.mission', 'b.vision', 'b.website' , 'b.description', 'b.email as organization_email', 'b.name as organization_name', 'CASE WHEN c.benefit_enc_id IS NOT NULL THEN COUNT(distinct c.benefit_enc_id) ELSE 0 END benefit', 'CASE WHEN d.employee_enc_id IS NOT NULL THEN COUNT(distinct d.employee_enc_id) ELSE 0 END team' ,'CASE WHEN e.image_enc_id IS NOT NULL THEN COUNT(distinct e.image_enc_id) ELSE 0 END gallery', 'CASE WHEN f.product_enc_id IS NOT NULL THEN COUNT(distinct f.product_enc_id) ELSE 0 END product'])
+            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(EmployeeBenefits::tableName() . 'as c', 'c.organization_enc_id = b.organization_enc_id')
+            ->leftJoin(OrganizationEmployees::tableName() . 'as d', 'd.organization_enc_id = b.organization_enc_id')
+            ->leftJoin(OrganizationImages::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
+            ->leftJoin(OrganizationProducts::tableName() . 'as f', 'f.organization_enc_id = b.organization_enc_id')
+//            ->innerJoinWith(['organizationEnc b' => function($b){
+//                $b->joinWith(['employeeBenefits c'], false);
+//                $b->joinWith(['organizationEmployees d'], false);
+//                $b->joinWith(['organizationImages e'], false);
+//                $b->joinWith(['organizationProducts f'], false);
+//            }])
             ->where(['not', ['a.user_of' => 'MIS']])
             ->andWhere([
                 'or',
@@ -174,8 +185,11 @@ class NotificationEmailsComponent extends Component
             ])
             ->groupBy('a.user_enc_id')
             ->limit(10)
-            ->asArray()
+//            ->asArray()
             ->all();
+//        foreach ($data->batch() as $rows) {
+//
+//        }
 
         $orgData = [];
         foreach ($data as $d) {
@@ -194,22 +208,22 @@ class NotificationEmailsComponent extends Component
             if ($d['product'] != 0) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['logo']) {
+            if ($d['logo']) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['tag_line']) {
+            if ($d['tag_line']) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['description']) {
+            if ($d['description']) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['mission']) {
+            if ($d['mission']) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['vision']) {
+            if ($d['vision']) {
                 $per += $t;
             }
-            if ($d['organizationEnc']['website']) {
+            if ($d['website']) {
                 $per += $t;
             }
             $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
