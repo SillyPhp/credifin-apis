@@ -33,6 +33,12 @@ use frontend\models\profile\UserProfilePictureEdit;
 class UsersController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        return parent::beforeAction($action);
+    }
+
     public function getPreference($type, $id)
     {
 
