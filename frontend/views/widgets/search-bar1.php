@@ -226,21 +226,18 @@ $script = <<<JS
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
   var cname = $('#cities').val();
-  var kname = $('#cities').val();
+  var kname = $('#keywords').val();
   if (cname&&kname)
       {
-          window.history.pushState('page', 'title','/'+kname.replace(/\s+/g, '-')+'-jobs-in-'+cname.replace(/\s+/g, '-'));
-          getCards();
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (cname)
       {
-          window.history.pushState('page', 'title','/jobs-in-'+cname.replace(/\s+/g, '-'));
-          getCards();
+          window.location.assign('/jobs-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (kname)
       {
-          window.history.pushState('page', 'title','/'+kname.replace(/\s+/g, '-')+'-jobs');
-          getCards();
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs');
       }
 })     
 var searchelem = document.getElementById("search_preview");    

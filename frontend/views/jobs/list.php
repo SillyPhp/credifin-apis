@@ -153,18 +153,11 @@ $(document).on('click','.loading_more', function(e){
     $('#loadMore').removeClass("loading_more");
     getCards();
 });
-
-
 loader = true;
 draggable = true;
-
-
 getCards();
-
-
 var sidebarpage = 1;
 getReviewList(sidebarpage);
-
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
