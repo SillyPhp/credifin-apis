@@ -1,11 +1,10 @@
 <?php
-
 use yii\helpers\Url;
 ?>
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+            <form class="form-inline" action="/" method="GET" id="search_bar_form">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
                         <div class="col-md-5 col-xs-12 col-sm-6">
@@ -14,9 +13,9 @@ use yii\helpers\Url;
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
-                                <input type="text" name="keyword" value="<?=str_replace("-"," ",Yii::$app->request->get('keyword')); Yii::$app->request->get('company');?>" class="form-control">
+                                <input type="text" id="keywords" name="keyword" value="<?=str_replace("-"," ",Yii::$app->request->get('keyword')); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
+                                        <input type="text" id="keywords" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
@@ -224,7 +223,23 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-        
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val();
+  var kname = $('#keywords').val();
+  if (cname&&kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname)
+      {
+          window.location.assign('/jobs-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs');
+      }
+})     
 var searchelem = document.getElementById("search_preview");    
 var getParams = function (url) {
 	var params = {};
@@ -275,8 +290,7 @@ $('#cities').typeahead(null, {
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
+      $('.Typeahead-spinner').hide();
   });
         
 $(window).scroll(function () {

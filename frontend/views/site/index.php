@@ -1210,11 +1210,13 @@ function scrollFunction() {
 	});
 });
 
-$(document).on('click','#search-submit',function() {
-   var value = $('#search-input').val();
-   if(value == ''){
-       return false;
-   }
+
+document.getElementById('search-submit').addEventListener('click',(evt)=> {
+  var searchInput = document.getElementById('search-input').value;
+  if(searchInput == ''){
+      evt.preventDefault();
+      return false; 
+  }
 });
 JS;
 if (!Yii::$app->user->isGuest) {

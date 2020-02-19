@@ -56,9 +56,7 @@ use yii\helpers\Url;
                             <div class="user-pos">{{title}}</div>
                             <div class="user-cmp">{{company}}</div>
                             <div class="both">
-                                <div class="user-ye">{{from_date}} - {{#is_current}}
-                                    {{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}
-                                </div>
+                                <span class="user-ye">{{from_date}}</span> {{#is_current}} / <span> Current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}
                                 <!--                                    <div class="user-loc">ludhiana</div>-->
                             </div>
                         </div>
@@ -74,7 +72,7 @@ use yii\helpers\Url;
                             <div class="user-pos">{{degree}} {{field}}</div>
                             <div class="user-cmp">{{institute}}</div>
                             <div class="both">
-                                <div class="user-ye">{{from_date}} - {{to_date}}</div>
+                                <div class="user-ye">{{from_date}} / {{to_date}}</div>
                                 <!--                                    <div class="user-loc">ludhiana</div>-->
                             </div>
                         </div>

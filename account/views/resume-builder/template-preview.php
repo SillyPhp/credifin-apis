@@ -28,10 +28,10 @@ foreach ($templates as $temp)
                    <?php } ?>
                 </div>
             </div>
+            <div class="loader_screen">
+                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+            </div>
             <div class="col-md-10 col-md-offset-2">
-                <div class="loader_screen">
-                    <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
-                </div>
                 <div id="template_display_widget" class="row">
 
                 </div>
@@ -96,10 +96,14 @@ margin-top:8px;
     font-size: 18px;
     font-family: roboto;
 }
+.loader_screen{
+position:absolute;
+top:50%;
+left:50%;
+}
 .loader_screen img
 {
 display:none;
-margin:auto
 }
 ');
 $script = <<<JS
