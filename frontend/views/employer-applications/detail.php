@@ -1246,6 +1246,7 @@ $this->registerCss("
         padding: 7px 17px;
         margin-right: 15px;
         position: relative;
+        margin-bottom:5px;
     }
     .shortlist_job,.shortlist_job:hover{
         color:#fff;
