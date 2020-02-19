@@ -200,6 +200,15 @@ class OrganizationSignUpForm extends Model
 
             if ($this->_flag) {
                 Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $this->organization_name,
+                    "email" => $this->organization_email,
+                ];
+                $mail->subject = 'Welcome to Empower Youth';
+                $mail->template = 'thank-you';
+                $mail->send();
                 Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
                 return true;
