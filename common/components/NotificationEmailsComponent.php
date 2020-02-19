@@ -150,4 +150,73 @@ class NotificationEmailsComponent extends Component
         return $per;
     }
 
+    public function orgProfileMail( ){
+        $data = Users::find()
+            ->alias('a')
+            ->select(['a.user_enc_id', 'a.organization_enc_id', 'a.email', 'b.email as organization_email', 'b.name as organization_name', 'CASE WHEN c.benefit_enc_id IS NOT NULL THEN COUNT(distinct c.benefit_enc_id) ELSE 0 END benefit', 'CASE WHEN d.employee_enc_id IS NOT NULL THEN COUNT(distinct d.employee_enc_id) ELSE 0 END team' ,'CASE WHEN e.image_enc_id IS NOT NULL THEN COUNT(distinct e.image_enc_id) ELSE 0 END gallery', 'CASE WHEN f.product_enc_id IS NOT NULL THEN COUNT(distinct f.product_enc_id) ELSE 0 END product'])
+            ->innerJoinWith(['organizationEnc b' => function($b){
+                $b->joinWith(['employeeBenefits c'], false);
+                $b->joinWith(['organizationEmployees d'], false);
+                $b->joinWith(['organizationImages e'], false);
+                $b->joinWith(['organizationProducts f'], false);
+            }])
+            ->where(['not', ['a.user_of' => 'MIS']])
+            ->andWhere([
+                'or',
+                ['b.logo' => null],
+                ['b.tag_line' => null],
+                ['b.description' => null],
+                ['b.mission' => null],
+                ['b.vision' => null],
+                ['b.website' => null],
+                ['b.cover_image' => null],
+                ['b.phone' => null],
+            ])
+            ->groupBy('a.user_enc_id')
+            ->limit(10)
+            ->asArray()
+            ->all();
+
+        $orgData = [];
+        foreach ($data as $d) {
+            $per = 0;
+            $total = 10;
+            $t = 100 / $total;
+            if ($d['benefit'] != 0) {
+                $per += $t;
+            }
+            if ($d['team'] != 0) {
+                $per += $t;
+            }
+            if ($d['gallery'] != 0) {
+                $per += $t;
+            }
+            if ($d['product'] != 0) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['logo']) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['tag_line']) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['description']) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['mission']) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['vision']) {
+                $per += $t;
+            }
+            if ($d['organizationEnc']['website']) {
+                $per += $t;
+            }
+            $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
+            array_push($orgData,$org);
+        }
+        print_r($orgData);
+        exit();
+    }
+
 }

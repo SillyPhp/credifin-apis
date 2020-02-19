@@ -56,7 +56,7 @@
                     {{#userWorkExperiences}}
                     <div class="user-inner-d">
                         <div class="user-year">
-                            <span>{{from_date}} - {{#is_current}} {{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}</span>|
+                            <span>{{from_date}}</span> {{#is_current}} - <span> Current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}|
                             <span>{{title}}</span>|
                             <span>{{company}}</span>
                         </div>
