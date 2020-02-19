@@ -307,21 +307,25 @@ class PreferencesController extends Controller
     {
         $users = Users::find()
             ->alias('a')
+            ->distinct()
+            ->select(['a.user_enc_id', 'a.username', 'a.first_name', 'a.last_name', 'a.email','d.name','c.is_selected'])
             ->joinWith(['userTypeEnc b'], false)
-            ->joinWith(['selectedServices c'=>function($c){
+            ->joinWith(['selectedServices c' => function ($c) {
                 $c->joinWith(['serviceEnc d']);
-            }])
+            }],false)
             ->where([
                 'a.status' => 'Active',
                 'a.is_deleted' => 0,
                 'b.user_type' => 'Individual',
-                'a.user_enc_id' => 'zroPWqDpjZxLp0KL0EvqZJnYE3wX6x'
+                'a.user_enc_id' => ['zroPWqDpjZxLp0KL0EvqZJnYE3wX6x','z2x4DBMkKZKOEObkxMdYZA9J31Lvb8'],
+                'd.name' => 'Jobs',
+                'c.is_selected' => 1
             ])
             ->asArray()
             ->all();
 
-        print_r($users);
-        die();
+//        print_r($users);
+//        die();
 
         foreach ($users as $user) {
             $u = $user['user_enc_id'];
@@ -460,18 +464,22 @@ class PreferencesController extends Controller
                 $utilitesModel->variables['string'] = time() . rand(100, 100000);
                 $email_logs->email_log_enc_id = $utilitesModel->encrypt();
                 $email_logs->email_type = 2;
+                $email_logs->receiver_email = $user['email'];
                 $email_logs->user_enc_id = $user['user_enc_id'];
                 $email_logs->subject = 'Empower Youth Updates For You';
                 $email_logs->template = 'applications-list';
                 $email_logs->created_on = date('Y-m-d H:i:s');
-                $email_logs->save();
+                if($email_logs->save()){
+
+                }else{
+                    print_r($email_logs->getErrors());
+                }
             }
         }
     }
 
     private function sendMail($userDetails, $jobs_cards, $internship_cards, $user_pref)
     {
-
 
 //        Yii::$app->urlManager->hostInfo = 'http://www.aditya.eygb.me';
 //        Yii::$app->urlManager->scriptUrl = 'http://www.aditya.eygb.me';
@@ -482,7 +490,7 @@ class PreferencesController extends Controller
         Yii::$app->mailer->htmlLayout = 'layouts/email';
 
         $mail = Yii::$app->mailer->compose(
-            ['html' => 'applications-list'], ['data' => $data, 'name' => $userDetails['name'],'pref'=>$user_pref]
+            ['html' => 'applications-list'], ['data' => $data, 'name' => $userDetails['name'], 'pref' => $user_pref]
         )
             ->setFrom([Yii::$app->params->contact_email => Yii::$app->params->site_name])
             ->setTo([$userDetails['email'] => $userDetails['name']])
