@@ -143,6 +143,15 @@ class IndividualSignUpForm extends Model
 
             if ($this->_flag) {
                 Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $this->first_name ." " . $this->last_name,
+                    "email" => $this->email,
+                ];
+                $mail->subject = 'Welcome to Empower Youth';
+                $mail->template = 'thank-you';
+                $mail->send();
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
                 $transaction->commit();
                 return true;
