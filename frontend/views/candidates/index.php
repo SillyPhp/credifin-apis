@@ -13,58 +13,13 @@ echo $this->render('/widgets/mustache/candidates');
                 <div class="filters">
                     <div class="f-ratings">
                         <div class="filter-head-main">Filter Candidates</div>
-                        <div class="overall-box-heading">Select Salary</div>
+                        <div class="overall-box-heading">Salary Range</div>
                         <div class="form-group form-md-checkboxes">
                             <div class="md-checkbox-list">
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox1"
-                                           class="md-check">
-                                    <label for="checkbox1">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">0 to 5k</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="4" id="checkbox2"
-                                           class="md-check">
-                                    <label for="checkbox2">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fourstars rating-stars">5k to 15k</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="3" id="checkbox3"
-                                           class="md-check">
-                                    <label for="checkbox3">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="threestars rating-stars">15k to 25k</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="2" id="checkbox4"
-                                           class="md-check">
-                                    <label for="checkbox4">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="twostars rating-stars">25k to 50k</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="1" id="checkbox5"
-                                           class="md-check">
-                                    <label for="checkbox5">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="onestars rating-stars">50k to 80k</div>
-                                    </label>
+                                <div>
+                                    <div class="form-group">
+                                        <input type="text" id="rangess"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -73,30 +28,11 @@ echo $this->render('/widgets/mustache/candidates');
                             <div class="md-checkbox-list">
                                 <div class="filter-search">
                                     <div class="f-search-loc">
-                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <input type="text" id="locations_search" placeholder="Search"/>
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox6"
-                                           class="md-check">
-                                    <label for="checkbox6">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Ludhiana</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox7"
-                                           class="md-check">
-                                    <label for="checkbox7">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Chandigarh</div>
-                                    </label>
-                                </div>
+                                <div id="locations_search"></div>
                             </div>
                         </div>
                         <div class="overall-box-heading">Select Position</div>
@@ -104,30 +40,11 @@ echo $this->render('/widgets/mustache/candidates');
                             <div class="md-checkbox-list">
                                 <div class="filter-search">
                                     <div class="f-search-loc">
-                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <input type="text" id="job_titles_search" placeholder="Search"/>
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox8"
-                                           class="md-check">
-                                    <label for="checkbox8">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Web Designer</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox9"
-                                           class="md-check">
-                                    <label for="checkbox9">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Web Developer</div>
-                                    </label>
-                                </div>
+                                <div id="job_titles_search"></div>
                             </div>
                         </div>
                         <div class="overall-box-heading">Select Skills</div>
@@ -135,30 +52,11 @@ echo $this->render('/widgets/mustache/candidates');
                             <div class="md-checkbox-list">
                                 <div class="filter-search">
                                     <div class="f-search-loc">
-                                        <input type="text" id="city_search" placeholder="Search"/>
+                                        <input type="text" id="skills_search" placeholder="Search"/>
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox10"
-                                           class="md-check">
-                                    <label for="checkbox10">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Php</div>
-                                    </label>
-                                </div>
-                                <div class="md-checkbox">
-                                    <input type="checkbox" name="avg_rating[]" value="5" id="checkbox11"
-                                           class="md-check">
-                                    <label for="checkbox11">
-                                        <span></span>
-                                        <span class="check"></span>
-                                        <span class="box"></span>
-                                        <div class="fivestars rating-stars">Html</div>
-                                    </label>
-                                </div>
+                                <div id="skills_search"></div>
                             </div>
                         </div>
                     </div>
@@ -212,652 +110,891 @@ echo $this->render('/widgets/mustache/candidates');
 </section>
 <?php
 $this->registerCss('
-#filters{
-    height:100vh;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 105px;
+#filters {
+	height: 100vh;
+	position: sticky;
+	position: -webkit-sticky;
+	top: 105px;
 }
+
 .filter-head-main {
-    font-size: 18px;
-    font-family: roboto;
-    text-align: center;
-    padding: 5px 0px 5px 0;
-    font-weight: 500;
-    color:#00a0e3;
+	font-size: 18px;
+	font-family: roboto;
+	text-align: center;
+	padding: 5px 0px 5px 0;
+	font-weight: 500;
+	color: #00a0e3;
 }
-.md-checkbox label > .check {
-    top: 0px;
+
+.md-checkbox label>.check {
+	top: 0px;
 }
+
 #loadMore {
-    display : none;
+	display: none;
 }
-.tab-empty{
-    padding:20px;
+
+.tab-empty {
+	padding: 20px;
 }
-.tab-empty-icon img{
-    max-width:250px; 
-    margin:0 auto;
+
+.tab-empty-icon img {
+	max-width: 250px;
+	margin: 0 auto;
 }
-.tab-empty-text{
-    text-align:center; 
-    font-size:35px; 
-    font-family:lobster; 
-    color:#999999; 
-    padding-top:20px;
+
+.tab-empty-text {
+	text-align: center;
+	font-size: 35px;
+	font-family: lobster;
+	color: #999999;
+	padding-top: 20px;
 }
-.shortlist-strip{
-    position:absolute;
-    top:0;
-    left:0;
+
+.shortlist-strip {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
-.s-strip{
-    padding:5px 10px;
-    border:1px solid #00a0e3;
-    border-radius:0 0 10px 0;
-    background:#00a0e3;
-    color:#fff;
+
+.s-strip {
+	padding: 5px 10px;
+	border: 1px solid #00a0e3;
+	border-radius: 0 0 10px 0;
+	background: #00a0e3;
+	color: #fff;
 }
- button.viewall-jobs{
-    border:none;
-}   
- *:focus{
-    outline:none !important;
+
+button.viewall-jobs {
+	border: none;
 }
-#btn-group1{
-    display:hidden;
+
+*:focus {
+	outline: none !important;
 }
-#btn-group2{
-    display:none;
+
+#btn-group1 {
+	display: hidden;
 }
-.paid-candidate-container{
-    background: #ffffff;
-    border-radius: 6px !important;
-    overflow: hidden;
-	text-align:center;
-    margin-bottom:30px;
-	position:relative;
+
+#btn-group2 {
+	display: none;
+}
+
+.paid-candidate-container {
+	background: #ffffff;
+	border-radius: 6px !important;
+	overflow: hidden;
+	text-align: center;
+	margin-bottom: 30px;
+	position: relative;
 	transition: .4s;
-    border:1px solid #eaeff5;
+	border: 1px solid #eaeff5;
 }
-.paid-candidate-container:hover, .paid-candidate-container:focus{
-    transform: translateY(-5px);
-    -webkit-transform: translateY(-5px);
-	cursor:pointer;
+
+.paid-candidate-container:hover,
+.paid-candidate-container:focus {
+	transform: translateY(-5px);
+	-webkit-transform: translateY(-5px);
+	cursor: pointer;
 }
-.paid-candidate-box-thumb img{
-    height:100%;
+
+.paid-candidate-box-thumb img {
+	height: 100%;
 }
-.com-load-more-btn{
-    max-width:150px;
-    margin:0 auto;
-    color:#fff;
-    font-size:14px;
+
+.com-load-more-btn {
+	max-width: 150px;
+	margin: 0 auto;
+	color: #fff;
+	font-size: 14px;
 }
-.paid-candidate-box{
-    text-align: center;
-    padding:20px 10px 15px;
+
+.paid-candidate-box {
+	text-align: center;
+	padding: 20px 10px 15px;
 }
+
 .paid-candidate-status {
-    position: absolute;
-    left:32px;
-    top: 25px;
-    background:#01c73d;
-    color: #ffffff;
-    padding: 4px 18px;
-    border-radius: 50px;
-    font-weight: 500;
+	position: absolute;
+	left: 32px;
+	top: 25px;
+	background: #01c73d;
+	color: #ffffff;
+	padding: 4px 18px;
+	border-radius: 50px;
+	font-weight: 500;
 }
+
 .paid-candidate-box-thumb {
-    margin-bottom: 30px;
-    width: 120px;
-	height:120px;
-    margin: 0 auto 25px auto;
-	border-radius:50% !important;
-	overflow:hidden;
+	margin-bottom: 30px;
+	width: 120px;
+	height: 120px;
+	margin: 0 auto 25px auto;
+	border-radius: 50% !important;
+	overflow: hidden;
 	box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 	-webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 	-moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 }
-.paid-candidate-box-detail h4{
-	margin-bottom:4px;
-	font-size:20px;
+
+.paid-candidate-box-detail h4 {
+	margin-bottom: 4px;
+	font-size: 20px;
 	text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    display: -webkit-inline-box;
-    overflow: hidden;
-}
-.paid-candidate-box-exp{
-    display: flex;
-    justify-content: center;
-}
-.paid-candidate-box-detail .desination, .paid-candidate-box-detail .location,
-.paid-candidate-box-exp .desination{
-	font-weight:500;
-	font-size:15px;
-	color:#677484;
-	height:27px;
-    padding:5px 20px 0;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    display: -webkit-box;
-    overflow: hidden;
-        
-}
-.paid-candidate-box-extra ul {
-    margin: 10px 0;
-	padding:0;
-	min-height:74px;
-	height:108px;
-	overflow:hidden;
-}
-.paid-candidate-box-extra ul li {
-    list-style: none;
-    padding:3px 15px;
-    border: 1px solid #b9c5ce;
-    border-radius: 50px !important;
-    margin: 2px 0;
-    font-weight: 500;
-    color: #657180;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    display: -webkit-inline-box;
-    overflow: hidden;
-}
-.paid-candidate-box-extra ul li.more-skill{
-	color:#ffffff;
-	border-color:#1194f7;
-}
-a.btn.btn-paid-candidate {
-    padding: 10px !important;
-    display: inline-block;
-    width: 100%;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 0;
-}
-a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
-	background:#00a0e3; 
-	color:#ffffff;
-	-webkit-transition: all .3s ease-in-out;
-    -moz-transition: all .3s ease-in-out;
-    -o-transition: all .3s ease-in-out;
-    -ms-transition: all .3s ease-in-out;
-    transition: all .3s ease-in-out;
-}
-.paid-candidate-box .dropdown{
-	position:absolute;
-	right:30px;
-	top:25px;
-}
-.btn-trans {
-    background: transparent;
-    border: none;
-	font-size:20px;
-    color:#99abb9;
-}
-.dropdown-menu.pull-right {
-    right: 0;
-    left: auto !important;
-    top: 90% !important;
-}
-.dropdown-menu.pull-right {
-    right: 0;
-	border-color: #ebf2f7;
-	padding: 0;
-    left: auto !important;
-    top: 90% !important;
-}
-.dropdown-menu>a, .dropdown-menu>button {
-    display: block;
-    padding: 14px 12px 14px 12px; 
-    clear: both;
-    font-weight: 300; 
-    line-height: 1.42857143;
-    color: #67757c;
-    border-bottom: 1px solid #f1f6f9;
-    background:transparent;
-}
-.dropdown-menu>button {
-    text-align: left;
-    border: none;
-    width: 100%;
-}
-.bt-1 {
-    border-top: 1px solid #eaeff5!important;
-}
-.custom-buttons{
-    width:100%;
-    font-size: 10px !important;
-    padding: 8px 0px !important;
-    margin-bottom:20px;
-}
-.dashboard-button a, .dashboard-button button{    
-    margin-left:10px !important;
-}
-/*----------------------*/
-.checkbox-input {
-  display: none;
-}
-.checkbox-label {
-  vertical-align: top;
-  width: 100%;
-  cursor: pointer;
-  font-weight: 400;
-  margin-bottom:0px;
-}
-.p-category-main:hover .checkbox-label:before {
-    top:-5px !important;
-} 
-.checkbox-label:before {
-  content: "";
-  position: absolute;
-  top: 80px;
-  left: 15px;
-  width: 35px;
-  height: 35px;
-  opacity: 0;
-  background-color: #2196F3;
-  background-repeat: no-repeat; 
-  background-size: 30px;
-  border-radius: 8px 0;
-//  -webkit-transform: translate(0%, -50%);
-//  transform: translate(0%, -50%);
-  transition: all 0.4s ease;
-  z-index:999;
-  
-}
-.checkbox-input:checked + .checkbox-label:before {
-  top: 0;
-  opacity: 1;
-}
-.checkox-input:checked + .checkbox-label{
-   transform: translateY(-5px);
-    -webkit-transform: translateY(-5px);
-	cursor:pointer;
-}
-.checkbox-input:checked + .checkbox-label .checkbox-text span {
-  -webkit-transform: translate(0, -8px);
-  transform: translate(0, -8px);
-}
-.radio_questions {
-    max-width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 36px;
-    position: relative;
-}
-.inputGroup {
-    background-color: #fff;
-    display: block;
-    margin: 10px 0;
-    position: relative;
-}
-.inputGroup input {
-    width: 32px;
-    height: 32px;
-    order: 1;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    visibility: hidden;
-}
-.inputGroup input:checked ~ label {
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,.3) !important;
-}
-.inputGroup label {
-    padding: 6px 75px 10px 25px;
-    width: 96%;
-    display: block;
-    margin: auto;
-    text-align: left;
-    color: #3C454C !important;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    transition: color 1ms ease-out;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid #eee;
-}
-.inputGroup input:checked ~ label:before {
-    transform: translate(-50%, -50%) scale3d(56, 56, 1);
-    opacity: 1;
-}
-.inputGroup input:checked ~ label:after {
-    background-color: #00a0e3;
-    border-color: #00a0e3;
-}
-.filter-btns{
-    display:none;
-}
-.empty{
-    text-align:center;
-    display:none;
-}
-.es-btn{
-    padding-top: 20px;
-    padding-bottom: 20px;
-    
-}
-.es-btn button{
-    background:#00a0e3;
-    border:1px solid #00a0e3;
-    padding: 10px 15px;
-    border-radius: 5px;
-    color: #fff;  
-    font-family: roboto;
-}
-.es-btn button:hover{
-    box-shadow: 0 0 10px rgba(0,0,0,.5);
-    transition:.3s all;
-    -moz-transition:.3s all;
-    -webkit-transition:.3s all;
-    -ms-transition:.3s all;
-}
-.es-text{
-     font-family: roboto;
-    font-size: 20px;
-    padding-top: 20px;
-    font-weight:bold;
-}
-.es-text2{
-     font-family: roboto;
-}
-.btn_add_new_org{
-    margin-top:15px;
-}
-.add_new_org1{
-    padding:10px 15px;
-    background:#fff;
-    color:#00a0e3;
-    border: 2px solid #eee;
-    border-radius:10px;
-    font-weight:500 !important;
-    font-family:roboto;
-}
-.add_new_org1:hover{
-    color:#00a0e3;
-    font-weight:bold;
-    box-shadow:0 0 10px rgba(0,0,0,.3);
-}
-.search-bar{
-    width:100%;
-    background:#fff;
-    border-radius:10px;
-    display:flex;
-    padding:5px 5px;
-    border:2px solid #eee;
-    color:#bcbaba
-    margin-top:20px;
-}
-.main-headings{
-    text-align:center;
-    font-size:25px;
-    padding-bottom:10px;
-    font-family:lora;
-}
-.s-input{
-    width:94%;
-    padding:10px 15px;
-    border:none;
-    border-radius:10px;
-    color:#bcbaba;
-    font-size: 16px;
-    font-family: roboto;
-    font-weight: 500;
-}
-input::placeholder{
-    color:#bcbaba;
-}
-form input[type="text"]:focus{
-    outline:none;
-    border:none !important;
-    box-shadow:none;
-}
-.s-btn{
-    width:5%;
-     padding:10px 15px;
-    border:none;
-    background:none;
-    color:#bcbaba;
-    font-size: 16px;    
-}
-#loading_img
-{
-  display:none;
-}
-#loading_img img
-{
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    width:100px;
-    height:100px
-}
-.fader{
-  width:100%;
-  height:100%;
-  position:fixed;
-  top:0;
-  left:0;
-  display:none;
-  z-index:99;
-  background-color:#fff;
-  opacity:0.7;
-}
-#loading_img.show
-{
-    display: block;
-    position: fixed;
-    z-index: 100;
-    opacity: 1;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    left: 10%;
-    right: 0;
-    top: 50%;
-}
-.padd-0{
-    margin-left:15px !important;
-    margin-right:15px !important;
-}
-.cm-btns{
-    margin-top:10px;
-    padding-top:5px;
-    border-top:1px solid #eee;
-    text-transform: capitalize;
-}
-.color-blue a{
-    color:#bcbaba;
-}
-.color-blue a:hover{
-    color:#00a0e3;
-}
-.color-orange a{
-    color:#bcbaba;
-}
-.color-orange a:hover{
-    color:#ff7803;
-}
-.related-company{
-    padding-top:50px;
-}    
-.rh-header{
-    background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
-    background-size:100% 300px;
-    background-repeat: no-repeat;
-    padding:130px 0 35px 0;
-    color:#fff;
-    margin-bottom:20px;
-} 
-.header{
-    text-align: left;
-}
-.num-companies{
-    font-size: 25px;
-}
-.num-companies span{
-    font-weight: bold;
-}
-.filter-search{
-    padding-bottom: 20px;
-}
-.f-main-heading{
-    display: flex;
-}
-.show-search{
-    margin-left: 15px;
-    margin-top: 5px;
-}
-.show-search button{
-    background: transparent;
-    border:none;
-    font-size: 15px;
-    color: #666;
-    float:right;
-}
-.show-search button:hover{
-    color:#00a0e3;
-}
-.f-search, .f-search-loc, .f-search-1{
-   border:1px solid #eee; 
-   padding:5px 15px;
-   border-radius:10px;   
-}
-.f-search input, .f-search-loc input, .f-search-1 input {
-    border:none;
-    font-size: 14px;
-}
-.f-search input::placeholder, .f-search-loc input::placeholder, .f-search-1 input::placeholder{
-    color:#999;
-}
-.f-search i, .f-search-loc i, .f-search-1 i{
-    float:right;
-    padding-top:3px;
-    color:#999;
-}
-.fivestars i{
-    color:#fd7100 !important; 
-}
-.fourstars i.active{
-    color:#fa8f01 !important; 
-}
-.threestars i.active{
-    color:#fcac01 !important; 
-}
-.twostars i.active{
-    color:#fabf37 !important; 
-}
-.onestars i.active{
-    color:#ffd478 !important; 
-}
-.md-checkbox label>.box{
-    top:6px;
-    border: 2px solid #ddd;
-}
-.md-checkbox-list .md-checkbox{
-    margin-bottom:-10px;
-}
-.f-ratings{
-    padding:5px 15px;
-    border:1px solid #eee;
-    border-radius:10px;
-    width: 260px;
-    overflow-y: scroll;
-    height: 500px;
-    position:relative;
-}
-.overall-box-heading{
-    font-size:16px;
-    padding-top:5px;
-    font-weight:500;
-    font-family:roboto;
-}
-.rating-stars{
-    font-size:16px;
-    font-weight:lighter;  
-    padding:4px;  
-}
-@media only screen and (max-width: 834px){
-.pos-relative-mobile{
-    position:relative;
-    overflow:scroll;
-}
-.mobile-hidden{
-    display:none;
-    position:absolute;
-    background:#fff;
-    top:0px;
-    right:0px;
-    z-index:9999;
-    border:1px solid #eee;
-    border-top:none;
-    border-bottom:none;
-    border-right:none;
-}
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	display: -webkit-inline-box;
+	overflow: hidden;
 }
 
+.paid-candidate-box-exp {
+	display: flex;
+	justify-content: center;
+}
+
+.paid-candidate-box-detail .desination,
+.paid-candidate-box-detail .location,
+.paid-candidate-box-exp .desination {
+	font-weight: 500;
+	font-size: 15px;
+	color: #677484;
+	height: 27px;
+	padding: 5px 20px 0;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+	overflow: hidden;
+}
+
+.paid-candidate-box-extra ul {
+	margin: 10px 0;
+	padding: 0;
+	min-height: 74px;
+	height: 108px;
+	overflow: hidden;
+}
+
+.paid-candidate-box-extra ul li {
+	list-style: none;
+	padding: 3px 15px;
+	border: 1px solid #b9c5ce;
+	border-radius: 50px !important;
+	margin: 2px 0;
+	font-weight: 500;
+	color: #657180;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	display: -webkit-inline-box;
+	overflow: hidden;
+}
+
+.paid-candidate-box-extra ul li.more-skill {
+	color: #ffffff;
+	border-color: #1194f7;
+}
+
+a.btn.btn-paid-candidate {
+	padding: 10px !important;
+	display: inline-block;
+	width: 100%;
+	font-size: 16px;
+	font-weight: 500;
+	border-radius: 0;
+}
+
+a.btn.btn-paid-candidate:hover,
+a.btn.btn-paid-candidate:focus {
+	background: #00a0e3;
+	color: #ffffff;
+	-webkit-transition: all .3s ease-in-out;
+	-moz-transition: all .3s ease-in-out;
+	-o-transition: all .3s ease-in-out;
+	-ms-transition: all .3s ease-in-out;
+	transition: all .3s ease-in-out;
+}
+
+.paid-candidate-box .dropdown {
+	position: absolute;
+	right: 30px;
+	top: 25px;
+}
+
+.btn-trans {
+	background: transparent;
+	border: none;
+	font-size: 20px;
+	color: #99abb9;
+}
+
+.dropdown-menu.pull-right {
+	right: 0;
+	left: auto !important;
+	top: 90% !important;
+}
+
+.dropdown-menu.pull-right {
+	right: 0;
+	border-color: #ebf2f7;
+	padding: 0;
+	left: auto !important;
+	top: 90% !important;
+}
+
+.dropdown-menu>a,
+.dropdown-menu>button {
+	display: block;
+	padding: 14px 12px 14px 12px;
+	clear: both;
+	font-weight: 300;
+	line-height: 1.42857143;
+	color: #67757c;
+	border-bottom: 1px solid #f1f6f9;
+	background: transparent;
+}
+
+.dropdown-menu>button {
+	text-align: left;
+	border: none;
+	width: 100%;
+}
+
+.bt-1 {
+	border-top: 1px solid #eaeff5!important;
+}
+
+.custom-buttons {
+	width: 100%;
+	font-size: 10px !important;
+	padding: 8px 0px !important;
+	margin-bottom: 20px;
+}
+
+.dashboard-button a,
+.dashboard-button button {
+	margin-left: 10px !important;
+}
+
+
+/*----------------------*/
+
+.checkbox-input {
+	display: none;
+}
+
+.checkbox-label {
+	vertical-align: top;
+	width: 100%;
+	cursor: pointer;
+	font-weight: 400;
+	margin-bottom: 0px;
+}
+
+.p-category-main:hover .checkbox-label:before {
+	top: -5px !important;
+}
+
+.checkbox-label:before {
+	content: "";
+	position: absolute;
+	top: 80px;
+	left: 15px;
+	width: 35px;
+	height: 35px;
+	opacity: 0;
+	background-color: #2196F3;
+	background-repeat: no-repeat;
+	background-size: 30px;
+	border-radius: 8px 0;
+	//  -webkit-transform: translate(0%, -50%);
+	//  transform: translate(0%, -50%);
+	transition: all 0.4s ease;
+	z-index: 999;
+}
+
+.checkbox-input:checked+.checkbox-label:before {
+	top: 0;
+	opacity: 1;
+}
+
+.checkox-input:checked+.checkbox-label {
+	transform: translateY(-5px);
+	-webkit-transform: translateY(-5px);
+	cursor: pointer;
+}
+
+.checkbox-input:checked+.checkbox-label .checkbox-text span {
+	-webkit-transform: translate(0, -8px);
+	transform: translate(0, -8px);
+}
+
+.radio_questions {
+	max-width: 100%;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 36px;
+	position: relative;
+}
+
+.inputGroup {
+	background-color: #fff;
+	display: block;
+	margin: 10px 0;
+	position: relative;
+}
+
+.inputGroup input {
+	width: 32px;
+	height: 32px;
+	order: 1;
+	z-index: 2;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	visibility: hidden;
+}
+
+.inputGroup input:checked~label {
+	color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .3) !important;
+}
+
+.inputGroup label {
+	padding: 6px 75px 10px 25px;
+	width: 96%;
+	display: block;
+	margin: auto;
+	text-align: left;
+	color: #3C454C !important;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	transition: color 1ms ease-out;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 1px solid #eee;
+}
+
+.inputGroup input:checked~label:before {
+	transform: translate(-50%, -50%) scale3d(56, 56, 1);
+	opacity: 1;
+}
+
+.inputGroup input:checked~label:after {
+	background-color: #00a0e3;
+	border-color: #00a0e3;
+}
+
+.filter-btns {
+	display: none;
+}
+
+.empty {
+	text-align: center;
+	display: none;
+}
+
+.es-btn {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.es-btn button {
+	background: #00a0e3;
+	border: 1px solid #00a0e3;
+	padding: 10px 15px;
+	border-radius: 5px;
+	color: #fff;
+	font-family: roboto;
+}
+
+.es-btn button:hover {
+	box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+	transition: .3s all;
+	-moz-transition: .3s all;
+	-webkit-transition: .3s all;
+	-ms-transition: .3s all;
+}
+
+.es-text {
+	font-family: roboto;
+	font-size: 20px;
+	padding-top: 20px;
+	font-weight: bold;
+}
+
+.es-text2 {
+	font-family: roboto;
+}
+
+.btn_add_new_org {
+	margin-top: 15px;
+}
+
+.add_new_org1 {
+	padding: 10px 15px;
+	background: #fff;
+	color: #00a0e3;
+	border: 2px solid #eee;
+	border-radius: 10px;
+	font-weight: 500 !important;
+	font-family: roboto;
+}
+
+.add_new_org1:hover {
+	color: #00a0e3;
+	font-weight: bold;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+}
+
+.search-bar {
+	width: 100%;
+	background: #fff;
+	border-radius: 10px;
+	display: flex;
+	padding: 5px 5px;
+	border: 2px solid #eee;
+	color: #bcbaba margin-top:20px;
+}
+
+.main-headings {
+	text-align: center;
+	font-size: 25px;
+	padding-bottom: 10px;
+	font-family: lora;
+}
+
+.s-input {
+	width: 94%;
+	padding: 10px 15px;
+	border: none;
+	border-radius: 10px;
+	color: #bcbaba;
+	font-size: 16px;
+	font-family: roboto;
+	font-weight: 500;
+}
+
+input::placeholder {
+	color: #bcbaba;
+}
+
+form input[type="text"]:focus {
+	outline: none;
+	border: none !important;
+	box-shadow: none;
+}
+
+.s-btn {
+	width: 5%;
+	padding: 10px 15px;
+	border: none;
+	background: none;
+	color: #bcbaba;
+	font-size: 16px;
+}
+
+#loading_img {
+	display: none;
+}
+
+#loading_img img {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	width: 100px;
+	height: 100px
+}
+
+.fader {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	display: none;
+	z-index: 99;
+	background-color: #fff;
+	opacity: 0.7;
+}
+
+#loading_img.show {
+	display: block;
+	position: fixed;
+	z-index: 100;
+	opacity: 1;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 100%;
+	height: 100%;
+	left: 10%;
+	right: 0;
+	top: 50%;
+}
+
+.padd-0 {
+	margin-left: 15px !important;
+	margin-right: 15px !important;
+}
+
+.cm-btns {
+	margin-top: 10px;
+	padding-top: 5px;
+	border-top: 1px solid #eee;
+	text-transform: capitalize;
+}
+
+.color-blue a {
+	color: #bcbaba;
+}
+
+.color-blue a:hover {
+	color: #00a0e3;
+}
+
+.color-orange a {
+	color: #bcbaba;
+}
+
+.color-orange a:hover {
+	color: #ff7803;
+}
+
+.related-company {
+	padding-top: 50px;
+}
+
+.rh-header {
+	background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
+	background-size: 100% 300px;
+	background-repeat: no-repeat;
+	padding: 130px 0 35px 0;
+	color: #fff;
+	margin-bottom: 20px;
+}
+
+.header {
+	text-align: left;
+}
+
+.num-companies {
+	font-size: 25px;
+}
+
+.num-companies span {
+	font-weight: bold;
+}
+
+.filter-search {
+	padding-bottom: 20px;
+}
+
+.f-main-heading {
+	display: flex;
+}
+
+.show-search {
+	margin-left: 15px;
+	margin-top: 5px;
+}
+
+.show-search button {
+	background: transparent;
+	border: none;
+	font-size: 15px;
+	color: #666;
+	float: right;
+}
+
+.show-search button:hover {
+	color: #00a0e3;
+}
+
+.f-search,
+.f-search-loc,
+.f-search-1 {
+	border: 1px solid #eee;
+	padding: 5px 15px;
+	border-radius: 10px;
+}
+
+.f-search input,
+.f-search-loc input,
+.f-search-1 input {
+	border: none;
+	font-size: 14px;
+}
+
+.f-search input::placeholder,
+.f-search-loc input::placeholder,
+.f-search-1 input::placeholder {
+	color: #999;
+}
+
+.f-search i,
+.f-search-loc i,
+.f-search-1 i {
+	float: right;
+	padding-top: 3px;
+	color: #999;
+}
+
+.fivestars i {
+	color: #fd7100 !important;
+}
+
+.fourstars i.active {
+	color: #fa8f01 !important;
+}
+
+.threestars i.active {
+	color: #fcac01 !important;
+}
+
+.twostars i.active {
+	color: #fabf37 !important;
+}
+
+.onestars i.active {
+	color: #ffd478 !important;
+}
+
+.md-checkbox label>.box {
+	top: 6px;
+	border: 2px solid #ddd;
+}
+
+.md-checkbox-list .md-checkbox {
+	margin-bottom: -10px;
+}
+
+.f-ratings {
+	padding: 5px 15px;
+	border: 1px solid #eee;
+	border-radius: 10px;
+	width: 260px;
+	overflow-y: scroll;
+	height: 500px;
+	position: relative;
+}
+
+.overall-box-heading {
+	font-size: 16px;
+	padding-top: 5px;
+	font-weight: 500;
+	font-family: roboto;
+}
+
+.rating-stars {
+	font-size: 16px;
+	font-weight: lighter;
+	padding: 4px;
+}
+
+@media only screen and (max-width: 834px) {
+	.pos-relative-mobile {
+		position: relative;
+		overflow: scroll;
+	}
+	.mobile-hidden {
+		display: none;
+		position: absolute;
+		background: #fff;
+		top: 0px;
+		right: 0px;
+		z-index: 9999;
+		border: 1px solid #eee;
+		border-top: none;
+		border-bottom: none;
+		border-right: none;
+	}
+}
 ');
 
 $script = <<<JS
     var load_more_cards = true;
     var loading = true;
+    var loading = true;
     var offset = 0;
+    var url = '/candidates';
     $(document).ready(function() {
         loading = false;
-            getUserCards(0);
+        getUserCards(0, url);
         setTimeout(
-            function(){
-            $('.loading-main').css('display','none');
-        }, 1000);
-        setTimeout(
-            function(){
-            $('#loadMore').css('display','block');
-        }, 2000);
+            function() {
+                $('.loading-main').css('display', 'none');
+            }, 1000);
+        // setTimeout(
+        //     function() {
+        //         $('#loadMore').css('display', 'block');
+        //     }, 2000);
     });
     
     $(document).on('click', '#loadMore', function(event) {
         event.preventDefault();
-        if(load_more_cards && loading){
+        if (load_more_cards && loading) {
             loading = false;
-            getUserCards(offset);
+            getUserCards(offset, url);
         }
     });
     
     $(window).scroll(function() { //detact scroll
-        if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)){ //scrolled to bottom of the page
-            if(load_more_cards && loading){
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)) { //scrolled to bottom of the page
+            if (load_more_cards && loading) {
                 loading = false;
-                getUserCards(offset);
+                getUserCards(offset, url);
             }
         }
     });
-var ps = new PerfectScrollbar('.f-ratings');
+    
+    var ps = new PerfectScrollbar('.f-ratings');
+    //Jobs salary slider
+    $("#rangess").ionRangeSlider({
+        skin: "round",
+        type: "double",
+        min: 5000,
+        max: 100000,
+        from: 5000,
+        to: 30000,
+        grid: true
+    });
+    
+    $(document).on('change', 'input[type=checkbox]', function() {
+        var exp_params = [];
+        var a = $(this).attr('value');
+        var b = $(this).attr('class').slice(0,-7);
+        var params = unescape(window.location.search.substring(1));
+        var cls_loc = params.match(/locations=/g);
+        var cls_jt = params.match(/job_titles=/g);
+        var cls_sk = params.match(/skills=/g);
+        if(!params){
+            params = 'locations=&job_titles=&skills=';
+        }
+//        console.log(cls_jt+": jt "+ cls_loc +" : loc "+ cls_sk + " : sk"); 
+//        if(!cls_jt || !cls_loc || !cls_sk) {
+//            if(!params){
+//                params = b +'=';
+//            } else {
+//                params = params + '&'+ b +'=';
+//            }
+//        }
+        var p = [];
+        $.each(params.split("&"),function(index,value) {
+            exp_params.push(value);
+            $.each(value.split("="),function(i,v) {
+                p.push(v);
+            });
+        });
+        $.each(p, function(i,v) {
+            if(v == b){
+                var str = p[i+1];
+                var str_arr = [];
+                $.each(str.split(","),function(index,value) {
+                    str_arr.push(value);
+                });
+                var new_str = "";
+                if(str_arr.includes(a)){
+                    $.each(str_arr,function(index, value) {
+                        // console.log(value +' ricky');
+                        if(value != a){
+                            if(new_str == ""){
+                                new_str = value;
+                            } else {
+                                new_str = new_str+','+value;
+                            }
+                        }
+                    });
+                } else {
+                    if(str){
+                        new_str = str +','+a;
+                    } else {
+                        new_str = a;
+                    }
+                }
+                p[i+1] = new_str;
+            }
+        });
+        var cur_params = "?";
+        $.each(p,function(i, v) {
+            if(i === 0){
+                cur_params = cur_params + v;
+            } else {
+                if(i % 2 === 0){
+                    cur_params = cur_params + '&' + v;
+                } else {
+                    cur_params = cur_params + '=' + v;
+                }
+            }
+        });
+        history.replaceState('data', 'title', cur_params);
+        var cur_url = '/candidates?'+ window.location.search.substring(1);
+        getUserCards(0, cur_url)
+    });
+    
+    var xhr;
+    var city_url = '/candidates/get-cities';
+    var title_url = '/candidates/get-job-titles';
+    var skill_url = '/candidates/get-skills';
+
+    $(document).ready(function() {
+        $(document).on('keyup', 'input[type=text]', function() {
+            var ths = $(this);
+            var id = ths.attr('id');
+            var val = ths.val();
+            var url;
+            switch (id) {
+                case 'locations_search' :
+                    url = city_url;
+                    break;
+                case 'job_titles_search' :
+                    url = title_url;
+                    break;
+                case 'skills_search' :
+                    url = skill_url;
+                    break;
+                default :
+            }
+            loadData(url, val, id);
+        });
+    });
+    
+    $(document).ready(function() {
+        loadData(city_url, "", "locations_search");
+        loadData(title_url, "", "job_titles_search");
+        loadData(skill_url, "", "skills_search");
+    });
+    
+    function loadData(url, val, id) {
+        if(val && xhr && xhr.readyState != 4) {
+            xhr.abort();
+        }
+        xhr = $.ajax({
+            url:url,
+            type: 'POST',
+            data: {name:val},
+            success: function (response) {
+                var div = $('div#'+id);
+                // var obj = JSON.parse(res);
+                var obj = response;
+                var html = []; 
+                $.each(obj,function(index,value) {
+                    html.push('<div class="md-checkbox"> <input type="checkbox" value="'+$.trim(value.name)+'" id="'+value.enc_id+'" class="'+id+'"> <label for="'+value.enc_id+'"> <span></span> <span class="check"></span> <span class="box"></span> <div class="fivestars rating-stars">'+value.name+'</div> </label></div>');
+                });
+                div.html(html);
+            }
+        });
+    }
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/css/components-md.min.css');
 $this->registerCssFile('@eyAssets/css/perfect-scrollbar.css');
 $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
-
-<script>
-    document.getElementById('show-filter').addEventListener("click", function () {
-        var s = document.getElementsByClassName('mobile-hidden');
-        s[0].style.display = 'block';
-    });
-    document.getElementById('hide-filter').addEventListener("click", function () {
-        var s = document.getElementsByClassName('mobile-hidden');
-        s[0].style.display = 'none';
-    });
-</script>
 

@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCategories;
 use common\models\Cities;
 use common\models\DropResumeApplications;
 use common\models\EmployerApplications;
+use common\models\Skills;
 use common\models\Users;
 use common\models\UserSkills;
 use common\models\UserTypes;
@@ -13,6 +15,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 class CandidatesController extends Controller
 {
@@ -28,8 +31,83 @@ class CandidatesController extends Controller
         return $this->render('features');
     }
 
-    public function actionIndex($offset = null)
+    public function actionGetCities()
     {
+        if (Yii::$app->request->post()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $name = Yii::$app->request->post('name');
+            $cities = Cities::find()
+                ->select(['city_enc_id as enc_id', 'name'])
+                ->where(['not', ['name' => ""]])
+                ->andFilterWhere(['like', 'name', $name])
+                ->orderBy(['name' => SORT_ASC])
+                ->groupBy('name')
+                ->limit(10)
+                ->asArray()
+                ->all();
+            return array_filter($cities);
+        }
+    }
+
+    public function actionGetJobTitles()
+    {
+        if (Yii::$app->request->post()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $name = Yii::$app->request->post('name');
+            $jobTitles = AssignedCategories::find()
+                ->alias('z')
+                ->select(['z.assigned_category_enc_id', 'a.category_enc_id as enc_id', 'a.name'])
+                ->joinWith(['categoryEnc a'], false)
+                ->where(['z.is_deleted' => 0, 'z.assigned_to' => 'Jobs', 'z.status' => 'Approved'])
+                ->andWhere(['not', ['z.parent_enc_id' => null]])
+                ->andWhere(['not', ['a.name' => ""]])
+                ->andFilterWhere(['like', 'a.name', $name])
+                ->groupBy(['a.category_enc_id'])
+                ->orderBy(['a.name' => SORT_ASC])
+                ->limit(10)
+                ->asArray()
+                ->all();
+            return array_filter($jobTitles);
+        }
+    }
+
+    public function actionGetSkills()
+    {
+        if (Yii::$app->request->post()) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $name = Yii::$app->request->post('name');
+            $skills = Skills::find()
+                ->select(['skill_enc_id as enc_id', 'skill as name'])
+                ->where(['is_deleted' => 0, 'status' => 'Publish'])
+                ->andWhere(['not', ['skill' => ""]])
+                ->andFilterWhere(['like', 'skill', $name])
+                ->orderBy(['skill' => SORT_ASC])
+                ->groupBy('skill')
+                ->limit(10)
+                ->asArray()
+                ->all();
+
+            return array_filter($skills);
+        }
+    }
+
+    public function actionIndex()
+    {
+        $parameters = array_merge(Yii::$app->request->queryParams, Yii::$app->request->post());
+        $offset = $parameters['offset'];
+//        $locations = $parameters['locations'];
+//        $skills = $parameters['skills'];
+//        $job_titles = $parameters['job_titles'];
+//        if ($locations) {
+//            $locations = explode(",", $locations);
+//        }
+//        if ($skills) {
+//            $skills = explode(",", $skills);
+//        }
+//        if ($job_titles) {
+//            $job_titles = explode(",", $job_titles);
+//        }
+
         $data = Users::find()
             ->alias('a')
             ->select([
@@ -46,13 +124,16 @@ class CandidatesController extends Controller
                 'f.name city_name',
             ])
             ->joinWith(['userTypeEnc b'], false)
-            ->joinWith(['userSkills c' => function ($c) {
+            ->joinWith(['userSkills c' => function ($c) use($skills){
                 $c->select(['c.created_by', 'c.user_skill_enc_id', 'c.skill_enc_id', 'c1.skill']);
                 $c->joinWith(['skillEnc c1'], false);
                 $c->onCondition(['c.is_deleted' => 0]);
                 $c->orderBy(['c.created_on' => SORT_DESC]);
+//                if (isset($skills) && !empty($skills)) {
+//                    $c->andWhere(['in', 'c1.skill', $skills]);
+//                }
             }])
-            ->joinWith(['userWorkExperiences e' => function ($e) {
+            ->joinWith(['userWorkExperiences e' => function ($e) use ($job_titles) {
                 $e->select(['e.created_by', 'e.experience_enc_id', 'e.company', 'e.title']);
                 $e->onCondition(['not', [
                     'e.company' => null,
@@ -60,20 +141,37 @@ class CandidatesController extends Controller
                 ]]);
                 $e->onCondition(['not', ['e.id' => null]]);
                 $e->orderBy(['e.created_on' => SORT_DESC]);
+//                if (isset($job_titles) && !empty($job_titles)) {
+//                    $e->andWhere(['in', 'e.title', $job_titles]);
+//                }
             }])
-            ->joinWith(['cityEnc f'], false)
+            ->joinWith(['cityEnc f' => function ($f) use ($locations) {
+//                if (isset($locations) && !empty($locations)) {
+//                    $f->andWhere(['in', 'f.name', ['Jalandher', 'Akalgarh']]);
+//                }
+            }], false)
             ->andWhere(['or', ['a.organization_enc_id' => NULL], ['a.organization_enc_id' => '']])
             ->andWhere(['b.user_type' => 'Individual'])
             ->andWhere(['a.user_of' => 'EY'])
             ->andWhere(['a.is_deleted' => 0])
             ->groupBy('a.user_enc_id')
             ->orderBy(['exp_count' => SORT_DESC, 'sk_count' => SORT_DESC, 'e.company' => SORT_ASC, 'e.title' => SORT_ASC])
-            ->limit(20)
-            ->offset($offset)
-            ->distinct()
-            ->asArray()
-            ->all();
+            ->limit(18)
+            ->distinct();
 
+        if (isset($offset) && $offset != null) {
+            $data->offset($offset);
+        }
+
+//        if(isset($keywords) && !empty($keywords)){
+//            $keywords = $keywords;
+//        }
+        $data = $data->asArray()->all();
+
+
+//        $data = yii\helpers\ArrayHelper::getColumn($data, 'city_name');
+//        print_r($data);
+//        exit();
         $users = [];
         $j = 0;
         foreach ($data as $u) {
@@ -164,15 +262,15 @@ class CandidatesController extends Controller
 
             $selected_applications = DropResumeApplications::find()
                 ->alias('a')
-                ->select(['a.applied_application_enc_id','a.user_enc_id','a.application_enc_id'])
-                ->joinWith(['applicationEnc b'],false)
+                ->select(['a.applied_application_enc_id', 'a.user_enc_id', 'a.application_enc_id'])
+                ->joinWith(['applicationEnc b'], false)
                 ->where(['a.user_enc_id' => $user_id, 'b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id])
                 ->asArray()
                 ->all();
 
-            if(!empty($selected_applications)){
+            if (!empty($selected_applications)) {
                 return json_encode($selected_applications);
-            }else{
+            } else {
                 return json_encode($failure);
             }
         }
