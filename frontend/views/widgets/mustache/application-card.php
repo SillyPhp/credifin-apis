@@ -219,6 +219,67 @@ function getFeaturedCard(itemid) {
     });
 }
 
+
+function addToReviewList(){
+    if(loader === false){
+        $(document).on('click','.application-card-add', function(event){
+            event.preventDefault();
+            var c_user = "$c_user"
+            if(c_user == ""){
+                $('#loginModal').modal('show');
+                return false;
+            }
+            var itemid = $(this).closest('.application-card-main').attr('data-id');
+            $.ajax({
+                url: "/jobs/item-id",
+                method: "POST",
+                data: {'itemid': itemid},
+                beforeSend:function(){
+        //            $('.loader-aj-main').fadeIn(1000);  
+                },
+                success: function (response) {
+                    if (response.status == '200' || response.status == 'short') {
+                        toastr.success('Added to your Review list', 'Success');
+                    } else if (response.status == 'unshort') {
+                        toastr.success('Delete from your Review list', 'Success');
+                    } else {
+                        toastr.error('Please try again Later', 'Error');
+                    }
+                }
+            });
+        });
+    }
+}
+
+function getReviewList(sidebarpage){
+    if(draggable === true){
+        var type ='$type';
+        $.ajax({
+            method: "POST",
+            url : "/reviewed-applications/review-list?sidebarpage="+sidebarpage,
+            data:{type:type},
+            success: function(response) {
+                reviewlists(response);
+                check_list();
+                utilities.initials();
+            }
+        }).done(function(){
+            if(review_list_draggable === true) {
+                $.each($('.draggable-item'), function(){
+                    $(this).draggable({
+                        helper: "clone",
+                        drag: function() { 
+                            $('.ps').addClass('ps-visible');
+                         },
+                         stop: function() { 
+                            $('.ps').removeClass('ps-visible');
+                         },
+                    });
+                });
+            }
+        });
+    }
+}
 function checkSkills(){
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
