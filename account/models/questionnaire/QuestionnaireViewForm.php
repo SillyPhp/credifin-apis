@@ -2,6 +2,9 @@
 
 namespace account\models\questionnaire;
 
+use common\models\SuggestedAnsweredQuestionnaireFields;
+use common\models\SuggestionAnsweredQuestionnaire;
+use common\models\SuggestionQuestionnaireFields;
 use Yii;
 use yii\base\Model;
 use common\models\AnsweredQuestionnaire;
@@ -86,5 +89,71 @@ class QuestionnaireViewForm extends Model
         } else {
             return false;
         }
+    }
+
+    public function saveResponse($data,$qidk)
+    {
+        $arr = json_decode($data,true);
+        $utilitiesModel = new Utilities();
+        $answeredModel = new SuggestionAnsweredQuestionnaire();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $answeredModel->answered_questionnaire_enc_id = $utilitiesModel->encrypt();
+        $answeredModel->questionnaire_enc_id = $qidk;
+        $answeredModel->created_on = date('Y-m-d H:i:s');
+        $answeredModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($answeredModel->save()) {
+            foreach ($arr as $array) {
+                if ($array->type == 'checkbox') {
+                    foreach ($array->option as $option) {
+                        $utilitiesModel = new Utilities();
+                        $fieldsModel = new SuggestedAnsweredQuestionnaireFields();
+                        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                        $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                        $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
+                        $fieldsModel->field_enc_id = $array->id;
+                        $fieldsModel->field_option_enc_id = $option;
+                        $fieldsModel->created_on = date('Y-m-d H:i:s');
+                        $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                        if (!$fieldsModel->save()) {
+                            return false;
+                        }
+                    }
+                }
+
+                if ($array->type == 'select' || $array->type == 'radio') {
+                    $utilitiesModel = new Utilities();
+                    $fieldsModel = new SuggestedAnsweredQuestionnaireFields();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                    $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
+                    $fieldsModel->field_enc_id = $array->id;
+                    $fieldsModel->field_option_enc_id = $array->option;
+                    $fieldsModel->created_on = date('Y-m-d H:i:s');
+                    $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$fieldsModel->save()) {
+                        return false;
+                    }
+                }
+                if ($array->type == 'text' || $array->type == 'textarea' || $array->type == 'number' || $array->type == 'date' || $array->type == 'time') {
+
+                    $utilitiesModel = new Utilities();
+                    $fieldsModel = new SuggestedAnsweredQuestionnaireFields;
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $fieldsModel->answer_enc_id = $utilitiesModel->encrypt();
+                    $fieldsModel->answered_questionnaire_enc_id = $answeredModel->answered_questionnaire_enc_id;
+                    $fieldsModel->field_enc_id = $array->id;
+                    $fieldsModel->answer = $array->answer;
+                    $fieldsModel->created_on = date('Y-m-d H:i:s');
+                    $fieldsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                    if (!$fieldsModel->save()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+
     }
 }

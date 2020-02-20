@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\bootstrap\Modal;
-use frontend\models\applications\CandidateApply;
+use frontend\models\applications\UserOpinion;
 ?>
 <div class="row">
     <?php
