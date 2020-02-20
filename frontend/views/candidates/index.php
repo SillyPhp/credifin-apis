@@ -13,16 +13,6 @@ echo $this->render('/widgets/mustache/candidates');
                 <div class="filters">
                     <div class="f-ratings">
                         <div class="filter-head-main">Filter Candidates</div>
-                        <div class="overall-box-heading">Salary Range</div>
-                        <div class="form-group form-md-checkboxes">
-                            <div class="md-checkbox-list">
-                                <div>
-                                    <div class="form-group">
-                                        <input type="text" id="rangess"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="overall-box-heading">Select Location</div>
                         <div class="form-group form-md-checkboxes">
                             <div class="md-checkbox-list">
@@ -32,6 +22,7 @@ echo $this->render('/widgets/mustache/candidates');
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
+                                <div id="locations_search_checked"></div>
                                 <div id="locations_search"></div>
                             </div>
                         </div>
@@ -44,6 +35,7 @@ echo $this->render('/widgets/mustache/candidates');
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
+                                <div id="job_titles_search_checked"></div>
                                 <div id="job_titles_search"></div>
                             </div>
                         </div>
@@ -56,6 +48,7 @@ echo $this->render('/widgets/mustache/candidates');
                                         <i class="fas fa-search"></i>
                                     </div>
                                 </div>
+                                <div id="skills_search_checked"></div>
                                 <div id="skills_search"></div>
                             </div>
                         </div>
@@ -820,33 +813,29 @@ $script = <<<JS
     var loading = true;
     var loading = true;
     var offset = 0;
-    var url = '/candidates';
+    var url = '/candidates'+ window.location.search;
     $(document).ready(function() {
         loading = false;
-        getUserCards(0, url);
+        getUserCards(0, url, 'append');
         setTimeout(
             function() {
                 $('.loading-main').css('display', 'none');
             }, 1000);
-        // setTimeout(
-        //     function() {
-        //         $('#loadMore').css('display', 'block');
-        //     }, 2000);
     });
     
     $(document).on('click', '#loadMore', function(event) {
         event.preventDefault();
         if (load_more_cards && loading) {
             loading = false;
-            getUserCards(offset, url);
+            getUserCards(offset, url, 'append');
         }
     });
     
-    $(window).scroll(function() { //detact scroll
+    $(window).scroll(function() {
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)) { //scrolled to bottom of the page
             if (load_more_cards && loading) {
                 loading = false;
-                getUserCards(offset, url);
+                getUserCards(offset, url, 'append');
             }
         }
     });
@@ -863,10 +852,30 @@ $script = <<<JS
         grid: true
     });
     
+    
+    
+    
+    
+    
+    // filter code start from here
+    
+    function swipe(ths, thsCls) {
+        var selectedCheck = ths.closest('.md-checkbox');
+        selectedCheck.remove();
+        if(ths.is(":checked")){
+            $('div#'+thsCls+'_search_checked').append(selectedCheck);
+        } else {
+            $('div#'+thsCls+'_search').prepend(selectedCheck);
+        }
+    }
+    
+    var exp_params;
     $(document).on('change', 'input[type=checkbox]', function() {
-        var exp_params = [];
-        var a = $(this).attr('value');
-        var b = $(this).attr('class').slice(0,-7);
+        exp_params = [];
+        var ths = $(this);
+        var thsVal = ths.attr('value');
+        var thsCls = ths.attr('class');
+        swipe(ths, thsCls);
         var params = unescape(window.location.search.substring(1));
         var cls_loc = params.match(/locations=/g);
         var cls_jt = params.match(/job_titles=/g);
@@ -877,9 +886,9 @@ $script = <<<JS
 //        console.log(cls_jt+": jt "+ cls_loc +" : loc "+ cls_sk + " : sk"); 
 //        if(!cls_jt || !cls_loc || !cls_sk) {
 //            if(!params){
-//                params = b +'=';
+//                params = thsCls +'=';
 //            } else {
-//                params = params + '&'+ b +'=';
+//                params = params + '&'+ thsCls +'=';
 //            }
 //        }
         var p = [];
@@ -890,17 +899,16 @@ $script = <<<JS
             });
         });
         $.each(p, function(i,v) {
-            if(v == b){
+            if(v == thsCls){
                 var str = p[i+1];
                 var str_arr = [];
                 $.each(str.split(","),function(index,value) {
                     str_arr.push(value);
                 });
                 var new_str = "";
-                if(str_arr.includes(a)){
+                if(str_arr.includes(thsVal)){
                     $.each(str_arr,function(index, value) {
-                        // console.log(value +' ricky');
-                        if(value != a){
+                        if(value != thsVal){
                             if(new_str == ""){
                                 new_str = value;
                             } else {
@@ -910,9 +918,9 @@ $script = <<<JS
                     });
                 } else {
                     if(str){
-                        new_str = str +','+a;
+                        new_str = str +','+thsVal;
                     } else {
-                        new_str = a;
+                        new_str = thsVal;
                     }
                 }
                 p[i+1] = new_str;
@@ -930,59 +938,76 @@ $script = <<<JS
                 }
             }
         });
-        history.replaceState('data', 'title', cur_params);
-        var cur_url = '/candidates?'+ window.location.search.substring(1);
-        getUserCards(0, cur_url)
+        history.pushState('data', 'title', cur_params);
+        var cur_url = '/candidates'+ window.location.search;
+        getUserCards(0, cur_url, 'html');
     });
     
     var xhr;
-    var city_url = '/candidates/get-cities';
-    var title_url = '/candidates/get-job-titles';
-    var skill_url = '/candidates/get-skills';
-
     $(document).ready(function() {
         $(document).on('keyup', 'input[type=text]', function() {
             var ths = $(this);
-            var id = ths.attr('id');
+            var id = ths.attr('id').slice(0,-7);
             var val = ths.val();
-            var url;
-            switch (id) {
-                case 'locations_search' :
-                    url = city_url;
-                    break;
-                case 'job_titles_search' :
-                    url = title_url;
-                    break;
-                case 'skills_search' :
-                    url = skill_url;
-                    break;
-                default :
-            }
-            loadData(url, val, id);
+            url = '/candidates/get-checkbox-list' + window.location.search;
+            loadCheckboxList(url, val, id);
         });
     });
     
+    function getFilterList(){
+        url = '/candidates/get-filter-list' + window.location.search;
+        $.ajax({
+           url:url,
+           type: 'POST',
+           success: function (response) {
+               $.each(response, function(i, v) {
+                    if(i === 'list'){
+                        $.each(v, function(indx, vlue) {
+                            var cls = indx;
+                            var html = []; 
+                            var div = $('div#'+cls+'_search');
+                            $.each(vlue, function(index, value) {
+                                html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'"> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
+                            });
+                            div.html(html);
+                        });
+                    } else {
+                        $.each(v, function(indx, vlue) {
+                            var cls = indx;
+                            var html = []; 
+                            var div = $('div#'+cls+'_search_checked');
+                            $.each(vlue, function(index, value) {
+                                html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'" checked> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
+                            });
+                            div.html(html);
+                        });
+                    }
+               });
+           }
+        });
+        
+    }
+    
     $(document).ready(function() {
-        loadData(city_url, "", "locations_search");
-        loadData(title_url, "", "job_titles_search");
-        loadData(skill_url, "", "skills_search");
+        getFilterList();
     });
     
-    function loadData(url, val, id) {
+    function loadCheckboxList(url, val, cls) {
         if(val && xhr && xhr.readyState != 4) {
             xhr.abort();
         }
         xhr = $.ajax({
             url:url,
             type: 'POST',
-            data: {name:val},
+            data: {name:val,id:cls},
             success: function (response) {
-                var div = $('div#'+id);
+                console.log(response);
+                var div = $('div#'+cls+'_search');
                 // var obj = JSON.parse(res);
                 var obj = response;
-                var html = []; 
+                var html = [];
                 $.each(obj,function(index,value) {
-                    html.push('<div class="md-checkbox"> <input type="checkbox" value="'+$.trim(value.name)+'" id="'+value.enc_id+'" class="'+id+'"> <label for="'+value.enc_id+'"> <span></span> <span class="check"></span> <span class="box"></span> <div class="fivestars rating-stars">'+value.name+'</div> </label></div>');
+                    html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'"> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
                 });
                 div.html(html);
             }

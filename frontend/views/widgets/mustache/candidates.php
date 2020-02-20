@@ -57,7 +57,7 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-    function getUserCards(offval, url){
+    function getUserCards(offval, url, loadType){
         var limit = 18;
         offval = offval * limit;
         $.ajax({
@@ -78,8 +78,11 @@ $script = <<<JS
                    load_more_cards = false;
                    $('#loadMore').hide();
                }
-               
-                $('#user_cards').append(Mustache.render($('#candidates').html(), res));
+               if(loadType == 'append'){
+                    $('#user_cards').append(Mustache.render($('#candidates').html(), res));
+               } else {
+                    $('#user_cards').html(Mustache.render($('#candidates').html(), res));
+               }
                 utilities.initials();
                 offset++;
             },
