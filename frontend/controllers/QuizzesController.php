@@ -172,9 +172,9 @@ class QuizzesController extends Controller
                         ]);
                         $x->joinWith(['quizQuestionsPools c' => function($c) use($temp){
                             $c->joinWith(['quizAnswersPools d']);
+                            $c->groupBy('c.quiz_question_pool_enc_id');
                             $c->limit($temp['num_of_ques']);
                         }]);
-//                        $x->joinWith(['quizAnswers c']);
                     }])
                     ->where([
                         'a.slug' => $slug,
