@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-use frontend\models\applications\CandidateApply;
+use frontend\models\applications\UserOpinion;
 
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
@@ -444,7 +444,7 @@ $this->render('/widgets/employer_applications/top-banner', [
     </div>
     <?php
     if (!Yii::$app->user->isGuest && empty(Yii::$app->user->identity->organization)) {
-        echo CandidateApply::widget(['application_enc_id' => (($data2['application_enc_id']) ? $data2['application_enc_id'] : $data1['application_enc_id']), 'btn_class' => 'apply-btn', 'organization_enc_id' => $org['organization_enc_id']]);
+        echo UserOpinion::widget(['application_enc_id' => (($data2['application_enc_id']) ? $data2['application_enc_id'] : $data1['application_enc_id']), 'btn_class' => 'apply-btn', 'organization_enc_id' => $org['organization_enc_id']]);
     }
     ?>
 </section>
@@ -1246,6 +1246,7 @@ $this->registerCss("
         padding: 7px 17px;
         margin-right: 15px;
         position: relative;
+        margin-bottom:5px;
     }
     .shortlist_job,.shortlist_job:hover{
         color:#fff;

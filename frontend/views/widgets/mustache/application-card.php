@@ -136,7 +136,6 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     for(var pair of searchParams.entries()) {
         data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
     }
-    
     data['type'] = type;
     data['location'] = location;
     $.ajax({

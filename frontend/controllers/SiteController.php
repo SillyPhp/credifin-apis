@@ -67,6 +67,7 @@ class SiteController extends Controller
         if ($route === "") {
             $route = "/";
         }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute($route, $this);
         return parent::beforeAction($action);
     }

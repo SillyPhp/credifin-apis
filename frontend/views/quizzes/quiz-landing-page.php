@@ -90,8 +90,18 @@ $this->params['header_dark'] = false;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-7">
                     <div class="heading-style">All quiz</div>
+                </div>
+                <div class="col-md-5 col-sm-4 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/quizzes/all'); ?>" class="btn btn-3">
+                                <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -261,11 +271,11 @@ $this->registerCss('
     line-height: 210px;
     position: relative;
     clear:both;
-    }
+}
 .imag{
     text-align: right;
-    }
-.txt{
+}
+.top-categories-list .txt, .newset .txt{
     position: absolute;
     line-height: 30px;
     bottom: 10px;
@@ -273,10 +283,10 @@ $this->registerCss('
     font-weight: 400;
     font-family:roboto;
     text-transform:uppercase;
-     }
+ }
 .popular-cate{
     text-align:center;
-    }
+}
 .newset{
     text-align:center;
     box-shadow: 0 0 10px rgba(0,0,0,.3);
@@ -286,10 +296,10 @@ $this->registerCss('
     position: relative;
     width:100%;
     margin-bottom:20px;
-    }
- @media only screen and (max-width:992px){
+}
+@media only screen and (max-width:992px){
     .mar-top{
         margin-top:20px;
     }
- }   
- ');
+}   
+');

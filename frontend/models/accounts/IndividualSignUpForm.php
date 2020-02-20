@@ -54,7 +54,7 @@ class IndividualSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
+            [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email'], 'email'],
             [['phone'], PhoneInputValidator::className()],
             [['confirm_password'], 'compare', 'compareAttribute' => 'new_password'],
@@ -95,7 +95,7 @@ class IndividualSignUpForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $usernamesModel = new Usernames();
-            $usernamesModel->username = $this->username;
+            $usernamesModel->username = strtolower($this->username);
             $usernamesModel->assigned_to = 1;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $this->_flag = false;
@@ -108,10 +108,10 @@ class IndividualSignUpForm extends Model
             if ($this->_flag) {
                 $utilitiesModel = new Utilities();
                 $usersModel = new Users();
-                $usersModel->username = $this->username;
-                $usersModel->first_name = $this->first_name;
-                $usersModel->last_name = $this->last_name;
-                $usersModel->email = $this->email;
+                $usersModel->username = strtolower($this->username);
+                $usersModel->first_name = ucfirst(strtolower($this->first_name));
+                $usersModel->last_name = ucfirst(strtolower($this->last_name));
+                $usersModel->email = strtolower($this->email);
                 $usersModel->phone = $this->phone;
                 $usersModel->initials_color = RandomColors::one();
                 $utilitiesModel->variables['password'] = $this->new_password;
@@ -143,6 +143,15 @@ class IndividualSignUpForm extends Model
 
             if ($this->_flag) {
                 Yii::$app->individualSignup->registrationEmail($usersModel->user_enc_id);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $this->first_name ." " . $this->last_name,
+                    "email" => $this->email,
+                ];
+                $mail->subject = 'Welcome to Empower Youth';
+                $mail->template = 'thank-you';
+                $mail->send();
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
                 $transaction->commit();
                 return true;

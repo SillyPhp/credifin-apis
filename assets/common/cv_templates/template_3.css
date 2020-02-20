@@ -1,7 +1,7 @@
 .r-parent {
     border: 2px solid #eee;
     padding:0;
-    background-image: linear-gradient(to right, #000 33.3%, #fff 0%);
+    background-image: linear-gradient(to right, #000 33.33%, #fff 0%);
 }
 .r-head{
     background: url('/assets/themes/ey/images/internship-profiles/jobprofilebg.png');
@@ -10,7 +10,7 @@
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     flex-direction: column;
     color:black;
     padding-right: 30px;
