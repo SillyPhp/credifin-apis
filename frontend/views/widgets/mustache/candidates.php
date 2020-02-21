@@ -60,10 +60,11 @@ $script = <<<JS
     function getUserCards(offval, url, loadType){
         var limit = 18;
         offval = offval * limit;
+        console.log('offse value = '+offval);
         $.ajax({
             type: 'POST',
             url: url,
-            data : {offset:offval},
+            data : {offset:offval,limit:limit},
             beforeSend: function () {
                 $('.load-more-spinner').css('visibility', 'visible');
                 $('.load-more-text').css('visibility', 'hidden');
@@ -74,6 +75,7 @@ $script = <<<JS
                if(res.length == limit){
                    loading = false;
                    $('#loadMore').css('display', 'block');
+                   console.log('tikki');
                } else {
                    load_more_cards = false;
                    $('#loadMore').hide();
@@ -87,6 +89,7 @@ $script = <<<JS
                 offset++;
             },
             complete: function() {
+                $('.loading-main').hide();
                 setTimeout(
                     function(){
                         loading = true;

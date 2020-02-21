@@ -57,9 +57,7 @@ echo $this->render('/widgets/mustache/candidates');
             </form>
         </div>
         <div class="col-md-9">
-            <div class="row" id="user_cards">
-
-            </div>
+            <div class="row" id="user_cards"></div>
             <?php
             echo $this->render('/widgets/users/preloaders/candidates');
             ?>
@@ -113,7 +111,6 @@ $this->registerCss('
 .filter-head-main {
 	font-size: 18px;
 	font-family: roboto;
-	text-align: center;
 	padding: 5px 0px 5px 0;
 	font-weight: 500;
 	color: #00a0e3;
@@ -811,11 +808,11 @@ form input[type="text"]:focus {
 $script = <<<JS
     var load_more_cards = true;
     var loading = true;
-    var loading = true;
     var offset = 0;
-    var url = '/candidates'+ window.location.search;
+    var url;
     $(document).ready(function() {
         loading = false;
+        url = '/candidates'+ window.location.search;
         getUserCards(0, url, 'append');
         setTimeout(
             function() {
@@ -825,8 +822,9 @@ $script = <<<JS
     
     $(document).on('click', '#loadMore', function(event) {
         event.preventDefault();
-        if (load_more_cards && loading) {
+        if (loading) {
             loading = false;
+            url = '/candidates'+ window.location.search;
             getUserCards(offset, url, 'append');
         }
     });
@@ -835,6 +833,7 @@ $script = <<<JS
         if ($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)) { //scrolled to bottom of the page
             if (load_more_cards && loading) {
                 loading = false;
+                url = '/candidates'+ window.location.search;
                 getUserCards(offset, url, 'append');
             }
         }
@@ -871,6 +870,9 @@ $script = <<<JS
     
     var exp_params;
     $(document).on('change', 'input[type=checkbox]', function() {
+        load_more_cards = true;
+        $('#user_cards').html(" ");
+        $('.loading-main').show();
         exp_params = [];
         var ths = $(this);
         var thsVal = ths.attr('value');
@@ -940,7 +942,10 @@ $script = <<<JS
         });
         history.pushState('data', 'title', cur_params);
         var cur_url = '/candidates'+ window.location.search;
-        getUserCards(0, cur_url, 'html');
+        offset = 0;
+        getUserCards(offset, cur_url, 'html');
+        // loading = true;
+        // load_more_cards = true;
     });
     
     var xhr;
@@ -955,9 +960,8 @@ $script = <<<JS
     });
     
     function getFilterList(){
-        url = '/candidates/get-filter-list' + window.location.search;
         $.ajax({
-           url:url,
+           url:'/candidates/get-filter-list' + window.location.search,
            type: 'POST',
            success: function (response) {
                $.each(response, function(i, v) {
