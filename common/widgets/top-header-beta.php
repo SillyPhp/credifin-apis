@@ -99,6 +99,197 @@
         }
         }
         ?>
+        <?php if (!Yii::$app->user->isGuest) { ?>
+            <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
+                <a href="/account/dashboard">
+                    Dashboard
+                    <?php
+                    if ($for != 'Dashboard') {
+                        ?>
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        <?php
+                    }
+                    ?>
+                </a>
+                <?php
+                if (Yii::$app->user->identity->organization_enc_id) {
+                    ?>
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '') ?>">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <li>
+                                            <a href="/account/dashboard">Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="/account/jobs/dashboard">Manage Jobs</a>
+                                        </li>
+                                        <li>
+                                            <a href="/account/internships/dashboard">Manage Internships</a>
+                                        </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li>
+                                                <a href="/account/training-program">Manage Training Programs</a>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Create Job</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Job</span>
+                                                        </a>
+                                                    </li>
+                                                    <?php
+                                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                                        ?>
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="/account/jobs/campus-placement">
+                                                                <div>
+                                                                    <span class="ey-services-icons campus"></span>
+                                                                </div>
+                                                                <span>Campus Hiring</span>
+                                                            </a>
+                                                        </li>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/job/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Job Tweet</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/jobs/quick-job">
+                                                            <div>
+                                                                <span class="ey-services-icons quick"></span>
+                                                            </div>
+                                                            <span>Create Quick Job</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="javascript:;">Create Internship</a>
+                                            <div class="ey-sub-sec">
+                                                <ul class="ey-head-sub-menu-items">
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/internships/create">
+                                                            <div>
+                                                                <span class="ey-services-icons ai"></span>
+                                                            </div>
+                                                            <span>Create AI Internship</span>
+                                                        </a>
+                                                    </li>
+                                                    <?php
+                                                    if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                                        ?>
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="/account/internships/campus-placement">
+                                                                <div>
+                                                                    <span class="ey-services-icons campus"></span>
+                                                                </div>
+                                                                <span>Campus Hiring</span>
+                                                            </a>
+                                                        </li>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/tweets/internship/create">
+                                                            <div>
+                                                                <span class="ey-services-icons tweet"></span>
+                                                            </div>
+                                                            <span>Post Internship Tweet</span>
+                                                        </a>
+                                                    </li>
+                                                    <li class="ey-head-sub-menu-icon">
+                                                        <a href="/account/internships/quick-internship">
+                                                            <div>
+                                                                <span class="ey-services-icons quick"></span>
+                                                            </div>
+                                                            <span>Create Quick Internship</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <?php
+                                        if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
+                                            ?>
+                                            <li class="ey-head-sub-menu-has-child">
+                                                <a href="javascript:;">Create Training Programs</a>
+                                                <div class="ey-sub-sec">
+                                                    <ul class="ey-head-sub-menu-items">
+                                                        <li class="ey-head-sub-menu-icon">
+                                                            <a href="/account/training-program/create">
+                                                                <div>
+                                                                    <span class="ey-services-icons ai"></span>
+                                                                </div>
+                                                                <span>Create AI Training Programs</span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                            <?php
+                                        }
+                                        ?>
+                                        <li>
+                                            <a href="/account/templates">Templates</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <div class="ey-header-sub-menu-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                } else {
+                    ?>
+                    <div class="ey-sub-menu <?= (($for == 'Dashboard') ? 'ey-active-menu' : '') ?>">
+                        <div class="container-fluid">
+                            <div class="large-container container">
+                                <nav class="ey-sub-nav-main">
+                                    <ul class="ey-sub-nav-items">
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/dashboard">Dashboard</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/jobs/dashboard">Manage Jobs</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/internships/dashboard">Manage Internships</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/preferences">My Preferences</a>
+                                        </li>
+                                        <li class="ey-head-sub-menu-has-child">
+                                            <a href="/account/resume-builder">Build Resume</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
+            </li>
+        <?php } ?>
     </ul>
 </nav>
 <?php
