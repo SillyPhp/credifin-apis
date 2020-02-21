@@ -187,9 +187,13 @@ class NotificationEmailsComponent extends Component
             ->limit(10)
 //            ->asArray()
             ->all();
-//        foreach ($data->batch() as $rows) {
+//        foreach ($data->batch(100) as $rows) {
 //
 //        }
+        foreach ($data->each(20) as $user) {
+            print_r($user);
+        }
+        exit();
 
         $orgData = [];
         foreach ($data as $d) {
