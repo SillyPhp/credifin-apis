@@ -841,7 +841,7 @@ $(document).on("click", ".giveFeedback", function(e){
     $(".feedback-main").load("/site/send-feedback");
 });
 ');
-$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_BEGIN]);
 $this->registerJs('
             WebFont.load({
                     google: {
@@ -851,7 +851,7 @@ $this->registerJs('
                             sessionStorage.fonts = true;
                     }
             });
-       ', View::POS_HEAD);
+       ', View::POS_BEGIN);
 ?>
 <?php $this->endBody(); ?>
 </body>
