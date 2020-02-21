@@ -827,6 +827,12 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).children("i").css("display", "none");
       }
 });
+$(".ey-sub-nav-items .ey-head-sub-menu-has-child a").each(function(){
+    var attr = $(this).attr("href");
+      if (attr === thispageurl) {
+        $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
+      }
+});
 
 $(document).on("click", ".partnerWith", function(e){
     e.preventDefault();
