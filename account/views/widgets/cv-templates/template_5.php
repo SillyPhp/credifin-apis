@@ -4,82 +4,85 @@ use yii\helpers\Url;
 
 ?>
 <script id="template_5" type="text/template">
-    <div class="r-parent col-md-8 p-0 col-md-offset-2">
-        <div class="r-inner">
-            <div class="r-left col-md-4 col-sm-4 p-0">
-                <div class="user-photo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/world-job/hong-kong.png') ?>">
+    <!-- Begin Paper-->
+    <div id="paper">
+        <div id="paper-mid">
+            <!-- Begin Personal Information -->
+            <div class="self">
+                <h1 class="name">{{name}}<br/>
+                    <span>Interactive Designer</span></h1>
+                <ul>
+                    {{#address}}<li class="ad">{{address}}</li>{{/address}}
+                    <li class="mail">{{email}}</li>
+                    <li class="tel">{{phone}}</li>
+                </ul>
+            </div>
+            <!-- End Personal Information -->
+            <div class="entry">
+                <h2>OBJECTIVE</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dignissim viverra nibh sed varius.
+                    Proin bibendum nunc in sem ultrices posuere. Aliquam ut aliquam lacus.</p>
+            </div>
+            <!-- End 1st Row -->
+            <!-- Begin 2nd Row -->
+            <div class="entry">
+                <h2>EDUCATION</h2>
+                {{#userEducations}}
+                <div class="content">
+                    <h3>{{from_date}} / {{to_date}}</h3>
+                    <p>{{institute}}<br/>
+                        <em>{{degree}} {{field}}</em></p>
                 </div>
-                <div class="user-detail">
-                    <div class="user-email u-txt"><i class="fa fa-envelope"></i> {{email}}</div>
-                    <div class="user-num u-txt"><i class="fa fa-phone-square"></i> {{phone}}</div>
-                    {{#address}}
-                    <div class="user-address u-txt"><i class="fas fa-map-marker-alt"></i> {{address}}</div>
-                    {{/address}}
+                {{/userEducations}}
+            </div>
+            <!-- End 2nd Row -->
+            <!-- Begin 3rd Row -->
+            <div class="entry">
+                <h2>EXPERIENCE</h2>
+                <div class="content">
+                    {{#userWorkExperiences}}
+                    <h3><span>{{from_date}}</span> {{#is_current}} / <span> Current</span>{{/is_current}}{{^is_current}}/{{to_date}}{{/is_current}}</h3>
+                    <p>{{company}}<br/>
+                        <em>{{title}}</em>
+                    </p>
+                    <ul class="info">
+                        <li>{{description}}</li>
+                    </ul>
+                    {{/userWorkExperiences}}
                 </div>
-                <div class="user-skills hed">skills</div>
-                <div class="user-detail">
-                    <ul>
+            </div>
+            <!-- End 3rd Row -->
+            <!-- Begin 4th Row -->
+            <div class="entry">
+                <h2>SKILLS</h2>
+                <div class="content">
+                    <h3>Skill set</h3>
+                    <ul class="skills">
                         {{#userSkills}}
                         <li>{{skill}}</li>
                         {{/userSkills}}
                     </ul>
                 </div>
-                {{#interests}}
-                <div class="user-interest hed">interest</div>
-                <div class="user-detail">
-                    <ul>
-                        <li>{{interests}}</li>
+                <div class="content">
+                    <h3>Hobbies</h3>
+                    <ul class="skills">
+                        {{#userHobbies}}
+                        <li>{{hobby}}</li>
+                        {{/userHobbies}}
                     </ul>
                 </div>
-                {{/interests}}
-                <div class="user-interest hed">Languages</div>
-                <div class="user-detail">
-                    <ul>
-                        <li>English</li>
+                <div class="content">
+                    <h3>Interest</h3>
+                    <ul class="skills">
+                        {{#userInterests}}
+                        <li>{{interest}}</li>
+                        {{/userInterests}}
                     </ul>
                 </div>
             </div>
-            <div class="col-md-8" style="padding-right:0;">
-                <div class="r-head">
-                    <div class="user-name">{{name}}</div>
-                    <div class="user-work">{{title}}</div>
-                    {{#description}}
-                    <div class="user-inf">{{description}}</div>
-                    {{/description}}
-                </div>
-                <div class="user-working right-head">
-                    <div class="heading-set">Work Experience</div>
-                    <div class="user-inner-d">
-                        {{#userWorkExperiences}}
-                        <div class="user-year">
-                            <div class="user-pos">{{title}}</div>
-                            <div class="user-cmp">{{company}}</div>
-                            <div class="both">
-                                <span class="user-ye">{{from_date}}</span> {{#is_current}} / <span> Current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}
-                                <!--                                    <div class="user-loc">ludhiana</div>-->
-                            </div>
-                        </div>
-                        <div class="user-desc">{{description}}</div>
-                        {{/userWorkExperiences}}
-                    </div>
-                </div>
-                <div class="user-education right-head">
-                    <div class="heading-set">education</div>
-                    <div class="user-inner-d">
-                        {{#userEducations}}
-                        <div class="user-year">
-                            <div class="user-pos">{{degree}} {{field}}</div>
-                            <div class="user-cmp">{{institute}}</div>
-                            <div class="both">
-                                <div class="user-ye">{{from_date}} / {{to_date}}</div>
-                                <!--                                    <div class="user-loc">ludhiana</div>-->
-                            </div>
-                        </div>
-                        {{/userEducations}}
-                    </div>
-                </div>
-            </div>
+            <!-- End 4th Row -->
         </div>
+        <div class="clear"></div>
     </div>
+    <!-- End Paper -->
 </script>

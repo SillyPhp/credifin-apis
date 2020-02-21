@@ -1,24 +1,13 @@
 .r-parent {
-    border: 2px solid #eee;
-    padding:0;
-}
-.r-head{
-    background: url('/assets/themes/ey/images/internship-profiles/jobprofilebg.png');
-    min-height: 230px;
-    background-position: bottom;
-    background-repeat: no-repeat;
-    background-size:cover;
+    max-width:800px;
+    margin: 0 auto;
 }
 .r-head-data {
-    border: 2px solid #eee;
-    margin-top: 50px;
-    margin-bottom: 50px;
+    color: #fff;
+    margin-bottom: 20px;
     padding: 20px;
     text-align: center;
     background-color:cadetblue;
-    color:#fff;
-    border: 2px solid #fff;
-    margin-right: 25%;
 }
 .user-name {
     font-size: 30px;
@@ -30,8 +19,12 @@
     font-family: roboto;
 }
 .r-left {
-    background-color:cadetblue;
-    padding: 15px 0px;
+    float: left;
+    width: 34%;
+}
+.r-right {
+    width: 65%;
+    float: left;
 }
 .user-photo{
     text-align: center;
@@ -46,21 +39,16 @@
     font-size: 18px;
     border-top: 1px solid #fff;
     border-bottom: 1px solid #fff;
-    color:#fff;
     text-transform: uppercase;
+    color: cadetblue;
 }
-.u-txt, .user-detail > ul > li{
+.u-txt, .user-detail{
     font-size:15px;
     font-family:roboto;
-    list-style:none;
 }
 .user-detail {
     padding:10px 20px 15px 20px;
-    color:#fff;
     text-align: center;
-}
-.user-detail > ul {
-    padding: 0 !important;
 }
 .right-head {
     font-size: 20px;
@@ -78,17 +66,17 @@
     padding: 0px 20px;
     color:cadetblue;
 }
-.right-head::after {
-    height: 3px;
-    content: " ";
-    text-shadow: none;
-    background-color:black;
-    position: absolute;
-    left: 0;
-    top: 23px;
-    z-index: -1;
-    right: 0;
-}
+/*.right-head::after {*/
+    /*height: 3px;*/
+    /*content: " ";*/
+    /*text-shadow: none;*/
+    /*background-color:black;*/
+    /*position: absolute;*/
+    /*left: 0;*/
+    /*top: 23px;*/
+    /*z-index: -1;*/
+    /*right: 0;*/
+/*}*/
 .user-inner-d {
     padding: 10px 0px 0px 0px;
 }

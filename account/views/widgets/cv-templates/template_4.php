@@ -3,15 +3,15 @@
 use yii\helpers\Url;
 ?>
 <script id="template_4" type="text/template">
-    <div class="r-parent col-md-8 p-0 col-md-offset-2">
+    <div class="r-parent">
         <div class="r-head">
-            <div class="r-head-data col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3">
+            <div class="r-head-data">
                 <div class="user-name">{{name}}</div>
                 <div class="user-work">{{title}}</div>
             </div>
         </div>
         <div class="r-inner">
-            <div class="r-left col-md-4 col-sm-4 p-0">
+            <div class="r-left">
                 <div class="user-photo">
                     <img src="<?= Url::to('@eyAssets/images/pages/world-job/hong-kong.png') ?>">
                 </div>
@@ -28,30 +28,24 @@ use yii\helpers\Url;
                 </div>
                 <div class="user-skills hed">skills</div>
                 <div class="user-detail">
-                    <ul>
                         {{#userSkills}}
-                        <li>{{skill}}</li>
+                        <div>{{skill}}</div>
                         {{/userSkills}}
-                    </ul>
                 </div>
                 <div class="user-interest hed">interest</div>
-                {{#interests}}
                 <div class="user-detail">
-                    <ul>
-                        <li>{{interests}}</li>
-                    </ul>
+                        {{#userInterests}}
+                        <div>{{interest}}</div>
+                        {{/userInterests}}
                 </div>
-                {{/interests}}
                 <div class="user-hobbies hed">hobbies</div>
                 <div class="user-detail">
-                    {{#hobbies}}
-                    <ul>
-                        <li>{{hobbies}}</li>
-                    </ul>
-                    {{/hobbies}}
+                        {{#userHobbies}}
+                        <div>{{hobby}}</div>
+                        {{/userHobbies}}
                 </div>
             </div>
-            <div class="col-md-8 col-sm-8">
+            <div class="r-right">
                 <div class="user-working right-head">
                     <span>Work Experience</span>
                     <div class="user-inner-d">
@@ -79,16 +73,18 @@ use yii\helpers\Url;
                 </div>
                 <div class="user-languages right-head">
                     <span>archievements</span>
-                    {{#userAchievements}}
                     <div class="user-inner-d">
-                        <div class="langs">{{achievement}}</div>
+                        {{#userAchievements}}
+                            <div class="langs">{{achievement}}</div>
+                        {{/userAchievements}}
                     </div>
-                    {{/userAchievements}}
                 </div>
                 <div class="user-languages right-head">
                     <span>languages</span>
                     <div class="user-inner-d">
-                        <div class="langs">English, hindi, punjabi,</div>
+                        {{#userLanguages}}
+                        <div class="langs">{{Language}}</div>
+                        {{/userLanguages}}
                     </div>
                 </div>
             </div>

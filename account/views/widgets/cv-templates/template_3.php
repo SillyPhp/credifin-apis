@@ -1,12 +1,11 @@
 <script id="template_3" type="text/template">
-    <div class="r-parent col-md-8 p-0 col-md-offset-2">
+    <div class="r-parent">
         <div class="r-head">
-            <div class="overlay-set"></div>
             <div class="user-name">{{name}}</div>
             <div class="user-work">{{title}}</div>
         </div>
         <div class="r-inner">
-            <div class="r-left col-md-4 col-sm-4 p-0">
+            <div class="r-left">
                 {{#description}}
                 <div class="user-profile hed">About</div>
                 <div class="user-detail u-txt-new">{{description}}</div>
@@ -50,7 +49,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-8 col-sm-8">
+            <div class="r-right">
                 <div class="user-working right-head">
                     <div class="heading-set">Work Experience</div>
                     {{#userWorkExperiences}}
@@ -89,9 +88,9 @@
                     {{/userAchievements}}
                 </div>
                 <div class="user-languages right-head">
-                    <div class="heading-set">languages</div>
+                   {{#language}}<div class="heading-set">languages</div>{{/language}}
                     <div class="user-inner-d">
-                        <div class="langs">English, hindi, punjabi</div>
+                        <div class="langs">{{language}}</div>
                     </div>
                 </div>
             </div>
