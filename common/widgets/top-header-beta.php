@@ -5,7 +5,7 @@
         foreach ($data as $grandParents) {
             ?>
             <li class="ey-nav-item ey-header-item ey-header-item-is-menu">
-                <a href="/<?= $grandParents['value']['route']; ?>">
+                <a href="<?= $grandParents['value']['route']; ?>">
                     <?= $grandParents['value']['name']; ?>
                     <?php
                     if ($grandParents['childs']) {
@@ -40,7 +40,7 @@
                                             }
                                             ?>
 ">
-                                                <a href="/<?= $parents['value']['route'] ?>">
+                                                <a href="<?= $parents['value']['route'] ?>">
                                                     <?= $parents['value']['name'] ?>
                                                     <div class="ey-sub-sec">
                                                         <ul class="ey-head-sub-menu-items">
@@ -49,7 +49,7 @@
                                                                 foreach ($parents['childs'] as $children) {
                                                                     ?>
                                                                     <li class="ey-head-sub-menu-icon">
-                                                                        <a href="/<?= $children['value']['route']; ?>">
+                                                                        <a href="<?= $children['value']['route']; ?>">
                                                                             <div>
                                                                                 <span class="ey-services-icons ai" style="background: url('<?= $children['value']['icon'];?>');"></span>
                                                                             </div>

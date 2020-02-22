@@ -3,6 +3,7 @@
 namespace frontend\models\profiles;
 use common\models\Users;
 use Yii;
+use yii\helpers\Url;
 use common\models\User;
 use common\models\UserAchievements;
 use common\models\UserEducation;
@@ -94,7 +95,9 @@ class ResumeData
     {
        $out = Users::find()
            ->alias('a')
-           ->select(['a.user_enc_id','a.city_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests'])
+           ->select(['a.user_enc_id','a.city_enc_id','CONCAT(first_name," ",last_name) name','email','dob','phone','GROUP_CONCAT(DISTINCT(g.hobby) SEPARATOR ",") hobbies','GROUP_CONCAT(DISTINCT(h.interest) SEPARATOR ",") interests',
+               'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image'
+               ])
            ->joinWith(['userSkills b'=>function($b)
            {
                $b->select(['b.created_by','c.skill','b.user_skill_enc_id']);
@@ -124,6 +127,12 @@ class ResumeData
            {
                $b->select(['h.user_enc_id', 'h.interest','h.user_interest_enc_id']);
                $b->andWhere(['h.is_deleted'=>0]);
+           }])
+           ->joinWith(['userSpokenLanguages j'=>function($j)
+           {
+                $j->select(['j.user_language_enc_id','j.created_by','k.language']);
+                $j->joinWith(['languageEnc k'],false);
+                $j->andWhere(['j.is_deleted'=>0]);
            }])
            ->joinWith(['userEducations i'])
            ->where(['a.user_enc_id'=>$id])
