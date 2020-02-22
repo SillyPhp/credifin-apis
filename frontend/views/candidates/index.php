@@ -262,7 +262,7 @@ button.viewall-jobs {
 	margin: 10px 0;
 	padding: 0;
 	min-height: 74px;
-	height: 108px;
+	height: 112px;
 	overflow: hidden;
 }
 
@@ -271,7 +271,7 @@ button.viewall-jobs {
 	padding: 3px 15px;
 	border: 1px solid #b9c5ce;
 	border-radius: 50px !important;
-	margin: 2px 0;
+	margin: 1px 0;
 	font-weight: 500;
 	color: #657180;
 	text-overflow: ellipsis;
