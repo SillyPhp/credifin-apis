@@ -13,9 +13,14 @@ use common\models\ShortlistedOrganizations;
 class OrganizationController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionShortlisted()
     {
-
         $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
             ->select(['b.establishment_year','a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
