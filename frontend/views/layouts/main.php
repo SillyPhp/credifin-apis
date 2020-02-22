@@ -831,6 +831,7 @@ $(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {
         $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
+        return false;
       }
 });
 
