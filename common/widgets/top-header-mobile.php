@@ -6,7 +6,7 @@
                 ?>
                 <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
                     <div class="ey-mobile-item-main">
-                        <a href="<?= $grandParents['value']['route']; ?>"><?= $grandParents['value']['name']; ?></a>
+                        <a href="/<?= $grandParents['value']['route']; ?>"><?= $grandParents['value']['name']; ?></a>
                         <?php
                         if ($grandParents['childs']) {
                         ?>
@@ -25,7 +25,7 @@
                                     ?>
                                     <div class="ey-mob-sub-item ey-mobile-sub-has-container">
                                         <div class="ey-mobile-sub-menu-heading">
-                                            <a href="<?= $parents['value']['route'] ?>">
+                                            <a href="/<?= $parents['value']['route'] ?>">
                                                 <?= $parents['value']['name'] ?>
                                             </a>
                                             <?php
@@ -50,7 +50,7 @@
                                                     foreach ($parents['childs'] as $children) {
                                                         ?>
                                                         <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
-                                                            <a href="<?= $children['value']['route']; ?>">
+                                                            <a href="/<?= $children['value']['route']; ?>">
                                                                 <div>
                                                                     <span class="ey-services-icons ai"
                                                                           style="background: url('<?= $children['value']['icon']; ?>');"></span>
@@ -69,36 +69,6 @@
                                 }
                             }
                             ?>
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/govt-jobs">Indian Govt. Jobs</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/usa-jobs">USA Govt. Jobs</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/organizations">Explore Companies</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/jobs/compare">Compare Jobs</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/organizations/explore">Featured Companies</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
-                            <!--                        <div class="ey-mob-sub-item ey-mobile-sub-has-container">-->
-                            <!--                            <div class="ey-mobile-sub-menu-heading">-->
-                            <!--                                <a href="/tweets/jobs">Job Tweets</a>-->
-                            <!--                            </div>-->
-                            <!--                        </div>-->
                         </div>
                     </div>
                 </div>
