@@ -241,8 +241,8 @@ namespace common\models;
  * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields0
  * @property QuestionnaireTemplates[] $questionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnaireTemplates0
- * @property Quiz[] $quizzes
- * @property Quiz[] $quizzes0
+ * @property Quizzes[] $quizzes
+ * @property Quizzes[] $quizzes0
  * @property QuizQuestions[] $quizQuestions
  * @property QuizQuestions[] $quizQuestions0
  * @property Referral[] $referrals
@@ -1962,7 +1962,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getQuizzes()
     {
-        return $this->hasMany(Quiz::className(), ['created_by' => 'user_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -1970,7 +1970,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getQuizzes0()
     {
-        return $this->hasMany(Quiz::className(), ['last_updated_by' => 'user_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**

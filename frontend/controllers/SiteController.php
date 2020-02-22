@@ -67,6 +67,7 @@ class SiteController extends Controller
         if ($route === "") {
             $route = "/";
         }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute($route, $this);
         return parent::beforeAction($action);
     }
@@ -817,6 +818,13 @@ class SiteController extends Controller
         $tweets = array_merge($a, $b);
         return $this->renderAjax('/widgets/twitter-masonry', [
             'tweets' => $tweets
+        ]);
+    }
+
+    public function actionUserFeedbackPage(){
+        $feedbackFormModel = new FeedbackForm();
+        return $this->render('user-feedback-page',[
+            'feedbackFormModel' => $feedbackFormModel,
         ]);
     }
 

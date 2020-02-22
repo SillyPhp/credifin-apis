@@ -296,5 +296,4 @@ class CitiesController extends Controller
 
         return $result;
     }
-
 }

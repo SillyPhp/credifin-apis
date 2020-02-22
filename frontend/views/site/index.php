@@ -1210,11 +1210,13 @@ function scrollFunction() {
 	});
 });
 
-$(document).on('click','#search-submit',function() {
-   var value = $('#search-input').val();
-   if(value == ''){
-       return false;
-   }
+
+document.getElementById('search-submit').addEventListener('click',(evt)=> {
+  var searchInput = document.getElementById('search-input').value;
+  if(searchInput == ''){
+      evt.preventDefault();
+      return false; 
+  }
 });
 JS;
 if (!Yii::$app->user->isGuest) {
@@ -1257,5 +1259,6 @@ $this->registerCssFile('@eyAssets/css/home-page-slider.css');
 $this->registerJsFile('@eyAssets/js/homepage_slider/select-chosen.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/homepage_slider/slick.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['position' => \yii\web\View::POS_HEAD]);
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>

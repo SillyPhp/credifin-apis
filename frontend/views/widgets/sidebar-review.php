@@ -410,7 +410,7 @@ function Ajax_call(itemid) {
 }
 
 $(document).on('click', '.application-card-add', function(event) {
-    var c_user = "$c_user"
+    var c_user = "$c_user";
     if(c_user == ""){
         $('#loginModal').modal('show');
     } else{

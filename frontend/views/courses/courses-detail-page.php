@@ -15,10 +15,6 @@ use yii\helpers\Url;
                         <div class="c-suggestion">{{headline}}</div>
                         <div class="c-created">Created by :<span>{{#visible_instructors}}{{display_name}}{{/visible_instructors}}</span></div>
                         <div class="c-lang">Languages : <span>{{#locale}}{{locale.title}}{{/locale}}</span></div>
-                        <div class="cart">
-                            <span><i class="fas fa-cart-plus" title="Add To Cart"></i>Add To Cart</span>
-                            <span><i class="far fa-heart" title="Add To Wishlist"></i>Wishlist</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -28,11 +24,6 @@ use yii\helpers\Url;
             <div class="container">
                 <div class="row">
                     <div class="col-md-8 col-sm-8">
-                        <div class="video-sec">
-                            <div class="video-thumb">
-                                <img src="{{image_750x422}}"/>
-                            </div>
-                        </div>
                         <div class="about-course">
                             <div class="course-heading">About this course</div>
                             <div class="course-detail">
@@ -47,18 +38,8 @@ use yii\helpers\Url;
                                         {{.}}
                                     {{/what_you_will_learn_data.items}}
                                 </div>
-<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
-<!--                                <div class="learning-cards"><i class="fas fa-check-circle"></i>html</div>-->
                             </div>
                         </div>
-<!--                        <div class="skills-box">-->
-<!--                            <h3>Skills you will gain</h3>-->
-<!--                            <div class="points">-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                                <div class="skills-cards">html</div>-->
-<!--                            </div>-->
-<!--                        </div>-->
                         <div class="c-requirements">
                             <h3>Requirements</h3>
                             <div class="req-points">
@@ -68,8 +49,6 @@ use yii\helpers\Url;
                                             {{.}}
                                         </li>
                                     {{/requirements_data.items}}
-<!--                                    <li>You will need Microsoft Excel 2010, 2013, or 2016</li>-->
-<!--                                    <li>You will need Microsoft PowerPoint 2010, 2013, or 2016</li>-->
                                 </ul>
                             </div>
                         </div>
@@ -81,22 +60,7 @@ use yii\helpers\Url;
                             </div>
                             <div class="c-amount">{{#is_paid}}<i class="fas fa-rupee-sign"></i>{{/is_paid}} {{price}}</div>
                             <div class="buy-btn">
-                                <button class="new-btn-set">Enroll Now</button>
-                            </div>
-<!--                            <div class="discount-set">-->
-<!--                                <button onclick="myFunction()" class="coupon-code">Apply Promo Code</button>-->
-<!--                            </div>-->
-<!--                            <div class="coupon-modal" id="coupon">-->
-<!--                                <input class="form-control set-marg" type="text">-->
-<!--                                <button class="coupon-btn-set">Apply</button>-->
-<!--                            </div>-->
-                            <div class="get-coupon input-group">
-                                <input type="text" id="value-save" class="form-control set-form" value="">
-                                <div class="input-group-btn">
-                                    <button class="clipboard btn btn-default get-btn" onClick="valueSave();">
-                                        <i class="fa fa-clipboard" aria-hidden="true"></i>Copy to Clipboard
-                                    </button>
-                                </div>
+                                <a href="https://udemy.com/{{url}}" target="_blank" class="new-btn-set">Enroll Now</a>
                             </div>
                             <div class="c-includes">
                                 <div class="include-head">This Course Includes</div>
@@ -106,7 +70,6 @@ use yii\helpers\Url;
                                         {{#num_article_assets}}<li>{{num_article_assets}} articles</li>{{/num_article_assets}}
                                         {{#num_additional_assets}}<li>{{num_additional_assets}} downloadable resources</li>{{/num_additional_assets}}
                                         {{#num_coding_exercises}}<li>{{num_coding_exercises}} Exercises</li>{{/num_coding_exercises}}
-<!--                                        <li>Full lifetime access</li>-->
                                         {{#has_certificate}}<li>Certificate of Completion</li>{{/has_certificate}}
                                     </ul>
                                 </div>
@@ -117,19 +80,6 @@ use yii\helpers\Url;
             </div>
         </section>
         {{/.}}
-    </script>
-    <script>
-        function myFunction() {
-            document.getElementById("coupon").style.display = "block";
-        }
-
-        function valueSave() {
-            var copyText = document.getElementById("value-save");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999)
-            document.execCommand("copy");
-            //alert("Copied the text: " + copyText.value);
-        }
     </script>
     <div id="sectionIsLoading" class="sectionIsLoading">
         <div></div>
@@ -198,22 +148,6 @@ $this->registerCss('
 .c-lang, .c-created {
     font-size: 16px;
 }
-.cart{
-    padding-top:5px;
-}
-.cart span {
-    margin-right: 20px;
-    font-size: 16px;
-    cursor: pointer;    
-}
-.cart span:hover {
-    color:#eee;
-}
-.cart span > i{
-    font-size:20px;
-    margin-right:10px;
-    color: #fff !important;
-}
 .about-course {
     padding: 10px 0px 30px 0px;
     font-family: roboto;
@@ -269,9 +203,6 @@ $this->registerCss('
     font-size: 13px;
 }
 .c-created span, .c-lang span {
-    font-size: 13px;
-}
-.cart span{
     font-size: 13px;
 }
 .buy-box{
@@ -345,6 +276,8 @@ $this->registerCss('
     border-radius: 4px;
     font-weight: 500;
     font-family: roboto;
+    display:block;
+    text-align:center;
 }
 .include-head {
     padding-top: 10px;
@@ -438,14 +371,7 @@ $this->registerCss('
 }
 ');
 $script = <<< JS
-function getUrlVars() {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-var id = getUrlVars()["id"];
+var id = $(location).attr("href").split('/').pop();
 $.ajax({
     method: "POST",
     url : '/courses/get-data',

@@ -115,9 +115,9 @@ AppAssets::register($this);
                                 </a>
                             </div>
                             <div class="ey-menu-main">
-                                <?= $this->render('@common/widgets/top-header-beta-bk', [
+                                <?= $this->render('@common/widgets/top-header-beta', [
                                     'for' => 'Frontend',
-//                                    'data' => $this->params['sub_header']
+                                    'data' => $this->params['sub_header']
                                 ]); ?>
                             </div>
                             <div class="ey-nav-actions">
@@ -232,8 +232,8 @@ AppAssets::register($this);
                 <div class="ey-mobile-content">
                     <div class="ey-mobile-menu-main-content">
                         <div class="ey-mobile-menu-inner-content">
-                            <?= $this->render('@common/widgets/top-header-mobile-bk',[
-//                                'data' => $this->params['sub_header']
+                            <?= $this->render('@common/widgets/top-header-mobile',[
+                                'data' => $this->params['sub_header']
                             ]); ?>
                         </div>
                     </div>
@@ -827,6 +827,12 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).children("i").css("display", "none");
       }
 });
+$(".ey-sub-nav-items .ey-head-sub-menu-has-child a").each(function(){
+    var attr = $(this).attr("href");
+      if (attr === thispageurl) {
+        $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
+      }
+});
 
 $(document).on("click", ".partnerWith", function(e){
     e.preventDefault();
@@ -841,7 +847,7 @@ $(document).on("click", ".giveFeedback", function(e){
     $(".feedback-main").load("/site/send-feedback");
 });
 ');
-$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => View::POS_HEAD]);
 $this->registerJs('
             WebFont.load({
                     google: {
