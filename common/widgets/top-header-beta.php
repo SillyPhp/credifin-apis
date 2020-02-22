@@ -67,24 +67,6 @@
                                             <?php
                                         }
                                         ?>
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/govt-jobs">Indian Govt. Jobs</a>-->
-                                        <!--                                    </li>-->
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/usa-jobs">USA Govt. Jobs</a>-->
-                                        <!--                                    </li>-->
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/organizations">Explore Companies</a>-->
-                                        <!--                                    </li>-->
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/jobs/compare">Compare Jobs</a>-->
-                                        <!--                                    </li>-->
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/organizations/explore">Featured Companies</a>-->
-                                        <!--                                    </li>-->
-                                        <!--                                    <li class="ey-head-sub-menu-has-child">-->
-                                        <!--                                        <a href="/tweets/jobs">Job Tweets</a>-->
-                                        <!--                                    </li>-->
                                     </ul>
                                 </nav>
                                 <div class="ey-header-sub-menu-container"></div>

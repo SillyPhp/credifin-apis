@@ -1,97 +1,93 @@
+<?php
+
+use yii\helpers\Url;
+
+?>
 <script id="template_3" type="text/template">
-    <div class="r-parent col-md-8 p-0 col-md-offset-2">
+    <div class="r-parent">
         <div class="r-head">
-            <div class="overlay-set"></div>
-            <div class="user-name">{{name}}</div>
-            <div class="user-work">{{title}}</div>
+            <div class="r-head-data">
+                <div class="user-name">{{name}}</div>
+                <div class="user-work">{{title}}</div>
+            </div>
         </div>
         <div class="r-inner">
-            <div class="r-left col-md-4 col-sm-4 p-0">
-                {{#description}}
-                <div class="user-profile hed">About</div>
-                <div class="user-detail u-txt-new">{{description}}</div>
-                {{/description}}
-                <div>
-                    <div class="user-contact hed">contact</div>
-                    <div class="user-detail">
-                        <div class="user-email u-txt"><i class="fa fa-envelope"></i> {{email}}</div>
-                        <div class="user-num u-txt"><i class="fa fa-phone-square"></i> {{phone}}</div>
-                        {{#address}}<div class="user-address u-txt"><i class="fa fa-map-marker"></i> {{address}}</div>{{/address}}
-                    </div>
+            <div class="r-left">
+                <div class="user-photo">
+                    {{#image}}
+                    <img src="<?= Url::to('{{image}}') ?>">
+                    {{/image}}
                 </div>
-                <div>
+                <div class="user-profile hed">Profile</div>
+                <div class="user-detail u-txt">Lorem Ipsum is simply dummy text of the printing and
+                    typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since
+                    the 1500s
+                </div>
+                <div class="user-contact hed">contact</div>
+                <div class="user-detail">
+                    <div class="user-email u-txt">{{email}}</div>
+                    <div class="user-num u-txt">{{phone}}</div>
+                    <div class="user-address u-txt">{{address}}</div>
+                </div>
+                <div class="user-skills hed">skills</div>
+                <div class="user-detail">
                     {{#userSkills}}
-                    <div class="user-skills hed">skills</div>
-                    <div class="user-detail">
-                        <ul>
-                            <li>{{skill}}</li>
-                        </ul>
-                    </div>
+                    <div>{{skill}}</div>
                     {{/userSkills}}
                 </div>
-                <div>
-                    {{#interests}}
-                    <div class="user-interest hed">interest</div>
-                    <div class="user-detail">
-                        <ul>
-                            <li>{{interests}}</li>
-                        </ul>
-                    </div>
-                    {{/interests}}
+                <div class="user-interest hed">interest</div>
+                <div class="user-detail">
+                    {{#userInterests}}
+                    <div>{{interest}}</div>
+                    {{/userInterests}}
                 </div>
-                <div>
-                    <div class="user-hobbies hed">Hobbies</div>
-                    <div class="user-detail">
-                        <ul>
-                            {{#hobbies}}
-                            <li>{{hobbies}}</li>
-                            {{/hobbies}}
-                        </ul>
-                    </div>
+                <div class="user-hobbies hed">hobbies</div>
+                <div class="user-detail">
+                    {{#userHobbies}}
+                    <div>{{hobby}}</div>
+                    {{/userHobbies}}
                 </div>
             </div>
-            <div class="col-md-8 col-sm-8">
+            <div class="r-right">
                 <div class="user-working right-head">
-                    <div class="heading-set">Work Experience</div>
-                    {{#userWorkExperiences}}
+                    <span>Work Experience</span>
                     <div class="user-inner-d">
+                        {{#userWorkExperiences}}
                         <div class="user-year">
                             <span>{{from_date}}</span> {{#is_current}} - <span> Current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}|
                             <span>{{title}}</span>|
                             <span>{{company}}</span>
                         </div>
-                        <div class="user-desc">
-                            <ul>
-                                <li>{{description}}</li>
-                            </ul>
-                        </div>
+                        <div class="user-desc">{{description}}</div>
+                        {{/userWorkExperiences}}
                     </div>
-                    {{/userWorkExperiences}}
                 </div>
                 <div class="user-education right-head">
-                    <div class="heading-set">education</div>
-                    {{#userEducations}}
+                    <span>education</span>
                     <div class="user-inner-d">
+                        {{#userEducations}}
                         <div class="user-stdy">
-                            <span>{{from_date}} - {{to_date}}</span>|
-                            <span>{{degree}} {{field}}</span>|
-                            <span class="user-uni">{{institute}}</span>
+                            <span>{{from_date}} - {{to_date}}</span>/
+                            <span>{{degree}} {{field}}</span>
                         </div>
+                        <div class="user-uni">{{institute}}</div>
+                        {{/userEducations}}
                     </div>
-                    {{/userEducations}}
                 </div>
                 <div class="user-languages right-head">
-                    <div class="heading-set">Archievements</div>
-                    {{#userAchievements}}
+                    <span>archievements</span>
                     <div class="user-inner-d">
-                        <div class="projects">{{achievement}}</div>
+                        {{#userAchievements}}
+                        <div class="langs">{{achievement}}</div>
+                        {{/userAchievements}}
                     </div>
-                    {{/userAchievements}}
                 </div>
                 <div class="user-languages right-head">
-                    <div class="heading-set">languages</div>
+                    <span>languages</span>
                     <div class="user-inner-d">
-                        <div class="langs">English, hindi, punjabi</div>
+                        {{#userSpokenLanguages}}
+                        <div class="langs">{{language}}</div>
+                        {{/userSpokenLanguages}}
                     </div>
                 </div>
             </div>

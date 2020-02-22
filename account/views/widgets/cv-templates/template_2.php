@@ -1,7 +1,7 @@
 <script id="template_2" type="text/template">
                     <div class="r-main">
+                        <div class="user-name">{{name}}</div>
                         <div class="r-left">
-                            <div class="user-name">{{name}}</div>
                             <div class="p-info-head">Personal Information</div>
                             <div class="p-info">
                                 <div class="r-phone-no">
@@ -34,9 +34,7 @@
                         </div>
                         <div class="r-right">
                             <div class="r-info">
-                                <div class="r-head">
-                                    {{description}}
-                                </div>
+                                <div class="r-head">{{description}}</div>
                                 <div class="info-head">Experience</div>
                                 <div class="e-main">
                                     {{#userWorkExperiences}}
@@ -65,18 +63,18 @@
                                     </div>
                                     {{/userEducations}}
                                 </div>
-                                {{#hobbies}}
                                 <div class="info-head">Hobbies</div>
                                 <div class="e-main">
-                                    <div class="hobbies">{{hobbies}}</div>
+                                {{#userHobbies}}
+                                    <div class="hobbies">{{hobby}}</div>
+                                {{/userHobbies}}
                                 </div>
-                                {{/hobbies}}
-                                {{#interests}}
                                 <div class="info-head">Interest</div>
                                 <div class="e-main">
-                                    <div class="hobbies">{{interests}}</div>
+                                {{#userInterests}}
+                                    <div class="hobbies">{{interest}}</div>
+                                {{/userInterests}}
                                 </div>
-                                {{/interests}}
                             </div>
                         </div>
                     </div>
