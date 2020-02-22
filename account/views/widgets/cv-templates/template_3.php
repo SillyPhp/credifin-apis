@@ -14,9 +14,9 @@ use yii\helpers\Url;
         <div class="r-inner">
             <div class="r-left">
                 <div class="user-photo">
-                    {{#userimage}}
+                    {{#image}}
                     <img src="<?= Url::to('{{image}}') ?>">
-                    {{/userimage}}
+                    {{/image}}
                 </div>
                 <div class="user-profile hed">Profile</div>
                 <div class="user-detail u-txt">Lorem Ipsum is simply dummy text of the printing and
@@ -85,9 +85,9 @@ use yii\helpers\Url;
                 <div class="user-languages right-head">
                     <span>languages</span>
                     <div class="user-inner-d">
-                        {{#userLanguages}}
-                        <div class="langs">{{Language}}</div>
-                        {{/userLanguages}}
+                        {{#userSpokenLanguages}}
+                        <div class="langs">{{language}}</div>
+                        {{/userSpokenLanguages}}
                     </div>
                 </div>
             </div>
