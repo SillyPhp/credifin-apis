@@ -885,7 +885,6 @@ $script = <<<JS
         if(!params){
             params = 'locations=&job_titles=&skills=';
         }
-//        console.log(cls_jt+": jt "+ cls_loc +" : loc "+ cls_sk + " : sk"); 
 //        if(!cls_jt || !cls_loc || !cls_sk) {
 //            if(!params){
 //                params = thsCls +'=';
@@ -1005,7 +1004,6 @@ $script = <<<JS
             type: 'POST',
             data: {name:val,id:cls},
             success: function (response) {
-                console.log(response);
                 var div = $('div#'+cls+'_search');
                 // var obj = JSON.parse(res);
                 var obj = response;

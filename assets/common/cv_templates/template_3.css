@@ -1,112 +1,106 @@
 .r-parent {
-    border: 2px solid #eee;
-    padding:0;
-    background-image: linear-gradient(to right, #000 33.33%, #fff 0%);
+    max-width:800px;
+    margin: 0 auto;
 }
-.r-head{
-    background: url('/assets/themes/ey/images/internship-profiles/jobprofilebg.png');
-    min-height: 200px;
-    background-position: top;
-    background-repeat: no-repeat;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    flex-direction: column;
-    color:black;
-    padding-right: 30px;
-    position:relative;
-}
-.overlay-set{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    background-color: rgba(0,0,0,0.7);
+.r-head-data {
+    color: #fff;
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+    background-color:cadetblue;
 }
 .user-name {
-    font-size: 35px;
+    font-size: 30px;
     font-family: roboto;
-    color:#fff;
-    z-index: 999;
-    text-transform: capitalize;
+    text-transform:capitalize;
 }
 .user-work {
-    font-size: 25px;
+    font-size: 20px;
     font-family: roboto;
-    color:#fff;
-    z-index: 999;
 }
 .r-left {
-    background-color:black;
-    padding:20px !important;
-    margin-top:-40px;
-    z-index: 999;
+    float: left;
+    width: 34%;
+}
+.r-right {
+    width: 65%;
+    float: left;
+}
+.user-photo{
+    text-align: center;
+    padding: 25px 0px;
+}
+.user-photo img{
+    width: 100px;
+    height: auto;
 }
 .hed{
+    text-align: center;
     font-size: 18px;
-    color:#fff;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
     text-transform: uppercase;
-    font-weight: 600;
+    color: cadetblue;
 }
-.u-txt, .user-detail > ul > li {
-    font-size: 15px;
-    font-family: roboto;
-    background: cadetblue;
-    display: inline-block;
-    margin: 2px;
-    padding: 2px 9px;
-    border-radius: 5px;
-}
-.u-txt-new{
+.u-txt, .user-detail{
     font-size:15px;
     font-family:roboto;
 }
 .user-detail {
-    padding:5px 0px 10px 0px;
-    color:#fff;
+    padding:10px 20px 15px 20px;
+    text-align: center;
 }
 .right-head {
     font-size: 20px;
+    text-align: center;
     padding:10px 0px;
     color: black;
     font-family:roboto;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: 500;
+    position:relative;
+    z-index: 1;
+}
+.right-head span{
+    background-color:#fff;
+    padding: 0px 20px;
+    color:cadetblue;
+}
+/*.right-head::after {*/
+/*height: 3px;*/
+/*content: " ";*/
+/*text-shadow: none;*/
+/*background-color:black;*/
+/*position: absolute;*/
+/*left: 0;*/
+/*top: 23px;*/
+/*z-index: -1;*/
+/*right: 0;*/
+/*}*/
+.user-inner-d {
+    padding: 10px 0px 0px 0px;
 }
 .user-year span, .user-stdy span{
     font-size: 16px;
+    padding-left: 5px;
     padding-right: 5px;
     font-weight: 500;
-}
-.heading-set {
-    color: cadetblue;
-    font-size: 18px;
+    color: #000;
 }
 .user-desc {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
+    text-align: center;
     text-transform: none;
-    padding-left:16px;
-}
-.user-desc > ul {
-    padding: 0 !important;
-}
-.user-desc > ul > li{
-    list-style:disclosure-closed;
+    padding-left:5px;
 }
 .user-uni {
     font-size: 18px;
     font-family: roboto;
     text-transform: none;
-    font-weight:500;
 }
-.langs, .projects {
+.langs {
     font-size: 16px;
     font-weight: 400;
     text-transform: none;
-}
-.user-detail > ul{
-    padding: 0 !important;
 }

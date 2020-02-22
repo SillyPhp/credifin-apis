@@ -13,61 +13,55 @@
             <div class="r-object">{{description}}</div>
             {{/description}}
             <div class="r-points">
+                <div class="education-head">Education</div>
+                {{#userEducations}}
+                <div class="education">
+                    <div class="e-date">
+                        <span class="edu1">{{from_date}}</span> - <span class="edu2">{{to_date}}</span> / <span class="e-name">{{degree}} {{field}}</span>
+                    </div>
+                    <div class="e-position">
+                        <div class="e-location">{{institute}}</div>
+                    </div>
+                </div>
+                {{/userEducations}}
+                <div class="work-head">Work History</div>
+                {{#userWorkExperiences}}
+                <div class="works">
+                    <div class="w-date">
+                        <span class="work1">{{from_date}}</span> {{#is_current}} - <span class="work2">current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}} / <span class="w-name">{{title}}</span>
+                    </div>
+                    <div class="w-position">
+                        <div class="w-location">{{company}}</div>
+                        <ul>
+                            <li>{{description}}</li>
+                        </ul>
+                    </div>
+                </div>
+                {{/userWorkExperiences}}
                 <div class="r-skills">
                     <div class="skill-head">Skills</div>
                     <div class="skills">
-                        <ul style="padding-left: 18px;">
-                            {{#userSkills}}
-                            <li>{{skill}}</li>
-                            {{/userSkills}}
-                        </ul>
+                        {{#userSkills}}
+                        <span>{{skill}}</span>,
+                        {{/userSkills}}
                     </div>
-                    <div class="work-head">Work History</div>
-                    {{#userWorkExperiences}}
-                    <div class="works">
-                        <div class="w-date">
-                            <span class="work1">{{from_date}}</span> {{#is_current}} - <span class="work2">current</span>{{/is_current}}{{^is_current}}-{{to_date}}{{/is_current}}
-                        </div>
-                        <div class="w-position">
-                            <div class="w-name">{{title}}</div>
-                            <div class="w-location">{{company}}</div>
-                            <ul style="padding-left: 0px;">
-                                <li>{{description}}</li>
-                            </ul>
-                        </div>
-                    </div>
-                    {{/userWorkExperiences}}
-                    <div class="education-head">Education</div>
-                    {{#userEducations}}
-                    <div class="education">
-                        <div class="e-date">
-                            <span class="edu1">{{from_date}}</span> - <span class="edu2">{{to_date}}</span>
-                        </div>
-                        <div class="e-position">
-                            <div class="e-name">{{degree}} {{field}}</div>
-                            <div class="e-location">{{institute}}</div>
-                        </div>
-                    </div>
-                    {{/userEducations}}
                     <div class="archievements-head">Achievements</div>
                     <div class="skills">
-                        <ul style="padding-left: 18px;">
                             {{#userAchievements}}
-                            <li>{{achievement}}</li>
+                            <div>{{achievement}}</div>
                             {{/userAchievements}}
-                        </ul>
                     </div>
-                    </div>
-                    {{#hobbies}}
-                    <div class="hobbies-head">Hobbies</div>
-                    <div class="u-hobbies">{{hobbies}}</div>
-                    {{/hobbies}}
-                    {{#interests}}
-                    <div class="interest-head">Interest</div>
-                    <div class="u-interest">{{interests}}</div>
-                    {{/interests}}
                 </div>
+                <div class="hobbies-head">Hobbies</div>
+                {{#userHobbies}}
+                <div class="u-hobbies">{{hobby}}</div>
+                {{/userHobbies}}
+                <div class="interest-head">Interest</div>
+                {{#userInterests}}
+                <div class="u-interest">{{interest}}</div>
+                {{/userInterests}}
             </div>
         </div>
+    </div>
     </div>
 </script>

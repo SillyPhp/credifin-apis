@@ -144,9 +144,9 @@ class CandidatesController extends Controller
                 case 'job_titles' :
                     $data = AssignedCategories::find()
                         ->alias('z')
-                        ->select(['z.assigned_category_enc_id', 'a.category_enc_id as enc_id', 'a.name'])
+                        ->select(['z.assigned_category_enc_id', 'a.category_enc_id', 'a.name'])
                         ->joinWith(['categoryEnc a'], false)
-                        ->where(['z.is_deleted' => 0, 'z.assigned_to' => 'Jobs', 'z.status' => 'Approved'])
+                        ->where(['z.is_deleted' => 0, 'z.assigned_to' => 'Jobs'])
                         ->andWhere(['not', ['z.parent_enc_id' => null]])
                         ->andWhere(['not', ['a.name' => ""]])
                         ->andFilterWhere(['like', 'a.name', $name])
@@ -159,8 +159,8 @@ class CandidatesController extends Controller
                     break;
                 case 'skills' :
                     $data = Skills::find()
-                        ->select(['skill_enc_id as enc_id', 'skill as name'])
-                        ->where(['is_deleted' => 0, 'status' => 'Publish'])
+                        ->select(['skill_enc_id', 'skill as name'])
+                        ->where(['is_deleted' => 0])
                         ->andWhere(['not', ['skill' => ""]])
                         ->andFilterWhere(['like', 'skill', $name])
                         ->orderBy(['skill' => SORT_ASC])
