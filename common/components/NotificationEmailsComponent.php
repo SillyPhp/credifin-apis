@@ -183,56 +183,94 @@ class NotificationEmailsComponent extends Component
                 ['b.cover_image' => null],
                 ['b.phone' => null],
             ])
-            ->groupBy('a.user_enc_id')
-            ->limit(10)
+            ->groupBy('a.user_enc_id');
+//            ->limit(10)
 //            ->asArray()
-            ->all();
-//        foreach ($data->batch(100) as $rows) {
-//
-//        }
-        foreach ($data->each(20) as $user) {
-            print_r($user);
-        }
-        exit();
-
+//            ->all();
         $orgData = [];
-        foreach ($data as $d) {
-            $per = 0;
-            $total = 10;
-            $t = 100 / $total;
-            if ($d['benefit'] != 0) {
-                $per += $t;
+        foreach ($data->batch(50) as $rows) {
+            foreach ($rows as $d) {
+                $per = 0;
+                $total = 10;
+                $t = 100 / $total;
+                if ($d['benefit'] != 0) {
+                    $per += $t;
+                }
+                if ($d['team'] != 0) {
+                    $per += $t;
+                }
+                if ($d['gallery'] != 0) {
+                    $per += $t;
+                }
+                if ($d['product'] != 0) {
+                    $per += $t;
+                }
+                if ($d['logo']) {
+                    $per += $t;
+                }
+                if ($d['tag_line']) {
+                    $per += $t;
+                }
+                if ($d['description']) {
+                    $per += $t;
+                }
+                if ($d['mission']) {
+                    $per += $t;
+                }
+                if ($d['vision']) {
+                    $per += $t;
+                }
+                if ($d['website']) {
+                    $per += $t;
+                }
+                $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
+                array_push($orgData,$org);
             }
-            if ($d['team'] != 0) {
-                $per += $t;
-            }
-            if ($d['gallery'] != 0) {
-                $per += $t;
-            }
-            if ($d['product'] != 0) {
-                $per += $t;
-            }
-            if ($d['logo']) {
-                $per += $t;
-            }
-            if ($d['tag_line']) {
-                $per += $t;
-            }
-            if ($d['description']) {
-                $per += $t;
-            }
-            if ($d['mission']) {
-                $per += $t;
-            }
-            if ($d['vision']) {
-                $per += $t;
-            }
-            if ($d['website']) {
-                $per += $t;
-            }
-            $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
-            array_push($orgData,$org);
         }
+//        exit();
+//        foreach ($data->each(50) as $user) {
+//            print_r($user);
+//        }
+//        exit();
+
+//        $orgData = [];
+//        foreach ($data as $d) {
+//            $per = 0;
+//            $total = 10;
+//            $t = 100 / $total;
+//            if ($d['benefit'] != 0) {
+//                $per += $t;
+//            }
+//            if ($d['team'] != 0) {
+//                $per += $t;
+//            }
+//            if ($d['gallery'] != 0) {
+//                $per += $t;
+//            }
+//            if ($d['product'] != 0) {
+//                $per += $t;
+//            }
+//            if ($d['logo']) {
+//                $per += $t;
+//            }
+//            if ($d['tag_line']) {
+//                $per += $t;
+//            }
+//            if ($d['description']) {
+//                $per += $t;
+//            }
+//            if ($d['mission']) {
+//                $per += $t;
+//            }
+//            if ($d['vision']) {
+//                $per += $t;
+//            }
+//            if ($d['website']) {
+//                $per += $t;
+//            }
+//            $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
+//            array_push($orgData,$org);
+//        }
         print_r($orgData);
         exit();
     }
