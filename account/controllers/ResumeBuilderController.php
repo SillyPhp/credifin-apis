@@ -37,6 +37,12 @@ use kartik\mpdf\Pdf;
 class ResumeBuilderController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
