@@ -258,12 +258,6 @@ class CandidatesController extends Controller
 //        }
             $data = $data->asArray()->all();
 
-//        print_r($data);
-//        exit();
-
-//        $data = yii\helpers\ArrayHelper::getColumn($data, 'city_name');
-//        print_r($data);
-//        exit();
             $users = [];
             $j = 0;
             foreach ($data as $u) {
@@ -309,7 +303,9 @@ class CandidatesController extends Controller
             }
             return $users;
         } else {
-            return $this->render('index');
+            return $this->render('index', [
+                'available_applications' => $this->getApplications(),
+            ]);
         }
     }
 

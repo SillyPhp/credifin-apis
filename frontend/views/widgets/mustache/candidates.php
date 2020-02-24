@@ -2,9 +2,11 @@
     {{#.}}
     <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
-<!--            <span class="shortlist-main" id="{{user_enc_id}}">-->
-<!--                <i class="far fa-star"></i>-->
-<!--            </span>-->
+            <?php if (Yii::$app->user->identity->organization) { ?>
+                <span class="shortlist-main" id="{{user_enc_id}}">
+                <i class="far fa-star"></i>
+            </span>
+            <?php } ?>
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
