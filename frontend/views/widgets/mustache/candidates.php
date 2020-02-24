@@ -2,9 +2,9 @@
     {{#.}}
     <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
-            <span class="shortlist-main" id="{{user_enc_id}}">
-                <i class="far fa-star"></i>
-            </span>
+<!--            <span class="shortlist-main" id="{{user_enc_id}}">-->
+<!--                <i class="far fa-star"></i>-->
+<!--            </span>-->
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
@@ -60,7 +60,6 @@ $script = <<<JS
     function getUserCards(offval, url, loadType){
         var limit = 18;
         offval = offval * limit;
-        console.log('offse value = '+offval);
         $.ajax({
             type: 'POST',
             url: url,
@@ -75,7 +74,6 @@ $script = <<<JS
                if(res.length == limit){
                    loading = false;
                    $('#loadMore').css('display', 'block');
-                   console.log('tikki');
                } else {
                    load_more_cards = false;
                    $('#loadMore').hide();

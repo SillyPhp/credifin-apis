@@ -827,10 +827,11 @@ $(".ey-menu-inner-main .ey-header-item-is-menu a").each(function(){
         $(this).children("i").css("display", "none");
       }
 });
-$(".ey-sub-nav-items .ey-head-sub-menu-has-child a").each(function(){
+$(".ey-sub-nav-items > li > a").each(function(){
     var attr = $(this).attr("href");
       if (attr === thispageurl) {
         $(this).parentsUntil(".ey-sub-menu").parent().addClass("ey-active-menu");
+        return false;
       }
 });
 
@@ -847,17 +848,6 @@ $(document).on("click", ".giveFeedback", function(e){
     $(".feedback-main").load("/site/send-feedback");
 });
 ');
-$this->registerJsFile('https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => View::POS_HEAD]);
-$this->registerJs('
-            WebFont.load({
-                    google: {
-                            "families": ["Lobster", "Open+Sans", "Roboto"]
-                    },
-                    active: function() {
-                            sessionStorage.fonts = true;
-                    }
-            });
-       ', View::POS_HEAD);
 ?>
 <?php $this->endBody(); ?>
 </body>
