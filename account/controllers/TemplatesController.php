@@ -9,6 +9,13 @@ use yii\web\HttpException;
 
 class TemplatesController extends Controller
 {
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         if (!empty(Yii::$app->user->identity->organization)) {
