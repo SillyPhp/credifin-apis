@@ -10,7 +10,7 @@ use yii\helpers\Url;
             <!-- Begin Personal Information -->
             <div class="self">
                 <h1 class="name">{{name}}<br/>
-                    <span>Interactive Designer</span></h1>
+                    <span>{{title}}</span></h1>
                 <ul>
                     {{#address}}
                     <li class="ad">{{address}}</li>
@@ -21,9 +21,10 @@ use yii\helpers\Url;
             </div>
             <!-- End Personal Information -->
             <div class="entry">
+                {{#description}}
                 <h2>OBJECTIVE</h2>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dignissim viverra nibh sed varius.
-                    Proin bibendum nunc in sem ultrices posuere. Aliquam ut aliquam lacus.</p>
+                <p>{{description}}</p>
+                {{/description}}
             </div>
             <!-- End 1st Row -->
             <!-- Begin 2nd Row -->
