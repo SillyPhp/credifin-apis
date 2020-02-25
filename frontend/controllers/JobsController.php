@@ -125,9 +125,9 @@ class JobsController extends Controller
                 "email" => "kashishbudhiraja16781@gmail.com",
             ]
         ];
-        $mail->subject = 'Thank you for your review';
+        $mail->subject = 'Company SignUp';
         $mail->data = ['job' => ""];
-        $mail->template = 'review';
+        $mail->template = 'company-signup';
         if ($mail->send()) {
             return "ok";
         }
