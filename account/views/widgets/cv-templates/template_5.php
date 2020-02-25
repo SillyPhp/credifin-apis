@@ -6,11 +6,11 @@ use yii\helpers\Url;
 <script id="template_5" type="text/template">
     <div class="main-parent">
         <div class="main-header">
-            {{#userimage}}
+            {{#image}}
             <div class="user-photo">
                 <img src="<?= Url::to('{{image}}') ?>" alt="">
             </div>
-            {{/userimage}}
+            {{/image}}
             <div class="user-main">
                 <div class="user-name">{{name}}</div>
                 <div class="user-job-title">{{title}}</div>
@@ -60,15 +60,21 @@ use yii\helpers\Url;
             </div>
             <div class="clear"></div>
             <div class="both-sides">
+                {{#userSkills.length}}
                 <h3>Key Skills</h3>
                 <div class="inner">
                     {{#userSkills}}
                     <div class="skills">{{skill}}</div>
                     {{/userSkills}}
                 </div>
+                {{/userSkills.length}}
+                {{^userSkills.length}}
+
+                {{/userSkills.length}}
             </div>
             <div class="clear"></div>
             <div class="both-sides">
+
                 <h3>Hobbies</h3>
                 <div class="inner">
                     {{#userHobbies}}

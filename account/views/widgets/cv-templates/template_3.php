@@ -15,7 +15,7 @@ use yii\helpers\Url;
             <div class="r-left">
                 {{#image}}
                 <div class="user-photo">
-                    <img src="<?= Url::to('{{image}}') ?>">
+                    <img src="<?= Url::to('{{image}}') ?>" alt="">
                 </div>
                 {{/image}}
                 {{#description}}
@@ -74,12 +74,16 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="user-languages right-head">
+                    {{#userAchievements.length}}
                     <span>archievements</span>
                     <div class="user-inner-d">
                         {{#userAchievements}}
                         <div class="langs">{{achievement}}</div>
                         {{/userAchievements}}
                     </div>
+                    {{/userAchievements.length}}
+                    {{^userAchievements.length}}
+                    {{/userAchievements.length}}
                 </div>
                 <div class="user-languages right-head">
                     <span>languages</span>

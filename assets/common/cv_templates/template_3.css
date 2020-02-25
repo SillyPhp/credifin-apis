@@ -17,6 +17,7 @@
 .user-work {
     font-size: 20px;
     font-family: roboto;
+    text-transform: capitalize;
 }
 .r-left {
     float: left;

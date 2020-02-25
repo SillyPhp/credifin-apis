@@ -58,7 +58,6 @@ use yii\helpers\Url;
             <!-- End 3rd Row -->
             <!-- Begin 4th Row -->
             <div class="entry">
-                <h2>SKILLS</h2>
                 <div class="content">
                     <h3>Skill set</h3>
                     <ul class="skills">
@@ -83,6 +82,18 @@ use yii\helpers\Url;
                         {{/userInterests}}
                     </ul>
                 </div>
+                {{#userAchievements.length}}
+                <div class="content">
+                    <h3>Achievements</h3>
+                    <ul class="skills">
+                        {{#userAchievements}}
+                        <li>{{achievement}}</li>
+                        {{/userAchievements}}
+                    </ul>
+                </div>
+                {{/userAchievements.length}}
+                {{^userAchievements.length}}
+                {{/userAchievements.length}}
             </div>
             <!-- End 4th Row -->
         </div>

@@ -2,6 +2,7 @@
     <div class="r-main">
         <div class="r-head">
             <div class="r-name">{{name}}</div>
+            <div class="r-work">{{title}}</div>
             <div class="r-work">{{phone}}</div>
             <div class="r-work">{{email}}</div>
             {{#address}}
