@@ -53,46 +53,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="row" id="quiz-list-main">
-                <!--                --><?php //foreach ($data as $d) { ?>
-                <!--                    <div class="col-md-3 col-sm-6">-->
-                <!--                        <div class="quiz-box">-->
-                <!--                            <div class="quiz-icon">-->
-                <!--                                <img src="-->
-                <? //= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?><!--">-->
-                <!--                            </div>-->
-                <!--                            <div class="quiz-title">-->
-                <!--                                --><? //= $d['name']; ?>
-                <!--                            </div>-->
-                <!--                            <div class="quiz-ques">-->
-                <!--                                Total Questions : --><? //= $d['cnt']; ?>
-                <!--                            </div>-->
-                <!---->
-                <!--                            <div class="take-quiz">-->
-                <!--                                <a href="--><? //= $d['slug']; ?><!--">Take Quiz</a>-->
-                <!--                            </div>-->
-                <!--                            <div class="quiz-social-links">-->
-                <!--                                <ul class="menu-sl bottomRight">-->
-                <!--                                    <li class="share-sl top">-->
-                <!--                                        <i class="fa fa-share-alt"></i>-->
-                <!--                                        <ul class="submenu">-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('http://www.facebook.com/sharer.php?u=' . $d['slug']);?><!--" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('https://twitter.com/intent/tweet?text=' . $d['slug']);?><!--" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('mailto:?&body=' . $d['slug']);?><!--" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>-->
-                <!--                                            <li id="elem-button-share-quiz-wa"><a href="-->
-                <? //= Url::to('https://wa.me/?text=' . $d['slug']);?><!--" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
-                <!--                                            <li id="elem-button-share-quiz-wa-mob"><a href="-->
-                <? //= Url::to('whatsapp://send?text=' . $d['slug']);?><!--" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
-                <!--                                        </ul>-->
-                <!--                                    </li>-->
-                <!--                                </ul>-->
-                <!---->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                --><?php //} ?>
+
             </div>
             <a href="#" id="loadMore"
                class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
@@ -106,7 +67,7 @@ $this->params['seo_tags'] = [
                                          calcMode="linear" repeatCount="indefinite"></animate>
                                 <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
                                          calcMode="linear" repeatCount="indefinite"></animate>
-                            </circle>
+                            </circle>a
                             <circle cx="25.0466" cy="8.99563" r="5">
                                 <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
                                          values="5;50;50;5" calcMode="linear"
