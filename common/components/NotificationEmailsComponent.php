@@ -7,6 +7,10 @@ use common\models\OrganizationEmployees;
 use common\models\OrganizationImages;
 use common\models\OrganizationProducts;
 use common\models\Organizations;
+use common\models\UserEducation;
+use common\models\UserSkills;
+use common\models\UserSpokenLanguages;
+use common\models\UserTypes;
 use Yii;
 use yii\db\Query;
 use yii\base\Component;
@@ -19,36 +23,89 @@ class NotificationEmailsComponent extends Component
 
     public function getData()
     {
-        $user_email = Users::find()
-            ->select(['user_enc_id', 'email'])
-            ->where(['not', ['user_of' => 'MIS']])
+        $data = (new Query())
+            ->from(['a' => Users::tableName()])
+            ->select(['a.user_enc_id', 'a.email', 'CONCAT(a.first_name, " ", a.last_name) name', 'a.username', 'a.gender', 'a.description', 'a.image','a.city_enc_id', 'a.dob', 'a.experience', 'a.job_function','e.user_language_enc_id', 'd.user_skill_enc_id', 'c.education_enc_id'])
+            ->leftJoin(UserTypes::tableName() . 'as b', 'b.user_type_enc_id = a.user_type_enc_id')
+            ->leftJoin(UserEducation::tableName() . 'as c', 'c.user_enc_id = a.user_enc_id')
+            ->leftJoin(UserSkills::tableName() . 'as d', 'd.created_by = a.user_enc_id')
+            ->leftJoin(UserSpokenLanguages::tableName() . 'as e', 'e.created_by = a.user_enc_id')
+            ->where(['not', ['a.user_of' => 'MIS']])
+            ->andWhere(['a.organization_enc_id' => null, 'b.user_type' => 'Individual'])
             ->andWhere([
                 'or',
-                ['gender' => null],
-                ['description' => null],
-                ['image' => null],
-                ['city_enc_id' => null],
-                ['dob' => null],
-                ['experience' => null],
+                ['a.gender' => null],
+                ['a.description' => null],
+                ['a.image' => null],
+                ['a.city_enc_id' => null],
+                ['a.dob' => null],
+                ['a.experience' => null],
+                ['a.job_function' => null],
+                ['c.education_enc_id' => null],
+                ['d.user_skill_enc_id' => null],
+                ['e.user_language_enc_id' => null],
             ])
-            ->asArray()
-            ->all();
-
-//        foreach ($user_email as $email) {
-//            $email_logs = new EmailLogs();
-//            $utilitesModel = new Utilities();
-//            $utilitesModel->variables['string'] = time() . rand(100, 100000);
-//            $email_logs->email_log_enc_id = $utilitesModel->encrypt();
-//            $email_logs->email_type = 4;
-//            $email_logs->user_enc_id = $email['user_enc_id'];
-//            $email_logs->subject = 'Empower Youth Updates User Profile';
-//            $email_logs->template = 'applications-list';
-//            $email_logs->is_sent = 0;
-//            $email_logs->created_on = date('Y-m-d H:i:s');
-//            if (!$email_logs->save()) {
-//                echo 'failed';
-//            }
-//        }
+            ->groupBy('a.user_enc_id');
+        $userData = [];
+        foreach ($data->batch(100) as $rows) {
+            foreach ($rows as $d) {
+                $per = 0;
+                $total = 10;
+                $t = 100 / $total;
+                if ($d['user_language_enc_id']) {
+                    $per += $t;
+                }
+                if ($d['user_skill_enc_id']) {
+                    $per += $t;
+                }
+                if ($d['education_enc_id']) {
+                    $per += $t;
+                }
+                if ($d['experience']) {
+                    $per += $t;
+                }
+                if ($d['image']) {
+                    $per += $t;
+                }
+                if ($d['job_function']) {
+                    $per += $t;
+                }
+                if ($d['description']) {
+                    $per += $t;
+                }
+                if ($d['gender']) {
+                    $per += $t;
+                }
+                if ($d['city_enc_id']) {
+                    $per += $t;
+                }
+                if ($d['dob']) {
+                    $per += $t;
+                }
+                $u = ['user' => ["id" => $d['user_enc_id'], 'name'=> $d['name'], 'email' => $d['email'], 'username' => $d['username'], 'profileCompleted' => $per]];
+                array_push($userData,$u);
+            }
+        }
+        foreach ($userData as $email) {
+            if($email['profile'] < 80) {
+                $email_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $email_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $email_logs->email_type = 4;
+                $email_logs->user_enc_id = $email['user']['id'];
+                $email_logs->receiver_email = $email['user']['email'];
+                $email_logs->subject = 'Empower Youth Updates User Profile';
+                $email_logs->template = 'complete-profile';
+                $email_logs->data = json_encode($email);
+                $email_logs->is_sent = 0;
+                $email_logs->created_on = date('Y-m-d H:i:s');
+                if (!$email_logs->save()) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public function SendMail()
@@ -214,11 +271,10 @@ class NotificationEmailsComponent extends Component
                 if ($d['website']) {
                     $per += $t;
                 }
-                $org = ["user_enc_id" => $d['user_enc_id'], "organization_enc_id" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
+                $org = ['organization' => ["id" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], 'username' => $d['slug'],'profileCompleted' => $per], 'user' => ["id" => $d['user_enc_id']]];
                 array_push($orgData,$org);
             }
         }
-        $z = 0;
         foreach ($orgData as $email) {
             if($email['profile'] < 80) {
                 $email_logs = new EmailLogs();
@@ -226,9 +282,9 @@ class NotificationEmailsComponent extends Component
                 $utilitesModel->variables['string'] = time() . rand(100, 100000);
                 $email_logs->email_log_enc_id = $utilitesModel->encrypt();
                 $email_logs->email_type = 4;
-                $email_logs->user_enc_id = $email['user_enc_id'];
-                $email_logs->organization_enc_id = $email['organization_enc_id'];
-                $email_logs->receiver_email = $email['email'];
+                $email_logs->user_enc_id = $email['user']['id'];
+                $email_logs->organization_enc_id = $email['organization']['id'];
+                $email_logs->receiver_email = $email['organization']['email'];
                 $email_logs->subject = 'Empower Youth Updates User Profile';
                 $email_logs->template = 'complete-profile';
                 $email_logs->data = json_encode($email);
@@ -236,23 +292,10 @@ class NotificationEmailsComponent extends Component
                 $email_logs->created_on = date('Y-m-d H:i:s');
                 if (!$email_logs->save()) {
                     return false;
-                } else{
-                    echo $z . ",";
-                    $z++;
-                }
+               }
             }
         }
         return true;
-    }
-
-    public function testMail(){
-        $email = EmailLogs::find()
-            ->where(['receiver_email' => 'asjdlasjdlk@gmail.com', 'email_type' => 4])
-            ->asArray()
-            ->one();
-
-        print_r(json_decode($email['data']));
-        exit();
     }
 
 }

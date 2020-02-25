@@ -133,14 +133,6 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTest2(){
-       $per = Yii::$app->notification->orgProfileMail();
-//       $per = Yii::$app->notification->testMail();
-        return $this->render('test', [
-                'data' => $per
-            ]);
-//       print_r($per);
-    }
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
