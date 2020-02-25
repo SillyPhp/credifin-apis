@@ -156,21 +156,15 @@ class NotificationEmailsComponent extends Component
         return $per;
     }
 
-    public function orgProfileMail( ){
+    public function orgProfileMail(){
         $data = (new Query())
             ->from(['a' => Users::tableName()])
-            ->select(['a.user_enc_id', 'a.organization_enc_id', 'a.email', 'b.logo', 'b.tag_line', 'b.mission', 'b.vision', 'b.website' , 'b.description', 'b.email as organization_email', 'b.name as organization_name', 'CASE WHEN c.benefit_enc_id IS NOT NULL THEN COUNT(distinct c.benefit_enc_id) ELSE 0 END benefit', 'CASE WHEN d.employee_enc_id IS NOT NULL THEN COUNT(distinct d.employee_enc_id) ELSE 0 END team' ,'CASE WHEN e.image_enc_id IS NOT NULL THEN COUNT(distinct e.image_enc_id) ELSE 0 END gallery', 'CASE WHEN f.product_enc_id IS NOT NULL THEN COUNT(distinct f.product_enc_id) ELSE 0 END product'])
+            ->select(['a.user_enc_id', 'a.organization_enc_id', 'a.email', 'b.logo', 'b.slug', 'b.tag_line', 'b.mission', 'b.vision', 'b.website' , 'b.description', 'b.email as organization_email', 'b.name as organization_name', 'CASE WHEN c.benefit_enc_id IS NOT NULL THEN COUNT(distinct c.benefit_enc_id) ELSE 0 END benefit', 'CASE WHEN d.employee_enc_id IS NOT NULL THEN COUNT(distinct d.employee_enc_id) ELSE 0 END team' ,'CASE WHEN e.image_enc_id IS NOT NULL THEN COUNT(distinct e.image_enc_id) ELSE 0 END gallery', 'CASE WHEN f.product_enc_id IS NOT NULL THEN COUNT(distinct f.product_enc_id) ELSE 0 END product'])
             ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
             ->leftJoin(EmployeeBenefits::tableName() . 'as c', 'c.organization_enc_id = b.organization_enc_id')
             ->leftJoin(OrganizationEmployees::tableName() . 'as d', 'd.organization_enc_id = b.organization_enc_id')
             ->leftJoin(OrganizationImages::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
             ->leftJoin(OrganizationProducts::tableName() . 'as f', 'f.organization_enc_id = b.organization_enc_id')
-//            ->innerJoinWith(['organizationEnc b' => function($b){
-//                $b->joinWith(['employeeBenefits c'], false);
-//                $b->joinWith(['organizationEmployees d'], false);
-//                $b->joinWith(['organizationImages e'], false);
-//                $b->joinWith(['organizationProducts f'], false);
-//            }])
             ->where(['not', ['a.user_of' => 'MIS']])
             ->andWhere([
                 'or',
@@ -184,9 +178,6 @@ class NotificationEmailsComponent extends Component
                 ['b.phone' => null],
             ])
             ->groupBy('a.user_enc_id');
-//            ->limit(10)
-//            ->asArray()
-//            ->all();
         $orgData = [];
         foreach ($data->batch(50) as $rows) {
             foreach ($rows as $d) {
@@ -223,55 +214,44 @@ class NotificationEmailsComponent extends Component
                 if ($d['website']) {
                     $per += $t;
                 }
-                $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
+                $org = ["user_enc_id" => $d['user_enc_id'], "organization_enc_id" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
                 array_push($orgData,$org);
             }
         }
-//        exit();
-//        foreach ($data->each(50) as $user) {
-//            print_r($user);
-//        }
-//        exit();
+        $z = 0;
+        foreach ($orgData as $email) {
+            if($email['profile'] < 80) {
+                $email_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $email_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $email_logs->email_type = 4;
+                $email_logs->user_enc_id = $email['user_enc_id'];
+                $email_logs->organization_enc_id = $email['organization_enc_id'];
+                $email_logs->receiver_email = $email['email'];
+                $email_logs->subject = 'Empower Youth Updates User Profile';
+                $email_logs->template = 'complete-profile';
+                $email_logs->data = json_encode($email);
+                $email_logs->is_sent = 0;
+                $email_logs->created_on = date('Y-m-d H:i:s');
+                if (!$email_logs->save()) {
+                    return false;
+                } else{
+                    echo $z . ",";
+                    $z++;
+                }
+            }
+        }
+        return true;
+    }
 
-//        $orgData = [];
-//        foreach ($data as $d) {
-//            $per = 0;
-//            $total = 10;
-//            $t = 100 / $total;
-//            if ($d['benefit'] != 0) {
-//                $per += $t;
-//            }
-//            if ($d['team'] != 0) {
-//                $per += $t;
-//            }
-//            if ($d['gallery'] != 0) {
-//                $per += $t;
-//            }
-//            if ($d['product'] != 0) {
-//                $per += $t;
-//            }
-//            if ($d['logo']) {
-//                $per += $t;
-//            }
-//            if ($d['tag_line']) {
-//                $per += $t;
-//            }
-//            if ($d['description']) {
-//                $per += $t;
-//            }
-//            if ($d['mission']) {
-//                $per += $t;
-//            }
-//            if ($d['vision']) {
-//                $per += $t;
-//            }
-//            if ($d['website']) {
-//                $per += $t;
-//            }
-//            $org = ["org" => $d['organization_enc_id'], "name" => $d['organization_name'], "email" => $d['organization_email'], "profile" => $per];
-//            array_push($orgData,$org);
-//        }
-        print_r($orgData);
+    public function testMail(){
+        $email = EmailLogs::find()
+            ->where(['receiver_email' => 'asjdlasjdlk@gmail.com', 'email_type' => 4])
+            ->asArray()
+            ->one();
+
+        print_r(json_decode($email['data']));
         exit();
     }
 

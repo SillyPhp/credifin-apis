@@ -15,6 +15,7 @@ namespace common\models;
  * @property string $receiver_phone Receiver Phone
  * @property string $subject Subject of email
  * @property string $template Template of Email
+ * @property string $data Email data
  * @property int $is_sent  0 yes, 1 no
  * @property string $created_on
  * @property string $last_updated_on
@@ -40,6 +41,7 @@ class EmailLogs extends \yii\db\ActiveRecord
         return [
             [['email_log_enc_id', 'email_type', 'user_enc_id', 'receiver_email', 'subject', 'template'], 'required'],
             [['email_type', 'is_sent'], 'integer'],
+            [['data'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['email_log_enc_id', 'user_enc_id', 'organization_enc_id', 'receiver_name', 'template'], 'string', 'max' => 100],
             [['receiver_email'], 'string', 'max' => 50],
@@ -50,7 +52,6 @@ class EmailLogs extends \yii\db\ActiveRecord
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
         ];
     }
-
 
     /**
      * @return \yii\db\ActiveQuery

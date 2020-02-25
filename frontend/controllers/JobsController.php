@@ -135,8 +135,11 @@ class JobsController extends Controller
 
     public function actionTest2(){
        $per = Yii::$app->notification->orgProfileMail();
-       print_r($per);
-       exit();
+//       $per = Yii::$app->notification->testMail();
+        return $this->render('test', [
+                'data' => $per
+            ]);
+//       print_r($per);
     }
     public function actionJobsApply()
     {
