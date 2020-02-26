@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-
 /**
  * This is the model class for table "{{%indian_govt_jobs}}".
  *
@@ -19,6 +18,7 @@ namespace common\models;
  * @property string $Data content
  * @property string $created_by user who posted
  * @property string $created_on Time date
+ * @property int $is_deleted
  *
  * @property AssignedIndianJobs[] $assignedIndianJobs
  * @property IndianGovtDepartments[] $deptEncs
@@ -43,6 +43,7 @@ class IndianGovtJobs extends \yii\db\ActiveRecord
             [['job_enc_id', 'Organizations', 'Location', 'Position', 'Pdf_link', 'job_id', 'Data', 'created_by'], 'required'],
             [['Position', 'Eligibility', 'Data'], 'string'],
             [['created_on'], 'safe'],
+            [['is_deleted'], 'integer'],
             [['job_enc_id', 'created_by'], 'string', 'max' => 100],
             [['Organizations', 'Location', 'Pdf_link', 'slug', 'Last_date', 'job_id'], 'string', 'max' => 200],
             [['job_enc_id'], 'unique'],
