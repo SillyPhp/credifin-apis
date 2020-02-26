@@ -127,21 +127,28 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
 }
 JS;
 $this->registerCss("
-.align_btn
-{
-text-align:center;
-clear:both;
+.align_btn{
+    text-align:center;
+    clear:both;
 }
-.application-card-type
-{
+.application-card-type{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 250px;
 }
-#no_job
-{
+#no_job{
     font-size: 16px;
+}
+.application-card-main{
+    min-height:205px;
+}
+.application-card-img{
+    margin-left:0px;
+    margin-top:25px;
+}
+.application-card-description {
+    margin: 20px 0px 0px 20px;
 }
 ");
 $this->registerJs($script);

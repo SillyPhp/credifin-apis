@@ -548,9 +548,10 @@ float:right;
     bottom: 0px;
     left: 20%;
 }
-#loadMore
-{
-display:none;
+#loadMore{
+    display:none;
+    margin-left: auto;
+    margin-right: auto;
 }
 @media only screen and (max-width: 550px){
     .overlay-image {
