@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\Cities;
 use common\models\DropResumeApplications;
+use common\models\EmailLogs;
 use common\models\EmployerApplications;
 use common\models\Skills;
 use common\models\Users;
@@ -370,6 +371,7 @@ class CandidatesController extends Controller
         $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
         $shortlist->status = 1;
         if ($shortlist->save()) {
+            $this->sendMail($app_id,'zroPWqDpjZxLp0KL0EvqZJnYE3wX6x');
             return true;
         }
     }
@@ -389,6 +391,131 @@ class CandidatesController extends Controller
             ->all();
 
         return $employer_applications;
+    }
+
+    private function sendMail($app_id, $user_id)
+    {
+        $user = Users::find()
+            ->select(['CONCAT(first_name," ",last_name) full_name','email'])
+            ->where(['user_enc_id'=>$user_id])
+            ->asArray()
+            ->one();
+
+        $data = $this->getApplicationData($app_id);
+        $data['user_name'] = ucfirst($user['full_name']);
+
+        if($data && $user) {
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                "name" => $user['full_name'],
+                "email" => $user['email'],
+            ];
+            $mail->subject = $data['org_name'] . " has shortlisted you for " . $data['title'];
+            $mail->data = $data;
+            $mail->template = 'shortlist-mail';
+            if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitiesModel->encrypt();
+                $mail_logs->receiver_email = $user['email'];
+                $mail_logs->email_type = 3;
+                $mail_logs->user_enc_id = $user_id;
+                $mail_logs->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $mail_logs->subject = $mail->subject;
+                $mail_logs->template = $mail->template;
+                $mail_logs->save();
+
+            }
+        }
+    }
+
+    private function getApplicationData($app_id)
+    {
+        $data = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'b.logo',
+                'b.logo_location', 'GROUP_CONCAT(DISTINCT(e.name) SEPARATOR ",") city',
+                'GROUP_CONCAT(DISTINCT(ff.skill) SEPARATOR ",") skills',
+                'a.slug',
+                'gg.name title',
+                'b.name org_name',
+                'm.fixed_wage as fixed_salary',
+                'm.wage_type salary_type',
+                'm.max_wage as max_salary',
+                'm.min_wage as min_salary',
+                'm.wage_duration as salary_duration',
+                'n.name type',
+                ])
+            ->joinWith(['organizationEnc b'], false)
+            ->joinWith(['applicationPlacementLocations c' => function ($c) {
+                $c->joinWith(['locationEnc d' => function ($d) {
+                    $d->joinWith(['cityEnc e']);
+                }]);
+            }], false)
+            ->joinWith(['applicationSkills f' => function ($f) {
+                $f->andWhere(['f.is_deleted' => 0]);
+                $f->joinWith(['skillEnc ff']);
+            }], false)
+            ->joinWith(['title g' => function ($g) {
+                $g->joinWith(['categoryEnc gg']);
+            }], false)
+            ->joinWith(['applicationOptions m'], false)
+            ->joinWith(['applicationTypeEnc n'],false)
+            ->where(['a.application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+            ->asArray()
+            ->one();
+
+        if ($data['salary_type'] == "Fixed") {
+            if ($data['salary_duration'] == "Monthly") {
+                $data['salary'] = '₹ ' . round($data['fixed_salary']) . ' p.m.';
+            } elseif ($data['salary_duration'] == "Hourly") {
+                $data['salary'] = '₹ ' . round($data['fixed_salary']) . ' Per Hour';
+            } elseif ($data['salary_duration'] == "Weekly") {
+                $data['salary'] = '₹ ' . round((int)$data['fixed_salary'] / 7 * 30) . ' p.m.';
+            } else {
+                $data['salary'] = '₹ ' . round((int)$data['fixed_salary'] / 12) . ' p.m.';
+            }
+        } elseif ($data['salary_type'] == "Negotiable" || $data['salary_type'] == "Performance Based") {
+            if (!empty($data['min_salary']) && !empty($data['max_salary'])) {
+                if ($data['salary_duration'] == "Monthly") {
+                    $data['salary'] = '₹ ' . round((string)$data['min_salary']) . " - " . '₹ ' . round((string)$data['max_salary']) . ' p.m.';
+                } elseif ($data['salary_duration'] == "Hourly") {
+                    $data['salary'] = '₹ ' . round((string)($data['min_salary'])) . " - " . '₹ ' . round((string)($data['max_salary'])) . ' Per Hour';
+                } elseif ($data['salary_duration'] == "Weekly") {
+                    $data['salary'] = '₹ ' . round((int)($data['min_salary'] / 7 * 30)) . " - " . '₹ ' . round((int)($data['max_salary'] / 7 * 30)) . ' p.m.';
+                } else {
+                    $data['salary'] = '₹ ' . round((int)($data['min_salary']) / 12) . " - " . '₹ ' . round((int)($data['max_salary']) / 12) . ' p.m.';
+                }
+            } elseif (!empty($data['min_salary']) && empty($data['max_salary'])) {
+                if ($data['salary_duration'] == "Monthly") {
+                    $data['salary'] = '₹ ' . round((string)$data['min_salary']) . ' p.m.';
+                } elseif ($data['salary_duration'] == "Hourly") {
+                    $data['salary'] = '₹ ' . round((string)($data['min_salary'])) . ' Per Hour';
+                } elseif ($data['salary_duration'] == "Weekly") {
+                    $data['salary'] = '₹ ' . round((int)($data['min_salary'] / 7 * 30)) . ' p.m.';
+                } else {
+                    $data['salary'] = '₹ ' . round((int)($data['min_salary']) / 12) . ' p.m.';
+                }
+            } elseif (empty($data['min_salary']) && !empty($data['max_salary'])) {
+                if ($data['salary_duration'] == "Monthly") {
+                    $data['salary'] = '₹ ' . round((string)$data['max_salary']) . ' p.m.';
+                } elseif ($data['salary_duration'] == "Hourly") {
+                    $data['salary'] = '₹ ' . round((string)($data['max_salary'])) . ' Per Hour';
+                } elseif ($data['salary_duration'] == "Weekly") {
+                    $data['salary'] = '₹ ' . round((int)($data['max_salary'] / 7 * 30)) . ' p.m.';
+                } else {
+                    $data['salary'] = '₹ ' . round((int)($data['max_salary']) / 12) . ' p.m.';
+                }
+            }
+        }
+
+        if (!empty($data)) {
+            return $data;
+        } else {
+            return false;
+        }
     }
 
 }
