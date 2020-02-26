@@ -62,4 +62,12 @@ class NotificationEmailsController extends Controller
         }
     }
 
+    public function actionSendOrganizationProfile(){
+        return Yii::$app->notification->orgProfileMail();
+    }
+
+    public function actionSendUserProfile(){
+        return Yii::$app->notification->getData();
+    }
+
 }
