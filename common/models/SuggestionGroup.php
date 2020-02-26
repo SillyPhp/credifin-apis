@@ -39,6 +39,7 @@ class SuggestionGroup extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['group_enc_id', 'group_name', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['group_enc_id'], 'unique'],
+            [['group_name'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];

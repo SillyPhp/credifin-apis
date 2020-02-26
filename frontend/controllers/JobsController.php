@@ -66,7 +66,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -100,6 +100,38 @@ class JobsController extends Controller
         }
     }
 
+    public function actionTest(){
+        $mail = Yii::$app->mail;
+        $mail->receivers = [];
+        $mail->receivers = [
+            [
+                "name" => "Tarandeep Singh",
+                "email" => "vasishtshshank@yahoo.com",
+            ],
+            [
+                "name" => "Tarandeep Singh",
+                "email" => "vasishtshshank@outlook.com",
+            ],
+            [
+                "name" => "Tarandeep Singh",
+                "email" => "vasishtshshank@gmail.com",
+            ],
+            [
+                "name" => "Tarandeep Singh",
+                "email" => "shshank@dsbedutech.in",
+            ],
+            [
+                "name" => "Tarandeep Singh",
+                "email" => "kashishbudhiraja16781@gmail.com",
+            ]
+        ];
+        $mail->subject = 'Thank you for your review';
+        $mail->data = ['job' => ""];
+        $mail->template = 'review';
+        if ($mail->send()) {
+            return "ok";
+        }
+    }
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
@@ -145,10 +177,13 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $location = Yii::$app->request->post('location');
             $type = Yii::$app->request->post('type');
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
+            $options['type'] = $type;
+            $options['location'] = $location;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
                 $response = [
@@ -1065,6 +1100,12 @@ class JobsController extends Controller
             return $response;
         }
         return $this->render('working-profile');
+    }
+
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'jobs'
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)

@@ -1,6 +1,19 @@
+<?php
+$controller_id = Yii::$app->controller->id;
+$action_id = Yii::$app->controller->action->id;
+switch ([$controller_id, $action_id]){
+    case ['site', 'load-data'] :
+    case ['jobs', 'index'] :
+    case ['jobs', ''] :
+        $btn_id = 'featured-application-card-add';
+        break;
+    default :
+        $btn_id = 'application-card-add';
+}
+?>
 <script id="application-card" type="text/template">
     {{#.}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="col-md-4 col-sm-12 col-xs-12">
         <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
              class="application-card-main shadow">
             <div class="app-box">
@@ -74,8 +87,7 @@
                 </div>
                 <div class="application-card-wrapper">
                     <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
+                    <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                 </div>
             </div>
         </div>
@@ -112,7 +124,7 @@ function renderCards(cards, container){
     // showSkills();
 }
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -124,8 +136,8 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     for(var pair of searchParams.entries()) {
         data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
     }
-    
     data['type'] = type;
+    data['location'] = location;
     $.ajax({
         method: "POST",
         url : url,
@@ -174,6 +186,38 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         }
     });
 }
+
+$(document).on('click', '.featured-application-card-add', function(event) {
+    event.preventDefault();
+    var c_user = "$c_user";
+    if(c_user === ""){
+        $('#loginModal').modal('show');
+    } else{
+        var itemid = $(this).closest('.application-card-main').attr('data-id');
+        getFeaturedCard(itemid);
+    }
+});
+
+function getFeaturedCard(itemid) {
+    $.ajax({
+        method: "POST",
+        url: "/jobs/item-id",
+        data: {'itemid': itemid}
+    }).done(function(data) {
+        if(data.status === 200){
+            toastr.success(data.message, 'Success');
+        } else if(data.status === 201) {
+            toastr.error(data.message, 'Error');
+        } else if (data.status === 'short') {
+            toastr.success(data.message, 'Reviewed Success');
+        } else if (data.status === 'unshort') {
+            toastr.success(data.message, 'Unreviewd Success');
+        } else if (data === 'error') {
+            toastr.info('Please Login first..');
+        }
+    });
+}
+
 
 function addToReviewList(){
     if(loader === false){

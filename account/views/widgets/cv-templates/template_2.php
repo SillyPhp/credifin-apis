@@ -1,7 +1,10 @@
 <script id="template_2" type="text/template">
                     <div class="r-main">
+                        <div class="user-name">
+                            <div>{{name}}</div>
+                            <div class="title-set">{{title}}</div>
+                        </div>
                         <div class="r-left">
-                            <div class="user-name">{{name}}</div>
                             <div class="p-info-head">Personal Information</div>
                             <div class="p-info">
                                 <div class="r-phone-no">
@@ -25,6 +28,12 @@
                                 <div class="r-skill">{{skill}}</div>
                                 {{/userSkills}}
                             </div>
+                            <div class="p-info-head">Hobbies</div>
+                            <div class="r-skills">
+                                {{#userHobbies}}
+                                <div class="r-skill">{{hobby}}</div>
+                                {{/userHobbies}}
+                            </div>
 <!--                            <div class="p-info-head">Languages</div>-->
 <!--                            <div class="r-languages">-->
 <!--                                <div class="r-lang">hindi</div>-->
@@ -34,9 +43,7 @@
                         </div>
                         <div class="r-right">
                             <div class="r-info">
-                                <div class="r-head">
-                                    {{description}}
-                                </div>
+                                <div class="r-head">{{description}}</div>
                                 <div class="info-head">Experience</div>
                                 <div class="e-main">
                                     {{#userWorkExperiences}}
@@ -65,18 +72,22 @@
                                     </div>
                                     {{/userEducations}}
                                 </div>
-                                {{#hobbies}}
-                                <div class="info-head">Hobbies</div>
+                                {{#userAchievements.length}}
+                                <div class="info-head">Achievements</div>
                                 <div class="e-main">
-                                    <div class="hobbies">{{hobbies}}</div>
+                                    {{#userAchievements}}
+                                    <div class="hobbies">{{achievement}}</div>
+                                    {{/userAchievements}}
                                 </div>
-                                {{/hobbies}}
-                                {{#interests}}
+                                {{/userAchievements.length}}
+                                {{^userAchievements.length}}
+                                {{/userAchievements.length}}
                                 <div class="info-head">Interest</div>
                                 <div class="e-main">
-                                    <div class="hobbies">{{interests}}</div>
+                                {{#userInterests}}
+                                    <div class="hobbies">{{interest}}</div>
+                                {{/userInterests}}
                                 </div>
-                                {{/interests}}
                             </div>
                         </div>
                     </div>

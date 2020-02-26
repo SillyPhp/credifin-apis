@@ -1,8 +1,6 @@
 <?php
 
-namespace dsbedutech\models;
-
-use Yii;
+namespace common\models;
 
 /**
  * This is the model class for table "{{%suggestion_questionnaire_field_options}}".
@@ -48,20 +46,6 @@ class SuggestionQuestionnaireFieldOptions extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('dsbedutech', 'ID'),
-            'field_option_enc_id' => Yii::t('dsbedutech', 'Field Option Enc ID'),
-            'field_option' => Yii::t('dsbedutech', 'Field Option'),
-            'field_enc_id' => Yii::t('dsbedutech', 'Field Enc ID'),
-            'created_on' => Yii::t('dsbedutech', 'Created On'),
-            'created_by' => Yii::t('dsbedutech', 'Created By'),
-            'last_updated_on' => Yii::t('dsbedutech', 'Last Updated On'),
-            'last_updated_by' => Yii::t('dsbedutech', 'Last Updated By'),
-            'is_deleted' => Yii::t('dsbedutech', 'Is Deleted'),
-        ];
-    }
 
     /**
      * @return \yii\db\ActiveQuery

@@ -18,9 +18,11 @@ use common\models\UserPreferredIndustries;
 use common\models\UserPreferredJobProfile;
 use common\models\UserPreferredLocations;
 use common\models\UserPreferredSkills;
+use frontend\models\profiles\ResumeData;
 use Yii;
 use yii\helpers\Url;
 use yii\db\Expression;
+use yii\helpers\ArrayHelper;
 use common\models\Organizations;
 use common\models\OrganizationLocations;
 use common\models\Cities;
@@ -40,7 +42,7 @@ class ApplicationCards
         return self::_getCardsFromJobs($options);
     }
 
-    public function getPreference($type)
+    public static function getPreference($type)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
         if ($user_id) {
@@ -60,12 +62,12 @@ class ApplicationCards
                     'c1.slug industry_slug',
                 ])
                 ->innerJoinWith(['userPreferredJobProfiles b' => function ($b) {
-                    $b->select(['b.preference_enc_id', 'b.job_profile_enc_id', 'b1.category_enc_id', 'b1.slug']);
+                    $b->select(['b.preference_enc_id', 'b.job_profile_enc_id', 'b1.category_enc_id', 'b1.name']);
                     $b->joinWith(['jobProfileEnc b1'], false);
                     $b->andWhere(['b.is_deleted' => 0]);
                 }])
                 ->innerJoinWith(['userPreferredIndustries c' => function ($c) {
-                    $c->select(['c.preference_enc_id', 'c.industry_enc_id', 'c1.slug']);
+                    $c->select(['c.preference_enc_id', 'c.industry_enc_id', 'c1.industry']);
                     $c->joinWith(['industryEnc c1'], false);
                     $c->andWhere(['c.is_deleted' => 0]);
                 }])
@@ -86,67 +88,114 @@ class ApplicationCards
                 ->andWhere(['a.is_deleted' => 0, 'a.created_by' => $user_id, 'a.assigned_to' => $type])
                 ->asArray()
                 ->one();
-
             $skills = [];
-            $cities = [];
-            $states = [];
-            $countries = [];
-            $profiles_slug = [];
-            $industries_slug = [];
-            foreach ($p['userPreferredIndustries'] as $i_slug) {
-                array_push($industries_slug, $i_slug['slug']);
+            $locations = [];
+            $profiles = [];
+            $industries = [];
+            foreach ($p['userPreferredIndustries'] as $inds) {
+                array_push($industries, $inds['industry']);
             }
-            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
-                array_push($profiles_slug, $p_slug['slug']);
+            foreach ($p['userPreferredJobProfiles'] as $prof) {
+                array_push($profiles, $prof['name']);
             }
             foreach ($p['userPreferredSkills'] as $s) {
                 array_push($skills, $s['skill']);
             }
             foreach ($p['userPreferredLocations'] as $l) {
-                array_push($cities, $l['city_name']);
-                array_push($states, $l['state_name']);
-                array_push($countries, $l['country_name']);
+                $loc = $l['city_name'] . ", " . $l['state_name'] . ", " . $l['country_name'];
+                array_push($locations, $loc);
             }
             return [
-                'profile_slug' => implode(',', array_unique($profiles_slug)),
-                'inds_slug' => implode(',', array_unique($industries_slug)),
-                'skills' => implode(',', array_unique($skills)),
-                'cities' => implode(',', array_unique($cities)),
-                'states' => implode(',', array_unique($states)),
-                'countries' => implode(',', array_unique($countries)),
-                'days' => $p['working_days'],
-                'exp' => $p['experience'],
-                'min_salary' => $p['min_expected_salary'],
-                'max_salary' => $p['max_expected_salary'],
-                'from' => $p['timings_from'],
-                'to' => $p['timings_to'],
+                'profiles' => array_unique($profiles),
+                'industries' => array_unique($industries),
+                'skills' => array_unique($skills),
+                'locations' => array_unique($locations),
+                'working_days' => $p['working_days'],
+                'experience' => $p['experience'],
+                'min_expected_salary' => $p['min_expected_salary'],
+                'max_expected_salary' => $p['max_expected_salary'],
+                'timings_from' => $p['timings_from'],
+                'timings_to' => $p['timings_to'],
                 'salary' => $p['salary'],
-                'type' => $p['type'],
+                'work_type' => $p['type'],
             ];
         }
     }
 
     private static function _getCardsFromJobs($options)
     {
+        $locations = [];
+        $resumeSkills = [];
+        $jobTitles = [];
+
+        $userId = Yii::$app->user->identity->user_enc_id;
+        $controllerId = Yii::$app->controller->id;
+        $actionId = Yii::$app->controller->action->id;
+        switch ([$controllerId, $actionId]) {
+            case ['jobs', 'index'] :
+            case ['jobs', ''] :
+                if (!empty($options['location'])) {
+                    $optLocations = explode(", ", $options['location']);
+                    foreach ($optLocations as $loc) {
+                        array_push($locations, $loc);
+                    }
+                }
+                if ($userId) {
+                    $resumeModel = new ResumeData();
+                    $resumeData = $resumeModel->getResumeData($userId);
+                    $job_preference = self::getPreference('Jobs');
+
+                    if (!empty($job_preference) || !empty($resumeData)) {
+                        if (!empty($job_preference['locations'])) {
+                            foreach ($job_preference['locations'] as $loc) {
+                                $expLoc = explode(", ", $loc);
+                                foreach ($expLoc as $el) {
+                                    array_push($locations, $el);
+                                }
+                            }
+                        }
+                        if (!empty($resumeData['userSkills'])) {
+                            $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
+                        }
+                        if (!empty($resumeData['userWorkExperiences'])) {
+                            foreach ($resumeData['userWorkExperiences'] as $exp) {
+                                array_push($jobTitles, $exp['title']);
+                                array_push($locations, $exp['city'], $exp['state'], $exp['country']);
+                            }
+                        }
+
+                        $locations = array_unique($locations);
+                        $profiles = $job_preference['profiles'];
+                        $industries = $job_preference['industries'];
+                        $skills = array_unique(array_merge($job_preference['skills'], $resumeSkills));
+                        $working_days = $job_preference['working_days'];
+                        $experience = $job_preference['experience'];
+                        $min_expected_salary = $job_preference['min_expected_salary'];
+                        $max_expected_salary = $job_preference['max_expected_salary'];
+                        $timings_from = $job_preference['timings_from'];
+                        $timings_to = $job_preference['timings_to'];
+                        $salary = $job_preference['salary'];
+                        $work_type = $job_preference['work_type'];
+
+                    }
+                }
+                break;
+            default :
+                if (!empty($options['location'])) {
+                    $optLocation = $options['location'];
+                }
+        }
+
         if (isset($options['limit'])) {
             $limit = $options['limit'];
             $offset = ($options['page'] - 1) * $options['limit'];
         }
 
-        //$job_preference = self::getPreference('Jobs');
-       // $internship_preference = self::getPreference('Internships');
 
-//        $a = [
-//            'job' => $job_preference,
-//            'intern' => $internship_preference,
-//
-//        ];
-//        print_r($a);
-//        exit();
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -199,7 +248,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
@@ -242,62 +291,96 @@ class ApplicationCards
             ->groupBy(['g.city_enc_id', 'a.application_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
-        if (isset($options['company'])) {
+        if (!empty($profiles)) {
             $cards1->andWhere([
                 'or',
-                ['like', 'd.name', $options['company']]
+                ['in', 'c.name', $profiles],
+                ['in', 'i.name', $profiles],
             ]);
             $cards2->andWhere([
                 'or',
-                ['like', 'd.name', $options['company']]
+                ['in', 'c.name', $profiles],
+                ['in', 'i.name', $profiles],
             ]);
         }
 
-        if (isset($options['slug'])) {
-            $cards1->andWhere([
+
+        if (isset($industries) && !empty($industries)) {
+            $cards1->orWhere(['in', 'h.industry', $industries]);
+        }
+
+        if (isset($skills) && !empty($skills)) {
+            $cards1->orWhere(['in', 'y.skill', $skills]);
+            $cards2->orWhere(['in', 'y.skill', $skills]);
+        }
+
+        if (isset($jobTitles) && !empty($jobTitles)) {
+            $cards1->orWhere([
                 'or',
-                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
             ]);
-            $cards2->andWhere([
+            $cards2->orWhere([
                 'or',
-                ($options['slug']) ? ['like', 'd.slug', $options['slug']] : ''
+                ['in', 'c.name', $jobTitles],
+                ['in', 'i.name', $jobTitles],
             ]);
         }
-        if (isset($options['location'])) {
-            $search_location = trim($options['location'], " ");
-            $search_pattern_location = self::makeSQL_search_pattern($search_location);
-            $cards1->andFilterWhere([
-                'or',
-                ['REGEXP','g.name',$search_pattern_location ],
-                ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','v.name',$search_pattern_location],
-                ['REGEXP','x.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location],
-                ['REGEXP','cy.name',$search_pattern_location],
-                ['REGEXP','ct.abbreviation',$search_pattern_location],
-                ['REGEXP','cy.abbreviation',$search_pattern_location],
-            ]);
-            $cards2->andFilterWhere([
-                'or',
-                ['REGEXP','g.name',$search_pattern_location],
-                ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location],
-                ['REGEXP','ct.abbreviation',$search_pattern_location],
-            ]);
+
+        if (isset($working_days)) {
+            $cards1->orWhere(['m.working_days' => $working_days]);
+        }
+
+        if (isset($experience)) {
+            $cards1->orWhere(['a.experience' => $experience]);
+            $cards2->orWhere(['a.experience' => $experience]);
+        }
+
+        if (isset($min_expected_salary)) {
+            $cards1->orWhere(['m.min_wage' => $min_expected_salary]);
+            $cards2->orWhere(['v.min_wage' => $min_expected_salary]);
+        }
+
+        if (isset($max_expected_salary)) {
+            $cards1->orWhere(['m.max_wage' => $max_expected_salary]);
+            $cards2->orWhere(['v.max_wage' => $max_expected_salary]);
+        }
+
+        if (isset($timings_from)) {
+            $cards1->orWhere(['a.timings_from' => $timings_from]);
+            $cards2->orWhere(['a.timings_from' => $timings_from]);
+        }
+
+        if (isset($timings_to)) {
+            $cards1->orWhere(['a.timings_to' => $timings_to]);
+            $cards2->orWhere(['a.timings_to' => $timings_to]);
+        }
+
+        if (isset($salary)) {
+            $cards1->orWhere(['m.fixed_wage' => $salary]);
+            $cards2->orWhere(['v.fixed_wage' => $salary]);
+        }
+
+        if (isset($work_type)) {
+            $cards1->orWhere(['a.type' => $work_type]);
+            $cards2->orWhere(['a.type' => $work_type]);
+        }
+
+        if (isset($options['company'])) {
+            $cards1->andWhere(['like', 'd.name', $options['company']]);
+            $cards2->andWhere(['like', 'd.name', $options['company']]);
+        }
+
+        if (isset($options['slug']) && !empty($options['slug'])) {
+            $cards1->andWhere(['like', 'd.slug', $options['slug']]);
+            $cards2->andWhere(['like', 'd.slug', $options['slug']]);
         }
 
         if (!isset($options['for_careers']) || !(int)$options['for_careers'] || $options['for_careers'] !== 1) {
             $options['for_careers'] = 0;
         }
-
-        $cards1->andWhere([
-            'or',
-            ['a.for_careers' => $options['for_careers']]
-        ]);
-        $cards2->andWhere([
-            'or',
-            ['a.for_careers' => $options['for_careers']]
-        ]);
+        $cards1->andWhere(['a.for_careers' => $options['for_careers']]);
+        $cards2->andWhere(['a.for_careers' => $options['for_careers']]);
 
         if (isset($options['category'])) {
             $cards1->andWhere([
@@ -345,6 +428,70 @@ class ApplicationCards
                 ['REGEXP', 'a.slug', $search_pattern]
             ]);
         }
+        if (isset($optLocation)) {
+            $search_location = trim($optLocation, " ");
+            $search_pattern_location = self::makeSQL_search_pattern($search_location);
+            $cards1->andFilterWhere([
+                'or',
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'v.name', $search_pattern_location],
+                ['REGEXP', 'x.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'cy.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'cy.abbreviation', $search_pattern_location],
+            ]);
+            $cards2->andFilterWhere([
+                'or',
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+            ]);
+        }
+        if (!empty($locations)) {
+            $cityIds = [];
+            $stateIds = [];
+            $countryIds = [];
+            foreach ($locations as $loc) {
+                $chkCountries = Countries::findOne(['name' => $loc]);
+                if ($chkCountries) {
+                    array_push($countryIds, $chkCountries['country_enc_id']);
+                }
+                $chkStates = States::findOne(['name' => $loc]);
+                if ($chkStates) {
+                    array_push($stateIds, $chkStates['state_enc_id']);
+                }
+                $chkCities = Cities::findOne(['name' => $loc]);
+                if ($chkCities) {
+                    array_push($cityIds, $chkCities['city_enc_id']);
+                }
+            }
+            if (!empty($cityIds)) {
+                $cards1->andFilterWhere([
+                    'or',
+                    ['in', 'g.city_enc_id', $cityIds],
+                    ['in', 'x.city_enc_id', $cityIds],
+                ]);
+                $cards2->andFilterWhere(['in', 'g.city_enc_id', $cityIds]);
+            } elseif (!empty($stateIds)) {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 's.state_enc_id', $stateIds],
+                    ['in', 'v.state_enc_id', $stateIds],
+                ]);
+                $cards2->andWhere(['in', 's.state_enc_id', $stateIds]);
+            } else {
+                $cards1->andWhere([
+                    'or',
+                    ['in', 'ct.country_enc_id', $countryIds],
+                    ['in', 'cy.country_enc_id', $countryIds],
+                ]);
+                $cards2->andWhere(['in', 'ct.country_enc_id', $countryIds]);
+            }
+        }
+
         $result = null;
         if (isset($options['similar_jobs'])) {
             $cards1->andWhere(['in', 'c.name', $options['similar_jobs']]);
@@ -371,47 +518,47 @@ class ApplicationCards
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
-            $currency = (($val['html_code'])?$val['html_code']:'₹ ');
+            $currency = (($val['html_code']) ? $val['html_code'] : '₹ ');
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = $currency.$val['fixed_salary'] * 12 . ' p.a.';
+                    $result[$i]['salary'] = $currency . $val['fixed_salary'] * 12 . ' p.a.';
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = $currency.$val['fixed_salary'] . ' Per Hour';
+                    $result[$i]['salary'] = $currency . $val['fixed_salary'] . ' Per Hour';
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = $currency.$val['fixed_salary'].' Per Week';
+                    $result[$i]['salary'] = $currency . $val['fixed_salary'] . ' Per Week';
                 } else {
-                    $result[$i]['salary'] = $currency.$val['fixed_salary'] . ' p.a.';
+                    $result[$i]['salary'] = $currency . $val['fixed_salary'] . ' p.a.';
                 }
             } elseif ($val['salary_type'] == "Negotiable") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.(string)$val['min_salary'] * 12 . " - ".$currency. (string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)$val['min_salary'] * 12 . " - " . $currency . (string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . " - " . $currency . (string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' Per Week';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . " - " . $currency . (string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . " - ".$currency. (string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . " - " . $currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.(string)$val['min_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)$val['min_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' Per Week';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency.(string)($val['min_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)($val['min_salary']) . ' p.a.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.(string)$val['max_salary'] * 12 . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)$val['max_salary'] * 12 . ' p.a.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' Per Week';
+                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' Per Week';
                     } else {
-                        $result[$i]['salary'] = $currency.(string)($val['max_salary']) . ' p.a.';
+                        $result[$i]['salary'] = $currency . (string)($val['max_salary']) . ' p.a.';
                     }
                 }
             }
@@ -434,7 +581,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -477,7 +624,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on','xt.html_code','GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
@@ -567,21 +714,21 @@ class ApplicationCards
             $search_pattern_location = self::makeSQL_search_pattern($search_location);
             $cards1->andFilterWhere([
                 'or',
-                ['REGEXP','g.name',$search_pattern_location],
-                ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','v.name',$search_pattern_location],
-                ['REGEXP','x.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location],
-                ['REGEXP','cy.name',$search_pattern_location],
-                ['REGEXP','ct.abbreviation',$search_pattern_location],
-                ['REGEXP','cy.abbreviation',$search_pattern_location],
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'v.name', $search_pattern_location],
+                ['REGEXP', 'x.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'cy.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
+                ['REGEXP', 'cy.abbreviation', $search_pattern_location],
             ]);
             $cards2->andFilterWhere([
                 'or',
-                ['REGEXP','g.name',$search_pattern_location],
-                ['REGEXP','s.name',$search_pattern_location],
-                ['REGEXP','ct.name',$search_pattern_location],
-                ['REGEXP','ct.abbreviation',$search_pattern_location],
+                ['REGEXP', 'g.name', $search_pattern_location],
+                ['REGEXP', 's.name', $search_pattern_location],
+                ['REGEXP', 'ct.name', $search_pattern_location],
+                ['REGEXP', 'ct.abbreviation', $search_pattern_location],
             ]);
         }
         if (isset($options['keyword'])) {
@@ -637,47 +784,47 @@ class ApplicationCards
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
-            $currency = (($val['html_code'])?$val['html_code']:'₹ ');
+            $currency = (($val['html_code']) ? $val['html_code'] : '₹ ');
             if ($val['salary_type'] == "Fixed") {
                 if ($val['salary_duration'] == "Monthly") {
-                    $result[$i]['salary'] = $currency.round($val['fixed_salary']) . ' p.m.';
+                    $result[$i]['salary'] = $currency . round($val['fixed_salary']) . ' p.m.';
                 } elseif ($val['salary_duration'] == "Hourly") {
-                    $result[$i]['salary'] = $currency.round($val['fixed_salary']) . ' Per Hour';
+                    $result[$i]['salary'] = $currency . round($val['fixed_salary']) . ' Per Hour';
                 } elseif ($val['salary_duration'] == "Weekly") {
-                    $result[$i]['salary'] = $currency.round((int)$val['fixed_salary'] / 7 * 30) . ' p.m.';
+                    $result[$i]['salary'] = $currency . round((int)$val['fixed_salary'] / 7 * 30) . ' p.m.';
                 } else {
-                    $result[$i]['salary'] = $currency.round((int)$val['fixed_salary'] / 12) . ' p.m.';
+                    $result[$i]['salary'] = $currency . round((int)$val['fixed_salary'] / 12) . ' p.m.';
                 }
             } elseif ($val['salary_type'] == "Negotiable" || $val['salary_type'] == "Performance Based") {
                 if (!empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.round((string)$val['min_salary']) . " - ".$currency. round((string)$val['max_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((string)$val['min_salary']) . " - " . $currency . round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.round((string)($val['min_salary'])) . " - ".$currency. round((string)($val['max_salary'])) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . round((string)($val['min_salary'])) . " - " . $currency . round((string)($val['max_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.round((int)($val['min_salary'] / 7 * 30)) . " - " .$currency. round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['min_salary'] / 7 * 30)) . " - " . $currency . round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = $currency.round((int)($val['min_salary']) / 12) . " - ".$currency. round((int)($val['max_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['min_salary']) / 12) . " - " . $currency . round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 } elseif (!empty($val['min_salary']) && empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.round((string)$val['min_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((string)$val['min_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.round((string)($val['min_salary'])) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . round((string)($val['min_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.round((int)($val['min_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['min_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = $currency.round((int)($val['min_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['min_salary']) / 12) . ' p.m.';
                     }
                 } elseif (empty($val['min_salary']) && !empty($val['max_salary'])) {
                     if ($val['salary_duration'] == "Monthly") {
-                        $result[$i]['salary'] = $currency.round((string)$val['max_salary']) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((string)$val['max_salary']) . ' p.m.';
                     } elseif ($val['salary_duration'] == "Hourly") {
-                        $result[$i]['salary'] = $currency.round((string)($val['max_salary'])) . ' Per Hour';
+                        $result[$i]['salary'] = $currency . round((string)($val['max_salary'])) . ' Per Hour';
                     } elseif ($val['salary_duration'] == "Weekly") {
-                        $result[$i]['salary'] = $currency.round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['max_salary'] / 7 * 30)) . ' p.m.';
                     } else {
-                        $result[$i]['salary'] = $currency.round((int)($val['max_salary']) / 12) . ' p.m.';
+                        $result[$i]['salary'] = $currency . round((int)($val['max_salary']) / 12) . ' p.m.';
                     }
                 }
             }

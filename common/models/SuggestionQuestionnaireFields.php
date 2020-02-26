@@ -1,6 +1,7 @@
 <?php
 
 namespace common\models;
+
 /**
  * This is the model class for table "{{%suggestion_questionnaire_fields}}".
  *

@@ -202,8 +202,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1">
                         <?php
-                        if (!empty($education)) {
-                            foreach ($education as $e) { ?>
+                        if (!empty($resume_data['userEducations'])) {
+                            foreach ($resume_data['userEducations'] as $e) { ?>
                                 <div class="row" style="margin-top: 40px; margin-bottom: 40px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-3 col-xs-4">
@@ -508,8 +508,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1 col-sm-12">
                         <?php
-                        if (!empty($experience)) {
-                            foreach ((array)$experience as $ex) { ?>
+                        if (!empty($resume_data['userWorkExperiences'])) {
+                            foreach ($resume_data['userWorkExperiences'] as $ex) { ?>
                                 <div class="row" style="margin-top: 30px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
@@ -570,8 +570,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
 
                                         <?php
-                                        if (!empty($skills)) {
-                                            foreach ($skills as $skill) { ?>
+                                        if (!empty($resume_data['userSkills'])) {
+                                            foreach ($resume_data['userSkills'] as $skill) { ?>
                                                 <li class="addedTag"><?= $skill['skill'] ?>
                                                     <span id="<?= $skill['user_skill_enc_id'] ?>"
                                                           class="skill_remove">x</span>
@@ -616,8 +616,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($achievements)) {
-                                            foreach ($achievements as $achievement) { ?>
+                                        if (!empty($resume_data['userAchievements'])) {
+                                            foreach ($resume_data['userAchievements'] as $achievement) { ?>
                                                 <li class="addedTag"><?= $achievement['achievement'] ?>
                                                     <span id="<?= $achievement['user_achievement_enc_id'] ?>"
                                                           class="achievement_remove">x</span>
@@ -660,8 +660,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($hobbies)) {
-                                            foreach ($hobbies as $hobby) { ?>
+                                        if (!empty($resume_data['userHobbies'])) {
+                                            foreach ($resume_data['userHobbies'] as $hobby) { ?>
                                                 <li class="addedTag"><?= $hobby['hobby'] ?>
                                                     <span id="<?= $hobby['user_hobby_enc_id'] ?>"
                                                           class="hobby_remove">x</span>
@@ -703,8 +703,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($interests)) {
-                                            foreach ($interests as $interest) { ?>
+                                        if (!empty($resume_data['userInterests'])) {
+                                            foreach ($resume_data['userInterests'] as $interest) { ?>
                                                 <li class="addedTag"><?= $interest['interest'] ?>
                                                     <span id="<?= $interest['user_interest_enc_id'] ?>"
                                                           class="interest_remove">x</span>
