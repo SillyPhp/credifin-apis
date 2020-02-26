@@ -13,16 +13,15 @@ use yii\helpers\Url;
         </div>
         <div class="r-inner">
             <div class="r-left">
+                {{#image}}
                 <div class="user-photo">
-                    {{#image}}
-                    <img src="<?= Url::to('{{image}}') ?>">
-                    {{/image}}
+                    <img src="<?= Url::to('{{image}}') ?>" alt="">
                 </div>
+                {{/image}}
+                {{#description}}
                 <div class="user-profile hed">Profile</div>
-                <div class="user-detail u-txt">Lorem Ipsum is simply dummy text of the printing and
-                    typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since
-                    the 1500s
-                </div>
+                <div class="user-detail u-txt">{{description}}</div>
+                {{/description}}
                 <div class="user-contact hed">contact</div>
                 <div class="user-detail">
                     <div class="user-email u-txt">{{email}}</div>
@@ -75,12 +74,16 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="user-languages right-head">
+                    {{#userAchievements.length}}
                     <span>archievements</span>
                     <div class="user-inner-d">
                         {{#userAchievements}}
                         <div class="langs">{{achievement}}</div>
                         {{/userAchievements}}
                     </div>
+                    {{/userAchievements.length}}
+                    {{^userAchievements.length}}
+                    {{/userAchievements.length}}
                 </div>
                 <div class="user-languages right-head">
                     <span>languages</span>
