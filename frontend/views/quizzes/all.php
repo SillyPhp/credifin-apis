@@ -53,46 +53,7 @@ $this->params['seo_tags'] = [
                 </div>
             </div>
             <div class="row" id="quiz-list-main">
-                <!--                --><?php //foreach ($data as $d) { ?>
-                <!--                    <div class="col-md-3 col-sm-6">-->
-                <!--                        <div class="quiz-box">-->
-                <!--                            <div class="quiz-icon">-->
-                <!--                                <img src="-->
-                <? //= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $d['sharing_image_location'] . "/" . $d['sharing_image'] ?><!--">-->
-                <!--                            </div>-->
-                <!--                            <div class="quiz-title">-->
-                <!--                                --><? //= $d['name']; ?>
-                <!--                            </div>-->
-                <!--                            <div class="quiz-ques">-->
-                <!--                                Total Questions : --><? //= $d['cnt']; ?>
-                <!--                            </div>-->
-                <!---->
-                <!--                            <div class="take-quiz">-->
-                <!--                                <a href="--><? //= $d['slug']; ?><!--">Take Quiz</a>-->
-                <!--                            </div>-->
-                <!--                            <div class="quiz-social-links">-->
-                <!--                                <ul class="menu-sl bottomRight">-->
-                <!--                                    <li class="share-sl top">-->
-                <!--                                        <i class="fa fa-share-alt"></i>-->
-                <!--                                        <ul class="submenu">-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('http://www.facebook.com/sharer.php?u=' . $d['slug']);?><!--" target="_blank" class="facebook"><i class="fab fa-facebook-f"></i></a></li>-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('https://twitter.com/intent/tweet?text=' . $d['slug']);?><!--" target="_blank" class="twitter"><i class="fab fa-twitter"></i></a></li>-->
-                <!--                                            <li><a href="-->
-                <? //= Url::to('mailto:?&body=' . $d['slug']);?><!--" target="_blank" class="googlePlus"><i class="far fa-envelope"></i></a></li>-->
-                <!--                                            <li id="elem-button-share-quiz-wa"><a href="-->
-                <? //= Url::to('https://wa.me/?text=' . $d['slug']);?><!--" target="_blank" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
-                <!--                                            <li id="elem-button-share-quiz-wa-mob"><a href="-->
-                <? //= Url::to('whatsapp://send?text=' . $d['slug']);?><!--" target="_blank" data-action="share/whatsapp/share" class="whatsapp"><i class="fab fa-whatsapp"></i></a></li>-->
-                <!--                                        </ul>-->
-                <!--                                    </li>-->
-                <!--                                </ul>-->
-                <!---->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                --><?php //} ?>
+
             </div>
             <a href="#" id="loadMore"
                class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">

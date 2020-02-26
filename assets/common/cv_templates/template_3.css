@@ -17,6 +17,7 @@
 .user-work {
     font-size: 20px;
     font-family: roboto;
+    text-transform: capitalize;
 }
 .r-left {
     float: left;
@@ -41,13 +42,16 @@
     border-bottom: 1px solid #fff;
     text-transform: uppercase;
     color: cadetblue;
+    font-family: roboto;
+    font-weight: 500;
+    padding-top: 10px;
 }
 .u-txt, .user-detail{
     font-size:15px;
     font-family:roboto;
 }
 .user-detail {
-    padding:10px 20px 15px 20px;
+    padding:5px 20px 5px 20px;
     text-align: center;
 }
 .right-head {

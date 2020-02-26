@@ -1,6 +1,9 @@
 <script id="template_2" type="text/template">
                     <div class="r-main">
-                        <div class="user-name">{{name}}</div>
+                        <div class="user-name">
+                            <div>{{name}}</div>
+                            <div class="title-set">{{title}}</div>
+                        </div>
                         <div class="r-left">
                             <div class="p-info-head">Personal Information</div>
                             <div class="p-info">
@@ -24,6 +27,12 @@
                                 {{#userSkills}}
                                 <div class="r-skill">{{skill}}</div>
                                 {{/userSkills}}
+                            </div>
+                            <div class="p-info-head">Hobbies</div>
+                            <div class="r-skills">
+                                {{#userHobbies}}
+                                <div class="r-skill">{{hobby}}</div>
+                                {{/userHobbies}}
                             </div>
 <!--                            <div class="p-info-head">Languages</div>-->
 <!--                            <div class="r-languages">-->
@@ -63,12 +72,16 @@
                                     </div>
                                     {{/userEducations}}
                                 </div>
-                                <div class="info-head">Hobbies</div>
+                                {{#userAchievements.length}}
+                                <div class="info-head">Achievements</div>
                                 <div class="e-main">
-                                {{#userHobbies}}
-                                    <div class="hobbies">{{hobby}}</div>
-                                {{/userHobbies}}
+                                    {{#userAchievements}}
+                                    <div class="hobbies">{{achievement}}</div>
+                                    {{/userAchievements}}
                                 </div>
+                                {{/userAchievements.length}}
+                                {{^userAchievements.length}}
+                                {{/userAchievements.length}}
                                 <div class="info-head">Interest</div>
                                 <div class="e-main">
                                 {{#userInterests}}
