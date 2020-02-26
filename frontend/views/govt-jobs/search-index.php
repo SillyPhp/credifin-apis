@@ -1,6 +1,7 @@
 <?php
-$this->title = ucwords(str_replace("-"," ",$s)).' Jobs';
+$this->title = ucwords(str_replace("-"," ",$s)).' Govt Jobs';
 $this->params['header_dark'] = true;
+Yii::$app->view->registerJs('var keyword = "' . $s . '"', \yii\web\View::POS_HEAD);
 $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
@@ -42,7 +43,12 @@ $this->registerCss('
 .main-content{
     min-height:100vh !important;
 }
+#loadMore
+{
+display:none;
+}
 ');
+echo $this->render('/widgets/mustache/govt-jobs-card');
 ?>
 <section class="applications-cards-list">
     <div class="row m-0">
@@ -88,3 +94,14 @@ $this->registerCss('
         </div>
     </div>
 </section>
+<?php
+$script = <<< JS
+var offset = 0;
+$(document).on('click','#loadMore',function(e) {
+  e.preventDefault();
+  fetchLocalData(template=$('#cardBlock'),limit=12,offset=offset+12,loader=false,loader_btn=true);
+})
+fetchLocalData(template=$('#cardBlock'),limit=50,offset=0,loader=true,loader_btn=false,keyword=keyword,replace=true);
+JS;
+$this->registerJs($script);
+?>
