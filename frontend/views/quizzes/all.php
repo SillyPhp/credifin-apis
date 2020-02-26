@@ -67,7 +67,7 @@ $this->params['seo_tags'] = [
                                          calcMode="linear" repeatCount="indefinite"></animate>
                                 <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
                                          calcMode="linear" repeatCount="indefinite"></animate>
-                            </circle>a
+                            </circle>
                             <circle cx="25.0466" cy="8.99563" r="5">
                                 <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
                                          values="5;50;50;5" calcMode="linear"

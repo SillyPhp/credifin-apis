@@ -24,7 +24,10 @@ class GovtJobsController extends Controller
     {
       return $this->render('index');
     }
-
+    public function actionSearch($s=null)
+    {
+        return $this->render('search-index',['s'=>str_replace("-", " ", $s)]);
+    }
     public function actionIndDepartmentDetail()
     {
         return $this->render('ind-department-detail');
