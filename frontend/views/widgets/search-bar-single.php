@@ -1,20 +1,19 @@
 <?php
-
 use yii\helpers\Url;
 ?>
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+            <form class="form-inline" action="/" method="GET" id="search_bar_form">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
-                        <div class="col-md-6 col-md-offset-2 col-xs-12 col-sm-6 col-sm-offset-3">
+                        <div class="col-md-6 col-md-offset-2 col-xs-12 col-sm-8">
                             <div class="input-group">
                                 <span style="width: 40px;" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input type="text" name="keyword" value="<?= $s; ?>" placeholder="Search City,State,Organizations" class="form-control">
+                                <input type="text" name="keyword" id="keywords" value="<?= $s; ?>" placeholder="Search City,State,Organizations" class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-12 col-sm-6 text-center">
+                        <div class="col-md-2 col-xs-12 col-sm-4 text-center">
                             <input type="submit" class="form-control submit-next hvr-float search-button" id="form_control_1" value="Search">
                         </div>
                     </div>
@@ -130,7 +129,16 @@ $this->registerCss('
     }
 }
 ');
-$script = <<<JS
+$script = <<< JS
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var kname = $('#keywords').val();
+  if (kname)
+      {
+          window.location.assign('/govt-jobs/search/'+kname.replace(/\s+/g, '-'));
+      }
+})
+
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
         $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);

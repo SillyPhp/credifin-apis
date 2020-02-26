@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use common\models\IndianGovtDepartments;
 use common\models\IndianGovtJobs;
 use common\models\Utilities;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -54,16 +55,18 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $keywords = Yii::$app->request->post('keywords');
+            $search = trim($keywords, " ");
+            $search_pattern = ApplicationCards::makeSQL_search_pattern($search);
             $d = IndianGovtJobs::find()
                     ->alias('a')
                     ->select(['a.job_enc_id id','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','a.slug','a.Organizations','a.Location','a.Position','a.Eligibility','a.Last_date'])
                     ->andWhere(['a.is_deleted'=>0])
                     ->andFilterWhere([
-                        'or',
-                        'a.Organizations LIKE "%' . $keywords . '%"',
-                        'a.Location LIKE "%' . $keywords . '%"',
-                        'a.Position LIKE "%' . $keywords . '%"',
-                        'a.Eligibility LIKE "%' . $keywords . '%"'
+                    'or',
+                    ['REGEXP', 'a.Organizations', $search_pattern],
+                    ['REGEXP', 'a.Location', $search_pattern],
+                    ['REGEXP', 'a.Position', $search_pattern],
+                    ['REGEXP', 'a.Eligibility', $search_pattern],
                     ])
                 ->joinWith(['assignedIndianJobs b'=>function($b)
                 {
