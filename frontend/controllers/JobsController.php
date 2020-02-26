@@ -16,6 +16,7 @@ use common\models\States;
 use common\models\TwitterJobs;
 use common\models\UnclaimedOrganizations;
 use common\models\UsaDepartments;
+use frontend\models\applications\PreferredApplicationCards;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -100,7 +101,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTest(){
+    public function actionTest()
+    {
         $mail = Yii::$app->mail;
         $mail->receivers = [];
         $mail->receivers = [
@@ -132,6 +134,7 @@ class JobsController extends Controller
             return "ok";
         }
     }
+
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
@@ -331,6 +334,28 @@ class JobsController extends Controller
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs
         ]);
+    }
+
+    public function actionPreferredList()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $cards = PreferredApplicationCards::jobs($options);
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                    'total' => count($cards),
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
     }
 
 
@@ -1102,8 +1127,9 @@ class JobsController extends Controller
         return $this->render('working-profile');
     }
 
-    public function actionInternational(){
-        return $this->render('/employer-applications/international',[
+    public function actionInternational()
+    {
+        return $this->render('/employer-applications/international', [
             'type' => 'jobs'
         ]);
     }
