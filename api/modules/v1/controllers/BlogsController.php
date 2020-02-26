@@ -32,7 +32,8 @@ class BlogsController extends ApiBaseController
                 'blogs-home',
                 'post-details',
                 'get-blog-child-comments',
-                'blog-list'
+                'blog-list',
+                'get-posts-by-tag'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -45,6 +46,7 @@ class BlogsController extends ApiBaseController
                 'get-blog-child-comments' => ['POST'],
                 'save-parent-comment' => ['POST'],
                 'save-child-comment' => ['POST'],
+                'get-posts-by-tag' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -158,7 +160,7 @@ class BlogsController extends ApiBaseController
         }
 
         $post = Posts::find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.image', 'f.image_location', 'f.initials_color'])
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", f.image_location, "/", f.image) image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->select(['b.post_enc_id', 'b.category_enc_id']);
                 $b->joinWith(['categoryEnc c' => function ($y) {
@@ -361,19 +363,19 @@ class BlogsController extends ApiBaseController
         if (isset($params['slug']) && !empty($params['slug'])) {
             $slug = $params['slug'];
         } else {
-            return $this->response(422, 'missing information 1');
+            return $this->response(422, 'missing information');
         }
 
         if (isset($params['comment']) && !empty($params['comment'])) {
             $comment = $params['comment'];
         } else {
-            return $this->response(422, 'missing information 2');
+            return $this->response(422, 'missing information');
         }
 
         if (isset($params['comment_enc_id']) && !empty($params['comment_enc_id'])) {
             $reply_id = $params['comment_enc_id'];
         } else {
-            return $this->response(422, 'missing information 3');
+            return $this->response(422, 'missing information');
         }
 
 
@@ -407,6 +409,48 @@ class BlogsController extends ApiBaseController
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function actionGetPostsByTag()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['tag']) && !empty($params['tag'])) {
+            $tag = $params['tag'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        if (isset($params['page'])) {
+            $page = (int)$params['page'];
+        } else {
+            $page = 1;
+        }
+
+        if($params['limit']){
+            $limit = (int)$params['limit'];
+        }else{
+            $limit = 3;
+        }
+
+        $postsModel = new Posts();
+        $posts = $postsModel->find()->alias('a')
+            ->select(['a.slug','a.title','a.excerpt','a.description','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => $tag, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if($posts){
+            return $this->response(200,$posts);
+        }else{
+            return $this->response(404,'not found');
         }
     }
 }
