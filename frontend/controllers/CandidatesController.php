@@ -371,7 +371,7 @@ class CandidatesController extends Controller
         $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
         $shortlist->status = 1;
         if ($shortlist->save()) {
-            $this->sendMail($app_id,'zroPWqDpjZxLp0KL0EvqZJnYE3wX6x');
+            $this->sendMail($app_id,$user_id);
             return true;
         }
     }
@@ -426,7 +426,6 @@ class CandidatesController extends Controller
                 $mail_logs->subject = $mail->subject;
                 $mail_logs->template = $mail->template;
                 $mail_logs->save();
-
             }
         }
     }

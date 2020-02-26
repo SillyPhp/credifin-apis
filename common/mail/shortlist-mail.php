@@ -312,8 +312,9 @@ use yii\helpers\ArrayHelper;
     <div class="border">
         <div class="position-relative">
             <div class="logo">
-                <a href="<?php ?>"><img src="<?= Url::to('@commonAssets/email_service/email-logo.png', 'https'); ?>"
-                                 class="responsive"></a>
+                <a href="<?= Url::to('/', true) ?>"><img
+                            src="<?= Url::to('@commonAssets/email_service/email-logo.png', 'https'); ?>"
+                            class="responsive"></a>
             </div>
         </div>
         <div class="new-img-set"><img src="<?= Url::to('@commonAssets/email_service/shortlisticon.png', 'https'); ?>">
@@ -333,21 +334,30 @@ use yii\helpers\ArrayHelper;
                             src="<?= Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '/' . $data['logo_location'] . '/' . $data['logo']; ?>">
                 </div>
                 <div class="job-ds"><?= $data['title'] ?></div>
-                <div class="com-location"><img
-                            src="<?= Url::to('@commonAssets/email_service/location1.png', 'https'); ?>" height="15px"
-                            width="15px"><span
-                            class="f"><?= $data['city'] ?></span>
-                </div>
-                <div class="com-skills"><img src="<?= Url::to('@commonAssets/email_service/skills.png', 'https'); ?>"
-                                             height="15px" width="15px"><span class="f"><?= $data['skills'] ?></span>
-                </div>
-                <div class="salary"><img src="<?= Url::to('@commonAssets/email_service/salary.png', 'https'); ?>"
-                                         height="16px" width="14px"><span class="f"><?= $data['salary'] ?></span>
-                </div>
+                <?php if ($data['city']) { ?>
+                    <div class="com-location"><img
+                                src="<?= Url::to('@commonAssets/email_service/location1.png', 'https'); ?>"
+                                height="15px"
+                                width="15px"><span
+                                class="f"><?= $data['city'] ?></span>
+                    </div>
+                <?php } ?>
+                <?php if ($data['skills']) { ?>
+                    <div class="com-skills"><img
+                                src="<?= Url::to('@commonAssets/email_service/skills.png', 'https'); ?>"
+                                height="15px" width="15px"><span class="f"><?= $data['skills'] ?></span>
+                    </div>
+                <?php } ?>
+                <?php if ($data['salary']) { ?>
+                    <div class="salary"><img src="<?= Url::to('@commonAssets/email_service/salary.png', 'https'); ?>"
+                                             height="16px" width="14px"><span class="f"><?= $data['salary'] ?></span>
+                    </div>
+                <?php } ?>
                 <?php if ($data['type'] == 'Jobs') { ?>
                     <div class="btn"><a href="<?= Url::to('/job/' . $data['slug'], 'https') ?>">View Job</a></div>
                 <?php } elseif ($data['type'] == 'Internships') { ?>
-                    <div class="btn"><a href="<?= Url::to('/internship/' . $data['slug'], 'https') ?>">View Job</a></div>
+                    <div class="btn"><a href="<?= Url::to('/internship/' . $data['slug'], 'https') ?>">View Job</a>
+                    </div>
                 <?php } ?>
 
             </div>
@@ -361,11 +371,11 @@ use yii\helpers\ArrayHelper;
             </div>
             <div class="last-list">
                 <ul>
-                    <li><a href="">Contact Us</a></li>
+                    <li><a href="<?= Url::to('/contact-us', true) ?>">Contact Us</a></li>
                     |
-                    <li><a href="">Terms and Conditions</a></li>
+                    <li><a href="<?= Url::to('/terms-conditions', true) ?>">Terms and Conditions</a></li>
                     |
-                    <li><a href="">Privacy Policies</a></li>
+                    <li><a href="<?= Url::to('/privacy-policy', true) ?>">Privacy Policies</a></li>
                 </ul>
             </div>
         </div>
