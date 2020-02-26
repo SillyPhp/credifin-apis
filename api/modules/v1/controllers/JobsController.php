@@ -303,7 +303,7 @@ class JobsController extends ApiBaseController
 
         $reqParams = Yii::$app->request->post();
 
-        if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id']) && isset($reqParams['city_id'])) {
+        if (!empty($reqParams['job_id']) && !empty($reqParams['resume_enc_id'])) {
 
             if ($reqParams['city_id'] != '') {
                 $city_enc_ids = explode(",", $reqParams['city_id']);
@@ -764,12 +764,15 @@ class JobsController extends ApiBaseController
                 ->joinWith(['organizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
                 }], false);
+            $image_link = Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https');
 
         } else {
-            $application_data->joinWith(['applicationUnclaimOptions b'],false)
+            $application_data->joinWith(['applicationUnclaimOptions b'], false)
                 ->joinWith(['unclaimedOrganizationEnc w' => function ($s) {
                     $s->onCondition(['w.status' => 1, 'w.is_deleted' => 0]);
                 }], false);
+
+            $image_link = Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https');
         }
         $application_data->joinWith(['preferredIndustry x'], false);
         $data1 = $application_data->select([
@@ -817,7 +820,7 @@ class JobsController extends ApiBaseController
             'w.initials_color color',
             'w.email',
             'w.website',
-            'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+            'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . $image_link . '",w.logo_location, "/", w.logo) END logo',
             'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, "/", w.cover_image) END cover_image'
         ])
             ->asArray()
@@ -854,7 +857,7 @@ class JobsController extends ApiBaseController
         unset($data2[0]['applicationInterviewLocations']);
         unset($data2[0]['applicationUnclaimOptions']);
 
-        $result = array_merge($data1,$data2[0]);
+        $result = array_merge($data1, $data2[0]);
 
         return $result;
     }
