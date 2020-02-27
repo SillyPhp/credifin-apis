@@ -223,6 +223,7 @@ class NotificationEmailsComponent extends Component
             ->leftJoin(OrganizationImages::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
             ->leftJoin(OrganizationProducts::tableName() . 'as f', 'f.organization_enc_id = b.organization_enc_id')
             ->where(['not', ['a.user_of' => 'MIS']])
+            ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere([
                 'or',
                 ['b.logo' => null],
