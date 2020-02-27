@@ -12,7 +12,7 @@ class CareersController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         return parent::beforeAction($action);
     }
 

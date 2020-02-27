@@ -27,12 +27,12 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-    <?php
-    if (Yii::$app->user->isGuest) {
-        echo $this->render('/widgets/sign-in-form', [
-            'loginFormModel' => $loginFormModel,
-        ]);
-    } ?>
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/sign-in-form', [
+        'loginFormModel' => $loginFormModel,
+    ]);
+} ?>
 
     <!--    <section class="showcase">-->
     <!--        <div class="container">-->
@@ -110,10 +110,103 @@ $this->params['header_dark'] = false;
             </div>
         </div>
     </section>
+    <section class="great-bg">
+        <div class="container">
+            <div class="row">
+                <div class="head-about">
+                    <h3>What's Great About Us?</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/Efficiency.png') ?>">
+                            </div>
+                            <h4>Enhance your Efficiency and Effectiveness</h4>
+                            <div class="about-text">Receive multiple offers from top-level organizations and properly
+                                recruited for joining an organization.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/showcase-progress.png') ?>">
+                            </div>
+                            <h4>Showcase Your Employer Brand</h4>
+                            <div class="about-text">Showcasing our unique cultural differentiators, and then working to
+                                amplify it so you can position yourself as a top place to work.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/track-progress.png') ?>">
+                            </div>
+                            <h4>Track Progress</h4>
+                            <div class="about-text">Track your application process in simple steps & stay up-to-date.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
+                            </div>
+                            <h4>Free For All</h4>
+                            <div class="about-text">You can apply for jobs and have your learning courses without giving
+                                any
+                                penny.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
+                            </div>
+                            <h4>Live Interview Schedule</h4>
+                            <div class="about-text">Automates scheduling of live interactions between interviewer and
+                                interview.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a href="/candidates/features">
+                        <div class="about-box">
+                            <div class="bx-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/livechat.png') ?>">
+                            </div>
+                            <h4>Live Chat</h4>
+                            <div class="about-text">You can easily live chat with our Employers to get help & for more
+                                other
+                                queries.
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="great-red">
+                <a href="/candidates/features">View All Features</a>
+            </div>
+        </div>
+    </section>
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="fx-heading">
                         its free to hire from empower youth
                     </div>
@@ -123,12 +216,79 @@ $this->params['header_dark'] = false;
                         </a>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="fx-heading">
+                        Find right candidate for your job
+                    </div>
+                    <div class="post-job-bttn">
+                        <a href="/candidates" id="myBttn" class="hvr-float-shadow">
+                            View Candidates
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section>
         <?= $this->render('/widgets/ai-quick-jobs'); ?>
+    </section>
+
+    <section class="emp-back">
+        <div class="container">
+            <div class="row">
+                <div class="emp-main">
+                    <h3>Job candidates have reported that they trust employees 3x More<Span> than employers to provide information on working at a company</Span>
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">75<span class="smaller">%</span></span>
+                                    <div class="pie">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers consider a
+                                    company's<span> employer brand before</span> even applying for a job
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">69<span class="smaller">%</span></span>
+                                    <div class="pie pie2">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers will <span>not accept</span> a job with a company
+                                    if that company has a <span>bad reputation</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="set-size charts-container">
+                                <div class="pie-wrapper progress-75 style-2">
+                                    <span class="label">80<span class="smaller">%</span></span>
+                                    <div class="pie pie3">
+                                        <div class="left-side half-circle"></div>
+                                        <div class="right-side half-circle"></div>
+                                    </div>
+                                    <div class="shadow"></div>
+                                </div>
+                                <div class="emp-text">of job seekers rely on <span>social media</span> and company
+                                    review sites as important <span>research resources</span> when looking for work
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="how-it-works">
@@ -170,7 +330,6 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-
 <?= $this->render('/widgets/companies-with-us'); ?>
 
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [
@@ -180,6 +339,139 @@ $this->params['header_dark'] = false;
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.emp-main {
+    text-align:center;
+    margin: 0px 0px 30px 0px;
+}
+.emp-main h3 {
+    font-size: 30px;
+    font-family: roboto;
+    font-weight: 700;
+    margin: 0;
+    margin-bottom: 30px;
+    padding:0px 105px;
+}
+.emp-main h3 span{
+    font-weight: 400;
+}
+.emp-text {
+    font-size: 16px;
+    font-family: roboto;
+    margin: 15px 0px;
+    text-align: center;
+}
+.emp-text span {
+    font-weight:700;
+}
+@media (max-width:768px){
+.emp-main h3 {
+    font-size: 23px;
+    padding:0px 20px;
+}
+}
+@media (max-width:415px){
+.emp-main h3 {
+    font-size: 20px;
+    padding:0px 10px;
+}
+.set-size {
+     margin-bottom: 20px;
+}
+}
+.set-size {
+  font-size: 10em;
+}
+.pie-wrapper {
+  height: 1em;
+  width: 1em;
+  margin: 15px;
+  position: relative;
+}
+.pie-wrapper:nth-child(3n + 1) {
+  clear: both;
+  margin:0 auto;
+}
+.pie-wrapper .pie {
+  height: 100%;
+  width: 100%;
+  clip: rect(0, 1em, 1em, 0.5em);
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.pie-wrapper .pie .half-circle {
+  height: 100%;
+  width: 100%;
+  border: 0.1em solid #00a0e3;
+  border-radius: 50%;
+  clip: rect(0, 0.5em, 1em, 0);
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.pie-wrapper .label {
+  background: #34495e;
+  border-radius: 50%;
+  bottom: 0.4em;
+  color: #ecf0f1;
+  cursor: default;
+  display: block;
+  font-size: 0.25em;
+  left: 0.4em;
+  line-height: 2.8em;
+  position: absolute;
+  right: 0.4em;
+  text-align: center;
+  top: 0.4em;
+}
+.pie-wrapper .label .smaller {
+  color: #00a0e3;
+  font-size: .45em;
+  vertical-align: bottom;
+}
+.pie-wrapper .shadow {
+  height: 100%;
+  width: 100%;
+  border: 0.1em solid #eee;
+  border-radius: 50%;
+}
+.pie-wrapper.style-2 .label {
+  background: transparent;
+  color: #00a0e3;
+}
+.pie-wrapper.style-2 .label .smaller {
+  color: #00a0e3;
+}
+.pie-wrapper.progress-75 .pie {
+  clip: rect(auto, auto, auto, auto);
+}
+.pie-wrapper.progress-75 .pie .half-circle {
+  border-color: #00a0e3;
+}
+.pie-wrapper.progress-75 .pie .left-side {
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
+}
+.pie-wrapper.progress-75 .pie .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.pie-wrapper.progress-75 .pie2 .left-side {
+  -webkit-transform: rotate(250deg);
+          transform: rotate(250deg);
+}
+.pie-wrapper.progress-75 .pie2 .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.pie-wrapper.progress-75 .pie3 .left-side {
+  -webkit-transform: rotate(290deg);
+          transform: rotate(290deg);
+}
+.pie-wrapper.progress-75 .pie3 .right-side {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
 .hwn{
     text-align:center;
     padding:30px 0 50px;
@@ -428,6 +720,111 @@ $this->registerCss('
   -webkit-transform: translateY(5px);
   transform: translateY(5px);
 }
+/*Whats Great About Us css starts */
+.great-red{
+    text-align: center;
+    position: relative;
+    max-width: 175px;
+    margin: 0 auto;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+.great-red a{
+    background:#00a0e3;
+    color:#fff;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: 0.6s;
+    overflow: hidden;
+    padding: 10px 22px;
+}
+.great-red a:before {
+  content: "";
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.5);
+  width: 60px;
+  height: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0.5;
+  filter: blur(30px);
+  transform: translateX(-100px) skewX(-15deg);
+}
+.great-red a:after {
+  content: "";
+  display: block;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.2);
+  width: 30px;
+  height: 100%;
+  left: 30px;
+  top: 0;
+  opacity: 0;
+  filter: blur(5px);
+  transform: translateX(-100px) skewX(-15deg);
+}
+.great-red a:hover {
+  background: #00a0e3;
+  cursor: pointer;
+}
+.great-red a:hover:before {
+  transform: translateX(150px) skewX(-15deg);
+  opacity: 0.6;
+  transition: 0.5s;
+}
+.great-red a:hover:after {
+  transform: translateX(150px) skewX(-15deg);
+  opacity: 1;
+  transition: 0.5s;
+}
+.great-red a:focus {
+  outline: 0;
+}
+.great-bg{
+    padding-bottom: 20px;
+}
+.head-about{
+    text-align:center;
+}
+.head-about h3 {
+    font-weight: 700;
+    font-family: roboto;
+    font-size: 30px;
+}
+.about-box {
+    padding: 20px 10px;
+    margin: 15px 0px;
+    height: 200px;
+    text-align:center;
+    background:#fff;
+    transition: ease-out .5s;
+    cursor: pointer;
+}
+.about-box:hover{
+    box-shadow: 0px 0px 15px 2px #eee;
+}
+@media(max-width:768px){
+    .about-box {
+        height:230px;
+    }
+}
+.bx-img {
+    width: 50px;
+    height: 55px;
+    margin: 0 auto;
+}
+.about-box h4{
+    margin: 0px 0px 5px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: roboto;
+}
+.about-text {
+    font-size: 15px;
+    font-family: roboto;
+}
+/*/*Whats Great About Us css starts */
 @media only screen and (max-width: 450px){
     .header{
         background-position:-55px !important;

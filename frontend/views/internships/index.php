@@ -36,17 +36,15 @@ use yii\helpers\Url;
     </div>
 </section>
 <section>
-    <div class="row">
-        <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
-            <div class="">
-                <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
-                <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
-                <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
-                <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
-                <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
-            </div>
-        </nav>
-    </div>
+    <nav class="nav1 cl-effect-18 nav-second-bg" id="cl-effect-18">
+        <div class="">
+            <a href="/internships/profiles" data-hover="Desultory">All Internships</a>
+            <a href="/organizations" data-hover="Sumptuous">Explore Company</a>
+            <a href="/internships/compare" data-hover="Sumptuous">Compare Internships</a>
+            <a href="/internships/near-me" data-hover="Scintilla">Internships Near Me</a>
+            <a href="/tweets/internships" data-hover="Propinquity">Internship Tweets</a>
+        </div>
+    </nav>
 </section>
 <section>
     <div class="container">
@@ -97,16 +95,16 @@ use yii\helpers\Url;
     </div>
 </section>
 
-<div id="stats_cards">
 
-</div>
+<?php
+echo $this->render('/widgets/info-stats');
 
-<?=
-$this->render('/widgets/top-cities',[
+echo $this->render('/widgets/top-cities', [
     'cities_jobs' => $cities_jobs,
     'type' => 'internships'
 ])
 ?>
+
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
@@ -236,10 +234,9 @@ if (Yii::$app->user->isGuest) {
 <?php
 echo $this->render('/widgets/mustache/category-card');
 echo $this->render('/widgets/mustache/application-card');
-echo $this->render('/widgets/info-stats');
 $this->registerCss('
 .j-tweets{
-    background:url('. Url::to('@eyAssets/images/backgrounds/p6.png') .');  
+    background:url(' . Url::to('@eyAssets/images/backgrounds/p6.png') . ');  
     background-attachment: fixed;
     padding-bottom:20px;
 }
@@ -835,7 +832,6 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
-fetchStats(template=$('#stats_cards'));
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');

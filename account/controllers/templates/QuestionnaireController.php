@@ -13,6 +13,12 @@ use yii\web\Response;
 
 class QuestionnaireController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionIndex()
     {
         $options = [
@@ -67,21 +73,17 @@ class QuestionnaireController extends Controller
 
     public function actionAssignQuestionnaireTemplate()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
             $q = new QuestionnaireModel();
-            if ($q->assignToOrg($id))
-            {
+            if ($q->assignToOrg($id)) {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Added To Your List'
                 ];
-            }
-            else
-            {
+            } else {
                 return [
                     'status' => 201,
                     'title' => 'error',
@@ -95,30 +97,24 @@ class QuestionnaireController extends Controller
 
     public function actionBookmarkQuestionnaireTemplate()
     {
-        if (Yii::$app->request->isPost)
-        {
+        if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
             $q = new QuestionnaireModel();
             $execute = $q->assignToBookMark($id);
-            if ($execute=='mark')
-            {
+            if ($execute == 'mark') {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Added To BookMark List'
                 ];
-            }
-            elseif ($execute=='unmark')
-            {
+            } elseif ($execute == 'unmark') {
                 return [
                     'status' => 200,
                     'title' => 'Success',
                     'message' => 'Removed From BookMark List'
                 ];
-            }
-            else
-            {
+            } else {
                 return [
                     'status' => 201,
                     'title' => 'error',

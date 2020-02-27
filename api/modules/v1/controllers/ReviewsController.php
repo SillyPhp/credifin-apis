@@ -340,7 +340,7 @@ class ReviewsController extends ApiBaseController
             $org = $unclaimed_org;
 
             $data['overall_rating'] = $emp_stats;
-            if($org['business_activity'] != 'Others') {
+            if($org['business_activity'] != 'Others' && $stats_students != null) {
                 $data['student_overall_rating'] = $stats_students;
             }
             $data['org_detail'] = $org;
@@ -349,13 +349,13 @@ class ReviewsController extends ApiBaseController
             $data['follow'] = $follow->followed == 1 ? true : false;
             $data['hasReviewed'] = $hasReviewed;
             $data['review_type'] = $reviewed_in;
-            if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute' || $org['business_activity'] == 'Others') {
+//            if ($org['business_activity'] == 'College' || $org['business_activity'] == 'School' || $org['business_activity'] == 'Educational Institute' || $org['business_activity'] == 'Others') {
                 if (!empty($data)) {
                     return $this->response(200, $data);
                 } else {
                     return $this->response(404, 'Not Found');
                 }
-            }
+//            }
         } else {
             return $this->response(404, 'Not Found');
         }
@@ -411,7 +411,6 @@ class ReviewsController extends ApiBaseController
 
             $reviews = OrganizationReviews::find()
                 ->alias('a')
-                ->distinct()
                 ->where(['a.organization_enc_id' => $org_enc_id, 'a.status' => 1])
                 ->joinWith(['createdBy b'], false)
                 ->joinWith(['categoryEnc c'], false)
@@ -460,6 +459,12 @@ class ReviewsController extends ApiBaseController
                 ->all();
 
             for ($i = 0; $i < count($result); $i++) {
+                if($result[$i]['created_by'] == $candidate->user_enc_id){
+                    $result[$i]['user_review'] = true;
+                }else{
+                    $result[$i]['user_review'] = false;
+                }
+                $result[$i]['link'] = Url::to($org['slug'].'/reviews','https');
                 $result[$i]['rating'] = $rating[$i];
             }
 
@@ -493,6 +498,7 @@ class ReviewsController extends ApiBaseController
                         'c.name profile',
                         'd.designation',
                         'a.created_on',
+                        'a.created_by',
                         'a.reviewer_type',
                         'a.show_user_details',
                         'b.first_name',
@@ -548,6 +554,12 @@ class ReviewsController extends ApiBaseController
                 $emp_rating = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($emp_reviews); $i++) {
+                    if($emp_reviews[$i]['created_by'] == $candidate->user_enc_id){
+                        $emp_reviews[$i]['user_review'] = true;
+                    }else{
+                        $emp_reviews[$i]['user_review'] = false;
+                    }
+                    $emp_reviews[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $emp_reviews[$i]['rating'] = $emp_rating[$i];
                 }
 
@@ -574,6 +586,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -625,6 +638,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
@@ -640,6 +659,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -690,6 +710,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
@@ -705,6 +731,7 @@ class ReviewsController extends ApiBaseController
                         'a.likes',
                         'a.dislikes',
                         'a.created_on',
+                        'a.created_by',
                         'a.show_user_details',
                         'a.reviewer_type',
                         'b.first_name',
@@ -756,6 +783,12 @@ class ReviewsController extends ApiBaseController
                 $rating_students = $this->__unclaimedReviews($options);
 
                 for ($i = 0; $i < count($reviews_students); $i++) {
+                    if($reviews_students[$i]['created_by'] == $candidate->user_enc_id){
+                        $reviews_students[$i]['user_review'] = true;
+                    }else{
+                        $reviews_students[$i]['user_review'] = false;
+                    }
+                    $reviews_students[$i]['link'] = Url::to($unclaimed_org['slug'].'/reviews','https');
                     $reviews_students[$i]['rating'] = $rating_students[$i];
                 }
 
@@ -1614,7 +1647,7 @@ class ReviewsController extends ApiBaseController
     private function getReviewCards($options)
     {
         $q1 = Organizations::find()->alias('a')
-            ->select(['a.organization_enc_id','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating'])
+            ->select(['a.organization_enc_id','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "claimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '",a.logo_location, "/", a.logo) END logo', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating','b.business_activity'])
             ->where(['a.is_deleted' => 0])
             ->andWhere(['a.status' => 'Active'])
             ->joinWith(['businessActivityEnc b'], false)
@@ -1669,7 +1702,7 @@ class ReviewsController extends ApiBaseController
         }
         $q1_count = $q1->count();
         $q2 = UnclaimedOrganizations::find()->alias('a')
-            ->select(['a.organization_enc_id','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating'])
+            ->select(['a.organization_enc_id','(CASE WHEN a.organization_enc_id IS NOT NULL THEN "unclaimed" END) as org_type', 'a.name', 'a.initials_color color', 'max(c.created_on) created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo', 'ROUND(average_rating) rating','b.business_activity'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->joinWith(['newOrganizationReviews c' => function ($b) {
                 $b->joinWith(['cityEnc d'], false);

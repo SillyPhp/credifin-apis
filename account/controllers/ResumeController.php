@@ -19,6 +19,12 @@ use common\models\Utilities;
 class ResumeController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionFirst()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {

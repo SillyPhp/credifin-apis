@@ -3,7 +3,7 @@
 namespace common\models;
 
 /**
- * This is the model class for table "{{%quizs}}".
+ * This is the model class for table "{{%quizzes}}".
  *
  * @property int $id Primary Key
  * @property string $quiz_enc_id Quiz Encrypted ID
@@ -36,14 +36,14 @@ namespace common\models;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class Quizs extends \yii\db\ActiveRecord
+class Quizzes extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%quizs}}';
+        return '{{%quizzes}}';
     }
 
     /**

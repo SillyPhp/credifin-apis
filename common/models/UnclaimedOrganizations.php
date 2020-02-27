@@ -10,6 +10,7 @@ use Yii;
  * @property int $id Primary Key
  * @property string $organization_enc_id Organization Encrypted ID
  * @property string $organization_type_enc_id Foreign Key to Business Activities Table
+ * @property string $city_enc_id Foreign Key to CitiesTable
  * @property string $name Organization Name
  * @property string $logo Organization Logo
  * @property string $logo_location Location of the Logo
@@ -32,7 +33,10 @@ use Yii;
  * @property UnclaimedFollowedOrganizations[] $unclaimedFollowedOrganizations
  * @property Users[] $userEncs
  * @property Users $createdBy
+ * @property TrainingProgramApplication[] $trainingProgramApplications
+ * @property TwitterJobs[] $twitterJobs
  * @property BusinessActivities $organizationTypeEnc
+ * @property Cities $cityEnc
  */
 class UnclaimedOrganizations extends \yii\db\ActiveRecord
 {
@@ -54,7 +58,7 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['status', 'is_deleted'], 'integer'],
             [['created_on'], 'safe'],
-            [['organization_enc_id', 'organization_type_enc_id', 'name', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
+            [['organization_enc_id', 'organization_type_enc_id', 'name', 'city_enc_id', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
             [['email'], 'string', 'max' => 50],
             [['phone'], 'string', 'max' => 15],
             [['initials_color'], 'string', 'max' => 7],
@@ -62,6 +66,7 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
             [['organization_enc_id'], 'unique'],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['organization_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_type_enc_id' => 'business_activity_enc_id']],
+            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
         ];
     }
 
@@ -123,5 +128,30 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     public function getOrganizationTypeEnc()
     {
         return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'organization_type_enc_id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTrainingProgramApplications()
+    {
+        return $this->hasMany(TrainingProgramApplication::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTwitterJobs()
+    {
+        return $this->hasMany(TwitterJobs::className(), ['unclaim_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCityEnc()
+    {
+        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
     }
 }

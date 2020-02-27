@@ -42,7 +42,7 @@ class InternshipsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
     public function actionQuickInternship()
@@ -1099,9 +1099,9 @@ class InternshipsController extends Controller
                 ['a.application_for' => 0],
                 ['a.application_for' => 1]
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1168,11 +1168,11 @@ class InternshipsController extends Controller
             'applicationType' => 'internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
+                'a.status' => 'Closed',
             ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '<', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],

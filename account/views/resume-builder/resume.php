@@ -23,6 +23,7 @@ function random_color()
     <div class="row">
 
         <div class="col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1">
+            <?= $this->render("@common/widgets/candidate-actions-navbar");?>
             <div class="col-md-12 col-sm-12">
                 <div class="row bg-lighter shadow round working">
                     <div class="col-md-8 col-sm-8">
@@ -201,8 +202,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1">
                         <?php
-                        if (!empty($education)) {
-                            foreach ($education as $e) { ?>
+                        if (!empty($resume_data['userEducations'])) {
+                            foreach ($resume_data['userEducations'] as $e) { ?>
                                 <div class="row" style="margin-top: 40px; margin-bottom: 40px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-3 col-xs-4">
@@ -324,7 +325,7 @@ function random_color()
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="md-checkbox-inline">
                                                         <?=
                                                         $fform->field($addExperienceForm, 'present')->checkBoxList([
@@ -344,6 +345,14 @@ function random_color()
                                                         ?>
 
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'salary')->textInput(['autocomplete' => 'off', 'data-toggle' => 'tooltip',  'title' => 'Hooray!'])->label('Salary'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'ctc')->textInput(['autocomplete' => 'off'])->label('CTC'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -435,11 +444,10 @@ function random_color()
                                                             ]])->label(false);
                                                         ?>
                                                     </div>
-
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     <div class="md-checkbox-inline">
                                                         <?=
                                                         $fform->field($addExperienceForm, 'present')->checkBoxList([
@@ -460,6 +468,14 @@ function random_color()
                                                         ?>
 
                                                     </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'salary')->textInput(['autocomplete' => 'off', 'id' => 'update_salary', 'data-toggle' => 'tooltip',  'title' => 'Your CTC will not be visible to anybody else except you, we will be using this salary to improve job recommendation for you'])->label('Salary'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <?= $fform->field($addExperienceForm, 'ctc')->textInput(['autocomplete' => 'off', 'id' => 'update_ctc', 'data-toggle' => 'tooltip',  'title' => 'Your CTC will not be visible to anybody else except you, we will be using this CTC to improve job recommendation for you'])->label('CTC'); ?>
+                                                    <i class="fas fa-info-circle info-icon"></i>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -492,8 +508,8 @@ function random_color()
                     ?>
                     <div class="col-md-10 col-md-offset-1 col-sm-12">
                         <?php
-                        if (!empty($experience)) {
-                            foreach ((array)$experience as $ex) { ?>
+                        if (!empty($resume_data['userWorkExperiences'])) {
+                            foreach ($resume_data['userWorkExperiences'] as $ex) { ?>
                                 <div class="row" style="margin-top: 30px;">
                                     <hr class="gradient_line"/>
                                     <div class="col-md-3 col-sm-4 col-xs-12">
@@ -554,8 +570,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
 
                                         <?php
-                                        if (!empty($skills)) {
-                                            foreach ($skills as $skill) { ?>
+                                        if (!empty($resume_data['userSkills'])) {
+                                            foreach ($resume_data['userSkills'] as $skill) { ?>
                                                 <li class="addedTag"><?= $skill['skill'] ?>
                                                     <span id="<?= $skill['user_skill_enc_id'] ?>"
                                                           class="skill_remove">x</span>
@@ -600,8 +616,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($achievements)) {
-                                            foreach ($achievements as $achievement) { ?>
+                                        if (!empty($resume_data['userAchievements'])) {
+                                            foreach ($resume_data['userAchievements'] as $achievement) { ?>
                                                 <li class="addedTag"><?= $achievement['achievement'] ?>
                                                     <span id="<?= $achievement['user_achievement_enc_id'] ?>"
                                                           class="achievement_remove">x</span>
@@ -644,8 +660,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($hobbies)) {
-                                            foreach ($hobbies as $hobby) { ?>
+                                        if (!empty($resume_data['userHobbies'])) {
+                                            foreach ($resume_data['userHobbies'] as $hobby) { ?>
                                                 <li class="addedTag"><?= $hobby['hobby'] ?>
                                                     <span id="<?= $hobby['user_hobby_enc_id'] ?>"
                                                           class="hobby_remove">x</span>
@@ -687,8 +703,8 @@ function random_color()
                                     <ul class="tags skill_tag_list">
                                         <?php
 
-                                        if (!empty($interests)) {
-                                            foreach ($interests as $interest) { ?>
+                                        if (!empty($resume_data['userInterests'])) {
+                                            foreach ($resume_data['userInterests'] as $interest) { ?>
                                                 <li class="addedTag"><?= $interest['interest'] ?>
                                                     <span id="<?= $interest['user_interest_enc_id'] ?>"
                                                           class="interest_remove">x</span>
@@ -727,7 +743,9 @@ function random_color()
 
 <?php
 $script = <<< JS
-
+$(document).ready(function(){
+  $('.info-icon').tooltip();
+});
 function compareDates(from,to){
     var a = new Date(from);
     var b = new Date(to);
@@ -935,6 +953,8 @@ $(document).on('submit','#add-experience-form',function(e){
     var title = $('#addexperienceform-title').val();
     var company = $('#company').val();
     var city = $('#city_id_exp').val();
+    var salary = $('#addexperienceform-salary').val();
+    var ctc = $('#addexperienceform-ctc').val();
    
     var from = $('#addexperienceform-exp_from').val();
     if($('#exp_present').prop("checked")){
@@ -958,10 +978,10 @@ $(document).on('submit','#add-experience-form',function(e){
     $.ajax({
        url: '/account/resume-builder/experience',
        method: 'POST',
-       data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description},
+       data : {title:title,company:company,city:city,from:from,to:to,checkbox:checkbox,description:description,salary:salary,ctc:ctc},
         beforeSend:function(){     
-                  $('.loader-aj-main').fadeIn(1000);  
-            },
+            $('.loader-aj-main').fadeIn(1000);  
+        },
        success : function(response){
            $('.loader-aj-main').fadeOut(1000);
            var res = JSON.parse(response);
@@ -998,6 +1018,8 @@ $(document).on('submit','#update-experience-form',function(e){
         }
     }
     var description = $('#update_description').val();
+    var salary = $('#update_salary').val();
+    var ctc = $('#update_ctc').val();
     
     if(compareDates(from,to)){
         toastr.error('please enter correct dates', 'error');
@@ -1010,7 +1032,7 @@ $(document).on('submit','#update-experience-form',function(e){
         $.ajax({
             url: '/account/resume-builder/update-experience',
             method : 'POST',
-            data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description},
+            data: {id:id,title:title,company:company,city:city,from:from,to:to,check:checkbox,description:description,ctc:ctc,salary:salary},
             beforeSend:function(){     
                       $('.loader-aj-main').fadeIn(1000);
             },
@@ -1080,6 +1102,9 @@ $(document).on('click','.exp-pen',function(e){
               $('#update_cities').val(obj.name);
               $('#update_exp_from').val(obj.from_date);
               $('#update_exp_to').val(obj.to_date);
+              $('#update_ctc').val(obj.ctc);
+              $('#update_salary').val(obj.salary);
+              
               if(obj.is_current == 1){
                   $('#update_exp_present').prop('checked', true);
                   $('#update_exp_to').val(0);
@@ -1456,6 +1481,14 @@ $('#update_school').typeahead(null, {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.info-icon {
+    position: absolute;
+    top: 32px;
+    right: 15px;
+}
+.field-addexperienceform-salary, .field-addexperienceform-ctc {
+    position: relative;
+}
 ul.widget-todo-list {
     list-style: none;
     padding: 0 20px;

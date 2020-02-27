@@ -369,7 +369,7 @@ $this->registerCss('
     z-index: -1;
 }
 .cm-btns {
-    margin-top:10px;
+    margin-top:10px !important;
 }  
 .color-blue a:hover{
     color:#00a0e3;

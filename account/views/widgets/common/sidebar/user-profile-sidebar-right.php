@@ -53,12 +53,24 @@ use yii\helpers\Url;
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted
-                            Job</a>
+                            Jobs</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
-                                    class="fa fa-paper-plane-o"></i>Applied Job</a>
+                                    class="fa fa-paper-plane-o"></i>Applied Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/preferences" title="" class="tree-toggler">
+                            <i class="fa fa-cog"></i>
+                            My Preferences
+                        </a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/resume-builder" title="" class="tree-toggler">
+                            <i class="fa fa-address-card"></i>
+                            Build Resume
+                        </a>
                     </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->

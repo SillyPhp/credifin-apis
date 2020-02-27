@@ -1,0 +1,69 @@
+.r-main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.r-head {
+    padding: 20px;
+    font-family: roboto;
+    border-bottom: 1px solid;
+}
+.r-name {
+    font-size: 30px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+.r-work {
+    font-size: 22px;
+}
+.r-address {
+    font-size: 18px;
+    border-top: 1px solid #fff;
+    padding: 15px 0px 0px 0px;
+}
+.r-center {
+    padding: 20px;
+    font-family: roboto;
+}
+.r-object {
+    font-size: 16px;
+    text-align: justify;
+    padding-bottom:15px;
+}
+.skill-head, .work-head, .education-head, .archievements-head, .hobbies-head, .interest-head {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 0px 5px 0px;
+    text-decoration: underline;
+}
+.skills{
+    font-size: 16px;
+    text-transform: capitalize;
+}
+.works, .education{
+    padding-bottom:5px;
+}
+.w-date, .e-date {
+    font-size: 16px;
+    font-weight: 400;
+}
+.w-position, .e-position {
+    text-transform: capitalize;
+    font-weight: 500;
+}
+.w-name, .e-name {
+    font-size: 16px;
+}
+.w-location, .e-location {
+    font-size: 16px;
+    font-weight: 400;
+}
+.w-position > ul {
+    margin: 0;
+}
+.w-position > ul > li{
+    font-weight:400;
+    font-family: roboto;
+}
+.u-hobbies, .u-interest {
+    font-size: 16px;
+}

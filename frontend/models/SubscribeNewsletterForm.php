@@ -51,7 +51,7 @@ class SubscribeNewsletterForm extends Model
             if($subscribers->update()) {
                 return true;
             } else{
-                return false;
+                return 'exists';
             }
         }
         $subscribersModel = new \common\models\Subscribers();

@@ -18,7 +18,7 @@ class AppAssets extends AssetBundle {
         'css/custom.css',
         'css/responsive.css',
         'fonts/fontawesome-5/css/all.css',
-        'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
+        'https://fonts.googleapis.com/css?family=Lobster|Open+Sans|Roboto:400,500,700&display=swap',
     ];
     public $js = [
         'js/jquery-touch-pounch.js',
