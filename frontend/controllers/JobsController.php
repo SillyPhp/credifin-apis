@@ -10,6 +10,7 @@ use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
 use common\models\Designations;
+use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
 use common\models\OrganizationLocations;
 use common\models\States;
@@ -41,6 +42,7 @@ use frontend\models\applications\CreateCompany;
 use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
+use yii\db\Query;
 
 class JobsController extends Controller
 {
@@ -127,9 +129,9 @@ class JobsController extends Controller
                 "email" => "kashishbudhiraja16781@gmail.com",
             ]
         ];
-        $mail->subject = 'Thank you for your review';
+        $mail->subject = 'Company SignUp';
         $mail->data = ['job' => ""];
-        $mail->template = 'review';
+        $mail->template = 'company-signup';
         if ($mail->send()) {
             return "ok";
         }
