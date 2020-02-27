@@ -17,7 +17,7 @@ use yii\db\Query;
 class DailyEmailsController extends Controller
 {
 
-    public function sendPreferredMail($limit = 10)
+    public function actionSendPreferredMail($limit = 10)
     {
         $data = (new Query())
             ->from(['a' => EmailLogs::tableName()])
@@ -48,7 +48,7 @@ class DailyEmailsController extends Controller
         }
     }
 
-    public function setEmailLogs($type = "Jobs"){
+    public function actionSetEmailLogs($type = "Jobs"){
         Yii::$app->preferredEmail->sendPreferredEmails($type);
     }
 
