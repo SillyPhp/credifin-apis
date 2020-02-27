@@ -31,7 +31,7 @@ class NotificationEmailsComponent extends Component
             ->leftJoin(UserSkills::tableName() . 'as d', 'd.created_by = a.user_enc_id')
             ->leftJoin(UserSpokenLanguages::tableName() . 'as e', 'e.created_by = a.user_enc_id')
             ->where(['not', ['a.user_of' => 'MIS']])
-            ->andWhere(['a.organization_enc_id' => null, 'b.user_type' => 'Individual'])
+            ->andWhere(['a.organization_enc_id' => null, 'b.user_type' => 'Individual', 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere([
                 'or',
                 ['a.gender' => null],
@@ -223,6 +223,7 @@ class NotificationEmailsComponent extends Component
             ->leftJoin(OrganizationImages::tableName() . 'as e', 'e.organization_enc_id = b.organization_enc_id')
             ->leftJoin(OrganizationProducts::tableName() . 'as f', 'f.organization_enc_id = b.organization_enc_id')
             ->where(['not', ['a.user_of' => 'MIS']])
+            ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere([
                 'or',
                 ['b.logo' => null],
