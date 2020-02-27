@@ -120,7 +120,7 @@ p{
 <div class="wrapper">
     <div class="bg-blue">
         <div class="logo">
-            <a href="<?= Url::to('/', 'https');?>">
+            <a href="<?= Url::to('/', true);?>">
                 <img src="<?= Url::to('@commonAssets/email_service/email-logo.png', true); ?>" class="responsive">
             </a>
         </div>
@@ -147,7 +147,7 @@ p{
         </div>
     </div>
     <div class="editProfile">
-        <a href="<?= Url::to('/' . $username . '/edit', 'https');?>">Edit Profile</a>
+        <a href="<?= Url::to('/' . $data['username'] . '/edit', true);?>">Edit Profile</a>
     </div>
     <div class="mail-text">
         <div class="text-bold mb1">SET IT, FORGET IT</div>
