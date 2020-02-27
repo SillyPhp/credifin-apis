@@ -64,7 +64,11 @@ class EmployerApplicationsSearch extends EmployerApplications
         }], false);
         $query->joinWith(['applicationPlacementLocations b' => function ($a) {
             $a->joinWith(['locationEnc c' => function ($b) {
-                $b->joinWith(['cityEnc d']);
+                $b->joinWith(['cityEnc d' => function ($d) {
+                    $d->joinWith(['stateEnc d1' => function ($d1) {
+                        $d1->joinWith(['countryEnc d2']);
+                    }]);
+                }]);
             }]);
         }], false);
         $query->joinWith(['title0 e' => function ($aa) {
