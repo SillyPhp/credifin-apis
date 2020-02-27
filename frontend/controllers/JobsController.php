@@ -10,6 +10,7 @@ use common\models\ApplicationTypes;
 use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
 use common\models\Designations;
+use common\models\EmailLogs;
 use common\models\IndianGovtDepartments;
 use common\models\OrganizationLocations;
 use common\models\States;
@@ -40,6 +41,7 @@ use frontend\models\applications\CreateCompany;
 use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
+use yii\db\Query;
 
 class JobsController extends Controller
 {
@@ -100,7 +102,8 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTest(){
+    public function actionTest()
+    {
         $mail = Yii::$app->mail;
         $mail->receivers = [];
         $mail->receivers = [
@@ -1103,8 +1106,9 @@ class JobsController extends Controller
         return $this->render('working-profile');
     }
 
-    public function actionInternational(){
-        return $this->render('/employer-applications/international',[
+    public function actionInternational()
+    {
+        return $this->render('/employer-applications/international', [
             'type' => 'jobs'
         ]);
     }
