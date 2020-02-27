@@ -4,6 +4,7 @@ namespace frontend\controllers;
 use common\models\IndianGovtDepartments;
 use common\models\IndianGovtJobs;
 use common\models\Utilities;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
@@ -15,6 +16,7 @@ class GovtJobsController extends Controller
 
     public function beforeAction($action)
     {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -23,7 +25,10 @@ class GovtJobsController extends Controller
     {
       return $this->render('index');
     }
-
+    public function actionSearch($s=null)
+    {
+        return $this->render('search-index',['s'=>str_replace("-", " ", $s)]);
+    }
     public function actionIndDepartmentDetail()
     {
         return $this->render('ind-department-detail');
@@ -50,15 +55,23 @@ class GovtJobsController extends Controller
             $limit = Yii::$app->request->post('limit');
             $offset = Yii::$app->request->post('offset');
             $keywords = Yii::$app->request->post('keywords');
+            $search = trim($keywords, " ");
+            $search_pattern = ApplicationCards::makeSQL_search_pattern($search);
             $d = IndianGovtJobs::find()
-                    ->select(['job_enc_id id','slug','Organizations','Location','Position','Eligibility','Last_date'])
+                    ->alias('a')
+                    ->select(['a.job_enc_id id','CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image) . '", image_location, "/", image) ELSE NULL END logo','a.slug','a.Organizations','a.Location','a.Position','a.Eligibility','a.Last_date'])
+                    ->andWhere(['a.is_deleted'=>0])
                     ->andFilterWhere([
-                        'or',
-                        'Organizations LIKE "%' . $keywords . '%"',
-                        'Location LIKE "%' . $keywords . '%"',
-                        'Position LIKE "%' . $keywords . '%"',
-                        'Eligibility LIKE "%' . $keywords . '%"'
-                    ]);
+                    'or',
+                    ['REGEXP', 'a.Organizations', $search_pattern],
+                    ['REGEXP', 'a.Location', $search_pattern],
+                    ['REGEXP', 'a.Position', $search_pattern],
+                    ['REGEXP', 'a.Eligibility', $search_pattern],
+                    ])
+                ->joinWith(['assignedIndianJobs b'=>function($b)
+                {
+                    $b->joinWith(['deptEnc c'],false);
+                }],false,'LEFT JOIN');
 
                   $data =  $d->limit($limit)
                     ->offset($offset)

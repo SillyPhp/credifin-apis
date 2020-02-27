@@ -121,11 +121,11 @@ class AuthController extends ApiBaseController
         if (!$usernamesModel->validate() || !$usernamesModel->save()) {
             return false;
         }
-        $user->username = $model->username;
-        $user->first_name = $model->first_name;
-        $user->last_name = $model->last_name;
+        $user->username = strtolower($model->username);
+        $user->first_name = ucfirst(strtolower($model->first_name));
+        $user->last_name = ucfirst(strtolower($model->last_name));
         $user->phone = $model->phone;
-        $user->email = $model->email;
+        $user->email = strtolower($model->email);
         $user->user_enc_id = time() . mt_rand(10, 99);
         $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
         $user->initials_color = RandomColors::one();

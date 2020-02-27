@@ -17,6 +17,7 @@ use common\models\States;
 use common\models\TwitterJobs;
 use common\models\UnclaimedOrganizations;
 use common\models\UsaDepartments;
+use frontend\models\applications\PreferredApplicationCards;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -68,7 +69,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -181,13 +182,13 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $city_id = Yii::$app->request->post('city_enc_id');
+            $location = Yii::$app->request->post('location');
             $type = Yii::$app->request->post('type');
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
             $options['type'] = $type;
-            $options['city_enc_id'] = $city_id;
+            $options['location'] = $location;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
                 $response = [
@@ -335,6 +336,28 @@ class JobsController extends Controller
             'tweets' => $tweets,
             'cities_jobs' => $cities_jobs
         ]);
+    }
+
+    public function actionPreferredList()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $cards = PreferredApplicationCards::jobs($options);
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                    'total' => count($cards),
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
     }
 
 

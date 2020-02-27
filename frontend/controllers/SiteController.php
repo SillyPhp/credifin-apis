@@ -67,6 +67,7 @@ class SiteController extends Controller
         if ($route === "") {
             $route = "/";
         }
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute($route, $this);
         return parent::beforeAction($action);
     }
@@ -706,7 +707,7 @@ class SiteController extends Controller
                 return $this->renderAjax('/widgets/info-stats');
                 break;
             case 'getFeaturedJobs':
-                return $this->renderAjax('/widgets/featured-jobs');
+                return $this->renderAjax('/widgets/employer_applications/preferred-jobs');
                 break;
             case 'getHowItWorks':
                 if (Yii::$app->user->isGuest) {

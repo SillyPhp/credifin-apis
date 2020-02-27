@@ -1,10 +1,12 @@
-<script id="git_candidates" type="text/template">
+<script id="candidates" type="text/template">
     {{#.}}
     <div class="col-lg-4 col-md-4 col-sm-6 p-category-main">
         <div class="paid-candidate-container">
-            <span class="shortlist-main" id="{{user_enc_id}}">
+            <?php if (Yii::$app->user->identity->organization) { ?>
+                <span class="shortlist-main" id="{{user_enc_id}}">
                 <i class="far fa-star"></i>
             </span>
+            <?php } ?>
             <div class="paid-candidate-box">
                 <div class="paid-candidate-inner--box">
                     <div class="paid-candidate-box-thumb">
@@ -18,7 +20,7 @@
                 <div class="paid-candidate-box-extra">
                     <ul>
                         {{#skills}}
-                            {{{.}}}
+                        {{{.}}}
                         {{/skills}}
                     </ul>
                 </div>
@@ -57,35 +59,37 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
-    
-    function getUserCards(off_set){
-        off_set = off_set * 20;
+    function getUserCards(offval, url, loadType){
+        var limit = 18;
+        offval = offval * limit;
         $.ajax({
-            url: '/candidates?offset=' + off_set,
             type: 'POST',
+            url: url,
+            data : {offset:offval,limit:limit},
             beforeSend: function () {
                 $('.load-more-spinner').css('visibility', 'visible');
-                // $('#loadMore').removeClass("loading_more");
                 $('.load-more-text').css('visibility', 'hidden');
             },
             success: function (res) {
-                $('.load-more-text').css('visibility', 'visible');
                 $('.load-more-spinner').css('visibility', 'hidden');
-               if(res.length == 20){
+                $('.load-more-text').css('visibility', 'visible');
+               if(res.length == limit){
                    loading = false;
+                   $('#loadMore').css('display', 'block');
                } else {
                    load_more_cards = false;
                    $('#loadMore').hide();
                }
-               
-                $('#user_cards').append(Mustache.render($('#git_candidates').html(), res));
+               if(loadType == 'append'){
+                    $('#user_cards').append(Mustache.render($('#candidates').html(), res));
+               } else {
+                    $('#user_cards').html(Mustache.render($('#candidates').html(), res));
+               }
                 utilities.initials();
                 offset++;
             },
             complete: function() {
-                // $('#loadMore').removeClass("loading_more");
-                // $('.load-more-text').css('visibility', 'hidden');
-                // $('.load-more-spinner').css('visibility', 'hidden');
+                $('.loading-main').hide();
                 setTimeout(
                     function(){
                         loading = true;

@@ -28,11 +28,11 @@ foreach ($templates as $temp)
                    <?php } ?>
                 </div>
             </div>
+            <div class="loader_screen">
+                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
+            </div>
             <div class="col-md-10 col-md-offset-2">
-                <div class="loader_screen">
-                    <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
-                </div>
-                <div id="template_display_widget">
+                <div id="template_display_widget" class="row">
 
                 </div>
                 <div class="btn_block_area">
@@ -73,12 +73,14 @@ margin-top:8px;
     height: 100vh;
     overflow-y: scroll;
 }
+.templates {
+    padding-top: 70px;
+}
 .temp-main {
-    border: 2px solid #00a0e3;
+    border-bottom: 1px solid #000;
     padding: 10px;
     margin: 5px;
     cursor: pointer;
-    border-radius:4px;
 }
 .temp-logo {
     width: 150px;
@@ -94,10 +96,14 @@ margin-top:8px;
     font-size: 18px;
     font-family: roboto;
 }
+.loader_screen{
+position:absolute;
+top:50%;
+left:50%;
+}
 .loader_screen img
 {
 display:none;
-margin:auto
 }
 ');
 $script = <<<JS

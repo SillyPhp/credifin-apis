@@ -134,8 +134,8 @@ class Cards
         }
 
         if (isset($options['organization_id'])) {
-            $cards1->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
-            $cards2->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+            $cards1->andWhere(['a.organization_enc_id' => $options['organization_id']]);
+            $cards2->andWhere(['a.organization_enc_id' => $options['organization_id']]);
         }
 
         if (isset($options['slug'])) {
@@ -293,6 +293,9 @@ class Cards
                     $result[$i]['salary'] = "Negotiable";
                 }
             }
+            if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
+                $result[$i]['skill'] = 'Multiple';
+            }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
             unset($result[$i]['salary_duration']);
@@ -399,8 +402,8 @@ class Cards
         }
 
         if (isset($options['organization_id'])) {
-            $cards1->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
-            $cards2->andWhere(['a.organization_enc_id'=>$options['organization_id']]);
+            $cards1->andWhere(['a.organization_enc_id' => $options['organization_id']]);
+            $cards2->andWhere(['a.organization_enc_id' => $options['organization_id']]);
         }
 
         if (isset($options['slug'])) {
@@ -558,6 +561,9 @@ class Cards
                 }
             } elseif ($val['salary_type'] == "Unpaid") {
                 $result[$i]['salary'] = "Unpaid";
+            }
+            if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
+                $result[$i]['skill'] = 'Multiple';
             }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
