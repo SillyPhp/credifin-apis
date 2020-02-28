@@ -227,7 +227,7 @@ class PreferredApplicationCards
         if (isset($options['limit'])) {
             $dataProvider->query->limit($options['limit']);
         }
-        return $dataProvider->query->groupBy('z.application_enc_id')->distinct()->asArray()->all();
+        return $dataProvider->query->orderBy(['z.created_on' => SORT_DESC])->groupBy('z.application_enc_id')->distinct()->asArray()->all();
     }
 
 
@@ -242,6 +242,12 @@ class PreferredApplicationCards
         $actionId = Yii::$app->controller->action->id;
         switch ([$controllerId, $actionId]) {
             case ['jobs', 'preferred-list'] :
+                if (!empty($options['location'])) {
+                    $optLocations = explode(", ", $options['location']);
+                    foreach ($optLocations as $loc) {
+                        array_push($locations, $loc);
+                    }
+                }
                 if ($userId) {
                     $resumeData = Yii::$app->userData->getResumeData($userId);
                     $job_preference = Yii::$app->userData->getPreference($userId, $options['type']);
@@ -331,29 +337,7 @@ class PreferredApplicationCards
             }
         }
 
-        if (count($data) < $options['limit'] && !empty($options['location'])) {
-            $locations = [];
-            $optLocations = explode(", ", $options['location']);
-            foreach ($optLocations as $loc) {
-                array_push($locations, $loc);
-            }
-            $cities = [];
-            $states = [];
-            $countries = [];
-            foreach ($locations as $loc) {
-                $chkCountries = Countries::findOne(['name' => $loc]);
-                if ($chkCountries) {
-                    array_push($countries, $chkCountries['name']);
-                }
-                $chkStates = States::findOne(['name' => $loc]);
-                if ($chkStates) {
-                    array_push($states, $chkStates['name']);
-                }
-                $chkCities = Cities::findOne(['name' => $loc]);
-                if ($chkCities) {
-                    array_push($cities, $chkCities['name']);
-                }
-            }
+        if (count($data) < $options['limit'] && $states) {
             $loc = [];
             $loc['states'] = $states;
             foreach ($filter_combos as $combo) {
@@ -371,9 +355,9 @@ class PreferredApplicationCards
             }
         }
 
-        if (count($data) < $options['limit']) {
+        if (count($data) < $options['limit'] && $countries) {
             $loc = [];
-            $loc['states'] = $states;
+            $loc['countries'] = $countries;
             foreach ($filter_combos as $combo) {
                 $flip_combo = array_flip($combo);
                 $filter_combo = array_diff_key($filters, $flip_combo);
@@ -388,9 +372,9 @@ class PreferredApplicationCards
                 }
             }
         }
+
         if (count($data) < $options['limit']) {
             $loc = [];
-            $loc['countries'] = $countries;
             foreach ($filter_combos as $combo) {
                 $flip_combo = array_flip($combo);
                 $filter_combo = array_diff_key($filters, $flip_combo);
