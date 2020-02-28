@@ -90,7 +90,7 @@ $this->params['seo_tags'] = [
                             </a>
                             <div class="channel-details">
                                 <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
-                                <div class="channer-des"><?= $post['user_about'] ?></div>
+                                <div class="channel-des"><?= $post['user_about'] ?></div>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -318,6 +318,11 @@ textarea::placeholder{
 .channel-name{
     font-size:17px;
     font-weight:bold;
+    padding-top: 10px;
+}
+.channel-des{
+    text-align:justify;
+    padding:15px 0px;
 }
 .channel-icon, .comment-icon{
     background:#fff;
@@ -341,11 +346,12 @@ textarea::placeholder{
 }
 .popular-heading, .about-heading{
     position:relative;
-    text-align:right;
+//    text-align:right;
     text-transform: uppercase;
-    padding: 0px 25px 2px 0px;
+//    padding: 0px 25px 2px 0px;
     font-weight: bold;
     margin-top:30px;
+    text-align:center;
 }
 .about-heading:before{
     border-width: 1px 110px 0px 0px !important;
@@ -355,18 +361,18 @@ textarea::placeholder{
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 91px 0px 0px;
+    border-width: 1px 58px 0px 0px;
     top: 11px;
-    left: 5px;
+    left: 0px;
 }
 .popular-heading:after{
     content: "";
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 18px 0px 0px;
+    border-width: 1px 58px 0px 0px;
     top: 11px;
-    right: 5px;
+    right: 0px;
 }
 .video-container{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
