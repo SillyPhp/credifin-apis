@@ -343,7 +343,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = Yii::$app->request->post();
-            $cards = PreferredApplicationCards::jobs($options);
+            $cards = PreferredApplicationCards::employerApplications($options);
             if ($cards) {
                 $response = [
                     'status' => 200,
