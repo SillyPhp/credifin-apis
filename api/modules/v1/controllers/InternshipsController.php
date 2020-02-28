@@ -465,7 +465,7 @@ class InternshipsController extends ApiBaseController
             }
 
             if (!$data["vacancies"]) {
-                $data["vacancies"] = null;
+                $data["vacancies"] = 0;
             }
 
             if (empty($data['applicationInterviewLocations'])) {
