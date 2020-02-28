@@ -464,6 +464,10 @@ class InternshipsController extends ApiBaseController
                 }
             }
 
+            if (!$data["vacancies"]) {
+                $data["vacancies"] = null;
+            }
+
             if (empty($data['applicationInterviewLocations'])) {
                 $data['applicationInterviewLocations'][] = [
                     "location_enc_id" => "kdmvkdkv",
