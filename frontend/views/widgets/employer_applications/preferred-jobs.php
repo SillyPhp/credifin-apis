@@ -13,7 +13,7 @@ use yii\helpers\Url;
                         <span>Prefered Jobs</span>
                         <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
                 <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
-                    <i class="fab fa-whatsapp-square"></i> Join Us
+<!--                    <i class="fab fa-whatsapp-square"></i> Join Us-->
                 </a>
             </span>
                     </div>
