@@ -74,7 +74,7 @@ margin-top:8px;
     overflow-y: scroll;
 }
 .templates {
-    padding-top: 70px;
+    padding-top: 30px;
 }
 .temp-main {
     border-bottom: 1px solid #000;

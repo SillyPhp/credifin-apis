@@ -727,6 +727,11 @@ function random_color()
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="pre-btn">
+                        <a href="/account/resume-builder/preview/">Preview</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1481,6 +1486,18 @@ $('#update_school').typeahead(null, {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.pre-btn {
+    text-align: center;
+    padding-top: 10px;
+}
+.pre-btn a {
+    background: #00a0e3;
+    color:#fff;
+    padding: 8px 25px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: roboto;
+}
 .info-icon {
     position: absolute;
     top: 32px;
