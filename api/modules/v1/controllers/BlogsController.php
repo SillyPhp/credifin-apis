@@ -160,7 +160,8 @@ class BlogsController extends ApiBaseController
         }
 
         $post = Posts::find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", f.image_location, "/", f.image) image'])
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image',
+                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END user_image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->select(['b.post_enc_id', 'b.category_enc_id']);
                 $b->joinWith(['categoryEnc c' => function ($y) {
@@ -216,7 +217,7 @@ class BlogsController extends ApiBaseController
 
         if ($post) {
             $similar_posts = Posts::find()->alias('a')
-                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+                ->select(['a.title', 'a.slug', 'a.excerpt','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
                 ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
                 ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
