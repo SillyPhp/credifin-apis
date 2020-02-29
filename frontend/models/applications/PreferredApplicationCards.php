@@ -227,7 +227,7 @@ class PreferredApplicationCards
         if (isset($options['limit'])) {
             $dataProvider->query->limit($options['limit']);
         }
-        return $dataProvider->query->groupBy('z.application_enc_id')->distinct()->asArray()->all();
+        return $dataProvider->query->orderBy(['z.created_on' => SORT_DESC])->groupBy('z.application_enc_id')->distinct()->asArray()->all();
     }
 
 
@@ -235,64 +235,58 @@ class PreferredApplicationCards
     {
         $userId = Yii::$app->user->identity->user_enc_id;
         $locations = [];
+        $cities = [];
+        $states = [];
+        $countries = [];
         $resumeSkills = [];
         $filters = [];
+        $optLocationkeys = ['cities', 'states', 'countries'];
 
-        $controllerId = Yii::$app->controller->id;
-        $actionId = Yii::$app->controller->action->id;
-        switch ([$controllerId, $actionId]) {
-            case ['jobs', 'preferred-list'] :
-                if ($userId) {
-                    $resumeData = Yii::$app->userData->getResumeData($userId);
-                    $job_preference = Yii::$app->userData->getPreference($userId, $options['type']);
-                    if (!empty($job_preference) || !empty($resumeData)) {
-                        if (!empty($job_preference['locations'])) {
-                            foreach ($job_preference['locations'] as $loc) {
-                                $expLoc = explode(", ", $loc);
-                                foreach ($expLoc as $el) {
-                                    array_push($locations, $el);
-                                }
-                            }
+        if ($options['location']) {
+            $optLocations = explode(", ", $options['location']);
+            $ipLocation = array_combine($optLocationkeys, $optLocations);
+            array_push($states, $ipLocation['states']);
+            array_push($countries, $ipLocation['countries']);
+        }
+        if ($userId) {
+            $resumeData = Yii::$app->userData->getResumeData($userId);
+            $job_preference = Yii::$app->userData->getPreference($userId, $options['type']);
+            if (!empty($job_preference) || !empty($resumeData)) {
+                if (!empty($job_preference['locations'])) {
+                    foreach ($job_preference['locations'] as $loc) {
+                        $expLoc = explode(", ", $loc);
+                        foreach ($expLoc as $el) {
+                            array_push($locations, $el);
                         }
-                        if (!empty($resumeData['userSkills'])) {
-                            $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
-                        }
-
-                        $filters['job_titles'] = [];
-                        if (!empty($resumeData['userWorkExperiences'])) {
-                            foreach ($resumeData['userWorkExperiences'] as $exp) {
-                                array_push($filters['job_titles'], $exp['title']);
-                                array_push($locations, $exp['city'], $exp['state'], $exp['country']);
-                            }
-                        }
-                        $locations = array_unique($locations);
-                        $filters['profiles'] = $job_preference['profiles'];
-                        $filters['industries'] = $job_preference['industries'];
-                        $filters['skills'] = array_unique(array_merge($job_preference['skills'], $resumeSkills));
-                        $filters['working_days'] = $job_preference['working_days'];
-                        $filters['experience'] = $job_preference['experience'];
-                        $filters['expected_salary']['min'] = "";
-                        $filters['expected_salary']['max'] = "";
-                        $filters['timings']['from'] = $job_preference['timings_from'];
-                        $filters['timings']['to'] = $job_preference['timings_to'];
-                        $filters['salary'] = $job_preference['salary'];
-                        $filters['work_type'] = $job_preference['work_type'];
                     }
                 }
-                break;
-            default :
-                if (!empty($options['location'])) {
-                    $optLocations = explode(", ", $options['location']);
-                    foreach ($optLocations as $loc) {
-                        array_push($locations, $loc);
+                if (!empty($resumeData['userSkills'])) {
+                    $resumeSkills = ArrayHelper::getColumn($resumeData['userSkills'], 'skill');
+                }
+
+                $filters['job_titles'] = [];
+                if (!empty($resumeData['userWorkExperiences'])) {
+                    foreach ($resumeData['userWorkExperiences'] as $exp) {
+                        array_push($filters['job_titles'], $exp['title']);
+                        array_push($locations, $exp['city'], $exp['state'], $exp['country']);
                     }
                 }
+                $locations = array_unique($locations);
+                $filters['profiles'] = $job_preference['profiles'];
+                $filters['industries'] = $job_preference['industries'];
+                $filters['skills'] = array_unique(array_merge($job_preference['skills'], $resumeSkills));
+                $filters['working_days'] = $job_preference['working_days'];
+                $filters['experience'] = $job_preference['experience'];
+                $filters['expected_salary']['min'] = "";
+                $filters['expected_salary']['max'] = "";
+                $filters['timings']['from'] = $job_preference['timings_from'];
+                $filters['timings']['to'] = $job_preference['timings_to'];
+                $filters['salary'] = $job_preference['salary'];
+                $filters['work_type'] = $job_preference['work_type'];
+            }
         }
 
         if (!empty($locations)) {
-            $cities = [];
-            $states = [];
-            $countries = [];
             foreach ($locations as $loc) {
                 $chkCountries = Countries::findOne(['name' => $loc]);
                 if ($chkCountries) {
@@ -331,29 +325,23 @@ class PreferredApplicationCards
             }
         }
 
-        if (count($data) < $options['limit'] && !empty($options['location'])) {
-            $locations = [];
-            $optLocations = explode(", ", $options['location']);
-            foreach ($optLocations as $loc) {
-                array_push($locations, $loc);
-            }
-            $cities = [];
-            $states = [];
-            $countries = [];
-            foreach ($locations as $loc) {
-                $chkCountries = Countries::findOne(['name' => $loc]);
-                if ($chkCountries) {
-                    array_push($countries, $chkCountries['name']);
+        if (count($data) < $options['limit'] && $ipLocation['cities']) {
+            foreach ($filter_combos as $combo) {
+                $flip_combo = array_flip($combo);
+                $filter_combo = array_diff_key($filters, $flip_combo);
+                $ai_jobs = self::getDataProvider($options, $filter_combo, $ipLocation);
+                if ($ai_jobs) {
+                    foreach ($ai_jobs as $ai) {
+                        array_push($data, $ai);
+                    }
                 }
-                $chkStates = States::findOne(['name' => $loc]);
-                if ($chkStates) {
-                    array_push($states, $chkStates['name']);
-                }
-                $chkCities = Cities::findOne(['name' => $loc]);
-                if ($chkCities) {
-                    array_push($cities, $chkCities['name']);
+                if (count($data) >= $options['limit']) {
+                    break;
                 }
             }
+        }
+
+        if (count($data) < $options['limit'] && $states) {
             $loc = [];
             $loc['states'] = $states;
             foreach ($filter_combos as $combo) {
@@ -371,9 +359,9 @@ class PreferredApplicationCards
             }
         }
 
-        if (count($data) < $options['limit']) {
+        if (count($data) < $options['limit'] && $countries) {
             $loc = [];
-            $loc['states'] = $states;
+            $loc['countries'] = $countries;
             foreach ($filter_combos as $combo) {
                 $flip_combo = array_flip($combo);
                 $filter_combo = array_diff_key($filters, $flip_combo);
@@ -388,9 +376,9 @@ class PreferredApplicationCards
                 }
             }
         }
+
         if (count($data) < $options['limit']) {
             $loc = [];
-            $loc['countries'] = $countries;
             foreach ($filter_combos as $combo) {
                 $flip_combo = array_flip($combo);
                 $filter_combo = array_diff_key($filters, $flip_combo);
