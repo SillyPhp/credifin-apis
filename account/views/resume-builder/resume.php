@@ -729,7 +729,7 @@ function random_color()
                 </div>
                 <div class="row">
                     <div class="pre-btn">
-                        <a href="/account/resume-builder/preview/">Preview</a>
+                        <a href="/account/resume-builder/preview/">view templates</a>
                     </div>
                 </div>
             </div>
@@ -1493,10 +1493,12 @@ $this->registerCss("
 .pre-btn a {
     background: #00a0e3;
     color:#fff;
-    padding: 8px 25px;
+    padding: 10px 35px;
     border-radius: 4px;
     font-size: 16px;
-    font-family: roboto;
+    font-weight:bold;
+    text-transform:uppercase;
+    box-shadow: 0 3px 6px rgba(0,0,0,.2),0 3px 6px rgba(0,0,0,.26);
 }
 .info-icon {
     position: absolute;
