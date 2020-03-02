@@ -223,21 +223,22 @@ $this->registerCss('
 }
 ');
 $script = <<<JS
+var type = '$type';
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
   var cname = $('#cities').val();
   var kname = $('#keywords').val();
   if (cname&&kname)
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type+'-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (cname)
       {
-          window.location.assign('/jobs-in-'+cname.replace(/\s+/g, '-'));
+          window.location.assign('/'+type+'-in-'+cname.replace(/\s+/g, '-'));
       }
   else if (kname)
       {
-          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-jobs');
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type);
       }
 })     
 var searchelem = document.getElementById("search_preview");    

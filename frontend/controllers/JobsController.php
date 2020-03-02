@@ -410,24 +410,7 @@ class JobsController extends Controller
             }
             return $response;
         }
-
-        if (Yii::$app->request->get('location') || Yii::$app->request->get('keyword')) {
-            $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
-            $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
-        }
-
-        if ($parameters['location'] && !empty($parameters['location'])) {
-            $options['location'] = $parameters['location'];
-        }
-        if ($parameters['keyword'] && !empty($parameters['keyword'])) {
-            $options['keyword'] = $parameters['keyword'];
-        }
-
-        $options['count'] = 1;
-
-        $total = ApplicationCards::jobs($options);
-
-        return $this->render('list',['total_jobs'=>$total]);
+        return $this->render('list');
     }
 
     public function actionDetail($eaidk)

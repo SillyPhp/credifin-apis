@@ -1,36 +1,36 @@
 <?php
 if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
-    $this->title = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('D M Y');
+    $this->title = Yii::$app->request->get('keyword') . ' jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
 } elseif (Yii::$app->request->get('location')) {
-    $this->title = $total_jobs . ' Jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+    $this->title = 'Total Jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
 } elseif (Yii::$app->request->get('keyword')) {
-    $this->title = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' Jobs vacancies available - ' . date('M Y');
+    $this->title =  Yii::$app->request->get('keyword') . ' Jobs vacancies available - ' . date('M Y');
 } else {
-    $this->title = 'Jobs';
+    $this->title = 'Total job vacancies available';
 }
 $this->params['header_dark'] = true;
 
-if (Yii::$app->request->get('location') && Yii::$app->request->get('keywords')) {
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
     $location = Yii::$app->request->get('location');
     $keywords = Yii::$app->request->get('keyword').' jobs vacancies, jobs in '. $location .', latest '.Yii::$app->request->get('keyword').' jobs in '.$location.', latest '.Yii::$app->request->get('keyword').' jobs';
 } elseif (Yii::$app->request->get('location')) {
     $location = Yii::$app->request->get('location');
-    $keywords = $total_jobs . ' Jobs vacancies available in ' . $location . ', ' . $location . ' careers, ' . $location . ' job listings, ' . $location . ' job search,' . $location . ' jobs';
+    $keywords = 'Total Jobs vacancies available in ' . $location . ', ' . $location . ' careers, ' . $location . ' job listings, ' . $location . ' job search,' . $location . ' jobs';
 } elseif (Yii::$app->request->get('keyword')) {
     $keyword = Yii::$app->request->get('keyword');
     $keywords = 'Jobs, ' . $keyword . ' job vacancies available, ' . $keyword . ' careers, ' . $keyword . ' job listings, ' . $keyword . ' job search,' . $keyword . ' jobs';
 } else {
-    $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+    $keywords = 'job vacancies, Empower Youth, latest jobs vacancies available in Porsche country, Porsche countries jobs';
 }
 
-if (Yii::$app->request->get('location') && Yii::$app->request->get('keywords')) {
-    $description = $total_jobs.' '.Yii::$app->request->get('keywords').' jobs vacancies available in '.Yii::$app->request->get('location').' - '.date('D M Y').'. Signup and apply on empoweryouth.com for free of cost.  Also, if not having a resume than build with us.';
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $description = Yii::$app->request->get('keyword').' jobs vacancies available in '.Yii::$app->request->get('location').' - '.date('M Y').'. Signup and apply on empoweryouth.com for free of cost.  Also, if not having a resume than build with us.';
 } elseif (Yii::$app->request->get('location')) {
-    $description = $total_jobs . ' Jobs vacancies available in ' . Yii::$app->request->get('location') . ' on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+    $description = 'Total Jobs vacancies available in ' . Yii::$app->request->get('location') . ' on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
 } elseif (Yii::$app->request->get('keyword')) {
-    $description = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' job vacancies available on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+    $description = Yii::$app->request->get('keyword') . ' job vacancies available on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
 } else {
-    $description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+    $description = 'Total job vacancies are available in countries. Explore, signup and apply now.';
 }
 
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
@@ -86,7 +86,7 @@ $this->registerCss('
             </div>
             <div class="col-md-10 col-sm-9 col-xs-12">
                 <?=
-                $this->render('/widgets/search-bar1');
+                $this->render('/widgets/search-bar1',['type'=>'jobs']);
                 ?>
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
