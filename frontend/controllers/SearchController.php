@@ -13,6 +13,13 @@ use frontend\models\applications\ApplicationCards;
 
 class SearchController extends Controller
 {
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
     private function findUnclaimed($s)
     {
         return UnclaimedOrganizations::find()

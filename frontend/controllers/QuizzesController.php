@@ -17,14 +17,22 @@ use yii\web\HttpException;
 
 class QuizzesController extends Controller
 {
-    public function actionIndex($type = null){
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
+    public function actionIndex($type = null)
+    {
         if ($type == null) {
             $categories = AssignedCategories::find()
                 ->alias('a')
-                ->select(['b.name','b.slug','CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/others.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
+                ->select(['b.name', 'b.slug', 'CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/others.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
                 ->joinWith(['parentEnc b'], false)
                 ->innerJoinWith(['quizzes c'], false)
-                ->where(['a.assigned_to'=> 'Quiz','a.status' =>'Approved', 'a.is_deleted' => 0, 'c.is_deleted'=> 0, 'c.display' => 1])
+                ->where(['a.assigned_to' => 'Quiz', 'a.status' => 'Approved', 'a.is_deleted' => 0, 'c.is_deleted' => 0, 'c.display' => 1])
                 ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
                 ->all();
@@ -32,7 +40,7 @@ class QuizzesController extends Controller
             $quizes = Quizzes::find()
                 ->alias('a')
                 ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'a.num_of_ques cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug'])
-                ->innerJoinWith(['quizPoolEnc b' => function($b) {
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
                     $b->innerJoinWith(['quizQuestionsPools z']);
                 }], false)
                 ->where([
@@ -52,7 +60,7 @@ class QuizzesController extends Controller
             $quizes = Quizzes::find()
                 ->alias('a')
                 ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'a.num_of_ques cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
-                ->innerJoinWith(['quizPoolEnc b' => function($b) {
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
                     $b->innerJoinWith(['quizQuestionsPools z']);
                 }], false)
                 ->innerJoinWith(['assignedCategoryEnc c' => function ($x) {
@@ -72,7 +80,8 @@ class QuizzesController extends Controller
         }
     }
 
-    public function actionAll(){
+    public function actionAll()
+    {
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -81,9 +90,9 @@ class QuizzesController extends Controller
             $quizes = Quizzes::find()
                 ->alias('a')
                 ->select(['CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END image', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
-            ->innerJoinWith(['quizPoolEnc b' => function($b) {
-                $b->innerJoinWith(['quizQuestionsPools z']);
-            }], false)
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+                    $b->innerJoinWith(['quizQuestionsPools z']);
+                }], false)
                 ->where([
                     'a.display' => 1,
                     'a.is_deleted' => 0
@@ -101,16 +110,14 @@ class QuizzesController extends Controller
             ];
         }
 
-        return $this->render('all', [
-//            'data' => $quizes
-        ]);
+        return $this->render('all');
     }
 
     public function actionDetail($slug, $s = NULL, $t = NULL)
     {
         $temp = Quizzes::find()
             ->alias('a')
-            ->innerJoinWith(['quizPoolEnc b' => function($b) {
+            ->innerJoinWith(['quizPoolEnc b' => function ($b) {
                 $b->innerJoinWith(['quizQuestionsPools z']);
             }], false)
             ->where([
@@ -162,15 +169,15 @@ class QuizzesController extends Controller
                         'result' => $result,
                     ];
                 }
-            } else{
+            } else {
                 $quiz = Quizzes::find()
                     ->alias('a')
-                    ->joinWith(['quizPoolEnc b' => function ($x) use($temp) {
+                    ->joinWith(['quizPoolEnc b' => function ($x) use ($temp) {
                         $x->andWhere([
                             'b.status' => 1,
                             'b.is_deleted' => 0
                         ]);
-                        $x->joinWith(['quizQuestionsPools c' => function($c) use($temp){
+                        $x->joinWith(['quizQuestionsPools c' => function ($c) use ($temp) {
                             $c->joinWith(['quizAnswersPools d']);
                             $c->groupBy('c.quiz_question_pool_enc_id');
                             $c->orderby(new Expression('rand()'));
@@ -238,7 +245,7 @@ class QuizzesController extends Controller
                     ->count();
                 if ($result == 0 && $result <= $temp['num_of_ques']) {
                     return $this->render('college-quiz', [
-                        'quiz' => $this->_getQuestion([],$slug),
+                        'quiz' => $this->_getQuestion([], $slug),
                     ]);
                 } else {
                     $noOfQuestion = Quizzes::find()
