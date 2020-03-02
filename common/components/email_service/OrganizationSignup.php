@@ -23,7 +23,7 @@ class OrganizationSignup extends Component{
             ->asArray()
             ->one();
 
-        if(!data){
+        if(!$data){
             return false;
         }
 
@@ -59,7 +59,7 @@ class OrganizationSignup extends Component{
             )
                 ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
                 ->setTo([$data['email'] => $data['name']])
-                ->setSubject(Yii::t('frontend', 'Active your ' . Yii::$app->params->site_name . ' account'));
+                ->setSubject(Yii::t('app', 'Active your ' . Yii::$app->params->site_name . ' account'));
 
             if($mail->send()){
                 return true;
