@@ -386,7 +386,6 @@ $.ajax({
             $('#detail-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
         } else{
             var template = $('#detail-app').html();
-            console.log(response);
              var m = ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12", "m13", "m14", "m15", "m16"];
             for(var y=0;y<=16;y++){
                 m[y] = document.createElement('meta');
