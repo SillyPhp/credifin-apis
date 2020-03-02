@@ -7,6 +7,7 @@ use common\models\UserVerificationTokens;
 use Yii;
 use yii\base\Component;
 use common\models\Utilities;
+use yii\helpers\Url;
 
 class OrganizationSignup extends Component{
 
@@ -23,7 +24,7 @@ class OrganizationSignup extends Component{
             ->asArray()
             ->one();
 
-        if(!data){
+        if(!$data){
             return false;
         }
 
@@ -50,7 +51,7 @@ class OrganizationSignup extends Component{
 
         if ($userVerificationTokensModel->validate() && $userVerificationTokensModel->save()) {
             $user['name'] = $data['name'];
-            $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/verify/' . $userVerificationTokensModel->token]);
+            $user['link'] = Url::to('/verify/' . $userVerificationTokensModel->token,'https');
 
             Yii::$app->mailer->htmlLayout = 'layouts/email';
 
@@ -59,7 +60,7 @@ class OrganizationSignup extends Component{
             )
                 ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
                 ->setTo([$data['email'] => $data['name']])
-                ->setSubject(Yii::t('frontend', 'Active your ' . Yii::$app->params->site_name . ' account'));
+                ->setSubject(Yii::t('app', 'Active your ' . Yii::$app->params->site_name . ' account'));
 
             if($mail->send()){
                 return true;
