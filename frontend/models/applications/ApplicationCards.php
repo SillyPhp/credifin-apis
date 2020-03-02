@@ -973,6 +973,7 @@ class ApplicationCards
         }
         return $search_pattern;
     }
+
     private static function optimizeSearchString($wordArray)
     {
         $articles = ['in', 'is', 'jobs', 'job', 'internship', 'internships'];

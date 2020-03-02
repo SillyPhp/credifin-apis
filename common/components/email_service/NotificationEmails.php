@@ -121,7 +121,7 @@ class NotificationEmails extends Component
         )
             ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$email => $org_d['name']])
-            ->setSubject(Yii::t('frontend', 'Someone Has Applied On Your Job Via Empower Youth'));
+            ->setSubject(Yii::t('app', 'Someone Has Applied On Your Job Via Empower Youth'));
 
         $appliedMail = new AppliedEmailLogs();
         $utilitiesModel = new Utilities();
