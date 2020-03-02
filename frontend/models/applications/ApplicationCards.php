@@ -504,6 +504,13 @@ class ApplicationCards
                 ->offset($offset)
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
+        } elseif (isset($options['count'])) {
+            $total = (new \yii\db\Query())
+                ->from([
+                    $cards1->union($cards2),
+                ])->count();
+
+            return $total;
         } else {
             $result = (new \yii\db\Query())
                 ->from([
@@ -973,6 +980,7 @@ class ApplicationCards
         }
         return $search_pattern;
     }
+
     private static function optimizeSearchString($wordArray)
     {
         $articles = ['in', 'is', 'jobs', 'job', 'internship', 'internships'];

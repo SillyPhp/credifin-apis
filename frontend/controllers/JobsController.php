@@ -363,6 +363,7 @@ class JobsController extends Controller
 
     public function actionList()
     {
+
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
@@ -409,7 +410,24 @@ class JobsController extends Controller
             }
             return $response;
         }
-        return $this->render('list');
+
+        if (Yii::$app->request->get('location') || Yii::$app->request->get('keyword')) {
+            $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
+            $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
+        }
+
+        if ($parameters['location'] && !empty($parameters['location'])) {
+            $options['location'] = $parameters['location'];
+        }
+        if ($parameters['keyword'] && !empty($parameters['keyword'])) {
+            $options['keyword'] = $parameters['keyword'];
+        }
+
+        $options['count'] = 1;
+
+        $total = ApplicationCards::jobs($options);
+
+        return $this->render('list',['total_jobs'=>$total]);
     }
 
     public function actionDetail($eaidk)

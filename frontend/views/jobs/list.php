@@ -1,18 +1,38 @@
 <?php
-if (Yii::$app->request->get('location')){
-    $this->title = 'Jobs in '.ucwords(str_replace("-"," ",Yii::$app->request->get('location')));
-}
-elseif(Yii::$app->request->get('keyword'))
-{
-    $this->title = ucwords(str_replace("-"," ",Yii::$app->request->get('keyword'))).' Jobs';
-}
-else
-{
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $this->title = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('D M Y');
+} elseif (Yii::$app->request->get('location')) {
+    $this->title = $total_jobs . ' Jobs vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+} elseif (Yii::$app->request->get('keyword')) {
+    $this->title = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' Jobs vacancies available - ' . date('M Y');
+} else {
     $this->title = 'Jobs';
 }
 $this->params['header_dark'] = true;
-$keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
-$description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keywords')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = Yii::$app->request->get('keyword').' jobs vacancies, jobs in '. $location .', latest '.Yii::$app->request->get('keyword').' jobs in '.$location.', latest '.Yii::$app->request->get('keyword').' jobs';
+} elseif (Yii::$app->request->get('location')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = $total_jobs . ' Jobs vacancies available in ' . $location . ', ' . $location . ' careers, ' . $location . ' job listings, ' . $location . ' job search,' . $location . ' jobs';
+} elseif (Yii::$app->request->get('keyword')) {
+    $keyword = Yii::$app->request->get('keyword');
+    $keywords = 'Jobs, ' . $keyword . ' job vacancies available, ' . $keyword . ' careers, ' . $keyword . ' job listings, ' . $keyword . ' job search,' . $keyword . ' jobs';
+} else {
+    $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+}
+
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keywords')) {
+    $description = $total_jobs.' '.Yii::$app->request->get('keywords').' jobs vacancies available in '.Yii::$app->request->get('location').' - '.date('D M Y').'. Signup and apply on empoweryouth.com for free of cost.  Also, if not having a resume than build with us.';
+} elseif (Yii::$app->request->get('location')) {
+    $description = $total_jobs . ' Jobs vacancies available in ' . Yii::$app->request->get('location') . ' on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} elseif (Yii::$app->request->get('keyword')) {
+    $description = $total_jobs . ' ' . Yii::$app->request->get('keyword') . ' job vacancies available on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} else {
+    $description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
+}
+
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
@@ -71,37 +91,38 @@ $this->registerCss('
                 <div class=" col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
                     <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
-                        <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
-                            <span class="load-more-text">Load More</span>
-                            <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
-                                 stroke="currentColor">
-                                <g fill="none" fill-rule="evenodd">
-                                    <g transform="translate(1 1)" stroke-width="2">
-                                        <circle cx="8.90684" cy="50" r="5">
-                                            <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
-                                                     calcMode="linear" repeatCount="indefinite"></animate>
-                                            <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
-                                                     calcMode="linear" repeatCount="indefinite"></animate>
-                                        </circle>
-                                        <circle cx="25.0466" cy="8.99563" r="5">
-                                            <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
-                                                     values="5;50;50;5" calcMode="linear"
-                                                     repeatCount="indefinite"></animate>
-                                            <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
-                                                     values="27;49;5;27" calcMode="linear"
-                                                     repeatCount="indefinite"></animate>
-                                        </circle>
-                                        <circle cx="47.0466" cy="46.0044" r="5">
-                                            <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
-                                                     calcMode="linear" repeatCount="indefinite"></animate>
-                                            <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
-                                                     values="49;5;27;49" calcMode="linear"
-                                                     repeatCount="indefinite"></animate>
-                                        </circle>
-                                    </g>
+                    <a href="#" id="loadMore"
+                       class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
+                        <span class="load-more-text">Load More</span>
+                        <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
+                             stroke="currentColor">
+                            <g fill="none" fill-rule="evenodd">
+                                <g transform="translate(1 1)" stroke-width="2">
+                                    <circle cx="8.90684" cy="50" r="5">
+                                        <animate attributeName="cy" begin="0s" dur="2.2s" values="50;5;50;50"
+                                                 calcMode="linear" repeatCount="indefinite"></animate>
+                                        <animate attributeName="cx" begin="0s" dur="2.2s" values="5;27;49;5"
+                                                 calcMode="linear" repeatCount="indefinite"></animate>
+                                    </circle>
+                                    <circle cx="25.0466" cy="8.99563" r="5">
+                                        <animate attributeName="cy" begin="0s" dur="2.2s" from="5" to="5"
+                                                 values="5;50;50;5" calcMode="linear"
+                                                 repeatCount="indefinite"></animate>
+                                        <animate attributeName="cx" begin="0s" dur="2.2s" from="27" to="27"
+                                                 values="27;49;5;27" calcMode="linear"
+                                                 repeatCount="indefinite"></animate>
+                                    </circle>
+                                    <circle cx="47.0466" cy="46.0044" r="5">
+                                        <animate attributeName="cy" begin="0s" dur="2.2s" values="50;50;5;50"
+                                                 calcMode="linear" repeatCount="indefinite"></animate>
+                                        <animate attributeName="cx" from="49" to="49" begin="0s" dur="2.2s"
+                                                 values="49;5;27;49" calcMode="linear"
+                                                 repeatCount="indefinite"></animate>
+                                    </circle>
                                 </g>
-                            </svg>
-                        </a>
+                            </g>
+                        </svg>
+                    </a>
                 </div>
             </div>
         </div>
