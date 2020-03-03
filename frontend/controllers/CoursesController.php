@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 
 class CoursesController extends Controller
 {
@@ -70,26 +71,25 @@ class CoursesController extends Controller
 
     public function actionDetail($uid)
     {
-        return $this->render('courses-detail-page');
-    }
-
-    public function actionGetData(){
-        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-            $id = Yii::$app->request->post('id');
-            $url = "https://www.udemy.com/api-2.0/courses/" . $id . "?fields[course]=@all";
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            $header = [
-                'Accept: application/json, text/plain, */*',
-                'Content-Type: application/json;charset=utf-8',
-                'Authorization: Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ=='
-            ];
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            $result = curl_exec($ch);
-
-            return $result;
+        $url = "https://www.udemy.com/api-2.0/courses/" . $uid . "?fields[course]=@all";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+            'Authorization: Basic c09DMng2QWdMRUp2UE9rNUxxeXEzaGVjdHFZaHVJRVFZazRrc0xHazpLaHdxOEd1Uk9VTENmQW9PZTZjUWpvWWZ0b1hNWWdhQ1dzUG9MMWZLbVZsb3ViYlNlc1FSc3hTYVdSNm51M0UzMVUzM1BRTGs4enFiSDQzeDh0ZDhHR0ZrSWdSVHhHTmM0UWpKS25VVWpTU1ZXTm9sOEI1c2huR3ZENnBYWEFwMQ=='
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if($result['title']) {
+            return $this->render('courses-detail-page', [
+                'data' => $result
+            ]);
+        } else{
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
 
