@@ -10,7 +10,7 @@ Yii::$app->view->registerJs('var keywords = "'. $keywords.'"',  \yii\web\View::P
         <div class="row">
             <div class="col-md-12 z-index-9">
                 <div class="search-box text-center">
-                    <h2 class="text-white mb-5 font-weight-700">Looking for a Career In Government.</h2>
+                    <h2 class="text-white mt-40 mb-5 font-weight-700">Looking for a Career In Government.</h2>
                     <h4 class="text-white font-20 mt-0">Find Your Dream Job Today.</h4>
                     <form id="form-search" action="">
                         <div class="input-group search-bar">
