@@ -386,6 +386,46 @@ $.ajax({
             $('#detail-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
         } else{
             var template = $('#detail-app').html();
+             var m = ["m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9", "m10", "m11", "m12", "m13", "m14", "m15", "m16"];
+            for(var y=0;y<=16;y++){
+                m[y] = document.createElement('meta');
+            }
+              m[0].name = 'keywords'; 
+              m[0].content = response.title  + ',' + response.primary_category.title + ',' + response.primary_subcategory.title + ', Udemy Courses';
+              m[1].name = 'description'; 
+              m[1].content = response.headline;
+              m[2].name = 'twitter:card'; 
+              m[2].content = 'summary_large_image';
+              m[3].name = 'twitter:title'; 
+              m[3].content = response.title;
+              m[4].name = 'twitter:description'; 
+              m[4].content = response.headline;
+              m[5].name = 'twitter:site'; 
+              m[5].content = '@EmpowerYouth__';
+              m[6].name = 'twitter:creator'; 
+              m[6].content = '@EmpowerYouth__';
+              m[7].name = 'twitter:image'; 
+              m[7].content = response.image_750x422;
+              m[8].property = 'og:locale'; 
+              m[8].content = 'en';
+              m[9].property = 'og:type'; 
+              m[9].content = 'website';
+              m[10].property = 'og:site_name'; 
+              m[10].content = 'Empower Youth';
+              m[11].property = 'og:url'; 
+              m[11].content = window.location.href;
+              m[12].property = 'og:title'; 
+              m[12].content = response.title;
+              m[13].property = 'og:description'; 
+              m[13].content = response.headline;
+              m[14].property = 'og:image';
+              m[14].content = response.image_750x422;
+              m[15].property = 'fb:app_id'; 
+              m[15].content = '973766889447403';
+              for(var z=0;z<=16;z++){
+                document.head.appendChild(m[z]);
+              }
+              $('title').text(response.title + ' | Empower Youth');
             var rendered = Mustache.render(template,response);
             $('#detail-main').append(rendered);
         }
