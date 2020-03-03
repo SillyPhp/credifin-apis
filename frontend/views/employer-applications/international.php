@@ -84,9 +84,9 @@ if($type == 'internships'){
                                 </div>
                                 <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 p-0">
                                     <div class="p-category">
-                                        <a href="<?= Url::to($url .'dubai')?>" title="">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/uae.png') ?>">
-                                            <span>UAE</span>
+                                        <a href="<?= Url::to($url .'thailand')?>" title="">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/world-job/thailand.png') ?>">
+                                            <span>Thailand</span>
                                         </a>
                                     </div>
                                 </div>
