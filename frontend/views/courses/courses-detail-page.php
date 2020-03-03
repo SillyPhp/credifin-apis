@@ -3,124 +3,133 @@ $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
 
+$this->title = Yii::t('frontend', $data['title']);
+$keywords = $data['title'] . "," . $data['primary_category']['title'] . "," . $data['primary_subcategory']['title'] . ', Udemy Courses';
+$description = $data['headline'];
+$image = $data['image_750x422'];
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<div id="detail-main"></div>
-    <script id="detail-app" type="text/template">
-        {{#.}}
-        <section class="bg-set-clr">
-            <div class="container">
-                <div class="row">
-                    <div class="set-line-main">
-                        <div class="c-heading">{{title}}</div>
-                        <div class="c-suggestion">{{headline}}</div>
-                        <div class="c-created">Created by :<span>{{#visible_instructors}}{{display_name}}{{/visible_instructors}}</span></div>
-                        <div class="c-lang">Languages : <span>{{#locale}}{{locale.title}}{{/locale}}</span></div>
+    <section class="bg-set-clr">
+        <div class="container">
+            <div class="row">
+                <div class="set-line-main">
+                    <div class="c-heading"><?= $data['title']; ?></div>
+                    <div class="c-suggestion"><?= $data['headline'] ?></div>
+                    <div class="c-created">Created by :
+                        <span>
+                                <?php
+                                $cr = [];
+                                foreach ($data['visible_instructors'] as $c) {
+                                    array_push($cr, $c['display_name']);
+                                }
+                                echo implode(",", $cr);
+                                ?>
+                            </span>
                     </div>
+                    <div class="c-lang">Languages : <span><?= $data['locale']['title'] ?></span></div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-sm-8">
-                        <div class="about-course">
-                            <div class="course-heading">About this course</div>
-                            <div class="course-detail">
-                                {{{description}}}
-                            </div>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-8">
+                    <div class="about-course">
+                        <div class="course-heading">About this course</div>
+                        <div class="course-detail">
+                            <?= $data['description']; ?>
                         </div>
-                        <div class="learn-box">
-                            <h3>What you will learn</h3>
-                            <div class="points">
+                    </div>
+                    <div class="learn-box">
+                        <h3>What you will learn</h3>
+                        <div class="points">
+                            <?php
+                            foreach ($data['what_you_will_learn_data']['items'] as $d) {
+                                ?>
                                 <div class="learning-cards"><i class="fas fa-check-circle"></i>
-                                    {{#what_you_will_learn_data.items}}
-                                        {{.}}
-                                    {{/what_you_will_learn_data.items}}
+                                    <?= $d ?>
                                 </div>
-                            </div>
+                                <?php
+                            }
+                            ?>
                         </div>
-                        <div class="c-requirements">
-                            <h3>Requirements</h3>
-                            <div class="req-points">
+                    </div>
+                    <div class="c-requirements">
+                        <h3>Requirements</h3>
+                        <div class="req-points">
+                            <ul>
+                                <?php
+                                foreach ($data['requirements_data']['items'] as $r) {
+                                    ?>
+                                    <li>
+                                        <?= $r; ?>
+                                    </li>
+                                    <?php
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="buy-box">
+                        <div class="c-preview">
+                            <img src="<?= $data['image_304x171'] ?>"/>
+                        </div>
+                        <div class="c-amount"><?php if ($data['is_paid']) { ?><i
+                                    class="fas fa-rupee-sign"></i><?php } ?> <?= $data['price'] ?></div>
+                        <div class="buy-btn">
+                            <a href="https://udemy.com<?= $data['url'] ?>" target="_blank" class="new-btn-set">Enroll
+                                Now</a>
+                        </div>
+                        <div class="c-includes">
+                            <div class="include-head">This Course Includes</div>
+                            <div class="include-inner">
                                 <ul>
-                                    {{#requirements_data.items}}
-                                        <li>
-                                            {{.}}
-                                        </li>
-                                    {{/requirements_data.items}}
+                                    <li><?= $data['content_info'] ?> on-demand video</li>
+                                    <?php if ($data['num_article_assets']) { ?>
+                                        <li><?= $data['num_article_assets'] ?> articles</li><?php } ?>
+                                    <?php if ($data['num_additional_assets']) { ?>
+                                        <li><?= $data['num_additional_assets'] ?> downloadable resources</li><?php } ?>
+                                    <?php if ($data['num_coding_exercises']) { ?>
+                                        <li><?= $data['num_coding_exercises'] ?> Exercises</li><?php } ?>
+                                    <?php if ($data['has_certificate']) { ?>
+                                        <li>Certificate of Completion</li><?php } ?>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-4">
-                        <div class="buy-box">
-                            <div class="c-preview">
-                                <img src="{{image_304x171}}"/>
-                            </div>
-                            <div class="c-amount">{{#is_paid}}<i class="fas fa-rupee-sign"></i>{{/is_paid}} {{price}}</div>
-                            <div class="buy-btn">
-                                <a href="https://udemy.com/{{url}}" target="_blank" class="new-btn-set">Enroll Now</a>
-                            </div>
-                            <div class="c-includes">
-                                <div class="include-head">This Course Includes</div>
-                                <div class="include-inner">
-                                    <ul>
-                                        <li>{{content_info}} on-demand video</li>
-                                        {{#num_article_assets}}<li>{{num_article_assets}} articles</li>{{/num_article_assets}}
-                                        {{#num_additional_assets}}<li>{{num_additional_assets}} downloadable resources</li>{{/num_additional_assets}}
-                                        {{#num_coding_exercises}}<li>{{num_coding_exercises}} Exercises</li>{{/num_coding_exercises}}
-                                        {{#has_certificate}}<li>Certificate of Completion</li>{{/has_certificate}}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </section>
-        {{/.}}
-    </script>
-    <div id="sectionIsLoading" class="sectionIsLoading">
-        <div></div>
-        <div></div>
-    </div>
+        </div>
+    </section>
 <?php
 $this->registerCss('
-.sectionIsLoading {
-    display: block;
-    position: relative;
-    width: 80px;
-    height: 50vh;
-    margin: auto;
-    margin-top: 25vh;
-}
-.sectionIsLoading div {
-  position: absolute;
-  border: 4px solid #00a0e3;
-  opacity: 1;
-  border-radius: 50%;
-  animation: sectionIsLoading 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
-}
-.sectionIsLoading div:nth-child(2) {
-  animation-delay: -0.5s;
-}
-@keyframes sectionIsLoading {
-  0% {
-    top: 36px;
-    left: 36px;
-    width: 0;
-    height: 0;
-    opacity: 1;
-  }
-  100% {
-    top: 0px;
-    left: 0px;
-    width: 72px;
-    height: 72px;
-    opacity: 0;
-  }
-}
 .bg-set-clr {
     background-color:#505763;
     color:#fff;
@@ -370,27 +379,3 @@ $this->registerCss('
     margin: 10px 0px;
 }
 ');
-$script = <<< JS
-var id = $(location).attr("href").split('/').pop();
-$.ajax({
-    method: "POST",
-    url : '/courses/get-data',
-    data:{id:id},
-    success: function(response) {
-        $('#sectionIsLoading').fadeOut(800);
-            response = JSON.parse(response);
-        if(response.detail == "Not found.") {
-            $('#detail-main').css('text-align', 'center');
-            $('#detail-main').css('min-height', '60vh');
-            $('#detail-main').css('margin-top', '15vh');
-            $('#detail-main').append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
-        } else{
-            var template = $('#detail-app').html();
-            var rendered = Mustache.render(template,response);
-            $('#detail-main').append(rendered);
-        }
-    }
-});
-JS;
-$this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

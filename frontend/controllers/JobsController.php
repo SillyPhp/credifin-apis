@@ -363,6 +363,7 @@ class JobsController extends Controller
 
     public function actionList()
     {
+
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
