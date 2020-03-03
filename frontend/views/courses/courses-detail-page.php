@@ -101,8 +101,7 @@ $this->params['seo_tags'] = [
                         <div class="c-preview">
                             <img src="<?= $data['image_304x171'] ?>"/>
                         </div>
-                        <div class="c-amount"><?php if ($data['is_paid']) { ?><i
-                                    class="fas fa-rupee-sign"></i><?php } ?> <?= $data['price'] ?></div>
+                        <div class="c-amount"><?= $data['price'] ?></div>
                         <div class="buy-btn">
                             <a href="https://udemy.com<?= $data['url'] ?>" target="_blank" class="new-btn-set">Enroll
                                 Now</a>
