@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use account\models\recruiter\AddCompany;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -14,7 +15,7 @@ use common\models\AppliedApplicationProcess;
 use common\models\Organizations;
 use common\models\AssignedCategories;
 
-class HrController extends Controller {
+class RecruiterController extends Controller {
 
     public function behaviors() {
         return [
@@ -36,16 +37,12 @@ class HrController extends Controller {
         return parent::beforeAction($action);
     }
 
-//    public $layout = 'backend-main';
-
     public function actionDashboard() {
-//        $organizationSignUpForm = new OrganizationSignUpForm();
-//        $organizationDetailForm = new OrganizationDetailForm();
+        $model = new AddCompany();
         return $this->render('dashboard', [
-//                    'organizationSignUpForm' => $organizationSignUpForm, 'organizationDetailForm' => $organizationDetailForm,
+            'model'=>$model
         ]);
     }
-
     public function actionCandidates(){
         return $this->render('candidates-hr');
     }

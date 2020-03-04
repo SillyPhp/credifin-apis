@@ -1,12 +1,11 @@
 <?php
 
 namespace api\modules\v3\controllers;
-
 use Yii;
 use yii\web\Response;
 use yii\rest\Controller;
 use yii\filters\ContentNegotiator;
-use api\modules\v1\models\Candidates;
+use api\modules\v3\models\Candidates;
 use common\models\UserAccessTokens;
 
 class ApiBaseController extends Controller
