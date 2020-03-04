@@ -1,7 +1,5 @@
 <?php
 
-/* @var $referral string */
-
 use yii\widgets\Menu;
 use yii\helpers\Url;
 
@@ -21,6 +19,12 @@ if (!empty(Yii::$app->user->identity->organization)) {
         'url' => Url::toRoute('/templates'),
     ];
     array_push($result, $template);
+
+    $schedular = [
+        'label' => '<i class=""></i>' . Yii::t('account', 'Interview Schedular'),
+        'url' => Url::toRoute('/schedular/update-interview'),
+    ];
+    array_push($result, $schedular);
 }
 
 if (Yii::$app->user->identity->businessActivity->business_activity == "Educational Institute") {
@@ -33,7 +37,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity == "Education
 
 $profile = [
     'label' => '<i class=""></i>' . Yii::t('account', 'My Profile'),
-    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username) . $referral,
+    'url' => Url::to((!empty(Yii::$app->user->identity->organization)) ? '/' . Yii::$app->user->identity->organization->slug : '/' . Yii::$app->user->identity->username),
     'template' => '<a href="{url}" target="_blank">{label}</a>',
 ];
 array_push($result, $profile);

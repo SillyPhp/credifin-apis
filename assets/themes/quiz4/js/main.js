@@ -48,11 +48,11 @@ $.ajax({
             r['name'] = main_data[i]['quiz_question_enc_id'];
             r['backgroundColor'] = 'rgb(67, 34, 56)';
             r['img'] = $('#i_path').val() + r['image_location'] + "/" + r['image'];
-            for(var j= 0; j < main_data[i]['quizAnswers'].length; j++){
-                if(main_data[i]['quizAnswers'][j]['is_answer'] == "1"){
-                    r['answer'] = main_data[i]['quizAnswers'][j]['answer'];
+            for(var j= 0; j < main_data[i]['quizAnswersPools'].length; j++){
+                if(main_data[i]['quizAnswersPools'][j]['is_answer'] == "1"){
+                    r['answer'] = main_data[i]['quizAnswersPools'][j]['answer'];
                 }else{
-                    w.push(main_data[i]['quizAnswers'][j]['answer'])
+                    w.push(main_data[i]['quizAnswersPools'][j]['answer'])
                 }
             }
             var p = {
@@ -417,7 +417,7 @@ function twShare(url, title, winWidth, winHeight) {
 pen_id = $('._pen_id').text();
 
 $('body').on('click', '.share', () => {
-    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouth__ and others.`, 520, 350);
+    twShare(`https://codepen.io/jcoulterdesign/full/a1b3ea524ead4700015153bb95b881c3`, `I got ${$('.breadcrumb.correct').length} out of 5 questions correct in this quiz by @EmpowerYouthin and others.`, 520, 350);
     return false;
 });
 

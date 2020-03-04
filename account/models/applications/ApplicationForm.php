@@ -3,6 +3,7 @@
 namespace account\models\applications;
 
 use common\models\ApplicationOption;
+use common\models\Currencies;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -215,8 +216,8 @@ class ApplicationForm extends Model
         $employerApplicationsModel->application_type_enc_id = $application_type_enc_id->application_type_enc_id;
         $employerApplicationsModel->interview_process_enc_id = $this->interview_process;
         $employerApplicationsModel->published_on = date('Y-m-d H:i:s');
-        $employerApplicationsModel->image = '1';
         $employerApplicationsModel->image_location = '1';
+        $employerApplicationsModel->image = '1';
         $employerApplicationsModel->status = 'Active';
         $category_execute = Categories::find()
             ->alias('a')
@@ -260,6 +261,46 @@ class ApplicationForm extends Model
                 $employerApplicationsModel->slug = $utilitiesModel->create_slug();
             }
         }
+
+//        $script_image_location = Yii::$app->getSecurity()->generateRandomString();
+//        $script_image = Yii::$app->getSecurity()->generateRandomString() . '.png';
+//        $base_path = Yii::$app->params->upload_directories->employer_applications->ai->image_path.$script_image_location;
+//        if (!is_dir($base_path)) {
+//            if (mkdir($base_path, 0755, true)) {
+//                if (!empty(Yii::$app->user->identity->organization->logo)) {
+//                    $res = $this->genrateImage(
+//                        $this->title,
+//                        Yii::$app->user->identity->organization->name,
+//                        Yii::$app->params->upload_directories->organizations->logo_path . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo,
+//                        $base_path.DIRECTORY_SEPARATOR.$script_image,
+//                        Url::to('@rootDirectory/assets/common/images/image_script/share-orignal-image.png')
+//                    );
+//                }
+//                else
+//                {
+//                    $res =  $this->genrateImage(
+//                        $this->title,
+//                        Yii::$app->user->identity->organization->name,
+//                        '',
+//                        $base_path.DIRECTORY_SEPARATOR.$script_image,
+//                        Url::to('@rootDirectory/assets/common/images/image_script/share-orignal-image.png')
+//                    );
+//                }
+//            }
+//        }
+//
+//        return $res;
+//
+//        if ($res)
+//        {
+//          $employerApplicationsModel->image_location = $script_image_location;
+//          $employerApplicationsModel->image = $script_image;
+//        }
+//        else
+//        {
+//            $employerApplicationsModel->image_location = '0';
+//            $employerApplicationsModel->image = '0';
+//        }
 
 //        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
 //        if (!$image_information) {
@@ -610,7 +651,7 @@ class ApplicationForm extends Model
                 }
             }
             Yii::$app->sitemap->generate();
-            return true;
+            return $employerApplicationsModel->application_enc_id;
         } else {
             return false;
         }
@@ -747,7 +788,15 @@ class ApplicationForm extends Model
         $que = ArrayHelper::map($questions_list, 'questionnaire_enc_id', 'questionnaire_name');
         return $que;
     }
-
+    public function getCurrency()
+    {
+        $d = Currencies::find()
+            ->select(['currency_enc_id','CONCAT(code," ",html_code) code'])
+            ->orderBy([new \yii\db\Expression('FIELD (code, "INR") DESC, code ASC')])
+            ->asArray()->all();
+        $d = ArrayHelper::map($d, 'currency_enc_id', 'code');
+        return $d;
+    }
     public function getOrganizationLocations($type = 1)
     {
         $loc_list = OrganizationLocations::find()
@@ -874,6 +923,7 @@ class ApplicationForm extends Model
 
     public function getCloneData($aidk, $application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -893,7 +943,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience', 'b.*'])
+                END) as experience', 'b.*','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($b) {
                 $b->onCondition(['c.is_deleted' => 0]);
@@ -926,6 +976,7 @@ class ApplicationForm extends Model
                     $b->joinWith(['cityEnc t'], false);
                 }], false);
                 $b->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
+                $b->distinct();
             }])
             ->joinWith(['applicationPlacementCities r'=>function($b)
             {
@@ -952,6 +1003,7 @@ class ApplicationForm extends Model
 
     public function getCloneUnclaimed($aidk,$application_type)
     {
+        $t = (($application_type=="Jobs")?'job':'internship');
         $application = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -967,7 +1019,7 @@ class ApplicationForm extends Model
                 WHEN a.experience = "10-20" THEN "10-20 Years"
                 WHEN a.experience = "20+" THEN "More Than 20 Years"
                 ELSE "No Experience"
-                END) as experience'])
+                END) as experience','CONCAT("/","' . $t . '","/", a.slug) link'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -990,5 +1042,35 @@ class ApplicationForm extends Model
             ->one();
         return $application;
 
+    }
+
+    private function genrateImage($title,$company_name,$icon_path,$output_image,$template)
+    {
+        $output_image = $output_image;
+        $company_name = $company_name;
+        $font = Url::to('@rootDirectory/assets/common/images/image_script/GeoSlb712MdBTBold.ttf');
+        $font2 = Url::to('@rootDirectory/assets/common/images/image_script/Gelasio-Regular.ttf');
+        $font3 = Url::to('@rootDirectory/assets/common/images/image_script/GeoSlb712MdBTBold.ttf');
+        $script_path = Url::to('@rootDirectory/assets/common/images/image_script/image_genrate_script.py');
+        $job_title = $title;
+        $canvas_name = substr(trim($company_name),0,1);
+        $icon_path = $icon_path;
+        $temp_image = $template;
+        $output_array = "";
+        $ret_code ="";
+        $script = 'sudo python "'.$script_path.'" "'.$company_name.'" "'.$job_title.'" "'.$canvas_name.'" "'.$temp_image.'" "'.$font.'" "'.$font2.'" "'.$font3.'" "'.$output_image.'" "'.$icon_path.'" ';
+        exec($script.' 2>&1',$output_array,$ret_code);
+        return [
+            'out'=>$output_array,
+            'ret'=>$ret_code
+        ];
+//        if ($ret_code)
+//        {
+//            return true;
+//        }
+//        else
+//        {
+//            return false;
+//        }
     }
 }

@@ -2,6 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationPlacementLocations;
+use common\models\ApplicationTemplates;
+use common\models\ApplicationTypes;
+use common\models\Cities;
+use common\models\OrganizationLocations;
+use common\models\States;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -47,8 +54,8 @@ class InternshipsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
-        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
@@ -57,7 +64,7 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $options = [];
-            $options['limit'] = 3;
+            $options['limit'] = 6;
             $options['page'] = 1;
             $cards = ApplicationCards::internships($options);
             if ($cards) {
@@ -147,11 +154,65 @@ class InternshipsController extends Controller
             ->asArray()
             ->all();
 
+        $other_jobs = (new \yii\db\Query())
+            ->distinct()
+            ->from(States::tableName() . 'as a')
+            ->select([
+                'a.state_enc_id',
+                'b.country_enc_id',
+                'c.city_enc_id',
+                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Jobs" Then 1 END)  as job_count',
+                'count(CASE WHEN e.application_enc_id IS NOT NULL AND f.name = "Internships"  Then 1 END)  as internship_count',
+            ])
+            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+            ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
+            ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as g', 'g.assigned_category_enc_id = e.title')
+            ->where(['e.is_deleted' => 0, 'b.name' => 'India']);
+        $other_jobs_state_wise = $other_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');
+        $ai_jobs = (new \yii\db\Query())
+            ->distinct()
+            ->from(States::tableName() . 'as a')
+            ->select([
+                'a.state_enc_id',
+                'b.country_enc_id',
+                'c.city_enc_id',
+                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Jobs" Then 1 END)  as job_count',
+                'count(CASE WHEN j.application_enc_id IS NOT NULL AND k.name = "Internships"  Then 1 END)  as internship_count',
+            ])
+            ->innerJoin(\common\models\Countries::tableName() . 'as b', 'b.country_enc_id = a.country_enc_id')
+            ->leftJoin(Cities::tableName() . 'as c', 'c.state_enc_id = a.state_enc_id')
+            ->leftJoin(OrganizationLocations::tableName() . 'as h', 'h.city_enc_id = c.city_enc_id')
+            ->leftJoin(ApplicationPlacementLocations::tableName() . 'as i', 'i.location_enc_id = h.location_enc_id')
+            ->innerJoin(EmployerApplications::tableName() . 'as j', 'j.application_enc_id = i.application_enc_id')
+            ->innerJoin(ApplicationTypes::tableName() . 'as k', 'k.application_type_enc_id = j.application_type_enc_id')
+            ->innerJoin(AssignedCategories::tableName() . 'as l', 'l.assigned_category_enc_id = j.title')
+            ->where(['j.is_deleted' => 0, 'l.is_deleted' => 0, 'b.name' => 'India']);
+        $ai_jobs_state_wise = $ai_jobs->addSelect('a.name state_name')->groupBy('a.id');
+        $ai_jobs_city_wise = $ai_jobs->addSelect('c.name city_name')->groupBy('c.id');
+        $cities_jobs = (new \yii\db\Query())
+            ->from([
+                $other_jobs_city_wise->union($ai_jobs_city_wise),
+            ])
+            ->select(['city_name', 'SUM(internship_count) as internships'])
+            ->groupBy('city_enc_id')
+            ->orderBy(['internships' => SORT_DESC])
+            ->limit(4)
+            ->all();
+
+
+        $tweets = $this->_getTweets($keywords = null, $location = null, $type = "Internships", $limit = 4, $offset = null);
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
+            'tweets' => $tweets,
+            'cities_jobs' => $cities_jobs
+
         ]);
     }
 
@@ -204,8 +265,12 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
-
             $options = [];
+            if (Yii::$app->request->get('location')||Yii::$app->request->get('keyword'))
+            {
+                $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
+                $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -264,10 +329,10 @@ class InternshipsController extends Controller
         }
         $object = new \account\models\applications\ApplicationForm();
         if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Internships');
         } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
             $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Internships');
         }
         if (!Yii::$app->user->isGuest) {
@@ -315,14 +380,52 @@ class InternshipsController extends Controller
         }
     }
 
+    public function actionTemplate($view){
+        if(Yii::$app->user->identity->organization) {
+            $application = ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.description', 'a.title', 'a.designation_enc_id', 'a.type', 'a.preferred_industry', 'a.interview_process_enc_id', 'a.timings_from', 'a.timings_to', 'a.experience', 'a.preferred_gender', 'zz.name as cat_name', 'zx.name as profile', 'y.designation', 'v.industry'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc zx']);
+                }], false)
+                ->joinWith(['designationEnc y'])
+                ->joinWith(['preferredIndustry v'], false)
+                ->joinWith(['applicationEduReqTemplates b' => function ($b) {
+                    $b->select(['b.educational_requirement_enc_id', 'b.application_enc_id', 'i.educational_requirement']);
+                    $b->joinWith(['educationalRequirementEnc i'], false);
+                }])
+                ->joinWith(['applicationOptionsTemplates c'])
+                ->joinWith(['applicationSkillsTemplates d' => function ($d) {
+                    $d->select(['d.application_enc_id', 'd.skill_enc_id', 'g.skill']);
+                    $d->joinWith(['skillEnc g'], false);
+                }])
+                ->joinWith(['applicationTemplateJobDescriptions e' => function ($e) {
+                    $e->select(['e.job_description_enc_id', 'e.application_enc_id', 'h.job_description']);
+                    $e->joinWith(['jobDescriptionEnc h'], false);
+                }])
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['a.application_enc_id' => $view, 'f.name' => 'Internships'])
+                ->asArray()
+                ->one();
+
+            return $this->render('/employer-applications/template-preview', [
+                'data' => $application,
+                'type' => 'Internship'
+            ]);
+        }
+    }
+
     public function actionQuickInternship()
     {
+        if (!Yii::$app->user->identity->organization):
         $this->layout = 'main-secondary';
         $model = new QuickJob();
         $typ = 'Internships';
         $data = new ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
+        $currencies = $data->getCurrency();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save($typ)) {
                 Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
@@ -331,7 +434,10 @@ class InternshipsController extends Controller
             }
             return $this->refresh();
         }
-        return $this->render('quick-internship', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        return $this->render('quick-internship', ['typ' => $typ,'currencies'=>$currencies,'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else :
+            return $this->redirect('/account/internships/quick-internship');
+        endif;
     }
 
     public function actionSimilarApplication($slug)
@@ -547,6 +653,12 @@ class InternshipsController extends Controller
 
     }
 
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'internships'
+        ]);
+    }
+
     private function getApplicationInfo($id)
     {
         $data = $this->getApplication($id);
@@ -735,12 +847,74 @@ class InternshipsController extends Controller
             }], false)
             ->where(['a.assigned_to' => ucfirst('Internships')])
             ->orderBy([
-                'total' => SORT_DESC,
+//                'total' => SORT_DESC,
                 'b.name' => SORT_ASC,
             ])
             ->asArray()
             ->all();
         return $this->render('internship-profiles', ['profiles' => $activeProfiles]);
+
+    }
+
+    private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
+    {
+        $tweets1 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\UnclaimedOrganizations::tableName() . 'as c', 'c.organization_enc_id = a.unclaim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $tweets2 = (new \yii\db\Query())
+            ->distinct()
+            ->select(['a.tweet_enc_id', 'a.job_type', 'a.created_on', 'c.name org_name', 'a.html_code', 'f.name profile', 'e.name job_title', 'c.initials_color color', 'CASE WHEN c.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",c.logo_location, "/", c.logo) END logo'])
+            ->from(\common\models\TwitterJobs::tableName() . 'as a')
+            ->leftJoin(\common\models\TwitterPlacementCities::tableName() . ' g', 'g.tweet_enc_id = a.tweet_enc_id')
+            ->leftJoin(\common\models\Cities::tableName() . 'as h', 'h.city_enc_id = g.city_enc_id')
+            ->innerJoin(\common\models\AssignedCategories::tableName() . 'as d', 'd.assigned_category_enc_id = a.job_title')
+            ->innerJoin(\common\models\Categories::tableName() . 'as e', 'e.category_enc_id = d.category_enc_id')
+            ->innerJoin(\common\models\Categories::tableName() . 'as f', 'f.category_enc_id = d.parent_enc_id')
+            ->innerJoin(\common\models\Organizations::tableName() . 'as c', 'c.organization_enc_id = a.claim_organization_enc_id')
+            ->innerJoin(\common\models\ApplicationTypes::tableName() . 'as j', 'j.application_type_enc_id = a.application_type_enc_id')
+            ->FilterWhere([
+                'or',
+                ['like', 'a.job_type', $keywords],
+                ['like', 'c.name', $keywords],
+                ['like', 'f.name', $keywords],
+                ['like', 'e.name', $keywords],
+                ['like', 'a.html_code', $keywords],
+                ['like', 'h.name', $keywords],
+            ])
+            ->andFilterWhere(['like', 'h.name', $location])
+            ->andFilterWhere(['like', 'j.name', $type]);
+
+        $result = (new \yii\db\Query())
+            ->from([
+                $tweets1->union($tweets2),
+            ])
+            ->limit($limit)
+            ->offset($offset)
+            ->groupBy('tweet_enc_id')
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all();
+
+        return $result;
     }
 
 }

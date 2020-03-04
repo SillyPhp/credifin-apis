@@ -192,6 +192,13 @@ use yii\helpers\Url;
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $this->registerCss('
+.application-card-img{
+    margin-top: 25px;
+    margin-left:0px;
+}
+.application-card-description{
+    margin: 20px 0px 0px 20px;
+}
 .search-bar{
     width:66%;
     background:#fff;
@@ -584,6 +591,8 @@ a.wn-overlay-text {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width:100%;
+    padding:0 10px;
 }
 ');
 

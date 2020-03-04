@@ -43,6 +43,53 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="heading-style">Top Rated Organizations</div>
+                    <div id="review_container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="share-box">
+        <div class="back1"><img src="<?= Url::to('@eyAssets/images/pages/review/post1.png')?>"></div>
+        <div class="back2"><img src="<?= Url::to('@eyAssets/images/pages/review/post2.png')?>"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Post Genuine Review About Your Company</div>
+                    <div class="col-md-4 set style-set">
+                        <div class="logo1"><img src="<?= Url::to('@eyAssets/images/pages/review/share-your-exp.png')?>"></div>
+                        <div class="text">Share Your Experience</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo2"><img src="<?= Url::to('@eyAssets/images/pages/review/refer-a-frnd.png')?>"></div>
+                        <div class="text">Refer a Friend</div>
+                    </div>
+                    <div class="col-md-4 set">
+                        <div class="logo3"><img src="<?= Url::to('@eyAssets/images/pages/review/be-a-guide.png')?>"></div>
+                        <div class="text">Be a Guide</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="heading-style">Recent Reviews</div>
+                    <div id="review_container_recent">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
                     <div class="heading-style">Review Methodology</div>
                 </div>
                 <div class="col-md-4">
@@ -78,18 +125,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Recent Reviews</div>
-                    <div id="review_container_recent">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="ey-helps">
         <div class="container">
             <div class="row">
@@ -127,18 +163,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="heading-style">Top Rated Organizations</div>
-                    <div id="review_container">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="qr-bg">
         <div class="container">
             <div class="row">
@@ -162,6 +187,14 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 
 <?php
 $this->registerCss('
@@ -603,6 +636,73 @@ display:inline-block;
 {
 float:right;
 }
+
+.share-box{
+	margin: 30px 0 10px; 
+	border-radius: 5px;
+	padding: 15px 0;
+	position: relative;
+	background-color: rgba(238, 238, 238, .2);
+}
+.back1 img,.back2 img {
+    max-width: 115px;
+}
+.back1{
+	position: absolute;
+	top: 15px;
+	left: 0px;
+}
+.back2{
+	position: absolute;
+	right: 0px;
+	bottom: 20px;
+}
+.new-box-banner{
+	text-align: center;
+	font-size: 35px;
+	font-family: PT Serif;
+	padding-bottom: 30px;
+	text-transform: capitalize;
+	font-weight: bold;
+}
+//.style-set{
+//    padding: 0 0px 0 77px;
+//}
+.logo1 img, .logo2 img, .logo3 img {
+    max-width: 180px;
+}
+//.logo2 img{
+//    max-width: 250px;
+//}
+//.logo3 img{
+//    max-width: 250px;
+//}
+.set{
+    text-align: center;
+}
+.text{
+    padding-top: 20px;
+    padding-bottom: 10px; 
+    font-family: lora;
+    font-size: 19px;
+}
+
+@media only screen and (max-width: 768px) {
+  .back1{top: 150px;}
+  .back2{top: 500px;}
+  .style-set{padding: 0px;}
+  .set{padding-bottom: 20px;}
+}
+@media only screen and (max-width: 450px) {
+	.new-box-banner{
+	    font-size: 25px;
+    }
+	.back1 img, .back2 img{max-width: 60px;}
+	.logo1 img{max-width: 150px;}
+	.logo2 img{max-width: 120px;}
+	.logo3 img{max-width: 130px;}
+}
+
 /*Load Suggestions loader css starts*/
 .load-suggestions{
     display:none;
@@ -677,6 +777,7 @@ fetch_cards_new_most_comp(params={'rating':[5,4],'limit':4,'most_reviewed':1},te
 fetch_cards_comp(params={'rating':[4,5],'limit':3},template=$('#review_container'));
 fetch_cards_comp(params={'rating':[1,2,3,4,5],'sort':1,'limit':3},template=$('#review_container_recent'));
 JS;
+$this->registerJs($script);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('https://fonts.googleapis.com/css?family=Lora');
 ?>

@@ -2,6 +2,7 @@
 
 namespace frontend\models\accounts;
 
+use common\models\EmailLogs;
 use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
@@ -59,7 +60,7 @@ class OrganizationSignUpForm extends Model
             [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-zA-Z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
+            [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
             [['phone', 'organization_phone'], PhoneInputValidator::className()],
@@ -107,7 +108,7 @@ class OrganizationSignUpForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $usernamesModel = new Usernames();
-            $usernamesModel->username = $this->username;
+            $usernamesModel->username = strtolower($this->username);
             $usernamesModel->assigned_to = 2;
             if (!$usernamesModel->validate() || !$usernamesModel->save()) {
                 $this->_flag = false;
@@ -119,10 +120,10 @@ class OrganizationSignUpForm extends Model
 
             $utilitiesModel = new Utilities();
             $usersModel = new Users();
-            $usersModel->username = $this->username;
-            $usersModel->first_name = $this->first_name;
-            $usersModel->last_name = $this->last_name;
-            $usersModel->email = $this->email;
+            $usersModel->username = strtolower($this->username);
+            $usersModel->first_name = ucfirst(strtolower($this->first_name));
+            $usersModel->last_name = ucfirst(strtolower($this->last_name));
+            $usersModel->email = strtolower($this->email);
             $usersModel->phone = $this->phone;
             $usersModel->initials_color = RandomColors::one();
             $utilitiesModel->variables['password'] = $this->new_password;
@@ -157,7 +158,7 @@ class OrganizationSignUpForm extends Model
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
                 $organizationsModel->name = $this->organization_name;
-                $organizationsModel->email = $this->organization_email;
+                $organizationsModel->email = strtolower($this->organization_email);
                 $organizationsModel->initials_color = RandomColors::one();
                 $organizationsModel->phone = $this->organization_phone;
                 $organizationsModel->website = $this->organization_website;
@@ -199,6 +200,30 @@ class OrganizationSignUpForm extends Model
 
             if ($this->_flag) {
                 Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $this->organization_name,
+                    "email" => $this->organization_email,
+                ];
+                $mail->subject = 'Welcome to Empower Youth';
+                $mail->template = 'thank-you';
+                if($mail->send()){
+                    $mail_logs = new EmailLogs();
+                    $utilitesModel = new Utilities();
+                    $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                    $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                    $mail_logs->email_type = 5;
+                    $mail_logs->organization_enc_id = $organizationsModel->organization_enc_id;
+                    $mail_logs->user_enc_id = $usersModel->user_enc_id;
+                    $mail_logs->receiver_name = $organizationsModel->name;
+                    $mail_logs->receiver_email = $usersModel->email;
+                    $mail_logs->receiver_phone = $usersModel->phone;
+                    $mail_logs->subject = 'Welcome to Empower Youth';
+                    $mail_logs->template = 'thank-you';
+                    $mail_logs->is_sent = 1;
+                    $mail_logs->save();
+                }
                 Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
                 return true;

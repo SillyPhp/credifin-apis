@@ -1,9 +1,12 @@
 <?php
+
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
-Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_HEAD);
+
+Yii::$app->view->registerJs('var doc_type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
+
 <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -16,14 +19,14 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="container">
-    <div class="portlet light" id="form_wizard_1">
+    <div class="portlet light nd-shadow" id="form_wizard_1">
         <div class="portlet-title">
             <div class="caption">
                 <i class=" icon-layers font-red"></i>
                 <span class="caption-subject font-red bold uppercase">
-                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
+                    <?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'): ?>
                         Job Application
-                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
+                    <?php elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'): ?>
                         Internship Application
                     <?php endif; ?>
                     <span class="step-title"> Step 1 of 4</span>
@@ -56,9 +59,9 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span class="number"> 2 </span><br/>
                                 <span class="desc">
                                     <i class="fa fa-check"></i>
-                                    <?php if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'): ?>
+                                    <?php if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'): ?>
                                         Job Description
-                                    <?php elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'): ?>
+                                    <?php elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'): ?>
                                         Internship Description
                                     <?php endif; ?>
                                 </span>
@@ -93,15 +96,15 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
                             <?php
-                            if ($type == 'Jobs'||$type=='Clone_Jobs'||$type=='Edit_Jobs'):
+                            if ($type == 'Jobs' || $type == 'Clone_Jobs' || $type == 'Edit_Jobs'):
                                 echo $this->render('/widgets/employer-applications/basic-job-details', [
-                                'form'=>$form,
-                                'model'=>$model,
-                                'primary_cat'=>$primary_cat,
-                                'industry'=>$industry,
-                                'type'=>$type,
-                            ]);
-                            elseif ($type == 'Internships'||$type=='Clone_Internships'||$type=='Edit_Internships'):
+                                    'form' => $form,
+                                    'model' => $model,
+                                    'primary_cat' => $primary_cat,
+                                    'industry' => $industry,
+                                    'type' => $type,
+                                ]);
+                            elseif ($type == 'Internships' || $type == 'Clone_Internships' || $type == 'Edit_Internships'):
                                 echo $this->render('/widgets/employer-applications/basic-internships-details', [
                                     'form' => $form,
                                     'model' => $model,
@@ -114,10 +117,10 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 <span></span>
                             </div>
                             <div class="placement_location_hide">
-                            <?=
-                      $this->render('/widgets/employer-applications/placement-locations', [
-                                    'form'=>$form,
-                                    'model'=>$model,
+                                <?=
+                                $this->render('/widgets/employer-applications/placement-locations', [
+                                    'form' => $form,
+                                    'model' => $model,
                                     'placement_locations' => $placement_locations,
                                 ]);
                                 ?>
@@ -174,8 +177,8 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
                                 'form' => $form,
                                 'model' => $model,
                                 'questionnaire' => $questionnaire,
-                                ]);
-                                ?>
+                            ]);
+                            ?>
                         </div>
                         <div class="tab-pane" id="tab4">
                             <?=
@@ -232,8 +235,105 @@ Yii::$app->view->registerJs('var doc_type = "'. $type.'"',  \yii\web\View::POS_H
     </div>
 </div>
 <div class="fader"></div>
+<input type="hidden" id="app_id_main"/>
 <?php
+//echo $this->render('/widgets/campus-placement/select-college-for-campus-placement',[
+//    'type' => $type,
+//]);
 $this->registerCss("
+body {
+    background-image: url(/assets/themes/ey/images/backgrounds/ai-header.png) !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    background-repeat: no-repeat !important;
+}
+.page-container-bg-solid .page-content{
+    background: transparent !important;
+}
+.portlet.light {
+    background-color: #ffffffe3 !important;
+}
+ul.ks-cboxtags {
+    list-style: none;
+    padding:0px;
+}
+.service-list{
+  display: inline-block;
+  min-width: 120px;
+}
+.service-list label{
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, .9);
+    border: 2px solid rgba(139, 139, 139, .3);
+    color: #333;
+    border-radius: 4px;
+    white-space: nowrap;
+    margin: 3px 0px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all .2s;
+}
+
+.service-list label {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.service-list label::before {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 12px;
+    padding: 2px 6px 2px 2px;
+    content: '\f067';
+    transition: transform .3s ease-in-out;
+}
+
+.service-list input[type='checkbox']:checked + label::before {
+    content: '\f00c';
+    transform: rotate(-360deg);
+    transition: transform .3s ease-in-out;
+}
+
+.service-list input[type='checkbox']:checked + label, .service-list label:hover {
+    border: 2px solid #00a0e3;
+    background-color: #00a0e3;
+    color: #fff;
+    transition: all .2s;
+}
+
+.service-list input[type='checkbox'] {
+  display: absolute;
+}
+.service-list input[type='checkbox'] {
+  position: absolute;
+  opacity: 0;
+}
+.service-list input[type='checkbox']:focus + label {
+  border: 2px solid #00a0e3;
+}
+.align{text-align:center;}
+.padd{padding-top:10px;}
+.comp-logo img{
+    width: 90px;
+    height: 90px;
+    border: 4px solid #fff;    
+}
+.modal-dialog{
+    width:800px !important;    
+}
+.g-pref{
+    display:block;
+    }
 .step {
    -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -437,7 +537,7 @@ textarea{
 }
 .divider{
     border-top:2px solid #eee;
-    margin: 35px -40px 19px;
+    margin: 35px -30px 19px;
 }
 .module2-heading{
     text-transform: uppercase;
@@ -1724,22 +1824,25 @@ window.ChildFunction = ChildFunction;
                        {
                          $('.button-submit').prop('disabled','disabled');
                        },
-                   success: function(data) {
-                   if(data == true)
-                    {
-                    $('.fader').css('display','block');    
-                    $('#loading_img').addClass('show');    
+                   success: function(res) {
+                   if(res['status'] == 200) {
+                        $('.fader').css('display','block');    
+                        $('#loading_img').addClass('show');
+                        $('#app_id_main').val(res['app_id']);
+                        // setTimeout(function() {
+                        //     $('.m-modal, .m-cover').removeClass("hidden");
+                        //     $('.m-modal').addClass("zoom");
+                        // }, 500);
                     function explode(){
                      window.location.replace(redirect_url); 
                      }
-                       setTimeout(explode, 2000); 
+                       setTimeout(explode, 2000);
+                     } else {
+                         $('#loading_img').removeClass('show');
+                         $('.button-submit').prop('disabled','');
+                         $('.fader').css('display','none');
+                         toastr.error('Opps Something went wrong', 'Server Error');
                      }
-                     else {
-                     $('#loading_img').removeClass('show');
-                     $('.button-submit').prop('disabled','');
-                     $('.fader').css('display','none');
-                     toastr.error('Opps Something went wrong', 'Server Error');
-                       }
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                        toastr.error('Some Internal Server Error re-submit the application by clicking submit', 'Connection Error');

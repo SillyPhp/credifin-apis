@@ -1,7 +1,5 @@
 <?php
 
-/* @var $referral string */
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -20,12 +18,14 @@ use yii\widgets\Pjax;
                     }
                     $name = Yii::$app->user->identity->organization->name;
                     $color = Yii::$app->user->identity->organization->initials_color;
+                    $email = Yii::$app->user->identity->organization->email;
                 } else {
                     if (Yii::$app->user->identity->image) {
                         $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
                     }
                     $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
                     $color = Yii::$app->user->identity->initials_color;
+                    $email = Yii::$app->user->identity->email;
                 }
                 if ($image):
                     ?>
@@ -36,8 +36,8 @@ use yii\widgets\Pjax;
                 <?php endif; ?>
             </div>
             <?php Pjax::end(); ?>
-            <h3 class="capitalize"><?= Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name ?></h3>
-            <p><?= Yii::$app->user->identity->email ?></p>
+            <h3 class="capitalize"><?= $name; ?></h3>
+            <p><?= $email ?></p>
         </div>
         <div class="tree_widget-sec">
             <ul>
@@ -46,7 +46,7 @@ use yii\widgets\Pjax;
                 if ($userType === 'Individual') :
                     ?>
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
 
@@ -59,17 +59,29 @@ use yii\widgets\Pjax;
                     <li class="inner-child">
                         <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i
                                     class="far fa-money-bill-alt"></i>Shorlisted
-                            Job</a>
+                            Jobs</a>
 
                     </li>
                     <li class="inner-child">
                         <a href="/account/jobs/applied" title="" class="tree-toggler"><i
-                                    class="far fa-paper-plane"></i>Applied Job</a>
+                                    class="far fa-paper-plane"></i>Applied Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/preferences" title="" class="tree-toggler">
+                            <i class="fas fa-cog"></i>
+                            My Preferences
+                        </a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/resume-builder" title="" class="tree-toggler">
+                            <i class="far fa-address-card"></i>
+                            Build Resume
+                        </a>
                     </li>
                 <?php elseif ($userType === 'Organization Admin'): ?>
                     <!--            Organization Menu Items-->
                     <li class="inner-child">
-                        <a href="/<?= Yii::$app->user->identity->username . $referral; ?>" title=""
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
                            class="tree-toggler"><i
                                     class="far fa-file-alt"></i>My Profile</a>
                     </li>

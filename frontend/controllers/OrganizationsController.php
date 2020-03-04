@@ -2,6 +2,24 @@
 
 namespace frontend\controllers;
 
+use common\models\BusinessActivities;
+use frontend\models\referral\ReferralReviewsTracking;
+use common\models\AssignedCategories;
+use common\models\Categories;
+use common\models\Designations;
+use common\models\NewOrganizationReviews;
+use common\models\OrganizationReviewFeedback;
+use common\models\OrganizationReviewLikeDislike;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
+use frontend\models\OrganizationProductsForm;
+use frontend\models\organizations\OrgAutoGenrateBlog;
+use frontend\models\OrgAutoBlogForm;
+use frontend\models\reviews\EditUnclaimedCollegeOrg;
+use frontend\models\reviews\EditUnclaimedInstituteOrg;
+use frontend\models\reviews\EditUnclaimedSchoolOrg;
+use frontend\models\reviews\RegistrationForm;
+use frontend\models\reviews\ReviewCards;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -26,24 +44,6 @@ use common\models\Countries;
 use common\models\EmployeeBenefits;
 use frontend\models\applications\ApplicationCards;
 use common\models\OrganizationReviews;
-use common\models\BusinessActivities;
-use frontend\models\referral\ReferralReviewsTracking;
-use common\models\AssignedCategories;
-use common\models\Categories;
-use common\models\Designations;
-use common\models\NewOrganizationReviews;
-use common\models\OrganizationReviewFeedback;
-use common\models\OrganizationReviewLikeDislike;
-use common\models\UnclaimedFollowedOrganizations;
-use common\models\UnclaimedOrganizations;
-use frontend\models\OrganizationProductsForm;
-use frontend\models\organizations\OrgAutoGenrateBlog;
-use frontend\models\OrgAutoBlogForm;
-use frontend\models\reviews\EditUnclaimedCollegeOrg;
-use frontend\models\reviews\EditUnclaimedInstituteOrg;
-use frontend\models\reviews\EditUnclaimedSchoolOrg;
-use frontend\models\reviews\RegistrationForm;
-use frontend\models\reviews\ReviewCards;
 
 class OrganizationsController extends Controller
 {
@@ -62,7 +62,8 @@ class OrganizationsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
@@ -1223,7 +1224,7 @@ class OrganizationsController extends Controller
     {
         $reviews = OrganizationReviews::find()
             ->alias('a')
-            ->select(['a.review_enc_id', 'f.feedback_type', '(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
+            ->select(['a.review_enc_id','(CASE WHEN f.feedback_type = "1" THEN "1" ELSE NULL END) as feedback_type','(CASE WHEN f.feedback_type = "0" THEN "1" ELSE NULL END) as feedback_type_not','(CASE WHEN a.show_user_details = "1" THEN "1" ELSE NULL END) as show_user_details', 'a.review_enc_id', 'a.status', 'overall_experience', 'ROUND(a.average_rating) average', 'd.name profile', 'DATE_FORMAT(a.created_on, "%d-%m-%Y" ) as created_on', 'a.is_current_employee', 'a.overall_experience', 'a.skill_development', 'designation', 'a.work_life', 'a.compensation', 'a.organization_culture', 'a.job_security', 'a.growth', 'a.work', 'a.likes', 'a.dislikes', 'a.from_date', 'a.to_date', 'c.first_name', 'c.last_name', 'CASE WHEN c.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", c.image_location, "/", c.image) ELSE NULL END image', 'c.initials_color'])
             ->where(['a.is_deleted' => 0])
             ->joinWith(['organizationEnc b' => function ($b) use ($slug) {
                 $b->andWhere(['b.slug' => $slug]);
@@ -1536,8 +1537,7 @@ class OrganizationsController extends Controller
         return $this->generateblog();
     }
 
-    public function actionExplore()
-    {
+    public function actionExplore(){
         return $this->render('explore');
     }
 
@@ -1566,7 +1566,7 @@ class OrganizationsController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $params1 = (new \yii\db\Query())
-            ->select(['organization_enc_id as id', 'name', 'slug', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['organization_enc_id as id','name', 'slug', 'initials_color color','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])

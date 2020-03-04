@@ -2,8 +2,6 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%users}}".
  *
@@ -24,6 +22,7 @@ use Yii;
  * @property string $cover_image User Cover Image
  * @property string $cover_image_location User Cover Image Location
  * @property string $description User Info
+ * @property string $objective Objective
  * @property string $facebook Facebook URL
  * @property string $google Google+ URL
  * @property string $twitter Twitter URL
@@ -114,6 +113,10 @@ use Yii;
  * @property BookmarkedQuestionnaireTemplates[] $bookmarkedQuestionnaireTemplates0
  * @property CandidateJobTitle[] $candidateJobTitles
  * @property CandidateRecords[] $candidateRecords
+ * @property CareerAdvise[] $careerAdvises
+ * @property CareerAdvise[] $careerAdvises0
+ * @property CareerQuestions[] $careerQuestions
+ * @property CareerQuestions[] $careerQuestions0
  * @property Categories[] $categories
  * @property Categories[] $categories0
  * @property CategoriesList[] $categoriesLists
@@ -238,8 +241,8 @@ use Yii;
  * @property QuestionnaireTemplateFields[] $questionnaireTemplateFields0
  * @property QuestionnaireTemplates[] $questionnaireTemplates
  * @property QuestionnaireTemplates[] $questionnaireTemplates0
- * @property Quiz[] $quizzes
- * @property Quiz[] $quizzes0
+ * @property Quizzes[] $quizzes
+ * @property Quizzes[] $quizzes0
  * @property QuizQuestions[] $quizQuestions
  * @property QuizQuestions[] $quizQuestions0
  * @property Referral[] $referrals
@@ -352,6 +355,9 @@ use Yii;
  * @property WhatsappInvitationMessages[] $whatsappInvitationMessages0
  * @property WhatsappInvitations[] $whatsappInvitations
  * @property WhatsappInvitations[] $whatsappInvitations0
+ * @property YoutubeChannels[] $youtubeChannels
+ * @property YoutubeChannels[] $youtubeChannels0
+ * @property YoutubeChannels[] $youtubeChannels1
  */
 class Users extends \yii\db\ActiveRecord
 {
@@ -372,14 +378,13 @@ class Users extends \yii\db\ActiveRecord
             [['user_enc_id', 'username', 'email', 'password', 'auth_key', 'first_name', 'last_name', 'user_type_enc_id', 'phone', 'initials_color'], 'required'],
             [['dob', 'created_on', 'last_updated_on'], 'safe'],
             [['gender', 'is_available', 'is_email_verified', 'is_phone_verified', 'is_deleted'], 'integer'],
-            [['user_of', 'status'], 'string'],
+            [['description', 'objective', 'user_of', 'status'], 'string'],
             [['user_enc_id', 'auth_key', 'user_type_enc_id', 'address', 'image', 'image_location', 'cover_image', 'cover_image_location', 'city_enc_id', 'organization_enc_id', 'job_function', 'asigned_job_function'], 'string', 'max' => 100],
             [['username', 'email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin', 'youtube', 'skype'], 'string', 'max' => 50],
             [['password'], 'string', 'max' => 200],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'experience'], 'string', 'max' => 15],
             [['initials_color'], 'string', 'max' => 7],
-            [['description'], 'string', 'max' => 500],
             [['user_enc_id'], 'unique'],
             [['username'], 'unique'],
             [['email'], 'unique'],
@@ -926,6 +931,38 @@ class Users extends \yii\db\ActiveRecord
     public function getCandidateRecords()
     {
         return $this->hasMany(CandidateRecords::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerAdvises0()
+    {
+        return $this->hasMany(CareerAdvise::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerQuestions()
+    {
+        return $this->hasMany(CareerQuestions::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCareerQuestions0()
+    {
+        return $this->hasMany(CareerQuestions::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -1925,7 +1962,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getQuizzes()
     {
-        return $this->hasMany(Quiz::className(), ['created_by' => 'user_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['created_by' => 'user_enc_id']);
     }
 
     /**
@@ -1933,7 +1970,7 @@ class Users extends \yii\db\ActiveRecord
      */
     public function getQuizzes0()
     {
-        return $this->hasMany(Quiz::className(), ['last_updated_by' => 'user_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['last_updated_by' => 'user_enc_id']);
     }
 
     /**
@@ -2830,5 +2867,37 @@ class Users extends \yii\db\ActiveRecord
     public function getWhatsappInvitations0()
     {
         return $this->hasMany(WhatsappInvitations::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['created_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels0()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['last_updated_by' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getYoutubeChannels1()
+    {
+        return $this->hasMany(YoutubeChannels::className(), ['author_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherInfo()
+    {
+        return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
     }
 }

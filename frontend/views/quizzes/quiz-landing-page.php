@@ -30,10 +30,12 @@ $this->params['header_dark'] = false;
                                     ?>
                                     <div class="edu mb-15 top-categories-list">
                                         <a href="<?= Url::to('/quizzes?type=' . $data[$next]['slug']); ?>">
-                                            <div class="imag">
-                                                <img src="<?= $data[$next]['icon']; ?>">
+                                            <div class="newset">
+                                                <div class="imag">
+                                                    <img src="<?= $data[$next]['icon']; ?>"/>
+                                                </div>
+                                                <div class="txt"><?= $data[$next]['name']; ?></div>
                                             </div>
-                                            <div class="txt"><?= $data[$next]['name']; ?></div>
                                         </a>
                                     </div>
                                     <?php
@@ -68,11 +70,11 @@ $this->params['header_dark'] = false;
                         <?php
                         foreach ($data as $d) {
                             ?>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0">
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
                                 <a href="<?= Url::to('/quizzes?type=' . $d['slug']); ?>">
                                     <div class="newset">
                                         <div class="imag">
-                                            <img src="<?= $d['icon']; ?>">
+                                            <img src="<?= $d['icon']; ?>"/>
                                         </div>
                                         <div class="txt"><?= $d['name']; ?></div>
                                     </div>
@@ -90,8 +92,18 @@ $this->params['header_dark'] = false;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-7">
                     <div class="heading-style">All quiz</div>
+                </div>
+                <div class="col-md-5 col-sm-4 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/quizzes/all'); ?>" class="btn btn-3">
+                                <span class="txt"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -124,7 +136,7 @@ $this->params['header_dark'] = false;
 <?php
 $this->registerCss('
 .top-categories:nth-child(2){
-    margin-top:5px;
+    margin-top:10px;
 }
 .top-categories:nth-child(1) .top-categories-list{
     float:right;
@@ -254,42 +266,51 @@ $this->registerCss('
     transition:.3s ease;
 }
 .edu{
-    text-align:center;
-    box-shadow: 0 0 10px rgba(0,0,0,.3);
-    width: 160px;
+//    text-align:center;
+//    box-shadow: 0 0 10px rgba(0,0,0,.3);
+//    width: 160px;
     min-height: 245px;  
-    line-height: 210px;
+//    line-height: 210px;
     position: relative;
     clear:both;
-    }
+}
 .imag{
     text-align: right;
-    }
-.txt{
+}
+.txt {
     position: absolute;
+    line-height: 17px;
+    bottom: 10px;
+    left: 0px;
+    font-weight: 400;
+    color: #222;
+    font-family: roboto;
+    text-transform: capitalize;
+    background-color: #fff;
+    padding: 0px 5px;
+}
+.top-categories-list{
     line-height: 30px;
     bottom: 10px;
     left: 10px;
     font-weight: 400;
     font-family:roboto;
     text-transform:uppercase;
-     }
+ }
 .popular-cate{
     text-align:center;
-    }
+}
 .newset{
     text-align:center;
-    box-shadow: 0 0 10px rgba(0,0,0,.3);
     max-width: 160px;
-    min-height: 245px;  
     line-height: 210px;
     position: relative;
     width:100%;
     margin-bottom:20px;
-    }
- @media only screen and (max-width:992px){
+}
+@media only screen and (max-width:992px){
     .mar-top{
         margin-top:20px;
     }
- }   
- ');
+}   
+');
