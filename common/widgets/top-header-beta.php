@@ -247,19 +247,19 @@
                             <div class="large-container container">
                                 <nav class="ey-sub-nav-main">
                                     <ul class="ey-sub-nav-items">
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/dashboard">Dashboard</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/jobs/dashboard">Manage Jobs</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/internships/dashboard">Manage Internships</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/preferences">My Preferences</a>
                                         </li>
-                                        <li class="ey-head-sub-menu-has-child">
+                                        <li>
                                             <a href="/account/resume-builder">Build Resume</a>
                                         </li>
                                     </ul>
