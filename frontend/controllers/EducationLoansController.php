@@ -18,4 +18,7 @@ class EducationLoansController extends Controller
             'EducationalLoan' => $model,
         ]);
     }
+    public function actionEducationLoanView(){
+        return $this->render('education-loan-view');
+    }
 }
