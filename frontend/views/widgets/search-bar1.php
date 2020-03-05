@@ -288,6 +288,7 @@ $('#cities').typeahead(null, {
   source: city,
    limit: 15,
    hint:false,
+   cache:true,
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
