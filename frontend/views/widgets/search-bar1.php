@@ -222,12 +222,12 @@ $this->registerCss('
     }
 }
 ');
-$script = <<<JS
-var type = '$type';
+$script = <<< JS
+var type = '$type'; 
 $(document).on('submit','#search_bar_form',function(e) {
   e.preventDefault();
-  var cname = $('#cities').val();
-  var kname = $('#keywords').val();
+  var cname = $('#cities').val().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().replace(/[^a-z0-9\s]/gi, '');
   if (cname&&kname)
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+type+'-in-'+cname.replace(/\s+/g, '-'));
@@ -288,6 +288,7 @@ $('#cities').typeahead(null, {
   source: city,
    limit: 15,
    hint:false,
+   cache:true,
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
