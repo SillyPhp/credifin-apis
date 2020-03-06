@@ -110,28 +110,28 @@ class JobsController extends Controller
         $mail->receivers = [
             [
                 "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@yahoo.com",
+                "email" => "ajayjuneja52@gmail.com",
             ],
+//            [
+//                "name" => "Tarandeep Singh",
+//                "email" => "vasishtshshank@outlook.com",
+//            ],
+//            [
+//                "name" => "Tarandeep Singh",
+//                "email" => "vasishtshshank@gmail.com",
+//            ],
             [
                 "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@outlook.com",
+                "email" => "ravindersaini15697@gmail.com",
             ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@gmail.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "shshank@dsbedutech.in",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "kashishbudhiraja16781@gmail.com",
-            ]
+//            [
+//                "name" => "Kashish Budhiraja",
+//                "email" => "kashishbudhiraja16781@gmail.com",
+//            ]
         ];
         $mail->subject = 'Company SignUp';
         $mail->data = ['job' => ""];
-        $mail->template = 'company-signup';
+        $mail->template = 'candidate-applied';
         if ($mail->send()) {
             return "ok";
         }

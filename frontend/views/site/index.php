@@ -28,7 +28,7 @@ $this->params['header_dark'] = false;
                         <div class="job-search-sec">
                             <div class="job-search style2">
                                 <h3>Discover a New Career Specially Designed For You</h3>
-                                <span>The Easiest Way to Get Your New Job</span>
+                                <span>The Easiest Way to Build Your Career</span>
                                 <div class="search-job2">
                                     <form id="search_jobs_internships" action="<?= Url::to('/search'); ?>">
                                         <div class="row no-gape">
