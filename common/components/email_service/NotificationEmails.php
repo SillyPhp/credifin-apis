@@ -3,6 +3,8 @@
 namespace common\components\email_service;
 
 use common\models\ApplicationUnclaimOptions;
+use common\models\EmployerApplications;
+use common\models\InterviewProcessFields;
 use common\models\Utilities;
 use common\models\Organizations;
 use common\models\UnclaimedOrganizations;
@@ -16,12 +18,13 @@ use Yii;
 class NotificationEmails extends Component
 {
 
-    public function userAppliedNotify($user_id = null, $application_id = null, $company_id = null, $unclaim_company_id = null, $type = null,$applied_id=null)
+    public function userAppliedNotify($user_id = null, $application_id = null, $company_id = null, $unclaim_company_id = null, $type = null, $applied_id = null)
     {
         $object = new \account\models\applications\ApplicationForm();
         $user_info = Users::find()
             ->where(['user_enc_id' => $user_id])
-            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience','CONCAT("' . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo'])
+            ->joinWith(['cityEnc b'], false)
+            ->select(['username', 'CONCAT(first_name," ",last_name) full_name', 'experience', 'CONCAT("' . Yii::$app->params->upload_directories->users->image . '",image_location,"/",image) logo', 'b.name city'])
             ->asArray()
             ->one();
         $user_skills = \common\models\UserSkills::find()
@@ -41,11 +44,29 @@ class NotificationEmails extends Component
             ->asArray()
             ->one();
 
+        $interview_process = EmployerApplications::find()
+            ->alias('a')
+            ->select(['a.application_enc_id', 'a.interview_process_enc_id', 'b.process_name'])
+            ->joinWith(['interviewProcessEnc b'], false)
+            ->where([
+                'application_enc_id' => $application_id
+            ])
+            ->asArray()
+            ->one();
+
+        $process_rounds = InterviewProcessFields::find()
+            ->select(['field_enc_id', 'field_name', 'field_label', 'sequence', 'icon'])
+            ->where([
+                'interview_process_enc_id' => $interview_process['interview_process_enc_id']
+            ])
+            ->asArray()
+            ->all();
+
         if (!empty($unclaim_company_id)) {
             $data = $object->getCloneUnclaimed($application_id, $type);
             $org_d = UnclaimedOrganizations::find()
-                ->select(['initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
-                ->where(['organization_enc_id'=>$unclaim_company_id])
+                ->select(['initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->where(['organization_enc_id' => $unclaim_company_id])
                 ->asArray()->one();
             $email = ApplicationUnclaimOptions::findOne(['application_enc_id' => $application_id])->email;
             $data['is_claimed'] = false;
@@ -54,7 +75,7 @@ class NotificationEmails extends Component
             $data = $object->getCloneData($application_id, $type);
             $org_d = Organizations::find()
                 ->where(['organization_enc_id' => $company_id])
-                ->select(['email','initials_color','name','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", logo_location, "/", logo) ELSE NULL END logo'])
+                ->select(['email', 'initials_color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
                 ->asArray()
                 ->one();
             $email = $org_d['email'];
@@ -115,6 +136,7 @@ class NotificationEmails extends Component
         $data['user_details'] = $user_info;
         $data['resume'] = $userCv['resume'];
         $data['org_info'] = $org_d;
+        $data['rounds'] = $process_rounds;
         Yii::$app->mailer->htmlLayout = 'layouts/email';
         $mail = Yii::$app->mailer->compose(
             ['html' => 'user-applied'], ['data' => $data]
@@ -131,7 +153,7 @@ class NotificationEmails extends Component
         $appliedMail->save();
         if ($mail->send()) {
             $update = Yii::$app->db->createCommand()
-                ->update(AppliedEmailLogs::tableName(), ['is_sent' => 1], ['applied_enc_id'=>$applied_id])
+                ->update(AppliedEmailLogs::tableName(), ['is_sent' => 1], ['applied_enc_id' => $applied_id])
                 ->execute();
             return true;
         } else {
