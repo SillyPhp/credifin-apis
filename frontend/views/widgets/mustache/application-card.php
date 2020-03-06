@@ -288,33 +288,38 @@ function getReviewList(sidebarpage){
     }
 }
 function checkSkills(){
+    var parent_card_main = $('.application-card-main').width() / 3;
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
        var i = 0;
+       $(elems).sort(function (a, b) {
+            return $(a).width() > $(b).width() ? 1 : -1;  
+        }).appendTo(skillsMain);
        $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+            if($(this).width() > parent_card_main && $(this).text() != 'Multiple Skills' || i >= 3){
                 $(this).addClass('hidden');
             }
             i++;
        });
-       var skillsMain = $(this).find('.tags');
        var hddn = $(this).find('.after.hidden');
        var hasMore = $(this).find('span.more-skills');
        if(hddn.length != 0){
            if(elems.length === hddn.length){
                $(elems[0]).removeClass('hidden');
+               $(elems[0]).parent().css('display','inherit');
                var lg_skills = $(elems[0]).width();
                var parent_card = $(elems[0]).parentsUntil('.application-card-main').parent().width() - 60;
                var countMore = hddn.length - 1;
                if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+                   skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
                }
                if(lg_skills >= parent_card){
                     $(elems[0]).addClass('lg-skill');
-                    $(elems[0]).nextUntil('.more-skills').next().hide();
+                    $(elems[0]).parent().parent().children('.more-skills').hide();
                }
            } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+                skillsMain.parent().append('<span class="more-skills">+ ' + hddn.length + '</span>');
            }
        }
     });
@@ -414,6 +419,7 @@ $this->registerCss('
     font-size: 17px;
     color:gray;
     font-family: Georgia !important;
+    display:inline-block;
 }
 .after{
     padding-right: 25px;
@@ -455,6 +461,7 @@ $this->registerCss('
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
+    display:inline-block;
 }
 .salary{ 
     padding-left: 16px;
