@@ -307,7 +307,6 @@ function checkSkills(){
        if(hddn.length != 0){
            if(elems.length === hddn.length){
                $(elems[0]).removeClass('hidden');
-               $(elems[0]).parent().css('display','inherit');
                var lg_skills = $(elems[0]).width();
                var parent_card = $(elems[0]).parentsUntil('.application-card-main').parent().width() - 60;
                var countMore = hddn.length - 1;
@@ -315,6 +314,7 @@ function checkSkills(){
                    skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
                }
                if(lg_skills >= parent_card){
+                   $(elems[0]).parent().css('display','inherit');
                     $(elems[0]).addClass('lg-skill');
                     $(elems[0]).parent().parent().children('.more-skills').hide();
                }
