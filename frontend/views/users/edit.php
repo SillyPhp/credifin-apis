@@ -20,9 +20,9 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                     <?php $form = ActiveForm::begin(['id' => 'userProfilePicture', 'action' => '/users/update-profile-picture']) ?>
                     <div class="profile-title" id="mp">
                         <h3>My Profile</h3>
-                        <a class="btn btn-danger btn-sm view_profile_btn pull-right"
-                           href="<?= Url::to('/' . Yii::$app->user->identity->username); ?>" target="_blank">View
-                            Profile</a>
+                        <a class="view_profile_btn pull-right" href="javascript:;" target="_blank">
+                            View Profile
+                        </a>
                         <div class="upload-img-bar">
                             <span>
                             <?php if (!empty(Yii::$app->user->identity->image)) {
@@ -227,7 +227,6 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                 </div>
             </div>
         </div>
-    </div>
     </div>
 <?php
 $this->registerCss("
@@ -478,6 +477,8 @@ border:none !important;
     background: #ffffff !important;
     border: 1px solid #ff7803 !important;
     color: #ff7803 !important;
+    border-radius: 4px;
+    font-size: 13px;
 }
 .tg-btn:hover{
 color: #fff !important;
@@ -621,7 +622,13 @@ content: attr(data-text);
     #picture_submit{float:none;}
 }
 ");
+$url = Url::to('/' . Yii::$app->user->identity->username);
 $script = <<< JS
+$(document).on('click', '.view_profile_btn', function(e){ 
+    e.preventDefault(); 
+    var url = $(this).attr('href'); 
+    window.open("$url", '_blank');
+});
 $(document).on('change','#category_drp',function() {
   if($(this).val()=='')
       {
