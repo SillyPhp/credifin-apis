@@ -288,14 +288,21 @@ function getReviewList(sidebarpage){
     }
 }
 function checkSkills(){
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
+       $(elems).sort(function (a, b) {
+            return $(a).width() > $(b).width() ? 1 : -1;  
+        }).appendTo(skillsMain);
+    });
+    checkSkills2();
+}
+function checkSkills2(){
     var parent_card_main = $('.application-card-main').width() / 3;
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
        var skillsMain = $(this).find('.tags');
        var i = 0;
-       $(elems).sort(function (a, b) {
-            return $(a).width() > $(b).width() ? 1 : -1;  
-        }).appendTo(skillsMain);
        $(elems).each(function() {
             if($(this).width() > parent_card_main && $(this).text() != 'Multiple Skills' || i >= 3){
                 $(this).addClass('hidden');
@@ -312,11 +319,15 @@ function checkSkills(){
                var countMore = hddn.length - 1;
                if(countMore != 0 && hasMore.length == 0){
                    skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
+               } else if(hasMore.length != 0){
+                   skillsMain.parent().children('.more-skills').show();
                }
                if(lg_skills >= parent_card){
                    $(elems[0]).parent().css('display','inherit');
                     $(elems[0]).addClass('lg-skill');
                     $(elems[0]).parent().parent().children('.more-skills').hide();
+               } else {
+                   $(elems[0]).parent().css('display','inline-block');
                }
            } else if(hasMore.length == 0) {
                 skillsMain.parent().append('<span class="more-skills">+ ' + hddn.length + '</span>');
