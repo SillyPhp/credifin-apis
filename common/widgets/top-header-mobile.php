@@ -1,184 +1,81 @@
 <nav>
     <div class="ey-mob-menu-main-items">
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/jobs">Jobs</a>
-                <span aria-hidden="true" class="ey-mobile-menu-toggler">
+        <?php
+        if ($data) {
+            foreach ($data as $grandParents) {
+                ?>
+                <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
+                    <div class="ey-mobile-item-main">
+                        <a href="<?= $grandParents['value']['route']; ?>"><?= $grandParents['value']['name']; ?></a>
+                        <?php
+                        if ($grandParents['childs']) {
+                        ?>
+                        <span aria-hidden="true" class="ey-mobile-menu-toggler">
                     <i class="fa fa-arrow-down"></i>
+                    <?php
+                    }
+                    ?>
                 </span>
-            </div>
-            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/jobs/near-me">Jobs Near Me</a>
-                        </div>
                     </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/govt-jobs">Indian Govt. Jobs</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/usa-jobs">USA Govt. Jobs</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/organizations">Explore Companies</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/jobs/compare">Compare Jobs</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/organizations/explore">Featured Companies</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/tweets/jobs">Job Tweets</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/internships">Internships</a>
-                <span aria-hidden="true" class="ey-mobile-menu-toggler">
-                    <i class="fa fa-arrow-down"></i>
-                </span>
-            </div>
-            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/internships/near-me">Internships Near Me</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/organizations">Explore Companies</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/internships/compare">Compare Internships</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/organizations/explore">Featured Companies</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/tweets/internships">Internship Tweets</a>
+                    <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
+                        <div class="ey-mob-sub-items">
+                            <?php
+                            if ($grandParents['childs']) {
+                                foreach ($grandParents['childs'] as $parents) {
+                                    ?>
+                                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
+                                        <div class="ey-mobile-sub-menu-heading">
+                                            <a href="<?= $parents['value']['route'] ?>">
+                                                <?= $parents['value']['name'] ?>
+                                            </a>
+                                            <?php
+                                            if ($parents['childs']) {
+                                                foreach ($parents['childs'] as $children) {
+                                                    if ($children) {
+                                                        ?>
+                                                        <span aria-hidden="true" class="ey-mobile-menu-item-toggler">
+                                                            <i class="fa fa-arrow-down"></i>
+                                                        </span>
+                                                        <?php
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="ey-mobile-sub-menu-container">
+                                            <div class="ey-mobile-sub-nav-items">
+                                                <?php
+                                                if ($parents['childs']) {
+                                                    foreach ($parents['childs'] as $children) {
+                                                        ?>
+                                                        <div class="ey-mobile-sub-icons ey-mobile-nav-item-with-icons">
+                                                            <a href="<?= $children['value']['route']; ?>">
+                                                                <div>
+                                                                    <span class="ey-services-icons ai"
+                                                                          style="background: url('<?= $children['value']['icon']; ?>');"></span>
+                                                                </div>
+                                                                <span><?= $children['value']['name']; ?></span>
+                                                            </a>
+                                                        </div>
+                                                        <?php
+                                                    }
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/training-programs">Training Courses</a>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/reviews">Reviews</a>
-                <span aria-hidden="true" class="ey-mobile-menu-toggler">
-                    <i class="fa fa-arrow-down"></i>
-                </span>
-            </div>
-            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/reviews/companies">Companies</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/reviews/colleges">Colleges</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/reviews/schools">Schools</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/reviews/institutes">Educational Institutes</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/learning">Learning Hub</a>
-                <span aria-hidden="true" class="ey-mobile-menu-toggler">
-                    <i class="fa fa-arrow-down"></i>
-                </span>
-            </div>
-            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/learning/categories">Popular Topics</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/questions">ASK</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/learning/contribute">Collaborate With Us</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/career-advice">Career Advice</a>
-            </div>
-        </div>
-        <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
-            <div class="ey-mobile-item-main">
-                <a href="/blog">Blog</a>
-                <span aria-hidden="true" class="ey-mobile-menu-toggler">
-                    <i class="fa fa-arrow-down"></i>
-                </span>
-            </div>
-            <div class="ey-mob-sub-main ey-mob-sub-menu-has-container">
-                <div class="ey-mob-sub-items">
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/blog/category/articles">Articles</a>
-                        </div>
-                    </div>
-                    <div class="ey-mob-sub-item ey-mobile-sub-has-container">
-                        <div class="ey-mobile-sub-menu-heading">
-                            <a href="/blog/category/infographics">Infographics</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <?php
+            }
+        }
+        ?>
         <?php if (!Yii::$app->user->isGuest) { ?>
             <div class="ey-mob-menu-inner-item ey-mob-menu-has-sub">
                 <div class="ey-mobile-item-main">

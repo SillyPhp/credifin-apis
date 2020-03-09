@@ -11,6 +11,12 @@ use yii\web\Controller;
 class UploadedResumeController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionAllResumeProfiles()
     {
         return $this->render('all-resume-profiles');

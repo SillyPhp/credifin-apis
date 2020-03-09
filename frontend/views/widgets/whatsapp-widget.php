@@ -1,5 +1,5 @@
 <?php
-use Yii\helpers\url;
+use yii\helpers\Url;
 ?>
     <section class="whatsapp-bg">
         <div class="container">
@@ -140,6 +140,11 @@ $this->registerCss('
     0%{transform: rotate(-20deg)}
     50%{transform: rotate(40deg)}
     100%{transform: rotate(-20deg)}
+}
+@media (max-width:415px){
+.wm-pos-rel, .wm-pos-rel-img{
+    height:250px;
+}
 }
 ')
 ?>

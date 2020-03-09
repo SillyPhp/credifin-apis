@@ -1,12 +1,24 @@
-<script id="application-card" type="text/template">
-    {{#.}}
-    <div class="col-md-4 col-sm-6 col-xs-12">
-        <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
-             class="application-card-main shadow">
-            <div class="app-box">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="application-card-img img-main">
+<?php
+$controller_id = Yii::$app->controller->id;
+$action_id = Yii::$app->controller->action->id;
+switch ([$controller_id, $action_id]) {
+    case ['site', 'load-data'] :
+    case ['jobs', 'index'] :
+    case ['jobs', ''] :
+        $btn_id = 'featured-application-card-add';
+        break;
+    default :
+        $btn_id = 'application-card-add';
+}
+?>
+    <script id="application-card" type="text/template">
+        {{#.}}
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div data-id="{{application_id}}" data-key="{{application_id}}-{{location_id}}"
+                 class="application-card-main shadow">
+                <div class="app-box">
+                    <div class="row">
+                        <div class="application-card-img">
                             <a href="{{organization_link}}" title="{{organization_name}}">
                                 {{#logo}}
                                 <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
@@ -17,8 +29,6 @@
                                 {{/logo}}
                             </a>
                         </div>
-                    </div>
-                    <div class="col-md-9">
                         <div class="comps-name-1 application-card-description">
                             <span class="skill">
                                 <a href="{{link}}" title="{{title}}" class="application-title capitalize org_name">
@@ -43,49 +53,47 @@
                         </span>
                         {{/city}}
                         </span>
-                        <div class="detail-loc">
-                            <div class="application-card-description job-loc">
+                        <div class="detail-loc application-card-description">
+                            <div class="job-loc">
                                 {{#salary}}
-                                <h5 class="salary"><i class="fas fa-rupee-sign"></i>&nbsp;{{salary}}</h5>
+                                <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
                                 {{^salary}}
                                 <h5 class="salary">Negotiable</h5>
                                 {{/salary}}
                                 {{#type}}
-                                <h5>{{type}}</h5>
+                                <h5 class="salary">{{type}}</h5>
                                 {{/type}}
                                 {{#experience}}
-                                <h5><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
                             </div>
                             <div class="clear"></div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12 p-0">
-                        <div class="tag-box">
-                            <div class="tags">
-                                {{#skill}}
-                                <span class="after">{{.}}</span>
-                                {{/skill}}
-                                {{^skill}}
-                                <span class="after">Multiple Skills</span>
-                                {{/skill}}
+                    <div class="row">
+                        <div class="col-md-12 p-0">
+                            <div class="tag-box">
+                                <div class="tags">
+                                    {{#skill}}
+                                    <span class="after">{{.}}</span>
+                                    {{/skill}}
+                                    {{^skill}}
+                                    <span class="after">Multiple Skills</span>
+                                    {{/skill}}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="application-card-wrapper">
-                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
-                    <a href="#" class="application-card-add" title="Add to Review List">&nbsp;<i
-                                class="fas fa-plus"></i>&nbsp;</a>
+                    <div class="application-card-wrapper">
+                        <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    {{/.}}
-</script>
+        {{/.}}
+    </script>
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
 $script = <<<JS
@@ -116,7 +124,7 @@ function renderCards(cards, container){
     // showSkills();
 }
 
-function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname) {
+function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
     let data = {};
     page += 1;
     const searchParams = new URLSearchParams(window.location.search);
@@ -128,8 +136,16 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     for(var pair of searchParams.entries()) {
         data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
     }
-    
     data['type'] = type;
+    if(location !== ""){
+        data['location'] = location;
+    }
+    if(limit !== ""){
+        data['limit'] = limit;
+    }
+    if(dataType !== ""){
+        data['dataType'] = dataType;
+    }
     $.ajax({
         method: "POST",
         url : url,
@@ -178,6 +194,38 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
         }
     });
 }
+
+$(document).on('click', '.featured-application-card-add', function(event) {
+    event.preventDefault();
+    var c_user = "$c_user";
+    if(c_user === ""){
+        $('#loginModal').modal('show');
+    } else{
+        var itemid = $(this).closest('.application-card-main').attr('data-id');
+        getFeaturedCard(itemid);
+    }
+});
+
+function getFeaturedCard(itemid) {
+    $.ajax({
+        method: "POST",
+        url: "/jobs/item-id",
+        data: {'itemid': itemid}
+    }).done(function(data) {
+        if(data.status === 200){
+            toastr.success(data.message, 'Success');
+        } else if(data.status === 201) {
+            toastr.error(data.message, 'Error');
+        } else if (data.status === 'short') {
+            toastr.success(data.message, 'Reviewed Success');
+        } else if (data.status === 'unshort') {
+            toastr.success(data.message, 'Unreviewd Success');
+        } else if (data === 'error') {
+            toastr.info('Please Login first..');
+        }
+    });
+}
+
 
 function addToReviewList(){
     if(loader === false){
@@ -268,10 +316,6 @@ function checkSkills(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
-.application-card-description{
-    margin:0 0 0 14px !important;
-    width:100% !important;
-}
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;
@@ -301,9 +345,7 @@ $this->registerCss('
     padding-left: 13px;
 }
 .comps-name-1{
-    display: block;
-    vertical-align: middle;
-    padding-left: 12px;
+    padding-left: 15px;
     padding-top: 15px;
 }
 .org_name{display:block;}
@@ -345,8 +387,8 @@ $this->registerCss('
     border-radius: 0px 10px 0px 10px !important;
     float: right !important;
     position:absolute !important;
-    right: 2px !important;
-    top: -13px !important;
+    right: -4px !important;
+    top: -3px !important;
 }
 
 .clear{
@@ -407,29 +449,16 @@ $this->registerCss('
     padding: 4px 10px 4px 10px;
     border-radius: 5px;
 }
-.img-main{
-    display: inline-block;
-}
-.comps-name-1{
-    float: none;
-    margin: 0px !important;
-}
 .more-skills{
     background-color: #00a0e3;
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
 }
-@media only screen and (max-width: 360px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
-}
-@media only screen and (max-width: 768px){
-    .comps-name-1 {display: block;vertical-align: middle; padding-left: 14px;}
+.salary{ 
+    padding-left: 16px;
 }
 @media only screen and (max-width: 974px){
-    .salary{ 
-        padding-left: 16px;
-    }
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}

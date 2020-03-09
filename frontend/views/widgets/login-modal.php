@@ -7,7 +7,7 @@ use borales\extensions\phoneInput\PhoneInput;
 
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
             <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
@@ -367,7 +367,7 @@ input{
     }
 }
 @media screen and (min-width: 768px){
-    .modal-dialog {
+    .modal-dialog-main {
         width: 750px !important;
         margin: 30px auto;
     }

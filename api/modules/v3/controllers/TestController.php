@@ -22,8 +22,17 @@ class TestController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'demo' => ['OPTIONS', 'POST'],
-                'test' => ['GET'],
             ]
+        ];
+
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['http://127.0.0.1:5500'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
         ];
         return $behaviors;
     }
@@ -35,10 +44,5 @@ class TestController extends ApiBaseController
         }else{
             return $this->response(401, 2);
         }
-    }
-
-    public function actionTest()
-    {
-        return 121;
     }
 }

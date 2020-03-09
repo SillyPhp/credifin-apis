@@ -54,7 +54,7 @@ class InternshipsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -265,8 +265,12 @@ class InternshipsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
-
             $options = [];
+            if (Yii::$app->request->get('location')||Yii::$app->request->get('keyword'))
+            {
+                $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
+                $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -414,12 +418,14 @@ class InternshipsController extends Controller
 
     public function actionQuickInternship()
     {
+        if (!Yii::$app->user->identity->organization):
         $this->layout = 'main-secondary';
         $model = new QuickJob();
         $typ = 'Internships';
         $data = new ApplicationForm();
         $primary_cat = $data->getPrimaryFields();
         $job_type = $data->getApplicationTypes();
+        $currencies = $data->getCurrency();
         if ($model->load(Yii::$app->request->post())) {
             if ($model->save($typ)) {
                 Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
@@ -428,7 +434,10 @@ class InternshipsController extends Controller
             }
             return $this->refresh();
         }
-        return $this->render('quick-internship', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        return $this->render('quick-internship', ['typ' => $typ,'currencies'=>$currencies,'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else :
+            return $this->redirect('/account/internships/quick-internship');
+        endif;
     }
 
     public function actionSimilarApplication($slug)
@@ -642,6 +651,12 @@ class InternshipsController extends Controller
             ->all();
         return json_encode($jobs[0]['employerApplications']);
 
+    }
+
+    public function actionInternational(){
+        return $this->render('/employer-applications/international',[
+            'type' => 'internships'
+        ]);
     }
 
     private function getApplicationInfo($id)

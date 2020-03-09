@@ -42,9 +42,9 @@ class DropResumeApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['applied_application_enc_id', 'user_enc_id', 'experience', 'created_by', 'last_updated_by'], 'required'],
+            [['applied_application_enc_id', 'user_enc_id', 'created_by', 'last_updated_by'], 'required'],
             [['experience', 'status', 'is_deleted'], 'integer'],
-            [['created_on', 'last_updated_on'], 'safe'],
+            [['created_on', 'last_updated_on','experience'], 'safe'],
             [['applied_application_enc_id', 'user_enc_id', 'application_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['applied_application_enc_id'], 'unique'],
             [['user_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_enc_id' => 'user_enc_id']],

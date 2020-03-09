@@ -10,7 +10,7 @@
                 </span>
             <div class="col-md-12 col-sm-12 col-xs-12 application-card-border-bottom">
                 <div class="application-card-img">
-                    <a href="/govt-jobs/detail/{{id}}" title="{{Organizations}}">
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Organizations}}">
                         {{#logo}}
                         <img src="{{logo}}" alt="{{Organizations}}" title="{{Organizations}}">
                         {{/logo}}
@@ -21,7 +21,7 @@
                     </a>
                 </div>
                 <div class="application-card-description">
-                    <a href="/govt-jobs/detail/{{id}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
+                    <a href="/govt-jobs/detail/{{slug}}" title="{{Position}}"><h4 class="application-title">{{Position}}</h4></a>
                     {{#Last_date}}
                     <h5><i class="far fa-calendar-alt"></i>&nbsp;Last_date: {{Last_date}}</h5>
                     {{/Last_date}}
@@ -57,25 +57,30 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
   beforeSend: function(){
       if (loader_btn)
           { 
-              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+              $('#loadMore').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
           }
       if (loader) {
-            $('.img_load').css('display','block');
+            $('.loader-main').css('display','block');
         }
       },
-  success:function(body) {    
-      $('.img_load').css('display','none');
-      $('#loader').html('Load More');
-      $('#loader').css('display','initial');
+  success:function(body) {
+      $('#loadMore').html('Load More');
+      $('#loadMore').css('display','block');
+      $('.loader-main').hide();
       match_local = match_local+body.count;
       if (body.total<12||body.total==match_local) 
           {
-              $('#loader').hide();
+              $('#loadMore').hide();
           }
-      template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      if (replace){
+          template.html(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      }else
+          {
+              template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+          }
       utilities.initials();
       if(body == ''){
-          $('#loader').hide();
+          $('#loadMore').hide();
           template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
       }
   }   
@@ -122,21 +127,28 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
 }
 JS;
 $this->registerCss("
-.align_btn
-{
-text-align:center;
-clear:both;
+.align_btn{
+    text-align:center;
+    clear:both;
 }
-.application-card-type
-{
+.application-card-type{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 250px;
 }
-#no_job
-{
+#no_job{
     font-size: 16px;
+}
+.application-card-main{
+    min-height:205px;
+}
+.application-card-img{
+    margin-left:0px;
+    margin-top:25px;
+}
+.application-card-description {
+    margin: 20px 0px 0px 20px;
 }
 ");
 $this->registerJs($script);
