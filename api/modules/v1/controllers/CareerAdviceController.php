@@ -23,6 +23,7 @@ class CareerAdviceController extends ApiBaseController
             'except' => [
                 'career-blogs',
                 'blog-detail',
+                'get-parent-comments',
                 'get-child-comments',
             ],
             'class' => HttpBearerAuth::className()
@@ -32,8 +33,9 @@ class CareerAdviceController extends ApiBaseController
             'actions' => [
                 'career-blogs' => ['POST'],
                 'blog-detail' => ['POST'],
+                'get-parent-comments' => ['POST'],
                 'get-child-comments' => ['POST'],
-                'save-parent-comments' => ['POST'],
+                'save-parent-comment' => ['POST'],
                 'save-child-comment' => ['POST'],
             ]
         ];
@@ -139,37 +141,6 @@ class CareerAdviceController extends ApiBaseController
             ->asArray()
             ->all();
 
-        $comments = CareerAdvicePostComments::find()
-            ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
-            ->joinWith(['userEnc b'], false)
-            ->where(['a.reply_to' => NULL])
-            ->andWhere(['a.post_enc_id' => $careerDetail['post_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $i = 0;
-        foreach ($comments as $r) {
-            $a = CareerAdvicePostComments::find()
-                ->where(['reply_to' => $r['comment_enc_id']])
-                ->andWhere(['post_enc_id' => $careerDetail['post_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-            if ($a) {
-                $comments[$i]['hasChild'] = true;
-            } else {
-                $comments[$i]['hasChild'] = false;
-            }
-            $i++;
-        }
-
-        if (!empty($comments)) {
-            $careerDetail['comments'] = $comments;
-        }
-
-
         if (!empty($careerDetail) && !empty($relatedArticles)) {
             $data = [
                 'blog-detail' => $careerDetail,
@@ -219,6 +190,56 @@ class CareerAdviceController extends ApiBaseController
 
         if (!empty($child_comment)) {
             return $this->response(200, $child_comment);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
+    public function actionGetParentComments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $post = CareerAdvisePosts::find()
+            ->where(['slug' => $slug])
+            ->andWhere(['status' => 1])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+
+        $comments = CareerAdvicePostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.reply_to' => NULL])
+            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        foreach ($comments as $r) {
+            $a = CareerAdvicePostComments::find()
+                ->where(['reply_to' => $r['comment_enc_id']])
+                ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
+            if ($a) {
+                $comments[$i]['hasChild'] = true;
+            } else {
+                $comments[$i]['hasChild'] = false;
+            }
+            $i++;
+        }
+
+        if (!empty($comments)) {
+            return $this->response(200, $comments);
         } else {
             return $this->response(404, 'not found');
         }
