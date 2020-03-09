@@ -19,6 +19,28 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Name of Applicant (Student Name)
+                                        </label>
+                                        <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
+                                        <label for="number" class="input-group-text">
+                                            Date Of Birth
+                                        </label>
+                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
+                                            <input type="text" class="form-control">
+                                            <div class="input-group-addon">
+                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 padd-20">
+                                    <div class="form-group">
                                         <label class="input-group-text" for="inputGroupSelect01">
                                             Choose Country where you want to study
                                         </label>
@@ -61,26 +83,13 @@ use yii\helpers\Url;
                                         <div class="radio-heading input-group-text">
                                             Which degree do you want to pursue
                                         </div>
-                                        <label class="container-radio">Diploma
-                                            <input type="radio" name="radio" class="edu" id="0">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container-radio">Graduation
-                                            <input type="radio" id="1" checked="checked" name="radio" class="edu">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container-radio">Post Graduation
-                                            <input type="radio" name="radio" class="edu" id="2">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container-radio">Professional Course
-                                            <input type="radio" name="radio" class="edu" id="3">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container-radio">Others
-                                            <input type="radio" name="radio" class="edu" id="4">
-                                            <span class="checkmark"></span>
-                                        </label>
+                                        <select class="form-control">
+                                            <option>Diploma</option>
+                                            <option>Graduation</option>
+                                            <option>Post Graduation</option>
+                                            <option>Professional Course</option>
+                                            <option>Others</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -95,16 +104,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="duration" class="input-group-text">
-                                            Course Duration
-                                        </label>
-                                        <input type="text" class="form-control" id="duration"
-                                               placeholder="Enter Course Duration">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="duration" class="input-group-text">
-                                            College or University Name
+                                            College / University Name
                                         </label>
                                         <input type="text" class="form-control" id="duration"
                                                placeholder="Enter College or University Name">
@@ -149,35 +149,6 @@ use yii\helpers\Url;
                                                placeholder="Enter Phone Number">
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="tab">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <h1 class="heading-style">Additional Details</h1>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Name of Applicant (Students Name)
-                                        </label>
-                                        <input type="text" class="form-control" id="number" placeholder="Enter Full Name">
-                                    </div>
-                                </div>
-                                <div class="col-md-12 padd-20">
-                                    <div class="form-group">
-                                        <label for="number" class="input-group-text">
-                                            Date Of Birth
-                                        </label>
-                                        <div class="input-group date" data-provide="datepicker" class="datepicker3">
-                                            <input type="text" class="form-control">
-                                            <div class="input-group-addon">
-                                                <span class=""><i class="fas fa-calendar-alt"></i></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="email" class="input-group-text">
@@ -187,20 +158,35 @@ use yii\helpers\Url;
                                                placeholder="Enter Email Address">
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h1 class="heading-style">Additional Details</h1>
+                                    </div>
+                                </div>
+
 
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group ">
                                         <div class="radio-heading input-group-text">
                                             Gender
                                         </div>
-                                        <label class="container-radio">Male
-                                            <input type="radio" checked="checked" name="genderRadio">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <label class="container-radio">Female
-                                            <input type="radio" name="genderRadio">
-                                            <span class="checkmark"></span>
-                                        </label>
+                                        <ul class="displayInline">
+                                            <li>
+                                                <label class="container-radio">Male
+                                                    <input type="radio" checked="checked" name="genderRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                            <li>
+                                                <label class="container-radio">Female
+                                                    <input type="radio" name="genderRadio">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="col-md-12 padd-20">
@@ -215,7 +201,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <div class="radio-heading input-group-text">
-                                            Who would be your co-borrower?
+                                            Who would be your Co-Applicant?
                                         </div>
                                         <ul>
                                             <li class="service-list">
@@ -249,7 +235,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="email" class="input-group-text">
-                                            Co-borrower's Name
+                                            Co-Applicant's Name
                                         </label>
                                         <input type="text" class="form-control" id="email"
                                                placeholder="Enter Full Name">
@@ -258,7 +244,7 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <div class="radio-heading input-group-text">
-                                            Your Co-borrower's employment type ?
+                                            Your Co-Applicant's employment type ?
                                         </div>
                                         <ul class="displayInline">
                                             <li>
@@ -285,99 +271,17 @@ use yii\helpers\Url;
                                 <div class="col-md-12 padd-20">
                                     <div class="form-group">
                                         <label for="annulIncome" class="input-group-text">
-                                            Co-borrower's Annual Income
+                                            Co-Applicant's Annual Income
                                         </label>
                                         <input type="text" class="form-control" id="annulIncome"
                                                placeholder="Enter Annual Income">
                                     </div>
                                 </div>
-                                <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
-                                    <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo()"> <i class="fas fa-plus-square"></i> Add Another Co-borrower</button>
-                                </div>
                                 <div id="addAnotherCo">
-                                    <div class="col-md-12 padd-20 display-flex">
-                                        <span class="input-group-text">Other Co-borrower's Details</span>
-                                        <button type="button" class="addAnotherCo input-group-text float-right" onclick="RemoveAnotherCo()"> Cancel</button>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <div class="radio-heading input-group-text">
-                                                Who would be your co-borrower?
-                                            </div>
-                                            <ul>
-                                                <li class="service-list">
-                                                    <input type="radio" name="name" id="father"
-                                                           class="checkbox-input services"/>
-                                                    <label for="father">Father</label>
-                                                </li>
-                                                <li class="service-list">
-                                                    <input type="radio" name="name" id="mother"
-                                                           class="checkbox-input services"/>
-                                                    <label for="mother">Mother</label>
-                                                </li>
-                                                <li class="service-list">
-                                                    <input type="radio" name="name" id="brother"
-                                                           class="checkbox-input services"/>
-                                                    <label for="brother">Brother</label>
-                                                </li>
-                                                <li class="service-list">
-                                                    <input type="radio" name="name" id="sister"
-                                                           class="checkbox-input services"/>
-                                                    <label for="sister">Sister</label>
-                                                </li>
-                                                <li class="service-list">
-                                                    <input type="radio" name="name" id="guardian"
-                                                           class="checkbox-input services"/>
-                                                    <label for="guardian">Guardian</label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="email" class="input-group-text">
-                                                Co-borrower's Name
-                                            </label>
-                                            <input type="text" class="form-control" id="email"
-                                                   placeholder="Enter Full Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <div class="radio-heading input-group-text">
-                                                Your Co-borrower's employment type ?
-                                            </div>
-                                            <ul class="displayInline">
-                                                <li>
-                                                    <label class="container-radio">Salaried
-                                                        <input type="radio" checked="checked" name="borrowRadio">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="container-radio">Self-Employed
-                                                        <input type="radio" name="borrowRadio">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                                <li>
-                                                    <label class="container-radio">Non-Working
-                                                        <input type="radio" name="borrowRadio">
-                                                        <span class="checkmark"></span>
-                                                    </label>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 padd-20">
-                                        <div class="form-group">
-                                            <label for="annulIncome" class="input-group-text">
-                                                Co-borrower's Annual Income
-                                            </label>
-                                            <input type="text" class="form-control" id="annulIncome"
-                                                   placeholder="Enter Annual Income">
-                                        </div>
-                                    </div>
+
+                                </div>
+                                <div class="col-md-12 padd-20 displayFlex" id="addAnotherButton">
+                                    <button type="button" class="addAnotherCo input-group-text" onclick="addAnotherCo()"> <i class="fas fa-plus-square"></i> Add Another Co-Applicant</button>
                                 </div>
                             </div>
 
@@ -421,7 +325,7 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-#countryName, #addAnotherCo{
+#countryName{
     display: none;
 }
 .float-right{
@@ -635,7 +539,7 @@ form label {
 }
 .service-list{
      display: inline-block;
-     min-width: 120px;
+     min-width: 110px;
      margin-left:3px;
 }
 .service-list label{
@@ -722,31 +626,14 @@ $script = <<<JS
     format: 'mm/dd/yyyy',
     startDate: '-3d'
 });
-    // $('#datetimepicker6').datepicker();
-   // $(function () {
-   //      $('#datetimepicker6').datepicker();
-   //      $('#datetimepicker7').datepicker({
-   //          useCurrent: false //Important! See issue #1075
-   //      });
-   //      // $("#datetimepicker6").on("dp.change", function (e) {
-   //      //     $('#datetimepicker7').data("DatePicker").minDate(e.date);
-   //      // });
-   //      // $("#datetimepicker7").on("dp.change", function (e) {
-   //      //     $('#datetimepicker6').data("DatePicker").maxDate(e.date);
-   //      // });
-   //  });
 JS;
 $this->registerJs($script);
 ?>
 
     <script>
-
         function matchHeight() {
-            // var leftDiv =  document.getElementById('cl');
             var divHeight = document.getElementById('sd').offsetHeight;
-            console.log(divHeight);
             document.getElementById('cl').style.height = (divHeight + "px");
-            console.log(document.getElementById('cl').offsetHeight)
         }
 
         window.onload = matchHeight();
@@ -795,16 +682,108 @@ $this->registerJs($script);
             }
         }
 
+
+        var coApplicant = ['<div class="col-md-12 padd-20 display-flex"><span class="input-group-text">Other Co-Applicant\'s Details</span><button type="button" class="addAnotherCo input-group-text float-right" onclick="RemoveAnotherCo(this)"> Cancel</button>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <div class="radio-heading input-group-text">\n' +
+        '                                                Who would be your Co-Applicant?\n' +
+        '                                            </div>\n' +
+        '                                            <ul>\n' +
+        '                                                <li class="service-list">\n' +
+        '                                                    <input type="radio" name="coapplicant" id="father"\n' +
+        '                                                           class="checkbox-input services"/>\n' +
+        '                                                    <label for="father">Father</label>\n' +
+        '                                                </li>\n' +
+        '                                                <li class="service-list">\n' +
+        '                                                    <input type="radio" name="name" id="mother"\n' +
+        '                                                           class="checkbox-input services"/>\n' +
+        '                                                    <label for="mother">Mother</label>\n' +
+        '                                                </li>\n' +
+        '                                                <li class="service-list">\n' +
+        '                                                    <input type="radio" name="name" id="brother"\n' +
+        '                                                           class="checkbox-input services"/>\n' +
+        '                                                    <label for="brother">Brother</label>\n' +
+        '                                                </li>\n' +
+        '                                                <li class="service-list">\n' +
+        '                                                    <input type="radio" name="name" id="sister"\n' +
+        '                                                           class="checkbox-input services"/>\n' +
+        '                                                    <label for="sister">Sister</label>\n' +
+        '                                                </li>\n' +
+        '                                                <li class="service-list">\n' +
+        '                                                    <input type="radio" name="name" id="guardian"\n' +
+        '                                                           class="checkbox-input services"/>\n' +
+        '                                                    <label for="guardian">Guardian</label>\n' +
+        '                                                </li>\n' +
+        '                                            </ul>\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="email" class="input-group-text">\n' +
+        '                                                Co-Applicant\'s Name\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" class="form-control" id="email"\n' +
+        '                                                   placeholder="Enter Full Name">\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <div class="radio-heading input-group-text">\n' +
+        '                                                Your Co-Applicant\'s employment type ?\n' +
+        '                                            </div>\n' +
+        '                                            <ul class="displayInline">\n' +
+        '                                                <li>\n' +
+        '                                                    <label class="container-radio">Salaried\n' +
+        '                                                        <input type="radio" checked="checked" name="borrowRadio">\n' +
+        '                                                        <span class="checkmark"></span>\n' +
+        '                                                    </label>\n' +
+        '                                                </li>\n' +
+        '                                                <li>\n' +
+        '                                                    <label class="container-radio">Self-Employed\n' +
+        '                                                        <input type="radio" name="borrowRadio">\n' +
+        '                                                        <span class="checkmark"></span>\n' +
+        '                                                    </label>\n' +
+        '                                                </li>\n' +
+        '                                                <li>\n' +
+        '                                                    <label class="container-radio">Non-Working\n' +
+        '                                                        <input type="radio" name="borrowRadio">\n' +
+        '                                                        <span class="checkmark"></span>\n' +
+        '                                                    </label>\n' +
+        '                                                </li>\n' +
+        '                                            </ul>\n' +
+        '                                        </div>\n' +
+        '                                    </div>\n' +
+        '                                    <div class="col-md-12 padd-20">\n' +
+        '                                        <div class="form-group">\n' +
+        '                                            <label for="annulIncome" class="input-group-text">\n' +
+        '                                                Co-Applicant\'s Annual Income\n' +
+        '                                            </label>\n' +
+        '                                            <input type="text" class="form-control" id="annulIncome"\n' +
+        '                                                   placeholder="Enter Annual Income">\n' +
+        '                                        </div>\n' +
+        '                                    </div>'];
+
         function addAnotherCo(){
-            document.getElementById('addAnotherCo').style.display = "block";
-            document.getElementById('addAnotherButton').style.display = "none";
-        }
+            var textnode = document.createElement("div");
+            textnode.setAttribute('class', 'coapplicant');
+            textnode.innerHTML = coApplicant;
+            document.getElementById('addAnotherCo').appendChild(textnode);
 
-        function RemoveAnotherCo() {
-            document.getElementById('addAnotherCo').style.display = "none";
-            document.getElementById('addAnotherButton').style.display = "block";
+            let coapplicants = document.getElementsByClassName('coapplicant');
+            if(coapplicants.length > 1){
+                document.getElementById('addAnotherButton').style.display = "none"
+            }
         }
-
+        function RemoveAnotherCo(ths) {
+            ths.closest('.coapplicant').remove();
+            let coapplicants = document.getElementsByClassName('coapplicant');
+            console.log(coapplicants)
+            if(coapplicants.length < 2){
+                document.getElementById('addAnotherButton').style.display = "block"
+            }
+        }
     </script>
 
 <?php
