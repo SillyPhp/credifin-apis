@@ -463,20 +463,30 @@ class OrganizationsController extends ApiBaseController
         $applied = AppliedApplications::find()
             ->distinct()
             ->alias('a')
+            ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username','e.slug org_slug'])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                     $c->innerJoinWith(['collegeEnc d']);
                 }]);
                 $b->innerJoinWith(['organizationEnc e']);
-            }],false)
-            ->innerJoinWith(['createdBy f'=>function($f){
-                $f->innerJoinWith(['userOtherInfo']);
-            }],false)
-            ->where(['d.organization_enc_id' => $college_id, 'e.slug' => $slug,'a.is_deleted'=>0])
-            ->andWhere(['a.status'=>['Pending']])
+                $b->joinWith(['title ee' => function ($ee) {
+                    $ee->joinWith(['categoryEnc e1']);
+                    $ee->joinWith(['parentEnc e2']);
+                }], false);
+                $b->joinWith(['designationEnc e3'], false);
+                $b->onCondition(['b.is_deleted' => 0]);
+            }], false)
+            ->innerJoinWith(['createdBy f' => function ($f) {
+                $f->innerJoinWith(['userOtherInfo g' => function ($g) {
+                    $g->joinWith(['departmentEnc g1']);
+                }]);
+                $f->onCondition(['f.is_deleted' => 0]);
+            }], false)
+            ->where(['d.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
+            ->andWhere(['e.has_placement_rights' => 1])
             ->asArray()
             ->all();
 
-        return $this->response(200,$applied);
+        return $this->response(200, $applied);
     }
 }
