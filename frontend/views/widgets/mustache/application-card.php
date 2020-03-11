@@ -290,25 +290,47 @@ function getReviewList(sidebarpage){
 function checkSkills(){
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
+       $(elems).sort(function (a, b) {
+            return $(a).width() > $(b).width() ? 1 : -1;  
+        }).appendTo(skillsMain);
+    });
+    checkSkills2();
+}
+function checkSkills2(){
+    var parent_card_main = $('.application-card-main').width() / 3;
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
        var i = 0;
        $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+            if($(this).width() > parent_card_main && $(this).text() != 'Multiple Skills' || i >= 3){
                 $(this).addClass('hidden');
             }
             i++;
        });
-       var skillsMain = $(this).find('.tags');
        var hddn = $(this).find('.after.hidden');
        var hasMore = $(this).find('span.more-skills');
        if(hddn.length != 0){
            if(elems.length === hddn.length){
                $(elems[0]).removeClass('hidden');
+               var lg_skills = $(elems[0]).width();
+               var parent_card = $(elems[0]).parentsUntil('.application-card-main').parent().width() - 60;
                var countMore = hddn.length - 1;
                if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+                   skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
+               } else if(hasMore.length != 0){
+                   skillsMain.parent().children('.more-skills').show();
+               }
+               if(lg_skills >= parent_card){
+                   $(elems[0]).parent().css('display','inherit');
+                    $(elems[0]).addClass('lg-skill');
+                    $(elems[0]).parent().parent().children('.more-skills').hide();
+               } else {
+                   $(elems[0]).parent().css('display','inline-block');
                }
            } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+                skillsMain.parent().append('<span class="more-skills">+ ' + hddn.length + '</span>');
            }
        }
     });
@@ -390,29 +412,25 @@ $this->registerCss('
     right: -4px !important;
     top: -3px !important;
 }
-
 .clear{
     clear:both;
 }
-
 .sal{
     margin-right: 5px;
 }
-
 .salary{
     font-family:roboto;
 }
-
 .tag-box{
     border-top: 1px solid lightgray;
     padding-left:15px;
     padding-top:10px;
 }
-
 .tags{
     font-size: 17px;
     color:gray;
     font-family: Georgia !important;
+    display:inline-block;
 }
 .after{
     padding-right: 25px;
@@ -454,18 +472,23 @@ $this->registerCss('
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
+    display:inline-block;
 }
 .salary{ 
     padding-left: 16px;
+}
+.lg-skill{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 @media only screen and (max-width: 974px){
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}
     .hide-resp{display:none;}
-
 }
 /*cards-box css*/
-
 ');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -118,9 +118,9 @@ p{
 ');
 ?>
 <div class="wrapper">
-    <div class=" bg-blue">
+    <div class="bg-blue">
         <div class="logo">
-            <a href="https://www.empoweryouth.com">
+            <a href="<?= Url::to('/', true);?>">
                 <img src="<?= Url::to('@commonAssets/email_service/email-logo.png', true); ?>" class="responsive">
             </a>
         </div>
@@ -147,7 +147,7 @@ p{
         </div>
     </div>
     <div class="editProfile">
-        <a href="">Edit Profile</a>
+        <a href="<?= Url::to('/' . $data['username'] . '/edit', true);?>">Edit Profile</a>
     </div>
     <div class="mail-text">
         <div class="text-bold mb1">SET IT, FORGET IT</div>

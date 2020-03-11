@@ -31,6 +31,7 @@ class BlogsController extends ApiBaseController
             'except' => [
                 'blogs-home',
                 'post-details',
+                'get-blog-parent-comments',
                 'get-blog-child-comments',
                 'blog-list',
                 'get-posts-by-tag'
@@ -43,6 +44,7 @@ class BlogsController extends ApiBaseController
                 'blogs-home' => ['POST'],
                 'post-details' => ['POST'],
                 'blog-list' => ['POST'],
+                'get-blog-parent-comments' => ['POST'],
                 'get-blog-child-comments' => ['POST'],
                 'save-parent-comment' => ['POST'],
                 'save-child-comment' => ['POST'],
@@ -160,7 +162,8 @@ class BlogsController extends ApiBaseController
         }
 
         $post = Posts::find()->alias('a')
-            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", f.image_location, "/", f.image) image'])
+            ->select(['a.*', 'CONCAT(f.first_name, " ", f.last_name) name', 'f.description user_about', 'f.initials_color','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image',
+                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image,'https') . '", f.image_location, "/", f.image) ELSE NULL END user_image'])
             ->joinWith(['postCategories b' => function ($b) {
                 $b->select(['b.post_enc_id', 'b.category_enc_id']);
                 $b->joinWith(['categoryEnc c' => function ($y) {
@@ -184,39 +187,9 @@ class BlogsController extends ApiBaseController
             ->one();
 
 
-        $comments = PostComments::find()
-            ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
-            ->joinWith(['userEnc b'], false)
-            ->where(['a.reply_to' => NULL])
-            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $i = 0;
-        foreach ($comments as $r) {
-            $a = PostComments::find()
-                ->where(['reply_to' => $r['comment_enc_id']])
-                ->andWhere(['post_enc_id' => $post['post_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-            if ($a) {
-                $comments[$i]['hasChild'] = true;
-            } else {
-                $comments[$i]['hasChild'] = false;
-            }
-            $i++;
-        }
-
-        if (!empty($comments)) {
-            $post['comments'] = $comments;
-        }
-
         if ($post) {
             $similar_posts = Posts::find()->alias('a')
-                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
+                ->select(['a.title', 'a.slug', 'a.excerpt','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
                 ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
                 ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
                 ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
@@ -316,6 +289,56 @@ class BlogsController extends ApiBaseController
 
         if (!empty($child_comment)) {
             return $this->response(200, $child_comment);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
+    public function actionGetBlogParentComments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $post = Posts::find()
+            ->where(['slug' => $slug])
+            ->andWhere(['status' => 'Active'])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+
+        $comments = PostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image,'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.reply_to' => NULL])
+            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        foreach ($comments as $r) {
+            $a = PostComments::find()
+                ->where(['reply_to' => $r['comment_enc_id']])
+                ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
+            if ($a) {
+                $comments[$i]['hasChild'] = true;
+            } else {
+                $comments[$i]['hasChild'] = false;
+            }
+            $i++;
+        }
+
+        if (!empty($comments)) {
+            return $this->response(200, $comments);
         } else {
             return $this->response(404, 'not found');
         }
