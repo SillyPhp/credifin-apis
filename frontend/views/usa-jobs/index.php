@@ -244,7 +244,7 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
         </div>
     </div>
 </section>
-<section>
+<section style="background:#fff;">
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6">
