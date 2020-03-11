@@ -187,36 +187,6 @@ class BlogsController extends ApiBaseController
             ->one();
 
 
-        $comments = PostComments::find()
-            ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
-            ->joinWith(['userEnc b'], false)
-            ->where(['a.reply_to' => NULL])
-            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $i = 0;
-        foreach ($comments as $r) {
-            $a = PostComments::find()
-                ->where(['reply_to' => $r['comment_enc_id']])
-                ->andWhere(['post_enc_id' => $post['post_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-            if ($a) {
-                $comments[$i]['hasChild'] = true;
-            } else {
-                $comments[$i]['hasChild'] = false;
-            }
-            $i++;
-        }
-
-        if (!empty($comments)) {
-            $post['comments'] = $comments;
-        }
-
         if ($post) {
             $similar_posts = Posts::find()->alias('a')
                 ->select(['a.title', 'a.slug', 'a.excerpt','CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.featured_image_location, "/", a.featured_image) featured_image', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
