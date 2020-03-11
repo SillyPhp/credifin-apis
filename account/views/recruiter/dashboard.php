@@ -31,16 +31,14 @@ use yii\helpers\Url;
             <div class="col-md-3">
                 <?=
                 Html::button('Add New Company', [
-                    'class' => 'btn btn-primary custom-buttons',
-                    'id' => 'open-modal',
-                    'data-toggle' => 'modal',
-                    'data-target' => '#add-new',
-                ]);
+                    'class' => 'btn btn-primary custom-buttons modal-load-class',
+                    'id' => 'add-new-company',
+                    'value' => URL::to('/account/recruiter/add-new-company')
+                   ]);
                 ?>
             </div>
         </div>
     </div>
-
     <div class="row">
     <div class="col-md-3">
         <?= $this->render('/widgets/tasks/taskbar-card'); ?>
@@ -358,74 +356,14 @@ use yii\helpers\Url;
         </div>
     </div>
 
-    <div class="modal fade" id="add-new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog">
-            <!-- Modal content-->
+    <div class="modal fade bs-modal-lg in" id="main-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <span class="org-info">Organization Information</span>
-                </div>
                 <div class="modal-body">
-                    <?php $form = ActiveForm::begin([
-                        'id' => 'company_add_form',
-                        'fieldConfig' => [
-                            'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{error}</div>',
-                        ],
-                    ]); ?>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <?= $form->field($model,'username')->textInput(['placeholder'=>'Username']); ?>
-                        </div>
-                        <div class="col-md-6">
-                            <?= $form->field($model,'organization_name')->textInput(['placeholder'=>'Organization Name']); ?>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="text" class="form-control" placeholder="Website"/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="tel" class="form-control" placeholder="Phone No.">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 padd">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <textarea id="form7" class="md-textarea form-control" rows="5   "></textarea>
-                                <label for="form7">Description</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 align">
-                            <div class="form-group">
-                                <ul class="ks-cboxtags">
-                                    <li class="service-list">
-                                        <input type="checkbox" id="services" class="checkbox-input services"/>
-                                        <label for="services">
-                                            Jobs
-                                        </label>
-                                    </li>
-                                    <li class="service-list">
-                                        <input type="checkbox" id="services2" class="checkbox-input services"/>
-                                        <label for="services2">
-                                            Internships
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                 <?php ?>
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
-                <div class="modal-footer">
-                    <a class="btn btn-primary">Save</a>
-                </div>
-                <?php ActiveForm::end();?>
             </div>
         </div>
     </div>
@@ -1456,11 +1394,6 @@ html body .tabs .nav-tabs li.active .nav-link, html.dark body .tabs .nav-tabs li
 }
 ');
 $script = <<< JS
- 
-$(document).on("click", "#addpro", function () {
-    $(".load-modal").load($(this).attr("url"));
-});
-        
 $('.todo-check').change(function () {
     if ($(this).prop("checked")) {
         $(this).closest('li').find('.todo-label').addClass('line-pass');
@@ -1468,31 +1401,14 @@ $('.todo-check').change(function () {
         $(this).closest('li').find('.todo-label').removeClass('line-pass');
     }
 });
-
+$(document).on('click', '.modal-load-class', function() {
+    $('#main-modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 $('.todo-remove').click(function (e) {
     $(this).closest('li').remove();
     e.preventDefault();
 });
-        
-  $('form').validate({
-  rules: {
-    'OrganizationSignUpForm[company_name]': {
-         required: true,
-     },
-        
-    "OrganizationSignUpForm[company_email]": {
-         required: true,
-     },
-    "OrganizationSignUpForm[company_website]": {
-         required: true,
-     },
-    "OrganizationSignUpForm[company_phone]": {
-         required: true,
-     }
-  },
-});  
-JS;
-$script = <<< JS
+
 fetch_companies_list($('#companies_lst'),limit=6,offset=0,id='EV8KoxNaQZzMJ5MM4mqvyp539GLgXD');
 $(document).ready(function(){ 
   $("#add-cand").click(function(){
@@ -1501,12 +1417,11 @@ $(document).ready(function(){
   });
 });
 $(document).on('click', '.remove-cand', function(){
-    $(this).parent('.temp-field').remove();
-});
+    $(this).parent('.temp-field').remove(); 
+}); 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
-$this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+//$this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

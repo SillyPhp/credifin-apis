@@ -38,10 +38,12 @@ class RecruiterController extends Controller {
     }
 
     public function actionDashboard() {
+        return $this->render('dashboard');
+    }
+    public function actionAddNewCompany()
+    {
         $model = new AddCompany();
-        return $this->render('dashboard', [
-            'model'=>$model
-        ]);
+        return $this->renderAjax('add-new-company',['model'=>$model]);
     }
     public function actionCandidates(){
         return $this->render('candidates-hr');
