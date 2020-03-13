@@ -73,9 +73,9 @@ class CareerAdviceController extends ApiBaseController
             $page = 1;
         }
 
-        if($params['limit']){
+        if ($params['limit']) {
             $limit = (int)$params['limit'];
-        }else{
+        } else {
             $limit = 3;
         }
 
@@ -179,7 +179,13 @@ class CareerAdviceController extends ApiBaseController
 
         $child_comment = CareerAdvicePostComments::find()
             ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image,'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->select([
+                'a.comment_enc_id',
+                'a.comment reply',
+                'b.username',
+                'CONCAT(b.first_name, " ", b.last_name) name',
+                'b.initials_color color',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
             ->joinWith(['userEnc b'], false)
             ->where(['a.reply_to' => $parent])
             ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -214,7 +220,13 @@ class CareerAdviceController extends ApiBaseController
 
         $comments = CareerAdvicePostComments::find()
             ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->select([
+                'a.comment_enc_id',
+                'a.comment reply',
+                'b.username',
+                'CONCAT(b.first_name, " ", b.last_name) name',
+                'b.initials_color color',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
             ->joinWith(['userEnc b'], false)
             ->where(['a.reply_to' => NULL])
             ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -271,8 +283,9 @@ class CareerAdviceController extends ApiBaseController
             ->andWhere(['is_deleted' => 0])
             ->one();
 
-        if ($this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
-            return $this->response(200, 'saved');
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
+            $result = $this->getComment($data->comment_enc_id,$data->post_enc_id);
+            return $this->response(200, $result);
         } else {
             return $this->response(500, 'an error occurred');
         }
@@ -313,8 +326,9 @@ class CareerAdviceController extends ApiBaseController
             ->one();
 
 
-        if ($this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
-            return $this->response(200, 'saved');
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
+            $result = $this->getComment($data->comment_enc_id,$data->post_enc_id);
+            return $this->response(200, $result);
         } else {
             return $this->response(500, 'an error occurred');
         }
@@ -332,10 +346,24 @@ class CareerAdviceController extends ApiBaseController
         $commentModel->user_enc_id = $current_user;
         $commentModel->created_on = date('Y-m-d H:i:s');
         if ($commentModel->save()) {
-            return true;
+            return $commentModel;
         } else {
             return false;
         }
+    }
+
+    private function getComment($comment_id, $post_id)
+    {
+        $comments = CareerAdvicePostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.post_enc_id' => $post_id, 'a.comment_enc_id' => $comment_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        return $comments;
     }
 
 }
