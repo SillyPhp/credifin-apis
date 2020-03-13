@@ -966,7 +966,7 @@ $(document).on('submit','#form-search',function(e) {
   fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
 });
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
-fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit=12,offset=0);
 //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
 JS;
 $this->registerJs($script);
