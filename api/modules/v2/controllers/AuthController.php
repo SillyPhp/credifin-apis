@@ -32,6 +32,15 @@ class AuthController extends ApiBaseController
                 'save-other-detail' => ['POST','OPTIONS'],
             ]
         ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.myecampus.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
+        ];
         return $behaviors;
     }
 
