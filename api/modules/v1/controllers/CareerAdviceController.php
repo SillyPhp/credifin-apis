@@ -179,7 +179,7 @@ class CareerAdviceController extends ApiBaseController
 
         $child_comment = CareerAdvicePostComments::find()
             ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image,'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
             ->joinWith(['userEnc b'], false)
             ->where(['a.reply_to' => $parent])
             ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
