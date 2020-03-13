@@ -151,7 +151,19 @@ class OrganizationsController extends ApiBaseController
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'dd.designation',
-                'z.name job_type'
+                'z.name job_type',
+                '(CASE
+                WHEN b.experience = "0" THEN "No Experience"
+                WHEN b.experience = "1" THEN "Less Than 1 Year Experience"
+                WHEN b.experience = "2" THEN "1 Year Experience"
+                WHEN b.experience = "3" THEN "2-3 Years Experience"
+                WHEN b.experience = "3-5" THEN "3-5 Years Experience"
+                WHEN b.experience = "5-10" THEN "5-10 Years Experience"
+                WHEN b.experience = "10-20" THEN "10-20 Years Experience"
+                WHEN b.experience = "20+" THEN "More Than 20 Years Experience"
+                ELSE "No Experience"
+               END) as experience',
+                'b.type'
             ])
             ->joinWith(['employerApplicationEnc b' => function ($b) {
                 $b->joinWith(['organizationEnc bb'], false);
@@ -463,7 +475,7 @@ class OrganizationsController extends ApiBaseController
         $applied = AppliedApplications::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username','e.slug org_slug'])
+            ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug'])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                     $c->innerJoinWith(['collegeEnc d']);

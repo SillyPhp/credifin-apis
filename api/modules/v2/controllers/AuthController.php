@@ -17,6 +17,7 @@ use common\models\Referral;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
+use yii\filters\Cors;
 
 class AuthController extends ApiBaseController
 {
@@ -28,8 +29,7 @@ class AuthController extends ApiBaseController
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'signup' => ['POST'],
-                'invi' => ['POST'],
-//                'login' => ['GET'],
+                'save-other-detail' => ['POST','OPTIONS'],
             ]
         ];
         return $behaviors;
