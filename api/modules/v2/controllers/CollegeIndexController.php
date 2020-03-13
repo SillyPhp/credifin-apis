@@ -14,6 +14,7 @@ use common\models\ReviewsType;
 use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
+use common\models\WhatsappInvitation;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -682,12 +683,39 @@ class CollegeIndexController extends ApiBaseController
                     }
                 }
             }
-            if($_flag == 0){
-                return $this->response(500,['status'=>500,'Message'=>'An Error occurred']);
-            }else{
-                return $this->response(200,['status'=>200,'Message'=>'saved']);
+            if ($_flag == 0) {
+                return $this->response(500, ['status' => 500, 'Message' => 'An Error occurred']);
+            } else {
+                return $this->response(200, ['status' => 200, 'Message' => 'saved']);
             }
         }
+    }
+
+    public function actionWhatsappInvitation()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $req = Yii::$app->request->post();
+            if (!empty($req['phone'])) {
+                $phone = $req['phone'];
+            }
+
+            $model = new WhatsappInvitation();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->invitation_enc_id = $utilitiesModel->encrypt();
+            $model->invitation_type = 1;
+            $model->phone = $phone;
+            $model->user_enc_id = $user->user_enc_id;
+            $model->organization_enc_id = $this->getOrgId();
+            if ($model->save()) {
+                $link = 'https://localhost:8080/signup?ref=' . $this->getReferralCode() . '&invitation=' . $model->invitation_enc_id;
+                return $this->response(200, ['status' => 200, 'link' => $link]);
+            } else {
+                return $this->response(500, ['status' => 500, 'Message' => 'An Error Occurred']);
+            }
+        }
+
     }
 
 }

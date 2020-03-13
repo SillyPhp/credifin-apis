@@ -6,6 +6,7 @@ use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\UserOtherDetails;
+use common\models\WhatsappInvitation;
 use http\Env\Response;
 use Yii;
 use api\modules\v1\models\Candidates;
@@ -27,6 +28,7 @@ class AuthController extends ApiBaseController
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'signup' => ['POST'],
+                'invi' => ['POST'],
 //                'login' => ['GET'],
             ]
         ];
@@ -46,17 +48,17 @@ class AuthController extends ApiBaseController
                     ]);
                 }
 
-                if($model->ref != '' && $model->invitation != ''){
-                    if($this->getRef($model) && $this->getInvitation($model)) {
+                if ($model->ref != '' && $model->invitation != '') {
+                    if ($this->getRef($model) && $this->getInvitation($model)) {
                         if ($model->saveUser()) {
                             return $this->response(200, ['status' => 200]);
                         } else {
                             return $this->response(500, ['status' => 500]);
                         }
-                    }else{
-                        return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
+                    } else {
+                        return $this->response(404, ['status' => 404, 'message' => 'Invalid Link']);
                     }
-                }else{
+                } else {
                     if ($model->saveUser()) {
                         return $this->response(200, ['status' => 200]);
                     } else {
@@ -67,15 +69,16 @@ class AuthController extends ApiBaseController
             }
             return $this->response(409, $model->getErrors());
         }
-        return $this->response(422,'Not found');
+        return $this->response(422, 'Not found');
     }
 
-    public function actionValidate(){
+    public function actionValidate()
+    {
         $model = new ValidateUser();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->validate()) {
-                return $this->response(200,['status'=>200]);
-            }else{
+                return $this->response(200, ['status' => 200]);
+            } else {
                 return $this->response(409, $model->getErrors());
             }
         }
@@ -100,11 +103,23 @@ class AuthController extends ApiBaseController
 
     private function getInvitation($model)
     {
-        $initation = EmailLogs::find()
-            ->where(['email_log_enc_id' => $model->invitation])
-            ->exists();
+        $invi = (new \yii\db\Query())
+            ->from(EmailLogs::tableName() . 'as a')
+            ->select(['email_log_enc_id id'])
+            ->where(['email_log_enc_id' => $model->invitation]);
 
-        return $initation;
+        $invi2 = (new \yii\db\Query())
+            ->from(WhatsappInvitation::tableName() . 'as a')
+            ->select(['invitation_enc_id id'])
+            ->where(['invitation_enc_id' => $model->invitation]);
+
+        $result = (new \yii\db\Query())
+            ->from([
+                $invi->union($invi2),
+            ])
+            ->one();
+
+        return $result;
     }
 
     public function actionUsername()
@@ -291,7 +306,7 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'user_type' => $user_detail['user_type'],
-            'user_other_detail'=> $this->userOtherDetail($find_user['user_enc_id']),
+            'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
             'college' => $user_detail['org_name'],
             'college_enc_id' => $user_detail['organization_enc_id'],
@@ -307,20 +322,22 @@ class AuthController extends ApiBaseController
         ];
     }
 
-    private function userOtherDetail($user_id){
+    private function userOtherDetail($user_id)
+    {
         $user_other_detail = UserOtherDetails::find()
-            ->where(['user_enc_id'=>$user_id])
+            ->where(['user_enc_id' => $user_id])
             ->exists();
 
         return $user_other_detail;
     }
 
-    public function actionSaveOtherDetail(){
+    public function actionSaveOtherDetail()
+    {
 
-        if($user = $this->isAuthorized()){
+        if ($user = $this->isAuthorized()) {
             $user_id = $user->user_enc_id;
-        }else{
-            return $this->response(401,['status'=>401,'msg'=>'unauthorized']);
+        } else {
+            return $this->response(401, ['status' => 401, 'msg' => 'unauthorized']);
         }
 
         $data = Yii::$app->request->post();
@@ -397,9 +414,9 @@ class AuthController extends ApiBaseController
         }
 
         if (!$user_other_details->save()) {
-            return $this->response(500,['status'=>500,'message'=>'an error occurred']);
-        }else{
-            return $this->response(201,['status'=>201,'message'=>'successfully added']);
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        } else {
+            return $this->response(201, ['status' => 201, 'message' => 'successfully added']);
         }
     }
 }
