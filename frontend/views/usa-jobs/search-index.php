@@ -1,5 +1,5 @@
 <?php
-$this->title = ucwords(str_replace("-"," ",$s)).' Govt Jobs';
+$this->title = ucwords(str_replace("-"," ",$s)).' Usa Govt Jobs';
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var keyword = "' . $s . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var url_path = "' . Yii::$app->controller->id . '"', \yii\web\View::POS_HEAD);
@@ -49,7 +49,7 @@ $this->registerCss('
 display:none;
 }
 ');
-echo $this->render('/widgets/mustache/govt-jobs-card');
+echo $this->render('/widgets/mustache/usa-jobs-card');
 ?>
 <section class="applications-cards-list">
     <div class="row m-0">
@@ -97,12 +97,24 @@ echo $this->render('/widgets/mustache/govt-jobs-card');
 </section>
 <?php
 $script = <<< JS
+var host = 'data.usajobs.gov';  
+var userAgent = 'snehkant93@gmail.com';  
+var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM=';
 var offset = 0;
+var min =0;
+var max = 8;
 $(document).on('click','#loadMore',function(e) {
   e.preventDefault();
-  fetchLocalData(template=$('#cardBlock'),limit=12,offset=offset+12,loader=false,loader_btn=true);
+  fetchLocalData(template=$('#cardBlock'),min = min+8,max = max+8,loader=false,loader_btn=true);
 })
-fetchLocalData(template=$('#cardBlock'),limit=50,offset=0,loader=true,loader_btn=false,keyword=keyword,replace=true);
+fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
+if (keyword==null||keyword==''){
+    fetchLocalData(template=$('#cardBlock'),min,max,loader=true,loader_btn=false);
+} 
+else 
+{
+fetch_usa_cards(host,userAgent,authKey,template=$('#cardBlock'),keyword=keyword);
+}
 JS;
 $this->registerJs($script);
 ?>
