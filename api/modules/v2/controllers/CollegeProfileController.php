@@ -7,6 +7,7 @@ namespace api\modules\v2\controllers;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\ProfilePicture;
 use common\models\ApplicationEducationalRequirements;
+use common\models\AppliedApplications;
 use common\models\Cities;
 use common\models\CollegeCourses;
 use common\models\ErexxEmployerApplications;
@@ -278,7 +279,7 @@ class CollegeProfileController extends ApiBaseController
                 } else {
                     return $this->response(404);
                 }
-            }else{
+            } else {
                 return $this->response(409, ['status' => 409, 'message' => 'already added']);
             }
         } else {
@@ -406,6 +407,18 @@ class CollegeProfileController extends ApiBaseController
 
             $resultt = [];
             foreach ($result as $j) {
+
+                $count = AppliedApplications::find()
+                    ->alias('a')
+                    ->select(['COUNT(a.applied_application_enc_id) count'])
+                    ->innerJoinWith(['createdBy f' => function ($f) {
+                        $f->innerJoinWith(['userOtherInfo g']);
+                        $f->onCondition(['f.is_deleted' => 0]);
+                    }], false)
+                    ->where(['a.application_enc_id' => $j['employerApplicationEnc']['application_enc_id'], 'a.is_deleted' => 0])
+                    ->asArray()
+                    ->one();
+
                 $data = [];
                 $locations = [];
                 $educational_requirement = [];
@@ -437,6 +450,7 @@ class CollegeProfileController extends ApiBaseController
                 $data['positions'] = $positions;
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
+                $data['applied_count'] = $count['count'];
                 array_push($resultt, $data);
             }
 

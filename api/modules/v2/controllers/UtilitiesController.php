@@ -79,7 +79,7 @@ class UtilitiesController extends ApiBaseController
             ])
             ->joinWith(['businessActivityEnc b'])
             ->where([
-                'has_placement_rights' => 1,
+                'is_erexx_registered' => 1,
                 'status' => 'Active',
                 'is_deleted' => 0,
                 'b.business_activity'=>'College'
