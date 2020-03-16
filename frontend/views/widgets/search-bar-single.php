@@ -135,7 +135,7 @@ $(document).on('submit','#search_bar_form',function(e) {
   var kname = $('#keywords').val();
   if (kname)
       {
-          window.location.assign('/govt-jobs/search/'+kname.replace(/\s+/g, '-'));
+          window.location.assign('/'+url_path+'/search/'+kname.replace(/\s+/g, '-'));
       }
 })
 

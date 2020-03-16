@@ -709,7 +709,7 @@ class CollegeIndexController extends ApiBaseController
             $model->user_enc_id = $user->user_enc_id;
             $model->organization_enc_id = $this->getOrgId();
             if ($model->save()) {
-                $link = 'https://localhost:8080/signup?ref=' . $this->getReferralCode() . '%26invitation=' . $model->invitation_enc_id;
+                $link = 'https://www.myecampus.in/signup?ref=' . $this->getReferralCode() . '%26invitation=' . $model->invitation_enc_id;
                 return $this->response(200, ['status' => 200, 'link' => $link]);
             } else {
                 return $this->response(500, ['status' => 500, 'Message' => 'An Error Occurred']);

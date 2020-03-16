@@ -18,6 +18,7 @@ use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
 use yii\filters\Cors;
+use yii\filters\auth\HttpBearerAuth;
 
 class AuthController extends ApiBaseController
 {
@@ -25,12 +26,32 @@ class AuthController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'save-other-detail',
+                'login',
+                'signup',
+                'validate',
+                'username',
+                'find-user'
+                ],
+            'class' => HttpBearerAuth::className()
+        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'signup' => ['POST'],
                 'save-other-detail' => ['POST','OPTIONS'],
             ]
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.myecampus.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
         ];
         return $behaviors;
     }
