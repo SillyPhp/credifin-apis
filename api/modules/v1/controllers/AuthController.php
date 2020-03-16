@@ -3,6 +3,7 @@
 namespace api\modules\v1\controllers;
 
 use api\modules\v1\models\ForgotPasswordForm;
+use common\models\EmailLogs;
 use common\models\Usernames;
 use common\models\Users;
 use common\models\UserTypes;
@@ -134,6 +135,30 @@ class AuthController extends ApiBaseController
         $user->setPassword($model->password);
         $user->generateAuthKey();
         if ($user->save()) {
+            Yii::$app->individualSignup->registrationEmail($user->user_enc_id);
+            $mail = Yii::$app->mail;
+            $mail->receivers = [];
+            $mail->receivers[] = [
+                "name" => $user->first_name ." " . $user->last_name,
+                "email" => $user->email,
+            ];
+            $mail->subject = 'Welcome to Empower Youth';
+            $mail->template = 'thank-you';
+            if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $mail_logs->email_type = 5;
+                $mail_logs->user_enc_id = $user->user_enc_id;
+                $mail_logs->receiver_name = $user->first_name ." " . $user->last_name;
+                $mail_logs->receiver_email = $user->email;
+                $mail_logs->receiver_phone = $user->phone;
+                $mail_logs->subject = 'Welcome to Empower Youth';
+                $mail_logs->template = 'thank-you';
+                $mail_logs->is_sent = 1;
+                $mail_logs->save();
+            }
             return $user;
         }
         return false;

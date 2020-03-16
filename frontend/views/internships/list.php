@@ -1,6 +1,63 @@
 <?php
-$this->title = Yii::t('frontend', 'Internships');
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $this->title = Yii::$app->request->get('keyword') . ' internship vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+} elseif (Yii::$app->request->get('location')) {
+    $this->title = 'Total internship vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+} elseif (Yii::$app->request->get('keyword')) {
+    $this->title =  Yii::$app->request->get('keyword') . ' internship vacancies available - ' . date('M Y');
+} else {
+    $this->title = 'Total internship vacancies available';
+}
+
 $this->params['header_dark'] = true;
+
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = Yii::$app->request->get('keyword').' internship vacancies, internships in '. $location .', latest '.Yii::$app->request->get('keyword').' internships in '.$location.', latest '.Yii::$app->request->get('keyword').' internships';
+} elseif (Yii::$app->request->get('location')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = 'Total internships vacancies available in ' . $location . ', ' . $location . ' careers, ' . $location . ' internship listings, ' . $location . ' internship search,' . $location . ' internships';
+} elseif (Yii::$app->request->get('keyword')) {
+    $keyword = Yii::$app->request->get('keyword');
+    $keywords = 'Internships, ' . $keyword . ' internship vacancies available, ' . $keyword . ' careers, ' . $keyword . ' internship listings, ' . $keyword . ' internship search,' . $keyword . ' internships';
+} else {
+    $keywords = 'internship vacancies, Empower Youth, latest internships vacancies available in Porsche country, Porsche countries internships';
+}
+
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $description = Yii::$app->request->get('keyword').' internships vacancies available in '.Yii::$app->request->get('location').' - '.date('M Y').'. Signup and apply on empoweryouth.com for free of cost.  Also, if not having a resume than build with us.';
+} elseif (Yii::$app->request->get('location')) {
+    $description = 'Total internships vacancies available in ' . Yii::$app->request->get('location') . ' on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} elseif (Yii::$app->request->get('keyword')) {
+    $description = Yii::$app->request->get('keyword') . ' internship vacancies available on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} else {
+    $description = 'Total internship vacancies are available in countries. Explore, signup and apply now.';
+}
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 $this->registerCss('
 .change-hr{
     margin-bottom: 30px;
@@ -29,7 +86,7 @@ $this->registerCss('
             </div>
             <div class="col-md-10 col-sm-9">
                 <?=
-                $this->render('/widgets/search-bar1');
+                $this->render('/widgets/search-bar1',['type'=>'internships']);
                 ?>
                 <div class="col-md-12 col-sm-12">
                     <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>

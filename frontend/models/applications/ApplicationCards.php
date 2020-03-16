@@ -950,6 +950,9 @@ class ApplicationCards
 
     public static function makeSQL_search_pattern($search)
     {
+        if ($search==null||empty($search)){
+            return "";
+        }
         $search_pattern = false;
         $wordArray = preg_split('/[^-\w\']+/', $search, -1, PREG_SPLIT_NO_EMPTY);
         $search = self::optimizeSearchString($wordArray);
@@ -973,6 +976,7 @@ class ApplicationCards
         }
         return $search_pattern;
     }
+
     private static function optimizeSearchString($wordArray)
     {
         $articles = ['in', 'is', 'jobs', 'job', 'internship', 'internships'];

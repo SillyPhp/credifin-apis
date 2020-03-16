@@ -256,6 +256,7 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
+                'r.name application_type',
                 'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
                 'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
             ])
@@ -263,9 +264,7 @@ class JobsController extends ApiBaseController
                 'a.slug' => $slug,
                 'a.is_deleted' => 0,
             ])
-//            ->joinWith(['applicationTypeEnc r' => function ($x) {
-//                $x->andWhere(['r.name' => 'Jobs']);
-//            }], false)
+            ->joinWith(['applicationTypeEnc r'], false)
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($x) {
                 $x->onCondition(['c.is_deleted' => 0]);

@@ -14,6 +14,7 @@ use common\models\ReviewsType;
 use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
+use common\models\WhatsappInvitation;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -501,7 +502,7 @@ class CollegeIndexController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $data = Yii::$app->request->post();
             $req['college_id'] = $this->getOrgId();
-             $candidates = UserOtherDetails::find()
+            $candidates = UserOtherDetails::find()
                 ->alias('a')
                 ->distinct()
                 ->select([
@@ -560,7 +561,6 @@ class CollegeIndexController extends ApiBaseController
 //            if (isset($data['application_type']) && !empty($data['application_type '])) {
 //                $candidates->andWhere(['a.semester' => $data['semester']]);
 //            }
-
 
 
             $candidates = $candidates->asArray()
@@ -664,29 +664,58 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $data = Yii::$app->request->post();
+            $_flag = 0;
+            foreach ($data['user_id'] as $id) {
+                $user = UserOtherDetails::find()
+                    ->where(['user_other_details_enc_id' => $id])
+                    ->one();
 
-            $user = UserOtherDetails::find()
-                ->where(['user_other_details_enc_id' => $data['user_id']])
-                ->one();
-
-            if ($user) {
-                if ($data['type'] == "approve") {
-                    $user->college_actions = 0;
-                } elseif ($data['type'] == "block") {
-                    $user->college_actions = 1;
-                } elseif ($data['type'] == "reject") {
-                    $user->college_actions = 2;
+                if ($user) {
+                    if ($data['type'] == "approve") {
+                        $user->college_actions = 0;
+                    } elseif ($data['type'] == "block") {
+                        $user->college_actions = 1;
+                    } elseif ($data['type'] == "reject") {
+                        $user->college_actions = 2;
+                    }
+                    if ($user->update()) {
+                        $_flag++;
+                    }
                 }
-
-                if ($user->update()) {
-                    return $this->response(200, ['status' => 200]);
-                } else {
-                    return $this->response(500, ['status' => 500]);
-                }
+            }
+            if ($_flag == 0) {
+                return $this->response(500, ['status' => 500, 'Message' => 'An Error occurred']);
             } else {
-                return $this->response(500, ['status' => 500]);
+                return $this->response(200, ['status' => 200, 'Message' => 'saved']);
             }
         }
+    }
+
+    public function actionWhatsappInvitation()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $req = Yii::$app->request->post();
+            if (!empty($req['phone'])) {
+                $phone = $req['phone'];
+            }
+
+            $model = new WhatsappInvitation();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->invitation_enc_id = $utilitiesModel->encrypt();
+            $model->invitation_type = 1;
+            $model->phone = $phone;
+            $model->user_enc_id = $user->user_enc_id;
+            $model->organization_enc_id = $this->getOrgId();
+            if ($model->save()) {
+                $link = 'https://www.myecampus.in/signup?ref=' . $this->getReferralCode() . '%26invitation=' . $model->invitation_enc_id;
+                return $this->response(200, ['status' => 200, 'link' => $link]);
+            } else {
+                return $this->response(500, ['status' => 500, 'Message' => 'An Error Occurred']);
+            }
+        }
+
     }
 
 }

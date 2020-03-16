@@ -29,6 +29,11 @@ class UsaJobsController extends Controller
         return $this->render('index', ['keywords' => $keywords]);
     }
 
+    public function actionSearch($s=null)
+    {
+        return $this->render('search-index',['s'=>str_replace("-", " ", $s)]);
+    }
+
     public function actionGetKeywords()
     {
         if (Yii::$app->request->isAjax) {

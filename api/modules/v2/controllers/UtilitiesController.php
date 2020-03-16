@@ -24,7 +24,7 @@ class UtilitiesController extends ApiBaseController
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
                 ->joinWith(['organizationEnc b'=>function($b){
                     $b->joinWith(['businessActivityEnc c'],false);
@@ -49,7 +49,7 @@ class UtilitiesController extends ApiBaseController
                     '(CASE
                 WHEN a.logo IS NULL OR a.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", a.logo_location, "/", a.logo) END
                 ) organization_logo'
                 ])
                 ->joinWith(['businessActivityEnc b'])

@@ -74,14 +74,14 @@ use yii\helpers\Url;
                 text-decoration: none;
                 color: #00a0e3;
                 font-weight: bold;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                overflow: hidden;
+                display: block;
             }
 
             .job-list ul li a:hover {
                 cursor: pointer;
-            }
-
-            .ey-link {
-                margin-top: 40px;
             }
 
             .ey-link a {
@@ -152,20 +152,30 @@ use yii\helpers\Url;
 <div class="wrapper">
     <div class="position-relative">
         <div class="logo">
-            <a href="#"><img src="<?= Url::to('/assets/themes/email/invitation/images/email-logo.png', 'https'); ?>"
-                             class="responsive"></a>
+            <a href="<?= Url::to('/', true) ?>"><img
+                        src="<?= Url::to('/assets/themes/email/invitation/images/email-logo.png', 'https'); ?>"
+                        class="responsive"></a>
         </div>
     </div>
     <div class="shadow">
-        <div class="reciver-name">Hi <?= $name ?></div>
+        <div class="reciver-name">Hi <?= ucfirst($data['user_detail']['name']) ?></div>
         <div class="reciver-msg">We found some new job openings that you could be refferd to!</div>
         <div class="job-list">
             <ul>
-                <?php foreach ($data['jobs'] as $d) { ?>
+                <?php foreach ($data['cards'] as $d) { ?>
                     <li>
-                        <a href="<?= Url::to('job/' . $d['slug'], 'https') ?>"><?= $d['designation'] ? $d['designation'] : $d['title'] ?>
+                        <?php
+                        if ($d['type'] == 'Jobs') {
+                            $link = "job";
+                        } elseif ($d['type'] == 'Internships') {
+                            $link = "internship";
+                        }
+                        ?>
+                        <a href="<?= Url::to($link . '/' . $d['slug'], 'https') ?>"><?= $d['designation'] ? $d['designation'] : $d['title'] ?>
                             @<?= $d['name'] ?>
-                            , <?= $d['city'] ?> </a></li>
+                            , <?= $d['city'] ? $d['city'] : 'Work From Home' ?> </a>
+                    </li>
+
                 <?php } ?>
             </ul>
         </div>
@@ -177,8 +187,8 @@ use yii\helpers\Url;
             <div class="preferences-text">
                 <p>Get more relevant jobs</p>
                 <p>Share details of your experience and preferences to find jobs that are suited to you</p>
-                <?php if (!$pref) { ?>
-                    <a href="<?= Url::to('account/preferences','https')?>">Submit your job preferences</a>
+                <?php if (!$data['user_prefs']) { ?>
+                    <a href="<?= Url::to('account/preferences', 'https') ?>">Submit your job preferences</a>
                 <?php } ?>
             </div>
         </div>

@@ -120,7 +120,7 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
       utilities.initials();
       if(body.total == 0){
           $('#loader').hide();
-          template.append('<label id="no_job">The Department had Not Posted Any Job In Recents</label>');
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
       }
   }   
   })
@@ -149,6 +149,11 @@ $this->registerCss("
 }
 .application-card-description {
     margin: 20px 0px 0px 20px;
+}
+.not-found{
+    max-width: 400px;
+    margin: auto;
+    display: block;
 }
 ");
 $this->registerJs($script);

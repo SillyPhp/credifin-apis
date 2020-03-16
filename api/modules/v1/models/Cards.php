@@ -294,7 +294,7 @@ class Cards
                 }
             }
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
-                $result[$i]['skill'] = 'Multiple';
+                $result[$i]['skill'] = 'Multiple Skills';
             }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);
@@ -563,7 +563,7 @@ class Cards
                 $result[$i]['salary'] = "Unpaid";
             }
             if ($result[$i]['skill'] == null || $result[$i]['skill'] == '') {
-                $result[$i]['skill'] = 'Multiple';
+                $result[$i]['skill'] = 'Multiple Skills';
             }
             unset($result[$i]['max_salary']);
             unset($result[$i]['min_salary']);

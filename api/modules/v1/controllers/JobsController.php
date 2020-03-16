@@ -241,7 +241,7 @@ class JobsController extends ApiBaseController
             }
 
             if (!$data["vacancies"]) {
-                $data["vacancies"] = 0;
+                $data["vacancies"] = null;
             }
 
             $data['icon'] = Url::to('/assets/common/categories/profile/' . $data['icon_png'], 'https');
@@ -676,6 +676,10 @@ class JobsController extends ApiBaseController
                 foreach ($data['applicationPlacementLocations'] as $apl) {
                     $data["vacancies"] += $apl['positions'];
                 }
+            }
+
+            if (!$data["vacancies"]) {
+                $data["vacancies"] = 0;
             }
 
             if (empty($data['applicationInterviewLocations'])) {
