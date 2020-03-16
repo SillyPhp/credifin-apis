@@ -5,7 +5,7 @@ namespace common\models;
 use Yii;
 
 /**
- * This is the model class for table "{{%whatsapp_invitation}}".
+ * This is the model class for table "{{%erexx_whatsapp_invitation}}".
  *
  * @property int $id Primary Key
  * @property string $invitation_enc_id Encrypted Key
@@ -20,14 +20,14 @@ use Yii;
  * @property Users $userEnc
  * @property Organizations $organizationEnc
  */
-class WhatsappInvitation extends \yii\db\ActiveRecord
+class ErexxWhatsappInvitation extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%whatsapp_invitation}}';
+        return '{{%erexx_whatsapp_invitation}}';
     }
 
     /**
