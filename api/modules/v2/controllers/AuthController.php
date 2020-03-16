@@ -6,7 +6,7 @@ use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\UserOtherDetails;
-use common\models\WhatsappInvitation;
+use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
 use Yii;
 use api\modules\v1\models\Candidates;
@@ -130,7 +130,7 @@ class AuthController extends ApiBaseController
             ->where(['email_log_enc_id' => $model->invitation]);
 
         $invi2 = (new \yii\db\Query())
-            ->from(WhatsappInvitation::tableName() . 'as a')
+            ->from(ErexxWhatsappInvitation::tableName() . 'as a')
             ->select(['invitation_enc_id id'])
             ->where(['invitation_enc_id' => $model->invitation]);
 
