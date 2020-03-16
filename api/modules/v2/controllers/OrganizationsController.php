@@ -38,6 +38,7 @@ class OrganizationsController extends ApiBaseController
             'except' => [
                 'detail',
                 'opportunities',
+                'applied-users',
                 'locations',
                 'follow'],
             'class' => HttpBearerAuth::className()
@@ -48,7 +49,9 @@ class OrganizationsController extends ApiBaseController
                 'detail' => ['POST', 'OPTIONS'],
                 'opportunities' => ['POST', 'OPTIONS'],
                 'locations' => ['POST', 'OPTIONS'],
-                'follow' => ['POST', 'OPTIONS']
+                'follow' => ['POST', 'OPTIONS'],
+                'applied-users' => ['POST', 'OPTIONS'],
+
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -475,7 +478,9 @@ class OrganizationsController extends ApiBaseController
         $applied = AppliedApplications::find()
             ->distinct()
             ->alias('a')
-            ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug'])
+            ->select(['a.applied_application_enc_id', 'f.first_name', 'f.last_name', 'a.status', 'e1.name title', 'e2.name parent_category', 'e3.designation', 'g.semester', 'g1.name department', 'f.username', 'e.slug org_slug',
+                'CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
+                'a.created_by student_id'])
             ->innerJoinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications c' => function ($c) {
                     $c->innerJoinWith(['collegeEnc d']);
@@ -495,7 +500,7 @@ class OrganizationsController extends ApiBaseController
                 $f->onCondition(['f.is_deleted' => 0]);
             }], false)
             ->where(['d.organization_enc_id' => $college_id, 'e.slug' => $slug, 'a.is_deleted' => 0, 'e.is_deleted' => 0])
-            ->andWhere(['e.has_placement_rights' => 1])
+            ->andWhere(['e.has_placement_rights' => 1, 'g.college_actions' => 0])
             ->asArray()
             ->all();
 

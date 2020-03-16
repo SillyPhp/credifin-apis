@@ -18,6 +18,7 @@ use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
 use yii\filters\Cors;
+use yii\filters\auth\HttpBearerAuth;
 
 class AuthController extends ApiBaseController
 {
@@ -25,6 +26,17 @@ class AuthController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'save-other-detail',
+                'login',
+                'signup',
+                'validate',
+                'username',
+                'find-user'
+                ],
+            'class' => HttpBearerAuth::className()
+        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [

@@ -29,7 +29,16 @@ class SearchController extends ApiBaseController
             'actions' => [
                 'companies' => ['POST', 'OPTIONS'],
                 'jobs' => ['POST', 'OPTIONS'],
+                'internships' =>['POST','OPTIONS']
             ]
+        ];
+        $behaviors['authenticator'] = [
+            'except' => [
+                'companies',
+                'jobs',
+                'internships'
+            ],
+            'class' => HttpBearerAuth::className()
         ];
 
         $behaviors['corsFilter'] = [
