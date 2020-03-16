@@ -5,16 +5,12 @@ namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
 use common\models\CollegeCourses;
-use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
-use common\models\Organizations;
+use common\models\ErexxWhatsappInvitation;
 use common\models\Referral;
-use common\models\ReviewsType;
-use common\models\User;
 use common\models\UserOtherDetails;
 use common\models\Users;
-use common\models\WhatsappInvitation;
 use Yii;
 use yii\helpers\Url;
 use common\models\Utilities;
@@ -700,7 +696,7 @@ class CollegeIndexController extends ApiBaseController
                 $phone = $req['phone'];
             }
 
-            $model = new WhatsappInvitation();
+            $model = new ErexxWhatsappInvitation();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->invitation_enc_id = $utilitiesModel->encrypt();
