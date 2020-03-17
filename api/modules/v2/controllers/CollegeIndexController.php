@@ -510,6 +510,7 @@ class CollegeIndexController extends ApiBaseController
                     'c.name department',
                     'b.first_name',
                     'b.last_name',
+                    'CONCAT(b.first_name, " " ,b.last_name) user_full_name',
                     'a.starting_year',
                     'a.ending_year',
                     'a.semester',
@@ -552,6 +553,12 @@ class CollegeIndexController extends ApiBaseController
             }
             if (isset($data['semester']) && !empty($data['semester'])) {
                 $candidates->andWhere(['a.semester' => $data['semester']]);
+            }
+            if (isset($data['roll_no']) && !empty($data['roll_no'])) {
+                $candidates->andWhere(['a.university_roll_number' => $data['roll_no']]);
+            }
+            if (isset($data['name'] ) && !empty($data['name'])) {
+                $candidates->having(['user_full_name' => $data['name']]);
             }
 
 //            if (isset($data['application_type']) && !empty($data['application_type '])) {
