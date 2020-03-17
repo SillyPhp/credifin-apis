@@ -3,6 +3,84 @@
 use yii\helpers\Url;
 
 ?>
+<div class="col-md-12">
+    <div class="widget-row">
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box1 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/company.png') ?>">
+                    <span class="count">10</span>
+                    <span class="box-text">New Leads</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box3 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/internship.png') ?>">
+                    <span class="count">100+</span>
+                    <span class="box-text">All Applications</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box6 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/intrnship.png') ?>">
+                    <span class="count">100+</span>
+                    <span class="box-text">Accepted</span>
+                </div>
+            </a>
+        </div>
+        <!--            <div class="col-md-3 col-sm-6">-->
+        <!--                <a href="#">-->
+        <!--                    <div class="box-des box2 mt">-->
+        <!--                        <img src="-->
+        <?//= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
+        <!--                        <span class="count">50</span>-->
+        <!--                        <span class="box-text">Candidates Under Review</span>-->
+        <!--                    </div>-->
+        <!--                </a>-->
+        <!--            </div>-->
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box4 mt box2set">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidates.png') ?>">
+                    <span class="count">20</span>
+                    <span class="box-text">Pre Verification</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box5 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/candidateplaced.png') ?>">
+                    <span class="count">100+</span>
+                    <span class="box-text">Under Process</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box7 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                    <span class="count">100+</span>
+                    <span class="box-text">Sanctioned</span>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <a href="#">
+                <div class="box-des box7 mt">
+                    <img src="<?= Url::to('@eyAssets/images/pages/hr-recruiters/jobopportunities.png') ?>">
+                    <span class="count">100+</span>
+                    <span class="box-text">Disbursed</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
 <div class="col-xs-12 col-sm-12">
     <div class="portlet light ">
         <div class="portlet-title tabbable-line">
@@ -12,41 +90,43 @@ use yii\helpers\Url;
             </div>
             <div class="actions">
                 <div class="btn-group dashboard-button">
-                    <button title="" class="viewall-jobs">India</button>
-                    <button title="" class="viewall-jobs">Other Country</button>
+                    <button title="" class="viewall-jobs" onclick="countryHide()">India</button>
+                    <button title="" class="viewall-jobs" onclick="countryShow()">Other Country</button>
                 </div>
             </div>
-            <div class="col-md-12">
-                <ul class="statusFilters">
-                    <li>
-                        <input id="lists[all]" type="checkbox" name="lists[all]" />
-                        <label for="lists[all]">All</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[new_lead]" type="checkbox" name="lists[new_lead]" />
-                        <label for="lists[new_lead]"> New Lead</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[accepted]" type="checkbox" name="lists[accepted]" />
-                        <label for="lists[accepted]"> Accepted</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]" />
-                        <label for="lists[pre_verification]"> Pre Verification</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[under_process]" type="checkbox" name="lists[under_process]" />
-                        <label for="lists[under_process]"> Under Process</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]" />
-                        <label for="lists[sanctioned]"> Sanctioned</label>
-                    </li>
-                    <li>
-                        <input class="checkbox" id="lists[disbursed]" type="checkbox" name="lists[disbursed]" />
-                        <label for="lists[disbursed]"> Disbursed</label>
-                    </li>
-                </ul>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="statusFilters">
+                        <li>
+                            <input id="lists[all]" type="checkbox" name="lists[all]" />
+                            <label for="lists[all]">All</label>
+                        </li>
+                        <li>
+                            <input id="lists[new_lead]" type="checkbox" name="lists[new_lead]" />
+                            <label for="lists[new_lead]"> New Lead</label>
+                        </li>
+                        <li>
+                            <input id="lists[accepted]" type="checkbox" name="lists[accepted]" />
+                            <label for="lists[accepted]"> Accepted</label>
+                        </li>
+                        <li>
+                            <input id="lists[pre_verification]" type="checkbox" name="lists[pre_verification]" />
+                            <label for="lists[pre_verification]"> Pre Verification</label>
+                        </li>
+                        <li>
+                            <input id="lists[under_process]" type="checkbox" name="lists[under_process]" />
+                            <label for="lists[under_process]"> Under Process</label>
+                        </li>
+                        <li>
+                            <input id="lists[sanctioned]" type="checkbox" name="lists[sanctioned]" />
+                            <label for="lists[sanctioned]"> Sanctioned</label>
+                        </li>
+                        <li>
+                            <input id="lists[disbursed]" type="checkbox" name="lists[disbursed]" />
+                            <label for="lists[disbursed]"> Disbursed</label>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="portlet-body">
@@ -59,8 +139,9 @@ use yii\helpers\Url;
                                     <table>
                                         <thead class="positionSticky">
                                         <tr>
-                                            <th class="loanAction">Actions</th>
-                                            <th class="moveToNext">Move To Next Phase</th>
+                                            <th class="dateApplied">Date Applied</th>
+                                            <th class="loanAction">Move To Next Phase</th>
+                                            <th class="moveToNext">Current Phase</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="dobwidth">DOB</th>
                                             <th class="country">Country</th>
@@ -90,6 +171,7 @@ use yii\helpers\Url;
                                         </thead>
                                         <tbody>
                                         <tr>
+                                            <td>22 Aug 2020</td>
                                             <td class="actionColoum">
                                                 <div class="dropdown">
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
@@ -103,14 +185,14 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState">Pre Verification</button>
                                             </td>
                                             <td>
-                                                <button class="nextState">Pre Verification</button>
+                                                <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>28-Sept-1993</td>
-                                            <td>India</td>
+                                            <td class="country">India</td>
                                             <td>Ludhiana</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
@@ -135,6 +217,7 @@ use yii\helpers\Url;
                                             <td> -</td>
                                         </tr>
                                         <tr>
+                                            <td>22 Aug 2020</td>
                                             <td class="actionColoum">
                                                 <div class="dropdown">
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
@@ -148,14 +231,14 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState">Pre Verification</button>
                                             </td>
                                             <td>
-                                                <button class="nextState">Pre Verification</button>
+                                                <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>28-Sept-1993</td>
-                                            <td>India</td>
+                                            <td class="country">India</td>
                                             <td>Ludhiana</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
@@ -180,6 +263,7 @@ use yii\helpers\Url;
                                             <td> -</td>
                                         </tr>
                                         <tr>
+                                            <td>22 Aug 2020</td>
                                             <td class="actionColoum">
                                                 <div class="dropdown">
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
@@ -193,14 +277,14 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState">Pre Verification</button>
                                             </td>
                                             <td>
-                                                <button class="nextState">Pre Verification</button>
+                                                <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>28-Sept-1993</td>
-                                            <td>India</td>
+                                            <td class="country">India</td>
                                             <td>Ludhiana</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
@@ -225,6 +309,7 @@ use yii\helpers\Url;
                                             <td> -</td>
                                         </tr>
                                         <tr>
+                                            <td>22 Aug 2020</td>
                                             <td class="actionColoum">
                                                 <div class="dropdown">
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
@@ -238,14 +323,14 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState">Pre Verification</button>
                                             </td>
                                             <td>
-                                                <button class="nextState">Pre Verification</button>
+                                                <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>28-Sept-1993</td>
-                                            <td>India</td>
+                                            <td class="country">India</td>
                                             <td>Ludhiana</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
@@ -270,6 +355,7 @@ use yii\helpers\Url;
                                             <td> -</td>
                                         </tr>
                                         <tr>
+                                            <td>22 Aug 2020</td>
                                             <td class="actionColoum">
                                                 <div class="dropdown">
                                                     <button onclick="actionStats(this)" class="dropbtn"><i
@@ -283,14 +369,15 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <span class="currentState">Accepted</span>
+                                                <button class="nextState">Pre Verification</button>
+
                                             </td>
                                             <td>
-                                                <button class="nextState">Pre Verification</button>
+                                                <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>28-Sept-1993</td>
-                                            <td>India</td>
+                                            <td class="country">India</td>
                                             <td>Ludhiana</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
@@ -380,7 +467,7 @@ $this->registerCss('
     min-width:100px;
     max-width:100px;
 }
-.dobwidth, .degree, .phoneNumber, .coEmployment, .city, .loanAction, .moveToNext{
+.dateApplied, .dobwidth, .degree, .phoneNumber, .coEmployment, .city, .loanAction, .moveToNext{
     min-width:150px;
     max-width:150px;
 }
@@ -417,6 +504,9 @@ td, th {
     width:100%;
     overflow-y:hidden;
     
+}
+.hide{
+    display: none;
 }
 @media 
 only screen and (max-width: 760px),
@@ -458,8 +548,8 @@ only screen and (max-width: 760px),
 	/*
 	Label the data
 	*/
-	td:nth-of-type(1):before { content: "Actions"; }
-	td:nth-of-type(2):before { content: "Move To Next Phase"; }
+	td:nth-of-type(1):before { content: "Move To Next Phase "; }
+	td:nth-of-type(2):before { content: "Current Phase"; }
 	td:nth-of-type(3):before { content: "Applicant Name"; }
 	td:nth-of-type(4):before { content: "Date of Birth"; }
 	td:nth-of-type(5):before { content: "Country?"; }
@@ -488,14 +578,15 @@ only screen and (max-width: 760px),
  /*--- input checkbox ---*/
 label {
     display:inline-block;
-    border:solid 1px gray;
-    line-height:40px;
-    height:40px;
+    border:solid 1px #999;
+    line-height:35px;
+    height:35px;
+    border-radius: 5px;
     padding: 0 20px;
     -webkit-font-smoothing: antialiased; 
     margin-top:10px;
     font-family:Arial,Helvetica,sans-serif;
-    color:gray;
+    color:#999;
     text-align:center;
 }
 
@@ -505,8 +596,9 @@ input[type=checkbox] {
 
 input:checked + label {
     border: solid 1px #00a0e3;
-    color: #00a0e3;
-    background: linear-gradient(180deg, #2b2d32 60%, #fff 40%)
+    color: #fff;
+    border-radius:5px;
+    background: #00a0e3;
 }
 
 //input:checked + label:before {
@@ -525,7 +617,48 @@ input:checked + label .check {
 
 input.checkbox:checked + label:before {
     content: "";
-}                                          
+}   
+/*--- stats ---*/
+.box1{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1job.png");}
+.box2{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1company.png");}
+.box3{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1internship.png");}
+.box4{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1institute.png");}
+.box5{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/1school.png");}
+.box6{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/college.png");}
+.box7{ background-image: url("/assets/themes/ey/images/pages/hr-recruiters/g.png");}
+.box-des {
+   background-size: 100% 100%;
+   background-repeat: no-repeat;
+   position: relative;
+   height: 160px;
+}
+.mt{margin-bottom:15px;}
+.box-des img{
+   position: absolute;
+   max-width: 63px;
+   right: 25px;
+   top: 15px;
+}
+.box2set img{
+    max-width: 80px !important;
+}
+.box-text {
+   position: absolute;
+   bottom: 3px;
+   left: 16px;
+   color: white;
+   font-size: 21px;
+   font-family: roboto;
+}
+.count {
+   position: absolute;
+   bottom: 28px;
+   left: 16px;
+   color: white;
+   font-size: 30px;
+   font-family: roboto;
+}
+                                       
 ');
 
 $script = <<<JS
@@ -556,9 +689,23 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
     function nextRound(e) {
         let currentRoundName = e.innerHTML;
         let nextRoundName = e.nextElementSibling.innerHTML;
-        e.closest('.actionColoum').nextElementSibling.firstElementChild.innerHTML = nextRoundName;
-        e.closest('.dropdown').nextElementSibling.innerHTML = currentRoundName;
+        e.closest('.actionColoum').nextElementSibling.firstElementChild.innerHTML = currentRoundName;
+        e.closest('.dropdown').nextElementSibling.innerHTML =  nextRoundName;
         e.closest('.dropdown-content').classList.remove('show');
     }
 
+    function countryHide() {
+        var z = document.getElementsByClassName('country');
+        for(var i = 0; i < z.length; i++){
+
+            z[i].classList.toggle('hide');
+        }
+    }
+
+    function countryShow(){
+        var z = document.getElementsByClassName('country');
+        for(var i = 0; i < z.length; i++){
+            z[i].classList.remove('hide');
+        }
+    }
 </script>
