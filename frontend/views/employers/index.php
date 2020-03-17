@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->params['header_dark'] = false;
 ?>
@@ -110,6 +110,11 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
+
+    <?php
+        echo $this->render('/widgets/e-campus')
+    ?>
+
     <section class="great-bg">
         <div class="container">
             <div class="row">
@@ -234,6 +239,46 @@ if (Yii::$app->user->isGuest) {
         <?= $this->render('/widgets/ai-quick-jobs'); ?>
     </section>
 
+    <Section class="information">
+        <div class="box-parent row">
+            <div class="bolls">
+                <div class="boll1 bol2"></div>
+                <div class="boll2 bol2"></div>
+                <div class="boll3 bol"></div>
+                <div class="boll4 bol"></div>
+                <div class="boll5 bol2"></div>
+                <div class="boll6 bol2"></div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">50 +</div>
+                    <div class="j-name">Colleges</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">10k +</div>
+                    <div class="j-name">Freshers</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">5k +</div>
+                    <div class="j-name">Job candidates</div>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="jobs-content">
+                    <div class="j-count">20k +</div>
+                    <div class="j-name">Internship Candidates</div>
+                </div>
+            </div>
+        </div>
+    </Section>
+
     <section class="emp-back">
         <div class="container">
             <div class="row">
@@ -339,6 +384,84 @@ if (Yii::$app->user->isGuest) {
     <!--    <div class="bluebg"></div>-->
 <?php
 $this->registerCss('
+.box-parent {
+    background:#ff7803;
+    border-radius: 8px;
+    padding: 90px 50px;
+    overflow:hidden;
+    margin: 20px;
+}
+.jobs-content {
+    text-align: left;
+    border-left: 4px solid #fff;
+    padding-left: 20px;
+}
+.j-count{
+    font-size:40px;
+    color:#fff;
+    font-weight: 700;
+    font-family: roboto;
+}
+.j-name{
+    font-size:25px;
+    color:#fff;
+    font-weight: 300;
+    font-family: roboto;
+}
+@media (max-width:768px){
+    .box-parent{padding:20px 50px !important;}
+    .jobs-content{margin-bottom:10px;}
+}
+.bolls{position:relative;}
+.bol{
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    background: #ff8821;
+    border-radius: 50%;
+}
+.bol2{
+    position: absolute;
+    width: 125px;
+    height: 125px;
+    background: #ff8821;
+    border-radius: 50%;
+}
+.boll1 {
+    top: -100px;
+    left: -56px;
+}
+.boll2 {
+    left: 171px;
+    top: 164px;
+}
+.boll3 {
+    left: 371px;
+    top: -25px;
+}
+.boll4 {
+    right: 1px;
+    top: 76px;
+}
+.boll5 {
+    right: 195px;
+    top: 18px;
+}
+.boll6 {
+    right: -69px;
+    bottom: 12px;
+}
+@media (max-width:415px){
+.boll5 {
+    right: 159px;
+    top: 305px;
+}
+.boll6 {
+    left: 205px;
+    top: 415px;
+}
+}
+
 .emp-main {
     text-align:center;
     margin: 0px 0px 30px 0px;
