@@ -36,7 +36,7 @@ class CandhomeController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://127.0.0.1:5500'],
+                'Origin' => ['https://www.myecampus.in/'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
@@ -50,7 +50,6 @@ class CandhomeController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $id = $user->user_enc_id;
 
-
             $college_id = UserOtherDetails::find()
                 ->select(['organization_enc_id'])
                 ->where(['user_enc_id' => $id])
@@ -59,45 +58,27 @@ class CandhomeController extends ApiBaseController
 
             $applied_count = AppliedApplications::find()
                 ->alias('a')
-                ->select(['COUNT(a.applied_application_enc_id) applied_count'])
-                ->joinWith(['applicationEnc c' => function ($c) {
-                    $c->joinWith(['organizationEnc d']);
+                ->distinct()
+                ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
                 }], false)
-                ->where([
-                    'a.created_by' => $id,
-                    'a.is_deleted' => 0,
-                    'd.is_erexx_registered' => 1,
-                    'd.is_deleted' => 0,
-                    'c.application_for' => 2,
-                ])
-                ->andWhere(['or',
-                    ['a.status' => 'Pending'],
-                    ['a.status' => 'Accepted']
-                ])
-                ->asArray()
-                ->all();
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
+                ->count();
 
             $companies_cnt = ErexxCollaborators::find()
                 ->select(['COUNT(college_enc_id) companies_count'])
-                ->where(['college_enc_id' => $college_id['organization_enc_id']])
+                ->where(['college_enc_id' => $college_id['organization_enc_id'], 'is_deleted' => 0,'organization_approvel' => 1, 'college_approvel' => 1,])
                 ->asArray()
                 ->all();
 
             $shortlisted_cnt = ShortlistedApplications::find()
                 ->alias('a')
-                ->select(['COUNT(a.shortlisted_enc_id) shortlisted_cnt'])
+                ->distinct()
                 ->joinWith(['applicationEnc c' => function ($c) {
-                    $c->joinWith(['organizationEnc d']);
-                }])
-                ->where([
-                    'a.created_by' => $id,
-                    'a.shortlisted' => 1,
-                    'd.is_erexx_registered' => 1,
-                    'd.is_deleted' => 0,
-                    'c.application_for' => 2,
-                ])
-                ->asArray()
-                ->all();
+                    $c->innerJoinWith(['erexxEmployerApplications cc']);
+                }], false)
+                ->where(['a.created_by' => $id, 'a.shortlisted' => 1, 'cc.status' => 'Active', 'cc.is_deleted' => 0])
+                ->count();
 
             $companies = ErexxCollaborators::find()
                 ->alias('aa')
@@ -125,50 +106,39 @@ class CandhomeController extends ApiBaseController
 
             $applied_applications = AppliedApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.current_round'])
-                ->joinWith(['applicationEnc b' => function ($x) {
-                    $x->joinWith(['organizationEnc d'], false);
-                    $x->joinWith(['title h' => function ($y) {
-                        $y->joinWith(['parentEnc i']);
-                        $y->joinWith(['categoryEnc j']);
+                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                    $b->joinWith(['organizationEnc d']);
+                    $b->joinWith(['title e' => function ($e) {
+                        $e->joinWith(['parentEnc e1']);
+                        $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $x->joinWith(['applicationPlacementLocations e' => function ($y) use ($x) {
-                        $x->select(['b.application_enc_id', 'b.title', 'b.slug', 'd.slug comp_slug', 'i.category_enc_id', 'g.name city', 'j.name profile', 'i.name parent_name', 'b.organization_enc_id', 'd.name organization_name', 'CONCAT("' . Url::to('/', true) . '", d.slug) profile_link', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo', 'e.placement_location_enc_id', 'COUNT(e.placement_location_enc_id) cnt']);
-                        $y->joinWith(['locationEnc f' => function ($z) {
-                            $z->joinWith(['cityEnc g']);
-                        }], false);
-                        $x->groupBy(['e.placement_location_enc_id']);
-                    }], false);
+                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
+                        $b->select(['b.application_enc_id',
+                            'b.title',
+                            'b.slug',
+                            'd.slug comp_slug',
+                            'e1.category_enc_id',
+                            'g.name city',
+                            'e2.name profile',
+                            'e1.name parent_name',
+                            'b.organization_enc_id',
+                            'd.name organization_name',
+                            'CONCAT("' . Url::to('/', true) . '", d.slug) profile_link',
+                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                            'f.placement_location_enc_id',
+                            'COUNT(f.placement_location_enc_id) cnt']);
+                        $f->joinWith(['locationEnc f1' => function ($f1) {
+                            $f1->joinWith(['cityEnc g']);
+                        }],false);
+                        $b->groupBy('f.placement_location_enc_id');
+                    }]);
                 }])
-//            ->joinWith(['resumeEnc c'], false)
-                ->where([
-                    'a.created_by' => $id,
-                    'a.is_deleted' => 0,
-                    'd.is_erexx_registered' => 1,
-                    'd.is_deleted' => 0,
-                    'b.application_for' => 2,
-                ])
-//            ->andWhere(['or',
-//                ['a.status' => 'Pending'],
-//                ['a.status' => 'Accepted']
-//            ])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
                 ->limit(6)
                 ->asArray()
                 ->all();
-
-//        $applied_applications = AppliedApplications::find()
-//            ->alias('a')
-////            ->select([])
-//            ->where(['a.created_by'=>$id,'is_deleted'=>0])
-//            ->andWhere(['or',
-//                ['a.status' => 'Pending'],
-//                ['a.status' => 'Accepted']
-//            ])
-//            ->asArray()
-//            ->all();
-//
-//        print_r($applied_applications);
-//        die();
 
             $followed_org = ErexxCollaborators::find()
                 ->alias('a')
@@ -193,13 +163,14 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['businessActivityEnc e'], false);
                 }])
                 ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0])
+                ->limit(6)
                 ->asArray()
                 ->all();
 
             $counts = [
-                'applied_cnt' => $applied_count,
+                'applied_cnt' => [0 => ['applied_count' => $applied_count]],
                 'companies_cnt' => $companies_cnt,
-                'shortlisted_cnt' => $shortlisted_cnt,
+                'shortlisted_cnt' => [0 => ['shortlisted_cnt' => $shortlisted_cnt]],
                 'organization' => $companies,
                 'applied_application' => $applied_applications,
                 'followed' => $followed_org,
