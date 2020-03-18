@@ -40,8 +40,12 @@ class AuthController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'signup' => ['POST'],
+                'signup' => ['POST','OPTIONS'],
                 'save-other-detail' => ['POST','OPTIONS'],
+                'login' => ['POST','OPTIONS'],
+                'validate' => ['POST','OPTIONS'],
+                'username' => ['POST','OPTIONS'],
+                'find-user' => ['POST','OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -69,8 +73,8 @@ class AuthController extends ApiBaseController
                     ]);
                 }
 
-                if ($model->ref != '' && $model->invitation != '') {
-                    if ($this->getRef($model) && $this->getInvitation($model)) {
+                if ($model->ref != '') {
+                    if ($this->getRef($model)) {
                         if ($model->saveUser()) {
                             return $this->response(200, ['status' => 200]);
                         } else {
