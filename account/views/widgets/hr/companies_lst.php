@@ -28,6 +28,7 @@ use yii\helpers\Url;
         </a>
         <div class="openings">{{total_applications}} Applications</div>
 <!--        <div class="jobcount">7 jobs, 3 Internships</div>-->
+         <div class="j-grid"><a href="/account/jobs/create/{{organization_enc_id}}" title="">Create Job</a></div>
         <div class="j-grid"><a href="/{{slug}}" title="">View Profile</a>
         </div>
         </div>

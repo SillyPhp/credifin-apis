@@ -611,15 +611,14 @@ text-transform: uppercase;
 .hr-com-icon img{text-align:center; margin:0; max-width:150px;  max-height:150px; }
 .hr-com-name{color:#00a0e3; text-decoration:none; font-size:16px;text-align:left;padding-left:15px;} 
 .hr-com-name:hover{text-decoration:none;}                                   
-.hr-com-field{padding-top:2px; padding-bottom:10px; font-size:14px; color:#080808;text-align:left;padding-left:15px;}
+.hr-com-field{padding-top:2px; padding-bottom:10px; font-size:14px; color:#080808;text-align:left;padding-left:15px;height:30px;}
 .hr-com-jobs{font-size:13px; color:#080808; text-align:center;  
               margin-top:10px; border-top:1px solid #eef1f5;}            
 .openings{
     font-size:13px;
     text-transform:capitalize;
     color:#aaaaaa;
-    text-align:left;
-    padding-left:15px;
+    text-align:center;
 }
 .jobcount{
     font-size:12px;
@@ -635,10 +634,10 @@ text-transform: uppercase;
 .com-load-more-btn{text-align:center; padding-top:30px; }
 .open{padding:10px;font-size:12px;font-family:roboto;}
 .j-grid {
-	text-align: right;
-	padding-right: 10px;
-	margin-top: -36px;
+	text-align: left;
+	padding-left: 10px;
 	padding-bottom: 11px;
+	display:inline-block;
 }
 .j-grid > a {
     font-family: Open Sans;
@@ -1424,4 +1423,4 @@ $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
-//$this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

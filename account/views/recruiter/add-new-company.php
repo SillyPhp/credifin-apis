@@ -10,19 +10,20 @@ use borales\extensions\phoneInput\PhoneInput;
 </div>
 <?php $form = ActiveForm::begin([
     'id' => 'company_add_form',
+    'validationUrl'=>'validate-form',
     'fieldConfig' => [
         'template' => '<div class="form-group form-md-line-input form-md-floating-label">{input}{label}{error}{hint}</div>',
-    ],
+    ]
 ]); ?>
     <div class="row">
         <div class="col-md-4">
-            <?= $form->field($model,'username'); ?>
+            <?= $form->field($model,'username',['enableAjaxValidation' => true]); ?>
         </div>
         <div class="col-md-4">
             <?= $form->field($model,'organization_name'); ?>
         </div>
         <div class="col-md-4">
-            <?= $form->field($model,'organization_email'); ?>
+            <?= $form->field($model,'organization_email',['enableAjaxValidation' => true]); ?>
         </div>
     </div>
     <div class="row">
@@ -68,16 +69,36 @@ use borales\extensions\phoneInput\PhoneInput;
         </div>
     </div>
 <div class="modal-footer">
-    <?= Html::button('Save', ['class' => 'btn btn-primary btn_save_cmpany']) ?>
+    <?= Html::submitButton('Add', ['class' => 'btn btn-primary btn_save_cmpany']) ?>
     <?= Html::button('Close', ['class' => 'btn default custom-buttons2', 'data-dismiss' => 'modal']); ?>
 </div>
 <?php ActiveForm::end();?>
 <?php
 $script = <<< JS
- $(document).on('submit', '#company_add_form', function (e) {
-     e.preventDefault();
-    console.log(1); 
+ $(document).on('submit', '#company_add_form', function (event) {
+  event.preventDefault();
+   $.ajax({
+    method: "POST",
+    url : 'https://sneh.eygb.me/api/v3/companies/create',
+    data:$(this).serialize(),
+    beforeSend:function()
+    {
+         $('.btn_save_cmpany').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+    },
+    success: function(response) { 
+        $('.btn_save_cmpany').html('Add');
+          if (response===true)
+              {
+                   $('#main-modal').modal('toggle');
+                  toastr.success('Company Added', 'Success');
+              }
+          else
+              {
+                  toastr.error('Server  Error', 'Error'); 
+              }
+      }
+      });  
  });
 JS;
-
+$this->registerJs($script);
 ?>
