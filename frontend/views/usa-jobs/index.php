@@ -271,19 +271,30 @@ Yii::$app->view->registerJs('var keywords = "' . $keywords . '"', \yii\web\View:
 <section>
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6 col-sm-6 col-xs-6">
                 <div class="heading-style">Jobs</div>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="type-1">
+                    <div>
+                        <a href="/usa-jobs/search" class="btn btn-3">
+                            <span class="txt-cate">View all</span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="loader_screen">
-                <img src="<?= Url::to('@eyAssets/images/loader/91.gif'); ?>" class="img_load">
-            </div>
+<!--            <div class="loader_screen">-->
+<!--                <img src="--><?//= Url::to('@eyAssets/images/loader/91.gif'); ?><!--" class="img_load">-->
+<!--            </div>-->
+            <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
             <div id="cards">
             </div>
-            <div class="align_btn">
-                <button id="loader" class="btn btn-success">Load More</button>
-            </div>
+<!--            <div class="align_btn">-->
+<!--                <button id="loader" class="btn btn-success">Load More</button>-->
+<!--            </div>-->
         </div>
     </div>
 </section>
@@ -944,7 +955,7 @@ echo $this->render('/widgets/mustache/usa-jobs-card');
 echo $this->render('/widgets/mustache/departments_usa');
 $script = <<< JS
 var min =0;
-var max = 8;
+var max = 17;
  $(document).on('click', "#toggle", function () {
         var elem = $("#toggle").text();
         if (elem == "Load More") {
@@ -953,20 +964,23 @@ var max = 8;
             $("#more").slideDown();
         }
     });
-$(document).on('click','#loader',function(e) {
-  e.preventDefault();
-  fetchLocalData(template=$('#cards'),min = min+8,max = max+8,loader=false,loader_btn=true);
-});
+// $(document).on('click','#loader',function(e) {
+//   e.preventDefault();
+//   fetchLocalData(template=$('#cards'),min = min+8,max = max+8,loader=false,loader_btn=true);
+// });
 var host = 'data.usajobs.gov';  
 var userAgent = 'snehkant93@gmail.com';  
 var authKey = 'ePz5DRXvkE/1XaIu++wGwe5EzgmvM3jNTbHRe9dGMRM='; 
 $(document).on('submit','#form-search',function(e) {
   e.preventDefault();
   var keyword = $('#search_company').val();
-  fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keyword);
+   if (keyword)
+      {
+          window.location.assign('/usa-jobs/search/'+keyword.replace(/\s+/g, '-'));
+      }
 });
 fetchLocalData(template=$('#cards'),min,max,loader=true,loader_btn=false);
-fetchDepartments(template=$('#departments_cards'),limit=4,offset=0);
+fetchDepartments(template=$('#departments_cards'),limit=12,offset=0);
 //fetch_usa_cards(host,userAgent,authKey,template=$('#cards'),keywords);
 JS;
 $this->registerJs($script);

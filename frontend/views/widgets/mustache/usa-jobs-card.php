@@ -49,17 +49,17 @@ function fetch_usa_cards(host,userAgent,authKey,template,keywords)
   },
   datatype:"jsonp",
     beforeSend: function(){
-            $('.img_load').css('display','block');
+            $('.loader-main').css('display','block');
         },
   success:function(body) {   
-      $('.img_load').css('display','none');
+      $('.loader-main').hide();
       body = JSON.parse(body);
       template.html(''); 
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
       $('#loader').hide();
       if(body == null){
-          $('#loader').hide();
+           $('#loadMore').hide();
           template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
       }
   }   
@@ -102,23 +102,25 @@ function fetchLocalData(template,min,max,loader,loader_btn) {
       'max':max
   },
   beforeSend: function(){
-      if (loader_btn)
+        if (loader_btn)
           { 
-              $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+              $('#loadMore').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
           }
       if (loader) {
-            $('.img_load').css('display','block');
+            $('.loader-main').css('display','block');
         }
       },
   success:function(body) {    
-      $('.img_load').css('display','none');
-      $('#loader').html('Load More');
-      $('#loader').css('display','initial');
+     $('#loadMore').html('Load More');
+      $('#loadMore').css('display','block');
+      $('.loader-main').hide();
       body = JSON.parse(body);
       template.append(Mustache.render($('#usa-jobs-card').html(),body));
       utilities.initials();
       if(body == null){
-          $('#loader').hide();
+          $('#loadMore').hide();
+          template.append('<img src="/assets/themes/ey/images/pages/jobs/not_found.png" class="not-found" alt="Not Found"/>');
+
       }
   }   
   })

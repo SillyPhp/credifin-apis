@@ -23,6 +23,7 @@ class CareerAdviceController extends ApiBaseController
             'except' => [
                 'career-blogs',
                 'blog-detail',
+                'get-parent-comments',
                 'get-child-comments',
             ],
             'class' => HttpBearerAuth::className()
@@ -32,8 +33,9 @@ class CareerAdviceController extends ApiBaseController
             'actions' => [
                 'career-blogs' => ['POST'],
                 'blog-detail' => ['POST'],
+                'get-parent-comments' => ['POST'],
                 'get-child-comments' => ['POST'],
-                'save-parent-comments' => ['POST'],
+                'save-parent-comment' => ['POST'],
                 'save-child-comment' => ['POST'],
             ]
         ];
@@ -71,9 +73,9 @@ class CareerAdviceController extends ApiBaseController
             $page = 1;
         }
 
-        if($params['limit']){
+        if ($params['limit']) {
             $limit = (int)$params['limit'];
-        }else{
+        } else {
             $limit = 3;
         }
 
@@ -124,64 +126,31 @@ class CareerAdviceController extends ApiBaseController
             ->asArray()
             ->one();
 
-        $relatedArticles = CareerAdvisePosts::find()
-            ->alias('a')
-            ->select(['a.title', 'a.slug', 'a.created_on', 'a.link', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
-            ->joinWith(['assignedCategoryEnc b' => function ($b) {
-                $b->joinWith(['categoryEnc c'], false);
-            }], false)
-            ->where([
-                'a.status' => 1,
-                'c.category_enc_id' => $careerDetail['category_enc_id']
-            ])
-            ->andwhere(['<>', 'a.assigned_category_enc_id', $careerDetail['assigned_category_enc_id']])
-            ->limit(3)
-            ->asArray()
-            ->all();
+        if ($careerDetail) {
+            $relatedArticles = CareerAdvisePosts::find()
+                ->alias('a')
+                ->select(['a.title', 'a.slug', 'a.created_on', 'a.link', 'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->posts->featured_image, 'https') . '", a.image_location, "/", a.image) ELSE CONCAT("' . Url::to('@eyAssets/images/pages/locations/goa.png') . '") END image'])
+                ->joinWith(['assignedCategoryEnc b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false);
+                }], false)
+                ->where([
+                    'a.status' => 1,
+                    'c.category_enc_id' => $careerDetail['category_enc_id']
+                ])
+                ->andwhere(['<>', 'a.assigned_category_enc_id', $careerDetail['assigned_category_enc_id']])
+                ->limit(3)
+                ->asArray()
+                ->all();
 
-        $comments = CareerAdvicePostComments::find()
-            ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
-            ->joinWith(['userEnc b'], false)
-            ->where(['a.reply_to' => NULL])
-            ->andWhere(['a.post_enc_id' => $careerDetail['post_enc_id']])
-            ->andWhere(['a.is_deleted' => 0])
-            ->orderBy(['a.created_on' => SORT_DESC])
-            ->asArray()
-            ->all();
-
-        $i = 0;
-        foreach ($comments as $r) {
-            $a = CareerAdvicePostComments::find()
-                ->where(['reply_to' => $r['comment_enc_id']])
-                ->andWhere(['post_enc_id' => $careerDetail['post_enc_id']])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-            if ($a) {
-                $comments[$i]['hasChild'] = true;
-            } else {
-                $comments[$i]['hasChild'] = false;
-            }
-            $i++;
-        }
-
-        if (!empty($comments)) {
-            $careerDetail['comments'] = $comments;
-        }
-
-
-        if (!empty($careerDetail) && !empty($relatedArticles)) {
             $data = [
                 'blog-detail' => $careerDetail,
                 'related-articles' => $relatedArticles
             ];
+
             return $this->response(200, $data);
-        } elseif (!empty($careerDetail)) {
-            return $this->response(200, $careerDetail);
         } else {
             return $this->response(404, 'not found');
         }
-
     }
 
     public function actionGetChildComments()
@@ -208,7 +177,13 @@ class CareerAdviceController extends ApiBaseController
 
         $child_comment = CareerAdvicePostComments::find()
             ->alias('a')
-            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->select([
+                'a.comment_enc_id',
+                'a.comment reply',
+                'b.username',
+                'CONCAT(b.first_name, " ", b.last_name) name',
+                'b.initials_color color',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
             ->joinWith(['userEnc b'], false)
             ->where(['a.reply_to' => $parent])
             ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -219,6 +194,62 @@ class CareerAdviceController extends ApiBaseController
 
         if (!empty($child_comment)) {
             return $this->response(200, $child_comment);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
+    public function actionGetParentComments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['slug']) && !empty($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $post = CareerAdvisePosts::find()
+            ->where(['slug' => $slug])
+            ->andWhere(['status' => 1])
+            ->andWhere(['is_deleted' => 0])
+            ->one();
+
+        $comments = CareerAdvicePostComments::find()
+            ->alias('a')
+            ->select([
+                'a.comment_enc_id',
+                'a.comment reply',
+                'b.username',
+                'CONCAT(b.first_name, " ", b.last_name) name',
+                'b.initials_color color',
+                'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.reply_to' => NULL])
+            ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
+            ->andWhere(['a.is_deleted' => 0])
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        foreach ($comments as $r) {
+            $a = CareerAdvicePostComments::find()
+                ->where(['reply_to' => $r['comment_enc_id']])
+                ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
+            if ($a) {
+                $comments[$i]['hasChild'] = true;
+            } else {
+                $comments[$i]['hasChild'] = false;
+            }
+            $i++;
+        }
+
+        if (!empty($comments)) {
+            return $this->response(200, $comments);
         } else {
             return $this->response(404, 'not found');
         }
@@ -250,8 +281,9 @@ class CareerAdviceController extends ApiBaseController
             ->andWhere(['is_deleted' => 0])
             ->one();
 
-        if ($this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
-            return $this->response(200, 'saved');
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, NULL)) {
+            $result = $this->getComment($data->comment_enc_id, $data->post_enc_id);
+            return $this->response(200, $result);
         } else {
             return $this->response(500, 'an error occurred');
         }
@@ -292,8 +324,9 @@ class CareerAdviceController extends ApiBaseController
             ->one();
 
 
-        if ($this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
-            return $this->response(200, 'saved');
+        if ($data = $this->saveComment($comment, $post['post_enc_id'], $current_user, $reply_id)) {
+            $result = $this->getComment($data->comment_enc_id, $data->post_enc_id);
+            return $this->response(200, $result);
         } else {
             return $this->response(500, 'an error occurred');
         }
@@ -311,10 +344,24 @@ class CareerAdviceController extends ApiBaseController
         $commentModel->user_enc_id = $current_user;
         $commentModel->created_on = date('Y-m-d H:i:s');
         if ($commentModel->save()) {
-            return true;
+            return $commentModel;
         } else {
             return false;
         }
+    }
+
+    private function getComment($comment_id, $post_id)
+    {
+        $comments = CareerAdvicePostComments::find()
+            ->alias('a')
+            ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+            ->joinWith(['userEnc b'], false)
+            ->where(['a.post_enc_id' => $post_id, 'a.comment_enc_id' => $comment_id])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->one();
+
+        return $comments;
     }
 
 }
