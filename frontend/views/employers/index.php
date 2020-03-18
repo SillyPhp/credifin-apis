@@ -266,7 +266,7 @@ if (Yii::$app->user->isGuest) {
             <div class="col-md-3 col-sm-6">
                 <div class="jobs-content">
                     <div class="j-count">5k +</div>
-                    <div class="j-name">Job candidates</div>
+                    <div class="j-name">Experienced candidates</div>
                 </div>
             </div>
 
@@ -403,7 +403,7 @@ $this->registerCss('
     font-family: roboto;
 }
 .j-name{
-    font-size:25px;
+    font-size:23px;
     color:#fff;
     font-weight: 300;
     font-family: roboto;
