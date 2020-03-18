@@ -43,8 +43,8 @@ class CollegeProfileController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://127.0.0.1:5500'],
-                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Origin' => ['https://www.myecampus.in/'],
+                'Access-Control-Request-Method' => ['POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
             ],
@@ -457,6 +457,74 @@ class CollegeProfileController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'jobs' => $resultt]);
         } else {
             return $this->response(401);
+        }
+    }
+
+    public function actionCandidatesProcess()
+    {
+        if ($user = $this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+            $slug = Yii::$app->request->post('slug');
+            $process = AppliedApplications::find()
+                ->alias('a')
+                ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
+                    'f.username, CONCAT(f.first_name, " ", f.last_name) name, CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
+                    'COUNT(cc.is_completed) total',
+                    'gg.name title'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc c']);
+                    $b->joinWith(['title ff' => function ($ff) {
+                        $ff->joinWith(['parentEnc ii'], false);
+                        $ff->joinWith(['categoryEnc gg'], false);
+                    }], false);
+                    $b->joinWith(['erexxEmployerApplications d']);
+                }], false)
+                ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
+                    $cc->joinWith(['fieldEnc dd'], false);
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon']);
+                }])
+                ->innerJoinWith(['createdBy f' => function ($f) {
+                    $f->innerJoinWith(['userOtherInfo g']);
+                    $f->onCondition(['f.is_deleted' => 0]);
+                }], false)
+                ->groupBy(['a.applied_application_enc_id'])
+                ->where(['b.slug' => $slug, 'a.is_deleted' => 0, 'd.college_enc_id' => $college_id])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($process as $p) {
+                $user_data = Users::find()
+                    ->alias('a')
+                    ->select(['a.user_enc_id', 'GROUP_CONCAT(DISTINCT(b1.skill) SEPARATOR ",") skill', 'GROUP_CONCAT(DISTINCT(e1.industry) SEPARATOR ",") industry'])
+                    ->joinWith(['userSkills b' => function ($b) {
+                        $b->joinWith(['skillEnc b1'], false);
+                        $b->onCondition(['b.is_deleted' => 0]);
+                    }], false)
+                    ->joinWith(['userWorkExperiences c' => function ($cc) {
+                        $cc->select(['c.created_by', 'c.company', 'c.is_current', 'c.title']);
+                    }])
+                    ->joinWith(['userEducations d' => function ($d) {
+                        $d->select(['d.user_enc_id', 'd.institute', 'd.degree']);
+                    }])
+                    ->joinWith(['userPreferredIndustries e' => function ($e) {
+                        $e->joinWith(['industryEnc e1'], false);
+                        $e->onCondition(['e.is_deleted' => 0]);
+                    }], false)
+                    ->where(['a.user_enc_id' => $p['user_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                $process[$i]['user_data'] = $user_data;
+                $i++;
+            }
+
+            if ($process) {
+                return $this->response(200, ['status' => 200, 'data' => $process]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+            }
         }
     }
 
