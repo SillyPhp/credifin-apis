@@ -1,7 +1,13 @@
 <?php
 
 namespace api\modules\v3\controllers;
-
+use yii\widgets\ActiveForm;
+use Yii;
+use yii\web\Response;
+use yii\rest\Controller;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 class JobController extends ApiBaseController
 {
     public function behaviors()
