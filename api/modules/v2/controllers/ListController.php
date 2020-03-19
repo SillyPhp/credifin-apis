@@ -110,7 +110,7 @@ class ListController extends ApiBaseController
                 ->all();
 
             return $this->response(200, $result);
-        }else{
+        } else {
             $result['companies'] = ErexxCollaborators::find()
                 ->alias('aa')
                 ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
@@ -119,7 +119,7 @@ class ListController extends ApiBaseController
                     $x->groupBy('organization_enc_id');
                     $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
-                    $x->joinWith(['employerApplications c' => function ($y){
+                    $x->joinWith(['employerApplications c' => function ($y) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
                         $y->joinWith(['applicationTypeEnc d'], true);
                         $y->andWhere([
@@ -129,7 +129,7 @@ class ListController extends ApiBaseController
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
                 }])
-                ->where(['aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0])
+                ->where(['b.has_placement_rights' => 1, 'aa.is_deleted' => 0])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -137,7 +137,7 @@ class ListController extends ApiBaseController
             $result['profiles'] = AssignedCategories::find()
                 ->alias('a')
                 ->select(['d.category_enc_id', 'd.name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', true) . '", d.icon) icon'])
-                ->joinWith(['parentEnc d' => function ($z){
+                ->joinWith(['parentEnc d' => function ($z) {
                     $z->groupBy(['d.category_enc_id']);
                 }], false)
                 ->innerJoinWith(['employerApplications b' => function ($x) {

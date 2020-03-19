@@ -67,7 +67,7 @@ class CandhomeController extends ApiBaseController
 
             $companies_cnt = ErexxCollaborators::find()
                 ->select(['COUNT(college_enc_id) companies_count'])
-                ->where(['college_enc_id' => $college_id['organization_enc_id'], 'is_deleted' => 0,'organization_approvel' => 1, 'college_approvel' => 1,])
+                ->where(['college_enc_id' => $college_id['organization_enc_id'], 'is_deleted' => 0, 'organization_approvel' => 1, 'college_approvel' => 1,])
                 ->asArray()
                 ->all();
 
@@ -131,7 +131,7 @@ class CandhomeController extends ApiBaseController
                             'COUNT(f.placement_location_enc_id) cnt']);
                         $f->joinWith(['locationEnc f1' => function ($f1) {
                             $f1->joinWith(['cityEnc g']);
-                        }],false);
+                        }], false);
                         $b->groupBy('f.placement_location_enc_id');
                     }]);
                 }])
@@ -186,33 +186,36 @@ class CandhomeController extends ApiBaseController
 
             $applied_applications = AppliedApplications::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.current_round'])
-                ->joinWith(['applicationEnc b' => function ($x) {
-                    $x->joinWith(['organizationEnc d'], false);
-                    $x->joinWith(['title h' => function ($y) {
-                        $y->joinWith(['parentEnc i']);
-                        $y->joinWith(['categoryEnc j']);
+                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                    $b->joinWith(['organizationEnc d']);
+                    $b->joinWith(['title e' => function ($e) {
+                        $e->joinWith(['parentEnc e1']);
+                        $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $x->joinWith(['applicationPlacementLocations e' => function ($y) use ($x) {
-                        $x->select(['b.application_enc_id', 'b.title', 'b.slug', 'i.category_enc_id', 'g.name city', 'j.name profile', 'i.name parent_name', 'b.organization_enc_id', 'd.slug comp_slug', 'd.name organization_name', 'CONCAT("' . Url::to('/', true) . '", d.slug) profile_link', 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo', 'e.placement_location_enc_id', 'COUNT(e.placement_location_enc_id) cnt']);
-                        $y->joinWith(['locationEnc f' => function ($z) {
-                            $z->joinWith(['cityEnc g']);
+                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
+                        $b->select(['b.application_enc_id',
+                            'b.title',
+                            'b.slug',
+                            'd.slug comp_slug',
+                            'e1.category_enc_id',
+                            'g.name city',
+                            'e2.name profile',
+                            'e1.name parent_name',
+                            'b.organization_enc_id',
+                            'd.name organization_name',
+                            'CONCAT("' . Url::to('/', true) . '", d.slug) profile_link',
+                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                            'f.placement_location_enc_id',
+                            'COUNT(f.placement_location_enc_id) cnt']);
+                        $f->joinWith(['locationEnc f1' => function ($f1) {
+                            $f1->joinWith(['cityEnc g']);
                         }], false);
-                        $x->groupBy(['e.placement_location_enc_id']);
-                    }], false);
+                        $b->groupBy('f.placement_location_enc_id');
+                    }]);
                 }])
-//            ->joinWith(['resumeEnc c'], false)
-                ->where([
-                    'a.created_by' => $id,
-                    'a.is_deleted' => 0,
-                    'd.is_erexx_registered' => 1,
-                    'd.is_deleted' => 0,
-                    'b.application_for' => 2,
-                ])
-                ->andWhere(['or',
-                    ['a.status' => 'Pending'],
-                    ['a.status' => 'Accepted']
-                ])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
                 ->limit(6)
                 ->asArray()
                 ->all();
