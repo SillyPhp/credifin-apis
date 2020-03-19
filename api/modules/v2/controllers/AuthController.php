@@ -6,7 +6,7 @@ use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
 use common\models\UserOtherDetails;
-use common\models\WhatsappInvitation;
+use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
 use Yii;
 use api\modules\v1\models\Candidates;
@@ -40,8 +40,12 @@ class AuthController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'signup' => ['POST'],
+                'signup' => ['POST','OPTIONS'],
                 'save-other-detail' => ['POST','OPTIONS'],
+                'login' => ['POST','OPTIONS'],
+                'validate' => ['POST','OPTIONS'],
+                'username' => ['POST','OPTIONS'],
+                'find-user' => ['POST','OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -69,8 +73,8 @@ class AuthController extends ApiBaseController
                     ]);
                 }
 
-                if ($model->ref != '' && $model->invitation != '') {
-                    if ($this->getRef($model) && $this->getInvitation($model)) {
+                if ($model->ref != '') {
+                    if ($this->getRef($model)) {
                         if ($model->saveUser()) {
                             return $this->response(200, ['status' => 200]);
                         } else {
@@ -130,7 +134,7 @@ class AuthController extends ApiBaseController
             ->where(['email_log_enc_id' => $model->invitation]);
 
         $invi2 = (new \yii\db\Query())
-            ->from(WhatsappInvitation::tableName() . 'as a')
+            ->from(ErexxWhatsappInvitation::tableName() . 'as a')
             ->select(['invitation_enc_id id'])
             ->where(['invitation_enc_id' => $model->invitation]);
 
