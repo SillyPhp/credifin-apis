@@ -71,20 +71,6 @@ switch ([$controller_id, $action_id]) {
                             <div class="clear"></div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 p-0">
-                            <div class="tag-box">
-                                <div class="tags">
-                                    {{#skill}}
-                                    <span class="after">{{.}}</span>
-                                    {{/skill}}
-                                    {{^skill}}
-                                    <span class="after">Multiple Skills</span>
-                                    {{/skill}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div class="application-card-wrapper">
                         <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
                         <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
