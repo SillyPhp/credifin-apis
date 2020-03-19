@@ -29,7 +29,7 @@ class SearchController extends ApiBaseController
             'actions' => [
                 'companies' => ['POST', 'OPTIONS'],
                 'jobs' => ['POST', 'OPTIONS'],
-                'internships' =>['POST','OPTIONS']
+                'internships' => ['POST', 'OPTIONS']
             ]
         ];
         $behaviors['authenticator'] = [
@@ -122,6 +122,42 @@ class SearchController extends ApiBaseController
                 $org->limit = 1;
                 $org->offset = ($page - 1) * 1;
             }
+
+            $result = $org->asArray()->all();
+            return $this->response(200, $result);
+        } else {
+            $org = ErexxCollaborators::find()
+                ->alias('aa')
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
+                ->distinct()
+                ->joinWith(['organizationEnc b' => function ($x) {
+                    $x->groupBy('organization_enc_id');
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->joinWith(['businessActivityEnc e'], false);
+                    $x->joinWith(['employerApplications c' => function ($y) {
+                        $y->innerJoinWith(['erexxEmployerApplications f']);
+                        $y->joinWith(['applicationTypeEnc d'], true);
+                        $y->andWhere([
+                            'c.status' => 'Active',
+                            'c.is_deleted' => 0,
+                        ]);
+                        $y->andWhere(['in', 'c.application_for', [0, 2]]);
+                    }], false);
+                }])
+                ->where(['b.has_placement_rights' => 1, 'aa.is_deleted' => 0]);
+
+            if (isset($name) && !empty($name)) {
+                $org->andWhere([
+                    'or',
+                    ['like', 'b.name', $name],
+                    ['like', 'b.slug', $name],
+                ]);
+            }
+
+//            if (isset($page) && !empty($page)) {
+//                $org->limit = 3;
+//                $org->offset = ($page - 1) * 1;
+//            }
 
             $result = $org->asArray()->all();
             return $this->response(200, $result);
