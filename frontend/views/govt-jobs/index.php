@@ -164,9 +164,6 @@ $this->registerCss("
 }
 
 /*<!---- view-all button css ends --->*/
-.application-card-border-bottom{
-    height:156px;
-}
 .loader_screen img
 {
 display:none;
@@ -559,18 +556,6 @@ float:right;
     display:none;
     margin-left: auto;
     margin-right: auto;
-}
-@media only screen and (max-width: 550px){
-    .overlay-image {
-        max-width: 115px;
-    }
-}
-.application-card-img{
-    margin-left:0px;
-    margin-top:30px;
-}
-.application-card-description{
-    margin:20px 0 0 15px !important;
 }
 ");
 echo $this->render('/widgets/mustache/govt-jobs-card');

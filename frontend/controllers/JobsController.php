@@ -103,40 +103,6 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTest()
-    {
-        $mail = Yii::$app->mail;
-        $mail->receivers = [];
-        $mail->receivers = [
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@yahoo.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@outlook.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "vasishtshshank@gmail.com",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "shshank@dsbedutech.in",
-            ],
-            [
-                "name" => "Tarandeep Singh",
-                "email" => "kashishbudhiraja16781@gmail.com",
-            ]
-        ];
-        $mail->subject = 'Company SignUp';
-        $mail->data = ['job' => ""];
-        $mail->template = 'company-signup';
-        if ($mail->send()) {
-            return "ok";
-        }
-    }
-
     public function actionJobsApply()
     {
         $model = new \frontend\models\applications\JobApplied();
@@ -1309,12 +1275,4 @@ class JobsController extends Controller
             'titles' => $titles_count,
         ];
     }
-
-//    public function actionTest(){
-//        $per = Yii::$app->notification->orgSendMail('zkDKX91qa7majL9wozJj76QVx4NmBW');
-////        $per = Yii::$app->notification->orgSendMail(Yii::$app->user->identity->organization_enc_id);
-//
-//        print_r($per);
-//        exit();
-//    }
 }

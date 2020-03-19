@@ -29,22 +29,16 @@ use yii\helpers\Url;
                 ?>
             </div>
             <div class="col-md-3">
-                <!--      <a class="btn btn-primary custom-buttons" href="/account/companies">
-                                   Add new company
-                                </a>-->
                 <?=
                 Html::button('Add New Company', [
-                    'class' => 'btn btn-primary custom-buttons',
-                    'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'company-form'),
-                    'id' => 'open-modal',
-                    'data-toggle' => 'modal',
-                    'data-target' => '#add-new',
-                ]);
+                    'class' => 'btn btn-primary custom-buttons modal-load-class',
+                    'id' => 'add-new-company',
+                    'value' => URL::to('/account/recruiter/add-new-company')
+                   ]);
                 ?>
             </div>
         </div>
     </div>
-
     <div class="row">
     <div class="col-md-3">
         <?= $this->render('/widgets/tasks/taskbar-card'); ?>
@@ -78,16 +72,6 @@ use yii\helpers\Url;
                     </div>
                 </a>
             </div>
-            <!--            <div class="col-md-4 col-sm-6">-->
-            <!--                <a href="#">-->
-            <!--                    <div class="box-des box2 mt">-->
-            <!--                        <img src="-->
-            <?//= Url::to('@eyAssets/images/pages/hr-recruiters/applicationr.png') ?><!--">-->
-            <!--                        <span class="count">50</span>-->
-            <!--                        <span class="box-text">Candidates Under Review</span>-->
-            <!--                    </div>-->
-            <!--                </a>-->
-            <!--            </div>-->
             <div class="col-md-4 col-sm-6">
                 <a href="#">
                     <div class="box-des box4 mt box2set">
@@ -368,299 +352,21 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div>
-                <!--                <div class="col-xs-12 col-sm-12">-->
-                <!--                    <div class="portlet light ">-->
-                <!--                        <div class="portlet-title tabbable-line">-->
-                <!--                            <div class="caption">-->
-                <!--                                <i class=" icon-social-twitter font-dark hide"></i>-->
-                <!--                                <span class="caption-subject font-dark bold uppercase">View Applications</span>-->
-                <!--                            </div>-->
-                <!--                            <div class="actions">-->
-                <!--                                <div class="btn-group dashboard-button">-->
-                <!--                                    <a href="/account/candidates" title="" class="viewall-jobs">View All</a>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                        <div class="portlet-body">-->
-                <!--                            <div class="tab-content">-->
-                <!--                                <div class="tab-pane active" id="tab_actions_pending">-->
-                <!--                                    <-- BEGIN: Actions -->
-                <!--                                    <div class="row">-->
-                <!--                                        <div class="col-md-12">-->
-                <!--                                            <div class="mt-actions " style="">-->
-                <!--                                                <div class="mt-action">-->
-                <!--                                                    <div class="mt-action-img">-->
-                <!--                                                        <img src="-->
-                <?//= Url::to('@backendAssets/layouts/layout/img/avatar10.jpg'); ?><!--"/>-->
-                <!--                                                    </div>-->
-                <!--                                                    <div class="mt-action-body">-->
-                <!--                                                        <div class="mt-action-row">-->
-                <!--                                                            <div class="mt-action-info ">-->
-                <!--                                                                <div class="mt-action-details ">-->
-                <!--                                                                    <span class="mt-action-author">Natasha Kim</span>-->
-                <!--                                                                    <p class="mt-action-desc">Dummy text of the-->
-                <!--                                                                        printing</p>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                            <div class="mt-action-buttons ">-->
-                <!--                                                                <div class="btn-group btn-group-circle">-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline green btn-sm">-->
-                <!--                                                                        Appove-->
-                <!--                                                                    </button>-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline red btn-sm">-->
-                <!--                                                                        Reject-->
-                <!--                                                                    </button>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                        </div>-->
-                <!--                                                    </div>-->
-                <!--                                                </div>-->
-                <!--                                                <div class="mt-action">-->
-                <!--                                                    <div class="mt-action-img">-->
-                <!--                                                        <img src="-->
-                <?//= Url::to('@backendAssets/layouts/layout/img/avatar3.jpg'); ?><!--"/>-->
-                <!--                                                    </div>-->
-                <!--                                                    <div class="mt-action-body">-->
-                <!--                                                        <div class="mt-action-row">-->
-                <!--                                                            <div class="mt-action-info ">-->
-                <!--                                                                <div class="mt-action-details ">-->
-                <!--                                                                    <span class="mt-action-author">Gavin Bond</span>-->
-                <!--                                                                    <p class="mt-action-desc">pending for approval</p>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                            <div class="mt-action-buttons ">-->
-                <!--                                                                <div class="btn-group btn-group-circle">-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline green btn-sm">-->
-                <!--                                                                        Appove-->
-                <!--                                                                    </button>-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline red btn-sm">-->
-                <!--                                                                        Reject-->
-                <!--                                                                    </button>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                        </div>-->
-                <!--                                                    </div>-->
-                <!--                                                </div>-->
-                <!--                                                <div class="mt-action">-->
-                <!--                                                    <div class="mt-action-img">-->
-                <!--                                                        <img src="-->
-                <?//= Url::to('@backendAssets/layouts/layout/img/avatar2.jpg'); ?><!--"/>-->
-                <!--                                                    </div>-->
-                <!--                                                    <div class="mt-action-body">-->
-                <!--                                                        <div class="mt-action-row">-->
-                <!--                                                            <div class="mt-action-info ">-->
-                <!--                                                                <div class="mt-action-details ">-->
-                <!--                                                                    <span class="mt-action-author">Diana Berri</span>-->
-                <!--                                                                    <p class="mt-action-desc">Lorem Ipsum is simply-->
-                <!--                                                                        dummy-->
-                <!--                                                                        text</p>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                            <div class="mt-action-buttons ">-->
-                <!--                                                                <div class="btn-group btn-group-circle">-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline green btn-sm">-->
-                <!--                                                                        Appove-->
-                <!--                                                                    </button>-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline red btn-sm">-->
-                <!--                                                                        Reject-->
-                <!--                                                                    </button>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                        </div>-->
-                <!--                                                    </div>-->
-                <!--                                                </div>-->
-                <!--                                                <div class="mt-action">-->
-                <!--                                                    <div class="mt-action-img">-->
-                <!--                                                        <img src="-->
-                <?//= Url::to('@backendAssets/layouts/layout/img/avatar4.jpg'); ?><!--"/>-->
-                <!--                                                    </div>-->
-                <!--                                                    <div class="mt-action-body">-->
-                <!--                                                        <div class="mt-action-row">-->
-                <!--                                                            <div class="mt-action-info ">-->
-                <!--                                                                <div class="mt-action-details ">-->
-                <!--                                                                    <span class="mt-action-author">John Clark</span>-->
-                <!--                                                                    <p class="mt-action-desc">Text of the printing and-->
-                <!--                                                                        typesetting industry</p>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                            <div class="mt-action-buttons ">-->
-                <!--                                                                <div class="btn-group btn-group-circle">-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline green btn-sm">-->
-                <!--                                                                        Appove-->
-                <!--                                                                    </button>-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline red btn-sm">-->
-                <!--                                                                        Reject-->
-                <!--                                                                    </button>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                        </div>-->
-                <!--                                                    </div>-->
-                <!--                                                </div>-->
-                <!--                                                <div class="mt-action">-->
-                <!--                                                    <div class="mt-action-img">-->
-                <!--                                                        <img src="-->
-                <?//= Url::to('@backendAssets/layouts/layout/img/avatar8.jpg'); ?><!--"/>-->
-                <!--                                                    </div>-->
-                <!--                                                    <div class="mt-action-body">-->
-                <!--                                                        <div class="mt-action-row">-->
-                <!--                                                            <div class="mt-action-info ">-->
-                <!--                                                                <div class="mt-action-details ">-->
-                <!--                                                                    <span class="mt-action-author">Donna Clarkson </span>-->
-                <!--                                                                    <p class="mt-action-desc">Simply dummy text of the-->
-                <!--                                                                        printing</p>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                            <div class="mt-action-buttons ">-->
-                <!--                                                                <div class="btn-group btn-group-circle">-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline green btn-sm">-->
-                <!--                                                                        Appove-->
-                <!--                                                                    </button>-->
-                <!--                                                                    <button type="button"-->
-                <!--                                                                            class="btn btn-outline red btn-sm">-->
-                <!--                                                                        Reject-->
-                <!--                                                                    </button>-->
-                <!--                                                                </div>-->
-                <!--                                                            </div>-->
-                <!--                                                        </div>-->
-                <!--                                                    </div>-->
-                <!--                                                </div>-->
-                <!--                                            </div>-->
-                <!--                                        </div>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="add-new" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog">
-            <!-- Modal content-->
+    <div class="modal fade bs-modal-lg in" id="main-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <span class="org-info">Organization Information</span>
-                </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="comp-logo">
-                                <img src="/assets/themes/ey/images/pages/hr-recruiters/1job.png">
-                            </div>
-                            <div class="add-photo">
-                                <i class="fa fa-plus" style="position: absolute;bottom: 40px;left: 55px;"></i>
-                                <span style="position: absolute;bottom: 16px;left: 31px;font-size:12px;">Add photo</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="text" class="form-control" placeholder="Organization Name"/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="email" class="form-control" placeholder="Organization E-mail"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="text" class="form-control" placeholder="Website"/>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <input type="tel" class="form-control" placeholder="Phone No.">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>Select Business Activity</option>
-                                <option>Banking & Finance</option>
-                                <option>Educational Institute</option>
-                                <option>Schools</option>
-                                <option>Colleges</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 padd">
-                            <div class="form-group form-md-line-input form-md-floating-label">
-                                <textarea id="form7" class="md-textarea form-control" rows="5   "></textarea>
-                                <label for="form7">Description</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 align">
-                            <div class="form-group">
-                                <ul class="ks-cboxtags">
-                                    <li class="service-list">
-                                        <input type="checkbox" id="services" class="checkbox-input services"/>
-                                        <label for="services">
-                                            Jobs
-                                        </label>
-                                    </li>
-                                    <li class="service-list">
-                                        <input type="checkbox" id="services2" class="checkbox-input services"/>
-                                        <label for="services2">
-                                            Internships
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn btn-primary">Save</a>
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif'); ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span><?= Yii::t('account', 'Loading'); ?>... </span>
                 </div>
             </div>
         </div>
     </div>
-    <!--    <div class="modal fade" id="add-job" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
-    <!--         style="padding-top:10%;">-->
-    <!--        <div class="modal-dialog">-->
-    <!--            Modal content-->
-    <!--            <div class="modal-content">-->
-    <!--                <div class="modal-header">-->
-    <!--                    <span class="org-info">Select Organization</span>-->
-    <!--                </div>-->
-    <!--                <div class="modal-body">-->
-    <!--                    <div class="row">-->
-    <!--                        <div class="col-md-12">-->
-    <!--                            <select class="form-control" id="exampleFormControlSelect1">-->
-    <!--                                <option>select</option>-->
-    <!--                                <option>dsb</option>-->
-    <!--                                <option>dsbedutech</option>-->
-    <!--                                <option>vsc</option>-->
-    <!--                                <option>dsb law group</option>-->
-    <!--                            </select>-->
-    <!--                        </div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                <div class="modal-footer">-->
-    <!--                    <a href="/account/jobs/create" class="btn btn-primary">Next</a>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
     <div class="modal fade" id="add-new-candidate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          style="padding-top:10%;">
         <div class="modal-dialog">
@@ -905,15 +611,14 @@ text-transform: uppercase;
 .hr-com-icon img{text-align:center; margin:0; max-width:150px;  max-height:150px; }
 .hr-com-name{color:#00a0e3; text-decoration:none; font-size:16px;text-align:left;padding-left:15px;} 
 .hr-com-name:hover{text-decoration:none;}                                   
-.hr-com-field{padding-top:2px; padding-bottom:10px; font-size:14px; color:#080808;text-align:left;padding-left:15px;}
+.hr-com-field{padding-top:2px; padding-bottom:10px; font-size:14px; color:#080808;text-align:left;padding-left:15px;height:30px;}
 .hr-com-jobs{font-size:13px; color:#080808; text-align:center;  
               margin-top:10px; border-top:1px solid #eef1f5;}            
 .openings{
     font-size:13px;
     text-transform:capitalize;
     color:#aaaaaa;
-    text-align:left;
-    padding-left:15px;
+    text-align:center;
 }
 .jobcount{
     font-size:12px;
@@ -929,10 +634,10 @@ text-transform: uppercase;
 .com-load-more-btn{text-align:center; padding-top:30px; }
 .open{padding:10px;font-size:12px;font-family:roboto;}
 .j-grid {
-	text-align: right;
-	padding-right: 10px;
-	margin-top: -36px;
+	text-align: left;
+	padding-left: 10px;
 	padding-bottom: 11px;
+	display:inline-block;
 }
 .j-grid > a {
     font-family: Open Sans;
@@ -1687,26 +1392,7 @@ html body .tabs .nav-tabs li.active .nav-link, html.dark body .tabs .nav-tabs li
     }
 }
 ');
-$script = <<<JS
-//$(document).on("click", "#open-modal", function () {
-//    $(".modal-body").load($(this).attr("url"));
-//});
-//$(document).on("click", "#open-modal2", function () {
-//    $(".modal-body").load($(this).attr("url"));
-//    $('#add-new').modalSteps();
-//});
-//$(document).on("click", "#open-modal3", function () {
-//    $(".modal-body").load($(this).attr("url"));
-//});
-//$(document).on("click", "#open-modal4", function () {
-//    $(".modal-body").load($(this).attr("url"));
-//});
-
-   
-$(document).on("click", "#addpro", function () {
-    $(".load-modal").load($(this).attr("url"));
-});
-        
+$script = <<< JS
 $('.todo-check').change(function () {
     if ($(this).prop("checked")) {
         $(this).closest('li').find('.todo-label').addClass('line-pass');
@@ -1714,31 +1400,14 @@ $('.todo-check').change(function () {
         $(this).closest('li').find('.todo-label').removeClass('line-pass');
     }
 });
-
+$(document).on('click', '.modal-load-class', function() {
+    $('#main-modal').modal('show').find('.modal-body').load($(this).attr('value'));   
+});
 $('.todo-remove').click(function (e) {
     $(this).closest('li').remove();
     e.preventDefault();
 });
-        
-  $('form').validate({
-  rules: {
-    'OrganizationSignUpForm[company_name]': {
-         required: true,
-     },
-        
-    "OrganizationSignUpForm[company_email]": {
-         required: true,
-     },
-    "OrganizationSignUpForm[company_website]": {
-         required: true,
-     },
-    "OrganizationSignUpForm[company_phone]": {
-         required: true,
-     }
-  },
-});  
-JS;
-$script = <<< JS
+
 fetch_companies_list($('#companies_lst'),limit=6,offset=0,id='EV8KoxNaQZzMJ5MM4mqvyp539GLgXD');
 $(document).ready(function(){ 
   $("#add-cand").click(function(){
@@ -1747,12 +1416,11 @@ $(document).ready(function(){
   });
 });
 $(document).on('click', '.remove-cand', function(){
-    $(this).parent('.temp-field').remove();
-});
+    $(this).parent('.temp-field').remove(); 
+}); 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');
 $this->registerCssFile('@backendAssets/global/css/plugins.min.css');
 $this->registerCssFile('@backendAssets/global/css/components.min.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/jquery-validation/js/jquery.validate.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
