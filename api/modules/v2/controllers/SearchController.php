@@ -154,10 +154,10 @@ class SearchController extends ApiBaseController
                 ]);
             }
 
-//            if (isset($page) && !empty($page)) {
-//                $org->limit = 3;
-//                $org->offset = ($page - 1) * 1;
-//            }
+            if (isset($page) && !empty($page)) {
+                $org->limit = 3;
+                $org->offset = ($page - 1) * 3;
+            }
 
             $result = $org->asArray()->all();
             return $this->response(200, $result);
