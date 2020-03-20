@@ -1,4 +1,4 @@
-<script id="usa-jobs-card" type="text/template">
+<script id="govt-jobs-card" type="text/template">
     {{#.}}
     <div class="col-md-4 col-sm-12 col-xs-12">
         <div class="application-card-main shadow">
@@ -89,10 +89,10 @@ function fetchLocalData(template,limit,offset,loader,loader_btn,keyword=null,rep
               $('#loadMore').hide();
           }
       if (replace){
-          template.html(Mustache.render($('#usa-jobs-card').html(),body.cards));
+          template.html(Mustache.render($('#govt-jobs-card').html(),body.cards));
       }else
           {
-              template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+              template.append(Mustache.render($('#govt-jobs-card').html(),body.cards));
           }
       utilities.initials();
       if(body == ''){
@@ -132,7 +132,7 @@ function fetchDeptData(template,limit,offset,dept_id,loader,loader_btn,keyword=n
           {
               $('#loader').hide();
           }
-      template.append(Mustache.render($('#usa-jobs-card').html(),body.cards));
+      template.append(Mustache.render($('#govt-jobs-card').html(),body.cards));
       utilities.initials();
       if(body.total == 0){
           $('#loader').hide();
