@@ -5,6 +5,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 echo $this->render('/widgets/mustache/candidates');
+$salary = $_GET['salary'];
+$salary_exp = explode(",", $salary);
+$salary_from = $salary_exp[0];
+$salary_to = $salary_exp[1];
 ?>
 
 <!--Modal-->
@@ -60,6 +64,16 @@ echo $this->render('/widgets/mustache/candidates');
                 <div class="filters">
                     <div class="f-ratings">
                         <div class="filter-head-main">Filter Candidates</div>
+                        <div class="overall-box-heading">Salary Range</div>
+                        <div class="form-group form-md-checkboxes">
+                            <div class="md-checkbox-list">
+                                <div>
+                                    <div class="form-group">
+                                        <input type="text" id="rangess" class="salary"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="overall-box-heading">Select Location</div>
                         <div class="form-group form-md-checkboxes">
                             <div class="md-checkbox-list">
@@ -154,7 +168,6 @@ $this->registerCss('
 	position: -webkit-sticky;
 	top: 105px;
 }
-
 .filter-head-main {
 	font-size: 18px;
 	font-family: roboto;
@@ -162,24 +175,19 @@ $this->registerCss('
 	font-weight: 500;
 	color: #00a0e3;
 }
-
 .md-checkbox label>.check {
 	top: 0px;
 }
-
 #loadMore {
 	display: none;
 }
-
 .tab-empty {
 	padding: 20px;
 }
-
 .tab-empty-icon img {
 	max-width: 250px;
 	margin: 0 auto;
 }
-
 .tab-empty-text {
 	text-align: center;
 	font-size: 35px;
@@ -187,13 +195,11 @@ $this->registerCss('
 	color: #999999;
 	padding-top: 20px;
 }
-
 .shortlist-strip {
 	position: absolute;
 	top: 0;
 	left: 0;
 }
-
 .s-strip {
 	padding: 5px 10px;
 	border: 1px solid #00a0e3;
@@ -201,23 +207,18 @@ $this->registerCss('
 	background: #00a0e3;
 	color: #fff;
 }
-
 button.viewall-jobs {
 	border: none;
 }
-
 *:focus {
 	outline: none !important;
 }
-
 #btn-group1 {
 	display: hidden;
 }
-
 #btn-group2 {
 	display: none;
 }
-
 .paid-candidate-container {
 	background: #ffffff;
 	border-radius: 6px !important;
@@ -228,30 +229,25 @@ button.viewall-jobs {
 	transition: .4s;
 	border: 1px solid #eaeff5;
 }
-
 .paid-candidate-container:hover,
 .paid-candidate-container:focus {
 	transform: translateY(-5px);
 	-webkit-transform: translateY(-5px);
 	cursor: pointer;
 }
-
 .paid-candidate-box-thumb img {
 	height: 100%;
 }
-
 .com-load-more-btn {
 	max-width: 150px;
 	margin: 0 auto;
 	color: #fff;
 	font-size: 14px;
 }
-
 .paid-candidate-box {
 	text-align: center;
 	padding: 20px 10px 15px;
 }
-
 .paid-candidate-status {
 	position: absolute;
 	left: 32px;
@@ -262,7 +258,6 @@ button.viewall-jobs {
 	border-radius: 50px;
 	font-weight: 500;
 }
-
 .paid-candidate-box-thumb {
 	margin-bottom: 30px;
 	width: 120px;
@@ -274,7 +269,6 @@ button.viewall-jobs {
 	-webkit-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 	-moz-box-shadow: 0 0px 14px 0 rgba(0, 0, 0, 0.08);
 }
-
 .paid-candidate-box-detail h4 {
 	margin-bottom: 4px;
 	font-size: 20px;
@@ -284,12 +278,10 @@ button.viewall-jobs {
 	display: -webkit-inline-box;
 	overflow: hidden;
 }
-
 .paid-candidate-box-exp {
 	display: flex;
 	justify-content: center;
 }
-
 .paid-candidate-box-detail .desination,
 .paid-candidate-box-detail .location,
 .paid-candidate-box-exp .desination {
@@ -304,7 +296,6 @@ button.viewall-jobs {
 	display: -webkit-box;
 	overflow: hidden;
 }
-
 .paid-candidate-box-extra ul {
 	margin: 10px 0;
 	padding: 0;
@@ -312,7 +303,6 @@ button.viewall-jobs {
 	height: 112px;
 	overflow: hidden;
 }
-
 .paid-candidate-box-extra ul li {
 	list-style: none;
 	padding: 3px 15px;
@@ -327,12 +317,10 @@ button.viewall-jobs {
 	display: -webkit-inline-box;
 	overflow: hidden;
 }
-
 .paid-candidate-box-extra ul li.more-skill {
 	color: #ffffff;
 	border-color: #1194f7;
 }
-
 a.btn.btn-paid-candidate {
 	padding: 10px !important;
 	display: inline-block;
@@ -341,7 +329,6 @@ a.btn.btn-paid-candidate {
 	font-weight: 500;
 	border-radius: 0;
 }
-
 a.btn.btn-paid-candidate:hover,
 a.btn.btn-paid-candidate:focus {
 	background: #00a0e3;
@@ -352,26 +339,22 @@ a.btn.btn-paid-candidate:focus {
 	-ms-transition: all .3s ease-in-out;
 	transition: all .3s ease-in-out;
 }
-
 .paid-candidate-box .dropdown {
 	position: absolute;
 	right: 30px;
 	top: 25px;
 }
-
 .btn-trans {
 	background: transparent;
 	border: none;
 	font-size: 20px;
 	color: #99abb9;
 }
-
 .dropdown-menu.pull-right {
 	right: 0;
 	left: auto !important;
 	top: 90% !important;
 }
-
 .dropdown-menu.pull-right {
 	right: 0;
 	border-color: #ebf2f7;
@@ -379,7 +362,6 @@ a.btn.btn-paid-candidate:focus {
 	left: auto !important;
 	top: 90% !important;
 }
-
 .dropdown-menu>a,
 .dropdown-menu>button {
 	display: block;
@@ -391,36 +373,29 @@ a.btn.btn-paid-candidate:focus {
 	border-bottom: 1px solid #f1f6f9;
 	background: transparent;
 }
-
 .dropdown-menu>button {
 	text-align: left;
 	border: none;
 	width: 100%;
 }
-
 .bt-1 {
 	border-top: 1px solid #eaeff5!important;
 }
-
 .custom-buttons {
 	width: 100%;
 	font-size: 10px !important;
 	padding: 8px 0px !important;
 	margin-bottom: 20px;
 }
-
 .dashboard-button a,
 .dashboard-button button {
 	margin-left: 10px !important;
 }
-
-
 /*----------------------*/
 
 .checkbox-input {
 	display: none;
 }
-
 .checkbox-label {
 	vertical-align: top;
 	width: 100%;
@@ -428,11 +403,9 @@ a.btn.btn-paid-candidate:focus {
 	font-weight: 400;
 	margin-bottom: 0px;
 }
-
 .p-category-main:hover .checkbox-label:before {
 	top: -5px !important;
 }
-
 .checkbox-label:before {
 	content: "";
 	position: absolute;
@@ -450,23 +423,19 @@ a.btn.btn-paid-candidate:focus {
 	transition: all 0.4s ease;
 	z-index: 999;
 }
-
 .checkbox-input:checked+.checkbox-label:before {
 	top: 0;
 	opacity: 1;
 }
-
 .checkox-input:checked+.checkbox-label {
 	transform: translateY(-5px);
 	-webkit-transform: translateY(-5px);
 	cursor: pointer;
 }
-
 .checkbox-input:checked+.checkbox-label .checkbox-text span {
 	-webkit-transform: translate(0, -8px);
 	transform: translate(0, -8px);
 }
-
 .radio_questions {
 	max-width: 100%;
 	font-size: 18px;
@@ -474,14 +443,12 @@ a.btn.btn-paid-candidate:focus {
 	line-height: 36px;
 	position: relative;
 }
-
 .inputGroup {
 	background-color: #fff;
 	display: block;
 	margin: 10px 0;
 	position: relative;
 }
-
 .inputGroup input {
 	width: 32px;
 	height: 32px;
@@ -494,12 +461,10 @@ a.btn.btn-paid-candidate:focus {
 	cursor: pointer;
 	visibility: hidden;
 }
-
 .inputGroup input:checked~label {
 	color: #fff;
 	box-shadow: 0 0 10px rgba(0, 0, 0, .3) !important;
 }
-
 .inputGroup label {
 	padding: 6px 75px 10px 25px;
 	width: 96%;
@@ -515,31 +480,25 @@ a.btn.btn-paid-candidate:focus {
 	border-radius: 8px;
 	border: 1px solid #eee;
 }
-
 .inputGroup input:checked~label:before {
 	transform: translate(-50%, -50%) scale3d(56, 56, 1);
 	opacity: 1;
 }
-
 .inputGroup input:checked~label:after {
 	background-color: #00a0e3;
 	border-color: #00a0e3;
 }
-
 .filter-btns {
 	display: none;
 }
-
 .empty {
 	text-align: center;
 	display: none;
 }
-
 .es-btn {
 	padding-top: 20px;
 	padding-bottom: 20px;
 }
-
 .es-btn button {
 	background: #00a0e3;
 	border: 1px solid #00a0e3;
@@ -548,7 +507,6 @@ a.btn.btn-paid-candidate:focus {
 	color: #fff;
 	font-family: roboto;
 }
-
 .es-btn button:hover {
 	box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 	transition: .3s all;
@@ -556,22 +514,18 @@ a.btn.btn-paid-candidate:focus {
 	-webkit-transition: .3s all;
 	-ms-transition: .3s all;
 }
-
 .es-text {
 	font-family: roboto;
 	font-size: 20px;
 	padding-top: 20px;
 	font-weight: bold;
 }
-
 .es-text2 {
 	font-family: roboto;
 }
-
 .btn_add_new_org {
 	margin-top: 15px;
 }
-
 .add_new_org1 {
 	padding: 10px 15px;
 	background: #fff;
@@ -581,13 +535,11 @@ a.btn.btn-paid-candidate:focus {
 	font-weight: 500 !important;
 	font-family: roboto;
 }
-
 .add_new_org1:hover {
 	color: #00a0e3;
 	font-weight: bold;
 	box-shadow: 0 0 10px rgba(0, 0, 0, .3);
 }
-
 .search-bar {
 	width: 100%;
 	background: #fff;
@@ -595,16 +547,14 @@ a.btn.btn-paid-candidate:focus {
 	display: flex;
 	padding: 5px 5px;
 	border: 2px solid #eee;
-	color: #bcbaba margin-top:20px;
+	color: #bcbaba margin-top: 20px;
 }
-
 .main-headings {
 	text-align: center;
 	font-size: 25px;
 	padding-bottom: 10px;
 	font-family: lora;
 }
-
 .s-input {
 	width: 94%;
 	padding: 10px 15px;
@@ -615,17 +565,14 @@ a.btn.btn-paid-candidate:focus {
 	font-family: roboto;
 	font-weight: 500;
 }
-
 input::placeholder {
 	color: #bcbaba;
 }
-
 form input[type="text"]:focus {
 	outline: none;
 	border: none !important;
 	box-shadow: none;
 }
-
 .s-btn {
 	width: 5%;
 	padding: 10px 15px;
@@ -634,11 +581,9 @@ form input[type="text"]:focus {
 	color: #bcbaba;
 	font-size: 16px;
 }
-
 #loading_img {
 	display: none;
 }
-
 #loading_img img {
 	margin-left: auto;
 	margin-right: auto;
@@ -646,7 +591,6 @@ form input[type="text"]:focus {
 	width: 100px;
 	height: 100px
 }
-
 .fader {
 	width: 100%;
 	height: 100%;
@@ -658,7 +602,6 @@ form input[type="text"]:focus {
 	background-color: #fff;
 	opacity: 0.7;
 }
-
 #loading_img.show {
 	display: block;
 	position: fixed;
@@ -672,39 +615,31 @@ form input[type="text"]:focus {
 	right: 0;
 	top: 50%;
 }
-
 .padd-0 {
 	margin-left: 15px !important;
 	margin-right: 15px !important;
 }
-
 .cm-btns {
 	margin-top: 10px;
 	padding-top: 5px;
 	border-top: 1px solid #eee;
 	text-transform: capitalize;
 }
-
 .color-blue a {
 	color: #bcbaba;
 }
-
 .color-blue a:hover {
 	color: #00a0e3;
 }
-
 .color-orange a {
 	color: #bcbaba;
 }
-
 .color-orange a:hover {
 	color: #ff7803;
 }
-
 .related-company {
 	padding-top: 50px;
 }
-
 .rh-header {
 	background-image: linear-gradient(141deg, #65c5e9 0%, #25b7f4 51%, #00a0e3 75%);
 	background-size: 100% 300px;
@@ -713,32 +648,25 @@ form input[type="text"]:focus {
 	color: #fff;
 	margin-bottom: 20px;
 }
-
 .header {
 	text-align: left;
 }
-
 .num-companies {
 	font-size: 25px;
 }
-
 .num-companies span {
 	font-weight: bold;
 }
-
 .filter-search {
 	padding-bottom: 20px;
 }
-
 .f-main-heading {
 	display: flex;
 }
-
 .show-search {
 	margin-left: 15px;
 	margin-top: 5px;
 }
-
 .show-search button {
 	background: transparent;
 	border: none;
@@ -746,11 +674,9 @@ form input[type="text"]:focus {
 	color: #666;
 	float: right;
 }
-
 .show-search button:hover {
 	color: #00a0e3;
 }
-
 .f-search,
 .f-search-loc,
 .f-search-1 {
@@ -758,20 +684,17 @@ form input[type="text"]:focus {
 	padding: 5px 15px;
 	border-radius: 10px;
 }
-
 .f-search input,
 .f-search-loc input,
 .f-search-1 input {
 	border: none;
 	font-size: 14px;
 }
-
 .f-search input::placeholder,
 .f-search-loc input::placeholder,
 .f-search-1 input::placeholder {
 	color: #999;
 }
-
 .f-search i,
 .f-search-loc i,
 .f-search-1 i {
@@ -779,36 +702,28 @@ form input[type="text"]:focus {
 	padding-top: 3px;
 	color: #999;
 }
-
 .fivestars i {
 	color: #fd7100 !important;
 }
-
 .fourstars i.active {
 	color: #fa8f01 !important;
 }
-
 .threestars i.active {
 	color: #fcac01 !important;
 }
-
 .twostars i.active {
 	color: #fabf37 !important;
 }
-
 .onestars i.active {
 	color: #ffd478 !important;
 }
-
 .md-checkbox label>.box {
 	top: 6px;
 	border: 2px solid #ddd;
 }
-
 .md-checkbox-list .md-checkbox {
 	margin-bottom: -10px;
 }
-
 .f-ratings {
 	padding: 5px 15px;
 	border: 1px solid #eee;
@@ -818,20 +733,17 @@ form input[type="text"]:focus {
 	height: 500px;
 	position: relative;
 }
-
 .overall-box-heading {
 	font-size: 16px;
 	padding-top: 5px;
 	font-weight: 500;
 	font-family: roboto;
 }
-
 .rating-stars {
 	font-size: 16px;
 	font-weight: lighter;
 	padding: 4px;
 }
-
 @media only screen and (max-width: 834px) {
 	.pos-relative-mobile {
 		position: relative;
@@ -850,356 +762,389 @@ form input[type="text"]:focus {
 		border-right: none;
 	}
 }
-
 .radio_questions {
-    max-width: 100%;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 36px;
-    position: relative;
+	max-width: 100%;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 36px;
+	position: relative;
 }
 .inputGroup {
-    background-color: #fff;
-    display: block;
-    margin: 10px 0;
-    position: relative;
+	background-color: #fff;
+	display: block;
+	margin: 10px 0;
+	position: relative;
 }
 .inputGroup input {
-    width: 32px;
-    height: 32px;
-    order: 1;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    visibility: hidden;
+	width: 32px;
+	height: 32px;
+	order: 1;
+	z-index: 2;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	visibility: hidden;
 }
 .inputGroup input:checked ~ label {
-    color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,.3) !important;
+	color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .3) !important;
 }
 .inputGroup label {
-    padding: 6px 75px 10px 25px;
-    width: 96%;
-    display: block;
-    margin: auto;
-    text-align: left;
-    color: #3C454C !important;
-    cursor: pointer;
-    position: relative;
-    z-index: 2;
-    transition: color 1ms ease-out;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 1px solid #eee;
+	padding: 6px 75px 10px 25px;
+	width: 96%;
+	display: block;
+	margin: auto;
+	text-align: left;
+	color: #3C454C !important;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	transition: color 1ms ease-out;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 1px solid #eee;
 }
 .inputGroup input:checked ~ label:before {
-    transform: translate(-50%, -50%) scale3d(56, 56, 1);
-    opacity: 1;
+	transform: translate(-50%, -50%) scale3d(56, 56, 1);
+	opacity: 1;
 }
 .inputGroup label:before {
-    width: 100%;
-    height: 10px;
-    border-radius: 50%;
-    content: \'\';
-    background-color: #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale3d(1, 1, 1);
-    transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
-    z-index: -1;
-    box-shadow: 0 0 10px rgba(0,0,0,.5) !important;
+	width: 100%;
+	height: 10px;
+	border-radius: 50%;
+	content: \'\';
+	background-color: #fff;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%) scale3d(1, 1, 1);
+	transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	opacity: 0;
+	z-index: -1;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .5) !important;
 }
 .inputGroup input:checked ~ label:after {
-    background-color: #00a0e3;
-    border-color: #00a0e3;
+	background-color: #00a0e3;
+	border-color: #00a0e3;
 }
 .process_radio label:after {
-    width: 32px;
-    height: 32px;
-    content: \'\';
-    border: 2px solid #D1D7DC;
-    background-color: #fff;
-    background-repeat: no-repeat;
-    background-position: 2px 3px;
-    background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
-    border-radius: 50%;
-    z-index: 2;
-    position: absolute;
-    right: 30px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    transition: all 200ms ease-in;
-
+	width: 32px;
+	height: 32px;
+	content: \'\';
+	border: 2px solid #D1D7DC;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	background-position: 2px 3px;
+	background-image: url("data:image/svg+xml,%3Csvg width=\'32\' height=\'32\' viewBox=\'0 0 32 32\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z\' fill=\'%23fff\' fill-rule=\'nonzero\'/%3E%3C/svg%3E ");
+	border-radius: 50%;
+	z-index: 2;
+	position: absolute;
+	right: 30px;
+	top: 50%;
+	transform: translateY(-50%);
+	cursor: pointer;
+	transition: all 200ms ease-in;
+}
 ');
 
 $script = <<<JS
-    var load_more_cards = true;
-    var loading = true;
-    var offset = 0;
-    var url;
-    var user_id = null;
-    var app_id = null;
-    
-    $(document).ready(function() {
-        loading = false;
-        url = '/candidates'+ window.location.search;
-        getUserCards(0, url, 'append');
-        setTimeout(
-            function() {
-                $('.loading-main').css('display', 'none');
-            }, 1000);
-    });
-    
-    $(document).on('click', '#loadMore', function(event) {
-        event.preventDefault();
-        if (loading) {
-            loading = false;
-            url = '/candidates'+ window.location.search;
-            getUserCards(offset, url, 'append');
-        }
-    });
-    
-    $(window).scroll(function() {
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)) { //scrolled to bottom of the page
-            if (load_more_cards && loading) {
-                loading = false;
-                url = '/candidates'+ window.location.search;
-                getUserCards(offset, url, 'append');
-            }
-        }
-    });
-    
-    var ps = new PerfectScrollbar('.f-ratings');
-    //Jobs salary slider
-    $("#rangess").ionRangeSlider({
-        skin: "round",
-        type: "double",
-        min: 5000,
-        max: 100000,
-        from: 5000,
-        to: 30000,
-        grid: true
-    });
+var load_more_cards = true;
+var loading = true;
+var offset = 0;
+var url;
+var user_id = null;
+var app_id = null;
+$(document).ready(function () {
+	loading = false;
+	url = '/candidates' + window.location.search;
+	getUserCards(0, url, 'append');
+	setTimeout(function () {
+		$('.loading-main').css('display', 'none');
+	}, 1000);
+});
+$(document).on('click', '#loadMore', function (event) {
+	event.preventDefault();
+	if (loading) {
+		loading = false;
+		url = '/candidates' + window.location.search;
+		getUserCards(offset, url, 'append');
+	}
+});
+$(window).scroll(function () {
+	if ($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 335)) { //scrolled to bottom of the page
+		if (load_more_cards && loading) {
+			loading = false;
+			url = '/candidates' + window.location.search;
+			getUserCards(offset, url, 'append');
+		}
+	}
+});
+var ps = new PerfectScrollbar('.f-ratings');
+//Jobs salary slider
+$("#rangess").ionRangeSlider({
+	skin: "round",
+	type: "double",
+	min: 5000,
+	max: 100000,
+	from: "$salary_from",
+	to: "$salary_to",
+	grid: true
+});
 
-    // filter code start from here
-    
-    function swipe(ths, thsCls) {
-        var selectedCheck = ths.closest('.md-checkbox');
-        selectedCheck.remove();
-        if(ths.is(":checked")){
-            $('div#'+thsCls+'_search_checked').append(selectedCheck);
-        } else {
-            $('div#'+thsCls+'_search').prepend(selectedCheck);
-        }
+// filter code start from here
+function swipe(ths, thsCls) {
+	var selectedCheck = ths.closest('.md-checkbox');
+	selectedCheck.remove();
+	if (ths.is(":checked")) {
+		$('div#' + thsCls + '_search_checked').append(selectedCheck);
+	} else {
+		$('div#' + thsCls + '_search').prepend(selectedCheck);
+	}
+}
+var exp_params;
+$(document).on('change', 'input[type=checkbox]', function() {
+    load_more_cards = true;
+    $('#user_cards').html("");
+    $('.loading-main').show();
+    exp_params = [];
+    var ths = $(this);
+    var thsVal = ths.attr('value');
+    var thsCls = ths.attr('class');
+    swipe(ths, thsCls);
+    var params = unescape(window.location.search.substring(1));
+    var cls_loc = params.match(/locations=/g);
+    var cls_jt = params.match(/job_titles=/g);
+    var cls_sk = params.match(/skills=/g);
+    var cls_sal = params.match(/salary=/g);
+    if(!cls_loc && !cls_jt && !cls_sk){
+        params = params+'&locations=&job_titles=&skills=';
     }
-    
-    var exp_params;
-    $(document).on('change', 'input[type=checkbox]', function() {
-        load_more_cards = true;
-        $('#user_cards').html(" ");
-        $('.loading-main').show();
-        exp_params = [];
-        var ths = $(this);
-        var thsVal = ths.attr('value');
-        var thsCls = ths.attr('class');
-        swipe(ths, thsCls);
-        var params = unescape(window.location.search.substring(1));
-        var cls_loc = params.match(/locations=/g);
-        var cls_jt = params.match(/job_titles=/g);
-        var cls_sk = params.match(/skills=/g);
-        if(!params){
-            params = 'locations=&job_titles=&skills=';
-        }
-//        if(!cls_jt || !cls_loc || !cls_sk) {
-//            if(!params){
-//                params = thsCls +'=';
-//            } else {
-//                params = params + '&'+ thsCls +'=';
-//            }
-//        }
-        var p = [];
-        $.each(params.split("&"),function(index,value) {
-            exp_params.push(value);
-            $.each(value.split("="),function(i,v) {
-                p.push(v);
-            });
+    var p = [];
+    $.each(params.split("&"),function(index,value) {
+        exp_params.push(value);
+        $.each(value.split("="),function(i,v) {
+            p.push(v);
         });
-        $.each(p, function(i,v) {
-            if(v == thsCls){
-                var str = p[i+1];
-                var str_arr = [];
-                $.each(str.split(","),function(index,value) {
-                    str_arr.push(value);
-                });
-                var new_str = "";
-                if(str_arr.includes(thsVal)){
-                    $.each(str_arr,function(index, value) {
-                        if(value != thsVal){
-                            if(new_str == ""){
-                                new_str = value;
-                            } else {
-                                new_str = new_str+','+value;
-                            }
+    });
+    $.each(p, function(i,v) {
+        if(v == thsCls){
+            var str = p[i+1];
+            var str_arr = [];
+            $.each(str.split(","),function(index,value) {
+                str_arr.push(value);
+            });
+            var new_str = "";
+            if(str_arr.includes(thsVal)){
+                $.each(str_arr,function(index, value) {
+                    if(value != thsVal){
+                        if(new_str == ""){
+                            new_str = value;
+                        } else {
+                            new_str = new_str+','+value;
                         }
-                    });
-                } else {
-                    if(str){
-                        new_str = str +','+thsVal;
-                    } else {
-                        new_str = thsVal;
                     }
-                }
-                p[i+1] = new_str;
-            }
-        });
-        var cur_params = "?";
-        $.each(p,function(i, v) {
-            if(i === 0){
-                cur_params = cur_params + v;
-            } else {
-                if(i % 2 === 0){
-                    cur_params = cur_params + '&' + v;
-                } else {
-                    cur_params = cur_params + '=' + v;
-                }
-            }
-        });
-        history.pushState('data', 'title', cur_params);
-        var cur_url = '/candidates'+ window.location.search;
-        offset = 0;
-        getUserCards(offset, cur_url, 'html');
-        // loading = true;
-        // load_more_cards = true;
-    });
-    
-    var xhr;
-    $(document).ready(function() {
-        $(document).on('keyup', 'input[type=text]', function() {
-            var ths = $(this);
-            var id = ths.attr('id').slice(0,-7);
-            var val = ths.val();
-            url = '/candidates/get-checkbox-list' + window.location.search;
-            loadCheckboxList(url, val, id);
-        });
-    });
-    
-    function getFilterList(){
-        $.ajax({
-           url:'/candidates/get-filter-list' + window.location.search,
-           type: 'POST',
-           success: function (response) {
-               $.each(response, function(i, v) {
-                    if(i === 'list'){
-                        $.each(v, function(indx, vlue) {
-                            var cls = indx;
-                            var html = []; 
-                            var div = $('div#'+cls+'_search');
-                            $.each(vlue, function(index, value) {
-                                html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'"> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
-                            });
-                            div.html(html);
-                        });
-                    } else {
-                        $.each(v, function(indx, vlue) {
-                            var cls = indx;
-                            var html = []; 
-                            var div = $('div#'+cls+'_search_checked');
-                            $.each(vlue, function(index, value) {
-                                html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'" checked> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
-                            });
-                            div.html(html);
-                        });
-                    }
-               });
-           }
-        });
-        
-    }
-    
-    $(document).ready(function() {
-        getFilterList();
-    });
-    
-    function loadCheckboxList(url, val, cls) {
-        if(val && xhr && xhr.readyState != 4) {
-            xhr.abort();
-        }
-        xhr = $.ajax({
-            url:url,
-            type: 'POST',
-            data: {name:val,id:cls},
-            success: function (response) {
-                var div = $('div#'+cls+'_search');
-                // var obj = JSON.parse(res);
-                var obj = response;
-                var html = [];
-                $.each(obj,function(index,value) {
-                    html.push('<div class="md-checkbox"> <input type="checkbox" value="'+value+'" id="21sdf2da4'+value+'1gt54re06" class="'+cls+'"> <label for="21sdf2da4'+value+'1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">'+value+'</div> </label></div>');
                 });
-                div.html(html);
-            }
-        });
-    }
-    
-    $(document).on('click','.shortlist-main',function(event) {
-        event.preventDefault();
-        user_id = $(this).attr('id');
-        
-        $.ajax({
-            type:"POST",
-            url:"candidates/get-data",
-            data: {user_id:user_id},
-            success:function (response) {
-                var res = JSON.parse(response);
-                if(res["status"] == 404){
-                    $('#shortList').modal('toggle');
-                }else{
-                    for(var i =0;i < res.length; i++){
-                        $('.application_list').each(function() {
-                            if($(this).attr('id') == res[i]['application_enc_id']){
-                                $(this).attr('name', 'already-checked-' + i);
-                                $(this).prop('checked', true);
-                                $(this).prop('disabled', true);
-                            }
-                        })
-                    }
-                    $('#shortList').modal('toggle');
+            } else {
+                if(str){
+                    new_str = str +','+thsVal;
+                } else {
+                    new_str = thsVal;
                 }
-
             }
+            p[i+1] = new_str;
+        }
+    });
+    var cur_params = "?";
+    $.each(p,function(i, v) {
+        if(i === 0){
+            cur_params = cur_params + v;
+        } else {
+            if(i % 2 === 0){
+                cur_params = cur_params + '&' + v;
+            } else {
+                cur_params = cur_params + '=' + v;
+            }
+        }
+    });
+    history.pushState('data', 'title', cur_params);
+    var cur_url = '/candidates'+ window.location.search;
+    offset = 0;
+    getUserCards(offset, cur_url, 'html');
+    // loading = true;
+    // load_more_cards = true;
+});
+    
+$(document).on('mouseup', 'span.irs-handle', function () {
+// $(document).ready(function () {
+    var ths = $('#rangess');
+    var thsVal = ths.val();
+    var thsCls = ths.attr('class').split(' ')[0];
+	load_more_cards = true;
+	$('#user_cards').html(" ");
+	$('.loading-main').show();
+	exp_params = [];
+	var params = unescape(window.location.search.substring(1));
+	var cls_loc = params.match(/locations=/g);
+    var cls_jt = params.match(/job_titles=/g);
+    var cls_sk = params.match(/skills=/g);
+    var cls_sal = params.match(/salary=/g);
+    var p = [];
+    $.each(params.split("&"),function(index,value) {
+        exp_params.push(value);
+        $.each(value.split("="),function(i,v) {
+            p.push(v);
         });
     });
-    
-    document.getElementById('submitData').addEventListener('click', function(){
-            var applications = document.getElementsByName('applications');
-            var selected_value;
-            for(var i = 0; i < applications.length; i++){
-                if(applications[i].checked){
-                    app_id = applications[i].value;
-                }
-            }
-            
-            $.ajax({
-                type:"POST",
-                url:"candidates/shortlist",
-                data: {user_id:user_id,app_id:app_id},
-                success:function (response) {
-                    if(JSON.parse(response)["status"] == 200){
-                        toastr.success('successfully shortlisted', 'success'); 
-                    }else{
-                        toastr.error('an error occurred', 'error'); 
-                    }
-    
-                }
+    $.each(p, function(i,v) {
+        if(v == thsCls){
+            var str = [];
+            $.each(thsVal.split(";"),function(index,value) {
+                str.push(value);
             });
-        });
+            p[i+1] = str[0]+','+str[1];
+        }
+    });
+    var cur_params = "?";
+    $.each(p,function(i, v) {
+        if(i === 0){
+            cur_params = cur_params + v;
+        } else {
+            if(i % 2 === 0){
+                cur_params = cur_params + '&' + v;
+            } else {
+                cur_params = cur_params + '=' + v;
+            }
+        }
+    });
+	history.pushState('data', 'title', cur_params);
+	var cur_url = '/candidates' + window.location.search;
+	offset = 0;
+	getUserCards(offset, cur_url, 'html');
+});
+    
+var xhr;
+$(document).ready(function () {
+	$(document).on('keyup', 'input[type=text]', function () {
+		var ths = $(this);
+		var id = ths.attr('id').slice(0, -7);
+		var val = ths.val();
+		url = '/candidates/get-checkbox-list' + window.location.search;
+		loadCheckboxList(url, val, id);
+	});
+});
 
+function getFilterList() {
+	$.ajax({
+		url: '/candidates/get-filter-list' + window.location.search,
+		type: 'POST',
+		success: function (response) {
+			$.each(response, function (i, v) {
+				if (i === 'list') {
+					$.each(v, function (indx, vlue) {
+						var cls = indx;
+						var html = [];
+						var div = $('div#' + cls + '_search');
+						$.each(vlue, function (index, value) {
+							html.push('<div class="md-checkbox"> <input type="checkbox" value="' + value + '" id="21sdf2da4' + value + '1gt54re06" class="' + cls + '"> <label for="21sdf2da4' + value + '1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">' + value + '</div> </label></div>');
+						});
+						div.html(html);
+					});
+				} else {
+					$.each(v, function (indx, vlue) {
+						var cls = indx;
+						var html = [];
+						var div = $('div#' + cls + '_search_checked');
+						$.each(vlue, function (index, value) {
+							html.push('<div class="md-checkbox"> <input type="checkbox" value="' + value + '" id="21sdf2da4' + value + '1gt54re06" class="' + cls + '" checked> <label for="21sdf2da4' + value + '1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">' + value + '</div> </label></div>');
+						});
+						div.html(html);
+					});
+				}
+			});
+		}
+	});
+}
+$(document).ready(function () {
+	getFilterList();
+});
+
+function loadCheckboxList(url, val, cls) {
+	if (val && xhr && xhr.readyState != 4) {
+		xhr.abort();
+	}
+	xhr = $.ajax({
+		url: url,
+		type: 'POST',
+		data: {
+			name: val,
+			id: cls
+		},
+		success: function (response) {
+			var div = $('div#' + cls + '_search');
+			// var obj = JSON.parse(res);
+			var obj = response;
+			var html = [];
+			$.each(obj, function (index, value) {
+				html.push('<div class="md-checkbox"> <input type="checkbox" value="' + value + '" id="21sdf2da4' + value + '1gt54re06" class="' + cls + '"> <label for="21sdf2da4' + value + '1gt54re06"> <span></span> <span class="check"></span> <span class="box"></span><div class="fivestars rating-stars">' + value + '</div> </label></div>');
+			});
+			div.html(html);
+		}
+	});
+}
+$(document).on('click', '.shortlist-main', function (event) {
+	event.preventDefault();
+	user_id = $(this).attr('id');
+	$.ajax({
+		type: "POST",
+		url: "candidates/get-data",
+		data: {
+			user_id: user_id
+		},
+		success: function (response) {
+			var res = JSON.parse(response);
+			if (res["status"] == 404) {
+				$('#shortList').modal('toggle');
+			} else {
+				for (var i = 0; i < res.length; i++) {
+					$('.application_list').each(function () {
+						if ($(this).attr('id') == res[i]['application_enc_id']) {
+							$(this).attr('name', 'already-checked-' + i);
+							$(this).prop('checked', true);
+							$(this).prop('disabled', true);
+						}
+					})
+				}
+				$('#shortList').modal('toggle');
+			}
+		}
+	});
+});
+document.getElementById('submitData').addEventListener('click', function () {
+	var applications = document.getElementsByName('applications');
+	var selected_value;
+	for (var i = 0; i < applications.length; i++) {
+		if (applications[i].checked) {
+			app_id = applications[i].value;
+		}
+	}
+	$.ajax({
+		type: "POST",
+		url: "candidates/shortlist",
+		data: {
+			user_id: user_id,
+			app_id: app_id
+		},
+		success: function (response) {
+			if (JSON.parse(response)["status"] == 200) {
+				toastr.success('successfully shortlisted', 'success');
+			} else {
+				toastr.error('an error occurred', 'error');
+			}
+		}
+	});
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
