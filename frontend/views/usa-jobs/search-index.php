@@ -48,13 +48,6 @@ $this->registerCss('
 {
 display:none;
 }
-.application-card-description {
-    margin: 20px 0 0 15px !important;
-}
-.application-card-img{
-    margin-left:0px;
-    margin-top:30px;
-}
 ');
 echo $this->render('/widgets/mustache/usa-jobs-card');
 ?>

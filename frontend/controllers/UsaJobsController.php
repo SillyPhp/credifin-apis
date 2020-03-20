@@ -148,7 +148,8 @@ class UsaJobsController extends Controller
     public function actionGetData($min = null, $max = null)
     {
         if (Yii::$app->request->isAjax) {
-            $e = fopen(Yii::$app->params->upload_directories->jsonFiles->file_path . DIRECTORY_SEPARATOR . 'updated.json', 'r');
+            //$e = fopen(Yii::$app->params->upload_directories->jsonFiles->file_path . DIRECTORY_SEPARATOR . 'updated.json', 'r');
+            $e = fopen('updated.json', 'r');
             $v = fgets($e);
             $v = json_decode($v, true);
             $min = Yii::$app->request->post('min');
