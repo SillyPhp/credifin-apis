@@ -5,21 +5,21 @@ use yii\helpers\Url;
 $this->params['header_dark'] = false;
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<section class="slider">
+<section class="slider bg-main-s">
     <div class="block no-padding">
         <div class="container fluid">
             <div class="">
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-                            <li class="slideHome">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?>"
-                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>
-                            </li>
-                            <li class="slideHome">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?>"
-                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>
-                            </li>
+<!--                            <li class="slideHome">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
+<!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
+<!--                            </li>-->
+<!--                            <li class="slideHome">-->
+<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
+<!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
+<!--                            </li>-->
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
                                      alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
@@ -58,7 +58,6 @@ $this->params['header_dark'] = false;
         </div>
     </div>
 
-
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
@@ -66,7 +65,10 @@ $this->params['header_dark'] = false;
                     <div class="box-border fade-in one">
                         <a href="/employers">
                             <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/corporates.svg') ?>"
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employer.png') ?>"
+                                     alt="Employers" title="Employers"></div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Employers</div>
                             <div class="h-text">I want to recruit talent</div>
@@ -77,9 +79,12 @@ $this->params['header_dark'] = false;
                     <div class="box-border fade-in two">
                         <a href="/candidates/features">
                             <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidates.svg') ?>"
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidate.png') ?>"
                                      alt="Candidates" title="Candidates">
                             </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
+                                     alt="Employers" title="Employers"></div>
                             <div class="h-heading">Candidates</div>
                             <div class="h-text">I'm the talent</div>
                         </a>
@@ -89,9 +94,12 @@ $this->params['header_dark'] = false;
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
                             <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/universities.svg') ?>"
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colleges.png') ?>"
                                      alt="Universities & Colleges" title="Universities and Colleges">
                             </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
                             <div class="h-heading">Universities & Colleges</div>
                             <div class="h-text">I want to enroll talent</div>
                         </div>
@@ -104,9 +112,12 @@ $this->params['header_dark'] = false;
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
                             <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/consultants.svg') ?>"
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiter.png') ?>"
                                      title="Recruiters" alt="Recruiters">
                             </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
                             <div class="h-heading">Recruiters</div>
                             <div class="h-text">I want to find the best match for talent</div>
                         </div>
@@ -205,6 +216,21 @@ $this->params['header_dark'] = false;
 </div>
 <?php
 $this->registerCss('
+.header-row {
+    margin-top: -177px;
+    background-color:#ffffff2b;
+    padding:0;
+}
+.icon img {
+    height: 60px;
+    width: 60px;
+}
+.h-heading{
+    color:#fff;
+}
+.h-text{
+    color:#ff7803;
+}
 .sectionIsLoading {
     display: none;
     position: relative;
@@ -375,17 +401,32 @@ $this->registerCss('
     -ms-transform: scale(1.1,1.1); 
     -webkit-transform: scale(1.1,1.1); 
     transform: scale(1.1,1.1);
-
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
     transition:.3s all;
+    background-color:#00a0e3;
+    z-index:1;
+    border:none;
+    box-shadow:0px 0px 37px #00000091;
+}
+.box-border:hover .icon{
+    display:none;
+}
+.icon2{
+    display:none;
+}
+.icon2 img{
+    height:60px;
+    width:60px;
+}
+.box-border:hover .icon2{
+    display:block;
 }
 .box-border{
-    background: #fff;
-    border:1px solid rgba(234,238,238,.8);
-    padding: 20px 30px;
-    text-align: center;
-    box-shadow: 0 0 5px rgba(0,0,0,.1); 
+    border-left:1px solid #ffffff4f;
+    border-right:1px solid #ffffff4f;
+    padding: 18px 20px 10px;
+    text-align: center; 
     margin-bottom: 20px; 
     position:relative;
     -ms-transition:.3s all; 
@@ -680,18 +721,30 @@ how-icon{
 
 @media screen and (min-width: 993px){
     .box-border{
-         min-width: 200px !important;
-         max-width: 200px !important;
-         height: 260px;
+         min-width: 213px !important;
+         max-width: 213px !important;
+         height: 170px;
     }
 }
 @media screen and (max-width: 992px) {
     .header-boxs{
         display:inline;
     }
+    .header-row{
+        margin-top:-100px;
+    }
     .box-border{
-        min-height:270px;
-        margin-left:0px;
+        min-height: 175px;
+        margin-left: 0px;
+        background: #fff;
+        border: 1px solid #eee;
+        padding: 30px;
+    }
+    .h-heading{
+        color:#000;
+    }
+    .box-border:hover .h-heading{
+        color:#fff;
     }
 }
 .job-field .chosen-container-single .chosen-single{
@@ -721,6 +774,9 @@ how-icon{
         text-align: right;
         margin-bottom: 30px;
     }
+    .box-border{
+        min-height: 215px;
+        }
 }
 .job-field select{
     float: left;
@@ -743,9 +799,9 @@ how-icon{
         border-radius: 8px;
         background:none;
     }
-@media screen and (max-width: 495px){   
+@media screen and (max-width: 575px){   
     .header-row{
-        margin-top:10px;
+        margin-top:20px;
     }
 }
 
