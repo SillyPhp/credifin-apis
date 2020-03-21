@@ -120,11 +120,11 @@ $this->registerCss('
 @media (max-width:992px){
 .ai-job{width:100%;}
 .ai-point > ul > li{font-size:13px;}
+.ai-quick {margin-top: 0px !important;margin-bottom:55px !important;)
 }
 @media (max-width:834px){
 .ai-job{width:75%;}
 .ai-point > ul > li{font-size:13px;}
-.ai-quick {margin-top: 0px !important;margin-bottom:55px !important;)
 }
 @media (max-width:414px){
 .jobs-main-heading{
@@ -136,9 +136,6 @@ $this->registerCss('
 .ai-job{
     width:78%;
     margin-bottom:70px;
-}
-.ai-quick{
-    margin-top: 0px;
 }
 }
 @media (max-width:375px){

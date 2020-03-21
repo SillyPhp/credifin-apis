@@ -8,6 +8,7 @@ use common\models\CollegeCourses;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\ErexxWhatsappInvitation;
+use common\models\OrganizationReviews;
 use common\models\Referral;
 use common\models\UserOtherDetails;
 use common\models\Users;
@@ -455,11 +456,11 @@ class CollegeIndexController extends ApiBaseController
 
             $companies = ErexxCollaborators::find()
                 ->alias('aa')
-                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
                 ->distinct()
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -469,11 +470,10 @@ class CollegeIndexController extends ApiBaseController
                             'c.is_deleted' => 0,
                             'f.college_enc_id' => $req['college_id']
                         ]);
-                        $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false)
-                        ->joinWith(['organizationReviews k' => function ($k) {
-                            $k->select(['k.organization_enc_id', 'ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
-                        }])
+//                        ->joinWith(['organizationReviews k' => function ($k) {
+//                            $k->select(['k.organization_enc_id', 'ROUND(k.average_rating) average_rating', 'COUNT(k.review_enc_id) reviews_cnt']);
+//                        }])
                         ->joinWith(['organizationLocations ee' => function ($e) {
                             $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
                             $e->joinWith(['cityEnc ff' => function ($ff) {
@@ -485,9 +485,27 @@ class CollegeIndexController extends ApiBaseController
                             $e->groupBy(['ee.organization_enc_id']);
                         }]);
                 }])
-                ->where(['aa.college_enc_id' => $req['college_id'], 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0])
+                ->where(['aa.college_enc_id' => $req['college_id'],
+                    'aa.organization_approvel' => 1,
+                    'aa.college_approvel' => 1,
+                    'aa.is_deleted' => 0,
+                    'f.is_deleted' => 0,
+                    'f.is_college_approved' => 1,
+                    'f.status' => 'Active'])
                 ->asArray()
                 ->all();
+
+            $i = 0;
+            foreach ($companies as $c){
+                $reviews = OrganizationReviews::find()
+                    ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
+                    ->where(['organization_enc_id'=>$c['organization_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                $companies[$i]['organizationEnc']['organizationReviews'][0] = $reviews;
+                $i++;
+            }
 
             return $this->response(200, ['status' => 200, 'companies' => $companies]);
         }
@@ -557,8 +575,8 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['roll_no']) && !empty($data['roll_no'])) {
                 $candidates->andWhere(['a.university_roll_number' => $data['roll_no']]);
             }
-            if (isset($data['name'] ) && !empty($data['name'])) {
-                $candidates->having(['user_full_name' => $data['name']]);
+            if (isset($data['name']) && !empty($data['name'])) {
+                $candidates->having(['like', 'user_full_name', $data['name']]);
             }
 
 //            if (isset($data['application_type']) && !empty($data['application_type '])) {
