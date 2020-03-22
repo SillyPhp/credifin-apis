@@ -2,11 +2,14 @@
 
 namespace account\controllers;
 
+use account\models\recruiter\AddCompany;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use frontend\models\OrganizationSignUpForm;
 use frontend\models\OrganizationDetailForm;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 use common\models\EmployerApplications;
 use common\models\Categories;
 use common\models\AppliedApplications;
@@ -14,7 +17,7 @@ use common\models\AppliedApplicationProcess;
 use common\models\Organizations;
 use common\models\AssignedCategories;
 
-class HrController extends Controller {
+class RecruiterController extends Controller {
 
     public function behaviors() {
         return [
@@ -36,16 +39,25 @@ class HrController extends Controller {
         return parent::beforeAction($action);
     }
 
-//    public $layout = 'backend-main';
-
     public function actionDashboard() {
-//        $organizationSignUpForm = new OrganizationSignUpForm();
-//        $organizationDetailForm = new OrganizationDetailForm();
-        return $this->render('dashboard', [
-//                    'organizationSignUpForm' => $organizationSignUpForm, 'organizationDetailForm' => $organizationDetailForm,
-        ]);
+        return $this->render('dashboard');
     }
-
+    public function actionAddNewCompany()
+    {
+        $model = new AddCompany();
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('add-new-company', ['model' => $model]);
+        }
+    }
+    public function actionValidateForm()
+    {
+        $model = new AddCompany();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->load(Yii::$app->request->post());
+            return ActiveForm::validate($model);
+        }
+    }
     public function actionCandidates(){
         return $this->render('candidates-hr');
     }

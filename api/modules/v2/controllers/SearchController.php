@@ -29,7 +29,7 @@ class SearchController extends ApiBaseController
             'actions' => [
                 'companies' => ['POST', 'OPTIONS'],
                 'jobs' => ['POST', 'OPTIONS'],
-                'internships' =>['POST','OPTIONS']
+                'internships' => ['POST', 'OPTIONS']
             ]
         ];
         $behaviors['authenticator'] = [
@@ -44,8 +44,8 @@ class SearchController extends ApiBaseController
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
             'cors' => [
-                'Origin' => ['http://127.0.0.1:5500'],
-                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Origin' => ['https://www.myecampus.in/'],
+                'Access-Control-Request-Method' => ['POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Max-Age' => 86400,
                 'Access-Control-Expose-Headers' => [],
             ],
@@ -95,7 +95,7 @@ class SearchController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($college_id) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -105,10 +105,15 @@ class SearchController extends ApiBaseController
                             'c.is_deleted' => 0,
                             'f.college_enc_id' => $college_id['organization_enc_id']
                         ]);
-                        $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
                 }])
-                ->where(['aa.college_enc_id' => $college_id, 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0]);
+                ->where(['aa.college_enc_id' => $college_id,
+                    'aa.organization_approvel' => 1,
+                    'aa.college_approvel' => 1,
+                    'aa.is_deleted' => 0,
+                    'f.is_deleted' => 0,
+                    'f.is_college_approved' => 1,
+                    'f.status' => 'Active']);
 
             if (isset($name) && !empty($name)) {
                 $org->andWhere([
@@ -119,14 +124,66 @@ class SearchController extends ApiBaseController
             }
 
             if (isset($page) && !empty($page)) {
-                $org->limit = 1;
-                $org->offset = ($page - 1) * 1;
+                $org->limit = 6;
+                $org->offset = ($page - 1) * 6;
             }
 
             $result = $org->asArray()->all();
             return $this->response(200, $result);
+        } else {
+            $org = ErexxCollaborators::find()
+                ->alias('aa')
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
+                ->distinct()
+                ->innerJoinWith(['organizationEnc b' => function ($x) {
+                    $x->groupBy('organization_enc_id');
+                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->joinWith(['businessActivityEnc e'], false);
+                }])
+                ->where(['b.has_placement_rights' => 1, 'aa.is_deleted' => 0]);
+
+            if (isset($name) && !empty($name)) {
+                $org->andWhere([
+                    'or',
+                    ['like', 'b.name', $name],
+                    ['like', 'b.slug', $name],
+                ]);
+            }
+
+            if (isset($page) && !empty($page)) {
+                $org->limit = 6;
+                $org->offset = ($page - 1) * 6;
+            }
+
+            $result = $org->asArray()->all();
+
+            $i = 0;
+            foreach ($result as $c) {
+                $jobs_count = $this->getJobsCount('Jobs', $c['organization_enc_id']);
+                $internships_count = $this->getJobsCount('Internships', $c['organization_enc_id']);
+                $result[$i]['organizationEnc']['jobs_count'] = $jobs_count;
+                $result[$i]['organizationEnc']['internships_count'] = $internships_count;
+                $i++;
+            }
+
+            return $this->response(200, $result);
         }
 
+    }
+
+    private function getJobsCount($type, $org_id)
+    {
+        $count = ErexxEmployerApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->innerJoinWith(['employerApplicationEnc b' => function ($b) {
+                $b->joinWith(['applicationTypeEnc c']);
+                $b->joinWith(['organizationEnc d']);
+            }], false)
+            ->groupBy('a.employer_application_enc_id')
+            ->where(['c.name' => $type, 'd.organization_enc_id' => $org_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
+            ->count();
+        return $count;
     }
 
     public function actionInternships()
@@ -170,7 +227,7 @@ class SearchController extends ApiBaseController
                 ->select([
                     'bb.name',
                     'bb.slug org_slug',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name parent_category',
                     'ee.name title',
                     'a.employer_application_enc_id',
