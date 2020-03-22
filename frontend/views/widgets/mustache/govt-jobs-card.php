@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="application-card-wrapper">
-                    <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                    <a href="/govt-jobs/detail/{{slug}}" class="application-card-open" title="View Detail">View Detail</a>
                 </div>
             </div>
         </div>
