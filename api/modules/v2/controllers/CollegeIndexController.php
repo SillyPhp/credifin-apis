@@ -5,8 +5,10 @@ namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
 use common\models\CollegeCourses;
+use common\models\CollegeSettings;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
 use common\models\OrganizationReviews;
 use common\models\Referral;
@@ -113,7 +115,7 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -266,7 +268,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.name',
                     'bb.slug org_slug',
                     'bb.organization_enc_id',
-                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
+                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
                     'e.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
@@ -496,10 +498,10 @@ class CollegeIndexController extends ApiBaseController
                 ->all();
 
             $i = 0;
-            foreach ($companies as $c){
+            foreach ($companies as $c) {
                 $reviews = OrganizationReviews::find()
                     ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
-                    ->where(['organization_enc_id'=>$c['organization_enc_id']])
+                    ->where(['organization_enc_id' => $c['organization_enc_id']])
                     ->asArray()
                     ->one();
 
@@ -737,6 +739,88 @@ class CollegeIndexController extends ApiBaseController
             }
         }
 
+    }
+
+    public function actionGetCollegePreferences()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $collge_id = $this->getOrgId();
+
+            $pref_exists = CollegeSettings::find()
+                ->where(['college_enc_id' => $collge_id])
+                ->exists();
+
+            if (!$pref_exists) {
+
+                $settings = ErexxSettings::find()
+                    ->where(['status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                foreach ($settings as $s) {
+
+                    $model = new CollegeSettings();
+                    $utilities = new Utilities();
+                    $utilities->variables['string'] = time() . rand(100, 100000);
+                    $model->college_settings_enc_id = $utilities->encrypt();
+                    $model->college_enc_id = $collge_id;
+                    $model->setting_enc_id = $s['setting_enc_id'];
+                    $model->created_by = $user->user_enc_id;
+                    $model->created_on = date('Y-m-d H:i:s');
+                    if (!$model->save()) {
+                        return $this->response(500, ['status' => 500, 'message' => 'en error occurred']);
+                    }
+                }
+            }
+
+            $college_setings = CollegeSettings::find()
+                ->alias('a')
+                ->select(['a.college_settings_enc_id', 'a.value', 'b.setting', 'b.title'])
+                ->innerJoinWith(['settingEnc b'],false)
+                ->where(['college_enc_id' => $collge_id, 'b.status' => 'Active'])
+                ->asArray()
+                ->all();
+
+            if ($college_setings) {
+                return $this->response(200, ['status' => 200, 'data' => $college_setings]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUpdateCollegePreferences()
+    {
+        if ($user = $this->isAuthorized()) {
+            $collge_id = $this->getOrgId();
+
+            $params = Yii::$app->request->post();
+            $setting_enc_id = $params['college_settings_enc_id'];
+            $value = $params['value'];
+
+            $setting = CollegeSettings::find()
+                ->where(['college_settings_enc_id' => $setting_enc_id])
+                ->one();
+
+            if ($setting) {
+                $setting->value = $value;
+                $setting->updated_by = $user->user_enc_id;
+                $setting->updated_on = date('Y-m-d H:i:s');
+                if ($setting->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
     }
 
 }
