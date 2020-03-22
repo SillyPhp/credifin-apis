@@ -828,4 +828,8 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionCollegeIndex(){
+        return $this->render('college-index');
+    }
+
 }
