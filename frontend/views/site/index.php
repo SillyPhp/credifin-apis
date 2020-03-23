@@ -95,7 +95,7 @@ $this->params['header_dark'] = false;
                         <a href="/candidates/features">
                             <div class="icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                     alt="Candidates" title="Candidates">
+                                     alt="Candidates" title="Candidates"> 
                             </div>
                             <div class="icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"

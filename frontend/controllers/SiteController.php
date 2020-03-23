@@ -223,7 +223,6 @@ class SiteController extends Controller
             'data' => $data
         ]);
     }
-
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -831,6 +830,10 @@ class SiteController extends Controller
         return $this->render('user-feedback-page',[
             'feedbackFormModel' => $feedbackFormModel,
         ]);
+    }
+
+    public function actionCollegeIndex(){
+        return $this->render('college-index');
     }
 
 }

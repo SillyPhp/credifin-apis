@@ -89,58 +89,7 @@ use yii\helpers\Url;
         </div>
     </Section>
 
-    <section class="virus-bg">
-        <div class="virus-icons">
-            <img src="<?= Url::to('@eyAssets/images/pages/college/coronavi.png') ?>">
-        </div>
-        <div class="virus-icon-left">
-            <img src="<?= Url::to('@eyAssets/images/pages/college/coronavi.png') ?>">
-        </div>
-        <div class="container">
-            <div class="onlineClasses">
-                <div class="online-icon">
-                    <img src="<?= Url::to('@eyAssets/images/pages/college/online-class.png') ?>">
-                </div>
-                <div class="online-content">
-                    <p class="oc-sub-heading">Protecting Education against Corona Virus</p>
-                    <p class="oc-text">We at Empower Youth are transforming your physical classroom to digital and
-                        taking
-                        it online so the education of child is not hampered</p>
-                    <div class="oc-text-icons">
-                        <div class="collegeSignupModal">
-                        <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon.png') ?>"
-                                 class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon-white.png') ?>"
-                                 class="hoverShow">
-                        </span>
-                            <p>Schools</p>
-                        </div>
-                        <div class="collegeSignupModal">
-                        <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon.png') ?>" class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon-white.png') ?>"
-                                 class="hoverShow">
-                        </span>
-                            <p>Universities & Colleges</p>
-                        </div>
-                        <div class="collegeSignupModal">
-                        <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute.png') ?>"
-                                 class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute-white.png') ?>"
-                                 class="hoverShow">
-                        </span>
-                            <p>Educational Institutes</p>
-                        </div>
-                    </div>
-                    <div class="oc">
-                        <button type="button" class="collegeSignupModal">Enroll Now</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<?= $this->render('/widgets/online-classes')?> 
 
     <Section>
         <div class="container">
