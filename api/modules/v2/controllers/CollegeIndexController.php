@@ -184,12 +184,21 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $college_settings = CollegeSettings::find()
+                ->alias('a')
+                ->select(['a.value'])
+                ->innerJoinWith(['settingEnc b'], false)
+                ->where(['a.college_enc_id' => $req['college_id'], 'b.status' => 'Active', 'b.setting' => 'jobs_approve'])
+                ->asArray()
+                ->one();
+
             $result = [];
             $result['company_count'] = $company_count['company_count'];
             $result['candidate_count'] = $candidate_count['candidate_count'];
             $result['companies'] = $companies;
             $result['candidates'] = $candidates;
             $result['placements_count'] = $placements_count;
+            $result['jobs_auto_approve'] = ($college_settings['value'] == 2 ? true : false);
 
             return $this->response(200, ['status' => 200, 'data' => $result]);
 
@@ -671,23 +680,25 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $data = Yii::$app->request->post();
-            $mail = Yii::$app->mailLogs;
-            $mail->organization_enc_id = $this->getOrgId();
-            $mail->user_enc_id = $user->user_enc_id;
-            $mail->referral_code = $this->getReferralCode();
-            $mail->email_type = 6;
-            $mail->email_receivers = [
-                [
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'phone' => $data['phone']
-                ]
-            ];
-            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
-            $mail->email_template = 'invitation-email';
-            if (!$mail->setEmailLog()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            $data = Yii::$app->request->post('data');
+            foreach ($data as $d) {
+                $mail = Yii::$app->mailLogs;
+                $mail->organization_enc_id = $this->getOrgId();
+                $mail->user_enc_id = $user->user_enc_id;
+                $mail->referral_code = $this->getReferralCode();
+                $mail->email_type = 6;
+                $mail->email_receivers = [
+                    [
+                        'name' => $d['name'],
+                        'email' => $d['email'],
+                        'phone' => $d['phone']
+                    ]
+                ];
+                $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+                $mail->email_template = 'invitation-email';
+                if (!$mail->setEmailLog()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
             }
             return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
         }

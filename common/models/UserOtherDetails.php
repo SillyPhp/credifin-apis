@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 
+
+
 /**
  * This is the model class for table "{{%user_other_details}}".
  *
@@ -14,6 +16,7 @@ use Yii;
  * @property string $department_enc_id
  * @property string $educational_requirement_enc_id
  * @property int $semester
+ * @property double $cgpa
  * @property string $starting_year
  * @property string $ending_year
  * @property string $university_roll_number
@@ -22,6 +25,8 @@ use Yii;
  * @property string $job_start_month
  * @property string $job_year
  * @property int $college_actions 0 as approved, 1 as blocked, 2 as rejected
+ * @property int $is_deleted
+ * @property string $updated_on
  */
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
@@ -40,8 +45,9 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     {
         return [
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number'], 'required'],
-            [['semester', 'internship_duration', 'college_actions'], 'integer'],
-            [['starting_year', 'ending_year', 'internship_start_date', 'job_year'], 'safe'],
+            [['semester', 'internship_duration', 'college_actions', 'is_deleted'], 'integer'],
+            [['cgpa'], 'number'],
+            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on'], 'safe'],
             [['job_start_month'], 'string'],
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 20],

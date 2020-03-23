@@ -179,16 +179,26 @@ class CandProfileController extends ApiBaseController
                 $city_enc_id = $city_id->city_enc_id;
             }
 
+            if ($req['cgpa']) {
+                $update = Yii::$app->db->createCommand()
+                    ->update(UserOtherDetails::tableName(), ['cgpa' => $req['cgpa'], 'updated_on' => Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
+                    ->execute();
+
+                if (!$update) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+
             if (!empty($city_enc_id)) {
                 $update = Yii::$app->db->createCommand()
                     ->update(Users::tableName(), ['city_enc_id' => $city_enc_id, 'last_updated_on' => Date('Y-m-d H:i:s')], ['user_enc_id' => $user->user_enc_id])
                     ->execute();
-                if ($update) {
-                    return $this->response(200, ['status' => 200]);
-                } else {
-                    return false;
+                if (!$update) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             }
+
+            return $this->response(200, ['status' => 200]);
         } else {
             return $this->response(401);
         }
@@ -209,12 +219,12 @@ class CandProfileController extends ApiBaseController
                     if ($user) {
 //                        $a = $this->updateData($req, $user_id);
                         if ($this->updateData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
                         }
                     } else {
 //                        $b = $this->saveData($req, $user_id);
                         if ($this->saveData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
                         }
                     }
                 }
@@ -227,11 +237,11 @@ class CandProfileController extends ApiBaseController
 
                     if ($user) {
                         if ($this->updateData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
                         }
                     } else {
                         if ($this->saveData($req, $user_id)) {
-                            return $this->response(200,['status'=>200]);
+                            return $this->response(200, ['status' => 200]);
                         }
                     }
                 }
@@ -546,10 +556,10 @@ class CandProfileController extends ApiBaseController
                 if ($user_id = $pictureModel->update()) {
                     $user_image = Users::find()
                         ->select(['CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", image_location, "/", image) ELSE NULL END image'])
-                        ->where(['user_enc_id'=>$user_id])
+                        ->where(['user_enc_id' => $user_id])
                         ->asArray()
                         ->one();
-                    return $this->response(200,['status'=>200,'image'=>$user_image['image']]);
+                    return $this->response(200, ['status' => 200, 'image' => $user_image['image']]);
                 }
                 return $this->response(500);
             } else {
