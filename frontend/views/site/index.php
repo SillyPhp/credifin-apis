@@ -61,7 +61,7 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in one">
                         <a href="/employers">
                             <div class="icon">
@@ -75,7 +75,7 @@ $this->params['header_dark'] = false;
                         </a>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in two">
                         <a href="/candidates/features">
                             <div class="icon">
@@ -90,7 +90,40 @@ $this->params['header_dark'] = false;
                         </a>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <div class="box-border fade-in two">
+                        <a href="/candidates/features">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
+                                     alt="Candidates" title="Candidates">
+                            </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
+                            <div class="h-heading">Schools</div>
+                            <div class="h-text">COVID-19 <br>( Online Classes )</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <div class="box-border fade-in three">
+                        <div class="box-overlay">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                     alt="Universities & Colleges" title="Universities and Colleges">
+                            </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
+                            <div class="h-heading">Colleges</div>
+                            <div class="h-text">I want to enroll talent</div>
+                        </div>
+                        <div class="overlay">
+                            <div class="text">Coming Soon</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
                             <div class="icon">
@@ -100,7 +133,7 @@ $this->params['header_dark'] = false;
                             <div class="icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
                                      alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Universities & Colleges</div>
+                            <div class="h-heading">Universities</div>
                             <div class="h-text">I want to enroll talent</div>
                         </div>
                         <div class="overlay">
@@ -108,7 +141,7 @@ $this->params['header_dark'] = false;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
                             <div class="icon">
@@ -229,7 +262,7 @@ $this->registerCss('
     color:#fff;
 }
 .h-text{
-    color:#ff7803;
+    color:#eef7ff; 
 }
 .sectionIsLoading {
     display: none;
@@ -394,7 +427,7 @@ $this->registerCss('
    padding-right:0px !important; 
 }
 .header-boxs{
-    max-width:850px;
+//    max-width:850px;
     margin:0 auto;
 }
 .box-border:hover{
@@ -721,8 +754,8 @@ how-icon{
 
 @media screen and (min-width: 993px){
     .box-border{
-         min-width: 213px !important;
-         max-width: 213px !important;
+         min-width: 191px !important;
+         max-width: 191px !important;
          height: 170px;
     }
 }

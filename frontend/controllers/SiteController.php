@@ -245,6 +245,11 @@ class SiteController extends Controller
         return $this->render('tweet-detail');
     }
 
+    public function actionSchoolIndex()
+    {
+        return $this->render('school-index');
+    }
+
     public function actionAllQuiz()
     {
         $quizes = Quiz::find()
