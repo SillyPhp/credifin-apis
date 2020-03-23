@@ -198,10 +198,69 @@ class CandProfileController extends ApiBaseController
                 }
             }
 
-            return $this->response(200, ['status' => 200]);
+            $source = Yii::$app->request->headers->get('source');
+            $bearer_token = Yii::$app->request->headers->get('Authorization');
+            $token = explode(" ", $bearer_token)[1];
+
+            $find_user = UserAccessTokens::find()
+                ->select(['*'])
+                ->where(['access_token' => $token, 'source' => $source])
+                ->asArray()
+                ->one();
+
+            if (!empty($find_user)) {
+                $user_type = Users::find()
+                    ->where(['!=', 'organization_enc_id', 'null'])
+                    ->exists();
+
+
+                $user_detail = Users::find()
+                    ->alias('a')
+                    ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
+                    ->joinWith(['userTypeEnc b'], false)
+                    ->joinWith(['cityEnc c'], false)
+                    ->joinWith(['userOtherInfo d' => function ($d) {
+                        $d->joinWith(['organizationEnc e']);
+                    }], false)
+                    ->where(['a.user_enc_id' => $find_user['user_enc_id']])
+                    ->asArray()
+                    ->one();
+
+            }
+
+            $data =  [
+                'user_id' => $find_user['user_enc_id'],
+                'username' => $user_detail['username'],
+                'user_type' => $user_detail['user_type'],
+                'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
+                'city' => $user_detail['city_name'],
+                'cgpa' => $user_detail['cgpa'],
+                'college' => $user_detail['org_name'],
+                'college_enc_id' => $user_detail['organization_enc_id'],
+                'email' => $user_detail['email'],
+                'first_name' => $user_detail['first_name'],
+                'last_name' => $user_detail['last_name'],
+                'phone' => $user_detail['phone'],
+                'initials_color' => $user_detail['initials_color'],
+                'access_token' => $find_user['access_token'],
+                'refresh_token' => $find_user['refresh_token'],
+                'access_token_expiry_time' => $find_user['access_token_expiration'],
+                'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
+            ];
+
+            return $this->response(200, ['status' => 200,'data'=>$data]);
         } else {
             return $this->response(401);
         }
+    }
+
+    private function userOtherDetail($user_id)
+    {
+        $user_other_detail = UserOtherDetails::find()
+            ->where(['user_enc_id' => $user_id])
+            ->exists();
+
+        return $user_other_detail;
     }
 
     public function actionSaveApplications()

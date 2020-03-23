@@ -34,18 +34,18 @@ class AuthController extends ApiBaseController
                 'validate',
                 'username',
                 'find-user'
-                ],
+            ],
             'class' => HttpBearerAuth::className()
         ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'signup' => ['POST','OPTIONS'],
-                'save-other-detail' => ['POST','OPTIONS'],
-                'login' => ['POST','OPTIONS'],
-                'validate' => ['POST','OPTIONS'],
-                'username' => ['POST','OPTIONS'],
-                'find-user' => ['POST','OPTIONS'],
+                'signup' => ['POST', 'OPTIONS'],
+                'save-other-detail' => ['POST', 'OPTIONS'],
+                'login' => ['POST', 'OPTIONS'],
+                'validate' => ['POST', 'OPTIONS'],
+                'username' => ['POST', 'OPTIONS'],
+                'find-user' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -315,7 +315,7 @@ class AuthController extends ApiBaseController
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id'])
+                ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
                 ->joinWith(['userOtherInfo d' => function ($d) {
@@ -333,6 +333,7 @@ class AuthController extends ApiBaseController
             'user_type' => $user_detail['user_type'],
             'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
+            'cgpa' => $user_detail['cgpa'],
             'college' => $user_detail['org_name'],
             'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
