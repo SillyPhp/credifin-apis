@@ -81,6 +81,35 @@ class CollegeIndexController extends ApiBaseController
             $req = [];
             $req['college_id'] = $organizations['college_id'];
 
+            $candidate_approve = CollegeSettings::find()
+                ->alias('a')
+                ->select(['a.value'])
+                ->innerJoinWith(['settingEnc b'], false)
+                ->where(['a.college_enc_id' => $req['college_id'], 'b.status' => 'Active', 'b.setting' => 'candidate_approve'])
+                ->asArray()
+                ->one();
+
+            if ($candidate_approve && $candidate_approve['value'] == 2) {
+                $candidates = UserOtherDetails::find()
+                    ->select(['user_other_details_enc_id'])
+                    ->where(['organization_enc_id' => $req['college_id'], 'college_actions' => null])
+                    ->asArray()
+                    ->all();
+
+                if (!empty($candidates)) {
+                    foreach ($candidates as $c) {
+                        $model = UserOtherDetails::find()
+                            ->where(['user_other_details_enc_id' => $c['user_other_details_enc_id']])
+                            ->one();
+
+                        if($model && $model->college_actions == null){
+                            $model->college_actions = 0;
+                            $model->update();
+                        }
+                    }
+                }
+            }
+
             $company_count = ErexxCollaborators::find()
                 ->select(['count(college_enc_id) company_count'])
                 ->where(['college_enc_id' => $req['college_id'], 'organization_approvel' => 1, 'college_approvel' => 1, 'is_deleted' => 0])
@@ -155,12 +184,21 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $college_settings = CollegeSettings::find()
+                ->alias('a')
+                ->select(['a.value'])
+                ->innerJoinWith(['settingEnc b'], false)
+                ->where(['a.college_enc_id' => $req['college_id'], 'b.status' => 'Active', 'b.setting' => 'jobs_approve'])
+                ->asArray()
+                ->one();
+
             $result = [];
             $result['company_count'] = $company_count['company_count'];
             $result['candidate_count'] = $candidate_count['candidate_count'];
             $result['companies'] = $companies;
             $result['candidates'] = $candidates;
             $result['placements_count'] = $placements_count;
+            $result['jobs_auto_approve'] = ($college_settings['value'] == 2 ? true : false);
 
             return $this->response(200, ['status' => 200, 'data' => $result]);
 
@@ -259,6 +297,51 @@ class CollegeIndexController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
             $type = Yii::$app->request->post('type');
+
+            $job_approve = CollegeSettings::find()
+                ->alias('a')
+                ->select(['a.value'])
+                ->innerJoinWith(['settingEnc b'], false)
+                ->where(['a.college_enc_id' => $college_id, 'b.status' => 'Active', 'b.setting' => 'jobs_approve'])
+                ->asArray()
+                ->one();
+
+            if($job_approve && $job_approve['value'] == 2){
+                $jobs = ErexxEmployerApplications::find()
+                    ->alias('a')
+                    ->distinct()
+                    ->select(['a.application_enc_id','bb.organization_enc_id'])
+                    ->joinWith(['employerApplicationEnc b' => function ($b) {
+                        $b->joinWith(['organizationEnc bb'], false);
+                        $b->joinWith(['applicationTypeEnc z']);
+                    }],false)
+                    ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 0, 'z.name' => $type])
+                    ->asArray()
+                    ->all();
+
+                foreach ($jobs as $j) {
+
+                    $erexx_collab = ErexxCollaborators::find()
+                        ->where(['organization_enc_id' => $j['organization_enc_id'], 'college_enc_id' => $college_id])
+                        ->asArray()
+                        ->one();
+
+                    if ($erexx_collab && $erexx_collab['college_approvel'] == 1) {
+                        $data = ErexxEmployerApplications::find()
+                            ->where(['application_enc_id' => $j['application_enc_id']])
+                            ->one();
+
+                        if (!empty($data)) {
+                            $data->is_college_approved = 1;
+                            $data->last_updated_by = $user->user_enc_id;
+                            $data->last_updated_on = date('Y-m-d H:i:s');
+                            $data->update();
+                        }
+                    }
+                }
+
+            }
+
             $jobs = ErexxEmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -597,23 +680,25 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
 
-            $data = Yii::$app->request->post();
-            $mail = Yii::$app->mailLogs;
-            $mail->organization_enc_id = $this->getOrgId();
-            $mail->user_enc_id = $user->user_enc_id;
-            $mail->referral_code = $this->getReferralCode();
-            $mail->email_type = 6;
-            $mail->email_receivers = [
-                [
-                    'name' => $data['name'],
-                    'email' => $data['email'],
-                    'phone' => $data['phone']
-                ]
-            ];
-            $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
-            $mail->email_template = 'invitation-email';
-            if (!$mail->setEmailLog()) {
-                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            $data = Yii::$app->request->post('data');
+            foreach ($data as $d) {
+                $mail = Yii::$app->mailLogs;
+                $mail->organization_enc_id = $this->getOrgId();
+                $mail->user_enc_id = $user->user_enc_id;
+                $mail->referral_code = $this->getReferralCode();
+                $mail->email_type = 6;
+                $mail->email_receivers = [
+                    [
+                        'name' => $d['name'],
+                        'email' => $d['email'],
+                        'phone' => $d['phone']
+                    ]
+                ];
+                $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+                $mail->email_template = 'invitation-email';
+                if (!$mail->setEmailLog()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
             }
             return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
         }
@@ -777,7 +862,7 @@ class CollegeIndexController extends ApiBaseController
             $college_setings = CollegeSettings::find()
                 ->alias('a')
                 ->select(['a.college_settings_enc_id', 'a.value', 'b.setting', 'b.title'])
-                ->innerJoinWith(['settingEnc b'],false)
+                ->innerJoinWith(['settingEnc b'], false)
                 ->where(['college_enc_id' => $collge_id, 'b.status' => 'Active'])
                 ->asArray()
                 ->all();

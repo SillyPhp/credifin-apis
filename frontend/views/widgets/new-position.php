@@ -1,5 +1,5 @@
 <?php
-use yii\helper\url;
+use yii\helpers\Url;
 ?>
 <div class="row">
     <div class="col-md-12">

@@ -131,6 +131,7 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
+<!--- virus Section --->
 <!--------services section starts-------->
 
 <section class="services-section">
@@ -213,6 +214,81 @@ $this->params['header_dark'] = false;
 <div id="sectionIsLoading" class="sectionIsLoading">
     <div></div>
     <div></div>
+</div>
+
+<div id="virusModal" class="collegeSignUpmodal">
+
+    <!-- Modal content -->
+    <div class="college-modal-content">
+        <span class="close">&times;</span>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="cmc-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/college/online-class-white.png')?>">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="csu-heading">Join the movement today</div>
+                <form class="mx-600">
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="username" class="uname-in" name="username" autofocus=""
+                                   autocomplete="off" placeholder="Full Name" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="collegeName" class="uname-in" name="collegeName" autofocus=""
+                                   autocomplete="off" placeholder="Organization Name" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="position" class="uname-in" name="position" autofocus=""
+                                   autocomplete="off" placeholder="Designation" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="email" class="uname-in" name="email" autofocus=""
+                                   autocomplete="off" placeholder="Email" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="phone" class="uname-in" name="phone" autofocus=""
+                                   autocomplete="off" placeholder="Phone Number" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname checkBox-padding">
+                        <div class="form-group field-username required">
+                            <label class="checkbox-container">Campus Placement
+                                <input type="checkbox" checked="checked">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Online Classes
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Hiring
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-oc">
+                        <button type="submit"> Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 <?php
 $this->registerCss('
@@ -427,12 +503,13 @@ $this->registerCss('
     border-right:1px solid #ffffff4f;
     padding: 18px 20px 10px;
     text-align: center; 
-    margin-bottom: 20px; 
+//    margin-bottom: 20px; 
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
     transition:.3s all;
 } 
+
 .box-overlay {
     display: block;
   width: 100%;
@@ -723,7 +800,7 @@ how-icon{
     .box-border{
          min-width: 213px !important;
          max-width: 213px !important;
-         height: 170px;
+         height: 171px;
     }
 }
 @media screen and (max-width: 992px) {
@@ -739,6 +816,7 @@ how-icon{
         background: #fff;
         border: 1px solid #eee;
         padding: 30px;
+        margin-bottom: 20px;
     }
     .h-heading{
         color:#000;
@@ -1212,6 +1290,7 @@ how-icon{
     }
 }
 
+
 ');
 $script = <<< JS
 $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -1318,3 +1397,25 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['position' => \yii\web\View::POS_HEAD]);
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script>
+    var modal = document.getElementById("virusModal");
+    // Get the button that opens the modal
+    var btn = document.getElementsByClassName("collegeSignupModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    for(var i=0; i< btn.length; i++){
+        btn[i].onclick = function () {
+            modal.style.display = "block";
+        }
+    }
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
