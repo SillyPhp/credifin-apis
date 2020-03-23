@@ -1,0 +1,1331 @@
+<?php
+
+use yii\helpers\Url;
+
+?>
+<section class="cl-header">
+    <div class="cl-top-vector">
+        <div class="cl-vector"></div>
+    </div>
+    <div class="cl-right-vector">
+        <div class="cl-vector-1"></div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="cl-banner-text">
+                    <div class="banner-heading">Streak your students to success.</div>
+                    <div class="banner-sub-heading">We have a huge pool of companies who are adding jobs and we can
+                        arrange more companies to add jobs according to your needs
+                    </div>
+                </div>
+                <div class="get-started-btn">
+                    <button type="button" class="button-gradient collegeSignupModal">Get Started Now</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="stats-ey">
+                <div class="col-md-4 col-sm-4">
+                    <div class="stat-box">
+                        1000+ <p>Companies</p>
+                        <span><img src="<?= Url::to('@eyAssets/images/pages/college/companies.png') ?>" alt=""></span>
+                    </div>
+
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="stat-box">
+                        10000+ <p>Jobs</p>
+                        <span><img src="<?= Url::to('@eyAssets/images/pages/college/jobs.png') ?>" alt=""></span>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="stat-box">
+                        1000+ <p>Internships</p>
+                        <span><img src="<?= Url::to('@eyAssets/images/pages/college/internship.png') ?>" alt=""></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="virus-bg">
+    <div class="virus-icons">
+        <img src="<?= Url::to('@eyAssets/images/pages/college/coronavi.png') ?>">
+    </div>
+    <div class="virus-icon-left">
+        <img src="<?= Url::to('@eyAssets/images/pages/college/coronavi.png') ?>">
+    </div>
+    <div class="container">
+        <div class="onlineClasses">
+            <div class="online-icon">
+                <img src="<?= Url::to('@eyAssets/images/pages/college/online-class.png') ?>">
+            </div>
+            <div class="online-content">
+                <p class="oc-sub-heading">Protecting Education against Corona Virus</p>
+                <p class="oc-text">We at Empower Youth are transforming your physical classroom to digital and taking
+                    it online so the education of child is not hampered</p>
+                <div class="oc-text-icons">
+                    <div class="collegeSignupModal">
+                        <span>
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon.png')?>" class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon-white.png')?>" class="hoverShow">
+                        </span>
+                        <p>Schools</p>
+                    </div>
+                    <div class="collegeSignupModal">
+                        <span>
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon.png')?>" class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon-white.png')?>" class="hoverShow">
+                        </span>
+                        <p>Universities & Colleges</p>
+                    </div>
+                    <div class="collegeSignupModal">
+                        <span>
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute.png')?>" class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute-white.png')?>" class="hoverShow">
+                        </span>
+                        <p>Educational Institutes</p>
+                    </div>
+                </div>
+                <div class="oc">
+                    <button type="button" class="collegeSignupModal">Join The Movement</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="row padding-top-40">
+            <div class="col-md-12">
+                <h1 class="heading-style">Join Our Campus Placement Programme Today!</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="e-parent">
+                <div class="e-inner">
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus1 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/jobq.png') ?>" alt=""/>
+                            </div>
+                            <div class="e-text" style="padding-top:10px;">campus Jobs</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus2 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/weekend.png') ?>" alt=""/>
+                            </div>
+                            <div class="e-text">Weekend internships</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus3 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/summer-internship.png') ?>"
+                                     alt=""/>
+                            </div>
+                            <div class="e-text">summer internships</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus4 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/winter.png') ?>" alt=""/>
+                            </div>
+                            <div class="e-text">Winter internships</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus5 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/campus-ambassador.png') ?>"
+                                     alt=""/>
+                            </div>
+                            <div class="e-text">campus ambassador</div>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 col-xs-6">
+                        <div class="e-campus6 ebox">
+                            <div class="e-icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/employers/campus-internship1.png') ?>"
+                                     alt=""/>
+                            </div>
+                            <div class="e-text">campus internships</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row padd40">
+            <div class="col-md-12">
+                <div class="bottom-text">
+                    We provide good <span>Companies</span> or <span>Internships</span> prospects so your students are in
+                    good hands.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="bg-gradient">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="college-heading">Our Services</h1>
+                <div class="service-buttons">
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/loan.png') ?>">
+                        <p class="serBttn">Education Loan</p>
+                    </div>
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/scholarship.png') ?>">
+                        <p class="serBttn">Scholarships </p>
+                    </div>
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/hiring.png') ?>">
+                        <p class="serBttn">Hiring</p>
+                    </div>
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/campus-job-placemnt.png') ?>">
+                        <p class="serBttn">Campus Job Placement</p>
+                    </div>
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/campus-internship.png') ?>">
+                        <p class="serBttn">Campus Internship Placement
+                        <p>
+                    </div>
+                    <div class="ser-box">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/online-classes.png') ?>">
+                        <p class="serBttn">Online Classes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="choose-sec-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="heading-style"> Why Choose My E-Campus? </h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="choose-box">
+                    <div class="choose-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/i1-1.png') ?>" alt="">
+                        <div class="choose-title">
+                            campus jobs placement
+                        </div>
+                    </div>
+                    <div class="choose-text ct-list-1">
+                        <ul>
+                            <li>Finding the right Jobs for your candidates</li>
+                            <li>Huge pool of companies.</li>
+                            <li>Effective and Efficient form of Placement Drive.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="choose-box">
+                    <div class="choose-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/i3.png') ?>" alt="">
+                        <div class="choose-title">
+                            campus internships placement
+                        </div>
+                    </div>
+                    <div class="choose-text ct-list-2">
+                        <ul>
+                            <li>Finding the right internships for your candidates</li>
+                            <li>National Pool Of Opportunities.</li>
+                            <li>Effective and Efficient form of Placement Drive.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="choose-box">
+                    <div class="choose-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/j1.png') ?>" alt="">
+                        <div class="choose-title">
+                            online internships assessment
+                        </div>
+                    </div>
+                    <div class="choose-text ct-list-3">
+                        <ul>
+                            <li>Special Login Page for the College/University.</li>
+                            <li>Track of candidates performance during Internships.</li>
+                            <li>Track of candidates interview process</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="cust-c">
+    <div class="cust-vector">
+        <div class="cust-vector-img"></div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-md-offset-5 col-sm-6 col-sm-offset-6">
+                <div class="padd-50">
+                    <div class="p-30-center">
+                        <div class="cust-heading">Customization</div>
+                        <div class="cust-text">
+                            Putting you in the driver's seat of your platform - a white labeled
+                            design with fully customizable features to meet your complex needs for permission, data
+                            collection
+                            and affiliations.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="lay-v">
+    <div class="lay-vector">
+        <div class="lay-vector-img"></div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 col-sm-6">
+                <div class="padding-30">
+                    <div class="p-30-center">
+                        <div class="cust-heading">Lay career path to your students</div>
+                        <div class="cust-text">
+                            Since we have various collection of companies there will definitely be various jobs out
+                            there and
+                            every student from the different profile will have a chance to participate.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="feat-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="heading-style">Our Features</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Schedule-Interviews-For-Your-Candidates-&-Manage-The-Dates.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Schedule Interviews For Your Candidates & Manage The Dates
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Save-Time-Cost-&-Efforts-on-Finding-Companies-&-Opportunities.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Save Time, Cost & Efforts on Finding Companies & Opportunities
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Find-Jobs-or-Internship-Opportunities.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Find Jobs or Internship Opportunities
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Keep-A-Track-of-Interview-Process-of-your-Candidates.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Keep A Track of Interview Process of your Candidates
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/National-Pool-Of-Opportunities.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        National Pool of Opportunities
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Keep-a-Track-of-Your-Candidates-&-get-Direct.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Keep a Track of Your Candidates & get Direct Insights from the companies
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/enroll-as-many-students-as-you-want.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Enroll as many students as you want
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Secure-and-Rapid-Online-Process.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Secure and Rapid Online Process
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Ability-to-do-an-In-depth-Company-Analysis.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Ability to do an In-depth Company Analysis
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Jobs-For-Students-From.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Jobs For Students From Every profile
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Chose-The-Companies-and-Opportunities-that-you.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Chose the companies and opportunities that you would like to invite into your campus
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cl-feature-box">
+                    <div class="cl-feat-icon">
+                        <img src="<?= Url::to('@eyAssets/images/pages/college/Approach-companies.png') ?>">
+                    </div>
+                    <div class="cl-feat-name">
+                        Approach companies to come to your campus
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?= $this->render('/widgets/companies-with-us') ?>
+
+
+<!-- The Modal -->
+<div id="virusModal" class="collegeSignUpmodal">
+
+    <!-- Modal content -->
+    <div class="college-modal-content">
+        <span class="close">&times;</span>
+        <div class="row">
+            <div class="col-md-6">
+               <div class="cmc-icon">
+                   <img src="<?= Url::to('@eyAssets/images/pages/college/online-class-white.png')?>">
+               </div>
+            </div>
+            <div class="col-md-6">
+                <div class="csu-heading">Join the movement today</div>
+                <form class="mx-600">
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="username" class="uname-in" name="username" autofocus=""
+                                   autocomplete="off" placeholder="Full Name" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="collegeName" class="uname-in" name="collegeName" autofocus=""
+                                   autocomplete="off" placeholder="Organization Name" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="position" class="uname-in" name="position" autofocus=""
+                                   autocomplete="off" placeholder="Designation" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="email" class="uname-in" name="email" autofocus=""
+                                   autocomplete="off" placeholder="Email" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname">
+                        <div class="form-group field-username required">
+                            <input type="text" id="phone" class="uname-in" name="phone" autofocus=""
+                                   autocomplete="off" placeholder="Phone Number" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="uname checkBox-padding">
+                        <div class="form-group field-username required">
+                            <label class="checkbox-container">Campus Placement
+                                <input type="checkbox" checked="checked">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Online Classes
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="checkbox-container">Hiring
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="button" class="button-gradient">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+<?php
+$this->registerCss('
+
+.virus-bg{
+    position: ralative;
+    overflow: hidden;
+    background:#eee ;
+    background-size: contain;
+    padding:30px 0 50px 0;
+    margin-top: 30px;
+}
+.virus-icons, .virus-icon-left{
+    position: absolute;
+}
+.virus-icons{
+    top:-150px; 
+    right:-150px;
+    max-width: 350px;
+    opacity:.5;
+}
+.virus-icon-left{
+    bottom: -100px;
+    left: -100px;
+    max-width:250px;
+    opacity:.4;
+}
+
+.oc button{
+    background: transparent;
+    border: 1px solid #00a0e3;
+    color:#00a0e3;
+    padding:15px 20px;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-family: roboto;
+}
+.oc button:hover{
+    background: #00a0e3;
+    color:#fff;
+    transition: .3s ease;
+}
+.oc-text-icons div span{
+    position: relative;   
+    display:inline-block;
+}
+.oc-text-icons div span .hoverShow{
+    display: none;
+    position: absolute;
+    top:0;
+    left:0;
+    z-index:99;
+}
+.oc-text-icons div:hover  span .hoverShow{
+    display: inline;
+    transition: 0.2s ease;
+}
+.oc-text-icons div:hover  span .hoverHide{
+    display: hidden;
+}
+.oc-text-icons div{
+    flex-basis: 200px;
+    text-align: center;
+     box-shadow:0 0 10px rgba(0,0,0,.1);
+    margin:10px 10px 0 0;
+    padding:10px 10px 5px 10px;
+    border-radius: 10px;
+} 
+.oc-text-icons div:hover{
+    background:#00a0e3;
+    color:#fff;
+    transition:.3s ease;
+    cursor: pointer;
+}
+.oc-text-icons p{
+    font-size:16px; 
+    padding-top: 5px;
+    font-family: roboto;
+    line-height:20px;
+}
+.oc-text-icons{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.onlineClasses{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.oc-text{
+    font-size: 18px;
+    font-family: roboto;
+    color: #333;
+    line-height: 26px;
+}
+.online-content{
+    flex-basis:60%;
+    margin-left: 40px;
+}
+.online-icon{
+    text-align:center;
+    flex-basis:30%
+}
+.oc-sub-heading{
+   font-size: 30px;
+    font-weight: 600;
+    color: #000;
+    font-family: lora;
+    margin: 0px;
+    text-transform: capitalize;
+}
+@media screen and (max-width:1200px){
+    .onlineClasses{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        text-align:center;
+    }
+    .online-content{
+        flex-basis:100%;
+        margin-left: 40px;
+    }
+    .online-icon{
+        text-align:center;
+        flex-basis:100%
+    }
+    .online-icon img{
+        max-width:250px;
+    }
+    .oc-text-icons{
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        justify-content: center;
+    }
+}
+.service-buttons{
+    margin-top:50px;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.ser-box{
+   flex-basis: 180px;
+   margin: 0 5px;
+   padding: 20px 0 0 0;
+   text-align: center;
+   box-shadow:0 0 10px rgba(0,0,0,.1);
+}
+.ser-box img{
+    
+}
+.serBttn{
+    color: #fff;
+    padding:8px 15px;
+    margin: 15px 0 0 0;
+    font-size:16px;
+    font-family: roboto;
+    line-height: 22px;
+}
+.bg-gradient{
+    background: url('. Url::to('@eyAssets/images/pages/college/college-index-service-bg.png').');
+    min-height:400px;  
+}
+.college-heading{
+    font-family:lobster;
+    color: #fff;
+    font-size: 28pt;
+}
+.mx-600{
+    max-width:600px;
+    margin:0 auto;
+}
+.college-modal-content .uname {
+    padding: 10px 0 0 0;
+}
+.mx-600 .form-group{
+    margin-bottom: 5px;
+}
+.uname-in {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 13px;
+}
+.button-gradient{
+    padding: 10px 15px;
+    background: linear-gradient(45deg, #00a0e3, #89d8f9);
+    color: #fff;
+    border-radius: 5px;
+    border:none;
+}
+.button-gradient:hover {
+    background: linear-gradient(45deg, #89d8f9, #00a0e3);
+    transition: .3s all;
+}
+.padding-top-40{
+    padding-top:40px;
+}
+.e-background{
+//    background-image: url("' . Url::to("@eyAssets/images/pages/employers/bg.png") . '");
+//    min-height: 400px;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.e-background h2 {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 35px;
+    font-family: lobster;
+    color:#fff;
+}
+.e-parent {
+    height: 125px;
+    position: relative;
+}
+.e-inner {
+    position: absolute;
+    top: x0px;
+}
+.ebox {
+    display: inline-block;
+    padding: 15px 5px 5px 5px;
+    margin-bottom:20px;
+    width: 100%;
+    min-height: 143px;
+    border-radius: 5px;
+    background-color:#fff;
+    box-shadow:0 0 15px 0px #eee;
+    border-bottom: 3px solid #ff7803;
+    transition: ease-out .3s;
+}
+.ebox:hover{
+    margin-top:-5px;
+    box-shadow:0 10px 10px 0px #eee;
+}
+.e-icon {
+    width:70px;
+    height: 70px;
+    margin:0 auto;
+    text-align:center;
+}
+.e-icon img{
+    max-width:60px;
+    height:60px;
+    width:100%;
+}
+.e-text {
+    text-align:center;
+    font-size: 20px;
+    font-weight: 700;
+    font-family: lora;
+    text-transform: capitalize;
+    line-height:25px;
+}
+@media(max-width:991px){
+.e-background{
+    min-height: 280px;
+}
+.e-parent {
+    height: 250px;
+}
+.e-inner{
+    position:relative;
+}
+.ebox:hover{
+    margin-top:0px;
+    box-shadow:0 10px 10px 0px #eee;
+}
+}
+
+@media(max-width:534px){
+.e-parent {
+    height: auto;
+    position: relative;
+}
+.e-inner {
+    position: relative;
+    left:0;
+}
+.ebox:hover{
+    margin-top:0px;
+    box-shadow:0 10px 10px 0px #eee;
+}
+}
+
+.padd40{
+    padding:40px 0;
+}
+
+.banner-heading{
+    font-family: \' Montserrat\';
+    font-size:35px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: left;
+    line-height: 40px;
+}
+.banner-sub-heading{
+    font-family: roboto;
+    padding-top: 15px;
+    font-size: 18px;
+}
+.get-started-btn{
+    margin-top:30px;
+}
+.get-started-btn-two{
+    text-align:center;
+}
+.get-started-btn-two a{
+    padding:10px 20px;
+    background:#00a0e3;
+    color:#fff;
+}
+/*---college-landing-page---*/
+.stat-box{
+    position: relative;
+    text-align: left;
+    min-height: 150px;
+    min-height: 125px;
+    margin: 15px auto;
+    padding-left:20px;
+    max-width: 290px;
+    color:#fff;
+    font-family: Montserrat;
+    background: linear-gradient(141deg, #11C0E8 0%, #13A8D8 50%, #0994ca 75%);
+    font-size: 25px;
+    padding-top: 32px;
+    font-weight: bold;
+    border-radius: 20px 0 20px 0;
+}
+.stat-box span{
+    position: absolute;
+    top: 37px;
+    right: 25px;
+}
+.stat-box p{
+    font-weight: normal;
+}
+.stats-ey{
+    margin-top: 250px;
+}
+.cl-top-vector, .cl-right-vector{
+    position: relative;
+}
+.cl-top-vector>div{
+    max-width: 700px;
+    max-height: 720px;
+    width:50vw;
+    height: 100vh;
+    position: absolute;
+    right:0px;
+    top:50px;
+    z-index: -2;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 100% 0;
+}
+.cl-vector{
+    background:url(' . Url::to('@eyAssets/images/pages/college/college-landing-header.png') . ');  
+//    background: url("../images/college-landing-page/college-landing-header.png");
+}
+.cl-right-vector > div{
+    width: 130px;
+    height: 330px;
+    position: absolute;
+    left: 0px;
+    top:75vh;
+    z-index: -2;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0 0;
+}
+.cl-vector-1{
+    background:url(' . Url::to('@eyAssets/images/pages/college/college-right-vector.png') . ');  
+//    background: url("../images/college-landing-page/college-right-vector.png");
+}
+.lay-v, .cust-c{
+    position: relative;
+    min-height:500px;
+}
+.cust-c{
+    margin-top:20px;
+}
+.lay-vector-img{
+    background:url(' . Url::to('@eyAssets/images/pages/college/track.png') . ');  
+//    background: url("../images/college-landing-page/track.png");
+}
+.lay-vector > div{
+    width: 50vw;
+    height: 500px;
+    position: absolute;
+    right: 0px;
+    top:0;
+    z-index: -2;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 100% 0;
+}
+.cust-vector-img{
+    background:url(' . Url::to('@eyAssets/images/pages/college/costomization.png') . ');
+//    background: url("../images/college-landing-page/costomization.png");
+}
+.cust-vector > div{
+    width: 50vw;
+    height: 500px;
+    position: absolute;
+    left: 0px;
+    top:0;
+    z-index: -2;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0 0;
+
+}
+.cl-banner-text{
+    max-width: 500px;
+    padding-top:150px;
+}
+.choose-box{
+    padding: 10px 0;
+
+}
+.choose-heading{
+    margin-top:80px !important;
+    margin-bottom:50px;
+}
+.choose-icon{
+    position:relative;
+}
+.choose-icon img{
+    max-width:350px;
+    width: 100%;
+}
+.choose-title{
+    position: absolute;
+    top: 15px;
+    left: 10px;
+    font-size: 15px;
+    max-width: 200px;
+    font-weight: 500;
+    color: #fff;
+    text-transform: uppercase;
+    font-family: Montserrat;
+}
+.choose-text{
+    background: #fff;
+    max-width: 340px;
+    min-height: 180px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,.1)
+}
+.choose-text ul li{
+    font-family: Roboto;
+    font-size: 15px;
+    max-width: 300px;
+    margin-bottom: 10px !important;
+}
+.ct-list-3 ul li{
+    list-style-image: url(' . Url::to('@eyAssets/images/pages/college/list1.png') . ');
+}
+.ct-list-1 ul li{
+    list-style-image: url(' . Url::to('@eyAssets/images/pages/college/list2.png') . ');
+}
+.ct-list-2 ul li{
+    list-style-image: url(' . Url::to('@eyAssets/images/pages/college/list3.png') . ');
+}
+.choose-text ul{
+    padding-left: 30px;
+    padding-top: 20px;
+}
+.cust-heading{
+    font-size:25px;
+    text-transform: uppercase;
+    font-family: Roboto;
+    font-weight: bold;
+    padding-top:10px;
+}
+.cust-text{
+    font-family: Roboto;
+    padding-top:10px;
+    font-size:18px;
+    line-height: 24px;
+}
+.lay-icon{
+    text-align: center;
+}
+.lay-icon img{
+    max-width: 350px;
+}
+.padding-30, .padd-50{
+    position: relative;
+    min-height: 500px;
+}
+.p-30-center{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.choose-sec-bg{
+    background: linear-gradient(#fff 0%, #eee 30%, #eee 70%, #fff);
+    padding-bottom: 30px;
+}
+.cater-heading{
+    margin-top:80px !important;
+}
+.cater-box{
+    text-align: center;
+    margin-bottom: 30px;
+}
+.cater-name{
+    font-family:Roboto;
+    text-align: center;
+    font-size: 16px;
+    padding-top: 15px;
+    color:#000;
+}
+.cl-blue-bg{
+    /*background: linear-gradient(141deg, #5000bd 0%, #4700a6 51%, #3e0091 75%);*/
+    padding:10px 0 20px;
+}
+.bottom-text{
+    padding-top:30px;
+    max-width: 900px;
+    text-align: center;
+    font-size: 30px;
+    margin:0 auto;
+    font-family: roboto;
+    line-height: 40px;
+}
+.bottom-text span{
+    font-weight: bold;
+}
+.cl-get-started{
+    padding-top:35px;
+    text-align:center;
+}
+.cl-get-started a{
+    background: #00a0e3;
+    padding: 15px 50px;
+    color: #fff;
+    border-radius: 10px 0px 10px 0;
+    font-size: 13px;
+    transition: .3s ease-in-out;
+}
+.cl-get-started a:hover{
+    text-decoration: none;
+    border-radius: 0px;
+    transition: .3s ease-in-out;
+}
+.cl-feature-box{
+    text-align: center;
+    padding:10px 0 60px;
+}
+.cl-feat-name{
+    padding: 10px 0 0 0 ;
+    font-size:18px;
+    font-family: Roboto;
+    text-transform: capitalize;
+    line-height: 25px;
+}
+.cl-feat-icon img{
+    max-width: 50px;
+    height: 50px;
+}
+.feat-bg{
+    padding-top:20px;
+    margin-top:00px;
+    background: linear-gradient(#fff 0%, #EEF2F6 30%, #f4f7fa 70%, #fff);
+}
+.cust-icon-large{
+    text-align: center;
+}
+.cust-icon-large img{
+    max-width: 280px;
+}
+@media screen and (max-width: 1200px){
+    .stat-box{
+        font-size: 20px;
+        padding-top: 35px;
+    }
+    .choose-title{
+        font-size: 14px;
+        max-width: 150px;
+    }
+}
+@media screen and (max-width: 992px){
+    .stat-box{
+        font-size: 20px;
+        padding-top: 35px;
+    }
+    .choose-icon {
+        position: relative;
+        max-width: 350px;
+        width: 100%;
+        margin: 0 auto;
+    }
+    .choose-text{
+        margin: 0 auto;
+    }
+    .padding-30, .padd-50{
+        min-height: 400px;
+    }
+}
+@media screen and (max-width: 768px){
+    .choose-heading{
+        margin-top: 200px;
+    }
+    .cl-right-vector > div{
+        top:60vh;
+    }
+    .padding-30, .padd-50 {
+        min-height: 400px;
+        max-width: 350px;
+    }
+    .padd-50{
+        float: right;
+        width: 100%;
+    }
+    .lay-v, .cust-c {
+        position: relative;
+        min-height: 300px;
+    }
+}
+@media screen and (max-width: 500px){
+    .lay-icon img{
+        max-width: 200px;
+    }
+    .p-30-center {
+        position: absolute;
+        bottom: 0px !important;
+        transform: none;
+    }
+}
+/*---college-landing-page ends---*/
+/* The Modal (background) */
+.collegeSignUpmodal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0px;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+ z-index: 9999;
+}
+
+/* Modal Content/Box */
+.college-modal-content {
+    background: linear-gradient(to right, #00a0e3 50%, #fff 50%);
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    text-align:center;  
+    border-radius: 10px;
+    width: 70%; /* Could be more or less, depending on screen size */
+     padding:30px 0 30px 0;
+     
+     
+}
+.csu-heading{
+    text-transform: capitalize;
+    font-size:18px;
+    color:#000;
+    font-family: roboto
+}
+/* The Close Button */
+.close {
+  position: absolute;
+  top:10px;
+  right: 10px;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.checkbox-container {
+  display: inline-block;
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  margin-right: 20px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.cmc-icon{
+    margin-top: 50px;
+}
+.checkBox-padding{
+    padding: 0 50px !important;
+    text-align: left !important;
+}
+/* Hide the browser\'s default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.checkbox-container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checkbox-container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkbox-container .checkmark:after {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+@media screen and (max-width: 992px){
+    .college-modal-content {
+        background: linear-gradient(to right, #fff 50%, #fff 50%);
+    }
+    .cmc-icon {
+        margin-top: 00px;
+    }
+    .cmc-icon img{
+        max-width: 200px;
+    }
+}
+');
+$script = <<<JS
+
+JS;
+$this->registerJS($script);
+?>
+
+<script>
+    var modal = document.getElementById("virusModal");
+    // Get the button that opens the modal
+    var btn = document.getElementsByClassName("collegeSignupModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    for(var i=0; i< btn.length; i++){
+        btn[i].onclick = function () {
+            modal.style.display = "block";
+        }
+    }
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
