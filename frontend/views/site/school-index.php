@@ -31,6 +31,8 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?= $this->render('/widgets/online-classes') ?>
+
     <Section>
         <div class="container">
             <div class="row">
@@ -73,7 +75,7 @@ use yii\helpers\Url;
                             <div class="sc-logo">
                                 <img src="<?= Url::to('@eyAssets/images/pages/schools/scholarshipq.png') ?>">
                             </div>
-                            <h3>scholarships</h3>
+                            <h3>Scholarships</h3>
                         </div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6">
@@ -89,55 +91,75 @@ use yii\helpers\Url;
         </div>
     </Section>
 
-<?= $this->render('/widgets/online-classes')?> 
-
     <Section>
         <div class="container">
             <div class="row">
                 <h3 class="ser-heading">Benefits</h3>
             </div>
             <div class="row">
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="b-main">
                         <div class="b-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/schools/video.png') ?>">
                         </div>
                         <div class="b-text">
                             <div class="b1">Video Calling</div>
-                            <div class="b2">Yellow</div>
+                            <div class="b2">Add real-time high quality video chat</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="b-main">
                         <div class="b-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/schools/phone.png') ?>">
                         </div>
                         <div class="b-text">
                             <div class="b1">Voice Calling</div>
-                            <div class="b2">Yellow</div>
+                            <div class="b2">Add real-time crystal clear voice</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="b-main">
                         <div class="b-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/schools/chatting.png') ?>">
                         </div>
                         <div class="b-text">
-                            <div class="b1">Chat</div>
-                            <div class="b2">Yellow</div>
+                            <div class="b1">Real Time Messaging</div>
+                            <div class="b2">chat room, notifications, call signaling and more.</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6">
+                <div class="col-md-4 col-sm-6">
                     <div class="b-main">
                         <div class="b-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/schools/24.png') ?>">
+                            <img src="<?= Url::to('@eyAssets/images/pages/schools/recording.png') ?>">
                         </div>
                         <div class="b-text">
-                            <div class="b1">24 * 24</div>
-                            <div class="b2">Yellow</div>
+                            <div class="b1">Recording</div>
+                            <div class="b2">Do more with your live audio and video streams</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="b-main">
+                        <div class="b-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/schools/live-audio.png') ?>">
+                        </div>
+                        <div class="b-text">
+                            <div class="b1">Live Audio Streaming</div>
+                            <div class="b2">Add real-time audio streaming</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="b-main">
+                        <div class="b-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/schools/live-video.png') ?>">
+                        </div>
+                        <div class="b-text">
+                            <div class="b1">Live Video Streaming</div>
+                            <div class="b2">Create meaningful real-time engagement experiences</div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +243,9 @@ use yii\helpers\Url;
 
 <?php
 $this->registercss('
+.footer{
+    margin-top:0px !important;
+}
 .topp-pad{
     margin-top: 80px !important;
 }
@@ -282,6 +307,7 @@ $this->registercss('
 .sc-main:hover{
     background-color:#00a0e3;
     box-shadow:0 0 15px 8px #eee;
+    transform: scale(1.1);
 }
 .sc-main:hover h3{
     color:#fff;
@@ -293,12 +319,12 @@ $this->registercss('
     margin:25px 0 25px;
 }
 .b-main {
-    margin-bottom: 20px;
+	margin-bottom: 25px;
+	padding: 10px 20px;
+	min-height: 172px;
+	box-shadow: 0 0 15px -5px #aaa;
 }
 .b-logo {
-	float: left;
-	box-shadow:0 0 5px 0px #eee;
-	border-radius: 50px;
 	padding: 10px;
 	display: inline-block;
 }
@@ -307,8 +333,7 @@ $this->registercss('
 	height: 35px;
 }
 .b-text {
-	display: inline-block;
-	padding: 3px 0 0 15px;
+	padding: 10px 0 0 0;
 }
 .b1 {
 	font-size: 18px;
@@ -513,4 +538,24 @@ $this->registercss('
     max-width: 50px;
     height: 50px;
 }
+@media(max-width:835px){
+.main-img{
+    margin-top:150px;
+}
+}
+@media(max-width:415px){
+.main-img {
+    margin-top: 100px;
+}
+.topp-pad{
+    margin-top: 20px !important;
+}
+.jumbo-heading{
+    font-size:30px;        
+    }
+.main-heading-set{
+    padding-top:0px;
+}
+}
+
 ');

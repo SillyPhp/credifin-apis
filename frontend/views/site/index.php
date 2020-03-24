@@ -12,14 +12,16 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
-<!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
-<!--                            </li>-->
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
-<!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
-<!--                            </li>-->
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
+                            <!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
+                            <!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
+                            <!--                            </li>-->
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
                                      alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
@@ -92,10 +94,10 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in two">
-                        <a href="/candidates/features">
+                        <a href="/schools">
                             <div class="icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                     alt="Candidates" title="Candidates"> 
+                                     alt="Candidates" title="Candidates">
                             </div>
                             <div class="icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
@@ -107,20 +109,22 @@ $this->params['header_dark'] = false;
                 </div>
                 <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in three">
-                        <div class="box-overlay">
-                            <div class="icon">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                     alt="Universities & Colleges" title="Universities and Colleges">
-                            </div>
-                            <div class="icon2">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
-                                     alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Colleges</div>
-                            <div class="h-text">I want to enroll talent</div>
-                        </div>
-                        <div class="overlay">
-                            <div class="text">Coming Soon</div>
-                        </div>
+<!--                        <div class="box-overlay">-->
+                            <a href="/colleges">
+                                <div class="icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                         alt="Universities & Colleges" title="Universities and Colleges">
+                                </div>
+                                <div class="icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
+                                         alt="Employers" title="Employers"></div>
+                                <div class="h-heading">Colleges</div>
+                                <div class="h-text">I'm the future</div>
+                            </a>
+<!--                        </div>-->
+                        <!--                        <div class="overlay">-->
+                        <!--                            <div class="text">Coming Soon</div>-->
+                        <!--                        </div>-->
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-6 col-xs-6">
