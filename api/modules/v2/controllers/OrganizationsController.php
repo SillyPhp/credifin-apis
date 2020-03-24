@@ -5,13 +5,12 @@ namespace api\modules\v2\controllers;
 
 
 use api\modules\v1\models\Candidates;
-use api\modules\v1\models\Cards;
 use common\models\AppliedApplications;
 use common\models\Cities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
 use common\models\EmployerApplications;
-use common\models\ErexxCollaborators;
+use common\models\Utilities;
 use common\models\ErexxEmployerApplications;
 use common\models\FollowedOrganizations;
 use common\models\Industries;
