@@ -2,10 +2,7 @@
 
 namespace api\modules\v2\controllers;
 
-use common\models\Cities;
 use common\models\Skills;
-use common\models\User;
-use common\models\UserAccessTokens;
 use common\models\UserEducation;
 use common\models\Users;
 use common\models\UserSkills;

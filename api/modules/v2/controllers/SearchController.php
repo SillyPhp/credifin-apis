@@ -283,6 +283,9 @@ class SearchController extends ApiBaseController
                     ['like', 'e.name', $options['keyword']],
                 ]);
             }
+            if(isset($options['slug'])){
+                $jobs->andWhere(['bb.slug'=>$options['slug']]);
+            }
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);
             }
@@ -357,6 +360,9 @@ class SearchController extends ApiBaseController
                     ['like', 'ee.name', $options['keyword']],
                     ['like', 'e.name', $options['keyword']],
                 ]);
+            }
+            if(isset($options['slug'])){
+                $jobs->andWhere(['bb.slug'=>$options['slug']]);
             }
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);

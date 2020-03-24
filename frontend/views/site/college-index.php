@@ -412,7 +412,140 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 
+.virus-bg{
+    position: ralative;
+    overflow: hidden;
+    background:#eee ;
+    background-size: contain;
+    padding:30px 0 50px 0;
+    margin-top: 30px;
+}
+.virus-icons, .virus-icon-left{
+    position: absolute;
+}
+.virus-icons{
+    top:-150px; 
+    right:-150px;
+    max-width: 350px;
+    opacity:.5;
+}
+.virus-icon-left{
+    bottom: -100px;
+    left: -100px;
+    max-width:250px;
+    opacity:.4;
+}
 
+.oc button{
+    background: transparent;
+    border: 1px solid #00a0e3;
+    color:#00a0e3;
+    padding:15px 20px;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-family: roboto;
+}
+.oc button:hover{
+    background: #00a0e3;
+    color:#fff;
+    transition: .3s ease;
+}
+.oc-text-icons div span{
+    position: relative;   
+    display:inline-block;
+}
+.oc-text-icons div span .hoverShow{
+    display: none;
+    position: absolute;
+    top:0;
+    left:0;
+    z-index:99;
+}
+.oc-text-icons div:hover  span .hoverShow{
+    display: inline;
+    transition: 0.2s ease;
+}
+.oc-text-icons div:hover  span .hoverHide{
+    display: hidden;
+}
+.oc-text-icons div{
+    flex-basis: 200px;
+    text-align: center;
+     box-shadow:0 0 10px rgba(0,0,0,.1);
+    margin:10px 10px 0 0;
+    padding:10px 10px 5px 10px;
+    border-radius: 10px;
+} 
+.oc-text-icons div:hover{
+    background:#00a0e3;
+    color:#fff;
+    transition:.3s ease;
+    cursor: pointer;
+}
+.oc-text-icons p{
+    font-size:16px; 
+    padding-top: 5px;
+    font-family: roboto;
+    line-height:20px;
+}
+.oc-text-icons{
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.onlineClasses{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.oc-text{
+    font-size: 18px;
+    font-family: roboto;
+    color: #333;
+    line-height: 26px;
+}
+.online-content{
+    flex-basis:60%;
+    margin-left: 40px;
+}
+.online-icon{
+    text-align:center;
+    flex-basis:30%
+}
+.oc-sub-heading{
+   font-size: 30px;
+    font-weight: 600;
+    color: #000;
+    font-family: lora;
+    margin: 0px;
+    text-transform: capitalize;
+}
+@media screen and (max-width:1200px){
+    .onlineClasses{
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        text-align:center;
+    }
+    .online-content{
+        flex-basis:100%;
+        margin-left: 40px;
+    }
+    .online-icon{
+        text-align:center;
+        flex-basis:100%
+    }
+    .online-icon img{
+        max-width:250px;
+    }
+    .oc-text-icons{
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        justify-content: center;
+    }
+}
 .service-buttons{
     margin-top:50px;
     display:flex;
