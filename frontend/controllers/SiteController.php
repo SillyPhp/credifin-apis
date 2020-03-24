@@ -11,6 +11,7 @@ use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\States;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\base\InvalidParamException;
@@ -829,7 +830,14 @@ class SiteController extends Controller
     }
 
     public function actionCollegeIndex(){
-        return $this->render('college-index');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('college-index',[
+            'model' => $model,
+        ]);
     }
 
 }

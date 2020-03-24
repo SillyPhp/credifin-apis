@@ -50,7 +50,9 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/online-classes')?>
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
 <section>
     <div class="container">
         <div class="row padding-top-40">
@@ -571,7 +573,7 @@ $this->registerCss('
     line-height: 22px;
 }
 .bg-gradient{
-    background: url('. Url::to('@eyAssets/images/pages/college/college-index-service-bg.png').');
+    background: url(' . Url::to('@eyAssets/images/pages/college/college-index-service-bg.png') . ');
     min-height:400px;  
 }
 .college-heading{
@@ -1062,7 +1064,7 @@ $this->registerJS($script);
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    for(var i=0; i< btn.length; i++){
+    for (var i = 0; i < btn.length; i++) {
         btn[i].onclick = function () {
             modal.style.display = "block";
         }
