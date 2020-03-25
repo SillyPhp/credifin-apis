@@ -82,8 +82,10 @@ use yii\helpers\Url;
 
 <div class="clearfix"></div>
 <div class="clearfix"></div>
-<div class="empty"></div>
-
+<!--<div class="empty"></div>-->
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
 <!--dynamic categories end-->
 
 <!--    <div class="working-box ">-->
