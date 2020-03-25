@@ -2,7 +2,7 @@
 
 namespace frontend\models\onlineClassEnquiries;
 
-use common\models\OnlineCalssEnquiries;
+use common\models\OnlineClassEnquiries;
 use Yii;
 use yii\base\Model;
 use common\models\Utilities;
@@ -43,7 +43,7 @@ class ClassEnquiryForm extends Model
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $enq = implode(",", $this->enquiry_for);
-            $model = new OnlineCalssEnquiries();
+            $model = new OnlineClassEnquiries();
             $utilitiesModel = new Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->enquiry_enc_id = $utilitiesModel->encrypt();
@@ -77,7 +77,11 @@ class ClassEnquiryForm extends Model
             }
         } catch (\Exception $e) {
             $transaction->rollBack();
-            return false;
+            return [
+                'status' => 201,
+                'title' => 'Exception Error',
+                'message' => 'Something wrong..',
+            ];
         }
     }
 }

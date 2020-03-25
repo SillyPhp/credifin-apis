@@ -3,7 +3,7 @@
 namespace common\models;
 
 /**
- * This is the model class for table "{{%online_calss_enquiries}}".
+ * This is the model class for table "{{%online_class_enquiries}}".
  *
  * @property int $id Primary Key
  * @property string $enquiry_enc_id User Encrypted ID
@@ -17,14 +17,14 @@ namespace common\models;
  * @property string $last_updated_on On which date User information was updated
  * @property int $is_deleted Is User Deleted (0 as False, 1 as True)
  */
-class OnlineCalssEnquiries extends \yii\db\ActiveRecord
+class OnlineClassEnquiries extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%online_calss_enquiries}}';
+        return '{{%online_class_enquiries}}';
     }
 
     /**
