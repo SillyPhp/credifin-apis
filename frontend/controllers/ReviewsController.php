@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -130,7 +131,14 @@ class ReviewsController extends Controller
 
     public function actionSchools()
     {
-        return $this->render('schools');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('schools',[
+            'model' => $model,
+        ]);
     }
 
     public function actionCompanies()
@@ -140,7 +148,14 @@ class ReviewsController extends Controller
 
     public function actionColleges()
     {
-        return $this->render('colleges');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('colleges',[
+            'model' => $model,
+        ]);
     }
 
     public function actionInstitutes()

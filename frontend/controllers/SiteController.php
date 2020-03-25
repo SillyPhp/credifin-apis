@@ -11,6 +11,7 @@ use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\States;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\base\InvalidParamException;
@@ -74,11 +75,17 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-
-        return $this->render('index');
+        return $this->render('index',[
+            'model' => $model
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -833,7 +840,14 @@ class SiteController extends Controller
     }
 
     public function actionCollegeIndex(){
-        return $this->render('college-index');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('college-index',[
+            'model' => $model,
+        ]);
     }
 
 }

@@ -1,5 +1,10 @@
 <?php
+
 use yii\helpers\Url;
+use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
+use borales\extensions\phoneInput\PhoneInput;
+
 ?>
 <section class="virus-bg">
     <div class="virus-icons">
@@ -20,22 +25,27 @@ use yii\helpers\Url;
                 <div class="oc-text-icons">
                     <div class="collegeSignupModal">
                         <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon.png')?>" class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon-white.png')?>" class="hoverShow">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon.png') ?>"
+                                 class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/school-icon-white.png') ?>"
+                                 class="hoverShow">
                         </span>
                         <p>Schools</p>
                     </div>
                     <div class="collegeSignupModal">
                         <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon.png')?>" class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon-white.png')?>" class="hoverShow">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon.png') ?>" class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/colg-icon-white.png') ?>"
+                                 class="hoverShow">
                         </span>
                         <p>Universities & Colleges</p>
                     </div>
                     <div class="collegeSignupModal">
                         <span>
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute.png')?>" class="hoverHide">
-                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute-white.png')?>" class="hoverShow">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute.png') ?>"
+                                 class="hoverHide">
+                            <img src="<?= Url::to('@eyAssets/images/pages/college/educational-institute-white.png') ?>"
+                                 class="hoverShow">
                         </span>
                         <p>Educational Institutes</p>
                     </div>
@@ -56,67 +66,77 @@ use yii\helpers\Url;
         <div class="row">
             <div class="col-md-6">
                 <div class="cmc-icon">
-                    <img src="<?= Url::to('@eyAssets/images/pages/college/online-class-white.png')?>">
+                    <img src="<?= Url::to('@eyAssets/images/pages/college/online-class-white.png') ?>">
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="csu-heading">Join the movement today</div>
-                <form class="mx-600">
-                    <div class="uname">
-                        <div class="form-group field-username required">
-                            <input type="text" id="username" class="uname-in" name="username" autofocus=""
-                                   autocomplete="off" placeholder="Full Name" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'enquiry-form',
+                    'enableClientValidation' => true,
+                    'validateOnBlur' => false,
+                    'options' => [
+                            'enctype' => 'multipart/form-data',
+                            'class' => 'mx-600',
+                        ],
+                ]);
+                ?>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
-                    <div class="uname">
-                        <div class="form-group field-username required">
-                            <input type="text" id="collegeName" class="uname-in" name="collegeName" autofocus=""
-                                   autocomplete="off" placeholder="Organization Name" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'organization_name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Organization Name', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
-                    <div class="uname">
-                        <div class="form-group field-username required">
-                            <input type="text" id="position" class="uname-in" name="position" autofocus=""
-                                   autocomplete="off" placeholder="Designation" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'designation')->textInput(['autocomplete' => 'off', 'placeholder' => 'Designation', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
-                    <div class="uname">
-                        <div class="form-group field-username required">
-                            <input type="text" id="email" class="uname-in" name="email" autofocus=""
-                                   autocomplete="off" placeholder="Email" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
-                    <div class="uname">
-                        <div class="form-group field-username required">
-                            <input type="text" id="phone" class="uname-in" name="phone" autofocus=""
-                                   autocomplete="off" placeholder="Phone Number" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
-                    </div>
-                    <div class="uname checkBox-padding">
-                        <div class="form-group field-username required">
-                            <label class="checkbox-container">Campus Placement
-                                <input type="checkbox" checked="checked">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Online Classes
-                                <input type="checkbox">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="checkbox-container">Hiring
-                                <input type="checkbox">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="modal-oc">
-                        <button type="submit"> Sign Up</button>
-                    </div>
-                </form>
+                </div>
+                <div class="uname">
+                    <?=
+                    $form->field($model, 'phone')->widget(PhoneInput::className(), [
+                        'jsOptions' => [
+                            'allowExtensions' => false,
+                            'preferredCountries' => ['in'],
+                            'nationalMode' => false,
+                        ],
+                        'options' =>[
+                            'class' => 'uname-in',
+                        ]
+                    ])->label(false);
+                    ?>
+                    <p class="help-block help-block-error"></p>
+                </div>
+                <div class="uname checkBox-padding">
+                    <?=
+                    $form->field($model, 'enquiry_for')->checkBoxList(['Campus Placement' => 'Campus Placement', 'Online Classes' => 'Online Classes', 'Hiring' => 'Hiring'], [
+                        'item' => function ($index, $label, $name, $checked, $value) {
+                            $return = '<label for="weekday-' . $index . '" class="checkbox-container">' . $label ;
+                            $return .= '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
+                            $return .=  '<span class="checkmark"></span></label>';
+                            return $return;
+                        }
+                    ])->label(false);
+                    ?>
+                </div>
+                <div class="modal-oc">
+                    <?= Html::submitButton('Sign Up', ['id' => 'enquiryBtn']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
@@ -125,6 +145,9 @@ use yii\helpers\Url;
 <?php
 
 $this->registerCss('
+.mx-600 .flag-container {
+    left: 45px !important;
+}
 .virus-bg{
     position: ralative;
     overflow: hidden;
@@ -412,6 +435,56 @@ $this->registerCss('
     }
 }
 ');
+$script = <<<JS
+$(document).on('submit', '#enquiry-form', function (event) {
+    event.preventDefault();
+    var form = $(this);
+    var btn = $('#enquiryBtn');
+    var btn_value = btn.text();
+    event.stopImmediatePropagation();
+    if ( form.data('requestRunning') ) {
+        return false;
+    }
+    form.data('requestRunning', true);
+    var url = form.attr('action');
+    var data = form.serialize();
+    var method = form.attr('method');
+    var formData = new FormData(this);
+    $.ajax({
+        url: url,
+        type: method,
+        enctype: 'multipart/form-data',
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function () {
+            btn.attr('disabled', true);
+            btn.html('Please Wait..');
+        },
+        success: function (response) {
+            if (response.status == 200) {
+                btn.attr('disabled', false);
+                btn.html(btn_value);
+                $(".close").click();
+                toastr.success(response.message, response.title);
+            } else {
+                btn.attr('disabled', false);
+                btn.html(btn_value);
+                toastr.error(response.message, response.title);
+            }
+        },
+        complete: function() {
+            form.data('requestRunning', false);
+        }
+    }).fail(function(data, textStatus, xhr) {
+         btn.attr('disabled', false);
+         btn.html(btn_value);
+    });
+});
+JS;
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 <script>
     var modal = document.getElementById("virusModal");
@@ -421,7 +494,7 @@ $this->registerCss('
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    for(var i=0; i< btn.length; i++){
+    for (var i = 0; i < btn.length; i++) {
         btn[i].onclick = function () {
             modal.style.display = "block";
         }
