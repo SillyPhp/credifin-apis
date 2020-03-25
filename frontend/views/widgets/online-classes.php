@@ -74,33 +74,35 @@ use borales\extensions\phoneInput\PhoneInput;
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'enquiry-form',
-//                    'class' => 'mx-600',
                     'enableClientValidation' => true,
                     'validateOnBlur' => false,
-                    'options' => ['enctype' => 'multipart/form-data'],
+                    'options' => [
+                            'enctype' => 'multipart/form-data',
+                            'class' => 'mx-600',
+                        ],
                 ]);
                 ?>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name'])->label(false); ?>
+                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name', 'class' => 'uname-in'])->label(false); ?>
                         <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <?= $form->field($model, 'organization_name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Organization Name'])->label(false); ?>
+                        <?= $form->field($model, 'organization_name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Organization Name', 'class' => 'uname-in'])->label(false); ?>
                         <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <?= $form->field($model, 'designation')->textInput(['autocomplete' => 'off', 'placeholder' => 'Designation'])->label(false); ?>
+                        <?= $form->field($model, 'designation')->textInput(['autocomplete' => 'off', 'placeholder' => 'Designation', 'class' => 'uname-in'])->label(false); ?>
                         <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email'])->label(false); ?>
+                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email', 'class' => 'uname-in'])->label(false); ?>
                         <p class="help-block help-block-error"></p>
                     </div>
                 </div>
@@ -111,6 +113,9 @@ use borales\extensions\phoneInput\PhoneInput;
                             'allowExtensions' => false,
                             'preferredCountries' => ['in'],
                             'nationalMode' => false,
+                        ],
+                        'options' =>[
+                            'class' => 'uname-in',
                         ]
                     ])->label(false);
                     ?>
@@ -120,8 +125,9 @@ use borales\extensions\phoneInput\PhoneInput;
                     <?=
                     $form->field($model, 'enquiry_for')->checkBoxList(['Campus Placement' => 'Campus Placement', 'Online Classes' => 'Online Classes', 'Hiring' => 'Hiring'], [
                         'item' => function ($index, $label, $name, $checked, $value) {
-                            $return = '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
-                            $return .= '<label for="weekday-' . $index . '">' . $label . '</label>';
+                            $return = '<label for="weekday-' . $index . '" class="checkbox-container">' . $label ;
+                            $return .= '<input type="checkbox" name="' . $name . '" value="' . $value . '" id="weekday-' . $index . '" class="weekday" ' . (($checked) ? 'checked' : '') . '/>';
+                            $return .=  '<span class="checkmark"></span></label>';
                             return $return;
                         }
                     ])->label(false);
@@ -139,6 +145,9 @@ use borales\extensions\phoneInput\PhoneInput;
 <?php
 
 $this->registerCss('
+.mx-600 .flag-container {
+    left: 45px !important;
+}
 .virus-bg{
     position: ralative;
     overflow: hidden;
