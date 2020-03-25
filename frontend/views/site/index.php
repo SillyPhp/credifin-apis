@@ -132,6 +132,9 @@ $this->params['header_dark'] = false;
 </section>
 
 <!--- virus Section --->
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
 <!--------services section starts-------->
 
 <section class="services-section">
