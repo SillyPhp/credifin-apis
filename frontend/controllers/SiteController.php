@@ -75,10 +75,17 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index');
+        return $this->render('index',[
+            'model' => $model
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
