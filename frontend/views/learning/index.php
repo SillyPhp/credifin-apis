@@ -51,8 +51,7 @@ use yii\helpers\Url;
 <div class="clearfix"></div>
 <div class="empty"></div>
 
-
-<div class="container ">
+<div class="container">
     <div class="cat-padding">
         <div class="row">
             <div class="col-md-12">
