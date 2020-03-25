@@ -113,7 +113,9 @@ class SearchController extends ApiBaseController
                     'aa.is_deleted' => 0,
                     'f.is_deleted' => 0,
                     'f.is_college_approved' => 1,
-                    'f.status' => 'Active']);
+                    'f.status' => 'Active',
+                    'b.is_erexx_approved' => 1,
+                    'b.has_placement_rights' => 1]);
 
             if (isset($name) && !empty($name)) {
                 $org->andWhere([
@@ -272,7 +274,8 @@ class SearchController extends ApiBaseController
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1,'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
                     'or',
@@ -350,7 +353,8 @@ class SearchController extends ApiBaseController
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1,'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
                     'or',

@@ -60,14 +60,18 @@ class CandhomeController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->innerJoinWith(['applicationEnc b' => function ($b) {
+                    $b->joinWith(['organizationEnc bb']);
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                 }], false)
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1])
                 ->count();
 
             $companies_cnt = ErexxCollaborators::find()
-                ->select(['COUNT(college_enc_id) companies_count'])
-                ->where(['college_enc_id' => $college_id['organization_enc_id'], 'is_deleted' => 0, 'organization_approvel' => 1, 'college_approvel' => 1,])
+                ->alias('a')
+                ->select(['COUNT(a.college_enc_id) companies_count'])
+                ->joinWith(['organizationEnc bb'])
+                ->where(['a.college_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.organization_approvel' => 1, 'a.college_approvel' => 1,'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
                 ->asArray()
                 ->all();
 
@@ -75,9 +79,11 @@ class CandhomeController extends ApiBaseController
                 ->alias('a')
                 ->distinct()
                 ->joinWith(['applicationEnc c' => function ($c) {
+                    $c->joinWith(['organizationEnc bb']);
                     $c->innerJoinWith(['erexxEmployerApplications cc']);
                 }], false)
-                ->where(['a.created_by' => $id, 'a.shortlisted' => 1, 'cc.status' => 'Active', 'cc.is_deleted' => 0])
+                ->where(['a.created_by' => $id, 'a.shortlisted' => 1,
+                    'cc.status' => 'Active', 'cc.is_deleted' => 0,'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
                 ->count();
 
             $companies = ErexxCollaborators::find()
@@ -99,7 +105,12 @@ class CandhomeController extends ApiBaseController
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
                 }])
-                ->where(['aa.college_enc_id' => $college_id, 'aa.organization_approvel' => 1, 'aa.college_approvel' => 1, 'aa.is_deleted' => 0])
+                ->where(['aa.college_enc_id' => $college_id,
+                    'aa.organization_approvel' => 1,
+                    'aa.college_approvel' => 1,
+                    'aa.is_deleted' => 0,
+                    'b.is_erexx_approved' => 1,
+                    'b.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -135,7 +146,7 @@ class CandhomeController extends ApiBaseController
                         $b->groupBy('f.placement_location_enc_id');
                     }]);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'d.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -162,7 +173,7 @@ class CandhomeController extends ApiBaseController
                     $b->andWhere(['c.followed' => 1, 'c.user_enc_id' => $id]);
                     $b->joinWith(['businessActivityEnc e'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0])
+                ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0,'b.is_erexx_approved' => 1, 'b.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -215,7 +226,7 @@ class CandhomeController extends ApiBaseController
                         $b->groupBy('f.placement_location_enc_id');
                     }]);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'d.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
