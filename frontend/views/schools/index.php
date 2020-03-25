@@ -18,7 +18,7 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">COVID-19 ( Online Classes )</div>
-                        <div class="jumbo-heading">Learning From Nothing <br> to be something</div>
+                        <div class="jumbo-heading">confronting Online School Classes for Students of Nursery to Class 12</div>
                         <!--                    <div class="search-box1">-->
                         <!--                        <form action="--><? //= Url::to('/courses/courses-list') ?><!--">-->
                         <!--                            <input type="text" placeholder="Search" name="keyword" id="get-courses-list">-->
