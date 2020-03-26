@@ -61,7 +61,7 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in one">
                         <a href="/employers">
                             <div class="icon">
@@ -75,7 +75,7 @@ $this->params['header_dark'] = false;
                         </a>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in two">
                         <a href="/candidates/features">
                             <div class="icon">
@@ -90,7 +90,42 @@ $this->params['header_dark'] = false;
                         </a>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <div class="box-border fade-in two">
+                        <a href="/schools">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
+                                     alt="Candidates" title="Candidates">
+                            </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
+                            <div class="h-heading">Schools</div>
+                            <div class="h-text">COVID-19 <br>(Online Classes)</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <div class="box-border fade-in three">
+<!--                        <div class="box-overlay">-->
+                            <a href="/colleges">
+                                <div class="icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                         alt="Universities & Colleges" title="Universities and Colleges">
+                                </div>
+                                <div class="icon2">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
+                                         alt="Employers" title="Employers"></div>
+                                <div class="h-heading">Colleges</div>
+                                <div class="h-text">I'm the future</div>
+                            </a>
+<!--                        </div>-->
+                        <!--                        <div class="overlay">-->
+                        <!--                            <div class="text">Coming Soon</div>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
                             <div class="icon">
@@ -100,7 +135,7 @@ $this->params['header_dark'] = false;
                             <div class="icon2">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
                                      alt="Employers" title="Employers"></div>
-                            <div class="h-heading">Universities & Colleges</div>
+                            <div class="h-heading">Universities</div>
                             <div class="h-text">I want to enroll talent</div>
                         </div>
                         <div class="overlay">
@@ -108,7 +143,7 @@ $this->params['header_dark'] = false;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-6 col-xs-6">
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
                             <div class="icon">
@@ -399,7 +434,7 @@ $this->registerCss('
    padding-right:0px !important; 
 }
 .header-boxs{
-    max-width:850px;
+//    max-width:850px;
     margin:0 auto;
 }
 .box-border:hover{
@@ -431,8 +466,7 @@ $this->registerCss('
     border-left:1px solid #ffffff4f;
     border-right:1px solid #ffffff4f;
     padding: 18px 20px 10px;
-    text-align: center; 
-//    margin-bottom: 20px; 
+    text-align: center;
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
@@ -727,9 +761,9 @@ how-icon{
 
 @media screen and (min-width: 993px){
     .box-border{
-         min-width: 213px !important;
-         max-width: 213px !important;
-         height: 171px;
+         min-width: 191px !important;
+         max-width: 191px !important;
+         height: 170px;
     }
 }
 @media screen and (max-width: 992px) {
@@ -740,12 +774,12 @@ how-icon{
         margin-top:-100px;
     }
     .box-border{
-        min-height: 175px;
+        min-height: 215px;
+        margin-bottom:20px;
         margin-left: 0px;
         background: #fff;
         border: 1px solid #eee;
         padding: 30px;
-        margin-bottom: 20px;
     }
     .h-heading{
         color:#000;
@@ -807,16 +841,12 @@ how-icon{
         background:none;
     }
 @media screen and (max-width: 575px){   
+
     .header-row{
         margin-top:20px;
     }
-}
-
-@media screen and (max-width: 375px){
-     .box-border{
-        min-height:280px;
-        margin-left:0px;
-        padding: 20px 10px;
+    .box-border{
+        min-height:240px;
      }
 }
 
@@ -1218,7 +1248,6 @@ how-icon{
         width: 100%;
     }
 }
-
 
 ');
 $script = <<< JS
