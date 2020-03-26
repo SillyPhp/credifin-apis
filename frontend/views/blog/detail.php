@@ -157,11 +157,6 @@ $this->params['seo_tags'] = [
                         echo $this->render('/widgets/hot-jobs');
                     ?>
                     <!--hotjobs Widget ends-->
-                    <!--hotjobs Widget start-->
-                    <?php
-                    echo $this->render('/widgets/teachers-card');
-                    ?>
-                    <!--hotjobs Widget ends-->
                 </div>
             </div>
         </div>
