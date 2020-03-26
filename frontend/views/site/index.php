@@ -101,7 +101,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Schools</div>
-                            <div class="h-text">COVID-19 <br>( Online Classes )</div>
+                            <div class="h-text">COVID-19 <br>(Online Classes)</div>
                         </a>
                     </div>
                 </div>
@@ -166,6 +166,10 @@ $this->params['header_dark'] = false;
     </div>
 </section>
 
+<!--- virus Section --->
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
 <!--------services section starts-------->
 
 <section class="services-section">
@@ -249,6 +253,7 @@ $this->params['header_dark'] = false;
     <div></div>
     <div></div>
 </div>
+
 <?php
 $this->registerCss('
 .header-row {
@@ -264,7 +269,7 @@ $this->registerCss('
     color:#fff;
 }
 .h-text{
-    color:#eef7ff; 
+    color:#ff7803;
 }
 .sectionIsLoading {
     display: none;
@@ -429,6 +434,7 @@ $this->registerCss('
    padding-right:0px !important; 
 }
 .header-boxs{
+//    max-width:850px;
     margin:0 auto;
 }
 .box-border:hover{
@@ -446,6 +452,9 @@ $this->registerCss('
 .box-border:hover .icon{
     display:none;
 }
+.box-border:hover .h-text{
+    color:#fff;
+}
 .icon2{
     display:none;
 }
@@ -460,13 +469,13 @@ $this->registerCss('
     border-left:1px solid #ffffff4f;
     border-right:1px solid #ffffff4f;
     padding: 18px 20px 10px;
-    text-align: center; 
-    margin-bottom: 20px; 
+    text-align: center;
     position:relative;
     -ms-transition:.3s all; 
     -webkit-transition:.3s all;
     transition:.3s all;
 } 
+
 .box-overlay {
     display: block;
   width: 100%;
@@ -768,7 +777,8 @@ how-icon{
         margin-top:-100px;
     }
     .box-border{
-        min-height: 175px;
+        min-height: 215px;
+        margin-bottom:20px;
         margin-left: 0px;
         background: #fff;
         border: 1px solid #eee;
@@ -834,16 +844,12 @@ how-icon{
         background:none;
     }
 @media screen and (max-width: 575px){   
+
     .header-row{
         margin-top:20px;
     }
-}
-
-@media screen and (max-width: 375px){
-     .box-border{
-        min-height:280px;
-        margin-left:0px;
-        padding: 20px 10px;
+    .box-border{
+        min-height:240px;
      }
 }
 
@@ -1352,3 +1358,25 @@ $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/
 $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['position' => \yii\web\View::POS_HEAD]);
 ?>
 <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<script>
+    var modal = document.getElementById("virusModal");
+    // Get the button that opens the modal
+    var btn = document.getElementsByClassName("collegeSignupModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    for(var i=0; i< btn.length; i++){
+        btn[i].onclick = function () {
+            modal.style.display = "block";
+        }
+    }
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

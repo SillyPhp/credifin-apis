@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use common\models\AppliedTrainingApplications;
 use common\models\TrainingProgramApplication;
 use common\models\TrainingProgramBatches;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\TrainingAppliedForm;
 use frontend\models\applications\ApplicationCards;
 use Yii;
@@ -22,6 +23,11 @@ class TrainingProgramsController extends Controller
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $type = Yii::$app->request->post('type');
@@ -42,7 +48,10 @@ class TrainingProgramsController extends Controller
             }
             return $response;
         }
-        return $this->render('index');
+
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
     public function actionFetchInstitutes()
     {

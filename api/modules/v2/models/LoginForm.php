@@ -53,7 +53,7 @@ class LoginForm extends Model
 
     private function _checkPassword($user)
     {
-        if ($user && $user->organization->organization_enc_id && isset(Yii::$app->params->password->mec->hash) && !empty(Yii::$app->params->password->mec->hash)) {
+        if ($user && isset(Yii::$app->params->password->mec->hash) && !empty(Yii::$app->params->password->mec->hash)) {
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['password'] = $this->password;
             if ($user->validatePassword($this->password, Yii::$app->params->password->mec->hash)) {
