@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\web\Controller;
 
@@ -17,7 +18,14 @@ class SchoolsController extends Controller
 
     public function actionIndex()
     {
-        return $this->render("index");
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 
 }

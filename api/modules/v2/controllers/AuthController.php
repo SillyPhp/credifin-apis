@@ -64,6 +64,7 @@ class AuthController extends ApiBaseController
     {
 
         $model = new IndividualSignup();
+        $model->source = Yii::$app->getRequest()->getUserIP();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->validate()) {
 
@@ -102,7 +103,14 @@ class AuthController extends ApiBaseController
         $model = new ValidateUser();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->validate()) {
-                return $this->response(200, ['status' => 200]);
+                $username = Usernames::find()
+                    ->where(['username' => $model->username])
+                    ->exists();
+                if (!$username) {
+                    return $this->response(200, ['status' => 200]);
+                }else{
+                    return $this->response(409,['username'=>['username already taken']]);
+                }
             } else {
                 return $this->response(409, $model->getErrors());
             }
@@ -166,7 +174,8 @@ class AuthController extends ApiBaseController
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->login()) {
-                $source = Yii::$app->request->post()['source'];
+//                $source = Yii::$app->request->post()['source'];
+                $source = Yii::$app->getRequest()->getUserIP();
                 $user = $this->findUser($model);
                 if ($user->organization_enc_id) {
                     $user_type = Users::find()

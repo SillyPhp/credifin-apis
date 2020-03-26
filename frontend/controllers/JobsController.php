@@ -67,6 +67,16 @@ class JobsController extends Controller
         ];
     }
 
+    public function actionClear()
+    {
+        $cache = Yii::$app->cache->flush();
+
+        if ($cache) {
+            return 'cache cleared';
+        } else {
+            return 'something went wrong...! please try again later';
+        }
+    }
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
