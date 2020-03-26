@@ -452,6 +452,9 @@ $this->registerCss('
 .box-border:hover .icon{
     display:none;
 }
+.box-border:hover .h-text{
+    color:#fff;
+}
 .icon2{
     display:none;
 }
