@@ -163,7 +163,12 @@ $this->registerCss('
     margin-left: 40px;
 }
 .uname-in-phone:focus{
-    outline:none;
+    outline:none !important;
+}
+.iti--allow-dropdown input, .iti--allow-dropdown input[type=text], .iti--allow-dropdown input[type=tel], .iti--separate-dial-code input, .iti--separate-dial-code input[type=text], .iti--separate-dial-code input[type=tel] {
+    padding-right: 6px;
+    padding-left: 10px;
+    margin-left: 0;
 }
 .virus-bg{
     position: ralative;
