@@ -115,7 +115,7 @@ use borales\extensions\phoneInput\PhoneInput;
                             'nationalMode' => false,
                         ],
                         'options' =>[
-                            'class' => 'uname-in',
+                            'class' => 'uname-in-phone',
                         ]
                     ])->label(false);
                     ?>
@@ -147,6 +147,23 @@ use borales\extensions\phoneInput\PhoneInput;
 $this->registerCss('
 .mx-600 .flag-container {
     left: 45px !important;
+}
+.iti{
+        position: relative;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 13px;
+}
+.uname-in-phone{
+    padding: 10px 15px;
+    width: 80%;
+    border: none;
+    margin-left: 40px;
+}
+.uname-in-phone:focus{
+    outline:none;
 }
 .virus-bg{
     position: ralative;
@@ -507,4 +524,11 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             modal.style.display = "none";
         }
     }
+    modal.onkeypress = function (event) {
+        if (event.keyCode == 27) {
+            modal.style.display = "none";
+        }
+    }
+
+
 </script>
