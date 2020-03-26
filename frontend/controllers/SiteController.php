@@ -230,7 +230,6 @@ class SiteController extends Controller
             'data' => $data
         ]);
     }
-
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -250,6 +249,11 @@ class SiteController extends Controller
     public function actionTweetDetail()
     {
         return $this->render('tweet-detail');
+    }
+
+    public function actionSchoolIndex()
+    {
+        return $this->render('school-index');
     }
 
     public function actionAllQuiz()
