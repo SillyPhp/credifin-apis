@@ -15,6 +15,7 @@ use common\models\Referral;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use Yii;
+Use \yii\db\Expression;
 use yii\helpers\Url;
 use common\models\Utilities;
 use yii\web\UploadedFile;
@@ -114,7 +115,7 @@ class CollegeIndexController extends ApiBaseController
                         }]);
                     }]);
                 }])
-                ->innerJoinWith(['applicationEnc ee'=>function($ee){
+                ->innerJoinWith(['applicationEnc ee' => function ($ee) {
                     $ee->joinWith(['organizationEnc e2']);
                 }])
                 ->where(['a.status' => 'Hired',
@@ -448,8 +449,10 @@ class CollegeIndexController extends ApiBaseController
 
             $candidate = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'], false)
+                ->select(['b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.cgpa', 'a.semester', 'c.name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->joinWith(['userEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc b1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.user_enc_id' => $data['user_id']])
                 ->asArray()
@@ -457,8 +460,10 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'], false)
+                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name','b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->joinWith(['userEnc b'=>function($b){
+                    $b->joinWith(['cityEnc b1']);
+                }], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0])
                 ->asArray()
@@ -569,40 +574,17 @@ class CollegeIndexController extends ApiBaseController
                     'a.starting_year',
                     'a.ending_year',
                     'a.semester',
+                    'a.college_actions',
                     'c.name',
+                    'a.cgpa',
                     'cc.educational_requirement course_name',
                     'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
-//                    $b->joinWith(['appliedApplications ccc' => function ($c) {
-////                        $c->select(['ccc.created_by','ccc.application_enc_id','e.organization_enc_id','e.name company_name','f.name','ccc.applied_application_enc_id','COUNT(CASE WHEN g.is_completed = 1 THEN 1 END) as active', 'COUNT(g.is_completed) total']);
-//                        $c->joinWith(['appliedApplicationProcesses g' => function ($g) {
-//                            $g->select(['g.applied_application_enc_id', 'h.field_enc_id']);
-//                            $g->joinWith(['fieldEnc h' => function ($h) {
-//                                $h->select(['h.field_enc_id', 'h.field_name', 'h.sequence']);
-//                            }]);
-//                        }]);
-//                        $c->joinWith(['applicationEnc d' => function ($d) {
-//                            $d->joinWith(['title ee' => function ($ee) {
-//                                $ee->joinWith(['categoryEnc f']);
-//                            }]);
-//                            $d->joinWith(['organizationEnc e']);
-//                            $d->onCondition([
-//                                'd.status' => 'Active',
-//                                'd.is_deleted' => 0,
-//                            ])
-//                            ->andOnCondition(["or",
-//                                ['d.application_for' => 0],
-//                                ['d.application_for' => 2],
-//                            ]);
-//                        }], false);
-//                        $c->onCondition(['ccc.is_deleted' => 0]);
-//                        $c->orderBy(['ccc.id' => SORT_DESC]);
-//                    }]);
                 }], true)
                 ->joinWith(['educationalRequirementEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
-                ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => null]);
+                ->where(['a.organization_enc_id' => $req['college_id']]);
             if (isset($data['course_name']) && !empty($data['course_name'])) {
                 $candidates->andWhere(['cc.educational_requirement' => $data['course_name']]);
             }
@@ -615,17 +597,64 @@ class CollegeIndexController extends ApiBaseController
             if (isset($data['name']) && !empty($data['name'])) {
                 $candidates->having(['like', 'user_full_name', $data['name']]);
             }
+            if (isset($data['college_actions']) && $data['college_actions'] != 'empty') {
+                if ($data['college_actions'] == '') {
+                    $candidates->andWhere(['a.college_actions' => null]);
+                } else {
+                    $candidates->andWhere(['a.college_actions' => $data['college_actions']]);
+                }
+            }
 
-//            if (isset($data['application_type']) && !empty($data['application_type '])) {
-//                $candidates->andWhere(['a.semester' => $data['semester']]);
-//            }
-
-
-            $candidates = $candidates->asArray()
+            $candidates = $candidates->orderBy(
+                [
+                    new \yii\db\Expression('college_actions IS NULL DESC,college_actions ASC')
+                ]
+            )->asArray()
                 ->all();
+
+            $i = 0;
+            foreach ($candidates as $c) {
+                $applied = $this->getAppliedData($c['user_enc_id']);
+                $candidates[$i]['applied'] = $applied;
+                $i++;
+            }
 
             return $this->response(200, ['status' => 200, 'candidates' => $candidates]);
         }
+    }
+
+    private function getAppliedData($user_id)
+    {
+        $applied = AppliedApplications::find()
+            ->distinct()
+            ->alias('a')
+            ->select(['a.applied_application_enc_id', 'b2.name org_name', 'b2.slug org_slug', 'a.current_round', 'b.slug',
+                'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
+                'COUNT(cc.is_completed) total',
+                'b4.name category_name',
+                'b5.name parent_category_name'])
+            ->joinWith(['applicationEnc b' => function ($b) {
+                $b->innerJoinWith(['erexxEmployerApplications b1'], false);
+                $b->joinWith(['organizationEnc b2'], false);
+                $b->joinWith(['title b3'=>function($b3){
+                    $b3->joinWith(['categoryEnc b4']);
+                    $b3->joinWith(['parentEnc b5']);
+                }]);
+            }],false)
+            ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
+                $cc->joinWith(['fieldEnc dd'], false);
+                $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon', 'dd.sequence']);
+                $cc->orderBy('dd.sequence');
+            }])
+            ->where(['a.created_by' => $user_id, 'b2.is_erexx_approved' => 1,
+                'b2.has_placement_rights' => 1])
+            ->groupBy(['a.applied_application_enc_id'])
+            ->orderBy(['a.id' => SORT_DESC])
+            ->limit(3)
+            ->asArray()
+            ->all();
+
+        return $applied;
     }
 
     public function actionCandidateInvitation()
@@ -733,10 +762,13 @@ class CollegeIndexController extends ApiBaseController
                 if ($user) {
                     if ($data['type'] == "approve") {
                         $user->college_actions = 0;
+                        $user->updated_on = date('Y-m-d H:i:s');
                     } elseif ($data['type'] == "block") {
                         $user->college_actions = 1;
+                        $user->updated_on = date('Y-m-d H:i:s');
                     } elseif ($data['type'] == "reject") {
                         $user->college_actions = 2;
+                        $user->updated_on = date('Y-m-d H:i:s');
                     }
                     if ($user->update()) {
                         $_flag++;
