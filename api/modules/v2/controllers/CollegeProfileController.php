@@ -260,6 +260,7 @@ class CollegeProfileController extends ApiBaseController
 
             $already_have = CollegeCourses::find()
                 ->where(['organization_enc_id' => $college_id, 'course_name' => $req['course_name']])
+                ->andWhere(['not',['college_course_enc_id'=>$req['course_id']]])
                 ->one();
 
             if (empty($already_have)) {
@@ -346,7 +347,14 @@ class CollegeProfileController extends ApiBaseController
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1]);
+                ->where([
+                    'a.college_enc_id' => $college_id,
+                    'a.is_deleted' => 0,
+                    'a.status' => 'Active',
+                    'a.is_college_approved' => 1,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1
+                ]);
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);
             }

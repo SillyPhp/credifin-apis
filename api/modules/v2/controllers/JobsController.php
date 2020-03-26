@@ -256,6 +256,7 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
+                'w.slug org_slug',
                 'r.name application_type',
                 'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
                 'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
