@@ -524,11 +524,10 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
             modal.style.display = "none";
         }
     }
-    modal.onkeypress = function (event) {
-        if (event.keyCode == 27) {
+    window.onkeyup = function (event) {
+        if(event.keyCode == 27){
             modal.style.display = "none";
         }
     }
-
 
 </script>
