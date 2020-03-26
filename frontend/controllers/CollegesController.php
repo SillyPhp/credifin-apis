@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 
 class CollegesController extends Controller
 {
