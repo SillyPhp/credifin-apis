@@ -632,7 +632,8 @@ class CollegeIndexController extends ApiBaseController
                 'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                 'COUNT(cc.is_completed) total',
                 'b4.name category_name',
-                'b5.name parent_category_name'])
+                'b5.name parent_category_name',
+                'a.status job_status'])
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications b1'], false);
                 $b->joinWith(['organizationEnc b2'], false);

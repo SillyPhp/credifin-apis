@@ -175,7 +175,7 @@ class IndividualSignup extends Model
             return false;
         }
 
-        if ($this->ref != '' && $this->invitation != '') {
+        if ($this->ref != '') {
             $this->saveRefferal($user->user_enc_id, $this->ref);
         }
 
