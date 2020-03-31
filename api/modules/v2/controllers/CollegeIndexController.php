@@ -460,8 +460,8 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name','b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'=>function($b){
+                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
                 ->joinWith(['departmentEnc c'], false)
@@ -637,11 +637,11 @@ class CollegeIndexController extends ApiBaseController
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications b1'], false);
                 $b->joinWith(['organizationEnc b2'], false);
-                $b->joinWith(['title b3'=>function($b3){
+                $b->joinWith(['title b3' => function ($b3) {
                     $b3->joinWith(['categoryEnc b4']);
                     $b3->joinWith(['parentEnc b5']);
                 }]);
-            }],false)
+            }], false)
             ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                 $cc->joinWith(['fieldEnc dd'], false);
                 $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon', 'dd.sequence']);
@@ -658,6 +658,34 @@ class CollegeIndexController extends ApiBaseController
         return $applied;
     }
 
+    public function actionTeacherInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('data');
+            foreach ($data as $d) {
+                $mail = Yii::$app->mailLogs;
+                $mail->organization_enc_id = $this->getOrgId();
+                $mail->user_enc_id = $user->user_enc_id;
+                $mail->referral_code = $this->getReferralCode();
+                $mail->email_type = 6;
+                $mail->type = 2;
+                $mail->email_receivers = [
+                    [
+                        'name' => $d['name'],
+                        'email' => $d['email'],
+                        'phone' => $d['phone']
+                    ]
+                ];
+                $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+                $mail->email_template = 'invitation-email';
+                if (!$mail->setEmailLog()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
     public function actionCandidateInvitation()
     {
         if ($user = $this->isAuthorized()) {
@@ -669,6 +697,7 @@ class CollegeIndexController extends ApiBaseController
                 $mail->user_enc_id = $user->user_enc_id;
                 $mail->referral_code = $this->getReferralCode();
                 $mail->email_type = 6;
+                $mail->type = 1;
                 $mail->email_receivers = [
                     [
                         'name' => $d['name'],
@@ -701,6 +730,7 @@ class CollegeIndexController extends ApiBaseController
             $mail->user_enc_id = $user->user_enc_id;
             $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
+            $mail->type = 1;
             $mail->email_receivers = $mails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
             $mail->email_template = 'invitation-email';
@@ -727,6 +757,7 @@ class CollegeIndexController extends ApiBaseController
             $mail->user_enc_id = $user->user_enc_id;
             $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
+            $mail->type = 1;
             $mail->email_receivers = $emails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
             $mail->email_template = 'invitation-email';

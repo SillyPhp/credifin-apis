@@ -13,6 +13,7 @@ namespace common\models;
  * @property string $receiver_email Receiver Email
  * @property string $receiver_name Receiver Name
  * @property string $receiver_phone Receiver Phone
+ * @property int $type 1 student,2 teacher
  * @property string $subject Subject of email
  * @property string $template Template of Email
  * @property string $data Email data
@@ -40,7 +41,7 @@ class EmailLogs extends \yii\db\ActiveRecord
     {
         return [
             [['email_log_enc_id', 'email_type', 'user_enc_id', 'receiver_email', 'subject', 'template'], 'required'],
-            [['email_type', 'is_sent'], 'integer'],
+            [['email_type','type', 'is_sent'], 'integer'],
             [['data'], 'string'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['email_log_enc_id', 'user_enc_id', 'organization_enc_id', 'receiver_name', 'template'], 'string', 'max' => 100],

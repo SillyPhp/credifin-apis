@@ -2,6 +2,7 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
@@ -33,7 +34,8 @@ class AuthController extends ApiBaseController
                 'signup',
                 'validate',
                 'username',
-                'find-user'
+                'find-user',
+                'teacher-signup'
             ],
             'class' => HttpBearerAuth::className()
         ];
@@ -46,6 +48,7 @@ class AuthController extends ApiBaseController
                 'validate' => ['POST', 'OPTIONS'],
                 'username' => ['POST', 'OPTIONS'],
                 'find-user' => ['POST', 'OPTIONS'],
+                'teacher-signup' => ['POST', 'OPTIONS'],
             ]
         ];
         $behaviors['corsFilter'] = [
@@ -58,6 +61,36 @@ class AuthController extends ApiBaseController
             ],
         ];
         return $behaviors;
+    }
+
+    public function actionTeacherSignup()
+    {
+        $model = new TeacherSignup();
+        $model->source = Yii::$app->getRequest()->getUserIP();
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if ($model->validate()) {
+
+                if (!$this->usernameValid($model)) {
+                    return $this->response(409, [
+                        'username' => 'Username already taken'
+                    ]);
+                }
+
+                if ($model->ref != '' && $model->invitation != '') {
+                    $invi = EmailLogs::findOne(['email_log_enc_id' => $model->invitation]);
+                    if ($this->getRef($model) && $invi->type == 2) {
+                        if ($model->saveTeacher()) {
+                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500]);
+                        }
+                    } else {
+                        return $this->response(404, ['status' => 404, 'message' => 'Invalid Link']);
+                    }
+                }
+            }
+            return $this->response(409, $model->getErrors());
+        }
     }
 
     public function actionSignup()
@@ -108,8 +141,8 @@ class AuthController extends ApiBaseController
                     ->exists();
                 if (!$username) {
                     return $this->response(200, ['status' => 200]);
-                }else{
-                    return $this->response(409,['username'=>['username already taken']]);
+                } else {
+                    return $this->response(409, ['username' => ['username already taken']]);
                 }
             } else {
                 return $this->response(409, $model->getErrors());
@@ -247,6 +280,7 @@ class AuthController extends ApiBaseController
             ->select(['a.user_enc_id', 'b.user_type', 'c.name city_name', 'e.name org_name'])
             ->joinWith(['userTypeEnc b'], false)
             ->joinWith(['cityEnc c'], false)
+            ->joinWith(['teachers'])
             ->joinWith(['userOtherInfo d' => function ($d) {
                 $d->joinWith(['organizationEnc e']);
             }], false)
@@ -257,7 +291,8 @@ class AuthController extends ApiBaseController
         return [
             'user_id' => $source->user_enc_id,
             'username' => $user->username,
-            'user_type' => $user_type['user_type'],
+            'user_type' => (!empty($user_type['teachers']) ? 'teacher' : $user_type['user_type']),
+//            'user_type' => $user_type['user_type'],
             'city' => $user_type['city_name'],
             'college' => $user_type['org_name'],
             'email' => $user->email,
