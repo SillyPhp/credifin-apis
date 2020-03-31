@@ -479,9 +479,14 @@ class CollegeIndexController extends ApiBaseController
             $college_id = $this->getOrgId();
 
             $courses = CollegeCourses::find()
-                ->select(['college_course_enc_id', 'course_name', 'course_duration'])
-                ->where(['organization_enc_id' => $college_id])
-                ->groupBy(['course_name'])
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id','b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.organization_enc_id' => $college_id])
+                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
