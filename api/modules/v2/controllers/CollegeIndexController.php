@@ -460,8 +460,8 @@ class CollegeIndexController extends ApiBaseController
 
             $candidates = UserOtherDetails::find()
                 ->alias('a')
-                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name','b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
-                ->joinWith(['userEnc b'=>function($b){
+                ->select(['a.user_other_details_enc_id', 'a.user_enc_id', 'a.cgpa', 'b.first_name', 'b.last_name', 'a.starting_year', 'a.ending_year', 'a.semester', 'c.name', 'b1.name city_name', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.first_name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END image'])
+                ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
                 ->joinWith(['departmentEnc c'], false)
@@ -479,9 +479,14 @@ class CollegeIndexController extends ApiBaseController
             $college_id = $this->getOrgId();
 
             $courses = CollegeCourses::find()
-                ->select(['college_course_enc_id', 'course_name', 'course_duration'])
-                ->where(['organization_enc_id' => $college_id])
-                ->groupBy(['course_name'])
+                ->alias('a')
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->joinWith(['collegeSections b' => function ($b) {
+                    $b->select(['b.college_course_enc_id','b.section_enc_id', 'b.section_name']);
+                    $b->onCondition(['b.is_deleted' => 0]);
+                }])
+                ->where(['a.organization_enc_id' => $college_id])
+                ->groupBy(['a.course_name'])
                 ->asArray()
                 ->all();
 
@@ -637,11 +642,11 @@ class CollegeIndexController extends ApiBaseController
             ->joinWith(['applicationEnc b' => function ($b) {
                 $b->innerJoinWith(['erexxEmployerApplications b1'], false);
                 $b->joinWith(['organizationEnc b2'], false);
-                $b->joinWith(['title b3'=>function($b3){
+                $b->joinWith(['title b3' => function ($b3) {
                     $b3->joinWith(['categoryEnc b4']);
                     $b3->joinWith(['parentEnc b5']);
                 }]);
-            }],false)
+            }], false)
             ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                 $cc->joinWith(['fieldEnc dd'], false);
                 $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon', 'dd.sequence']);

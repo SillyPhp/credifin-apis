@@ -20,6 +20,7 @@ use Yii;
  * @property Users $createdBy
  * @property Organizations $organizationEnc
  * @property Users $updatedBy
+ * @property CollegeSections[] $collegeSections
  */
 class CollegeCourses extends \yii\db\ActiveRecord
 {
@@ -69,5 +70,13 @@ class CollegeCourses extends \yii\db\ActiveRecord
     public function getUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCollegeSections()
+    {
+        return $this->hasMany(CollegeSections::className(), ['college_course_enc_id' => 'college_course_enc_id']);
     }
 }
