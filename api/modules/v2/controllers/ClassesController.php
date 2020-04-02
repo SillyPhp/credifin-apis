@@ -189,7 +189,7 @@ class ClassesController extends ApiBaseController
     {
         if ($this->isAuthorized()) {
             $teacher_id = $this->getTeacherId();
-            $data = Yii::$app->request->post();
+            $data = Yii::$app->request->post('data');
             $model = new AssignedVideoSessions();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -202,8 +202,10 @@ class ClassesController extends ApiBaseController
             if ($model->save()) {
                 return $this->response(200, ['status' => 200, 'message' => 'saved']);
             } else {
-                print_r($model->getErrors());
+                return $this->response(500,['status'=>500,'message'=>'an error occured']);
             }
+        }else{
+            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
         }
     }
 }
