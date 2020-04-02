@@ -12,9 +12,10 @@ class TokensModel
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $model->session_enc_id = $utilitiesModel->encrypt();
         $model->app_id = '9c38705a1b9542b1a1ccbf7edd7200c4';
-        $model->channel_name = $options['user_enc_id'];
+        $model->expire_time = $options['expire_time'];
+        $model->channel_name = 'EmpowerLive'.rand(100, 100000);
         $model->created_by = $options['user_enc_id'];
-        $model->session_token = $this->genrateToken($model->app_id,$model->channel_name,'9ed4669b46c0408686ff5f70d29d2db7');
+        $model->session_token = $this->genrateToken($model->app_id,$model->channel_name,'9ed4669b46c0408686ff5f70d29d2db7',$model->expire_time);
         if ($model->save())
         {
             return [
@@ -29,11 +30,11 @@ class TokensModel
             ];
         }
     }
-    private function genrateToken($appID,$channelName,$appCertificate){
+    private function genrateToken($appID,$channelName,$appCertificate,$expire_time){
         $uid = 0;
         $uidStr = null;
         $role = RtcTokenBuilder::RoleAttendee;
-        $expireTimeInSeconds = 3600;
+        $expireTimeInSeconds = $expire_time; //3600 default
         $currentTimestamp = (new \DateTime("now", new \DateTimeZone('UTC')))->getTimestamp();
         $privilegeExpiredTs = $currentTimestamp + $expireTimeInSeconds;
         $token = \api\modules\v3\models\RtcTokenBuilder::buildTokenWithUserAccount($appID, $appCertificate, $channelName, $uidStr, $role, $privilegeExpiredTs);

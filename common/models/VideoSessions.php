@@ -8,6 +8,7 @@ namespace common\models;
  *
  * @property int $id Primary Key
  * @property string $session_enc_id Encrypted Key
+ * @property int $expire_time
  * @property string $app_id
  * @property string $channel_name
  * @property string $session_token
@@ -34,8 +35,8 @@ class VideoSessions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['session_enc_id', 'app_id', 'channel_name', 'session_token', 'created_by'], 'required'],
-            [['is_active'], 'integer'],
+            [['session_enc_id', 'expire_time', 'app_id', 'channel_name', 'session_token', 'created_by'], 'required'],
+            [['expire_time', 'is_active'], 'integer'],
             [['created_on'], 'safe'],
             [['session_enc_id', 'app_id', 'channel_name', 'created_by'], 'string', 'max' => 100],
             [['session_token'], 'string', 'max' => 200],
