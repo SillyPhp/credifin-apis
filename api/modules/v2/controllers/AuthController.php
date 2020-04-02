@@ -359,26 +359,30 @@ class AuthController extends ApiBaseController
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
+                ->select(['a.user_enc_id','a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
+                ->joinWith(['teachers cc'=>function($cc){
+                    $cc->joinWith(['collegeEnc c1']);
+                }])
                 ->joinWith(['userOtherInfo d' => function ($d) {
                     $d->joinWith(['organizationEnc e']);
                 }], false)
                 ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
                 ->one();
-
         }
 
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
-            'user_type' => $user_detail['user_type'],
+            'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
+//            'user_type' => $user_detail['user_type'],
             'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
             'cgpa' => $user_detail['cgpa'],
-            'college' => $user_detail['org_name'],
+//            'college' => $user_detail['org_name'],
+            'college' => (!empty($user_detail['teachers'][0]['collegeEnc']) ? $user_detail['teachers'][0]['collegeEnc']['name'] : $user_detail['org_name']),
             'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
@@ -439,28 +443,30 @@ class AuthController extends ApiBaseController
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-        $e = EducationalRequirements::find()
-            ->where([
-                'educational_requirement' => $data['course_name']
-            ])
-            ->one();
+//        $e = EducationalRequirements::find()
+//            ->where([
+//                'educational_requirement' => $data['course_name']
+//            ])
+//            ->one();
 
-        if ($e) {
-            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
-        } else {
-            $eduReq = new EducationalRequirements();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
-            $eduReq->educational_requirement = $data['course_name'];
-            $eduReq->created_on = date('Y-m-d H:i:s');
-            $eduReq->created_by = $user_id;
-            if (!$eduReq->save()) {
-                return false;
-            }
-            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
-        }
+//        if ($e) {
+//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
+//        } else {
+//            $eduReq = new EducationalRequirements();
+//            $utilitiesModel = new \common\models\Utilities();
+//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
+//            $eduReq->educational_requirement = $data['course_name'];
+//            $eduReq->created_on = date('Y-m-d H:i:s');
+//            $eduReq->created_by = $user_id;
+//            if (!$eduReq->save()) {
+//                return false;
+//            }
+//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
+//        }
 
+        $user_other_details->course_enc_id = $data['course_id'];
+        $user_other_details->section_enc_id = $data['section_id'];
         $user_other_details->semester = $data['semester'];
         $user_other_details->starting_year = $data['starting_year'];
         $user_other_details->ending_year = $data['ending_year'];
