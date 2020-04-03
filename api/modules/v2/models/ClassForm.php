@@ -17,11 +17,12 @@ class ClassForm extends Model
     public $end_time;
     public $batch;
     public $date;
+    public $semester;
 
     public function rules()
     {
         return [
-            [['course_id', 'start_time', 'end_time', 'batch', 'date'], 'required'],
+            [['course_id', 'start_time', 'end_time', 'batch', 'date','semester'], 'required'],
             [['section_id'],'safe']
         ];
     }
@@ -35,6 +36,7 @@ class ClassForm extends Model
         $model->course_enc_id = $this->course_id;
         $model->section_enc_id = $this->section_id;
         $model->batch = $this->batch;
+        $model->semester = $this->semester;
         $model->start_time = $this->start_time;
         $model->end_time = $this->end_time;
         $model->class_date = date('Y-m-d', strtotime($this->date));

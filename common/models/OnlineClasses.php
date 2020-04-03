@@ -19,6 +19,8 @@ use Yii;
  * @property string $created_on class created on time
  * @property string $status Active,Inactive
  * @property int $is_deleted 0 false,1 true
+ * @property int $semester 0 false,1 true
+ * @property AssignedVideoSessions[] $assignedVideoSessions
  *
  * @property Teachers $teacherEnc
  * @property CollegeCourses $courseEnc
@@ -40,16 +42,24 @@ class OnlineClasses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['class_enc_id', 'teacher_enc_id', 'course_enc_id', 'batch', 'start_time', 'end_time', 'class_date'], 'required'],
+            [['class_enc_id', 'teacher_enc_id', 'course_enc_id', 'batch', 'start_time', 'end_time', 'class_date','semester'], 'required'],
             [['batch', 'start_time', 'end_time', 'class_date', 'created_on'], 'safe'],
             [['status'], 'string'],
-            [['is_deleted'], 'integer'],
+            [['is_deleted','semester'], 'integer'],
             [['class_enc_id', 'teacher_enc_id', 'course_enc_id', 'section_enc_id'], 'string', 'max' => 100],
             [['class_enc_id'], 'unique'],
             [['teacher_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Teachers::className(), 'targetAttribute' => ['teacher_enc_id' => 'teacher_enc_id']],
             [['course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['course_enc_id' => 'college_course_enc_id']],
             [['section_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeSections::className(), 'targetAttribute' => ['section_enc_id' => 'section_enc_id']],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAssignedVideoSessions()
+    {
+        return $this->hasMany(AssignedVideoSessions::className(), ['class_enc_id' => 'class_enc_id']);
     }
 
 

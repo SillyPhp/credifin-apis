@@ -5,10 +5,12 @@ namespace api\modules\v2\controllers;
 use common\models\AppliedApplications;
 use common\models\ErexxCollaborators;
 use common\models\FollowedOrganizations;
+use common\models\OnlineClasses;
 use common\models\Organizations;
 use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
+use common\models\Users;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\auth\HttpBearerAuth;
@@ -63,7 +65,7 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['organizationEnc bb']);
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                 }], false)
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'bb.is_erexx_approved' => 1,
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1])
                 ->count();
 
@@ -71,7 +73,7 @@ class CandhomeController extends ApiBaseController
                 ->alias('a')
                 ->select(['COUNT(a.college_enc_id) companies_count'])
                 ->joinWith(['organizationEnc bb'])
-                ->where(['a.college_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.organization_approvel' => 1, 'a.college_approvel' => 1,'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
+                ->where(['a.college_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
                 ->asArray()
                 ->all();
 
@@ -83,7 +85,7 @@ class CandhomeController extends ApiBaseController
                     $c->innerJoinWith(['erexxEmployerApplications cc']);
                 }], false)
                 ->where(['a.created_by' => $id, 'a.shortlisted' => 1,
-                    'cc.status' => 'Active', 'cc.is_deleted' => 0,'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
+                    'cc.status' => 'Active', 'cc.is_deleted' => 0, 'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
                 ->count();
 
             $companies = ErexxCollaborators::find()
@@ -146,7 +148,7 @@ class CandhomeController extends ApiBaseController
                         $b->groupBy('f.placement_location_enc_id');
                     }]);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'d.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -173,7 +175,7 @@ class CandhomeController extends ApiBaseController
                     $b->andWhere(['c.followed' => 1, 'c.user_enc_id' => $id]);
                     $b->joinWith(['businessActivityEnc e'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0,'b.is_erexx_approved' => 1, 'b.has_placement_rights' => 1])
+                ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0, 'b.is_erexx_approved' => 1, 'b.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -226,7 +228,7 @@ class CandhomeController extends ApiBaseController
                         $b->groupBy('f.placement_location_enc_id');
                     }]);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0,'d.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -235,6 +237,143 @@ class CandhomeController extends ApiBaseController
         } else {
             return false;
         }
+    }
+
+    public function actionOnlineClasses()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('y-m-d');
+            $time_now = $dt->format('H:i:s');
+
+            $user = Users::find()
+                ->alias('a')
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->innerJoinWith(['userOtherInfo b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            $classes = OnlineClasses::find()
+                ->alias('a')
+                ->select(
+                    [
+                        'a.class_enc_id',
+                        'a.class_date',
+                        'a.start_time',
+                        'a.end_time',
+                        'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
+                        'd.course_name',
+                        'a.semester'
+                    ])
+                ->joinWith(['teacherEnc b' => function ($b) {
+                    $b->joinWith(['userEnc b1'], false);
+                    $b->joinWith(['collegeEnc c'], false);
+                }], false)
+                ->joinWith(['courseEnc d'], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'c.organization_enc_id' => $user['college_id']])
+                ->andWhere(
+                    [
+                        'a.semester' => $user['semester'],
+                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.section_enc_id' => $user['section_enc_id']
+                    ])
+                ->andWhere(['a.class_date' => $date_now])
+                ->andWhere(['>=', 'a.end_time', $time_now])
+                ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($classes as $c) {
+                $seconds = $this->timeDifference($c['start_time'], $c['class_date']);
+                $classes[$i]['seconds'] = $seconds;
+                $classes[$i]['is_started'] = ($seconds < 0 ? true : false);
+                $i++;
+            }
+
+            if($classes) {
+                return $this->response(200, ['status' => 200, 'data' => $classes]);
+            }else{
+                return $this->response(404,['status'=>404,'message'=>'Not Found']);
+            }
+
+        }else{
+            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        }
+    }
+
+    public function actionGetUpcomingClasses(){
+        if ($user = $this->isAuthorized()) {
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('y-m-d');
+
+            $user = Users::find()
+                ->alias('a')
+                ->select(['a.user_enc_id', 'a.username', 'b.starting_year', 'b.course_enc_id', 'b.section_enc_id', 'b.semester', 'b.organization_enc_id college_id'])
+                ->innerJoinWith(['userOtherInfo b'], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            $classes = OnlineClasses::find()
+                ->alias('a')
+                ->select(
+                    [
+                        'a.class_enc_id',
+                        'a.class_date',
+                        'a.start_time',
+                        'a.end_time',
+                        'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
+                        'd.course_name',
+                        'a.semester'
+                    ])
+                ->joinWith(['teacherEnc b' => function ($b) {
+                    $b->joinWith(['userEnc b1'], false);
+                    $b->joinWith(['collegeEnc c'], false);
+                }], false)
+                ->joinWith(['courseEnc d'], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'c.organization_enc_id' => $user['college_id']])
+                ->andWhere(
+                    [
+                        'a.semester' => $user['semester'],
+                        'a.course_enc_id' => $user['course_enc_id'],
+                        'a.section_enc_id' => $user['section_enc_id']
+                    ])
+                ->andWhere(['>','a.class_date',$date_now])
+                ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            if($classes) {
+                return $this->response(200, ['status' => 200, 'data' => $classes]);
+            }else{
+                return $this->response(404,['status'=>404,'message'=>'Not Found']);
+            }
+
+        }else{
+            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        }
+    }
+
+
+
+    private function timeDifference($start_time, $date)
+    {
+        $datetime = new \DateTime();
+        $timezone = new \DateTimeZone('Asia/Kolkata');
+        $datetime->setTimezone($timezone);
+        $time1 = $datetime->format('y-m-d H:i:s');
+
+        $seconds = strtotime($date . $start_time) - strtotime($time1);
+
+        return $seconds;
     }
 
 //    public function actionGetCompanies()
