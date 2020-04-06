@@ -25,6 +25,13 @@ class ClassesController extends ApiBaseController
             'class' => VerbFilter::className(),
             'actions' => [
                 'create-class' => ['POST', 'OPTIONS'],
+                'get-courses' => ['POST', 'OPTIONS'],
+                'get-classes' => ['POST', 'OPTIONS'],
+                'get-upcoming-classes' => ['POST', 'OPTIONS'],
+                'save-session' => ['POST', 'OPTIONS'],
+                'validate-session' => ['POST', 'OPTIONS'],
+                'get-student-session' => ['POST', 'OPTIONS'],
+                'save-live-class' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -77,7 +84,7 @@ class ClassesController extends ApiBaseController
                         if ($model->SaveClass()) {
                             $data = OnlineClasses::find()
                                 ->alias('a')
-                                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.batch', 'a.start_time', 'a.end_time', 'a.class_date'])
+                                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date'])
                                 ->joinWith(['courseEnc b'], false)
                                 ->joinWith(['sectionEnc c'], false)
                                 ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
@@ -145,10 +152,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.batch', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
                 ->joinWith(['courseEnc b'], false)
                 ->joinWith(['sectionEnc c'], false)
-                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
                 ->andWhere(['a.class_date' => $date_now])
                 ->andWhere(['>=', 'a.end_time', $time_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
@@ -185,10 +192,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.batch', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
                 ->joinWith(['courseEnc b'], false)
                 ->joinWith(['sectionEnc c'], false)
-                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
                 ->andWhere(['>', 'a.class_date', $date_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
                 ->asArray()
@@ -278,6 +285,81 @@ class ClassesController extends ApiBaseController
                 return $this->response(200, ['status' => 200, 'session_id' => $class['session_id']]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionSaveLiveClass()
+    {
+
+        if ($this->isAuthorized()) {
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('y-m-d');
+            $time_now = $dt->format('H:i:s');
+            $end_time = $dt->modify('+1 hours');
+            $end_time = $end_time->format('H:i:s');
+
+            $teacher_id = $this->getTeacherId();
+
+            $data = Yii::$app->request->post('data');
+
+            $model = new OnlineClasses();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->class_enc_id = $utilitiesModel->encrypt();
+            $model->teacher_enc_id = $teacher_id;
+            $model->semester = $data['semester'];
+            $model->subject_name = $data['subject_name'];
+            $model->course_enc_id = $data['course_id'];
+            $model->section_enc_id = $data['section_id'];
+            $model->start_time = $time_now;
+            $model->end_time = $end_time;
+            $model->class_type = 'Live';
+            $model->class_date = $date_now;
+            $model->created_on = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                $data = [];
+                $data['class_id'] = $model->class_enc_id;
+                $data['class_date'] = $model->class_date;
+                return $this->response(200, ['status' => 200, 'data' => $data]);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 500, 'message' => 'unauthorized']);
+        }
+
+    }
+
+    public function actionChangeStatus()
+    {
+        if ($this->isAuthorized()) {
+            $class_id = Yii::$app->request->post('class_id');
+
+            $model = OnlineClasses::find()
+                ->where(['class_enc_id' => $class_id])
+                ->one();
+
+            if ($model) {
+                if ($model->status == 'Active') {
+                    $model->status = "Inactive";
+                    if ($model->update()) {
+                        return $this->response(200, ['status' => 200, 'message' => 'status changed']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    return $this->response(409, ['status' => 409, 'message' => 'conflict']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);

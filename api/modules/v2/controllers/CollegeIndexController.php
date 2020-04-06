@@ -682,7 +682,7 @@ class CollegeIndexController extends ApiBaseController
                     ]
                 ];
                 $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
-                $mail->email_template = 'invitation-email';
+                $mail->email_template = 'teacher-invitation-email';
                 if (!$mail->setEmailLog()) {
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }

@@ -267,7 +267,9 @@ class CandhomeController extends ApiBaseController
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
                         'd.course_name',
-                        'a.semester'
+                        'a.semester',
+                        'a.subject_name',
+                        'a.class_type'
                     ])
                 ->joinWith(['teacherEnc b' => function ($b) {
                     $b->joinWith(['userEnc b1'], false);
@@ -284,29 +286,32 @@ class CandhomeController extends ApiBaseController
                 ->andWhere(['a.class_date' => $date_now])
                 ->andWhere(['>=', 'a.end_time', $time_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
+                ->orderBy([new \yii\db\Expression('a.class_type = "Live" desc')])
                 ->asArray()
                 ->all();
 
             $i = 0;
             foreach ($classes as $c) {
                 $seconds = $this->timeDifference($c['start_time'], $c['class_date']);
+                $classes[$i]['is_live'] = ($c['class_type'] == "Live" ? true : false);
                 $classes[$i]['seconds'] = $seconds;
                 $classes[$i]['is_started'] = ($seconds < 0 ? true : false);
                 $i++;
             }
 
-            if($classes) {
+            if ($classes) {
                 return $this->response(200, ['status' => 200, 'data' => $classes]);
-            }else{
-                return $this->response(404,['status'=>404,'message'=>'Not Found']);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }
 
-        }else{
-            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
-    public function actionGetUpcomingClasses(){
+    public function actionGetUpcomingClasses()
+    {
         if ($user = $this->isAuthorized()) {
 
             $dt = new \DateTime();
@@ -332,7 +337,8 @@ class CandhomeController extends ApiBaseController
                         'a.end_time',
                         'CONCAT(b1.first_name," ",b1.last_name) teacher_name',
                         'd.course_name',
-                        'a.semester'
+                        'a.semester',
+                        'a.subject_name'
                     ])
                 ->joinWith(['teacherEnc b' => function ($b) {
                     $b->joinWith(['userEnc b1'], false);
@@ -346,22 +352,21 @@ class CandhomeController extends ApiBaseController
                         'a.course_enc_id' => $user['course_enc_id'],
                         'a.section_enc_id' => $user['section_enc_id']
                     ])
-                ->andWhere(['>','a.class_date',$date_now])
+                ->andWhere(['>', 'a.class_date', $date_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
                 ->asArray()
                 ->all();
 
-            if($classes) {
+            if ($classes) {
                 return $this->response(200, ['status' => 200, 'data' => $classes]);
-            }else{
-                return $this->response(404,['status'=>404,'message'=>'Not Found']);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }
 
-        }else{
-            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 
 
     private function timeDifference($start_time, $date)

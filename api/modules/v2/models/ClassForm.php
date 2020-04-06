@@ -15,19 +15,25 @@ class ClassForm extends Model
     public $section_id;
     public $start_time;
     public $end_time;
-    public $batch;
+    public $subject_name;
     public $date;
     public $semester;
 
     public function rules()
     {
         return [
-            [['course_id', 'start_time', 'end_time', 'batch', 'date','semester'], 'required'],
+            [['course_id', 'start_time', 'end_time', 'subject_name', 'date','semester'], 'required'],
             [['section_id'],'safe']
         ];
     }
 
     public function SaveClass(){
+
+        $time = new \DateTime($this->end_time);
+        $time->modify("-1 second");
+
+        $end_time = $time->format('H:i:s');
+
         $model = new OnlineClasses();
         $utilitiesModel = new \common\models\Utilities();
         $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -35,10 +41,10 @@ class ClassForm extends Model
         $model->teacher_enc_id = $this->teacher_id;
         $model->course_enc_id = $this->course_id;
         $model->section_enc_id = $this->section_id;
-        $model->batch = $this->batch;
+        $model->subject_name = $this->subject_name;
         $model->semester = $this->semester;
         $model->start_time = $this->start_time;
-        $model->end_time = $this->end_time;
+        $model->end_time = $end_time;
         $model->class_date = date('Y-m-d', strtotime($this->date));
         $model->created_on = date('Y-m-d H:i:s');
         if($model->save()){
