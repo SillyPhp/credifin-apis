@@ -850,4 +850,8 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionMentorshipIndex(){
+        return $this->render('mentorship-index');
+    }
+
 }
