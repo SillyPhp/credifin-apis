@@ -109,6 +109,9 @@ echo $this->render('/widgets/top-cities', [
     </div>
 </section>
 <?= $this->render('/widgets/usa_and_govt_jobs'); ?>
+
+<?= $this->render('/widgets/international-jobs'); ?>
+
 <section class="j-tweets">
     <div class="container">
         <div class="row">
