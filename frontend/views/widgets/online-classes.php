@@ -51,7 +51,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     </div>
                 </div>
                 <div class="oc">
-                    <button type="button" class="collegeSignupModal">Join The Movement</button>
+                    <button type="button" class="collegeSignupModal">Start Your Free Online Classroom Today </button>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@ use borales\extensions\phoneInput\PhoneInput;
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="csu-heading">Join the movement today</div>
+                <div class="csu-heading">Start Your Free Online Classroom Today</div>
                 <?php
                 $form = ActiveForm::begin([
                     'id' => 'enquiry-form',
