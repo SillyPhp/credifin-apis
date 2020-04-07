@@ -37,14 +37,22 @@ use yii\helpers\Url;
                 <div class="uname">
                     <div class="form-group field-username required">
                         <label for="fname">Full Name</label>
-                        <input type="text" id="fname" name="firstname" placeholder="Your name">
+                        <input type="text" id="fname" name="firstname" placeholder="">
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
                         <div class="form-group field-username required">
-                            <label for="fname">Mentor In Field</label>
-                            <input type="text" id="fname" name="firstname" placeholder="Field Name">
+                            <label for="fname">I Teach</label>
+                            <input type="text" id="fname" name="firstname" placeholder="e.g. Reading, Math ">
+                        </div>
+                    </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <div class="form-group field-username required">
+                            <label for="fname">To Ages</label>
+                            <input type="text" id="fname" name="firstname" placeholder="e.g. 5-22+, ">
                         </div>
                     </div>
                 </div>
@@ -56,11 +64,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-                <div class="uname">
-                    <div class="form-group field-username required">
 
-                    </div>
-                </div>
                 <div class="uname">
                 </div>
                 <div class="uname checkBox-padding">
