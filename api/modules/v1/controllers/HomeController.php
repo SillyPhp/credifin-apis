@@ -239,6 +239,13 @@ class HomeController extends ApiBaseController
             ->limit(4)
             ->all();
 
+        $i = 0;
+        foreach ($cities_jobs as $c) {
+            $cities_jobs[$i]['total_openings'] = $c['jobs'] + $c['internships'];
+            $cities_jobs[$i]['city_image'] = Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($c["city_name"])) . '.png','https');
+            $i++;
+        }
+
         if ($cities_jobs) {
             return $this->response(200, $cities_jobs);
         } else {
@@ -267,7 +274,7 @@ class HomeController extends ApiBaseController
                     'd.status' => 'Active',
                     'd.is_deleted' => 0,
                 ])
-                    ->joinWith(['applicationTypeEnc e' => function ($e) use($type){
+                    ->joinWith(['applicationTypeEnc e' => function ($e) use ($type) {
                         $e->andOnCondition(['e.name' => ucfirst($type)]);
                     }], false);
             }], false)
