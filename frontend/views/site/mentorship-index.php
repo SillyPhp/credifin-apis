@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\helpers\Html;
 ?>
 <section class="mentor-header">
     <div class="container">
@@ -34,43 +36,52 @@ use yii\helpers\Url;
             </div>
             <div class="col-md-6">
                 <div class="csu-heading">Join our mentorship program today</div>
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'enquiry-form',
+                    'enableClientValidation' => true,
+                    'validateOnBlur' => false,
+                    'options' => [
+                        'enctype' => 'multipart/form-data',
+                        'class' => 'mx-600',
+                    ],
+                ]);
+                ?>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <label for="fname">Full Name</label>
-                        <input type="text" id="fname" name="firstname" placeholder="">
+                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <div class="form-group field-username required">
-                            <label for="fname">I Teach</label>
-                            <input type="text" id="fname" name="firstname" placeholder="e.g. Reading, Math ">
-                        </div>
+                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <div class="form-group field-username required">
-                            <label for="fname">To Ages</label>
-                            <input type="text" id="fname" name="firstname" placeholder="e.g. 5-22+, ">
-                        </div>
+                        <?= $form->field($model, 'teaching_field')->textInput(['autocomplete' => 'off', 'placeholder' => 'Teaching Field', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
                 </div>
                 <div class="uname">
                     <div class="form-group field-username required">
-                        <div class="form-group field-username required">
-                            <label for="fname">Experience In Mentoring</label>
-                            <input type="text" id="fname" name="firstname" placeholder="Experience">
-                        </div>
+                        <?= $form->field($model, 'experience')->dropDownList([1 => 'fresher', 2 => 'experienced'], ['prompt' => 'select experience', 'class' => 'uname-in'])->label(false) ?>
+                        <p class="help-block help-block-error"></p>
                     </div>
                 </div>
 
                 <div class="uname">
-                </div>
-                <div class="uname checkBox-padding">
+                    <?=
+                    $form->field($model, 'phone')->textInput(['placeholder' => 'Phone number', 'class' => 'uname-in'])->label(false);
+                    ?>
+                    <p class="help-block help-block-error"></p>
                 </div>
                 <div class="modal-oc">
+                    <?= Html::submitButton('Sign Up', ['id' => 'enquiryBtn']); ?>
                 </div>
+                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
@@ -80,6 +91,15 @@ use yii\helpers\Url;
 $this->registerCSS('
 .footer{
     margin-top:0px !important;
+}
+.modal-oc button{
+    background: transparent;
+    border: 1px solid #00a0e3;
+    color:#00a0e3;
+    padding:10px 20px;
+    margin-top: 30px;
+    text-transform: uppercase;
+    font-family: roboto;
 }
 .mentor-header{
     background: url('. Url::to('@eyAssets/images/pages/mentorship/mentors-main-banner.png').');
@@ -244,21 +264,51 @@ $this->registerCSS('
 .mx-600 .form-group{
     margin-bottom: 5px;
 }
-.mentor-modal-content input[type=text] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 5px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
 
 .uname label{
     text-align: left;
     font-weight: bold;
     width:100%;
     line-height:0px;
+}
+.mx-600 .flag-container {
+    left: 45px !important;
+}
+.iti{
+        position: relative;
+    display: inline-block;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 13px;
+}
+.mx-600 .uname{
+    padding: 10px 0 0px 0;
+}
+.mx-600 .uname-in {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    font-size: 13px;
+}
+.mx-600 .form-group{
+    margin-bottom: 5px;
+}
+
+.uname-in-phone{
+    padding: 10px 15px;
+    width: 80%;
+    border: none;
+    margin-left: 40px;
+}
+.uname-in-phone:focus{
+    outline:none !important;
+}
+.iti--allow-dropdown input, .iti--allow-dropdown input[type=text], .iti--allow-dropdown input[type=tel], .iti--separate-dial-code input, .iti--separate-dial-code input[type=text], .iti--separate-dial-code input[type=tel] {
+    padding-right: 6px;
+    padding-left: 10px;
+    margin-left: 0;
 }
 @media screen and (max-width: 992px){
     .mentor-modal-content {

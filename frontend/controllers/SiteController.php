@@ -11,6 +11,7 @@ use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\States;
+use frontend\models\MentorshipEnquiryForm;
 use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
@@ -851,7 +852,11 @@ class SiteController extends Controller
     }
 
     public function actionMentorshipIndex(){
-        return $this->render('mentorship-index');
+        $model = new \frontend\models\mentorship\MentorshipEnquiryForm();
+
+        return $this->render('mentorship-index',[
+            'model' => $model,
+        ]);
     }
 
 }

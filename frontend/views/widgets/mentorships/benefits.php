@@ -48,9 +48,9 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12 col-xs-12">
-                    <div class="mbb-btn">
-                    <a href=""><i class="fas fa-users"></i> Try With Your Mentors</a>
-                    </div>
+<!--                    <div class="mbb-btn">-->
+<!--                    <a href=""><i class="fas fa-users"></i> Try With Your Mentors</a>-->
+<!--                    </div>-->
                 </div>
 
             </div>
