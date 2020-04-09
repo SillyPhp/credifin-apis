@@ -9,7 +9,7 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel">
                         <div class="whats-abso">
-                            <h1 class="whats-main-heading">Join Our Social Media Community</h1>
+                            <h1 class="whats-main-heading">Join Our Social Community</h1>
                             <div class="whats-sub-heading">Get Latest Job Updates</div>
                             <div class="whats-href">
                                 <a href="<?= Url::to('/whatsapp-community') ?>">
@@ -78,11 +78,12 @@ $this->registerCss('
     padding: 20px;
     margin-bottom:20px !important;
 }
-.fab.fa-whatsapp, .fab.fa-telegram-plane, .fab.fa-instagram, .fab.fa-twitter {
+.social-logo .fab.fa-whatsapp, .social-logo .fab.fa-telegram-plane,
+.social-logo .fab.fa-instagram, .social-logo .fab.fa-twitter {
     font-size: 55px;
     color: #fff;
 }
-.fab.fa-facebook-f {
+.social-logo .fab.fa-facebook-f {
     font-size: 55px;
     color: #00a0e3;
 }
@@ -160,7 +161,9 @@ $this->registerCss('
     width: 80px;
     height: 80px;
 }
-.fab.fa-facebook-f, .fab.fa-whatsapp, .fab.fa-telegram-plane, .fab.fa-instagram, .fab.fa-twitter {
+.social-logo .fab.fa-facebook-f, .social-logo .fab.fa-whatsapp,
+.social-logo .fab.fa-telegram-plane, .social-logo .fab.fa-instagram,
+.social-logo .fab.fa-twitter {
     font-size: 40px;
 }
 }
