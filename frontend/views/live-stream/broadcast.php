@@ -40,14 +40,11 @@ Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::P
 $this->registerJs('
 browserAccess();
 function browserAccess()
-{
+{ 
 if (top === self) {
      $("body").html("Access Denied");
 } 
-else
-    {
-        executeAll();
-    }
+else{executeAll();}
 }   
 function executeAll(){
 $("#content_main").show();
@@ -83,12 +80,13 @@ function getTokenVarification(tokenId)
         channel_name = response.response.channel_name;
         access_token = response.response.token;
         addScript("/assets/themes/ey/broadcast/js/broadcast-script.js");
+        addCssFile("/assets/themes/ey/broadcast/css/style.css");
        }
        else
        {
         alert("Authentication Failed");
        }
-      }
+      },  
     })  
 }
 $("#mic-btn").prop("disabled", true);
@@ -96,11 +94,10 @@ $("#video-btn").prop("disabled", true);
 $("#screen-share-btn").prop("disabled", true);
 $("#exit-btn").prop("disabled", true);
 $("#add-rtmp-btn").prop("disabled", true);
-}
+} 
 ');
 $this->registerCssFile('https://use.fontawesome.com/releases/v5.7.0/css/all.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
-$this->registerCssFile('/assets/themes/ey/broadcast/css/style.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/web/AgoraRTCSDK-2.8.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

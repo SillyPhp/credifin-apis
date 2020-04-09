@@ -63,6 +63,7 @@ function getTokenVarification(tokenId)
         channel_name = response.response.channel_name;
         access_token = response.response.token;
         addScript("/assets/themes/ey/broadcast/js/audience-script.js");
+        addCssFile("/assets/themes/ey/broadcast/css/style.css");
        }
        else
        {
@@ -71,11 +72,10 @@ function getTokenVarification(tokenId)
       }
     })  
 }
-}
+} 
 ');
 $this->registerCssFile('https://use.fontawesome.com/releases/v5.7.0/css/all.css');
 $this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
-$this->registerCssFile('/assets/themes/ey/broadcast/css/style.css');
 $this->registerJsFile('https://cdn.agora.io/sdk/web/AgoraRTCSDK-2.8.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>

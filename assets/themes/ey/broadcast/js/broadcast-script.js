@@ -51,20 +51,19 @@ var defaultConfigRTMP = {
 // set log level:
 // -- .DEBUG for dev
 // -- .NONE for prod
-AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.DEBUG);
+AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 
 // init Agora SDK
-client.init(
-    agoraAppId,
-    function() {
-        console.log("AgoraRTC client initialized");
-        joinChannel(); // join channel upon successfull init
-    },
-    function(err) {
-        console.log("[ERROR] : AgoraRTC client init failed", err);
-    }
-);
-
+    client.init(
+        agoraAppId,
+        function () {
+            console.log("AgoraRTC client initialized");
+            joinChannel(); // join channel upon successfull init
+        },
+        function (err) {
+            console.log("[ERROR] : AgoraRTC client init failed", err);
+        }
+    );
 // client callbacks
 client.on("stream-published", function(evt) {
     console.log("Publish local stream successfully");

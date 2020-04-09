@@ -11,7 +11,7 @@ var client = AgoraRTC.createClient({ mode: "live", codec: "vp8" }); // vp8 to wo
 // set log level:
 // -- .DEBUG for dev
 // -- .NONE for prod
-AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.DEBUG);
+AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 $(document).ready(function() {
     // Due to broswer restrictions on auto-playing video,
     // user must click to init and join channel
