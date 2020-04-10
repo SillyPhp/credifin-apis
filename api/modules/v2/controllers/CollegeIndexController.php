@@ -663,6 +663,34 @@ class CollegeIndexController extends ApiBaseController
         return $applied;
     }
 
+    public function actionTeacherInvitation()
+    {
+        if ($user = $this->isAuthorized()) {
+            $data = Yii::$app->request->post('data');
+            foreach ($data as $d) {
+                $mail = Yii::$app->mailLogs;
+                $mail->organization_enc_id = $this->getOrgId();
+                $mail->user_enc_id = $user->user_enc_id;
+                $mail->referral_code = $this->getReferralCode();
+                $mail->email_type = 6;
+                $mail->type = 2;
+                $mail->email_receivers = [
+                    [
+                        'name' => $d['name'],
+                        'email' => $d['email'],
+                        'phone' => $d['phone']
+                    ]
+                ];
+                $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
+                $mail->email_template = 'teacher-invitation-email';
+                if (!$mail->setEmailLog()) {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            }
+            return $this->response(200, ['status' => 200, 'message' => 'Email sent']);
+        }
+    }
+
     public function actionCandidateInvitation()
     {
         if ($user = $this->isAuthorized()) {
@@ -674,6 +702,7 @@ class CollegeIndexController extends ApiBaseController
                 $mail->user_enc_id = $user->user_enc_id;
                 $mail->referral_code = $this->getReferralCode();
                 $mail->email_type = 6;
+                $mail->type = 1;
                 $mail->email_receivers = [
                     [
                         'name' => $d['name'],
@@ -706,6 +735,7 @@ class CollegeIndexController extends ApiBaseController
             $mail->user_enc_id = $user->user_enc_id;
             $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
+            $mail->type = 1;
             $mail->email_receivers = $mails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
             $mail->email_template = 'invitation-email';
@@ -732,6 +762,7 @@ class CollegeIndexController extends ApiBaseController
             $mail->user_enc_id = $user->user_enc_id;
             $mail->referral_code = $this->getReferralCode();
             $mail->email_type = 6;
+            $mail->type = 1;
             $mail->email_receivers = $emails;
             $mail->email_subject = 'Educational Institute has invited you to join on Empower Youth';
             $mail->email_template = 'invitation-email';

@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use Yii;
 
 /**
  * This is the model class for table "{{%video_sessions}}".
@@ -16,6 +17,7 @@ namespace common\models;
  * @property string $created_by
  * @property string $created_on
  *
+ * @property AssignedVideoSessions[] $assignedVideoSessions
  * @property ClassAccess[] $classAccesses
  * @property Users $createdBy
  */
@@ -45,9 +47,14 @@ class VideoSessions extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
-     * @inheritdoc
+     * @return \yii\db\ActiveQuery
      */
+    public function getAssignedVideoSessions()
+    {
+        return $this->hasMany(AssignedVideoSessions::className(), ['session_enc_id' => 'session_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
