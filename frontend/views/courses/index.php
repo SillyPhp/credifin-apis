@@ -1,8 +1,6 @@
 <?php
 $this->params['header_dark'] = false;
-
 use yii\helpers\Url;
-
 ?>
     <section style="background: #061540;">
         <div class="container headsec">
