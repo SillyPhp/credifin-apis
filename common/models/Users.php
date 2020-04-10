@@ -52,6 +52,7 @@ namespace common\models;
  * @property AnsweredQuestionnaire[] $answeredQuestionnaires0
  * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields
  * @property AnsweredQuestionnaireFields[] $answeredQuestionnaireFields0
+ * @property Teachers[] $teachers
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates
  * @property AppEmpBenefitTemplate[] $appEmpBenefitTemplates0
  * @property AppInterviewQuestionnaireTemplate[] $appInterviewQuestionnaireTemplates
@@ -2899,5 +2900,13 @@ class Users extends \yii\db\ActiveRecord
     public function getUserOtherInfo()
     {
         return $this->hasOne(UserOtherDetails::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTeachers()
+    {
+        return $this->hasMany(Teachers::className(), ['user_enc_id' => 'user_enc_id']);
     }
 }
