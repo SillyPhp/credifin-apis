@@ -3,10 +3,13 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\ClassComments;
 use api\modules\v2\models\ClassForm;
 use common\models\AssignedVideoSessions;
 use common\models\CollegeCourses;
+use common\models\OnlineClassComments;
 use common\models\OnlineClasses;
+use common\models\PostComments;
 use common\models\Teachers;
 use common\models\Users;
 use Yii;
@@ -32,6 +35,12 @@ class ClassesController extends ApiBaseController
                 'validate-session' => ['POST', 'OPTIONS'],
                 'get-student-session' => ['POST', 'OPTIONS'],
                 'save-live-class' => ['POST', 'OPTIONS'],
+                'change-status' => ['POST', 'OPTIONS'],
+                'save-comment' => ['POST', 'OPTIONS'],
+                'get-parent-comments' => ['POST', 'OPTIONS'],
+                'get-child-comments' => ['POST', 'OPTIONS'],
+                'change-visibility' => ['POST', 'OPTIONS'],
+                'get-student-comment' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -365,4 +374,243 @@ class ClassesController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
+
+    public function actionSaveComment()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ClassComments();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    if ($model->saveComment($user->user_enc_id)) {
+                        return $this->response(200, ['status' => 200, 'message' => 'saved']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    print_r($model->getErrors());
+                }
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'data not loading']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetParentComments()
+    {
+
+        if ($this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_id');
+            $limit = Yii::$app->request->post('limit');
+            $page = Yii::$app->request->post('page');
+
+            if (!$limit) {
+                $limit = 4;
+            }
+
+            if (!$page) {
+                $page = 1;
+            }
+
+            $comments = OnlineClassComments::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->joinWith(['userEnc b'], false)
+                ->joinWith(['onlineClassComments c' => function ($c) {
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->joinWith(['userEnc bb'], false);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['a.reply_to' => NULL])
+                ->andWhere(['a.class_enc_id' => $class_id])
+                ->andWhere(['a.is_deleted' => 0])
+                ->orderBy(['a.created_on' => SORT_ASC])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($comments as $r) {
+                $a = OnlineClassComments::find()
+                    ->where(['reply_to' => $r['comment_enc_id']])
+                    ->andWhere(['class_enc_id' => $class_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if ($a) {
+                    $comments[$i]['hasChild'] = true;
+                } else {
+                    $comments[$i]['hasChild'] = false;
+                }
+                $i++;
+            }
+
+            if ($comments) {
+                return $this->response(200, ['status' => 200, 'comments' => $comments]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetChildComments()
+    {
+        if ($this->isAuthorized()) {
+
+            $parent = Yii::$app->request->post('comment_enc_id');
+
+            if (!$parent) {
+                return $this->response(422, ['status' => 422, 'message' => 'missing data']);
+            }
+
+            $limit = Yii::$app->request->post('limit');
+            $page = Yii::$app->request->post('page');
+
+            if (!$limit) {
+                $limit = 4;
+            }
+
+            if (!$page) {
+                $page = 1;
+            }
+
+            $child_comment = OnlineClassComments::find()
+                ->alias('a')
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->joinWith(['userEnc b'], false)
+                ->where(['a.reply_to' => $parent])
+                ->andWhere(['a.is_deleted' => 0])
+//                ->orderBy(['a.created_on' => SORT_DESC])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            if ($child_comment) {
+                return $this->response(200, ['status' => 200, 'child_comment' => $child_comment]);
+            } else {
+                return $this->response(404, ['status' => 404, 'mesasge' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionChangeVisibility()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $params = Yii::$app->request->post();
+
+            if (isset($params['comment_enc_id']) && !empty($params['comment_enc_id'])) {
+                $comment_id = $params['comment_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($params['value'])) {
+                if ($params['value'] == 1) {
+                    $value = 1;
+                } elseif ($params['value'] == 0) {
+                    $value = 0;
+                }
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $comment = OnlineClassComments::find()
+                ->where(['comment_enc_id' => $comment_id, 'is_deleted' => 0, 'status' => 1])
+                ->one();
+
+            if ($comment) {
+                $comment->is_visible = $value;
+                $comment->updated_on = date('Y-m-d H:i:s');
+                $comment->updated_by = $user->user_enc_id;
+
+                if ($comment->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionGetStudentComment()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_id');
+            $limit = Yii::$app->request->post('limit');
+            $page = Yii::$app->request->post('page');
+
+            if (!$limit) {
+                $limit = 4;
+            }
+
+            if (!$page) {
+                $page = 1;
+            }
+
+            $comments = OnlineClassComments::find()
+                ->alias('a')
+                ->distinct()
+                ->select(['a.comment_enc_id', 'a.comment', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) ELSE NULL END image'])
+                ->joinWith(['userEnc b'], false)
+                ->joinWith(['onlineClassComments c' => function ($c) {
+                    $c->select(['c.reply_to', 'c.comment_enc_id', 'c.comment', 'bb.username', 'CONCAT(bb.first_name, " ", bb.last_name) name', 'bb.initials_color color', 'CASE WHEN bb.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb.image_location, "/", bb.image) ELSE NULL END image']);
+                    $c->joinWith(['userEnc bb'], false);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['a.reply_to' => NULL])
+                ->andWhere(['a.class_enc_id' => $class_id])
+                ->andWhere(['a.is_deleted' => 0])
+                ->andWhere(['or',
+                    ['a.user_enc_id' => $user->user_enc_id],
+                    ['a.is_visible' => 1]
+                ])
+                ->orderBy(['a.created_on' => SORT_ASC])
+                ->limit($limit)
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($comments as $r) {
+                $a = OnlineClassComments::find()
+                    ->where(['reply_to' => $r['comment_enc_id']])
+                    ->andWhere(['class_enc_id' => $class_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+                if ($a) {
+                    $comments[$i]['hasChild'] = true;
+                } else {
+                    $comments[$i]['hasChild'] = false;
+                }
+                $i++;
+            }
+
+            if ($comments) {
+                return $this->response(200, ['status' => 200, 'comments' => $comments]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
 }

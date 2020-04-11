@@ -10,6 +10,7 @@ use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
 use Yii;
+use yii\helpers\Url;
 use api\modules\v1\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
@@ -359,7 +360,7 @@ class AuthController extends ApiBaseController
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id','a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
+                ->select(['a.user_enc_id','a.first_name', 'a.last_name','CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
                 ->joinWith(['teachers cc'=>function($cc){
@@ -376,6 +377,7 @@ class AuthController extends ApiBaseController
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
+            'image' => $user_detail['image'],
             'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
 //            'user_type' => $user_detail['user_type'],
             'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
