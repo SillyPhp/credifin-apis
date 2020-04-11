@@ -113,7 +113,6 @@ $this->registerCss('
     text-decoration: none;
     -webkit-transition: color 0.2s;
 }
-
 .skills-set::after {
     background: #fff;
     border-bottom: 13px solid transparent;
