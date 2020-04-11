@@ -1,15 +1,11 @@
 <?php
-
 namespace frontend\controllers;
-
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
-
 class CoursesController extends Controller
 {
-
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
@@ -95,7 +91,6 @@ class CoursesController extends Controller
 
     public function actionSearch($q = null)
     {
-//        Yii::$app->response->format = Response::FORMAT_JSON;
         if (Yii::$app->request->isAjax) {
             $url = "https://www.udemy.com/api-2.0/courses/?page=1&page_size=20&search=" . $q;
             $ch = curl_init();

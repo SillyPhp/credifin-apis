@@ -714,6 +714,9 @@ class SiteController extends Controller
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
                 break;
+            case 'getInternationalJobs':
+                return $this->renderAjax('/widgets/international-jobs');
+                break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
                 break;
