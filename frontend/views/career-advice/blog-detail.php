@@ -79,6 +79,7 @@ use yii\helpers\Url;
                     <?php
                 }
                 ?>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>
