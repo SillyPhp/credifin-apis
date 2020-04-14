@@ -484,7 +484,8 @@ var service_url = "https://www.udemy.com/api-2.0/courses/"
 $.ajax({
     type: "GET",
     url: service_url,
-    dataType: "xml",
+    dataType: "json", 
+    contentType: "text/plain",
     data: "page=1&page_size=6",
     processData: false,
     beforeSend : function(req) {
