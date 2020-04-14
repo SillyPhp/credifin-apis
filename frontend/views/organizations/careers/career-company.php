@@ -37,7 +37,7 @@ echo $this->render('/widgets/drop_resume', [
                                     <div class="col-lg-4">
                                         <div class="job-field">
                                             <?= Html::dropDownList('cities_drp',null,$cities, ['id'=>'cities_drp','prompt'=>'Choose City','data-placeholder'=>'City, province or region', 'class'=>'chosen-city']) ?>
-                                            <i class="la la-map-marker"></i>
+                                            <i class="fas fa-map-marker-alt"></i>
                                         </div>
                                     </div>
                                     <div class="col-lg-1">
@@ -405,7 +405,6 @@ section.overlape {
     z-index: 2;
 }
 .block {
-    float: left;
     padding: 0px 0;
     position: relative;
     width: 100%;  
@@ -522,10 +521,12 @@ section.overlape {
     float: left;
     width: 100%;
     position: relative;
-    
+    overflow:hidden;
+    border-radius:8px;
+    margin-bottom: 20px;
 }
 
-.job-field input {
+.job-field input, .job-field select {
     float: left;
     width: 100%;
     background: no-repeat;
@@ -545,7 +546,9 @@ section.overlape {
     -o-border-radius: 8px;
     border-radius: 8px;
 }
-
+.job-field select{
+    width:110%;
+}
 .job-field input::-webkit-input-placeholder { /* Chrome */
   color: #888888;font-size: 13px
 }

@@ -28,7 +28,7 @@ use yii\helpers\Url;
                                 <?= $careerDetail['description'] ?>
                             </div>
                             <div class="cb-ori-artical-link">
-                                <a href="<?= $careerDetail['link'] ?>">Read orignal Article</a>
+                                <a href="<?= $careerDetail['link'] ?>" target="_blank">Read orignal Article</a>
                             </div>
                         </div>
                     </div>
@@ -41,10 +41,12 @@ use yii\helpers\Url;
                 ?>
             </div>
             <div class="col-md-4">
-                <?=
-                $this->render('/widgets/subscribe-newsletter',[
-                    'subscribersForm' => $newsletterForm
-                ]);
+                <?php
+                if (Yii::$app->user->isGuest) {
+                    echo $this->render('/widgets/subscribe-newsletter', [
+                        'subscribersForm' => $newsletterForm
+                    ]);
+                }
                 ?>
                 <?php
                 if(!empty($relatedArticles)) {
