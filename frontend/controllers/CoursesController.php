@@ -4,6 +4,8 @@ use Yii;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\web\HttpException;
+use common\models\LearningVideos;
+use yii\db\Expression;
 class CoursesController extends Controller
 {
     public function beforeAction($action)
@@ -31,7 +33,18 @@ class CoursesController extends Controller
 
             return $result;
         }
-        return $this->render('index');
+        $popular_videos = LearningVideos::find()
+            ->where([
+                'is_deleted' => 0,
+                'status' => 1
+            ])
+            ->orderBy(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
+        return $this->render('index', [
+            'popular_videos' => $popular_videos,
+        ]);
     }
 
     public function actionCoursesList()
