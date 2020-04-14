@@ -98,6 +98,7 @@ $this->registercss('
 @media only screen and (max-width: 768px){
 .mail-share{
     display:inline-block;
+    width:99%;
 }
 }
 ');

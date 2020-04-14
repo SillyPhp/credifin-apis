@@ -521,7 +521,6 @@ section.overlape {
     float: left;
     width: 100%;
     position: relative;
-    overflow:hidden;
     border-radius:8px;
     margin-bottom: 20px;
 }
