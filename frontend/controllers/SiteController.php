@@ -859,4 +859,8 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionMentorProfile(){
+        return $this->render('mentor-profile');
+    }
+
 }
