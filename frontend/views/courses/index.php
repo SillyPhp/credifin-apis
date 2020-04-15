@@ -45,7 +45,7 @@ use yii\helpers\Url;
     </section>
 
     <section class="popular-skills">
-        <h3>Popular Categories</h3>
+        <h3>Popular Skills</h3>
         <div class="container" id="popular-category"></div>
     </section>
 
