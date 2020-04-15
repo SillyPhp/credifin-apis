@@ -1,8 +1,6 @@
 <?php
 $this->params['header_dark'] = true;
-
 use yii\helpers\Url;
-
 $this->title = Yii::t('frontend', $data['title']);
 $keywords = $data['title'] . "," . $data['primary_category']['title'] . "," . $data['primary_subcategory']['title'] . ', Udemy Courses';
 $description = $data['headline'];
@@ -103,7 +101,7 @@ $this->params['seo_tags'] = [
                         </div>
                         <div class="c-amount"><?= $data['price'] ?></div>
                         <div class="buy-btn">
-                            <a href="https://udemy.com<?= $data['url'] ?>" target="_blank" class="new-btn-set">Enroll
+                            <a href="https://www.udemy.com<?= $data['url'] ?>" target="_blank" class="new-btn-set">Enroll
                                 Now</a>
                         </div>
                         <div class="c-includes">
@@ -150,6 +148,11 @@ $this->params['seo_tags'] = [
             </div>
         </div>
     </section>
+    <!-- Automate starts here -->
+    <script type="text/javascript">
+        var _rakuten_automate = { accountKey: "b80371751312499fd4c9213a50140663aab18fd5e1878880e9ebf0846e5723fe", u1: "empweryouth159", snippetURL: "https://automate-frontend.linksynergy.com/minified_logic.js", automateURL: "https://automate.linksynergy.com", widgetKey: "HTLn3pIbhTqAlaYgQKFjIZC0U6GAwlIg", aelJS: null, useDefaultAEL: false, loaded: false, events: [] };var ael=window.addEventListener;window.addEventListener=function(a,b,c,d){"click"!==a&&_rakuten_automate.useDefaultAEL?ael(a,b,c):_rakuten_automate.events.push({type:a,handler:b,capture:c,rakuten:d})};_rakuten_automate.links={};var httpRequest=new XMLHttpRequest;httpRequest.open("GET",_rakuten_automate.snippetURL,!0);httpRequest.timeout=5E3;httpRequest.ontimeout=function(){if(!_rakuten_automate.loaded){for(i=0;i<_rakuten_automate.events.length;i++){var a=_rakuten_automate.events[i];ael(a.type,a.handler,a.capture)}_rakuten_automate.useDefaultAEL=!0}};httpRequest.onreadystatechange=function(){httpRequest.readyState===XMLHttpRequest.DONE&&200===httpRequest.status&&(eval(httpRequest.responseText),_rakuten_automate.run(ael))};httpRequest.send(null);
+    </script>
+    <!-- Automate ends here -->
 <?php
 $this->registerCss('
 .bg-set-clr {
