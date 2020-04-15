@@ -521,6 +521,7 @@ section.overlape {
     float: left;
     width: 100%;
     position: relative;
+    overflow:hidden;
     border-radius:8px;
     margin-bottom: 20px;
 }
@@ -546,7 +547,7 @@ section.overlape {
     border-radius: 8px;
 }
 .job-field select{
-    width:110%;
+    width:105%;
 }
 .job-field input::-webkit-input-placeholder { /* Chrome */
   color: #888888;font-size: 13px
