@@ -338,8 +338,26 @@ body .btn:focus {
     #buttons-container div {
         max-width: 90px;
         min-width: 90px;
-        margin: 8px;
+        margin: 5px;
         margin-bottom: 5px;
+        padding: 0px 2px;
+    }
+}
+@media only screen and (max-width: 310px) {
+    #buttons-container .dropdown-toggle {
+        display: none;
+    }
+    #buttons-container .btn-block {
+        border-radius: .3rem;
+    }
+    #buttons-container .btn-group i {
+        padding: 0;
+    }
+    #buttons-container div {
+        max-width: 85px;
+        min-width: 70px;
+        margin: 2px;
+        padding: 0px 5px;
     }
 }
 
