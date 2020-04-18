@@ -93,6 +93,10 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?php
+//echo $this->render('/widgets/courses-subscribe');
+?>
+
 <?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <div class="row">
