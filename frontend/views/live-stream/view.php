@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
 ?>
 <div id="content_main">
     <div class="container-fluid p-0">
@@ -54,7 +55,7 @@ function getTokenVarification(tokenId)
 {
    $.ajax({
     method: "POST",
-    url : "https://sneh.eygb.me/api/v3/video-session/validate-tokens",
+    url : base_url+"/api/v3/video-session/validate-tokens",
     data:{"tokenId":tokenId},
     success: function(response) { 
        if(response.response.status===true)
