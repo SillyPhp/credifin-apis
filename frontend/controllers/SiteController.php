@@ -210,6 +210,11 @@ class SiteController extends Controller
         return $this->render('about-us');
     }
 
+    public function actionMentorCareer()
+    {
+        return $this->render('mentor-career');
+    }
+
     public function actionWhatsappCommunity()
     {
         $data = SocialGroups::find()
