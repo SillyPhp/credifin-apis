@@ -8,6 +8,7 @@ use common\models\LearningVideos;
 use yii\db\Expression;
 class CoursesController extends Controller
 {
+    public $cookieString = '__udmy_2_v57r=; ud_cache_price_country=IN;';
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
@@ -23,6 +24,7 @@ class CoursesController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',
@@ -65,6 +67,7 @@ class CoursesController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',
@@ -85,6 +88,7 @@ class CoursesController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
         $header = [
             'Accept: application/json, text/plain, */*',
             'Content-Type: application/json;charset=utf-8',
@@ -110,6 +114,7 @@ class CoursesController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($ch,CURLOPT_COOKIE, $this->cookieString);
             $header = [
                 'Accept: application/json, text/plain, */*',
                 'Content-Type: application/json;charset=utf-8',
@@ -121,5 +126,4 @@ class CoursesController extends Controller
             return $result;
         }
     }
-
 }
