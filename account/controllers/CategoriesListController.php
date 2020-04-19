@@ -202,18 +202,15 @@ class CategoriesListController extends Controller
             ->alias('a')
             ->select(['a.skill value', 'a.skill_enc_id id'])
             ->where('skill LIKE "%' . $q . '%"')
-            ->joinWith(['assignedSkills b'=>function($b)
-            {
-                $b->andWhere(['assigned_to'=>'Profiles']);
-            }],false)
             ->andWhere([
                 'or',
                 ['=', 'a.status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
             ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('skill')
             ->asArray()
-            ->distinct()
+            ->distinct('skill')
             ->limit(20)
             ->all();
         return json_encode($categories);
