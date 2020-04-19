@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Url;
 Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
 ?>
 <div id="content_main">
     <div class="container-fluid p-0">
@@ -8,8 +9,9 @@ Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::P
         <div id="watch-live-overlay">
             <div id="overlay-container">
                 <div class="col-md text-center">
-                    <button id="watch-live-btn" type="button" class="btn btn-block btn-primary btn-xlg">
-                        <i id="watch-live-icon" class="fas fa-broadcast-tower"></i><span>Watch the Live Stream</span>
+                    <button id="watch-live-btn" type="button" class="btn btn-block btn-xlg">
+                        <i id="watch-live-icon" class="far fa-play-circle"></i>
+                        <span>Click here to Watch the Live Stream</span>
                     </button>
                 </div>
             </div>
@@ -54,7 +56,7 @@ function getTokenVarification(tokenId)
 {
    $.ajax({
     method: "POST",
-    url : "https://sneh.eygb.me/api/v3/video-session/validate-tokens",
+    url : base_url+"/api/v3/video-session/validate-tokens",
     data:{"tokenId":tokenId},
     success: function(response) { 
        if(response.response.status===true)

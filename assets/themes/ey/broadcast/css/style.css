@@ -138,10 +138,16 @@ body .btn:focus {
     width: 100%;
     height: 100%;
     text-align: center;
-    background-image: url('../images/AllThingsRTC_live-bg.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+}
+#watch-live-overlay, #full-screen-video{
+    background: #111; /* Old browsers */
+    background: -moz-linear-gradient(-45deg,  #111 0%, #111 50%, #000 63%, #000 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#111), color-stop(50%,#111), color-stop(63%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(-45deg, #111 0%,#111 50%,#000 63%,#000 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* IE10+ */
+    background: linear-gradient(135deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#111', endColorstr='#000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 #external-broadcasts-container {
@@ -166,15 +172,14 @@ body .btn:focus {
     border-radius: 5px;
     position: relative;
     margin: 0 auto;
-    top: 65%;
+    top: 35%;
     width: 70%;
 }
-
 #watch-live-overlay button {
     display: block;
-    /* margin: -50px auto; */
-    color: #0096e6;
-    background: #fff;
+    color: #fff;
+    background: transparent;
+    border-color: transparent;
 }
 
 #watch-live-overlay img {
@@ -186,6 +191,10 @@ body .btn:focus {
 
 #watch-live-overlay button i {
     padding: 0 10px;
+    font-size: 5.2rem;
+}
+#watch-live-overlay button span {
+    display: block;
 }
 
 .btn-xlg {
@@ -308,7 +317,7 @@ body .btn:focus {
     }
 
     #watch-live-overlay #overlay-container {
-        top: 60%;
+        top: 30%;
     }
 
     .btn-xlg {
