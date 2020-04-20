@@ -23,13 +23,13 @@ use yii\helpers\Html;
                 ]);
                 ?>
                 <div class="col-md-5">
-                    <?= $form->field($model, 'name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Name'])->label(false); ?>
+                    <?= $form->field($model, 'name')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Name', 'class' => 'fm-set'])->label(false); ?>
                 </div>
                 <div class="col-md-5">
-                    <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Email'])->label(false); ?>
+                    <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Email', 'class' => 'fm-set'])->label(false); ?>
                 </div>
                 <div class="col-md-2">
-                    <?= Html::submitButton('Submit', ['class' => 'btn btn-default', 'id' => 'subscribeBtn']); ?>
+                    <?= Html::submitButton('Submit', ['class' => 'btn btn-default sub-btn', 'id' => 'subscribeBtn']); ?>
                 </div>
                 <?php
                 ActiveForm::end();
@@ -42,13 +42,13 @@ use yii\helpers\Html;
 $this->registercss('
 .sub-sec{
     background-color: #00a0e3;
-    padding: 10px 0 50px;
+    padding: 10px 0 40px;
     margin: 25px 0;
 }
 .cou-heading {
     font-size: 22px;
     color: #fff;
-    padding-bottom: 8px;
+    padding-bottom: 10px;
     text-transform: capitalize;
     font-family: roboto;
     font-weight: 500;
@@ -57,8 +57,12 @@ $this->registercss('
     border-radius: 4px;
     font-size: 16px;
     font-family: roboto;
+    width: 100%;
+    height: 45px;
+    padding: 0 15px;
+    border: none;
 }
-.sub-btn button{
+.sub-btn{
     padding: 7px 25px;
     font-size: 18px;
     color: #fff;
@@ -68,9 +72,10 @@ $this->registercss('
     border:3px solid;
     font-weight: 500;
 }
-.sub-btn:hover button{
+.sub-btn:hover{
     color:#00a0e3;
     background-color:#fff;
+    border-color:#fff;
 }
 ');
 $subscriberScript = <<<JS
