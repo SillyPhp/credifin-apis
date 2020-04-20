@@ -94,7 +94,9 @@ use yii\helpers\Url;
     </section>
 
 <?php
-//echo $this->render('/widgets/courses-subscribe');
+echo $this->render('/widgets/courses-subscribe', [
+    'model' => $model,
+]);
 ?>
 
 <?php if (!empty($popular_videos)) { ?>
