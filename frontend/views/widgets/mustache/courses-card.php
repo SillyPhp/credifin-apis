@@ -9,7 +9,7 @@
                     </div>
                     <div class="course-description">
                         <div class="course-name">{{title}}</div>
-                        <div class="course-fees"><i class="fas fa-dollar-sign"></i>
+                        <div class="course-fees">{{#price_detail}}{{currency_symbol}}{{/price_detail}}</i>
                             {{#price_detail}}
                                 {{amount}}
                             {{/price_detail}}</div>
@@ -113,7 +113,6 @@ $this->registerCss('
     text-decoration: none;
     -webkit-transition: color 0.2s;
 }
-
 .skills-set::after {
     background: #fff;
     border-bottom: 13px solid transparent;

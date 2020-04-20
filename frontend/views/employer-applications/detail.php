@@ -415,6 +415,7 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
         <?php

@@ -210,6 +210,11 @@ class SiteController extends Controller
         return $this->render('about-us');
     }
 
+    public function actionMentorCareer()
+    {
+        return $this->render('mentor-career');
+    }
+
     public function actionWhatsappCommunity()
     {
         $data = SocialGroups::find()
@@ -713,6 +718,9 @@ class SiteController extends Controller
                 break;
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
+                break;
+            case 'getInternationalJobs':
+                return $this->renderAjax('/widgets/international-jobs');
                 break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
