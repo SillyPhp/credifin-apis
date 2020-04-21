@@ -54,6 +54,8 @@ class CitiesController extends Controller
                     ['like', 'a.name', $q],
                     ['like', 'c.name', $q],
                 ])
+                ->distinct('a.name')
+                ->groupBy('b.name','a.name')
                 ->limit(20)
                 ->all();
             return $cities;
