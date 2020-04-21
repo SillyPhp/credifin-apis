@@ -30,10 +30,12 @@ $this->params['header_dark'] = false;
                                     ?>
                                     <div class="edu mb-15 top-categories-list">
                                         <a href="<?= Url::to('/quizzes?type=' . $data[$next]['slug']); ?>">
-                                            <div class="imag">
-                                                <img src="<?= $data[$next]['icon']; ?>">
+                                            <div class="newset">
+                                                <div class="imag">
+                                                    <img src="<?= $data[$next]['icon']; ?>"/>
+                                                </div>
+                                                <div class="txt"><?= $data[$next]['name']; ?></div>
                                             </div>
-                                            <div class="txt"><?= $data[$next]['name']; ?></div>
                                         </a>
                                     </div>
                                     <?php
@@ -68,11 +70,11 @@ $this->params['header_dark'] = false;
                         <?php
                         foreach ($data as $d) {
                             ?>
-                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0">
+                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
                                 <a href="<?= Url::to('/quizzes?type=' . $d['slug']); ?>">
                                     <div class="newset">
                                         <div class="imag">
-                                            <img src="<?= $d['icon']; ?>">
+                                            <img src="<?= $d['icon']; ?>"/>
                                         </div>
                                         <div class="txt"><?= $d['name']; ?></div>
                                     </div>
@@ -134,7 +136,7 @@ $this->params['header_dark'] = false;
 <?php
 $this->registerCss('
 .top-categories:nth-child(2){
-    margin-top:5px;
+    margin-top:10px;
 }
 .top-categories:nth-child(1) .top-categories-list{
     float:right;
@@ -264,19 +266,30 @@ $this->registerCss('
     transition:.3s ease;
 }
 .edu{
-    text-align:center;
-    box-shadow: 0 0 10px rgba(0,0,0,.3);
-    width: 160px;
+//    text-align:center;
+//    box-shadow: 0 0 10px rgba(0,0,0,.3);
+//    width: 160px;
     min-height: 245px;  
-    line-height: 210px;
+//    line-height: 210px;
     position: relative;
     clear:both;
 }
 .imag{
     text-align: right;
 }
-.top-categories-list .txt, .newset .txt{
+.txt {
     position: absolute;
+    line-height: 17px;
+    bottom: 10px;
+    left: 0px;
+    font-weight: 400;
+    color: #222;
+    font-family: roboto;
+    text-transform: capitalize;
+    background-color: #fff;
+    padding: 0px 5px;
+}
+.top-categories-list{
     line-height: 30px;
     bottom: 10px;
     left: 10px;
@@ -289,9 +302,7 @@ $this->registerCss('
 }
 .newset{
     text-align:center;
-    box-shadow: 0 0 10px rgba(0,0,0,.3);
     max-width: 160px;
-    min-height: 245px;  
     line-height: 210px;
     position: relative;
     width:100%;

@@ -190,6 +190,7 @@ class CandidatesController extends Controller
             $locations = $parameters['locations'];
             $skills = $parameters['skills'];
             $job_titles = $parameters['job_titles'];
+            $salary = $parameters['salary'];
             if ($locations) {
                 $locations = explode(",", $locations);
             }
@@ -199,6 +200,12 @@ class CandidatesController extends Controller
             if ($job_titles) {
                 $job_titles = explode(",", $job_titles);
             }
+            if ($salary) {
+                $salary_exp = explode(",", $salary);
+                $salary_from = $salary_exp[0];
+                $salary_to = $salary_exp[1];
+            }
+
 
             $data = Users::find()
                 ->alias('a')
@@ -223,7 +230,7 @@ class CandidatesController extends Controller
                     $c->orderBy(['c.created_on' => SORT_DESC]);
                 }])
                 ->joinWith(['userWorkExperiences e' => function ($e) {
-                    $e->select(['e.created_by', 'e.experience_enc_id', 'e.company', 'e.title']);
+                    $e->select(['e.created_by', 'e.experience_enc_id', 'e.company', 'e.title', 'e.ctc', 'e.salary']);
                     $e->onCondition(['not', [
                         'e.company' => null,
                         'e.title' => null,
@@ -249,6 +256,9 @@ class CandidatesController extends Controller
             }
             if (isset($skills) && !empty($skills)) {
                 $data->andWhere(['in', 'c1.skill', $skills]);
+            }
+            if (isset($salary) && !empty($salary)) {
+                $data->andWhere(['between', 'e.salary', $salary_from, $salary_to]);
             }
             if (isset($offset) && $offset != null) {
                 $data->offset($offset);
@@ -371,7 +381,7 @@ class CandidatesController extends Controller
         $shortlist->last_updated_by = Yii::$app->user->identity->user_enc_id;
         $shortlist->status = 1;
         if ($shortlist->save()) {
-            $this->sendMail($app_id,$user_id);
+            $this->sendMail($app_id, $user_id);
             return true;
         }
     }
@@ -396,15 +406,15 @@ class CandidatesController extends Controller
     private function sendMail($app_id, $user_id)
     {
         $user = Users::find()
-            ->select(['CONCAT(first_name," ",last_name) full_name','email'])
-            ->where(['user_enc_id'=>$user_id])
+            ->select(['CONCAT(first_name," ",last_name) full_name', 'email'])
+            ->where(['user_enc_id' => $user_id])
             ->asArray()
             ->one();
 
         $data = $this->getApplicationData($app_id);
         $data['user_name'] = ucfirst($user['full_name']);
 
-        if($data && $user) {
+        if ($data && $user) {
             $mail = Yii::$app->mail;
             $mail->receivers = [];
             $mail->receivers[] = [
@@ -414,7 +424,7 @@ class CandidatesController extends Controller
             $mail->subject = $data['org_name'] . " has shortlisted you for " . $data['title'];
             $mail->data = $data;
             $mail->template = 'shortlist-mail';
-            if($mail->send()){
+            if ($mail->send()) {
                 $mail_logs = new EmailLogs();
                 $utilitiesModel = new \common\models\Utilities();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -446,7 +456,7 @@ class CandidatesController extends Controller
                 'm.min_wage as min_salary',
                 'm.wage_duration as salary_duration',
                 'n.name type',
-                ])
+            ])
             ->joinWith(['organizationEnc b'], false)
             ->joinWith(['applicationPlacementLocations c' => function ($c) {
                 $c->joinWith(['locationEnc d' => function ($d) {
@@ -461,7 +471,7 @@ class CandidatesController extends Controller
                 $g->joinWith(['categoryEnc gg']);
             }], false)
             ->joinWith(['applicationOptions m'], false)
-            ->joinWith(['applicationTypeEnc n'],false)
+            ->joinWith(['applicationTypeEnc n'], false)
             ->where(['a.application_enc_id' => $app_id, 'a.is_deleted' => 0, 'a.status' => 'Active'])
             ->asArray()
             ->one();

@@ -700,8 +700,8 @@ if (!empty($data['applicationPlacementLocations'])) {
     </div>
     <div class="applyBtn">
         <div class="btn-center">
-            <?= Html::a(Yii::t('app', 'Apply'), Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug']])); ?>
-            <?= Html::a(Yii::t('app', 'View '), Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug']])); ?>
+            <?= Html::a(Yii::t('app', 'Apply'), Url::to(Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug'],'https')); ?>
+            <?= Html::a(Yii::t('app', 'View '), Url::to(Yii::$app->textTransformation->toLower($data['application_type']) . '/' . $data['slug'],'https')); ?>
         </div>
     </div>
 </div>

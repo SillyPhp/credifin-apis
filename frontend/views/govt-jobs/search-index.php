@@ -2,6 +2,7 @@
 $this->title = ucwords(str_replace("-"," ",$s)).' Govt Jobs';
 $this->params['header_dark'] = true;
 Yii::$app->view->registerJs('var keyword = "' . $s . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var url_path = "' . Yii::$app->controller->id . '"', \yii\web\View::POS_HEAD);
 $keywords = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $description = 'Free job alert,naukri,job search,Latest jobs,internship,fresher jobs,internship,Empower youth';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');

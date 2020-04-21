@@ -737,10 +737,10 @@
                     if (data.status == 200) {
                         // console.log(data);
                         toastr.success('Interview schedule has been fixed. Check Dashboard for Updates', 'Interview Scheduled Successfully');
-                        // window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/update-interview";
                     } else {
                         toastr.error('Some error occured. Please try again', 'Error');
-                        // window.location.href = "/account/schedular/update-interview";
+                        window.location.href = "/account/schedular/update-interview";
                     }
                 }
             })

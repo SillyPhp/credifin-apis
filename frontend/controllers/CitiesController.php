@@ -43,17 +43,19 @@ class CitiesController extends Controller
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
         if (!is_null($q)) {
-            $cities = Cities::find()
-                ->alias('a')
-                ->select(['a.city_enc_id AS id', 'a.name AS text'])
+            $cities = (new \yii\db\Query())
+                ->from(Cities::tableName() . 'as a')
+                ->select(['a.city_enc_id AS id', 'CONCAT(a.name," - ", b.name) text'])
                 ->innerJoin(States::tableName() . ' as b', 'b.state_enc_id = a.state_enc_id')
                 ->innerJoin(Countries::tablename() . ' as c', 'c.country_enc_id = b.country_enc_id')
-                ->where(['like', 'a.name', $q])
-                ->andWhere(['c.country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMOGM2K3loZz09'])
+                ->andFilterWhere([
+                    'or',
+                    ['like', 'b.name', $q],
+                    ['like', 'a.name', $q],
+                    ['like', 'c.name', $q],
+                ])
                 ->limit(20)
-                ->asArray()
                 ->all();
-
             return $cities;
         }
     }

@@ -2,12 +2,14 @@
 
 namespace common\components\email_service;
 
+use common\models\EmailLogs;
 use common\models\Users;
 use common\models\UserVerificationTokens;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use common\models\Utilities;
 use Yii;
+use yii\helpers\Url;
 
 class IndividualSignup extends Component{
 
@@ -25,7 +27,7 @@ class IndividualSignup extends Component{
             ->asArray()
             ->one();
 
-        if(!data){
+        if(!$data){
             return false;
         }
 
@@ -51,7 +53,7 @@ class IndividualSignup extends Component{
 
         if ($userVerificationTokensModel->validate() && $userVerificationTokensModel->save()) {
             $user['name'] = $data['name'];
-            $user['link'] = Yii::$app->urlManager->createAbsoluteUrl(['/verify/' . $userVerificationTokensModel->token]);
+            $user['link'] = Url::to('/verify/' . $userVerificationTokensModel->token,'https');
 
             Yii::$app->mailer->htmlLayout = 'layouts/email';
 
@@ -60,9 +62,22 @@ class IndividualSignup extends Component{
             )
             ->setFrom([Yii::$app->params->from_email => Yii::$app->params->site_name])
             ->setTo([$data['email'] => $data['name']])
-            ->setSubject(Yii::t('frontend', 'Active your ' . Yii::$app->params->site_name . ' account'));
+            ->setSubject(Yii::t('app', 'Active your ' . Yii::$app->params->site_name . ' account'));
 
             if($mail->send()){
+                $mail_logs = new EmailLogs();
+                $utilitesModel = new Utilities();
+                $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                $mail_logs->email_type = 1;
+                $mail_logs->user_enc_id = $data['user_id'];
+                $mail_logs->receiver_name = $data['name'];
+                $mail_logs->receiver_email = $data['email'];
+                $mail_logs->receiver_phone = $data['phone'];
+                $mail_logs->subject = 'Active your ' . Yii::$app->params->site_name . ' account';
+                $mail_logs->template = 'verification-email';
+                $mail_logs->is_sent = 1;
+                $mail_logs->save();
                 return true;
             }
             return false;

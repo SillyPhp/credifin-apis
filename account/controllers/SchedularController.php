@@ -47,32 +47,6 @@ class SchedularController extends Controller
         }
     }
 
-    public function actionInerviewerStatus($id, $type)
-    {
-        $interviewer_details = InterviewerDetail::find()
-            ->where(['interviewer_detail_enc_id' => $id])
-            ->one();
-
-        if ($interviewer_details->status == 1) {
-            echo 'You are already accepted.';
-        } elseif ($interviewer_details->status == 2) {
-            echo 'You are already rejected.';
-        } else {
-
-            if (!empty($interviewer_details)) {
-                if ($type == 'accept') {
-                    $interviewer_details->status = 1;
-                } elseif ($type == 'reject') {
-                    $interviewer_details->status = 2;
-                }
-
-                if ($interviewer_details->update()) {
-                     echo 'successfully '.$type.'ed';
-                }
-            }
-        }
-    }
-
     public function actionFindApplications()
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {

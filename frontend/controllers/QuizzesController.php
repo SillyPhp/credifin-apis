@@ -29,7 +29,7 @@ class QuizzesController extends Controller
         if ($type == null) {
             $categories = AssignedCategories::find()
                 ->alias('a')
-                ->select(['b.name', 'b.slug', 'CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/others.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
+                ->select(['b.name', 'b.slug', 'CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/other1.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
                 ->joinWith(['parentEnc b'], false)
                 ->innerJoinWith(['quizzes c'], false)
                 ->where(['a.assigned_to' => 'Quiz', 'a.status' => 'Approved', 'a.is_deleted' => 0, 'c.is_deleted' => 0, 'c.display' => 1])

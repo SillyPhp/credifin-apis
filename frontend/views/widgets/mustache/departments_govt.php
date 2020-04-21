@@ -80,7 +80,7 @@ body{
 .agency-box {
     border: 1px solid #fff;
     box-shadow: 0px 0px 8px 0px #eee;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     background:#fff;
     border-radius: 2px;
 }
@@ -95,6 +95,7 @@ body{
     height: 100px;
     line-height: 100px;
     text-align: center;
+    overflow:hidden;
 }
 .agency-logo img {
     width: auto;

@@ -15,7 +15,7 @@ use yii\web\HttpException;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\filters\AccessControl;
-use frontend\models\learning\VideoForm;
+use frontend\models\learning\ClassEnquiryForm;
 
 class VideosController extends Controller
 {
@@ -51,7 +51,7 @@ class VideosController extends Controller
     {
         $this->layout = 'main-secondary';
 
-        $learningCornerFormModel = new VideoForm();
+        $learningCornerFormModel = new ClassEnquiryForm();
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;

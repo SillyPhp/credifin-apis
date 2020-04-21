@@ -27,7 +27,8 @@ class IndividualSignup extends Model
     public $password;
     public $college;
     public $department;
-    public $course_name;
+    public $course_id;
+    public $section_id;
     public $semester;
     public $starting_year;
     public $ending_year;
@@ -43,7 +44,7 @@ class IndividualSignup extends Model
     public function rules()
     {
         return [
-            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation'], 'safe'],
+            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation','section_id'], 'safe'],
 
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
@@ -63,7 +64,7 @@ class IndividualSignup extends Model
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            [['college', 'department', 'course_name', 'semester', 'roll_number'], 'required'],
+            [['college', 'department', 'course_id', 'semester', 'roll_number'], 'required'],
 
             ['source', 'required']
         ];
@@ -127,28 +128,30 @@ class IndividualSignup extends Model
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-        $e = EducationalRequirements::find()
-            ->where([
-                'educational_requirement' => $this->course_name
-            ])
-            ->one();
+//        $e = EducationalRequirements::find()
+//            ->where([
+//                'educational_requirement' => $this->course_name
+//            ])
+//            ->one();
+//
+//        if ($e) {
+//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
+//        } else {
+//            $eduReq = new EducationalRequirements();
+//            $utilitiesModel = new \common\models\Utilities();
+//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
+//            $eduReq->educational_requirement = $this->course_name;
+//            $eduReq->created_on = date('Y-m-d H:i:s');
+//            $eduReq->created_by = $user->user_enc_id;
+//            if (!$eduReq->save()) {
+//                return false;
+//            }
+//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
+//        }
 
-        if ($e) {
-            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
-        } else {
-            $eduReq = new EducationalRequirements();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
-            $eduReq->educational_requirement = $this->course_name;
-            $eduReq->created_on = date('Y-m-d H:i:s');
-            $eduReq->created_by = $user->user_enc_id;
-            if (!$eduReq->save()) {
-                return false;
-            }
-            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
-        }
-
+        $user_other_details->course_enc_id = $this->course_id;
+        $user_other_details->section_enc_id = $this->section_id;
         $user_other_details->semester = $this->semester;
         $user_other_details->starting_year = $this->starting_year;
         $user_other_details->ending_year = $this->ending_year;
@@ -175,7 +178,7 @@ class IndividualSignup extends Model
             return false;
         }
 
-        if ($this->ref != '' && $this->invitation != '') {
+        if ($this->ref != '') {
             $this->saveRefferal($user->user_enc_id, $this->ref);
         }
 

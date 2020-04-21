@@ -2,6 +2,7 @@
 
 namespace frontend\models\accounts;
 
+use common\models\EmailLogs;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
@@ -151,7 +152,22 @@ class IndividualSignUpForm extends Model
                 ];
                 $mail->subject = 'Welcome to Empower Youth';
                 $mail->template = 'thank-you';
-                $mail->send();
+                if($mail->send()){
+                    $mail_logs = new EmailLogs();
+                    $utilitesModel = new Utilities();
+                    $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                    $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                    $mail_logs->email_type = 5;
+                    $mail_logs->user_enc_id = $usersModel->user_enc_id;
+                    $mail_logs->receiver_name = $usersModel->first_name ." " . $usersModel->last_name;
+                    $mail_logs->receiver_email = $usersModel->email;
+                    $mail_logs->receiver_phone = $usersModel->phone;
+                    $mail_logs->subject = 'Welcome to Empower Youth';
+                    $mail_logs->template = 'thank-you';
+                    $mail_logs->is_sent = 1;
+                    $mail_logs->save();
+                }
+
                 Referral::widget(['user_id' => $usersModel->user_enc_id]);
                 $transaction->commit();
                 return true;
