@@ -8,6 +8,8 @@ use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
 use common\models\Utilities;
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
 
 class UploadNotes extends Model
 {
@@ -21,7 +23,7 @@ class UploadNotes extends Model
     public function rules()
     {
         return [
-            [['notes'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg, pdf, doc, docx','maxFiles' => 10],
+            [['notes'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg, pdf, doc, docx', 'maxFiles' => 10],
         ];
     }
 
@@ -35,7 +37,6 @@ class UploadNotes extends Model
             $class_notes->note_enc_id = $utilitiesModel->encrypt();
             $class_notes->class_enc_id = $class_id;
             $class_notes->note_location = Yii::$app->getSecurity()->generateRandomString();
-            $base_path = Yii::$app->params->upload_directories->resume->file_path . $class_notes->note_location;
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $encrypted_string = $utilitiesModel->encrypt();
             if (substr($encrypted_string, -1) == '.') {
@@ -47,19 +48,45 @@ class UploadNotes extends Model
             $class_notes->created_on = date('Y-m-d h:i:s');
             $class_notes->created_by = $user_id;
             if ($class_notes->save()) {
-                if (!is_dir($base_path)) {
-                    if (mkdir($base_path, 0755, true)) {
-                        if ($note->saveAs($base_path . DIRECTORY_SEPARATOR . $class_notes->note)) {
-                            array_push($note_ids,$class_notes->note_enc_id);
-                        }
-                    } else {
-                        return false;
-                    }
+                if($this->uploadFile($class_notes->note, $note->tempName)){
+                    array_push($note_ids, $class_notes->note_enc_id);
                 }
             } else {
                 return false;
             }
         }
         return $note_ids;
+    }
+
+    public function uploadFile($file_name, $file)
+    {
+        $bucketName = 'mec-uploads';
+        $access_key = 'AKIATDLKTDI76APKFGXO';
+        $secret_key = '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';
+        $s3 = new S3Client([
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key' => $access_key,
+                'secret' => $secret_key,
+            ]
+        ]);
+
+        $result = $s3->putObject([
+            'Bucket' => $bucketName,
+            'Key' => 'online_class_notes/'.$file_name,
+            'SourceFile' => $file
+        ]);
+
+        if($result){
+            $s3->putObjectAcl([
+                'Bucket' => $bucketName,
+                'Key' => 'online_class_notes/'.$file_name,
+                'ACL' => 'public-read'
+            ]);
+            return true;
+        }else{
+            return false;
+        }
     }
 }
