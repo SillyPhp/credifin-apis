@@ -27,12 +27,8 @@ use yii\helpers\Url;
                             <p class="mentor-designation">CTO <br> Empower Youth</p>
                         </div>
                         <div class="mentor-fields">
-                            <h4>Consult For</h4>
-                            <ul>
-                                <li>Web Designing</li>
-                                <li>Web Development</li>
-                                <li>Personality Development</li>
-                            </ul>
+                            <h4>Mentor Industry</h4>
+                            <p>Business Consulting/Coaching</p>
                         </div>
                         <div class="mentor-social-links">
                             <h4>Social Links</h4>
@@ -66,141 +62,218 @@ use yii\helpers\Url;
                         </div>
                         <button class="mentor-pay">Apply for Mentorship</button>
                     </div>
+
+                    <div class="mentor-expertise">
+                        <h4>Like This Mentor</h4>
+                        <div class="btn-flex">
+                            <div class="apply-btn">
+                                <button type="button">Follow <i class="fas fa-plus"></i></button>
+                            </div>
+                            <div class="apply-btn">
+                                <button type="button">Share <i class="fas fa-share-alt"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mentor-expertise">
+                        <h4>Expertise</h4>
+                        <ul>
+                            <li>International: Exporting and Importing</li>
+                            <li>International: Outsourcing</li>
+                            <li>Sales: Customer Service and CRM</li>
+                            <li>Sales: Selling Services</li>
+                        </ul>
+                    </div>
+                    <div class="mentor-expertise">
+                        <?= $this->render('/widgets/mentorships/video-slider')?>
+                    </div>
                 </div>
-            <div class="col-md-8">
-                <div class="mentor-padding-50">
-
-                    <div class="row mb3">
-                        <div class="col-md-4">
-                            <div class="mentor-stats">
-                                <h4>25</h4> <span>Person Mentored</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mentor-stats">
-                                <h4>100+</h4> <span>Hours Mentored</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mentor-stats">
-                                <h4>4</h4> <span>Person Mentoring</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mentor-stats">
-                                <h4>$25/hour</h4> <span>Mentoring Fee</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb4">
-                        <div class="col-md-12">
-                            <div class="mentor-heading">Mentorship Details</div>
-                            <div class="mentor-description">
-                                Coding for beginners might seem hard. However, starting with the basics is a great way
-                                to
-                                familiarise yourself with the syntax and the process of what it takes to create a
-                                website.
-                                This course teaches you HTML and CSS. Furthermore, all of the code that you will write
-                                will
-                                be visually represented within the course
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb4">
-                        <div class="col-md-12">
-                            <div class="mentor-heading">About Mentor</div>
-                            <div class="mentor-description">
-                                <p>“Just use the knowledge gained by experience, and learn what all you can with
-                                    whatever
-                                    new stuff ahead.”- is his life motto. Mr Tarry is a leading photographer and
-                                    proprietor
-                                    of Mophie Photography.</p>
-
-                                <p>Tarry started photography to find happiness, and he lives to put that enthusiasm
-                                    into Mophie Photography. He creates intuitive, creative, and adventurous experiences
-                                    within the process of shooting that make the process itself memorable.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb4">
-                        <div class="col-md-12">
-                            <div class="mentor-heading">Professional Background</div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="am-box">
-                                <ul class="prim-ind">
-                                    <li>Primary Industry<br> <span>Media and Entertainment</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="am-box">
-                                <ul class="location-work">
-                                    <li>Countries I have worked in<br> <span>India</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="am-box">
-                                <ul class="emp-work">
-                                    <li>Experience</li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="am-box">
-                                        <ul class="exp-field">
-                                            <li>Business Management <br> <span>14-15 Years</span></li>
-                                        </ul>
-                                    </div>
+                <div class="col-md-8">
+                    <div class="mentor-padding-50">
+                        <div class="row mb3">
+                            <div class="col-md-4">
+                                <div class="mentor-stats">
+                                    <h4>25</h4> <span>Person Mentored</span>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="am-box">
-                                        <ul class="exp-field">
-                                            <li>Ownership <br> <span>14-15 Years</span></li>
-                                        </ul>
-                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mentor-stats">
+                                    <h4>100+</h4> <span>Hours Mentored</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mentor-stats">
+                                    <h4>4</h4> <span>Person Mentoring</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mentor-stats">
+                                    <h4>$25 <span>per hour</span></h4> <span>Mentoring Fee</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mentor-stats">
+                                    <h4>9</h4> <span>Endorsements</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <div class="am-box">
-                                <ul class="expertize-list">
-                                    <li>Areas of Expertise
-                                        <ul class="area-fileds">
-                                            <li>Business Plan/Model</li>
-                                            <li>Plan/Model</li>
-                                        </ul>
-                                    </li>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">How Can I help</div>
+                                <div class="mentor-description">
+                                    <p>Tarry started photography to find happiness, and he lives to put that enthusiasm
+                                        into Mophie Photography. He creates intuitive, creative, and adventurous
+                                        experiences
+                                        within the process of shooting that make the process itself memorable.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Skills Taught By Mentor</div>
+                                <ul class="skills-taught">
+                                    <li>Web Designing</li>
+                                    <li>Web Development</li>
+                                    <li>Personality Development</li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mentor-heading">Stages Of The Startups That I Prefer Helping</div>
-                            <div class="support-list">
-                                <ul>
-                                    <li>
-                                        <div class="sl-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/mentorship/i.png') ?>">
-                                            <p>Ideation</p>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Mentorship Details</div>
+                                <div class="mentor-description">
+                                    Coding for beginners might seem hard. However, starting with the basics is a great
+                                    way
+                                    to
+                                    familiarise yourself with the syntax and the process of what it takes to create a
+                                    website.
+                                    This course teaches you HTML and CSS. Furthermore, all of the code that you will
+                                    write
+                                    will
+                                    be visually represented within the course
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">About Mentor</div>
+                                <div class="mentor-description">
+                                    <p>“Just use the knowledge gained by experience, and learn what all you can with
+                                        whatever
+                                        new stuff ahead.”- is his life motto. Mr Tarry is a leading photographer and
+                                        proprietor
+                                        of Mophie Photography.</p>
+
+                                    <p>Tarry started photography to find happiness, and he lives to put that enthusiasm
+                                        into Mophie Photography. He creates intuitive, creative, and adventurous
+                                        experiences
+                                        within the process of shooting that make the process itself memorable.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Professional Background</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="am-box">
+                                    <ul class="prim-ind">
+                                        <li>Primary Industry<br> <span>Media and Entertainment</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="am-box">
+                                    <ul class="location-work">
+                                        <li>Countries I have worked in<br> <span>India</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mpb-text">
+                                    <p>Hospitality & Tourism, 2nd stage small business , customer service,launching new
+                                        products & services ONLY if your business it's been operational for more than a
+                                        year.</p>
+
+                                    <p>Going to the next level, after having business for more than 2yrs or a very well
+                                        product/service designed. NOW focusing on Management, MKT estrategies/PR and
+                                        Financials.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Experience</div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="ex-box">
+                                            <ul class="exp-field">
+                                                <li>Business Management <br> <span>14-15 Years</span></li>
+                                            </ul>
                                         </div>
-                                    </li>
-                                </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="ex-box">
+                                            <ul class="exp-field">
+                                                <li>Ownership <br> <span>14-15 Years</span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="ment-exp-box">
+                                            <p><span>Job Title: </span>Director</p>
+                                            <p><span>Company: </span>Empower Youth</p>
+                                            <p><span>Working Period </span>06 Aug 2018 - Currently Working Here</p>
+                                            <p><span>Job Description: </span>Going to the next level, after having business for more than 2yrs or a very well
+                                                product/service designed. NOW focusing on Management, MKT estrategies/PR and
+                                                Financials.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="mentee-btn">
-                                <button>Apply for Mentorship</button>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Stages Of The Startups That I Prefer Helping</div>
+                                <div class="support-list">
+                                    <ul>
+                                        <li>
+                                            <div class="sl-icon">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/mentorship/i.png') ?>">
+                                                <p>Ideation</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Mentor Blogs</div>
+                            </div>
+                            <?= $this->render('/widgets/mentorships/mentor-blogs')?>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mentee-btn">
+                                    <button class="">Refer to a Friend</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <?= $this->render('/widgets/mentorships/mentorship-card')?>
+                </div>
+            </div>
         </div>
     </section>
 <?php
@@ -231,10 +304,16 @@ $this->registerCss('
 .ms-link:hover{
     color: #0e76a8;
 }
-.mentor-fields ul li{
+.mentor-fields ul li, .mentor-expertise ul li{
     font-size: 16px;
     color: #333;
     font-weight: 400;
+}
+.mentor-expertise ul{
+    padding-inline-start: 20px;
+}
+.mentor-expertise ul li{
+    list-style-type: disc;
 }
 .support-list ul{
     margin-top: 20px;
@@ -301,23 +380,12 @@ $this->registerCss('
     content:"\f005";
      left:15px; 
 }
-.area-fileds{
-    padding-inline-start: 0px;
-    margin-left: 0px;   
-    margin-top: 10px; 
-}
-.area-fileds li{
-    display:inline;
-    font-size: 15px !important;
-    color: #333 !important;
-    margin:0 5px 0 0px !important;
-    background: #f7f8fa;
-    padding: 8px 15px;
-}
+
 .mentor-heading{
     font-size: 25px;
     font-family: lora;
     color:#000;
+    text-transform: capitalize;
 }
 .mb4{
     margin-bottom: 40px;
@@ -339,6 +407,7 @@ $this->registerCss('
     background: #f4f8ff;
     padding: 20px 0;
     border-radius: 20px;
+    margin-bottom: 20px;
 }
 .mentor-relative{
     min-height: 200px;
@@ -379,9 +448,9 @@ $this->registerCss('
     font-family: lora;
     font-size:23px;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
 }
-.mentor-details p{
+.mentor-details p, mentor-fields p{
     margin: 0px;
     font-size: 16px;
     line-height: 25px;
@@ -391,11 +460,12 @@ $this->registerCss('
     font-family: roboto;
     margin-top: 30px;
 }
-.mentor-fields h4, .mentor-social-links h4{
+.mentor-fields h4, .mentor-social-links h4, .mentor-expertise h4{
     color: #333;
     font-family: lora;
     font-size: 23px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 .mentor-pay{
     margin-top: 20px;
@@ -421,12 +491,15 @@ $this->registerCss('
     font-family: roboto;
     color: #333;
 }
-.mentor-stats span{
+.mentor-stats span, .mentor-stats h4 span{
     font-size: 16px;
     font-family: roboto;
     color: #00a0e3;
 }
-.mentor-description{
+.mentor-stats h4 span{
+    color:#333;
+}
+.mentor-description, .mpb-text{
         font-size: 16px;
     line-height: 25px;
     color: #333;
@@ -441,16 +514,20 @@ $this->registerCss('
     text-align:center
 }
 .mentee-btn button{
-    color:#00a0e3;
-    border: 2px solid #00a0e3;
+    color:#fff;
+    border: none;
     padding: 15px 20px;
-    background: #fff;
-    border-radius: 50px;
+    background: #00a0e3;
     transition: .3s all;
+    text-transform: uppercase;
+    font-size: 16px;
 }
 .mentee-btn button:hover{
-    background: #00a0e3;
-    color:#fff;
+   box-shadow: 0 0 8px rgba(0,0,0,.3);
+    background: #fff;
+    color: #00a0e3;
+    transition: .2s ease;
+    transform: scale(1.03);
 }
 
 
@@ -493,6 +570,68 @@ $this->registerCss('
     font-size: 14px;
     color: #333;
     font-family: roboto;
+}
+.mentor-expertise{
+    background: #f4f8ff;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    font-family: roboto;
+}
+.skills-taught{
+    margin-top: 10px;
+}
+.skills-taught li{
+       display: inline;
+    font-size: 15px !important;
+    color: #333 !important;
+    margin: 0 5px 0 0px !important;
+    background: #f7f8fa;
+    padding: 8px 15px;
+}
+.ex-box ul li {
+    font-size: 17px;
+    font-family: roboto;
+    color: #00a0e3;
+    line-height: 27px;
+    margin-bottom: 20px;
+}
+.ex-box ul li span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 400;
+}
+.ment-exp-box p{
+    font-size: 16px;
+    font-family: roboto;
+    color: #333;
+}
+.ment-exp-box p span{
+    color: #000; 
+    font-weight: bold;
+}
+.btn-flex{
+    display: flex;
+}
+.apply-btn{
+    flex-basis: 50%;
+}
+.apply-btn button, .share-btn button{
+    width: 100%;
+    padding: 10px 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: #00a0e3;
+    color: #fff;
+    border: 1px solid #fff;
+}
+.apply-btn button:hover, .share-btn button:hover{
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    background: #fff;
+    color:#00a0e3;
+    transition: .2s ease;
+    transform: scale(1.03);
 }
 ');
 $script = <<<JS

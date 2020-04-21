@@ -863,4 +863,8 @@ class SiteController extends Controller
         return $this->render('mentor-profile');
     }
 
+    public function actionAllMentors(){
+        return $this->render('all-mentors');
+    }
+
 }
