@@ -25,7 +25,7 @@ use yii\helpers\Url;
             </div>
         </div>
         <div class="md-like">
-            <button type="button"><i class="far fa-heart"></i></button>
+            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
         </div>
     </div>
     <div class="men-box-fields">
@@ -50,9 +50,9 @@ use yii\helpers\Url;
         <div class="apply-btn">
             <button type="button">View Profile</button>
         </div>
-    </div>
-    <div class="share-btn">
-        <button type="button">Share With Friend</button>
+        <div class="share-btn">
+            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+        </div>
     </div>
 </div>
 <?php
@@ -81,6 +81,8 @@ $this->registerCss('
     background: #00a0e3;
     color: #fff;
     border: 1px solid #fff;
+    font-family: roboto;
+    font-weight: 500;
 }
 .apply-btn button:hover, .share-btn button:hover{
     box-shadow: 0 0 8px rgba(0,0,0,.3);
@@ -175,9 +177,9 @@ $this->registerCss('
     position: relative;
 }
 .mentorship-card-profile {
-    min-width: 80px;
-    max-width: 80px;
-    height: 80px;
+    min-width: 90px;
+    max-width: 9px;
+    height: 100px;
     border-radius: 20px;
     -webkit-border-radius: 20px;
     -ms-border-radius: 20px;
@@ -231,7 +233,9 @@ $this->registerCss('
     border: none;
     border-radius: 0 0 10px 10px;
 }
-
+button i{
+    padding:0 10px;
+}
 ')
 ?>
 

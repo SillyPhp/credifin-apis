@@ -26,6 +26,14 @@ use yii\helpers\Url;
                             <p class="mentor-name">Mr. Tarry</p>
                             <p class="mentor-designation">CTO <br> Empower Youth</p>
                         </div>
+                        <div class="btn-flex use-p">
+                            <div class="apply-btn">
+                                <button type="button">Follow <i class="fas fa-plus"></i></button>
+                            </div>
+                            <div class="apply-btn">
+                                <button type="button">Share <i class="fas fa-share-alt"></i></button>
+                            </div>
+                        </div>
                         <div class="mentor-fields">
                             <h4>Mentor Industry</h4>
                             <p>Business Consulting/Coaching</p>
@@ -61,18 +69,6 @@ use yii\helpers\Url;
                             </ul>
                         </div>
                         <button class="mentor-pay">Apply for Mentorship</button>
-                    </div>
-
-                    <div class="mentor-expertise">
-                        <h4>Like This Mentor</h4>
-                        <div class="btn-flex">
-                            <div class="apply-btn">
-                                <button type="button">Follow <i class="fas fa-plus"></i></button>
-                            </div>
-                            <div class="apply-btn">
-                                <button type="button">Share <i class="fas fa-share-alt"></i></button>
-                            </div>
-                        </div>
                     </div>
 
                     <div class="mentor-expertise">
@@ -278,6 +274,10 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.use-p{
+    padding:0 20px;
+    margin-top:5px;
+}
 .mentor-social-links{
     text-align: center;
     margin-top: 20px;
@@ -405,7 +405,7 @@ $this->registerCss('
 }
 .mentor-details-bg{
     background: #f4f8ff;
-    padding: 20px 0;
+    padding: 20px 0 0;
     border-radius: 20px;
     margin-bottom: 20px;
 }
@@ -424,8 +424,8 @@ $this->registerCss('
     font-weight: bold;
 }
 .turitor-instructor-profile {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     -webkit-border-radius: 50%;
     -ms-border-radius: 50%;
@@ -458,7 +458,7 @@ $this->registerCss('
 .mentor-fields{
     text-align: center;
     font-family: roboto;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 .mentor-fields h4, .mentor-social-links h4, .mentor-expertise h4{
     color: #333;

@@ -32,7 +32,7 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="md-like">
-                            <button type="button"><i class="far fa-heart"></i></button>
+                            <button type="button"><i class="far fa-bookmark"></i></button>
                         </div>
                     </div>
                     <div class="men-box-fields">
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="md-like">
-                            <button type="button"><i class="far fa-heart"></i></button>
+                            <button type="button"><i class="far fa-bookmark"></i></button>
                         </div>
                     </div>
                     <div class="men-box-fields">
@@ -142,7 +142,7 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="md-like">
-                            <button type="button"><i class="far fa-heart"></i></button>
+                            <button type="button"><i class="far fa-bookmark"></i></button>
                         </div>
                     </div>
                     <div class="men-box-fields">
