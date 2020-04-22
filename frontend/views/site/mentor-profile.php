@@ -466,6 +466,7 @@ $this->registerCss('
     font-size: 23px;
     font-weight: bold;
     margin-bottom: 5px;
+    margin-top: 0px;
 }
 .mentor-pay{
     margin-top: 20px;

@@ -7,120 +7,9 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-4 col-sm-6">
-                <div class="mentor-details-bg">
-
+                <div class="mentorship-card-bg">
                     <div class="md-flex">
-                        <div class="turitor-instructor-profile">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
-                        </div>
-                        <div class="mentor-details">
-                            <p class="mentor-name">Tarandeep Singh Rakhra</p>
-                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 2000 Per Hour</p>
-                            <p class="mentor-designation">20 Sessions</p>
-                            <div class="mentor-demo">
-                                <button type="button">Demo Available</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="md-flex spaceBetween">
-                       <div class="md-rating">9.7 <span>Rating</span></div>
-                        <div class="md-progress">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                    <span class="sr-only">70% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-like">
-                            <button type="button"><i class="far fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                    <div class="men-box-fields">
-                        <h4>Area Of Mentorship</h4>
-                        <ul class="skills-taught">
-                            <li>Web Designing</li>
-                            <li>Web Development</li>
-                            <li>Personality Development</li>
-                        </ul>
-                    </div>
-                    <div class="ask-mentee">
-                        <h4>Mentor Skills</h4>
-                        <ul class="ask-people">
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel1.jpg') ?>"></li>
-                        </ul>
-                    </div>
-                    <div class="btn-flex">
-                        <div class="apply-btn">
-                            <button type="button">Apply</button>
-                        </div>
-                        <div class="apply-btn">
-                            <button type="button">View Profile</button>
-                        </div>
-                    </div>
-                    <div class="share-btn">
-                        <button type="button">Share With Friend</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="mentor-details-bg">
-                    <div class="md-flex">
-                        <div class="turitor-instructor-profile">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel1.jpg') ?>">
-                        </div>
-                        <div class="mentor-details">
-                            <p class="mentor-name">Kumar Shalya Gupta</p>
-                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 2000 Per Hour</p>
-                            <p class="mentor-designation">20 Sessions</p>
-                        </div>
-                    </div>
-                    <div class="md-flex spaceBetween">
-                        <div class="md-rating">9.7 <span>Rating</span></div>
-                        <div class="md-progress">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                    <span class="sr-only">70% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-like">
-                            <button type="button"><i class="far fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                    <div class="men-box-fields">
-                        <h4>Area Of Mentorship</h4>
-                        <ul class="skills-taught">
-                            <li>Web Designing</li>
-                            <li>Web Development</li>
-                            <li>Personality Development</li>
-                        </ul>
-                    </div>
-                    <div class="ask-mentee">
-                        <h4>Mentor Skills</h4>
-                        <ul class="ask-people">
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
-                        </ul>
-                    </div>
-                    <div class="btn-flex">
-                        <div class="apply-btn">
-                            <button type="button">Apply</button>
-                        </div>
-                        <div class="apply-btn">
-                            <button type="button">View Profile</button>
-                        </div>
-                    </div>
-                    <div class="share-btn">
-                        <button type="button">Share With Friend</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="mentor-details-bg">
-                    <div class="md-flex">
-                        <div class="turitor-instructor-profile">
+                        <div class="mentorship-card-profile">
                             <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
                         </div>
                         <div class="mentor-details">
@@ -132,6 +21,7 @@ use yii\helpers\Url;
                             </div>
                         </div>
                     </div>
+                    <div class="career-c">Career Counselling</div>
                     <div class="md-flex spaceBetween">
                         <div class="md-rating">9.7 <span>Rating</span></div>
                         <div class="md-progress">
@@ -142,12 +32,12 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="md-like">
-                            <button type="button"><i class="far fa-bookmark"></i></button>
+                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
                         </div>
                     </div>
                     <div class="men-box-fields">
                         <h4>Area Of Mentorship</h4>
-                        <ul class="skills-taught">
+                        <ul class="mentor-skills-taught">
                             <li>Web Designing</li>
                             <li>Web Development</li>
                             <li>Personality Development</li>
@@ -167,9 +57,123 @@ use yii\helpers\Url;
                         <div class="apply-btn">
                             <button type="button">View Profile</button>
                         </div>
+                        <div class="share-btn">
+                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                        </div>
                     </div>
-                    <div class="share-btn">
-                        <button type="button">Share With Friend</button>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="mentorship-card-bg">
+                    <div class="md-flex">
+                        <div class="mentorship-card-profile">
+                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                        </div>
+                        <div class="mentor-details">
+                            <p class="mentor-name">Mr. Tarry</p>
+                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 200 Per Hour</p>
+                            <p class="mentor-designation">20 Sessions</p>
+                            <div class="mentor-demo">
+                                <button type="button">Demo Available</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="career-c">Career Counselling</div>
+                    <div class="md-flex spaceBetween">
+                        <div class="md-rating">9.7 <span>Rating</span></div>
+                        <div class="md-progress">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                    <span class="sr-only">70% Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-like">
+                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="men-box-fields">
+                        <h4>Area Of Mentorship</h4>
+                        <ul class="mentor-skills-taught">
+                            <li>Web Designing</li>
+                            <li>Web Development</li>
+                            <li>Personality Development</li>
+                        </ul>
+                    </div>
+                    <div class="ask-mentee">
+                        <h4>Mentor Skills</h4>
+                        <ul class="ask-people">
+                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
+                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
+                        </ul>
+                    </div>
+                    <div class="btn-flex">
+                        <div class="apply-btn">
+                            <button type="button">Apply</button>
+                        </div>
+                        <div class="apply-btn">
+                            <button type="button">View Profile</button>
+                        </div>
+                        <div class="share-btn">
+                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <div class="mentorship-card-bg">
+                    <div class="md-flex">
+                        <div class="mentorship-card-profile">
+                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
+                        </div>
+                        <div class="mentor-details">
+                            <p class="mentor-name">Mr. Tarry</p>
+                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 200 Per Hour</p>
+                            <p class="mentor-designation">20 Sessions</p>
+                            <div class="mentor-demo">
+                                <button type="button">Demo Available</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="career-c">Career Counselling</div>
+                    <div class="md-flex spaceBetween">
+                        <div class="md-rating">9.7 <span>Rating</span></div>
+                        <div class="md-progress">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                    <span class="sr-only">70% Complete</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md-like">
+                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
+                        </div>
+                    </div>
+                    <div class="men-box-fields">
+                        <h4>Area Of Mentorship</h4>
+                        <ul class="mentor-skills-taught">
+                            <li>Web Designing</li>
+                            <li>Web Development</li>
+                            <li>Personality Development</li>
+                        </ul>
+                    </div>
+                    <div class="ask-mentee">
+                        <h4>Mentor Skills</h4>
+                        <ul class="ask-people">
+                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
+                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
+                        </ul>
+                    </div>
+                    <div class="btn-flex">
+                        <div class="apply-btn">
+                            <button type="button">Apply</button>
+                        </div>
+                        <div class="apply-btn">
+                            <button type="button">View Profile</button>
+                        </div>
+                        <div class="share-btn">
+                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -185,6 +189,12 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.career-c {
+    font-size: 18px;
+    font-family: lora;
+    font-weight: bold;
+    margin-top: 15px;
+}
 .mentor-demo button{
     padding: 0px 00px;
     border: none;
@@ -209,6 +219,8 @@ $this->registerCss('
     background: #00a0e3;
     color: #fff;
     border: 1px solid #fff;
+    font-family: roboto;
+    font-weight: 500;
 }
 .apply-btn button:hover, .share-btn button:hover{
     box-shadow: 0 0 8px rgba(0,0,0,.3);
@@ -256,7 +268,7 @@ $this->registerCss('
 }
 .spaceBetween{
     justify-content: space-between;
-    margin-top: 20px;
+//    margin-top: 5px;
 }
 .md-like button{
     background: transparent;
@@ -279,10 +291,10 @@ $this->registerCss('
     font-size: 14px;
     font-weight: normal;   
 }
-.skills-taught{
+.mentor-skills-taught{
     margin-top: 10px;
 }
-.skills-taught li{
+.mentor-skills-taught li{
     display: inline-block;
     font-size: 14px !important;
     color: #333 !important;
@@ -294,7 +306,7 @@ $this->registerCss('
 .mt50{
     padding-top: 50px;
 }
-.mentor-details-bg{
+.mentorship-card-bg{
     box-shadow: 0 0 10px rgba(0,0,0,.1);
     padding: 20px 20px;
     border-radius: 0px;
@@ -302,10 +314,10 @@ $this->registerCss('
     margin-bottom: 25px;
     position: relative;
 }
-.turitor-instructor-profile {
-    min-width: 80px;
-    max-width: 80px;
-    height: 80px;
+.mentorship-card-profile {
+    min-width: 90px;
+    max-width: 9px;
+    height: 100px;
     border-radius: 20px;
     -webkit-border-radius: 20px;
     -ms-border-radius: 20px;
@@ -313,7 +325,7 @@ $this->registerCss('
     
     overflow: hidden;
 }
-.turitor-instructor-profile img {
+.mentorship-card-profile img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -358,6 +370,9 @@ $this->registerCss('
     width: 100%;
     border: none;
     border-radius: 0 0 10px 10px;
+}
+button i{
+    padding:0 10px;
 }
 ');
 $script = <<<JS

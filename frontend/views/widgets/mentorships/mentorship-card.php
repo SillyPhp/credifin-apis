@@ -15,6 +15,7 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+    <div class="career-c">Career Counselling</div>
     <div class="md-flex spaceBetween">
         <div class="md-rating">9.7 <span>Rating</span></div>
         <div class="md-progress">
@@ -57,6 +58,12 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.career-c {
+    font-size: 18px;
+    font-family: lora;
+    font-weight: bold;
+    margin-top: 15px;
+}
 .mentor-demo button{
     padding: 0px 00px;
     border: none;
@@ -130,7 +137,7 @@ $this->registerCss('
 }
 .spaceBetween{
     justify-content: space-between;
-    margin-top: 20px;
+//    margin-top: 5px;
 }
 .md-like button{
     background: transparent;
