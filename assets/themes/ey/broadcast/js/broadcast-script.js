@@ -453,8 +453,26 @@ function enableUiControls() {
     });
 
     $("#exit-btn").click(function(){
-        console.log("so sad to see you leave the channel");
+        var url_string = document.referrer;
+        var url = new URL(url_string);
+        var class_id = url.searchParams.get("cid");
+        var url_string2 = window.location.href;
+        var url2 = new URL(url_string2);
+        var user_id = url2.searchParams.get("uid");
+        $.ajax({
+            url : '/api/v2/classes/change-status',
+            method : 'post',
+            data : {class_id:class_id,uid:user_id},
+            success : function(data){
+
+            },
+        });
         leaveChannel();
+        if (confirm('Now the class is over. Do you want to leave this page and go to the dashboard?')) {
+            var referrer = document.referrer;
+            ref = referrer.match(/:\/\/(.[^/]+)/)[1];
+            window.top.location.href = 'https://'+ref;
+        }
     });
 
     $("#start-RTMP-broadcast").click(function(){
