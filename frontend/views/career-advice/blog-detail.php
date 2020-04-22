@@ -48,6 +48,11 @@ use yii\helpers\Url;
                     ]);
                 }
                 ?>
+
+                <?php
+                 echo $this->render('/widgets/sharing-box');
+                ?>
+
                 <?php
                 if(!empty($relatedArticles)) {
                     ?>
