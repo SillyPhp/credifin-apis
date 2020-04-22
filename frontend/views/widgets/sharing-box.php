@@ -10,35 +10,35 @@ use yii\helpers\Url;
         </div>
         <!--                        <div class="share-it">Share :-</div>-->
         <div class="fb-share">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=http://https://www.empoweryouth.com/learning/video/slug">
-                <button class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</button>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
+                <span class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</span>
             </a>
         </div>
         <div class="tw-share">
-            <a href="https://twitter.com/home?status=https://www.empoweryouth.com/learning/video/slug">
-                <button class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</button>
+            <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
+                <span class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</span>
             </a>
         </div>
         <div class="li-share">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.empoweryouth.com/learning/video/slug">
-                <button class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</button>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
+                <span class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</span>
             </a>
         </div>
         <div class="wa-share">
-            <a href="wa.me/?text=https://www.empoweryouth.com/learning/video/slug">
-                <button class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</button>
+            <a href="wa.me/?text=" target="_blank" class="share-elem-main">
+                <span class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</span>
             </a>
         </div>
         <div class="mail-share">
-            <a href="mailto:someone@example.com?Subject=Hello&body=https://www.empoweryouth.com/learning/video/slug"
-               target="_top">
-                <button class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</button>
+            <a href="mailto:someone@example.com?Subject=Hello&body=" target="_top" class="share-elem-main">
+                <span class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</span>
             </a>
         </div>
     </div>
 
 <?php
 $this->registercss('
+.share-elem-main{display:block;}
 .sharing-box{
     border: 1px solid #eee;
     padding: 15px;
@@ -53,7 +53,7 @@ $this->registercss('
     width:49%;
 }
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
-    padding: 10px 0;
+    padding: 7px 0;
     width:100%;
     background: #00a0e3;
     border: none;
@@ -63,6 +63,8 @@ $this->registercss('
     text-transform: capitalize;
     color: #fff;
     margin-bottom: 10px;
+    display: inline-block;
+    text-align: center;
 }
 .fb-btn:hover {
     background-color: #fff;
@@ -102,3 +104,11 @@ $this->registercss('
 }
 }
 ');
+$script = <<<JS
+$('.sharing-box div .share-elem-main').each(function() {
+    var href = $(this).attr('href');
+    var page_url = window.location.href;
+    $(this).attr('href', href + page_url);
+});
+JS;
+$this->registerJs($script);
