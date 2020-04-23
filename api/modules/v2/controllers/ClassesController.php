@@ -5,7 +5,10 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\ClassComments;
 use api\modules\v2\models\ClassForm;
+use api\modules\v2\models\UploadNotes;
+use api\modules\v2\models\ProfilePicture;
 use common\models\AssignedVideoSessions;
+use common\models\ClassNotes;
 use common\models\CollegeCourses;
 use common\models\OnlineClassComments;
 use common\models\OnlineClasses;
@@ -17,6 +20,10 @@ use yii\helpers\Url;
 use common\models\Utilities;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
+
 
 class ClassesController extends ApiBaseController
 {
@@ -41,6 +48,8 @@ class ClassesController extends ApiBaseController
                 'get-child-comments' => ['POST', 'OPTIONS'],
                 'change-visibility' => ['POST', 'OPTIONS'],
                 'get-student-comment' => ['POST', 'OPTIONS'],
+                'upload-notes' => ['POST', 'OPTIONS'],
+                'get-notes' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -349,7 +358,8 @@ class ClassesController extends ApiBaseController
 
     public function actionChangeStatus()
     {
-        if ($this->isAuthorized()) {
+        $user_id = Yii::$app->request->post('uid');
+        if ($this->isAuthorized() || $user_id) {
             $class_id = Yii::$app->request->post('class_id');
 
             $model = OnlineClasses::find()
@@ -604,6 +614,109 @@ class ClassesController extends ApiBaseController
 
             if ($comments) {
                 return $this->response(200, ['status' => 200, 'comments' => $comments]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUploadNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_id');
+            $notesModel = new UploadNotes();
+            $notesModel->notes = UploadedFile::getInstancesByName('files');
+            if ($notesModel->notes && $notesModel->validate()) {
+                if ($note_ids = $notesModel->upload($class_id, $user->user_enc_id)) {
+
+                    $notes = ClassNotes::find()
+                        ->select(['title', 'note'])
+                        ->where(['class_enc_id' => $class_id, 'is_deleted' => 0, 'note_enc_id' => $note_ids])
+                        ->asArray()
+                        ->all();
+
+                    $i = 0;
+                    foreach ($notes as $n){
+                        $link = $this->getFile($n['note']);
+                        $notes[$i]['link'] = $link;
+                        $i++;
+                    }
+
+                    return $this->response(200, ['status' => 200, 'data' => $notes]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function getFile($file_name)
+    {
+        $bucketName = 'mec-uploads';
+        $access_key = 'AKIATDLKTDI76APKFGXO';
+        $secret_key = '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';
+        $s3 = new S3Client([
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key' => $access_key,
+                'secret' => $secret_key,
+            ]
+        ]);
+
+        $url = $s3->getObjectUrl($bucketName, 'online_class_notes/' . $file_name);
+        return $url;
+
+    }
+
+    public function actionGetNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_enc_id');
+            $notes = ClassNotes::find()
+                ->select(['title','note'])
+                ->where(['class_enc_id' => $class_id, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($notes as $n){
+                $link = $this->getFile($n['note']);
+                $notes[$i]['link'] = $link;
+                $i++;
+            }
+            if ($notes) {
+                return $this->response(200, ['status' => 200, 'data' => $notes]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionClassStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_enc_id');
+            $status = OnlineClasses::find()
+                ->select(['status'])
+                ->where(['is_deleted' => 0, 'class_id' => $class_id])
+                ->asArray()
+                ->one();
+
+            if ($status) {
+                return $this->response(200, ['status' => 200, 'data' => $status]);
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }

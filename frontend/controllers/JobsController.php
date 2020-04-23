@@ -67,16 +67,6 @@ class JobsController extends Controller
         ];
     }
 
-    public function actionClear()
-    {
-        $cache = Yii::$app->cache->flush();
-
-        if ($cache) {
-            return 'cache cleared';
-        } else {
-            return 'something went wrong...! please try again later';
-        }
-    }
     public function beforeAction($action)
     {
         Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
@@ -339,7 +329,6 @@ class JobsController extends Controller
 
     public function actionList()
     {
-
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
@@ -1285,4 +1274,5 @@ class JobsController extends Controller
             'titles' => $titles_count,
         ];
     }
+
 }

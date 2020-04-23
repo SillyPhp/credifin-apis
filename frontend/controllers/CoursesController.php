@@ -1,5 +1,6 @@
 <?php
 namespace frontend\controllers;
+use common\models\extended\Subscribers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -18,6 +19,11 @@ class CoursesController extends Controller
 
     public function actionIndex()
     {
+        $model = new Subscribers();
+        if(Yii::$app->request->post() && $model->load(Yii::$app->request->post())){
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->subscribe();
+        }
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $url = "https://www.udemy.com/api-2.0/courses/?page=1&page_size=6";
             $ch = curl_init();
@@ -46,6 +52,7 @@ class CoursesController extends Controller
             ->all();
         return $this->render('index', [
             'popular_videos' => $popular_videos,
+            'model' => $model,
         ]);
     }
 
