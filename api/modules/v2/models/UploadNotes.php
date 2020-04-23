@@ -23,7 +23,7 @@ class UploadNotes extends Model
     public function rules()
     {
         return [
-            [['notes'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg, pdf, doc, docx', 'maxFiles' => 10],
+            [['notes'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, jpeg, pdf, doc, docx, xlsx, xls', 'maxFiles' => 10],
         ];
     }
 
@@ -48,7 +48,7 @@ class UploadNotes extends Model
             $class_notes->created_on = date('Y-m-d h:i:s');
             $class_notes->created_by = $user_id;
             if ($class_notes->save()) {
-                if($this->uploadFile($class_notes->note, $note->tempName)){
+                if ($this->uploadFile($class_notes->note, $note->tempName)) {
                     array_push($note_ids, $class_notes->note_enc_id);
                 }
             } else {
@@ -74,18 +74,18 @@ class UploadNotes extends Model
 
         $result = $s3->putObject([
             'Bucket' => $bucketName,
-            'Key' => 'online_class_notes/'.$file_name,
+            'Key' => 'online_class_notes/' . $file_name,
             'SourceFile' => $file
         ]);
 
-        if($result){
+        if ($result) {
             $s3->putObjectAcl([
                 'Bucket' => $bucketName,
-                'Key' => 'online_class_notes/'.$file_name,
+                'Key' => 'online_class_notes/' . $file_name,
                 'ACL' => 'public-read'
             ]);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
