@@ -35,7 +35,7 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
+                            <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
                                 <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
                             </a>
                         </div>
@@ -60,7 +60,7 @@ switch ([$controller_id, $action_id]) {
                                 {{/salary}}
                                 {{^salary}}
                                 {{#sal}}
-                                <h5 class="salary"><a href="/{{slug}}" target="_blank"><i class="fas fa-dollar-sign"></i> View In Details</a></h5>
+                                <h5 class="salary"><a href="{{link}}" target="_blank"><i class="fas fa-dollar-sign"></i> View In Details</a></h5>
                                 {{/sal}}
                                 {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
