@@ -8,6 +8,7 @@ echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
+$this->title = $get['company'] . ' is hiring for '.$get['title'];
 $keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,'.$get['title'].' Jobs,  MBA Jobs, Career, Walk-ins '.$get['title'].',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,'.$get['title'].' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
