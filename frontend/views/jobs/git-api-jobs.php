@@ -136,19 +136,13 @@ if (!Yii::$app->user->isGuest) {
 
                     </div>
                     <div class="job-details">
-                        <?php if ($get['how_to_apply']): ?>
-                        <div class="d-head">How To Apply</div>
-                        <div class="duties-tab set-sticky">
-                            <div class="d-content"><?= $get['how_to_apply'] ?></div>
-                        </div>
-                        <?php endif; ?>
                         <div class="d-head">Job Description</div>
                         <div class="duties-tab set-sticky">
                             <div class="d-content desc"><?= $get['description'] ?></div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
         <!--  org details-->
                 <div class="job-single-head style2 overlay-top">
