@@ -20,7 +20,7 @@ use yii\helpers\Url;
                             <div class="cb-blob-web-name">
                                 <a href="<?= $careerDetail['link'] ?>">View Source</a>
                             </div>
-                            <div class="cb-blog-time"><?= date('d-M-Y',strtotime($careerDetail['created_on'])) ?></div>
+                            <div class="cb-blog-time"><?= date('d-M-Y', strtotime($careerDetail['created_on'])) ?></div>
                             <div class="cb-quick-sum-heading">
                                 Quick Summary
                             </div>
@@ -33,7 +33,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
-<!--                <//= $this->render('/widgets/career-pole-widget') >-->
+                <!--                <//= $this->render('/widgets/career-pole-widget') >-->
                 <?=
                 $this->render('/widgets/mustache/discussion/discussion-box', [
                     "controllerId" => Yii::$app->controller->id . "/comments"
@@ -50,11 +50,11 @@ use yii\helpers\Url;
                 ?>
 
                 <?php
-                 echo $this->render('/widgets/sharing-box');
+                echo $this->render('/widgets/sharing-box');
                 ?>
 
                 <?php
-                if(!empty($relatedArticles)) {
+                if (!empty($relatedArticles)) {
                     ?>
                     <div class="row">
                         <div class="col-md-12">
@@ -74,7 +74,7 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r['created_on'])) ?></div>
                                     <div class="cb-blob-web-name cb-blob-web-name-small">
-                                        <a href="">Read Article</a>
+                                        <a href="<?= $r['slug'] ?>">Read Article</a>
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                     <?php
                 }
                 ?>
-                <?= $this->render("/widgets/square_ads");?>
+                <?= $this->render("/widgets/square_ads"); ?>
             </div>
         </div>
     </div>
