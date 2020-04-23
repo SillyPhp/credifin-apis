@@ -59,6 +59,10 @@ $this->params['seo_tags'] = [
     ],
 ];
 $this->registerCss('
+.salary a
+{
+color: #2b7cb7;
+}
 .change-hr{
     margin-bottom: 30px;
     margin-top: 15px;
@@ -135,9 +139,7 @@ echo $this->render('/widgets/mustache/application-card', [
     'type' => 'Jobs',
 ]);
 
-
 $script = <<<JS
-
 var loading = false;
 var load_more_cards = true;
 $(window).animate({scrollTop:0}, '300');
@@ -176,7 +178,7 @@ $(document).on('click','.loading_more', function(e){
 });
 loader = true;
 draggable = true;
-getCards();
+getCards();   
 var sidebarpage = 1;
 getReviewList(sidebarpage);
 JS;

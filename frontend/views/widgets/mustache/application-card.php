@@ -59,13 +59,21 @@ switch ([$controller_id, $action_id]) {
                                 <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
                                 {{^salary}}
+                                {{#sal}}
+                                <h5 class="salary"><a href="/{{slug}}" target="_blank"><i class="fas fa-dollar-sign"></i> View In Details</a></h5>
+                                {{/sal}}
+                                {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
+                                {{/sal}}
                                 {{/salary}}
                                 {{#type}}
                                 <h5 class="salary">{{type}}</h5>
                                 {{/type}}
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
+                                {{/experience}}
+                                {{^experience}}
+                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
                                 {{/experience}}
                             </div>
                             <div class="clear"></div>
@@ -82,7 +90,26 @@ switch ([$controller_id, $action_id]) {
     </script>
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
-$script = <<<JS
+$script = <<< JS
+function gitHubJobs() {
+  $.ajax({
+  method: 'POST',
+  url: '/jobs/git-jobs',
+  dataType:"json",
+  beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+  success: (res) => {
+            $('.loader-main').hide();
+            $('#loadMore').addClass("loading_more");
+            $('.load-more-text').css('visibility', 'visible');
+            $('.load-more-spinner').css('visibility', 'hidden');
+            renderCards(res, '.blogbox');
+            utilities.initials();
+  } 
+})
+} 
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
@@ -93,21 +120,12 @@ function renderCards(cards, container){
     if(cardsLength%3 !==0 && loader === true) {
         $('#loadMore').hide();
     }
-    for(var i=0; i<cards.length; i++){
-        if(cards[i].skill != null){
-            cards[i].skill = cards[i].skill.split(',')
-        } else {
-            cards[i].skill = [];
-        }
-    }
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
         $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
-    checkSkills();
-    // showSkills();
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
@@ -124,7 +142,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     }
     data['type'] = type;
     if(location !== ""){
-        data['location'] = location;
+        data['location'] = location; 
     }
     if(limit !== ""){
         data['limit'] = limit;
@@ -146,7 +164,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
+            if(response.status === 200) { 
                 renderCards(response.cards, container);
                 utilities.initials();
             } else {
@@ -324,6 +342,14 @@ function checkSkills2(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.city
+{
+text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 40%;
+}
+
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;
