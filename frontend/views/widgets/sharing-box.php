@@ -11,27 +11,27 @@ use yii\helpers\Url;
         <!--                        <div class="share-it">Share :-</div>-->
         <div class="fb-share">
             <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
-                <span class="fb-btn"><i class="fab fa-facebook-f marg"></i>Facebook</span>
+                <span class="fb-btn"><i class="fab fa-facebook-f marg"></i> Facebook</span>
             </a>
         </div>
         <div class="tw-share">
             <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
-                <span class="tw-btn"><i class="fab fa-twitter marg"></i>Twitter</span>
+                <span class="tw-btn"><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="li-share">
             <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
-                <span class="li-btn"><i class="fab fa-linkedin-in marg"></i>LinkedIn</span>
+                <span class="li-btn"><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
         <div class="wa-share">
             <a href="wa.me/?text=" target="_blank" class="share-elem-main">
-                <span class="wa-btn"><i class="fab fa-whatsapp marg"></i>Whatsapp</span>
+                <span class="wa-btn"><i class="fab fa-whatsapp marg"></i> Whatsapp</span>
             </a>
         </div>
         <div class="mail-share">
             <a href="mailto:someone@example.com?Subject=Hello&body=" target="_top" class="share-elem-main">
-                <span class="mail-btn"><i class="fas fa-envelope marg"></i>Mail</span>
+                <span class="mail-btn"><i class="fas fa-envelope marg"></i> Mail</span>
             </a>
         </div>
     </div>
