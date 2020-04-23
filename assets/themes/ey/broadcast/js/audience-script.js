@@ -123,7 +123,7 @@ function joinChannel() {
         function(uid) {
             console.log("User " + uid + " join channel successfully");
             if($('#full-screen-video > h3').length == 0) {
-                $('#full-screen-video').append('<h3 style="color: #fff;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);">Your teacher not connected. Please wait..</h3>');
+                $('#full-screen-video').append('<h3 style="color: #fff;position: absolute;left: 50%;top: 50%;transform: translate(-50%, -50%);">Your teacher is connecting. Please wait..</h3>');
             }
         },
         function(err) {
