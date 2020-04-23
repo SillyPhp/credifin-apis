@@ -18,8 +18,8 @@ $this->params['seo_tags'] = [
         'description' => $description,
         'twitter:card' => 'summary_large_image',
         'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
-        'twitter:site' => '@EmpowerYouth__',
-        'twitter:creator' => '@EmpowerYouth__',
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
         'twitter:image' => $image,
     ],
     'property' => [
@@ -60,8 +60,12 @@ $this->params['seo_tags'] = [
                             <?= $post['description']; ?>
                         </div>
                     </div>
-                    <div class="divider"></div>
-                    <?= $this->render('/widgets/mustache/discussion/discussion-box'); ?>
+                    <!--                    <div class="divider"></div>-->
+                    <?=
+                    $this->render('/widgets/mustache/discussion/discussion-box', [
+                    "controllerId" => Yii::$app->controller->id . "/comments"
+                    ]);
+                    ?>
                 </div>
                 <div class="col-md-3">
                     <div class="about-blogger">
@@ -86,10 +90,24 @@ $this->params['seo_tags'] = [
                             </a>
                             <div class="channel-details">
                                 <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
-                                <div class="channer-des"><?= $post['user_about'] ?></div>
+                                <div class="channel-des"><?= $post['user_about'] ?></div>
                             </div>
                         </div>
                         <div class="col-md-12">
+                            <!--                            <div class="popular-heading about-heading"> About Blog</div>-->
+                            <!--                            <div class="blog-tags">-->
+                            <!--                                <span>Category:</span>-->
+                            <!--                                <ul>-->
+                            <!--                                    --><?php
+                            //                                    foreach ($post['postCategories'] as $cat) {
+                            //                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
+                            //                                    }
+                            //                                    ?>
+                            <!--                                </ul>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="blog-pub">-->
+                            <!--                                <span>Published:</span> -->
+                            <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
                                 <span>Tags:</span>
                                 <ul>
@@ -116,7 +134,7 @@ $this->params['seo_tags'] = [
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
-                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-6 col-xs-offset-3">
+                                <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
                                         <a href="/blog/<?= $related['slug'] ?>">
                                             <div class="video-icon">
@@ -134,6 +152,12 @@ $this->params['seo_tags'] = [
                         }
                         ?>
                     </div>
+                    <!--hotjobs Widget start-->
+                    <?php
+                        echo $this->render('/widgets/hot-jobs');
+                    ?>
+                    <!--hotjobs Widget ends-->
+                    <?= $this->render("/widgets/square_ads");?>
                 </div>
             </div>
         </div>
@@ -300,6 +324,11 @@ textarea::placeholder{
 .channel-name{
     font-size:17px;
     font-weight:bold;
+    padding-top: 10px;
+}
+.channel-des{
+    text-align:justify;
+    padding:15px 0px;
 }
 .channel-icon, .comment-icon{
     background:#fff;
@@ -318,15 +347,17 @@ textarea::placeholder{
 }
 .channel-icon img, .channel-icon canvas, .comment-icon img{
     width:100%;
+    height:100%;
     line-height:0px;
 }
 .popular-heading, .about-heading{
     position:relative;
-    text-align:right;
+//    text-align:right;
     text-transform: uppercase;
-    padding: 0px 25px 2px 0px;
+//    padding: 0px 25px 2px 0px;
     font-weight: bold;
     margin-top:30px;
+    text-align:center;
 }
 .about-heading:before{
     border-width: 1px 110px 0px 0px !important;
@@ -336,18 +367,18 @@ textarea::placeholder{
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 91px 0px 0px;
+    border-width: 1px 58px 0px 0px;
     top: 11px;
-    left: 5px;
+    left: 0px;
 }
 .popular-heading:after{
     content: "";
     position: absolute;
     border-color: #000;
     border-style: solid;
-    border-width: 1px 18px 0px 0px;
+    border-width: 1px 58px 0px 0px;
     top: 11px;
-    right: 5px;
+    right: 0px;
 }
 .video-container{
     box-shadow:0 0 10px rgba(0,0,0,0.1);
@@ -356,6 +387,7 @@ textarea::placeholder{
     position:relative;
     margin-top:20px;
     overflow:hidden;
+    
 }
 .video-container:hover{
     box-shadow:0 0 15px rgba(0,0,0,0.3);
@@ -425,6 +457,9 @@ textarea::placeholder{
 .reply button:hover{
     color:#00a0e3;
 }
+.reply-comm .comment{
+    margin-left:15px;
+}
 
 /*----blog section ends----*/
 @media only screen and (min-width: 992px) and (max-width: 1200px) {
@@ -484,6 +519,9 @@ textarea::placeholder{
         max-width:100%;
     }
 }
+
+
+
 /*----blog description preview css start----*/
 #blog-description ul{
     list-style: disc;
@@ -502,3 +540,4 @@ div#blog-description * {
 /*----blog description preview css ends----*/
 ');
 $this->registerJsFile('https://platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()]]);
+

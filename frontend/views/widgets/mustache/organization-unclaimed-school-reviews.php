@@ -2,9 +2,7 @@
 
 use yii\helpers\Url;
 
-$referral = Yii::$app->referral->getReferralCode();
-
-$link = Url::to($org_slug . '/reviews' . $referral, "https");
+$link = Url::to($org_slug . '/reviews', "https");
 ?>
     <script id="organization-student-reviews" type="text/template">
         {{#.}}
@@ -94,7 +92,7 @@ $link = Url::to($org_slug . '/reviews' . $referral, "https");
                             <i class="fab fa-facebook-square"
                                onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-twitter-square"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-linkedin"
                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"></i>
                             <i class="fab fa-whatsapp wa_icon_hover"
@@ -102,16 +100,6 @@ $link = Url::to($org_slug . '/reviews' . $referral, "https");
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6">
-                        <!--                    <div class="usefull-bttn pull-right">-->
-                        <!--                        <div class="use-bttn">-->
-                        <!--                            <button type="button"><i class="fa fa-thumbs-up"></i> Usefull-->
-                        <!--                            </button>-->
-                        <!--                        </div>-->
-                        <!--                        <div class="notuse-bttn">-->
-                        <!--                            <button type="button"><i class="fa fa-thumbs-down"></i> Not Usefull-->
-                        <!--                            </button>-->
-                        <!--                        </div>-->
-                        <!--                    </div>-->
                     </div>
                 </div>
             </div>
@@ -173,11 +161,9 @@ $(document).on('click','#load_more_btn1',function(e) {
 getStudentReviews(limit=3,offset=page_name);
 JS;
 $this->registerCss("
-.padding-none
-{
-padding:0;
-}
-");
+.padding-none {
+    padding: 0;
+}");
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
 $this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

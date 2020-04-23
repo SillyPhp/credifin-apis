@@ -7,13 +7,13 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
 
     <div class="col-md-3">
         <a href="<?= Url::toRoute('/internships'); ?>">
-            <div class="internships_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+            <div class="internships_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Internships'); ?></h4>
                 <div class="widget-thumb-wrap">
                     <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
                     <div class="widget-thumb-body">
                     <span class="widget-thumb-body-stat" data-counter="counterup"
-                          data-value="<?= $applications['total']; ?>"><?= $applications['total']; ?></span>
+                          data-value="<?= $applications ?>"><?= $applications ?></span>
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
     </div>
     <div class="col-md-3">
         <a href="<?= Url::toRoute('/hiring-processes'); ?>">
-            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Interview Processes'); ?></h4>
                 <div class="widget-thumb-wrap">
                     <i class="widget-thumb-icon bg-red fa fa-users"></i>
@@ -35,7 +35,7 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
     </div>
     <div class="col-md-3">
         <a href="<?= Url::toRoute('/questionnaire'); ?>">
-            <div class="questionnaire_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+            <div class="questionnaire_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Questionnaire'); ?></h4>
                 <div class="widget-thumb-wrap">
                     <i class="widget-thumb-icon bg-purple fa fa-question"></i>
@@ -49,7 +49,7 @@ echo Html::hiddenInput('value', $viewed,['id'=>'hidden_input']);
     </div>
     <div class="col-md-3">
         <a href="<?= Url::toRoute('/internships'); ?>">
-            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count">
+            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow">
                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
                 <div class="widget-thumb-wrap">
                     <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>

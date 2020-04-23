@@ -43,9 +43,10 @@ $form = ActiveForm::begin([
     ],
 ]);
 ?>
+
     <div class="row">
         <div class="col-md-12">
-            <legend><?= Yii::t('frontend', 'Organization Information'); ?></legend>
+            <legend><?= Yii::t('frontend', 'I Want To Hire'); ?></legend>
         </div>
     </div>
     <div class="row">
@@ -119,17 +120,11 @@ $form = ActiveForm::begin([
             <?= Html::submitButton('Sign Up', ['class' => 'btn btn-primary btn-lg btn-block mt-15 main-blue-btn', 'name' => 'register-button']); ?>
         </div>
     </div>
-    <div class="row  pt-20">
-        <div class="col-md-12">
-            <a class="btn btn-dark btn-lg btn-block no-border hvr-float main-orange-btn"
-               href="<?= Url::to('/signup/individual'); ?>"
-               data-bg-color="#ff7803"><?= Yii::t('frontend', 'Signup as Individual'); ?></a>
-        </div>
-    </div>
 <?php ActiveForm::end(); ?>
 
 <?php
 $this->registerCss('
+
 .intl-tel-input {
     width: 100%;
 }
@@ -137,4 +132,5 @@ $this->registerCss('
     color: #555 !Important;
     background-color: #eee !Important;
 }
+.country-list{z-index:99 !important;}
 ');

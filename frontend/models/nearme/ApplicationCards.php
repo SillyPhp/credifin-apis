@@ -18,22 +18,25 @@ class ApplicationCards
 
     private static function _getCardsFromJobs($lat, $long, $radius, $num, $keyword, $type, $walkin)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         $date = Date('Y-m-d H:i:s');
+
         $data = EmployerApplications::find()
             ->alias('a')
+            ->distinct()
             ->select([
                 'a.application_enc_id',
                 'a.type',
-                'CONCAT(i.slug, "' . $referral . '") as organization_slug',
+                'CONCAT("/", i.slug) organization_link',
+                '(CASE 
+                    WHEN j.name = "Jobs" THEN CONCAT("/job/", a.slug)
+                    WHEN j.name = "Internships" THEN CONCAT("/internship/", a.slug) END) as link',
                 'a.experience',
-                'h.name as job_title',
-                'CONCAT(a.slug, "' . $referral . '") as slug',
+                'h.name as title',
                 'a.last_date',
-                'e.name as city_name',
+                'e.name as city',
                 'c.location_name',
-                'c.location_enc_id',
-                'i.name',
+                'c.location_enc_id location_id',
+                'i.name organization_name',
                 'f.wage_type',
                 'c.latitude',
                 'c.longitude',
@@ -82,12 +85,16 @@ class ApplicationCards
                 $z->joinWith(['categoryEnc as h'], false);
                 $z->joinWith(['parentEnc p'], false);
             }], false)
+            ->joinWith(['applicationSkills bb' => function ($bb) {
+                $bb->select(['bb.application_enc_id', 'bbb.skill']);
+                $bb->joinWith(['skillEnc bbb'], false);
+            }], true)
             ->joinWith(['organizationEnc as i'])
             ->joinWith(['applicationTypeEnc as j'])
             ->joinWith(['designationEnc l'], false)
             ->joinWith(['preferredIndustry o'], false)
             ->having(['<', 'distance', $radius])
-            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0]);
+            ->where(['j.name' => $type, 'a.status' => 'Active', 'a.for_careers' => 0, 'a.is_deleted' => 0, 'bb.is_deleted' => 0]);
 
         if (!empty($keyword)) {
             $data->andWhere([
@@ -151,6 +158,14 @@ class ApplicationCards
                         }
                     }
                 }
+
+                $skills = [];
+                foreach ($val['applicationSkills'] as $skill) {
+                    array_push($skills, $skill['skill']);
+                }
+                $skill = implode(',', $skills);
+                $result[$i]['skill'] = $skill;
+                unset($result[$i]['applicationSkills']);
                 $i++;
             }
         } elseif ($type == 'Internships') {
@@ -200,6 +215,12 @@ class ApplicationCards
                         }
                     }
                 }
+                $skills = [];
+                foreach ($val['applicationSkills'] as $skill) {
+                    array_push($skills, $skill['skill']);
+                }
+                $skill = implode(',', $skills);
+                $result[$i]['skill'] = $skill;
                 $i++;
             }
         }

@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
+$countries = ArrayHelper::map($countriesModel->find()->select(['country_enc_id', 'name'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'country_enc_id', 'name');
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -29,7 +30,7 @@ $form = ActiveForm::begin([
         $form->field($locationFormModel, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
                 'allowExtensions' => false,
-                'onlyCountries' => ['in'],
+                'preferredCountries' => ['in'],
                 'nationalMode' => false,
             ]
         ])->label(false);
@@ -40,17 +41,40 @@ $form = ActiveForm::begin([
     </div>
 </div>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <?=
+        $form->field($locationFormModel, 'country')->label('<i class="fa fa-location-arrow"></i> Country')->dropDownList(
+            $countries, [
+            'prompt' => 'Select Country',
+            'id' => 'country_drp',
+            'onchange' => '
+                                    $("#states_drp").empty().append($("<option>", { 
+                                        value: "",
+                                        text : "Select State" 
+                                    }));
+                                    $.post(
+                                        "' . Url::toRoute("cities/get-state") . '", 
+                                        {id: $(this).val(),_csrf: $("input[name=_csrf]").val()}, 
+                                        function(res){
+                                            if(res.status === 200) {
+                                                drp_down("states_drp", res.states);
+                                            }
+                                        }
+                                    );',
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-3">
         <?=
         $form->field($locationFormModel, 'state')->label('<i class="fa fa-location-arrow"></i> State')->dropDownList(
-                $states, [
+                 [],[
             'prompt' => 'Select State',
             'id' => 'states_drp',
             'onchange' => '
                                     $("#cities_drp").empty().append($("<option>", { 
                                         value: "",
                                         text : "Select City" 
-                                    }));
+                                    })); 
                                     $.post(
                                         "' . Url::toRoute("cities/get-cities-by-state") . '", 
                                         {id: $(this).val(),_csrf: $("input[name=_csrf]").val()}, 
@@ -63,7 +87,7 @@ $form = ActiveForm::begin([
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?=
         $form->field($locationFormModel, 'city')->label('<i class="fa fa-map-marker"></i> City')->dropDownList(
                 [], [
@@ -72,7 +96,7 @@ $form = ActiveForm::begin([
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="md-checkbox-inline">
             <?=
             $form->field($locationFormModel, 'location_for')->checkBoxList([
@@ -133,6 +157,11 @@ $this->registerCss('
     opacity: 1 !important;
     color: #e73d4a !important;
     filter: alpha(opacity=100);
+   
+}
+.country-list
+{
+z-index:999 !important;
 }
 ');
 $script = <<<JS

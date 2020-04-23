@@ -25,12 +25,11 @@ class CommentsController extends Controller
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $result = PostComments::find()
                 ->alias('a')
-                ->select(['a.post_enc_id','a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
+                ->select(['a.comment_enc_id', 'a.comment reply', 'b.username', 'CONCAT(b.first_name, " ", b.last_name) name', 'b.initials_color color', 'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", b.image_location, "/", b.image) ELSE NULL END img'])
                 ->joinWith(['userEnc b'], false)
                 ->where(['a.reply_to' => NULL])
                 ->andWhere(['a.post_enc_id' => $post['post_enc_id']])
@@ -42,11 +41,9 @@ class CommentsController extends Controller
             $i = 0;
             foreach ($result as $r) {
                 $a = PostComments::find()
-                    ->where([
-                        'reply_to' => $r['comment_enc_id'],
-                        'post_enc_id' => $r['post_enc_id'],
-                        'is_deleted' => 0
-                    ])
+                    ->where(['reply_to' => $r['comment_enc_id']])
+                    ->andWhere(['post_enc_id' => $post['post_enc_id']])
+                    ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if ($a) {
                     $result[$i]['hasChild'] = true;
@@ -75,7 +72,6 @@ class CommentsController extends Controller
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $result = PostComments::find()
@@ -108,7 +104,6 @@ class CommentsController extends Controller
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $current_user = Yii::$app->user->identity->user_enc_id;
@@ -133,6 +128,7 @@ class CommentsController extends Controller
             }
 
         }
+
     }
 
     public function actionChildComment()
@@ -148,7 +144,6 @@ class CommentsController extends Controller
                 ->where(['slug' => $q])
                 ->andWhere(['status' => 'Active'])
                 ->andWhere(['is_deleted' => 0])
-                ->asArray()
                 ->one();
 
             $current_user = Yii::$app->user->identity->user_enc_id;

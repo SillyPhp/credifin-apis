@@ -23,19 +23,22 @@ use Yii;
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  */
-class ApplicationPlacementLocations extends \yii\db\ActiveRecord {
+class ApplicationPlacementLocations extends \yii\db\ActiveRecord
+{
 
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%application_placement_locations}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['placement_location_enc_id', 'positions', 'location_enc_id', 'application_enc_id', 'created_on', 'created_by'], 'required'],
             [['positions', 'is_deleted'], 'integer'],
@@ -52,29 +55,33 @@ class ApplicationPlacementLocations extends \yii\db\ActiveRecord {
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getApplicationEnc() {
-    return $this->hasOne(EmployerApplications:: className(), ['application_enc_id' => 'application_enc_id']);
+    public function getApplicationEnc()
+    {
+        return $this->hasOne(EmployerApplications:: className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLocationEnc() {
-    return $this->hasOne(OrganizationLocations:: className(), ['location_enc_id' => 'location_enc_id']);
+    public function getLocationEnc()
+    {
+        return $this->hasOne(OrganizationLocations:: className(), ['location_enc_id' => 'location_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCreatedBy() {
-    return $this->hasOne(Users:: className(), ['user_enc_id' => 'created_by']);
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users:: className(), ['user_enc_id' => 'created_by']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastUpdatedBy() {
-    return $this->hasOne(Users:: className(), ['user_enc_id' => 'last_updated_by']);
+    public function getLastUpdatedBy()
+    {
+        return $this->hasOne(Users:: className(), ['user_enc_id' => 'last_updated_by']);
     }
 
 }

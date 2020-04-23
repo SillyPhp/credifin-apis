@@ -17,10 +17,10 @@ use Yii;
  * @property string $last_updated_on On which date Wage information was updated
  * @property string $last_updated_by By which User Wage information was updated
  *
- * @property TwitterJobs $tweetEnc
- * @property Cities $cityEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Cities $cityEnc
+ * @property TwitterJobs $tweetEnc
  */
 class TwitterPlacementCities extends \yii\db\ActiveRecord
 {
@@ -43,32 +43,16 @@ class TwitterPlacementCities extends \yii\db\ActiveRecord
             [['is_deleted'], 'integer'],
             [['placement_cities_enc_id', 'tweet_enc_id', 'city_enc_id', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['placement_cities_enc_id'], 'unique'],
-            [['tweet_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => TwitterJobs::className(), 'targetAttribute' => ['tweet_enc_id' => 'tweet_enc_id']],
-            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['city_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cities::className(), 'targetAttribute' => ['city_enc_id' => 'city_enc_id']],
+            [['tweet_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => TwitterJobs::className(), 'targetAttribute' => ['tweet_enc_id' => 'tweet_enc_id']],
         ];
     }
 
     /**
      * @inheritdoc
      */
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTweetEnc()
-    {
-        return $this->hasOne(TwitterJobs::className(), ['tweet_enc_id' => 'tweet_enc_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCityEnc()
-    {
-        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
-    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -84,5 +68,21 @@ class TwitterPlacementCities extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCityEnc()
+    {
+        return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTweetEnc()
+    {
+        return $this->hasOne(TwitterJobs::className(), ['tweet_enc_id' => 'tweet_enc_id']);
     }
 }

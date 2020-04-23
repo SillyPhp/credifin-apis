@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -17,8 +18,8 @@ class ReviewsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
-        Yii::$app->seo->setSeoByRoute(Yii::$app->requestedRoute, $this);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
 
@@ -49,11 +50,10 @@ class ReviewsController extends Controller
 
     public function actionSearchOrg($type = null, $query)
     {
-        $referral = Yii::$app->referral->getReferralCode();
         Yii::$app->response->format = Response::FORMAT_JSON;
         $type = explode(",", $type);
         $params1 = (new \yii\db\Query())
-            ->select(['name', 'CONCAT(slug, "/reviews", "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
+            ->select(['name', 'CONCAT(slug, "/reviews") as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo', '(CASE
                 WHEN business_activity IS NULL THEN ""
                 ELSE business_activity
                 END) as business_activity'])
@@ -71,7 +71,7 @@ class ReviewsController extends Controller
         }
 
         $params2 = (new \yii\db\Query())
-            ->select(['name', 'CONCAT(slug, "' . $referral . '") as profile_link', 'CONCAT(slug, "/reviews", "' . $referral . '") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
+            ->select(['name', 'slug as profile_link', 'CONCAT(slug, "/reviews") as review_link', 'initials_color color', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo', 'business_activity'])
             ->from(Organizations::tableName() . 'as a')
             ->innerJoin(BusinessActivities::tableName() . 'as b', 'b.business_activity_enc_id = a.business_activity_enc_id')
             ->where("replace(name, '.', '') LIKE '%$query%'");
@@ -93,7 +93,6 @@ class ReviewsController extends Controller
     {
         $model = new RegistrationForm();
         $org_type = $model->types();
-        $referral = Yii::$app->referral->getReferralCode();
         if (!empty(Yii::$app->user->identity->organization) || Yii::$app->user->isGuest) {
             $this->layout = 'main-secondary';
             return $this->render('without-login');
@@ -107,19 +106,19 @@ class ReviewsController extends Controller
             if ($response['status'] == 200) {
                 if ($type == 'company') {
                     if ($model->postReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
                 } else if ($type == 'college') {
                     if ($model->postCollegeReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
                 } else if ($type == 'school') {
                     if ($model->postSchoolReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
                 } else if ($type == 'institute') {
                     if ($model->postInstituteReviews($response['org_id'])) {
-                        return $this->redirect('/' . $response['slug'] . '/reviews' . $referral);
+                        return $this->redirect('/' . $response['slug'] . '/reviews');
                     }
                 }
             } else {
@@ -132,7 +131,14 @@ class ReviewsController extends Controller
 
     public function actionSchools()
     {
-        return $this->render('schools');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('schools',[
+            'model' => $model,
+        ]);
     }
 
     public function actionCompanies()
@@ -142,7 +148,14 @@ class ReviewsController extends Controller
 
     public function actionColleges()
     {
-        return $this->render('colleges');
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('colleges',[
+            'model' => $model,
+        ]);
     }
 
     public function actionInstitutes()

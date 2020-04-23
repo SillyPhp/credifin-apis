@@ -29,145 +29,156 @@ use yii\helpers\Url;
                                     <!-- BEGIN: Actions -->
                                     <div id="card-data" class="row cd-box">
                                     <?php
-                                    foreach ($user_data as $u) {
-                                                ?>
-                                                <article>
-                                                    <div class="col-lg-3 col-md-3 col-sm-6 p-category-main"
-                                                         onclick="makeChecked(this);">
-                                                        <?php if ($u["status"] == 0) { ?>
-                                                            <input type="checkbox"
-                                                                   name="<?= $u['applied_application_enc_id'] ?>"
-                                                                   id="<?= $u['userEnc']['user_enc_id'] ?>"
-                                                                   class="checkbox-input"/>
-                                                        <?php } ?>
-                                                        <label for="can1" class="checkbox-label">
-                                                            <div class="paid-candidate-container">
-                                                                <div class="paid-candidate-box">
-                                                                    <div class="dropdown">
-                                                                        <div class="btn-group fl-right">
-                                                                            <div class="dropdown-menu pull-right animated flipInX">
-                                                                                <a href="#" data-toggle="modal"
-                                                                                   data-target="#shortList">Shortlist</a>
-                                                                                <button class="reject">Reject</button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="paid-candidate-inner--box">
-                                                                        <div class="paid-candidate-box-thumb">
-                                                                            <?php
-                                                                            $name = $image = NULL;
-                                                                            if (!empty($u['userEnc']['image'])) {
-                                                                                $image = Yii::$app->params->upload_directories->users->image . $u['userEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['userEnc']['image'];
-                                                                            }
-                                                                            $name = $u['userEnc']['first_name'] . ' ' . $u['userEnc']['last_name'];
-                                                                            if ($image):
-                                                                                ?>
-                                                                                <img src="<?= $image; ?>"
-                                                                                     alt="<?= $name; ?>"
-                                                                                     class="img-responsive img-circle"/>
-                                                                            <?php else: ?>
-                                                                                <canvas class="user-icon img-circle img-responsive"
-                                                                                        name="<?= $name; ?>"
-                                                                                        color="<?= $u['userEnc']['initials_color']; ?>"
-                                                                                        width="140" height="140"
-                                                                                        font="70px"></canvas>
-                                                                            <?php endif; ?>
-                                                                        </div>
-                                                                        <div class="paid-candidate-box-detail">
-                                                                            <h4><?= ucfirst($u['userEnc']['first_name']) ?>
-                                                                                <?= $u['userEnc']['last_name'] ?>
-                                                                            </h4>
-                                                                            <span class="desination"><?= $u['userEnc']['name'] ?></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="paid-candidate-box-extra">
-                                                                        <ul>
-                                                                            <?php
-                                                                            $i = 0;
-                                                                            foreach ($u['userEnc']['userSkills'] as $sk) {
-
-                                                                                ?>
-                                                                                <li>
-                                                                                    <?php
-                                                                                    echo $sk['skill'];
-                                                                                    $i++;
-                                                                                    if ($i == 3) break;
-                                                                                    ?>
-                                                                                </li>
-                                                                            <?php }
-                                                                            if (count($u['userEnc']['userSkills']) >= 4) {
-                                                                                ?>
-                                                                                <li class="more-skill bg-primary">
-                                                                                    +<?= count($u['userEnc']['userSkills']) - 3 ?></li>
-                                                                            <?php } ?></ul>
-                                                                    </div>
-                                                                    <div class="paid-candidate-box-exp">
-                                                                        <?php if (!empty($u['userEnc']['city_name'])) { ?>
-                                                                            <div class="desination"><i
-                                                                                        class="fa fa-map-marker"></i><?= $u['userEnc']['city_name'] ?>
-                                                                            </div>
-                                                                        <?php } ?>
-                                                                        <?php
-
-                                                                        $exp = $u['experience'];
-
-                                                                        switch ($exp) {
-
-                                                                            case 0:
-                                                                                $exp = '0 Years';
-                                                                                break;
-
-                                                                            case 1:
-                                                                                $exp = '0.6 Months';
-                                                                                break;
-
-                                                                            case 2:
-                                                                                $exp = '1 Year';
-                                                                                break;
-
-                                                                            case 3:
-                                                                                $exp = '2-3 Years';
-                                                                                break;
-
-                                                                            case 4:
-                                                                                $exp = '3-5 Years';
-                                                                                break;
-
-                                                                            case 5:
-                                                                                $exp = '5-10 Years';
-                                                                                break;
-
-                                                                            case 6:
-                                                                                $exp = '10-20 Years';
-                                                                                break;
-
-                                                                            case 7:
-                                                                                $exp = '20+ Years';
-                                                                                break;
-                                                                        };
-                                                                        ?>
-                                                                        <div class="desination"><i
-                                                                                    class="fa fa-briefcase"></i> <?= $exp ?>
+                                    if(!empty($user_data)) {
+                                        foreach ($user_data as $u) {
+                                            ?>
+                                            <article>
+                                                <div class="col-lg-3 col-md-3 col-sm-6 p-category-main"
+                                                     onclick="makeChecked(this);">
+                                                    <?php if ($u["status"] == 0) { ?>
+                                                        <input type="checkbox"
+                                                               name="<?= $u['applied_application_enc_id'] ?>"
+                                                               id="<?= $u['userEnc']['user_enc_id'] ?>"
+                                                               class="checkbox-input"/>
+                                                    <?php } ?>
+                                                    <label for="can1" class="checkbox-label">
+                                                        <div class="paid-candidate-container">
+                                                            <div class="paid-candidate-box">
+                                                                <div class="dropdown">
+                                                                    <div class="btn-group fl-right">
+                                                                        <div class="dropdown-menu pull-right animated flipInX">
+                                                                            <a href="#" data-toggle="modal"
+                                                                               data-target="#shortList">Shortlist</a>
+                                                                            <button class="reject">Reject</button>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <a href="/<?= $u['userEnc']['username'] ?>"
-                                                                   class="btn btn-paid-candidate bt-1">View Detail</a>
-
-                                                                <?php if ($u["status"] == 1) { ?>
-                                                                    <div class="shortlist-strip">
-                                                                        <div class="s-strip"> Shortlisted</div>
+                                                                <div class="paid-candidate-inner--box">
+                                                                    <div class="paid-candidate-box-thumb">
+                                                                        <?php
+                                                                        $name = $image = NULL;
+                                                                        if (!empty($u['userEnc']['image'])) {
+                                                                            $image = Yii::$app->params->upload_directories->users->image . $u['userEnc']['image_location'] . DIRECTORY_SEPARATOR . $u['userEnc']['image'];
+                                                                        }
+                                                                        $name = $u['userEnc']['first_name'] . ' ' . $u['userEnc']['last_name'];
+                                                                        if ($image):
+                                                                            ?>
+                                                                            <img src="<?= $image; ?>"
+                                                                                 alt="<?= $name; ?>"
+                                                                                 class="img-responsive img-circle"/>
+                                                                        <?php else: ?>
+                                                                            <canvas class="user-icon img-circle img-responsive"
+                                                                                    name="<?= $name; ?>"
+                                                                                    color="<?= $u['userEnc']['initials_color']; ?>"
+                                                                                    width="140" height="140"
+                                                                                    font="70px"></canvas>
+                                                                        <?php endif; ?>
                                                                     </div>
-                                                                <?php } ?>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                </article>
-                                                <?php
-                                        }
-                                    ?>
-                                    </div>
+                                                                    <div class="paid-candidate-box-detail">
+                                                                        <h4><?= ucfirst($u['userEnc']['first_name']) ?>
+                                                                            <?= $u['userEnc']['last_name'] ?>
+                                                                        </h4>
+                                                                        <span class="desination"><?= $u['userEnc']['name'] ?></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="paid-candidate-box-extra">
+                                                                    <ul>
+                                                                        <?php
+                                                                        $i = 0;
+                                                                        foreach ($u['userEnc']['userSkills'] as $sk) {
 
+                                                                            ?>
+                                                                            <li>
+                                                                                <?php
+                                                                                echo $sk['skill'];
+                                                                                $i++;
+                                                                                if ($i == 3) break;
+                                                                                ?>
+                                                                            </li>
+                                                                        <?php }
+                                                                        if (count($u['userEnc']['userSkills']) >= 4) {
+                                                                            ?>
+                                                                            <li class="more-skill bg-primary">
+                                                                                +<?= count($u['userEnc']['userSkills']) - 3 ?></li>
+                                                                        <?php } ?></ul>
+                                                                </div>
+                                                                <div class="paid-candidate-box-exp">
+                                                                    <?php if (!empty($u['userEnc']['city_name'])) { ?>
+                                                                        <div class="desination"><i
+                                                                                    class="fa fa-map-marker"></i> <?= $u['userEnc']['city_name'] ?>
+                                                                        </div>
+                                                                    <?php } ?>
+                                                                    <?php
+
+                                                                    $exp = $u['experience'];
+
+                                                                    switch ($exp) {
+
+                                                                        case 0:
+                                                                            $exp = '0 Years';
+                                                                            break;
+
+                                                                        case 1:
+                                                                            $exp = '0.6 Months';
+                                                                            break;
+
+                                                                        case 2:
+                                                                            $exp = '1 Year';
+                                                                            break;
+
+                                                                        case 3:
+                                                                            $exp = '2-3 Years';
+                                                                            break;
+
+                                                                        case 4:
+                                                                            $exp = '3-5 Years';
+                                                                            break;
+
+                                                                        case 5:
+                                                                            $exp = '5-10 Years';
+                                                                            break;
+
+                                                                        case 6:
+                                                                            $exp = '10-20 Years';
+                                                                            break;
+
+                                                                        case 7:
+                                                                            $exp = '20+ Years';
+                                                                            break;
+                                                                    };
+                                                                    ?>
+                                                                    <div class="desination"><i
+                                                                                class="fa fa-briefcase"></i> <?= $exp ?>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <a href="/<?= $u['userEnc']['username'] ?>"
+                                                               class="btn btn-paid-candidate bt-1">View Detail</a>
+
+                                                            <?php if ($u["status"] == 1) { ?>
+                                                                <div class="shortlist-strip">
+                                                                    <div class="s-strip"> Shortlisted</div>
+                                                                </div>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </article>
+                                            <?php
+                                        }
+                                    }else {
+                                    ?>
+                                        <div class="tab-empty">
+                                            <div class="tab-empty-icon">
+                                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/applyingjob.png'); ?>"
+                                                     class="img-responsive" alt=""/>
+                                            </div>
+                                            <div class="tab-empty-text">
+                                                <div class="">There is no Application to Display</div>
+                                            </div>
+                                        </div>
+                                    <?php } ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -228,6 +239,20 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:250px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
 .shortlist-strip{
     position:absolute;
     top:0;
@@ -325,9 +350,9 @@ $this->registerCss('
     margin: 10px 0;
 	padding:0;
 	min-height:74px;
+	height: 115px;
 }
 .paid-candidate-box-extra ul li {
-    display: inline-block;
     list-style: none;
     padding:3px 15px;
     border: 1px solid #b9c5ce;
@@ -335,6 +360,11 @@ $this->registerCss('
     margin: 5px;
     font-weight: 500;
     color: #657180;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    display: -webkit-inline-box;
+    overflow: hidden;
 }
 .paid-candidate-box-extra ul li.more-skill{
 	color:#ffffff;
@@ -419,6 +449,9 @@ a.btn.btn-paid-candidate:hover, a.btn.btn-paid-candidate:focus{
   font-weight: 400;
   margin-bottom:0px;
 }
+.p-category-main:hover .checkbox-label:before {
+    top:-5px !important;
+} 
 .checkbox-label:before {
   content: "";
   position: absolute;

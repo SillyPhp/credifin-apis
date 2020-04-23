@@ -25,33 +25,15 @@ endif;
         <li><i class="far fa-money-bill-alt"></i>
             <h3>Offered <?= (($type=='Job')? 'Salary' : 'Stipend');
             if ($wage_type == 'Fixed') {
-                    echo '(Fixed)';
-                    $amount = $fixed_wage;
-                    setlocale(LC_MONETARY, 'en_IN');
-                    $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount)) . $salry_duration;
+                    echo ' (Fixed)';
                 } else if ($wage_type == 'Negotiable'|| $wage_type == 'Performance Based') {
-                    if (!empty($min_wage) || !empty($max_wage)) {
-                        echo '(Negotiable)';
-                    }
-                    $amount1 = $min_wage;
-                    $amount2 = $max_wage;
-                    setlocale(LC_MONETARY, 'en_IN');
-                    if (!empty($min_wage) && !empty($max_wage)) {
-                        $amount = '&#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . $salry_duration . '&nbspTo&nbsp' . '&#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . $salry_duration;
-                    } elseif (!empty($min_wage)) {
-                        $amount = 'From &#8377 ' . utf8_encode(money_format('%!.0n', $amount1)) . $salry_duration;
-                    } elseif (!empty($max_wage)) {
-                        $amount = 'Upto &#8377 ' . utf8_encode(money_format('%!.0n', $amount2)) . $salry_duration;
-                    } elseif (empty($min_wage) && empty($max_wage)) {
-                        $amount = 'Negotiable';
-                    }
+                        echo ' (Negotiable)';
                 }
-            else if ($wage_type=='Unpaid')
-            {
-                $amount = 'Unpaid';
+            else if ($wage_type == 'Unpaid') {
+                echo ' (Unpaid)';
             }
             ?></h3>
-            <span><?= $amount; ?></span></li>
+            <span><?= (($ammount_value)?$ammount_value : 'N/A'); ?></span></li>
         <li><i class="fas fa-mars-double"></i>
             <h3>Gender</h3><span><?php
                 switch ($gender) {

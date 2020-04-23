@@ -1,0 +1,102 @@
+.main-parent {
+    max-width: 750px;
+    margin: 0 auto;
+}
+.main-header {
+    padding-bottom: 10px;
+}
+.user-photo {
+    width: 70px;
+    height: 70px;
+    float: left;
+}
+.user-photo img{
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+.user-main {
+    padding-left: 20px;
+    float: left;
+    width: 350px;
+}
+.user-info {
+    text-align: right;
+    padding: 10px;
+}
+.user-name {
+    font-size: 25px;
+    font-family: roboto;
+    text-transform: capitalize;
+}
+.user-job-title, .user-email, .user-number {
+    font-size: 18px;
+    text-transform: capitalize;
+    font-family: roboto;
+}
+.main-middle {
+    border-top: 1px solid;
+    clear: both;
+    padding: 10px 0;
+}
+.both-sides h3{
+    float: left;
+    width: 200px;
+    display: inline-block;
+    margin-top: 0;
+    font-family: Roboto;
+    font-size: 22px;
+}
+.both-sides p{
+    float: left;
+    display: inline-block;
+    margin: 0px;
+    width: calc(100% - 225px);
+    text-align: justify;
+    font-size: 16px;
+    font-family: roboto;
+}
+.clear{
+    clear: both;
+    padding: 15px 0;
+}
+.inner {
+    float: left;
+    display: inline-block;
+    margin-top: 0px;
+    width: calc(100% - 225px);
+    text-align: justify;
+}
+.user-title {
+    font-size: 18px;
+    font-family: roboto;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+.user-stdy, .user-cmpny {
+    font-size: 16px;
+    font-family: roboto;
+    text-transform: capitalize;
+}
+.user-date {
+    font-size: 15px;
+    font-family: roboto;
+    color:#a4a4a4;
+}
+.user-description {
+    font-size: 15px;
+    font-family: roboto;
+    font-weight: 400;
+}
+.skills{
+    display: inline-block;
+    width: 160px;
+    margin-right: 10px;
+    float: left;
+    font-size: 16px;
+    font-family: Roboto;
+    text-transform: uppercase;
+}
+.using-padding {
+    padding-bottom: 10px;
+}

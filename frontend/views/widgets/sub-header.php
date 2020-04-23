@@ -3,7 +3,7 @@
         <?php
         foreach ($data as $d) {
             ?>
-            <a href="/<?= $d['route'] . $referral; ?>"><?= $d['name']; ?></a>
+            <a href="/<?= $d['route']; ?>"><?= $d['name']; ?></a>
             <?php
         }
         ?>
