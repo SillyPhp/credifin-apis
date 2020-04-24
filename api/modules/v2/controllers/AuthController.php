@@ -360,10 +360,18 @@ class AuthController extends ApiBaseController
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.user_enc_id','a.first_name', 'a.last_name','CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id', 'd.cgpa'])
+                ->select(['a.user_enc_id', 'a.first_name',
+                    'a.last_name',
+                    'cc.college_enc_id',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+                    'a.username', 'a.phone', 'a.email',
+                    'a.initials_color', 'b.user_type',
+                    'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
+                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester'
+                ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
-                ->joinWith(['teachers cc'=>function($cc){
+                ->joinWith(['teachers cc' => function ($cc) {
                     $cc->joinWith(['collegeEnc c1']);
                 }])
                 ->joinWith(['userOtherInfo d' => function ($d) {
@@ -378,6 +386,9 @@ class AuthController extends ApiBaseController
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
             'image' => $user_detail['image'],
+            'course_enc_id' => $user_detail['course_enc_id'],
+            'section_enc_id' => $user_detail['section_enc_id'],
+            'semester' => $user_detail['semester'],
             'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
 //            'user_type' => $user_detail['user_type'],
             'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
@@ -385,7 +396,8 @@ class AuthController extends ApiBaseController
             'cgpa' => $user_detail['cgpa'],
 //            'college' => $user_detail['org_name'],
             'college' => (!empty($user_detail['teachers'][0]['collegeEnc']) ? $user_detail['teachers'][0]['collegeEnc']['name'] : $user_detail['org_name']),
-            'college_enc_id' => $user_detail['organization_enc_id'],
+            'college_enc_id' => (!empty($user_detail['teachers']) ? $user_detail['college_enc_id'] : $user_detail['organization_enc_id']),
+//            'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
             'last_name' => $user_detail['last_name'],

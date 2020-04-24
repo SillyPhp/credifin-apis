@@ -171,10 +171,10 @@ class ClassesController extends ApiBaseController
             $teacher_id = $this->getTeacherId();
             $classes = OnlineClasses::find()
                 ->alias('a')
-                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
+                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'c.section_name', 'a.subject_name', 'a.semester', 'a.start_time', 'a.end_time', 'a.class_type', 'a.class_date', 'CONCAT(a.class_date," ",a.end_time) date_time'])
                 ->joinWith(['courseEnc b'], false)
                 ->joinWith(['sectionEnc c'], false)
-                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0, 'a.class_type' => 'Scheduled'])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.status' => 'Active', 'a.is_deleted' => 0])
                 ->andWhere(['a.class_date' => $date_now])
                 ->andWhere(['>=', 'a.end_time', $time_now])
                 ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
@@ -252,13 +252,13 @@ class ClassesController extends ApiBaseController
             $today = $data['expiry_date'];
             $today = str_replace('/', '-', $today);
             $today = date('Y-m-d', strtotime($today));
-            $nextday = date("d/m/Y", strtotime($today . "+1 day"));
+            $nextday = date("Y-m-d", strtotime($today . "+1 day"));
 
             $model = new AssignedVideoSessions();
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $model->assigned_video_enc_id = $utilitiesModel->encrypt();
-            $model->expire_date = date('Y-m-d', strtotime($nextday));
+            $model->expire_date = $nextday;
             $model->class_enc_id = $data['class_id'];
             $model->session_enc_id = $data['session_id'];
             $model->created_by = $teacher_id;
@@ -366,6 +366,18 @@ class ClassesController extends ApiBaseController
             $model = OnlineClasses::find()
                 ->where(['class_enc_id' => $class_id])
                 ->one();
+
+            $session = AssignedVideoSessions::find()
+                ->where(['class_enc_id' => $class_id])
+                ->one();
+
+            if($session){
+                if($session->status == 'Active'){
+                    $session->status = 'Ended';
+                    $session->video_session_enc_time = date('y-m-d H:i:s');
+                    $session->update();
+                }
+            }
 
             if ($model) {
                 if ($model->status == 'Active') {
@@ -755,10 +767,10 @@ class ClassesController extends ApiBaseController
                 ->all();
 
             $i = 0;
-            foreach ($classes as $c){
-                if($c['classNotes']){
+            foreach ($classes as $c) {
+                if ($c['classNotes']) {
                     $j = 0;
-                    foreach ($c['classNotes'] as $n){
+                    foreach ($c['classNotes'] as $n) {
                         $link = $this->getFile($n['note']);
                         $classes[$i]['classNotes'][$j]['link'] = $link;
                         $j++;
@@ -772,8 +784,8 @@ class ClassesController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
-        }else{
-            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
