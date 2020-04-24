@@ -5,7 +5,10 @@ namespace api\modules\v2\controllers;
 
 use api\modules\v2\models\ClassComments;
 use api\modules\v2\models\ClassForm;
+use api\modules\v2\models\UploadNotes;
+use api\modules\v2\models\ProfilePicture;
 use common\models\AssignedVideoSessions;
+use common\models\ClassNotes;
 use common\models\CollegeCourses;
 use common\models\OnlineClassComments;
 use common\models\OnlineClasses;
@@ -17,6 +20,10 @@ use yii\helpers\Url;
 use common\models\Utilities;
 use yii\filters\Cors;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
+
 
 class ClassesController extends ApiBaseController
 {
@@ -41,6 +48,9 @@ class ClassesController extends ApiBaseController
                 'get-child-comments' => ['POST', 'OPTIONS'],
                 'change-visibility' => ['POST', 'OPTIONS'],
                 'get-student-comment' => ['POST', 'OPTIONS'],
+                'upload-notes' => ['POST', 'OPTIONS'],
+                'get-notes' => ['POST', 'OPTIONS'],
+                'all-notes' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -349,7 +359,8 @@ class ClassesController extends ApiBaseController
 
     public function actionChangeStatus()
     {
-        if ($this->isAuthorized()) {
+        $user_id = Yii::$app->request->post('uid');
+        if ($this->isAuthorized() || $user_id) {
             $class_id = Yii::$app->request->post('class_id');
 
             $model = OnlineClasses::find()
@@ -358,7 +369,7 @@ class ClassesController extends ApiBaseController
 
             if ($model) {
                 if ($model->status == 'Active') {
-                    $model->status = "Inactive";
+                    $model->status = "Ended";
                     if ($model->update()) {
                         return $this->response(200, ['status' => 200, 'message' => 'status changed']);
                     } else {
@@ -610,6 +621,159 @@ class ClassesController extends ApiBaseController
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionUploadNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_id');
+            $notesModel = new UploadNotes();
+            $notesModel->notes = UploadedFile::getInstancesByName('files');
+            if ($notesModel->notes && $notesModel->validate()) {
+                if ($note_ids = $notesModel->upload($class_id, $user->user_enc_id)) {
+
+                    $notes = ClassNotes::find()
+                        ->select(['title', 'note'])
+                        ->where(['class_enc_id' => $class_id, 'is_deleted' => 0, 'note_enc_id' => $note_ids])
+                        ->asArray()
+                        ->all();
+
+                    $i = 0;
+                    foreach ($notes as $n) {
+                        $link = $this->getFile($n['note']);
+                        $notes[$i]['link'] = $link;
+                        $i++;
+                    }
+
+                    return $this->response(200, ['status' => 200, 'data' => $notes]);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function getFile($file_name)
+    {
+        $bucketName = 'mec-uploads';
+        $access_key = 'AKIATDLKTDI76APKFGXO';
+        $secret_key = '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';
+        $s3 = new S3Client([
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => [
+                'key' => $access_key,
+                'secret' => $secret_key,
+            ]
+        ]);
+
+        $url = $s3->getObjectUrl($bucketName, 'online_class_notes/' . $file_name);
+        return $url;
+
+    }
+
+    public function actionGetNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_enc_id');
+            $notes = ClassNotes::find()
+                ->select(['title', 'note'])
+                ->where(['class_enc_id' => $class_id, 'is_deleted' => 0])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($notes as $n) {
+                $link = $this->getFile($n['note']);
+                $notes[$i]['link'] = $link;
+                $i++;
+            }
+            if ($notes) {
+                return $this->response(200, ['status' => 200, 'data' => $notes]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionClassStatus()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $class_id = Yii::$app->request->post('class_enc_id');
+            $status = OnlineClasses::find()
+                ->select(['status'])
+                ->where(['is_deleted' => 0, 'class_id' => $class_id])
+                ->asArray()
+                ->one();
+
+            if ($status) {
+                return $this->response(200, ['status' => 200, 'data' => $status]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAllNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('y-m-d');
+            $time_now = $dt->format('H:i:s');
+            $teacher_id = $this->getTeacherId();
+
+            $classes = OnlineClasses::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
+                ->joinWith(['courseEnc b'], false)
+                ->joinWith(['sectionEnc c'], false)
+                ->innerJoinWith(['classNotes n' => function ($n) {
+                    $n->select(['n.class_enc_id', 'n.note_enc_id', 'n.note', 'n.title']);
+                    $n->onCondition(['n.is_deleted' => 0]);
+                }])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.is_deleted' => 0])
+                ->andWhere(['<', 'a.class_date', $date_now])
+                ->andWhere(['<=', 'a.end_time', $time_now])
+                ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($classes as $c){
+                if($c['classNotes']){
+                    $j = 0;
+                    foreach ($c['classNotes'] as $n){
+                        $link = $this->getFile($n['note']);
+                        $classes[$i]['classNotes'][$j]['link'] = $link;
+                        $j++;
+                    }
+                }
+                $i++;
+            }
+
+            if ($classes) {
+                return $this->response(200, ['status' => 200, 'data' => $classes]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        }else{
+            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
         }
     }
 
