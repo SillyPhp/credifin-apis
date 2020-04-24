@@ -964,9 +964,6 @@ class ApplicationCards
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         $result = curl_exec($ch);
         $result = json_decode($result,true);
-        if (count($result)>18):
-        $result = array_slice($result, 0, 18);
-        endif;
         if ($result) {
             array_walk($result, function (&$item) {
                 $item['created_on'] = $item['created_at'];
