@@ -19,10 +19,12 @@ use Yii;
  * @property string $class_date class date
  * @property string $class_type
  * @property string $created_on class created on time
- * @property string $status Active,Inactive
+ * @property string $status Active,Inactive,Ended
  * @property int $is_deleted 0 false,1 true
  *
  * @property AssignedVideoSessions[] $assignedVideoSessions
+ * @property ClassNotes[] $classNotes
+ * @property OnlineClassComments[] $onlineClassComments
  * @property Teachers $teacherEnc
  * @property CollegeCourses $courseEnc
  * @property CollegeSections $sectionEnc
@@ -55,6 +57,7 @@ class OnlineClasses extends \yii\db\ActiveRecord
         ];
     }
 
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -63,6 +66,21 @@ class OnlineClasses extends \yii\db\ActiveRecord
         return $this->hasMany(AssignedVideoSessions::className(), ['class_enc_id' => 'class_enc_id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getClassNotes()
+    {
+        return $this->hasMany(ClassNotes::className(), ['class_enc_id' => 'class_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOnlineClassComments()
+    {
+        return $this->hasMany(OnlineClassComments::className(), ['class_enc_id' => 'class_enc_id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery

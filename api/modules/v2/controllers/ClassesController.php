@@ -50,6 +50,7 @@ class ClassesController extends ApiBaseController
                 'get-student-comment' => ['POST', 'OPTIONS'],
                 'upload-notes' => ['POST', 'OPTIONS'],
                 'get-notes' => ['POST', 'OPTIONS'],
+                'all-notes' => ['POST', 'OPTIONS'],
             ]
         ];
 
@@ -368,7 +369,7 @@ class ClassesController extends ApiBaseController
 
             if ($model) {
                 if ($model->status == 'Active') {
-                    $model->status = "Inactive";
+                    $model->status = "Ended";
                     if ($model->update()) {
                         return $this->response(200, ['status' => 200, 'message' => 'status changed']);
                     } else {
@@ -640,7 +641,7 @@ class ClassesController extends ApiBaseController
                         ->all();
 
                     $i = 0;
-                    foreach ($notes as $n){
+                    foreach ($notes as $n) {
                         $link = $this->getFile($n['note']);
                         $notes[$i]['link'] = $link;
                         $i++;
@@ -683,13 +684,13 @@ class ClassesController extends ApiBaseController
 
             $class_id = Yii::$app->request->post('class_enc_id');
             $notes = ClassNotes::find()
-                ->select(['title','note'])
+                ->select(['title', 'note'])
                 ->where(['class_enc_id' => $class_id, 'is_deleted' => 0])
                 ->asArray()
                 ->all();
 
             $i = 0;
-            foreach ($notes as $n){
+            foreach ($notes as $n) {
                 $link = $this->getFile($n['note']);
                 $notes[$i]['link'] = $link;
                 $i++;
@@ -723,6 +724,56 @@ class ClassesController extends ApiBaseController
 
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionAllNotes()
+    {
+        if ($user = $this->isAuthorized()) {
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('y-m-d');
+            $time_now = $dt->format('H:i:s');
+            $teacher_id = $this->getTeacherId();
+
+            $classes = OnlineClasses::find()
+                ->distinct()
+                ->alias('a')
+                ->select(['a.class_enc_id', 'a.status', 'b.course_name', 'a.subject_name', 'a.start_time', 'a.end_time', 'a.class_date'])
+                ->joinWith(['courseEnc b'], false)
+                ->joinWith(['sectionEnc c'], false)
+                ->innerJoinWith(['classNotes n' => function ($n) {
+                    $n->select(['n.class_enc_id', 'n.note_enc_id', 'n.note', 'n.title']);
+                    $n->onCondition(['n.is_deleted' => 0]);
+                }])
+                ->where(['a.teacher_enc_id' => $teacher_id, 'a.is_deleted' => 0])
+                ->andWhere(['<', 'a.class_date', $date_now])
+                ->andWhere(['<=', 'a.end_time', $time_now])
+                ->orderBy(['a.class_date' => SORT_ASC, 'a.start_time' => SORT_ASC])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($classes as $c){
+                if($c['classNotes']){
+                    $j = 0;
+                    foreach ($c['classNotes'] as $n){
+                        $link = $this->getFile($n['note']);
+                        $classes[$i]['classNotes'][$j]['link'] = $link;
+                        $j++;
+                    }
+                }
+                $i++;
+            }
+
+            if ($classes) {
+                return $this->response(200, ['status' => 200, 'data' => $classes]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        }else{
+            return $this->response(401,['status'=>401,'message'=>'unauthorized']);
         }
     }
 
