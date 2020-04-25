@@ -369,9 +369,6 @@ class JobsController extends Controller
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'api' => count($cardsApi),
-                    'db' => count($cardsDb),
-                    'tottal' => count($merg),
                     'cards' => $merg,
                 ];
             } else {
