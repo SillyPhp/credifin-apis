@@ -21,7 +21,7 @@ use yii\helpers\Url;
                 <button type="button">View Details</button>
             </div>
             <div class="sharing-btn naam">
-                <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                <button type="button" title="share with friend">Share <i class="fas fa-share-alt"></i></button>
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@ $this->registerCss('
 	border: none;
 	color: #fff;
 	margin: 0 2px;
-	padding: 7px 20px;
+	padding: 7px 18px;
 	font-size: 16px;
 	border-radius: 4px;
 	font-family: roboto;

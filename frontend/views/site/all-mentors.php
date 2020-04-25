@@ -58,7 +58,7 @@ use yii\helpers\Url;
                             <button type="button">View Profile</button>
                         </div>
                         <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@ use yii\helpers\Url;
                             <button type="button">View Profile</button>
                         </div>
                         <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
                         </div>
                     </div>
                 </div>
@@ -172,7 +172,7 @@ use yii\helpers\Url;
                             <button type="button">View Profile</button>
                         </div>
                         <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share"></i></button>
+                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
                         </div>
                     </div>
                 </div>
@@ -371,7 +371,7 @@ $this->registerCss('
     border: none;
     border-radius: 0 0 10px 10px;
 }
-button i{
+.share-btn button i{
     padding:0 10px;
 }
 ');
