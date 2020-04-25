@@ -10,38 +10,50 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-4 col-sm-6">
-                    <div class="news-box">
-                        <div class="news-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/training-program/institute.png'); ?>"/>
-                        </div>
-                        <div class="news-main">
-                            <a href="#">
-                                <div class="news-heading">Join India's Largest Community of Career Counsellors</div>
-                            </a>
-                            <div class="news-date">12 july 2020</div>
-                            <div class="news-tags">
-                                <ul>
-                                    <li>fashion</li>
-                                    <li>covid</li>
-                                    <li>holidays</li>
-                                    <li>holidays</li>
-                                    <li>holidays</li>
-                                </ul>
+                <?php
+                foreach ($news as $n) {
+                    ?>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="news-box">
+                            <div class="news-img">
+                                <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"/>
                             </div>
-                            <div class="news-content">Lorem ipsum, or lipsum as it is sometimes known, is dummy text
-                                used in laying out print, graphic or web designs. The passage is attributed to an
-                                unknown typesetter in the 15th century who is thought to have scrambled parts of
-                                Cicero's
-                            </div>
-                            <div class="news-btns">
-                                <button class="upvoke-btn" title="upvote"><i class="fas fa-chevron-up"></i></button>
-                                <button class="downvoke-btn" title="downvote"><i class="fas fa-chevron-down"></i>
-                                </button>
+                            <div class="news-main">
+                                <a href="#">
+                                    <div class="news-heading"><?= $n->title ?></div>
+                                </a>
+                                <div class="news-date"><?= date('d M Y', strtotime($n->created_on)) ?></div>
+                                <div class="news-tags">
+                                    <ul>
+                                        <?php
+                                        $index = 1;
+                                        foreach ($n->newsTags as $tag) {
+                                            if ($tag->is_deleted == 0) {
+                                                $t = $tag->assignedTagEnc->tagEnc;
+                                                ?>
+                                                <li><?= $t->name ?></li>
+                                                <?php
+                                                if ($index == 3) {
+                                                    break;
+                                                }
+                                                $index++;
+                                            }
+                                        }
+                                        ?>
+                                    </ul>
+                                </div>
+                                <div class="news-content"><?= $n->description ?></div>
+                                <div class="news-btns">
+                                    <button id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn" title="upvote"><i class="fas fa-chevron-up"></i></button>
+                                    <button id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn" title="downvote"><i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <?php
+                }
+                ?>
             </div>
         </div>
     </section>
@@ -142,3 +154,37 @@ $this->registercss('
 	border-radius: 2px;
 }
 ');
+
+$script = <<<JS
+$(document).on('click', '.vote-btn', function (event) {
+    event.preventDefault();
+    var btn = $(this);
+    console.log(btn);
+    var id = btn.attr('id');
+    var key = btn.attr('data-key');
+    $.ajax({
+        type: 'POST',
+        data: {id:id,key:key},
+        beforeSend: function () {
+            btn.attr('disabled', true);
+        },
+        success: function (response) {
+            btn.attr('disabled', false);
+            if (response.status == 200) {
+                toastr.success(response.message, response.title);
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        },
+        complete: function() {
+            btn.attr('disabled', false);
+        }
+    }).fail(function(data, textStatus, xhr) {
+         toastr.error('Network Problem', 'Please try later..');
+         btn.attr('disabled', false);
+    });
+});
+JS;
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

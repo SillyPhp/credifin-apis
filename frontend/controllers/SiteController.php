@@ -7,6 +7,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
+use common\models\ExternalNewsUpdate;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
@@ -83,7 +84,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index',[
+        return $this->render('index', [
             'model' => $model
         ]);
     }
@@ -235,6 +236,7 @@ class SiteController extends Controller
             'data' => $data
         ]);
     }
+
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -461,7 +463,43 @@ class SiteController extends Controller
 
     public function actionNewsIndex()
     {
-        return $this->render('news-index');
+        $news = ExternalNewsUpdate::findAll(['is_deleted' => 0, 'status' => 1]); // status 1 as published
+        if (Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('id');
+            $key = Yii::$app->request->post('key');
+            $model = ExternalNewsUpdate::findOne(['news_enc_id' => $key]);
+            switch ($id) {
+                case 'upvoteBtn' :
+                    $model->upvote += 1;
+                    break;
+                case 'downvoteBtn' :
+                    $model->downvote += 1;
+                    break;
+                default :
+                    return [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'Please try again later..',
+                    ];
+            }
+            if ($model->save()) {
+                return [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Vote submitted..',
+                ];
+            } else {
+                return [
+                    'status' => 201,
+                    'title' => 'Technical Issue',
+                    'message' => 'Something went wrong...',
+                ];
+            }
+        }
+        return $this->render('news-index', [
+            'news' => $news
+        ]);
     }
 
     public function actionUpdateProfile()
@@ -845,20 +883,22 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionUserFeedbackPage(){
+    public function actionUserFeedbackPage()
+    {
         $feedbackFormModel = new FeedbackForm();
-        return $this->render('user-feedback-page',[
+        return $this->render('user-feedback-page', [
             'feedbackFormModel' => $feedbackFormModel,
         ]);
     }
 
-    public function actionCollegeIndex(){
+    public function actionCollegeIndex()
+    {
         $model = new ClassEnquiryForm();
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
         }
-        return $this->render('college-index',[
+        return $this->render('college-index', [
             'model' => $model,
         ]);
     }
