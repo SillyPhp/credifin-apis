@@ -374,7 +374,7 @@ class ClassesController extends ApiBaseController
             if($session){
                 if($session->status == 'Active'){
                     $session->status = 'Ended';
-                    $session->video_session_enc_time = date('y-m-d H:i:s');
+                    $session->video_session_end_time = date('y-m-d H:i:s');
                     $session->update();
                 }
             }
