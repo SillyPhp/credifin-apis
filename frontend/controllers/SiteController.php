@@ -459,6 +459,11 @@ class SiteController extends Controller
         return $this->render('privacy-policy');
     }
 
+    public function actionNewsIndex()
+    {
+        return $this->render('news-index');
+    }
+
     public function actionUpdateProfile()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
