@@ -93,7 +93,7 @@ class GovtJobsController extends ApiBaseController
                     ->asArray()
                     ->one();
                 if (!empty($data['image']) && !empty($data['image_location'])) {
-                    $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                    $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'],'https');
                 } else {
                     $get[$i]['logo'] = null;
                 }

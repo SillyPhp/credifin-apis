@@ -34,7 +34,7 @@ class HomeController extends ApiBaseController
                 'top-learning-categories' => ['POST'],
                 'get-stats' => ['POST'],
                 'top-cities' => ['POST'],
-                'top-profiles' => ['POST'],
+                'featured' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -98,9 +98,9 @@ class HomeController extends ApiBaseController
         $total = $this->getData('');
 
         if ($type == 'jobs') {
-            $cards = ['jobs' => $total_jobs['total_applications'], 'titles' => $total_jobs['titles'], 'location' => $total_jobs['locations'], 'companies' => $total_jobs['org']];
+            $cards = ['jobs' => $total_jobs['total_applications'], 'profiles' => $total_jobs['titles'], 'location' => $total_jobs['locations'], 'companies' => $total_jobs['org']];
         } elseif ($type == 'internships') {
-            $cards = ['titles' => $total_internships['titles'], 'internships' => $total_internships['total_applications'], 'location' => $total_internships['locations'], 'companies' => $total_internships['org']];
+            $cards = ['profiles' => $total_internships['titles'], 'internships' => $total_internships['total_applications'], 'location' => $total_internships['locations'], 'companies' => $total_internships['org']];
         } else {
             $cards = ['jobs' => $total_jobs['total_applications'], 'internships' => $total_internships['total_applications'], 'location' => $total['locations'], 'companies' => $total_jobs['org']];
         }
@@ -242,7 +242,7 @@ class HomeController extends ApiBaseController
         $i = 0;
         foreach ($cities_jobs as $c) {
             $cities_jobs[$i]['total_openings'] = $c['jobs'] + $c['internships'];
-            $cities_jobs[$i]['city_image'] = Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($c["city_name"])) . '.png','https');
+            $cities_jobs[$i]['city_image'] = Url::to('@commonAssets/images/cities/' . preg_replace('/\s+/', '_', strtolower($c["city_name"])) . '.png', 'https');
             $i++;
         }
 
@@ -253,42 +253,17 @@ class HomeController extends ApiBaseController
         }
     }
 
-    public function actionTopProfiles()
+    public function actionFeatured()
     {
-        $type = Yii::$app->request->post('type');
-
-        $profiles = AssignedCategories::find()
-            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
-            ->alias('a')
-            ->distinct()
-            ->innerJoinWith(['parentEnc b' => function ($b) {
-                $b->onCondition([
-                    'or',
-                    ['!=', 'b.icon', NULL],
-                    ['!=', 'b.icon', ''],
-                ])
-                    ->groupBy(['b.category_enc_id']);
-            }], false)
-            ->joinWith(['employerApplications d' => function ($d) use ($type) {
-                $d->andOnCondition([
-                    'd.status' => 'Active',
-                    'd.is_deleted' => 0,
-                ])
-                    ->joinWith(['applicationTypeEnc e' => function ($e) use ($type) {
-                        $e->andOnCondition(['e.name' => ucfirst($type)]);
-                    }], false);
-            }], false)
-            ->where(['a.assigned_to' => ucfirst($type)])
-            ->orderBy([
-//                    'total' => SORT_DESC,
-                'b.name' => SORT_ASC,
-            ])
-            ->limit(8)
+        $organizations = \common\models\Organizations::find()
+            ->select(['initials_color color', 'name', 'CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", logo_location, "/", logo) ELSE NULL END logo'])
+            ->where(['is_sponsored' => 1])
+            ->limit(6)
             ->asArray()
             ->all();
 
-        if ($profiles) {
-            return $this->response(200, $profiles);
+        if ($organizations) {
+            return $this->response(200, $organizations);
         } else {
             return $this->response(404, 'not found');
         }
