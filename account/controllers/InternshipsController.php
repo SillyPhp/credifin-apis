@@ -3,8 +3,11 @@
 namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
+use account\models\applications\ApplicationTemplateDataProvider;
 use account\models\applications\ExtendsJob;
+use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
+use common\models\ApplicationTemplates;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
@@ -39,10 +42,32 @@ class InternshipsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
-
+    public function actionQuickInternship()
+    {
+        if (Yii::$app->user->identity->organization->organization_enc_id):
+            $model = new ShortJobs();
+            $type = 'Internships';
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields($type);
+            $job_type = $data->getApplicationTypes();
+            $placement_locations = $data->PlacementLocations();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save($type)) {
+                    Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Something Went Wrong..');
+                }
+                return $this->refresh();
+            }
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+        else:
+            return $this->redirect('/');
+        endif;
+    }
     public function actionIndex()
     {
         if (Yii::$app->user->identity->organization) {
@@ -206,6 +231,59 @@ class InternshipsController extends Controller
             }
         } else {
             throw new HttpException(404, Yii::t('account', 'Page not found.'));
+        }
+    }
+
+    public function actionCloneTemplate($aidk){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Internships'])
+            ->asArray()
+            ->one();
+        if(Yii::$app->user->identity->organization && $application){
+            $model = new ApplicationForm();
+            $type = 'Clone_Internships';
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $session_token = Yii::$app->request->post('n');
+                if ($application_id = $model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
+                } else {
+                    return false;
+                }
+            } else {
+                $obj = new ApplicationTemplateDataProvider();
+                $model = $obj->setValues($model, $aidk);
+                return $this->render('/employer-applications/form', [
+                    'model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found'));
         }
     }
 
@@ -1021,9 +1099,9 @@ class InternshipsController extends Controller
                 ['a.application_for' => 0],
                 ['a.application_for' => 1]
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1043,13 +1121,16 @@ class InternshipsController extends Controller
                 'a.status' => 'Active',
                 'a.application_for' => 1,
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -1087,11 +1168,11 @@ class InternshipsController extends Controller
             'applicationType' => 'internships',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
+                'a.status' => 'Closed',
             ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '<', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1177,7 +1258,7 @@ class InternshipsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
 
             $colleges = Organizations::find()
                 ->alias('a')
@@ -1190,7 +1271,7 @@ class InternshipsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
-                    "a.is_erexx_registered" => 1,
+                    "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
                 ])
@@ -1218,6 +1299,28 @@ class InternshipsController extends Controller
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+        }
+    }
+
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Internships"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('internships-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -1252,6 +1355,9 @@ class InternshipsController extends Controller
                     ];
                 }
             }
+
+            $this->__addCollege($data['colleges']);
+
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
@@ -1329,6 +1435,28 @@ class InternshipsController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
         }
     }
 

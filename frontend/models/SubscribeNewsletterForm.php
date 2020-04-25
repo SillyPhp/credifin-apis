@@ -16,7 +16,8 @@ class SubscribeNewsletterForm extends Model
     public function rules()
     {
         return [
-            [['first_name', 'last_name', 'email'], 'required'],
+            [['email'], 'required'],
+            [['first_name', 'last_name'], 'safe'],
             [['first_name', 'last_name', 'email'], 'trim'],
             [['email'], 'email'],
         ];
@@ -50,7 +51,7 @@ class SubscribeNewsletterForm extends Model
             if($subscribers->update()) {
                 return true;
             } else{
-                return false;
+                return 'exists';
             }
         }
         $subscribersModel = new \common\models\Subscribers();

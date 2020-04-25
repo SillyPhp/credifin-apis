@@ -21,7 +21,7 @@ class TweetsController extends Controller
 {
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -127,7 +127,8 @@ class TweetsController extends Controller
                 ['like', 'h.name', $keywords],
             ])
             ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
+            ->andFilterWhere(['like', 'j.name', $type])
+            ->andWhere(['a.is_deleted'=>0]);
 
         $tweets2 = (new \yii\db\Query())
             ->distinct()
@@ -150,7 +151,8 @@ class TweetsController extends Controller
                 ['like', 'h.name', $keywords],
             ])
             ->andFilterWhere(['like', 'h.name', $location])
-            ->andFilterWhere(['like', 'j.name', $type]);
+            ->andFilterWhere(['like', 'j.name', $type])
+            ->andWhere(['a.is_deleted'=>0]);
 
         $result = (new \yii\db\Query())
             ->from([

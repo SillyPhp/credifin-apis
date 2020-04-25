@@ -20,16 +20,20 @@ class JobApplied extends Model
     public $org_id;
     public $check;
     public $resume_list;
-    public $questionnaire_id;
-    public $fill_question;
     public $location_pref;
     public $status;
 
     public function rules()
     {
         return [
-            [['id', 'resume_file', 'org_id','status', 'check', 'resume_list', 'questionnaire_id', 'location_pref', 'fill_question'], 'required'],
-            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg','maxSize' => 1024 * 1024 * 2],
+            [['id', 'resume_file', 'org_id', 'status', 'check', 'resume_list', 'questionnaire_id', 'fill_question'], 'required'],
+            [
+                ['location_pref'], 'required', 'when' => function ($model, $attribute) {
+                }, 'whenClient' => "function (attribute, value) {
+                       return $('#jobapplied-location_pref label input').length != 0;
+                }"
+            ],
+            [['resume_file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'doc, docx,pdf,png,jpg,jpeg', 'maxSize' => 1024 * 1024 * 2],
         ];
     }
 
@@ -76,7 +80,7 @@ class JobApplied extends Model
                                     $app_id = $appliedModel->applied_application_enc_id;
                                     $id = $this->id;
                                     if (!$locModel->save()) {
-                                       return false;
+                                        return false;
                                     }
                                 }
                             }
@@ -127,8 +131,6 @@ class JobApplied extends Model
                     $locModel->city_enc_id = $location;
                     $locModel->created_on = date('Y-m-d H:i:s');
                     $locModel->created_by = Yii::$app->user->identity->user_enc_id;
-                    $app_id = $appliedModel->applied_application_enc_id;
-                    $id = $this->id;
                     if (!$locModel->save()) {
                         return false;
                     }
@@ -138,6 +140,8 @@ class JobApplied extends Model
                 'status' => true,
                 'aid' => $appliedModel->applied_application_enc_id,
             ];
+            $app_id = $appliedModel->applied_application_enc_id;
+            $id = $this->id;
             $this->save_process($id, $app_id);
             RefferalJobAppliedTracking::widget(['job_applied_id' => $appliedModel->applied_application_enc_id]);
             return $status;
@@ -157,19 +161,19 @@ class JobApplied extends Model
             ->asArray()
             ->all();
         if (!empty($process_list)):
-        foreach ($process_list as $process) {
-            $processModel = new AppliedApplicationProcess;
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $processModel->process_enc_id = $utilitiesModel->encrypt();
-            $processModel->applied_application_enc_id = $app_id;
-            $processModel->field_enc_id = $process['field_enc_id'];
-            $processModel->created_on = date('Y-m-d H:i:s');
-            $processModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$processModel->save()) {
-                return false;
+            foreach ($process_list as $process) {
+                $processModel = new AppliedApplicationProcess;
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $processModel->process_enc_id = $utilitiesModel->encrypt();
+                $processModel->applied_application_enc_id = $app_id;
+                $processModel->field_enc_id = $process['field_enc_id'];
+                $processModel->created_on = date('Y-m-d H:i:s');
+                $processModel->created_by = Yii::$app->user->identity->user_enc_id;
+                if (!$processModel->save()) {
+                    return false;
+                }
             }
-        }
         endif;
     }
 }

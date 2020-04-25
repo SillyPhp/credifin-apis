@@ -52,7 +52,7 @@ class AccountsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -241,9 +241,13 @@ class AccountsController extends Controller
         }
         $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->forgotPassword()) {
+            if ($model->forgotPassword() === true) {
                 return $this->render('/site/message', [
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
+                ]);
+            } elseif($model->forgotPassword() === 'User Not Exist') {
+                return $this->render('/site/message', [
+                    'message' => 'Enter Valid Email Address.'
                 ]);
             } else {
                 return $this->render('/site/message', [

@@ -96,7 +96,7 @@ class JobApply extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $processModel->process_enc_id = $utilitiesModel->encrypt();
             $processModel->applied_application_enc_id = $app_id;
-            $processModel->field_enc_id = $process['field_e/nc_id'];
+            $processModel->field_enc_id = $process['field_enc_id'];
             $processModel->created_on = date('Y-m-d h:i:s');
             $processModel->created_by = $user_enc_id;
             if (!$processModel->save()) {

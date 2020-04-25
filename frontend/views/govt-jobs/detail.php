@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$link = Url::to('detail/' . $get['job_enc_id'], 'https');
+$link = Url::to('detail/' . $get['slug'], 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['Organizations'] . ' is hiring for ' . $get['Position'];
@@ -95,7 +95,12 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="duties">Details</div>
                 <div class="duties-tab set-sticky">
                     <div class="summary">Summary</div>
-                    <div id="gv-summary" class="d-content"><?= $get['Data'] ?>
+                    <div id="gv-summary" class="d-content">
+                        <?php
+                        $data = ltrim($get['Data'],"[");
+                        $data = rtrim($data,"]");
+                        echo $data;
+                          ?>
                     </div>
                 </div>
                 <?php if (!empty($get['Eligibility'])){ ?>
@@ -109,7 +114,7 @@ $this->params['seo_tags'] = [
                 <div class="d-head" id="locations">Locations</div>
                 <div class="location-tab set-sticky">
                     <div class="location-set">
-                        <div style="margin-bottom: 8px;">
+                        <div>
                             <i class="fas fa-map-marker-alt" style="color:#3790ec;margin-right: 5px;"></i>
                             <span><?= $get['Location'] ?></span>
                         </div>
@@ -132,7 +137,7 @@ $this->params['seo_tags'] = [
                     <div class="agency">Official Notification</div>
                     <div class="a-divider"></div>
                     <div class="follow-btn">
-                        <a class="follow app_btn" href="<?= $get['Pdf_link'] ?>" target="_blank">Download PDF</a>
+                        <a class="follow app_btn" href="<?= $get['Pdf_link'] ?>" target="_blank">Detailed Advertisement</a>
                     </div>
                 </div>
                 <div class="sharing-box">
@@ -171,6 +176,7 @@ $this->params['seo_tags'] = [
                         </button>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>
@@ -178,7 +184,6 @@ $this->params['seo_tags'] = [
 <?php
 $this->registerCss('
 .tags-bar > span {
-    float: left;
     background: #f4f5fa;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
@@ -334,7 +339,6 @@ margin:auto;
     margin-top: 67px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
 }
 .agency{
@@ -351,11 +355,9 @@ margin:auto;
     font-size:19px;
 }
 .job-single-head2 {
-        float: left;
         width: 100%;
-//        padding-bottom: 30px;
-//        border-bottom: 1px solid #e8ecec;
-    }
+//        float: left;
+}
 .job-single-head2 > span {
         float: left;
         width: 100%;
@@ -369,8 +371,8 @@ margin:auto;
         color: #202020;
     }
 .job-overview {
-    float: left;
     width: 100%;
+//    float: left;
 }
 .job-overview > h3 {
     float: left;
@@ -460,10 +462,10 @@ margin:auto;
     padding: 15px;
     border-radius: 5px;
     text-align: justify;
-    float:left;
     box-shadow: 0 0 10px 0px #eee;
     clear:both;
     width:100%;
+//    float:left;
 }
 .d-head {
     font-size: 22px;
@@ -471,17 +473,16 @@ margin:auto;
     font-family:roboto;
     color: #00a0e3;
     padding: 25px 0 5px 5px;
-    float:left;
+//    float:left;
 }
 .summary{
     font-size:18px;
     font-weight:500;
-    padding: 10px 0 5px 0;
+    padding: 0 0 5px 0;
     font-family:roboto;
 }   
 .d-content {
     font-size: 15px;
-    padding:0 0 15px 0;
     font-family:roboto;
 }
 .d-points > ul {
@@ -536,9 +537,9 @@ margin:auto;
     margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
-    float:left;
     width:100%;
     background-color:#1d759a;
+    margin-bottom: 20px;
 }
 .fb-btn, .li-btn, .tw-btn, .wa-btn, .mail-btn {
     padding: 10px 0;

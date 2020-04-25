@@ -77,7 +77,7 @@ $(document).on('submit','#created-company',function(event) {
             contentType: false,
             processData: false,
             beforeSend: function () {
-               l_btn.html('<i class="fa fa-circle-o-notch"></i>');
+               l_btn.html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
                l_btn.attr("disabled","true");
             },
             success: function (response) {
@@ -88,7 +88,7 @@ $(document).on('submit','#created-company',function(event) {
                     $('#email').val(email);
                 } else {
                     toastr.error(response.message, response.title);
-                    l_btn.html('submit');
+                    l_btn.html('Submit');
                     l_btn.removeAttr("disabled");
                 }
             },

@@ -1,5 +1,6 @@
 <?php
 use yii\widgets\Pjax;
+use yii\helpers\Url;
 
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Trainings',
@@ -22,10 +23,38 @@ echo $this->render('/widgets/header/secondary-header', [
                         'applications' => $applications['data'],
                         'per_row' => 4,
                     ]);
-                }
+                } else {
+                    ?>
+                    <div class="tab-empty">
+                        <div class="tab-empty-icon">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/active-trainingp.png'); ?>"
+                                 class="img-responsive" alt=""/>
+                        </div>
+                        <div class="tab-empty-text">
+                            <div class="">There haven't created any active Training Program</div>
+                        </div>
+                    </div>
+                <?php }
                 Pjax::end();
                 ?>
             </div>
         </div>
     </div>
 </div>
+<?php
+$this->registerCss("
+.tab-empty{
+    padding:20px;
+}
+.tab-empty-icon img{
+    max-width:250px; 
+    margin:0 auto;
+}
+.tab-empty-text{
+    text-align:center; 
+    font-size:35px; 
+    font-family:lobster; 
+    color:#999999; 
+    padding-top:20px;
+}
+");

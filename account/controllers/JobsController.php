@@ -4,10 +4,12 @@ namespace account\controllers;
 
 use account\models\applications\ApplicationDataProvider;
 use account\models\applications\ApplicationForm;
+use account\models\applications\ApplicationTemplateDataProvider;
 use account\models\applications\ExtendsJob;
 use account\models\applications\ShortJobs;
 use account\models\applications\UserAppliedApplication;
 use account\models\campus_placement\CollegePlacementForm;
+use common\models\ApplicationTemplates;
 use common\models\DropResumeApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
@@ -42,7 +44,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->requestedRoute, 2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -103,9 +105,9 @@ class JobsController extends Controller
                 ['a.application_for' => 1]
             ],
 
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -125,13 +127,16 @@ class JobsController extends Controller
                 'a.status' => 'Active',
                 'a.application_for' => 1
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
             'limit' => $limit,
+            'options' => [
+                'placement_locations' => true,
+            ],
         ];
 
         $applications = new \account\models\applications\Applications();
@@ -408,7 +413,7 @@ class JobsController extends Controller
             ->alias('a')
             ->select(['a.organization_enc_id', 'a.name'])
             ->joinWith(['businessActivityEnc b'], false)
-            ->where(['a.is_erexx_registered' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->where(['a.has_placement_rights' => 1, 'a.status' => 'Active', 'a.is_deleted' => 0])
             ->andWhere(['b.business_activity' => 'College'])
             ->asArray()
             ->all();
@@ -487,11 +492,11 @@ class JobsController extends Controller
             'applicationType' => 'Jobs',
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
-                'a.status' => 'Active',
+                'a.status' => 'Closed',
             ],
-            'having' => [
-                '<', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '<', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -522,7 +527,7 @@ class JobsController extends Controller
     {
         $primaryfields = Categories::find()
             ->alias('a')
-            ->select(['a.name', 'a.category_enc_id'])
+            ->select(['a.name', 'a.category_enc_id','CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", a.icon) icon'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')
             ->where(['b.assigned_to' => 'Jobs', 'b.parent_enc_id' => NULL])
             ->asArray()
@@ -545,6 +550,7 @@ class JobsController extends Controller
             if ($model->load(Yii::$app->request->post())) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 $session_token = Yii::$app->request->post('n');
+//                return $model->saveValues($type);
                 if ($application_id = $model->saveValues($type)) {
                     $session = Yii::$app->session;
                     if (!empty($session->get($session_token))) {
@@ -733,6 +739,59 @@ class JobsController extends Controller
         }
     }
 
+    public function actionCloneTemplate($aidk){
+        $application = ApplicationTemplates::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc f'], false)
+            ->where(['a.application_enc_id' => $aidk, 'f.name' => 'Jobs'])
+            ->asArray()
+            ->one();
+        if(Yii::$app->user->identity->organization && $application){
+            $model = new ApplicationForm();
+            $type = 'Clone_Jobs';
+            $primary_cat = $model->getPrimaryFields();
+            $questionnaire = $model->getQuestionnnaireList();
+            $industry = $model->getndustry();
+            $benefits = $model->getBenefits();
+            $process = $model->getInterviewProcess();
+            $placement_locations = $model->getOrganizationLocations();
+            $interview_locations = $model->getOrganizationLocations(2);
+            if ($model->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                $session_token = Yii::$app->request->post('n');
+                if ($application_id = $model->saveValues($type)) {
+                    $session = Yii::$app->session;
+                    if (!empty($session->get($session_token))) {
+                        $session->remove($session_token);
+                    }
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'app_id' => $application_id,
+                    ];
+                } else {
+                    return false;
+                }
+            } else {
+                $obj = new ApplicationTemplateDataProvider();
+                $model = $obj->setValues($model, $aidk);
+                return $this->render('/employer-applications/form', [
+                    'model' => $model,
+                    'primary_cat' => $primary_cat,
+                    'industry' => $industry,
+                    'placement_locations' => $placement_locations,
+                    'interview_locations' => $interview_locations,
+                    'benefits' => $benefits,
+                    'process' => $process,
+                    'questionnaire' => $questionnaire,
+                    'type' => $type,
+                ]);
+            }
+        } else{
+            throw new HttpException(404, Yii::t('account', 'Page not found'));
+        }
+    }
+
     public function actionPreview()
     {
         $model = new ApplicationForm();
@@ -799,6 +858,22 @@ class JobsController extends Controller
             $id = Yii::$app->request->post('data');
             $update = Yii::$app->db->createCommand()
                 ->update(EmployerApplications::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
+                ->execute();
+            if ($update) {
+                Yii::$app->sitemap->generate();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function actionCloseApplication()
+    {
+        if (Yii::$app->request->isPost) {
+            $id = Yii::$app->request->post('data');
+            $update = Yii::$app->db->createCommand()
+                ->update(EmployerApplications::tableName(), ['status' => 'Closed', 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['application_enc_id' => $id])
                 ->execute();
             if ($update) {
                 Yii::$app->sitemap->generate();
@@ -1272,24 +1347,26 @@ class JobsController extends Controller
     {
         if (Yii::$app->user->identity->organization->organization_enc_id):
             $model = new ShortJobs();
+            $type = 'Jobs';
             $data = new ApplicationForm();
             $primary_cat = $data->getPrimaryFields();
             $job_type = $data->getApplicationTypes();
             $placement_locations = $data->PlacementLocations();
             $currencies = $data->getCurrency();
             if ($model->load(Yii::$app->request->post())) {
-                if ($model->save()) {
+                if ($model->save($type)) {
                     Yii::$app->session->setFlash('success', 'Your Information Has Been Successfully Submitted..');
                 } else {
                     Yii::$app->session->setFlash('error', 'Something Went Wrong..');
                 }
                 return $this->refresh();
             }
-            return $this->render('/employer-applications/one-click-job', ['currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('/employer-applications/one-click-job', ['type'=>$type,'currencies' => $currencies, 'placement_locations' => $placement_locations, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else:
             return $this->redirect('/');
         endif;
     }
+
 
     private function __candidateApplications($limit = NULL)
     {
@@ -1426,7 +1503,7 @@ class JobsController extends Controller
 
     public function actionCampusPlacement()
     {
-        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->is_erexx_registered == 1) {
+        if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
 //        $applications = EmployerApplications::find()
 //            ->alias('a')
 //            ->joinWith(['applicationTypeEnc b'])
@@ -1460,7 +1537,7 @@ class JobsController extends Controller
                     $c->joinWith(['locationEnc e'], true);
                 }], false)
                 ->where([
-                    "a.is_erexx_registered" => 1,
+                    "a.has_placement_rights" => 1,
                     "a.status" => "Active",
                     "a.is_deleted" => 0,
                 ])
@@ -1472,7 +1549,28 @@ class JobsController extends Controller
                 'colleges' => $colleges,
             ]);
         } else {
-            throw new HttpException(404, Yii::t('frontend', 'Page Not Found.'));
+            throw new HttpException(404, Yii::t('account', 'Page Not Found.'));
+        }
+    }
+
+    public function actionViewTemplates(){
+        if (!empty(Yii::$app->user->identity->organization)) {
+            $application = \common\models\ApplicationTemplates::find()
+                ->alias('a')
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->joinWith(['title0 z' => function ($z) {
+                    $z->joinWith(['categoryEnc zz']);
+                }], false)
+                ->joinWith(['applicationTypeEnc f'], false)
+                ->where(['f.name' => "Jobs"])
+//            ->groupBy('zz.name')
+                ->asArray()
+                ->all();
+            return $this->render('jobs-templates', [
+                'jobs' => $application,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('account', 'Page not found.'));
         }
     }
 
@@ -1481,6 +1579,7 @@ class JobsController extends Controller
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $data = Yii::$app->request->post();
+
             foreach ($data['applications'] as $app) {
                 foreach ($data['colleges'] as $clg) {
                     $utilitiesModel = new Utilities();
@@ -1507,6 +1606,9 @@ class JobsController extends Controller
                     ];
                 }
             }
+
+            $this->__addCollege($data['colleges']);
+
             return $response = [
                 'status' => 200,
                 'title' => 'Success',
@@ -1530,6 +1632,37 @@ class JobsController extends Controller
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function __addCollege($colleges)
+    {
+
+        foreach ($colleges as $clg) {
+            $erexx_collab = ErexxCollaborators::find()
+                ->where(['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id, 'college_enc_id' => $clg, 'status' => 'Active', 'is_deleted' => 0])
+                ->one();
+
+            if (empty($erexx_collab)) {
+                $utilitiesModel = new Utilities();
+                $erexxCollaboratorsModel = new ErexxCollaborators();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $erexxCollaboratorsModel->collaboration_enc_id = $utilitiesModel->encrypt();
+                $erexxCollaboratorsModel->organization_enc_id = Yii::$app->user->identity->organization->organization_enc_id;
+                $erexxCollaboratorsModel->college_enc_id = $clg;
+                $erexxCollaboratorsModel->created_on = date('Y-m-d H:i:s');
+                $erexxCollaboratorsModel->created_by = Yii::$app->user->identity->user_enc_id;
+                $erexxCollaboratorsModel->save();
+            }
+        }
+    }
+    public function actionExtendsDate()
+    {
+        $model = new ExtendsJob();
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                return $this->redirect(Yii::$app->request->referrer);
+            }
         }
     }
 

@@ -31,9 +31,11 @@ class Applications extends EmployerApplications
             ->joinWith(['appliedApplications e' => function ($c) {
                 $c->select(['e.application_enc_id']);
             }], true)
-            ->joinWith(['placementLocations'])
-            ->joinWith(['locations'])
-            ->where(['a.is_deleted' => 0])
+            ->joinWith(['placementLocations']);
+            if($options['options']['placement_locations']) {
+                $applications->joinWith(['locations']);
+            }
+            $applications->where(['a.is_deleted' => 0])
             ->groupBy(['a.application_enc_id']);
 
         $applications->joinWith(['applicationTypeEnc f' => function ($d) {

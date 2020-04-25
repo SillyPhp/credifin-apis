@@ -251,6 +251,7 @@ Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEA
                         </div>
                     </div>
                 </div>
+                <?= $this->render("/widgets/square_ads");?>
             </div>
         </div>
     </div>

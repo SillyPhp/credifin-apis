@@ -14,8 +14,8 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                     <?php
                 } else {
                     ?>
-                    <canvas class="user-icon" name="<?= $org_name; ?>" width="100" height="100"
-                            color="<?= $initial_color; ?>" font="48px"></canvas>
+                    <canvas class="user-icon" name="<?= $org_name; ?>" width="125" height="125"
+                            color="<?= $initial_color; ?>" font="60px"></canvas>
                     <?php
                 }
                 ?>
@@ -32,7 +32,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
         <div class="actions-main">
             <?php if (Yii::$app->user->isGuest): ?>
                 <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                            class="fas fa-paper-plane"></i>Login to apply</a>
+                            class="fas fa-paper-plane"></i>Apply</a>
                 <div class="sub-actions">
                     <?php
                     if ($type == 'Internship'): ?>
@@ -62,9 +62,12 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                         <?php endif; ?>
                     </div>
                 <?php elseif (!Yii::$app->user->identity->organization): ?>
-                    <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
-                        for
-                        <?= $type ?></a>
+                <div class="btn-parent">
+                        <a href="#" class="apply-job-btn apply-btn hvr-icon-pulse"><i class="fas fa-paper-plane hvr-icon"></i>Apply
+                            for
+                            <?= $type ?></a>
+<!--                        <a href="#" class="follow-btn apply-btn hvr-icon-pulse"><i class="fas fa-plus hvr-icon"></i></a>-->
+                </div>
                 <?php if ($shortlist_btn_display): ?>
                     <div class="sub-actions">
                         <?php
@@ -157,9 +160,22 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
     </div>
 <?php
 $this->registerCss('
+.follow-btn{
+    background:#ff7803;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.18);
+    border-radius: 2px;
+    font-family: Open Sans;
+    font-size: 13px;
+    color:#fff;
+    width: 32px;
+    height: auto;
+    padding: 15px 10px;
+    text-align: center;
+}
+.follow-btn:hover{color:#fff;}
 .job-thumb a{
-    width: 125px;
-    height: 125px;
+    width: 125px !Important;
+    height: 125px !Important;
     background-color: #fff;
     display: block;
     margin: auto;
@@ -169,7 +185,7 @@ $this->registerCss('
     margin:5px;
 }
 .overlay-top{
-    width: 80%;
+    width: 80% !Important;
     margin: auto;
     margin-top: -150px;
     float: none;
@@ -177,6 +193,10 @@ $this->registerCss('
     z-index: 9;
     padding-top: 20px;
     padding-bottom: 50px;
+}
+#logo_img {
+    width: 115px !Important;
+    height: 115px !Important;
 }
 .organization-details{
     display: block;
@@ -319,7 +339,14 @@ a.add-or-compare:hover, a.add-or-compare:focus {
 @media only screen and (max-width: 991px) {
     .job-single-head.style2.overlay-top{
         margin-top: 0;
-        width: 100%;
+        width: 100% !important;
+    }
+    .job-single-head.style2 .job-thumb{
+        margin-top:0px;
+        margin-left:10px;
+    }
+    .overlay-top{
+        padding-bottom:10px;
     }
     .job-thumb{max-width: 125px;}
     .job-head-info{

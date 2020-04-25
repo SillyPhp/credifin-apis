@@ -218,7 +218,6 @@ class ReviewCards
         ];
     }
 
-
     public function getReviewsCount($unclaimed_org)
     {
         return NewOrganizationReviews::find()

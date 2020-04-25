@@ -45,6 +45,7 @@ use Yii;
  * @property int $is_phone_verified Is Organization Phone Verified (0 as False, 1 as True)
  * @property int $is_startup Is Organization a Startup (0 as No, 1 as Yes)
  * @property int $is_erexx_registered Is College Erexx Based (0 as False, 1 as True)
+ * @property int $has_placement_rights 1 for Has erexx rights
  * @property string $status Organization Status (Active, Inactive, Pending)
  * @property int $is_deleted Is Organization Deleted (0 as False, 1 as True)
  *
@@ -110,7 +111,7 @@ class Organizations extends \yii\db\ActiveRecord
             [['organization_enc_id', 'name', 'slug', 'email', 'initials_color', 'phone', 'created_by'], 'required'],
             [['establishment_year', 'created_on', 'last_updated_on'], 'safe'],
             [['description', 'mission', 'vision', 'value', 'status'], 'string'],
-            [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_erexx_registered', 'is_deleted'], 'integer'],
+            [['number_of_employees', 'is_sponsored', 'is_featured', 'is_email_verified', 'is_phone_verified', 'is_startup', 'is_erexx_registered', 'has_placement_rights', 'is_deleted'], 'integer'],
             [['organization_enc_id', 'organization_type_enc_id', 'business_activity_enc_id', 'industry_enc_id', 'name', 'slug', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'tag_line', 'website', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['email', 'facebook', 'google', 'twitter', 'instagram', 'linkedin'], 'string', 'max' => 50],
             [['initials_color'], 'string', 'max' => 7],

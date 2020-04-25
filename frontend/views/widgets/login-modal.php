@@ -7,7 +7,7 @@ use borales\extensions\phoneInput\PhoneInput;
 
 ?>
 <div id="loginModal" class="modal fade-scale loginModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-main">
         <!-- Modal content-->
         <div class="modal-content half-bg-color">
             <button type="button" class="close-lg-modal" data-dismiss="modal" aria-hidden="true">✕</button>
@@ -88,10 +88,10 @@ use borales\extensions\phoneInput\PhoneInput;
                             <div class="sign-up-form" id="signForm">
                                 <div class="sign-heading">Sign up as</div>
                                 <div class="indi-btn">
-                                    <a href="/signup/individual">Individual</a>
+                                    <a href="/signup/individual">Individual / Candidate</a>
                                 </div>
                                 <div class="organ-btn">
-                                    <a href="/signup/organization">Organization</a>
+                                    <a href="/signup/organization">Organization / Companies</a>
                                 </div>
                                 <div class="new-user">
                                     Existing User?
@@ -158,7 +158,7 @@ $this->registerCss('
     border-radius: 5px;
     text-transform: capitalize;
     font-size: 15px;
-    width: 160px;
+    width: 245px;
     margin: auto;
     margin-top: 5px;
     display: block;
@@ -367,7 +367,7 @@ input{
     }
 }
 @media screen and (min-width: 768px){
-    .modal-dialog {
+    .modal-dialog-main {
         width: 750px !important;
         margin: 30px auto;
     }

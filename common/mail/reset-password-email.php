@@ -142,7 +142,7 @@ $this->registerCss('
             <img src="<?= Url::to('@commonAssets/email_service/email-eyteam.png', true); ?>">
         </div>
         <div class="copyright">
-            <?= Yii::t('frontend', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name; ?>
+            <?= Yii::t('app', 'Copyright') . ' &copy; ' . date('Y') . ' ' . Yii::$app->params->site_name; ?>
         </div>
     </div>
 </div>

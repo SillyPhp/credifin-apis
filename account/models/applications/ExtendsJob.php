@@ -28,6 +28,7 @@ class ExtendsJob extends Model {
     {
         $employerApplicationsModel = EmployerApplications::findOne(['application_enc_id'=>$this->application_enc_id]);
         $employerApplicationsModel->last_date = date('Y-m-d', strtotime($this->date));
+        $employerApplicationsModel->status = 'Active';
         if ($employerApplicationsModel->save())
         {
             return true;

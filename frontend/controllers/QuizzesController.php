@@ -5,61 +5,65 @@ namespace frontend\controllers;
 use common\models\AssignedCategories;
 use common\models\QuizAnswersPool;
 use common\models\QuizPool;
-use common\models\Quizs;
 use common\models\QuizSubmittedAnswers;
-use common\models\Quiz;
+use common\models\Quizzes;
 use Yii;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\db\Expression;
 use yii\web\Response;
+use yii\web\HttpException;
 
 class QuizzesController extends Controller
 {
-    public function actionIndex($type = null){
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
+
+    public function actionIndex($type = null)
+    {
         if ($type == null) {
             $categories = AssignedCategories::find()
                 ->alias('a')
-                ->select(['b.name','b.slug','CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/others.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
+                ->select(['b.name', 'b.slug', 'CASE WHEN a.icon_png IS NULL OR a.icon_png = "" THEN "' . Url::to('@commonAssets/quiz_categories/other1.png') . '" ELSE CONCAT("' . Url::to('@commonAssets/quiz_categories/') . '", a.icon_png) END icon'])
                 ->joinWith(['parentEnc b'], false)
                 ->innerJoinWith(['quizzes c'], false)
-                ->where(['a.assigned_to'=> 'Quiz','a.status' =>'Approved', 'a.is_deleted' => 0, 'c.is_deleted'=> 0, 'c.display' => 1])
+                ->where(['a.assigned_to' => 'Quiz', 'a.status' => 'Approved', 'a.is_deleted' => 0, 'c.is_deleted' => 0, 'c.display' => 1])
                 ->groupBy(['a.assigned_category_enc_id'])
                 ->asArray()
                 ->all();
 
-            $quizes = Quiz::find()
+            $quizes = Quizzes::find()
                 ->alias('a')
-                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
-                ->joinWith(['quizQuestions b' => function ($x) {
-                    $x->onCondition([
-                        'b.is_deleted' => 0
-                    ]);
-                    $x->groupBy(['b.quiz_enc_id']);
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'a.num_of_ques cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug'])
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+                    $b->innerJoinWith(['quizQuestionsPools z']);
                 }], false)
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 1,
                     'a.display' => 1
                 ])
+                ->groupBy('a.quiz_enc_id')
                 ->asArray()
+                ->limit(12)
                 ->all();
             return $this->render('quiz-landing-page', [
                 'data' => $categories,
                 'quiz' => $quizes
             ]);
         } else {
-            $quizes = Quiz::find()
+            $quizes = Quizzes::find()
                 ->alias('a')
-                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
-                ->joinWith(['quizQuestions b' => function ($x) {
-                    $x->onCondition([
-                        'b.is_deleted' => 0
-                    ]);
-                    $x->groupBy(['b.quiz_enc_id']);
+                ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'a.num_of_ques cnt', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'd.name category_name', 'CONCAT("' . Url::to('@commonAssets/categories/svg/') . '", d.icon) icon'])
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+                    $b->innerJoinWith(['quizQuestionsPools z']);
                 }], false)
-                ->joinWith(['assignedCategoryEnc c' => function ($x) {
+                ->innerJoinWith(['assignedCategoryEnc c' => function ($x) {
                     $x->joinWith(['parentEnc d']);
                 }], false)
                 ->where([
@@ -67,6 +71,7 @@ class QuizzesController extends Controller
                     'a.display' => 1,
                     'd.slug' => $type
                 ])
+                ->groupBy('a.quiz_enc_id')
                 ->asArray()
                 ->all();
             return $this->render('all-quiz', [
@@ -75,32 +80,46 @@ class QuizzesController extends Controller
         }
     }
 
-    public function actionAll(){
-        $quizes = Quiz::find()
-            ->alias('a')
-            ->select(['a.sharing_image', 'a.sharing_image_location', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'COUNT(b.quiz_question_enc_id) cnt'])
-            ->joinWith(['quizQuestions b' => function ($x) {
-                $x->onCondition([
-                    'b.is_deleted' => 0
-                ]);
-                $x->groupBy(['b.quiz_enc_id']);
-            }], false)
-            ->where([
-                'a.display' => 1,
-                'a.is_deleted' => 0
-            ])
-            ->asArray()
-            ->all();
+    public function actionAll()
+    {
 
-        return $this->render('all', [
-            'data' => $quizes
-        ]);
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $page = Yii::$app->request->post('page');
+            $limit = Yii::$app->request->post('limit');
+            $quizes = Quizzes::find()
+                ->alias('a')
+                ->select(['CASE WHEN a.sharing_image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->quiz->sharing->image, 'https') . '", a.sharing_image_location, "/", a.sharing_image) ELSE NULL END image', 'a.name', 'a.quiz_enc_id', 'CONCAT("' . Url::to("/", true) . '", "quiz", "/", a.slug) slug', 'a.num_of_ques cnt'])
+                ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+                    $b->innerJoinWith(['quizQuestionsPools z']);
+                }], false)
+                ->where([
+                    'a.display' => 1,
+                    'a.is_deleted' => 0
+                ])
+                ->groupBy('a.quiz_enc_id')
+                ->offset(($page - 1) * $limit)
+                ->asArray()
+                ->limit($limit)
+                ->all();
+
+            return [
+                'status' => 200,
+                'title' => 'Success',
+                'data' => $quizes
+            ];
+        }
+
+        return $this->render('all');
     }
 
     public function actionDetail($slug, $s = NULL, $t = NULL)
     {
-        $temp = Quizs::find()
+        $temp = Quizzes::find()
             ->alias('a')
+            ->innerJoinWith(['quizPoolEnc b' => function ($b) {
+                $b->innerJoinWith(['quizQuestionsPools z']);
+            }], false)
             ->where([
                 'a.slug' => $slug,
                 'a.status' => 1,
@@ -132,7 +151,11 @@ class QuizzesController extends Controller
 
                 $submittedQuestions = $this->_getPreviousQuestions($slug);
                 $newQuestion = $this->_getQuestion($submittedQuestions, $slug);
-                if ($newQuestion) {
+                $result = QuizSubmittedAnswers::find()
+                    ->select(['answer_enc_id'])
+                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                    ->count();
+                if ($newQuestion && $result <= $temp['num_of_ques']) {
                     return $response = [
                         'status' => 200,
                         'message' => 'Success',
@@ -146,36 +169,98 @@ class QuizzesController extends Controller
                         'result' => $result,
                     ];
                 }
-            }
-        }
-        if ($temp['template'] == 6) {
-            $this->layout = 'quiz6-main';
-            $result = QuizSubmittedAnswers::find()
-                ->select(['answer_enc_id'])
-                ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
-                ->count();
-            if ($result == 0) {
-                return $this->render('college-quiz', [
-                    'quiz' => $this->_getQuestion([],$slug),
-                ]);
             } else {
-                $noOfQuestion = Quizs::find()
-                    ->select('num_of_ques')
-                    ->where(['slug' => $slug])
+                $quiz = Quizzes::find()
+                    ->alias('a')
+                    ->joinWith(['quizPoolEnc b' => function ($x) use ($temp) {
+                        $x->andWhere([
+                            'b.status' => 1,
+                            'b.is_deleted' => 0
+                        ]);
+                        $x->joinWith(['quizQuestionsPools c' => function ($c) use ($temp) {
+                            $c->joinWith(['quizAnswersPools d']);
+                            $c->groupBy('c.quiz_question_pool_enc_id');
+                            $c->orderby(new Expression('rand()'));
+                            $c->limit($temp['num_of_ques']);
+                        }]);
+                    }])
+                    ->where([
+                        'a.slug' => $slug,
+                        'a.status' => 1,
+                        'a.is_deleted' => 0
+                    ])
                     ->asArray()
                     ->one();
-                return $this->render('college-quiz', [
-                    'result' => $this->_getQuizResult($slug),
-                    'noOfQuestion' => $noOfQuestion,
-                ]);
+                return [
+                    'results' => $quiz['quizPoolEnc']['quizQuestionsPools']
+                ];
             }
-//            return $this->render('college-quiz', [
-//                'score' => $s,
-//                'total' => $t,
-//                'quiz' => $temp
-//            ]);
-        } else{
-            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+        switch ($temp['template']) {
+            case 1:
+                $this->layout = 'quiz-main';
+                return $this->render('cricket-quiz', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 2:
+                $this->layout = 'quiz2-main';
+                return $this->render('cricket-quiz-2', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 3:
+                $this->layout = 'quiz3-main';
+                return $this->render('quiz-3', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 4:
+                $this->layout = 'quiz4-main';
+                return $this->render('quiz-4', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 5:
+                $this->layout = 'quiz5-main';
+                return $this->render('quiz-5', [
+                    'score' => $s,
+                    'total' => $t,
+                    'quiz' => $temp
+                ]);
+                break;
+            case 6:
+                $this->layout = 'quiz6-main';
+                $result = QuizSubmittedAnswers::find()
+                    ->select(['answer_enc_id'])
+                    ->where(['quiz_slug' => $slug, 'user_enc_id' => Yii::$app->user->identity->user_enc_id])
+                    ->count();
+                if ($result == 0 && $result <= $temp['num_of_ques']) {
+                    return $this->render('college-quiz', [
+                        'quiz' => $this->_getQuestion([], $slug),
+                    ]);
+                } else {
+                    $noOfQuestion = Quizzes::find()
+                        ->select('num_of_ques')
+                        ->where(['slug' => $slug])
+                        ->asArray()
+                        ->one();
+                    return $this->render('college-quiz', [
+                        'result' => $this->_getQuizResult($slug),
+                        'noOfQuestion' => $noOfQuestion,
+                    ]);
+                }
+                break;
+            default :
+                throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
         }
     }
 
@@ -192,7 +277,7 @@ class QuizzesController extends Controller
 
     private function _getQuestion($isSubmitted = [], $slug)
     {
-        $question = Quizs::find()
+        $question = Quizzes::find()
             ->alias('z')
             ->innerJoinWith(['quizPoolEnc a' => function ($a) use ($isSubmitted) {
                 $a->innerJoinWith(['quizQuestionsPools c' => function ($c) use ($isSubmitted) {

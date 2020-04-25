@@ -316,8 +316,8 @@ $script = <<<JS
           var chk2 = $('#services-1');
           
           if (chk1.prop("checked") == true || chk2.prop("checked") == true) {
-                $(this).css('pointer-events', 'none');
-                $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                // $(this).css('pointer-events', 'none');
+                // $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                 $("#services_submit_form").submit();
           }else {
                 $('.error').html('Select at least one to continue');
