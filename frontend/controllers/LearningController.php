@@ -15,6 +15,7 @@ use common\models\SubmittedVideos;
 use common\models\Tags;
 use common\models\UserPrivileges;
 use common\models\Users;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Url;
@@ -370,7 +371,11 @@ class LearningController extends Controller
 
     public function actionIndex()
     {
-
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
         $popular_videos = LearningVideos::find()
             ->where([
                 'is_deleted' => 0,
@@ -422,6 +427,7 @@ class LearningController extends Controller
             'popular_videos' => $popular_videos,
             'topics' => $topics,
             'object' => $object,
+            'model' => $model,
         ]);
     }
 

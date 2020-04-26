@@ -35,7 +35,7 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{organization_link}}" title="{{organization_name}}" style="text-decoration:none;">
+                            <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
                                 <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
                             </a>
                         </div>
@@ -59,7 +59,12 @@ switch ([$controller_id, $action_id]) {
                                 <h5 class="salary">{{salary}}</h5>
                                 {{/salary}}
                                 {{^salary}}
+                                {{#sal}}
+                                <h5 class="salary"><a href="{{link}}" target="_blank"><i class="far fa-money-bill-alt"></i> View In Details</a></h5>
+                                {{/sal}}
+                                {{^sal}}
                                 <h5 class="salary">Negotiable</h5>
+                                {{/sal}}
                                 {{/salary}}
                                 {{#type}}
                                 <h5 class="salary">{{type}}</h5>
@@ -67,22 +72,11 @@ switch ([$controller_id, $action_id]) {
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
+                                {{^experience}}
+                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
+                                {{/experience}}
                             </div>
                             <div class="clear"></div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 p-0">
-                            <div class="tag-box">
-                                <div class="tags">
-                                    {{#skill}}
-                                    <span class="after">{{.}}</span>
-                                    {{/skill}}
-                                    {{^skill}}
-                                    <span class="after">Multiple Skills</span>
-                                    {{/skill}}
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <div class="application-card-wrapper">
@@ -96,7 +90,26 @@ switch ([$controller_id, $action_id]) {
     </script>
 <?php
 $c_user = Yii::$app->user->identity->user_enc_id;
-$script = <<<JS
+$script = <<< JS
+function gitHubJobs() {
+  $.ajax({
+  method: 'POST',
+  url: '/jobs/git-jobs',
+  dataType:"json",
+  beforeSend: function(){
+           $('.load-more-text').css('visibility', 'hidden');
+           $('.load-more-spinner').css('visibility', 'visible');
+        },
+  success: (res) => {
+            $('.loader-main').hide();
+            $('#loadMore').addClass("loading_more");
+            $('.load-more-text').css('visibility', 'visible');
+            $('.load-more-spinner').css('visibility', 'hidden');
+            renderCards(res, '.blogbox');
+            utilities.initials();
+  } 
+})
+} 
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
@@ -107,21 +120,12 @@ function renderCards(cards, container){
     if(cardsLength%3 !==0 && loader === true) {
         $('#loadMore').hide();
     }
-    for(var i=0; i<cards.length; i++){
-        if(cards[i].skill != null){
-            cards[i].skill = cards[i].skill.split(',')
-        } else {
-            cards[i].skill = [];
-        }
-    }
     var noRows = Math.ceil(cardsLength / 3);
     var j = 0;
     for(var i = 1; i <= noRows; i++){
         $(container).append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
         j+=3;
     }
-    checkSkills();
-    // showSkills();
 }
 
 function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pathname, location = "", limit = "", dataType = "") {
@@ -138,7 +142,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
     }
     data['type'] = type;
     if(location !== ""){
-        data['location'] = location;
+        data['location'] = location; 
     }
     if(limit !== ""){
         data['limit'] = limit;
@@ -160,7 +164,7 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
             $('#loadMore').addClass("loading_more");
             $('.load-more-text').css('visibility', 'visible');
             $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
+            if(response.status === 200) { 
                 renderCards(response.cards, container);
                 utilities.initials();
             } else {
@@ -290,25 +294,47 @@ function getReviewList(sidebarpage){
 function checkSkills(){
     $('.application-card-main').each(function(){
        var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
+       $(elems).sort(function (a, b) {
+            return $(a).width() > $(b).width() ? 1 : -1;  
+        }).appendTo(skillsMain);
+    });
+    checkSkills2();
+}
+function checkSkills2(){
+    var parent_card_main = $('.application-card-main').width() / 3;
+    $('.application-card-main').each(function(){
+       var elems = $(this).find('.after');
+       var skillsMain = $(this).find('.tags');
        var i = 0;
        $(elems).each(function() {
-            if($(this).width() > 100 && $(this).text() != 'Multiple Skills' || i >= 2){
+            if($(this).width() > parent_card_main && $(this).text() != 'Multiple Skills' || i >= 3){
                 $(this).addClass('hidden');
             }
             i++;
        });
-       var skillsMain = $(this).find('.tags');
        var hddn = $(this).find('.after.hidden');
        var hasMore = $(this).find('span.more-skills');
        if(hddn.length != 0){
            if(elems.length === hddn.length){
                $(elems[0]).removeClass('hidden');
+               var lg_skills = $(elems[0]).width();
+               var parent_card = $(elems[0]).parentsUntil('.application-card-main').parent().width() - 60;
                var countMore = hddn.length - 1;
                if(countMore != 0 && hasMore.length == 0){
-                   skillsMain.append('<span class="more-skills">+ ' + countMore + '</span>');
+                   skillsMain.parent().append('<span class="more-skills">+ ' + countMore + '</span>');
+               } else if(hasMore.length != 0){
+                   skillsMain.parent().children('.more-skills').show();
+               }
+               if(lg_skills >= parent_card){
+                   $(elems[0]).parent().css('display','inherit');
+                    $(elems[0]).addClass('lg-skill');
+                    $(elems[0]).parent().parent().children('.more-skills').hide();
+               } else {
+                   $(elems[0]).parent().css('display','inline-block');
                }
            } else if(hasMore.length == 0) {
-                skillsMain.append('<span class="more-skills">+ ' + hddn.length + '</span>');
+                skillsMain.parent().append('<span class="more-skills">+ ' + hddn.length + '</span>');
            }
        }
     });
@@ -316,6 +342,14 @@ function checkSkills(){
 JS;
 $this->registerJs($script);
 $this->registerCss('
+.city
+{
+text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 40%;
+}
+
 .application-card-description h5{
     margin-top:0px !important;
     margin-bottom: 8px !important;
@@ -390,29 +424,25 @@ $this->registerCss('
     right: -4px !important;
     top: -3px !important;
 }
-
 .clear{
     clear:both;
 }
-
 .sal{
     margin-right: 5px;
 }
-
 .salary{
     font-family:roboto;
 }
-
 .tag-box{
     border-top: 1px solid lightgray;
     padding-left:15px;
     padding-top:10px;
 }
-
 .tags{
     font-size: 17px;
     color:gray;
     font-family: Georgia !important;
+    display:inline-block;
 }
 .after{
     padding-right: 25px;
@@ -454,18 +484,23 @@ $this->registerCss('
     color: #fff;
     padding: 5px 15px;
     border-radius: 20px;
+    display:inline-block;
 }
 .salary{ 
     padding-left: 16px;
+}
+.lg-skill{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 @media only screen and (max-width: 974px){
     .city-box{padding-left: 18px; padding-bottom: 10px;}
     .hide-responsive{display:none;}
     .show-responsive{display:inline;}
     .hide-resp{display:none;}
-
 }
 /*cards-box css*/
-
 ');
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -906,7 +906,7 @@ $script = <<< JS
                 prefetch: '',
                 cache: true, 
                 remote: {
-                    url: '/cities/city-list?q=%QUERY',
+                    url: '/cities/get-location?q=%QUERY',
                     wildcard: '%QUERY'
                 }
             });
@@ -918,7 +918,7 @@ $script = <<< JS
                 itemText: 'text',
                 typeaheadjs: {
                     name: 'city',
-                    displayKey: 'text',
+                    displayKey: 'city_name',
                     source: city.ttAdapter()
                 }
             });

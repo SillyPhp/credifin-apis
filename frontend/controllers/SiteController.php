@@ -11,6 +11,7 @@ use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
 use common\models\States;
+use frontend\models\onlineClassEnquiries\ClassEnquiryForm;
 use frontend\models\SubscribeNewsletterForm;
 use Yii;
 use yii\base\InvalidParamException;
@@ -74,11 +75,17 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-
-        return $this->render('index');
+        return $this->render('index',[
+            'model' => $model
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -203,6 +210,11 @@ class SiteController extends Controller
         return $this->render('about-us');
     }
 
+    public function actionMentorCareer()
+    {
+        return $this->render('mentor-career');
+    }
+
     public function actionWhatsappCommunity()
     {
         $data = SocialGroups::find()
@@ -223,7 +235,6 @@ class SiteController extends Controller
             'data' => $data
         ]);
     }
-
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -243,6 +254,11 @@ class SiteController extends Controller
     public function actionTweetDetail()
     {
         return $this->render('tweet-detail');
+    }
+
+    public function actionSchoolIndex()
+    {
+        return $this->render('school-index');
     }
 
     public function actionAllQuiz()
@@ -703,6 +719,9 @@ class SiteController extends Controller
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
                 break;
+            case 'getInternationalJobs':
+                return $this->renderAjax('/widgets/international-jobs');
+                break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
                 break;
@@ -825,6 +844,17 @@ class SiteController extends Controller
         $feedbackFormModel = new FeedbackForm();
         return $this->render('user-feedback-page',[
             'feedbackFormModel' => $feedbackFormModel,
+        ]);
+    }
+
+    public function actionCollegeIndex(){
+        $model = new ClassEnquiryForm();
+        if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return $model->save();
+        }
+        return $this->render('college-index',[
+            'model' => $model,
         ]);
     }
 

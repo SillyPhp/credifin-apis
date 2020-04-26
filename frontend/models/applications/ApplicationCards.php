@@ -42,6 +42,11 @@ class ApplicationCards
         return self::_getCardsFromJobs($options);
     }
 
+    public static function gitjobs($page=0,$keyword=null,$loc=null)
+    {
+        return self::_gitjobs($page,$keyword,$loc);
+    }
+
     public static function getPreference($type)
     {
         $user_id = Yii::$app->user->identity->user_enc_id;
@@ -195,7 +200,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -221,8 +226,6 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -248,7 +251,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/job/", a.slug) link',
                 'CONCAT("/job/", a.slug) organization_link',
                 'd.initials_color color',
@@ -274,8 +277,6 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -504,13 +505,6 @@ class ApplicationCards
                 ->offset($offset)
                 ->orderBy(new \yii\db\Expression('rand()'))
                 ->all();
-        } elseif (isset($options['count'])) {
-            $total = (new \yii\db\Query())
-                ->from([
-                    $cards1->union($cards2),
-                ])->count();
-
-            return $total;
         } else {
             $result = (new \yii\db\Query())
                 ->from([
@@ -588,7 +582,7 @@ class ApplicationCards
         $cards1 = (new \yii\db\Query())
             ->distinct()
             ->from(EmployerApplications::tableName() . 'as a')
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code', 'a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/", d.slug) organization_link',
                 'd.initials_color color',
@@ -604,8 +598,6 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 '(CASE WHEN g.name IS NOT NULL THEN g.name ELSE x.name END) as city'
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -631,7 +623,7 @@ class ApplicationCards
         $cards2 = (new \yii\db\Query())
             ->from(EmployerApplications::tableName() . 'as a')
             ->distinct()
-            ->select(['a.created_on', 'xt.html_code', 'GROUP_CONCAT(DISTINCT(y.skill) SEPARATOR ",") skill', 'a.application_enc_id application_id', 'a.type', 'i.name category',
+            ->select(['a.created_on', 'xt.html_code','a.application_enc_id application_id', 'a.type', 'i.name category',
                 'CONCAT("/internship/", a.slug) link',
                 'CONCAT("/internship/", a.slug) organization_link',
                 'd.initials_color color',
@@ -647,8 +639,6 @@ class ApplicationCards
                 'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '", d.logo_location, "/", d.logo) ELSE NULL END logo',
                 'g.name city'
             ])
-            ->leftJoin(ApplicationSkills::tableName() . 'as u', 'u.application_enc_id = a.application_enc_id AND u.is_deleted = 0')
-            ->leftJoin(Skills::tableName() . 'as y', 'y.skill_enc_id = u.skill_enc_id')
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.assigned_category_enc_id = a.title')
             ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
             ->innerJoin(Categories::tableName() . 'as i', 'b.parent_enc_id = i.category_enc_id')
@@ -954,9 +944,55 @@ class ApplicationCards
             ->all();
         return $result;
     }
-
+    private static function _gitjobs($page,$keyword,$loc)
+    {
+        if (!empty($keyword) || !empty($loc)) {
+            $url = "https://jobs.github.com/positions.json?description=" . $keyword . "&location=" . $loc."&page=".$page;
+        }
+        else
+        {
+            $url = "https://jobs.github.com/positions.json?page=".$page;
+        }
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result,true);
+        if ($result) {
+            array_walk($result, function (&$item) {
+                $item['created_on'] = $item['created_at'];
+                $item['organization_name'] = $item['company'];
+                $item['logo'] = $item['company_logo'];
+                $item['organization_link'] = $item['company_url'];
+                $item['link'] = '/jobs/api/'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))).'/'.$item['id'];
+                $item['city'] = $item['location'];
+                $item['sal'] = 1;
+                unset($item['created_at']);
+                unset($item['company']);
+                unset($item['company_logo']);
+                unset($item['company_url']);
+                unset($item['url']);
+                unset($item['description']);
+                unset($item['location']);
+            });
+            return $result;
+        }
+        else
+        {
+            return $result = [];
+        }
+    }
     public static function makeSQL_search_pattern($search)
     {
+        if ($search==null||empty($search)){
+            return "";
+        }
         $search_pattern = false;
         $wordArray = preg_split('/[^-\w\']+/', $search, -1, PREG_SPLIT_NO_EMPTY);
         $search = self::optimizeSearchString($wordArray);

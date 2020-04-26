@@ -201,8 +201,8 @@ $this->registerCss('
                 </div>
             </div>
             <div class="clear text-center">
-                <a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=accept','https')?>" class="link primary">Accept</a>
-                <a href="<?= Url::to('/account/schedular/inerviewer-status?id='.$data['id']. '&type=reject','https')?>" class="link danger">Decline</a>
+                <a href="<?= Url::to('/schedular/inerviewer-status?id='.$data['id']. '&type=accept','https')?>" class="link primary">Accept</a>
+                <a href="<?= Url::to('/schedular/inerviewer-status?id='.$data['id']. '&type=reject','https')?>" class="link danger">Decline</a>
             </div>
         </div>
 

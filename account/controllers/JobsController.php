@@ -127,9 +127,9 @@ class JobsController extends Controller
                 'a.status' => 'Active',
                 'a.application_for' => 1
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
