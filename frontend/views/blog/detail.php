@@ -157,6 +157,7 @@ $this->params['seo_tags'] = [
                         echo $this->render('/widgets/hot-jobs');
                     ?>
                     <!--hotjobs Widget ends-->
+                    <?= $this->render("/widgets/square_ads");?>
                 </div>
             </div>
         </div>

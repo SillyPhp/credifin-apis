@@ -16,6 +16,8 @@ use Yii;
  * @property string $department_enc_id
  * @property string $educational_requirement_enc_id
  * @property int $semester
+ * @property string $course_enc_id
+ * @property string $section_enc_id
  * @property double $cgpa
  * @property string $starting_year
  * @property string $ending_year
@@ -27,6 +29,8 @@ use Yii;
  * @property int $college_actions 0 as approved, 1 as blocked, 2 as rejected
  * @property int $is_deleted
  * @property string $updated_on
+ * @property CollegeCourses $courseEnc
+ * @property CollegeSections $sectionEnc
  */
 class UserOtherDetails extends \yii\db\ActiveRecord
 {
@@ -44,15 +48,17 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number'], 'required'],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'semester', 'starting_year', 'ending_year', 'university_roll_number','course_enc_id'], 'required'],
             [['semester', 'internship_duration', 'college_actions', 'is_deleted'], 'integer'],
             [['cgpa'], 'number'],
-            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on'], 'safe'],
+            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on','educational_requirement_enc_id'], 'safe'],
             [['job_start_month'], 'string'],
-            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id'], 'string', 'max' => 100],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'section_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 20],
             [['user_other_details_enc_id'], 'unique'],
             [['university_roll_number'], 'unique'],
+            [['course_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeCourses::className(), 'targetAttribute' => ['course_enc_id' => 'college_course_enc_id']],
+            [['section_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => CollegeSections::className(), 'targetAttribute' => ['section_enc_id' => 'section_enc_id']],
         ];
     }
 
@@ -86,6 +92,22 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     public function getUserEnc()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'user_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCourseEnc()
+    {
+        return $this->hasOne(CollegeCourses::className(), ['college_course_enc_id' => 'course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSectionEnc()
+    {
+        return $this->hasOne(CollegeSections::className(), ['section_enc_id' => 'section_enc_id']);
     }
 }
 

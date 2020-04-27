@@ -51,7 +51,7 @@ use borales\extensions\phoneInput\PhoneInput;
                     </div>
                 </div>
                 <div class="oc">
-                    <button type="button" class="collegeSignupModal">Start Your Free Online Classroom Today</button>
+                    <button type="button" class="collegeSignupModal">Start Your Free Online Classroom Today </button>
                 </div>
             </div>
         </div>
