@@ -19,7 +19,7 @@ use yii\helpers\Url;
                                 <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"/>
                             </div>
                             <div class="news-main">
-                                <a href="#">
+                                <a href="<?= Url::to('/news/' . $n->slug) ?>">
                                     <div class="news-heading"><?= $n->title ?></div>
                                 </a>
                                 <div class="news-date"><?= date('d M Y', strtotime($n->created_on)) ?></div>
@@ -44,8 +44,10 @@ use yii\helpers\Url;
                                 </div>
                                 <div class="news-content"><?= $n->description ?></div>
                                 <div class="news-btns">
-                                    <button id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn" title="upvote"><i class="fas fa-chevron-up"></i></button>
-                                    <button id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn" title="downvote"><i class="fas fa-chevron-down"></i>
+                                    <button id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                            title="upvote"><i class="fas fa-chevron-up"></i></button>
+                                    <button id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                            title="downvote"><i class="fas fa-chevron-down"></i>
                                     </button>
                                 </div>
                             </div>

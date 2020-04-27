@@ -461,47 +461,6 @@ class SiteController extends Controller
         return $this->render('privacy-policy');
     }
 
-    public function actionNewsIndex()
-    {
-        $news = ExternalNewsUpdate::findAll(['is_deleted' => 0, 'status' => 1]); // status 1 as published
-        if (Yii::$app->request->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            $id = Yii::$app->request->post('id');
-            $key = Yii::$app->request->post('key');
-            $model = ExternalNewsUpdate::findOne(['news_enc_id' => $key]);
-            switch ($id) {
-                case 'upvoteBtn' :
-                    $model->upvote += 1;
-                    break;
-                case 'downvoteBtn' :
-                    $model->downvote += 1;
-                    break;
-                default :
-                    return [
-                        'status' => 201,
-                        'title' => 'Error',
-                        'message' => 'Please try again later..',
-                    ];
-            }
-            if ($model->save()) {
-                return [
-                    'status' => 200,
-                    'title' => 'Success',
-                    'message' => 'Vote submitted..',
-                ];
-            } else {
-                return [
-                    'status' => 201,
-                    'title' => 'Technical Issue',
-                    'message' => 'Something went wrong...',
-                ];
-            }
-        }
-        return $this->render('news-index', [
-            'news' => $news
-        ]);
-    }
-
     public function actionUpdateProfile()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
