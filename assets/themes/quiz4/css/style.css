@@ -151,13 +151,13 @@ body .main_inner__loading .joy img {
 
 body .main_inner__loading .text {
     font-family: 'Pasta';
-    position: absolute;
+    /*position: absolute;*/
     text-align: center;
     left: 0;
     right: 0;
     margin: auto;
     max-width: 900px;
-    font-size: 80px;
+    font-size: 60px;
 }
 
 body .main_inner__loading .text .s,
@@ -345,13 +345,13 @@ body .main_inner__loading .loader button {
     clear: both;
     outline: none;
     /* width: 240px; */
-    padding: 12px;
+    padding: 5px 12px;
     background: transparent;
-    margin-top: 30px;
+    /*margin-top: 15px;*/
     color: #ffcc00;
     border: 0;
     font-size: 44px;
-    top: 50px;
+    /*top: 50px;*/
     position: relative;
     left: -5px;
     display: inline-block;
