@@ -18,48 +18,48 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-<!--    <section>-->
-<!--        <div class="container mt-20">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 col-sm-12">-->
-<!--                    <div class="box1">-->
-<!--                        <div class="heading-text-1">You're Welcome To Challenge Yourself</div>-->
-<!--                        <div class="inner-text">Take a quiz from different categories to test your knowledge</div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-sm-12">-->
-<!--                    <div class="row mar-top">-->
-<!--                        --><?php
+    <!--    <section>-->
+    <!--        <div class="container mt-20">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-6 col-sm-12">-->
+    <!--                    <div class="box1">-->
+    <!--                        <div class="heading-text-1">You're Welcome To Challenge Yourself</div>-->
+    <!--                        <div class="inner-text">Take a quiz from different categories to test your knowledge</div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-6 col-sm-12">-->
+    <!--                    <div class="row mar-top">-->
+    <!--                        --><?php
 //                        $next = 0;
 //                        for ($i = 0; $i < 2; $i++) {
 //                            ?>
-<!--                            <div class="col-md-6 col-sm-6 col-xs-6 top-categories pr-0">-->
-<!--                                --><?php
+    <!--                            <div class="col-md-6 col-sm-6 col-xs-6 top-categories pr-0">-->
+    <!--                                --><?php
 //                                for ($j = 0; $j < 2; $j++) {
 //                                    ?>
-<!--                                    <div class="edu mb-15 top-categories-list">-->
-<!--                                        <a href="--><?//= Url::to('/quizzes?type=' . $data[$next]['slug']); ?><!--">-->
-<!--                                            <div class="newset">-->
-<!--                                                <div class="imag">-->
-<!--                                                    <img src="--><?//= $data[$next]['icon']; ?><!--"/>-->
-<!--                                                </div>-->
-<!--                                                <div class="txt-name">--><?//= $data[$next]['name']; ?><!--</div>-->
-<!--                                            </div>-->
-<!--                                        </a>-->
-<!--                                    </div>-->
-<!--                                    --><?php
+    <!--                                    <div class="edu mb-15 top-categories-list">-->
+    <!--                                        <a href="--><?//= Url::to('/quizzes?type=' . $data[$next]['slug']); ?><!--">-->
+    <!--                                            <div class="newset">-->
+    <!--                                                <div class="imag">-->
+    <!--                                                    <img src="--><?//= $data[$next]['icon']; ?><!--"/>-->
+    <!--                                                </div>-->
+    <!--                                                <div class="txt-name">--><?//= $data[$next]['name']; ?><!--</div>-->
+    <!--                                            </div>-->
+    <!--                                        </a>-->
+    <!--                                    </div>-->
+    <!--                                    --><?php
 //                                    $next++;
 //                                }
 //                                ?>
-<!--                            </div>-->
-<!--                            --><?php
+    <!--                            </div>-->
+    <!--                            --><?php
 //                        }
 //                        ?>
-<!---->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--    </section>-->
+    <!---->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--    </section>-->
 
     <section>
         <div class="container">
@@ -108,42 +108,42 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <div class="heading-style">Popular Categories</div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
-<!---->
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-12">-->
-<!--                    <div class="popular-cate">-->
-<!--                        --><?php
+    <!--    <section>-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <div class="heading-style">Popular Categories</div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
+    <!---->
+    <!--    <section>-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-12">-->
+    <!--                    <div class="popular-cate">-->
+    <!--                        --><?php
 //                        foreach ($data as $d) {
 //                            ?>
-<!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
-<!--                                <a href="--><?//= Url::to('/quizzes?type=' . $d['slug']); ?><!--">-->
-<!--                                    <div class="newset">-->
-<!--                                        <div class="imag">-->
-<!--                                            <img src="--><?//= $d['icon']; ?><!--"/>-->
-<!--                                        </div>-->
-<!--                                        <div class="txt-name">--><?//= $d['name']; ?><!--</div>-->
-<!--                                    </div>-->
-<!--                                </a>-->
-<!--                            </div>-->
-<!--                            --><?php
+    <!--                            <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">-->
+    <!--                                <a href="--><?//= Url::to('/quizzes?type=' . $d['slug']); ?><!--">-->
+    <!--                                    <div class="newset">-->
+    <!--                                        <div class="imag">-->
+    <!--                                            <img src="--><?//= $d['icon']; ?><!--"/>-->
+    <!--                                        </div>-->
+    <!--                                        <div class="txt-name">--><?//= $d['name']; ?><!--</div>-->
+    <!--                                    </div>-->
+    <!--                                </a>-->
+    <!--                            </div>-->
+    <!--                            --><?php
 //                        }
 //                        ?>
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
 
     <section>
         <div class="container">
@@ -171,11 +171,21 @@ $this->params['header_dark'] = false;
                             <div class="quiz-icon">
                                 <img src="<?= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?>">
                             </div>
-                            <div class="quiz-title">
-                                <?= $q['name']; ?>
+                            <div class="quiz-overlay">
+                                <div class="quiz-text">
+                                    <div class="quiz-creater">
+                                        <div class="quiz-c-image"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                                        <div class="quiz-c-name">alice</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="quiz-ques">
-                                Total Questions : <?= $q['cnt']; ?>
+                            <div class="quiz-inner">
+                                <div class="quiz-title">
+                                    <?= $q['name']; ?>
+                                </div>
+                                <div class="quiz-ques">
+                                    Total Questions : <?= $q['cnt']; ?>
+                                </div>
                             </div>
                             <div class="take-quiz">
                                 <span>Take Quiz</span>
@@ -191,6 +201,50 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+.quiz-overlay {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 150px;
+	width: 100%;
+	opacity: 0;
+	transition: .4s all;
+	background-color: #00a0e3;
+	border-radius: 6px 6px 0 0;
+}
+
+.quiz-box:hover .quiz-overlay {
+  opacity: .9;
+  transform:scale(1.007);
+}
+.quiz-c-image {
+    width: 70px;
+    margin: auto;
+    padding: 15px 0 5px;
+}
+.quiz-c-image img {
+    border-radius: 60px;
+}
+.quiz-c-name {
+	font-size: 20px;
+	color: #fff;
+	font-family: roboto;
+	text-transform: capitalize;
+	font-weight: 500;
+}
+//.quiz-text {
+//  color: white;
+//  font-size: 20px;
+//  position: absolute;
+//  top: 50%;
+//  left: 50%;
+//  -webkit-transform: translate(-50%, -50%);
+//  -ms-transform: translate(-50%, -50%);
+//  transform: translate(-50%, -50%);
+//  text-align: center;
+//}
 .class-box {
     box-shadow: 0 0 7px 1px #eee;
     text-align: center;
@@ -229,6 +283,7 @@ $this->registerCss('
     border-radius: 10px;
     margin-bottom: 20px;
     display: block;
+    position:relative;
 }
 .quiz-box:hover{
     box-shadow:0 0 8px rgba(0,0,0,.3);
