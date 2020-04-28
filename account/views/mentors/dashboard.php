@@ -16,8 +16,12 @@ use yii\helpers\Url;
                 </div>
             </div>
 
-            <div class="md-mentee">
-                <h4 class="mentor-heading">Your Mentee</h4>
+            <div class="md-mentee mt3">
+                <div class="disFlex">
+                    <h4 class="mentor-heading">Your Mentee</h4>
+                    <div class="viewAll"><a href="">View All</a></div>
+                </div>
+
                 <div class="md-mentee-box">
                     <div class="mentee-icon">
                         <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
@@ -47,7 +51,7 @@ use yii\helpers\Url;
                 </div>
             </div>
 
-            <div class="md-mentee">
+            <div class="md-mentee mt3">
                 <h4 class="mentor-heading">Mentee Applied</h4>
                 <div class="md-mentee-box mentee-applied">
                     <div class="mentee-icon">
@@ -80,7 +84,7 @@ use yii\helpers\Url;
         </div>
 
         <div class="col-md-9">
-            <div class="row">
+            <div class="row mt3">
                 <div class="col-md-4">
                     <h4 class="mentor-heading">Total Earning</h4>
                     <div class="md-stats-box">
@@ -110,7 +114,7 @@ use yii\helpers\Url;
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mt3">
                 <div class="col-md-12">
                     <h4 class="mentor-heading"> Schedule</h4>
                     <div class="md-schdule-box">
@@ -226,6 +230,18 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.mt3{
+    margin-top: 30px;
+}
+.viewAll a{
+    color: #00a0e3;
+}
+.disFlex{
+    display: flex;
+    margin-top: 30px;
+        justify-content: space-between;
+        padding: 0 5px 0 0;
+}
 .mentor-dashboard-profile{
     display: flex;
     padding: 20px 15px;
@@ -258,12 +274,11 @@ $this->registerCss('
     margin-top: 5px;
 }
 .mentor-heading{
-    font-size: 25px;
-    margin: 30px 0 15px 0;
+    font-size: 20px;
+    margin: 0px 0 15px 0;
     line-height: 20px;
     font-family: lora;
     color: #333;
-    font-weight: bold;
 }
 .md-mentee-box{
     display: flex;
