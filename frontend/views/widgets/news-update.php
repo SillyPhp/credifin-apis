@@ -5,23 +5,43 @@ use yii\helpers\Url;
 <section class="news-updation">
     <div class="container">
         <div class="row">
-            <div class="col-md-5">
-                <div class="newss-logo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/news-update/news1.png'); ?>"/>
+            <div class="col-md-4">
+               <div class="news-bx">
+                   <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                   <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
+               </div>
+            </div>
+            <div class="col-md-4">
+                <div class="news-bx">
+                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
                 </div>
             </div>
-            <div class="col-md-7">
-                <div class="newss-content">
-                    <div class="newss-heading">Join India's Largest Community of Career Counsellors</div>
-                    <div class="other-news">
-                        <ul>
-                            <li>Join India's Largest Community of Career Counsellors</li>
-                            <li>Join India's Largest Community of Career Counsellors</li>
-                            <li>Join India's Largest Community of Career Counsellors</li>
-                        </ul>
-                    </div>
+            <div class="col-md-4">
+                <div class="news-bx">
+                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="news-bx">
+                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="news-bx">
+                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="news-bx">
+                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -31,32 +51,24 @@ $this->registercss('
 	background-color: #edf3f9;
 	padding: 20px 0 30px;
 }
-.newss-logo {
-	width: 300px;
-	margin: auto;
+.news-bx{
+    display:flex;
+    margin-bottom: 15px;
 }
-.newss-content {
-	padding: 40px 0;
-	font-family: roboto;
+.news-logo {
+    max-width: 55px;
 }
-.newss-heading{
-    font-size: 22px;
+.news-name {
+    padding-left: 14px;
+    font-size: 16px;
     font-family: roboto;
-    padding-bottom: 10px;
-    text-transform:uppercase;
-    animation:blinkingText 1.2s infinite;
-}
-@keyframes blinkingText{
-    0%{     color: #ff7340;    }
-    49%{    color: #ff7340; }
-    60%{    color: transparent; }
-    99%{    color:transparent;  }
-    100%{   color: #ff7340;    }
-}
-.other-news ul li{
-    font-size:18px;
-    text-transform:uppercase;
-    margin-bottom:2px;
-    list-style:inside;
+    display: block;
+    display: -webkit-box;
+    max-height: 56px;
+    min-height: 56px;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 ');
