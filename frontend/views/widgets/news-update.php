@@ -1,53 +1,41 @@
 <?php
+
+use common\models\ExternalNewsUpdate;
 use yii\helpers\Url;
+
 ?>
 
-<section class="news-updation">
-    <div class="container">
-        <div class="row">
-            <div class="n-heading">News Update</div>
+    <section class="news-updation">
+        <div class="container">
+            <div class="row">
+                <div class="n-heading">News Update</div>
+            </div>
+            <div class="row">
+                <?php
+                $newsUpdates = ExternalNewsUpdate::find()
+                    ->where(['is_deleted' => 0, 'status' => 1])
+                    ->orderBy(['created_on' => SORT_DESC])
+                    ->limit(6)
+                    ->all();
+                foreach ($newsUpdates as $n) {
+                    ?>
+                    <div class="col-md-4">
+                        <a href="<?= Url::to('/news/' . $n->slug) ?>">
+                            <div class="news-bx">
+                                <div class="news-logo">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"
+                                         alt=""/>
+                                </div>
+                                <div class="news-name"><?= $n->title ?></div>
+                            </div>
+                        </a>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-               <div class="news-bx">
-                   <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                   <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-               </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
+    </section>
 <?php
 $this->registercss('
 .news-updation {
