@@ -174,7 +174,9 @@ $this->params['header_dark'] = false;
                             <div class="quiz-overlay">
                                 <div class="quiz-text">
                                     <div class="quiz-creater">
-                                        <div class="quiz-c-image"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
+                                        <div class="quiz-c-image"><img
+                                                    src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"
+                                                    alt=""></div>
                                         <div class="quiz-c-name">alice</div>
                                     </div>
                                 </div>
@@ -199,8 +201,104 @@ $this->params['header_dark'] = false;
         </div>
     </section>
 
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="qz-main">
+                        <div class="qz-logo">
+                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                        </div>
+                        <div class="qz-count">
+                            <span class="qz-q">16 question</span>
+                            <span class="qz-plays">200 plays</span>
+                        </div>
+                        <div class="qz-inner">
+                            <div class="qz-name">type of insurance</div>
+                            <div class="qz-creater">
+                                <div class="creator-name">
+                                    <span class="creator-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                                    </span>
+                                    <span>Pooja</span>
+                                </div>
+                                <div class="creator-grade">
+                                    <span class="gd">grade :</span>
+                                    <span class="cnt">8th</span>
+                                </div>
+                            </div>
+                            <div class="qz-border"></div>
+                            <div class="qz-level">Diificulty level : Easy</div>
+                            <div class="take-quiz">
+                                <span>Take Quiz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 <?php
 $this->registerCss('
+.qz-border{
+    border-bottom:2px solid #eee;
+    margin:10px 0;
+}
+.qz-main {
+	box-shadow: 0 0 15px 6px #eee;
+	border-radius: 8px;
+	overflow: hidden;
+}
+.qz-logo {
+	width: 100%;
+	height: 135px;
+}
+.qz-logo img{
+	height: 135px;
+	width: 100%;
+}
+.qz-count {
+	margin-top: -15px;
+	display: flex;
+	justify-content: center;
+}
+.qz-q, .qz-plays {
+	background-color: #000;
+	padding: 2px 5px;
+	color: #fff;
+	font-family: roboto;
+	font-size: 16px;
+	border-radius: 4px;
+	font-weight: 500;
+	width: 100px;
+	text-align: center;
+	margin: 0 auto;
+}
+.qz-inner {
+	padding: 15px 15px 0 15px;
+	font-family: roboto;
+}
+.qz-name {
+	font-size: 20px;
+	text-transform: capitalize;
+}
+.qz-creater {
+	display: flex;
+	justify-content: space-between;
+}
+.creator-img img{
+    width: 25px;
+    border-radius: 50px;
+    margin-right: 2px;
+}
+.creator-name, .creator-grade {
+	font-size: 16px;
+	text-transform: capitalize;
+}
+.qz-level {
+	font-size: 15px;
+}
 .quiz-overlay {
 	position: absolute;
 	top: 0;
@@ -333,6 +431,7 @@ $this->registerCss('
     margin-bottom: 0px;
     overflow: hidden;
     padding: 20px 0 6px 0;
+    text-align:center;
 }
 .take-quiz span{
     border:1px solid #eee;
