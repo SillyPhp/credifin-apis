@@ -60,6 +60,9 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?php
+echo $this->render('/widgets/news-update');
+?>
 
 <?php
 $this->registercss('
