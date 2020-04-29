@@ -204,7 +204,7 @@ $this->params['header_dark'] = false;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="qz-main">
                         <div class="qz-logo">
                             <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
@@ -228,7 +228,8 @@ $this->params['header_dark'] = false;
                                 </div>
                             </div>
                             <div class="qz-border"></div>
-                            <div class="qz-level">Diificulty level : Easy</div>
+                            <div class="qz-level">Category : Marketing</div>
+                            <div class="qz-level">Price : $12</div>
                             <div class="take-quiz">
                                 <span>Take Quiz</span>
                             </div>
@@ -252,10 +253,10 @@ $this->registerCss('
 }
 .qz-logo {
 	width: 100%;
-	height: 135px;
+	height: 150px;
 }
 .qz-logo img{
-	height: 135px;
+	height: 150px;
 	width: 100%;
 }
 .qz-count {
@@ -271,9 +272,9 @@ $this->registerCss('
 	font-size: 16px;
 	border-radius: 4px;
 	font-weight: 500;
-	width: 100px;
+	flex-basis:50%;
 	text-align: center;
-	margin: 0 auto;
+	margin: 0 15px;
 }
 .qz-inner {
 	padding: 15px 15px 0 15px;
