@@ -10,6 +10,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\helpers\Url;
 use yii\web\Response;
+use yii\helpers\ArrayHelper;
 
 /**
  * Site controller
@@ -81,7 +82,21 @@ class NewsController extends Controller
     public function actionDetail($slug)
     {
         $newsDetail = ExternalNewsUpdate::findOne(['slug' => $slug]);
-        $relatedNews = ExternalNewsUpdate::find()->where(['not', ['in', 'slug', $slug]])->all();
+        $tags = ArrayHelper::getColumn($newsDetail->newsTags, 'assignedTagEnc.tagEnc.name');
+        $relatedNews = ExternalNewsUpdate::find()
+            ->alias('z')
+            ->joinWith(['newsTags a' => function ($a) use ($tags) {
+                $a->joinWith(['assignedTagEnc a1' => function ($a1) use ($tags) {
+                    $a1->joinWith(['tagEnc a2' => function ($a2) use ($tags) {
+                        $a2->where(['in', 'a2.name', $tags]);
+                    }]);
+                }]);
+                $a->andWhere(['a.is_deleted' => 0]);
+            }])
+            ->andWhere(['not', ['in', 'z.slug', $slug]])
+            ->andWhere(['z.is_deleted' => 0])
+            ->groupBy('z.news_enc_id')
+            ->all();
 
         $newsletterForm = new SubscribeNewsletterForm();
         return $this->render('news-detail', [
