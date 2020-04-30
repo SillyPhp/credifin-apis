@@ -109,5 +109,13 @@ class GovtJobsController extends ApiBaseController
         }
     }
 
+    private function getCityName($string)
+    {
+        //Get the first occurrence of a character.
+        $strpos = strpos($string, ',');
+        $stringSplit1 = substr($string, 0, $strpos);
+        return trim($stringSplit1);
+    }
+
 
 }
