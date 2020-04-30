@@ -60,6 +60,9 @@ use yii\helpers\Url;
         </div>
     </section>
 
+<?php
+echo $this->render('/widgets/news-update');
+?>
 
 <?php
 $this->registercss('
@@ -79,34 +82,43 @@ $this->registercss('
 .news-img {
     width: 100%;
     min-height: 160px;
+    max-height: 160px;
 }
 .news-img img{
     width: 100%;
     min-height: 160px;
+    max-height: 160px;
 }
 .news-main {
     padding:10px 15px;
     font-family: roboto;
 }
 .news-heading {
-    font-size: 22px;
-    font-weight:500;
-    line-height: 30px;
-    text-transform: capitalize;
-    color: #333;
-    display: block;
-    display: -webkit-box;
-    max-height: 66px;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	font-size: 22px;
+	font-weight: 500;
+	line-height: 30px;
+	text-transform: capitalize;
+	color: #333;
+	display: block;
+	display: -webkit-box;
+	max-height: 66px;
+	min-height: 66px;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 .news-date {
     color: #00a0e3;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 5px;
+    min-height: 23px;
+    max-height: 23px;
+}
+.news-tags {
+    min-height: 30px;
+    max-height: 30px;
 }
 .news-tags ul li{
     font-size: 13px;
@@ -131,18 +143,19 @@ $this->registercss('
 //  background: #807e7e;
 //}
 .news-content {
-    font-size: 16px;
-    line-height: 24px;
-    text-align: justify;
-    background: #FFFFFF;
-    display: block;
-    display: -webkit-box;
-    max-height: 100px;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-bottom: 5px;
+	font-size: 16px;
+	line-height: 24px;
+	text-align: justify;
+	background: #FFFFFF;
+	display: block;
+	display: -webkit-box;
+	max-height: 75px;
+	min-height: 75px;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
 }
 .news-btns {
     text-align:right;

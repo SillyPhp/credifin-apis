@@ -33,6 +33,9 @@ use yii\helpers\Url;
                         </div>
                     </div>
                 </div>
+                <?php
+                echo $this->render('/widgets/sharing-widget-new');
+                ?>
                 <!--                <//= $this->render('/widgets/career-pole-widget') >-->
                 <?=
                 $this->render('/widgets/mustache/discussion/discussion-box', [

@@ -831,10 +831,11 @@ body .main_inner__answers .answer:nth-of-type(3) {
         text-align: center;
     }
 }
-
-body .main_inner__answers .answer:hover {
-    text-indent: 14px;
-    color: #333;
+@media (hover: hover) {
+    body .main_inner__answers .answer:hover {
+        text-indent: 14px;
+        color: #333;
+    }
 }
 
 body .main_inner__answers .answer:hover:before {
@@ -881,9 +882,10 @@ body .main_inner__answers .answer:after {
     transition: all 0.3s ease;
     z-index: -1;
 }
-
-body .main_inner__answers .answer:hover:after {
-    width: 100%;
+@media (hover: hover) {
+    body .main_inner__answers .answer:hover:after {
+        width: 100%;
+    }
 }
 
 body .main_inner__breadcrumbs {
