@@ -876,6 +876,10 @@ class SiteController extends Controller
         return $this->render('mentor-profile');
     }
 
+    public function actionMenteeIndex(){
+        return $this->render('mentee-index');
+    }
+
     public function actionAllMentors(){
         return $this->render('all-mentors');
     }
