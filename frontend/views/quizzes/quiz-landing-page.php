@@ -102,61 +102,61 @@ $this->params['header_dark'] = false;
     <!--        </div>-->
     <!--    </section>-->
 
-<!--    <section>-->
-<!--        <div class="container">-->
-<!--            <div class="row">-->
-<!--                <div class="col-md-6 col-sm-6">-->
-<!--                    <div class="heading-style">Popular quiz</div>-->
-<!--                </div>-->
-<!--                <div class="col-md-6 col-sm-6 col-xs-12">-->
-<!--                    <div class="type-1">-->
-<!--                        <div>-->
-<!--                            <a href="--><?//= Url::to('/quizzes/all'); ?><!--" class="btn btn-3">-->
-<!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all'); ?><!--</span>-->
-<!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
-<!--                            </a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="row">-->
-<!--                --><?php
+    <!--    <section>-->
+    <!--        <div class="container">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-6 col-sm-6">-->
+    <!--                    <div class="heading-style">Popular quiz</div>-->
+    <!--                </div>-->
+    <!--                <div class="col-md-6 col-sm-6 col-xs-12">-->
+    <!--                    <div class="type-1">-->
+    <!--                        <div>-->
+    <!--                            <a href="--><?//= Url::to('/quizzes/all'); ?><!--" class="btn btn-3">-->
+    <!--                                <span class="txt">--><?//= Yii::t('frontend', 'View all'); ?><!--</span>-->
+    <!--                                <span class="round"><i class="fas fa-chevron-right"></i></span>-->
+    <!--                            </a>-->
+    <!--                        </div>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--            <div class="row">-->
+    <!--                --><?php
 //                foreach ($quiz as $q) {
 //                    ?>
-<!--                    <div class="col-md-3 col-sm-6">-->
-<!--                        <a href="--><?//= Url::to($q['slug']); ?><!--" title="--><?//= $q['name']; ?><!--" class="quiz-box">-->
-<!--                            <div class="quiz-icon">-->
-<!--                                <img src="--><?//= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?><!--">-->
-<!--                            </div>-->
-<!--                            <div class="quiz-overlay">-->
-<!--                                <div class="quiz-text">-->
-<!--                                    <div class="quiz-creater">-->
-<!--                                        <div class="quiz-c-image"><img-->
-<!--                                                    src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--"-->
-<!--                                                    alt=""></div>-->
-<!--                                        <div class="quiz-c-name">alice</div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="quiz-inner">-->
-<!--                                <div class="quiz-title">-->
-<!--                                    --><?//= $q['name']; ?>
-<!--                                </div>-->
-<!--                                <div class="quiz-ques">-->
-<!--                                    Total Questions : --><?//= $q['cnt']; ?>
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <div class="take-quiz">-->
-<!--                                <span>Take Quiz</span>-->
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </div>-->
-<!--                    --><?php
+    <!--                    <div class="col-md-3 col-sm-6">-->
+    <!--                        <a href="--><?//= Url::to($q['slug']); ?><!--" title="--><?//= $q['name']; ?><!--" class="quiz-box">-->
+    <!--                            <div class="quiz-icon">-->
+    <!--                                <img src="--><?//= Yii::$app->params->upload_directories->quiz->sharing->image . "/" . $q['sharing_image_location'] . "/" . $q['sharing_image'] ?><!--">-->
+    <!--                            </div>-->
+    <!--                            <div class="quiz-overlay">-->
+    <!--                                <div class="quiz-text">-->
+    <!--                                    <div class="quiz-creater">-->
+    <!--                                        <div class="quiz-c-image"><img-->
+    <!--                                                    src="--><?//= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?><!--"-->
+    <!--                                                    alt=""></div>-->
+    <!--                                        <div class="quiz-c-name">alice</div>-->
+    <!--                                    </div>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="quiz-inner">-->
+    <!--                                <div class="quiz-title">-->
+    <!--                                    --><?//= $q['name']; ?>
+    <!--                                </div>-->
+    <!--                                <div class="quiz-ques">-->
+    <!--                                    Total Questions : --><?//= $q['cnt']; ?>
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="take-quiz">-->
+    <!--                                <span>Take Quiz</span>-->
+    <!--                            </div>-->
+    <!--                        </a>-->
+    <!--                    </div>-->
+    <!--                    --><?php
 //                }
 //                ?>
-<!--            </div>-->
-<!--        </div>-->
-<!--    </section>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </section>-->
 
     <section>
         <div class="container">
@@ -195,16 +195,10 @@ $this->params['header_dark'] = false;
                                     </span>
                                     <span>Pooja</span>
                                 </div>
-                                <div class="creator-grade">
-                                    <span class="gd">grade :</span>
-                                    <span class="cnt">8th</span>
-                                </div>
                             </div>
                             <div class="qz-border"></div>
-                            <div class="qz-flex">
-                                <div class="qz-cat"><span>Category :</span> Marketing</div>
-                                <div class="qz-duration"><span>Duration :</span> 5min</div>
-                            </div>
+                            <div class="qz-cat"><span>Category :</span> Marketing</div>
+                            <div class="qz-duration"><span>Duration :</span> 5min</div>
                             <div class="qz-price"><span>Price :</span> $12</div>
                             <div class="take-quiz">
                                 <span>Take Quiz</span>
@@ -220,19 +214,23 @@ $this->params['header_dark'] = false;
 $this->registerCss('
 .qz-border{
     border-bottom:2px solid #eee;
-    margin:10px 0;
+    margin:8px 0;
 }
 .qz-main {
-	box-shadow: 0 0 15px 6px #eee;
+	box-shadow: 0 0 10px 1px #eee;
 	border-radius: 8px;
 	overflow: hidden;
+	transition:all .3s;
+}
+.qz-main:hover{
+    box-shadow: 0 0 15px 7px #eee;
 }
 .qz-logo {
 	width: 100%;
-	height: 150px;
+	height: 140px;
 }
 .qz-logo img{
-	height: 150px;
+	height: 140px;
 	width: 100%;
 }
 .qz-count {
@@ -241,7 +239,7 @@ $this->registerCss('
 	justify-content: center;
 }
 .qz-q, .qz-plays {
-	background-color: #000;
+	background-color: #00a0e3;
 	padding: 2px 5px;
 	color: #fff;
 	font-family: roboto;
@@ -253,7 +251,7 @@ $this->registerCss('
 	margin: 0 15px;
 }
 .qz-inner {
-	padding: 15px 15px 0 15px;
+	padding: 10px 15px 0 15px;
 	font-family: roboto;
 }
 .qz-name {
@@ -271,13 +269,9 @@ $this->registerCss('
     border-radius: 50px;
     margin-right: 2px;
 }
-.creator-name, .creator-grade {
+.creator-name {
 	font-size: 16px;
 	text-transform: capitalize;
-}
-.qz-flex {
-    display: flex;
-    justify-content: space-between;
 }
 .qz-cat, .qz-duration, .qz-price {
 	font-size: 15px;
@@ -401,7 +395,7 @@ $this->registerCss('
 .take-quiz{
     margin-bottom: 0px;
     overflow: hidden;
-    padding: 20px 0 6px 0;
+    padding: 10px 0 6px 0;
     text-align:center;
 }
 .take-quiz span {
