@@ -17,10 +17,11 @@ use yii\helpers\Url;
                             <div class="cb-blog-title">
                                 <?= $newsDetail->title ?>
                             </div>
-                            <div class="cb-blob-web-name">
-                                <a href="<?= $newsDetail->link ?>">View Source</a>
+                            <div class="vots">
+                                <span class="upv"><i class="fas fa-thumbs-up"></i> 100 upvotes</span>
+                                <span class="downv"><i class="fas fa-thumbs-down"></i> 50 downvotes</span>
                             </div>
-                            <div class="cb-blog-time"><?= date('d-M-Y', strtotime($newsDetail->created_on)) ?></div>
+<!--                            <div class="cb-blog-time">--><?//= date('d-M-Y', strtotime($newsDetail->created_on)) ?><!--</div>-->
                             <div class="cb-quick-summery">
                                 <?= $newsDetail->description ?>
                             </div>
@@ -38,9 +39,14 @@ use yii\helpers\Url;
                                     ?>
                                 </ul>
                             </div>
+                            <?= $this->render('/widgets/sharing-widget-new')?>
+                            <div class="source-name">
+                                <span class="src-name">jagbani</span>
+                            </div>
                             <div class="cb-ori-artical-link">
                                 <a href="<?= $newsDetail['link'] ?>" target="_blank">Read orignal News</a>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -102,6 +108,32 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.vots {
+	font-family: roboto;
+	padding: 10px 0 5px;
+	font-size: 16px;
+	text-align:right;
+}
+.upv {
+	color: #00a0e3;
+	padding-right:10px;
+}
+.downv {
+	color: #ff7803;
+}
+.source-name {
+	font-size: 16px;
+	font-family: roboto;
+	padding: 10px 2px 5px;
+	text-transform: uppercase;
+	text-align:right;
+}
+.src-name {
+	background-color: brown;
+	color: #fff;
+	padding: 3px 12px;
+	font-weight: 500;
+}
 .news-tags ul li{
     font-size: 13px;
     background-color: #333;
@@ -177,7 +209,9 @@ $this->registerCss('
     line-height:25px;
 }
 .cb-ori-artical-link{
-    margin-top:25px;
+    margin-top:15px;
+    margin-bottom:15px;
+    text-align:right;
 }
 .cb-ori-artical-link a{
     text-transform:uppercase;

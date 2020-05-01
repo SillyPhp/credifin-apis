@@ -42,7 +42,6 @@ $this->registercss('
 .sharing-box{
     border: 1px solid #eee;
     padding: 15px;
-    margin-top: 20px;
     border-radius: 5px;
     box-shadow: 0 0 10px 0px #eee;
     width:100%;
