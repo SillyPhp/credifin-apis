@@ -65,7 +65,6 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .types-section{
-    padding:50px 0;
     text-align:center;
     font-family: roboto;
 }
