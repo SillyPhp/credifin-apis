@@ -18,33 +18,50 @@ use yii\helpers\Url;
                                 <?= $newsDetail->title ?>
                             </div>
                             <div class="vots">
-                                <span class="upv"><i class="fas fa-thumbs-up"></i> 100 upvotes</span>
-                                <span class="downv"><i class="fas fa-thumbs-down"></i> 50 downvotes</span>
+                                <span class="upv"><i
+                                            class="fas fa-thumbs-up"></i> <?= $newsDetail->upvote ?> upvotes</span>
+                                <span class="downv"><i class="fas fa-thumbs-down"></i> <?= $newsDetail->downvote ?> downvotes</span>
                             </div>
-<!--                            <div class="cb-blog-time">--><?//= date('d-M-Y', strtotime($newsDetail->created_on)) ?><!--</div>-->
+                            <!--                            <div class="cb-blog-time">-->
+                            <? //= date('d-M-Y', strtotime($newsDetail->created_on)) ?><!--</div>-->
                             <div class="cb-quick-summery">
                                 <?= $newsDetail->description ?>
                             </div>
-                            <div class="news-tags">
-                                <ul>
-                                    <?php
-                                    foreach ($newsDetail->newsTags as $tag) {
-                                        if ($tag->is_deleted == 0) {
-                                            $t = $tag->assignedTagEnc->tagEnc;
-                                            ?>
-                                            <li><?= $t->name ?></li>
-                                            <?php
+                            <?php
+                            if ($newsDetail->newsTags) {
+                                ?>
+                                <div class="news-tags">
+                                    <ul>
+                                        <?php
+                                        foreach ($newsDetail->newsTags as $tag) {
+                                            if ($tag->is_deleted == 0) {
+                                                $t = $tag->assignedTagEnc->tagEnc;
+                                                ?>
+                                                <li><?= $t->name ?></li>
+                                                <?php
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </ul>
-                            </div>
-                            <?= $this->render('/widgets/sharing-widget-new')?>
-                            <div class="source-name">
-                                <span class="src-name">jagbani</span>
-                            </div>
+                                        ?>
+                                    </ul>
+                                </div>
+                                <?php
+                            }
+                            ?>
+                            <?php $sharingLink = Url::base(true) . '/news/' . $newsDetail->slug ?>
+                            <?= $this->render('/widgets/sharing-widget-new', [
+                                'sharingLink' => $sharingLink
+                            ]) ?>
+                            <?php
+                            if ($newsDetail->source) {
+                                ?>
+                                <div class="source-name">
+                                    <span class="src-name"><?= $newsDetail->source ?></span>
+                                </div>
+                                <?php
+                            }
+                            ?>
                             <div class="cb-ori-artical-link">
-                                <a href="<?= $newsDetail['link'] ?>" target="_blank">Read orignal News</a>
+                                <a href="<?= $newsDetail->link ?>" target="_blank">Read orignal News</a>
                             </div>
 
                         </div>
@@ -65,39 +82,36 @@ use yii\helpers\Url;
                 echo $this->render('/widgets/sharing-box');
                 ?>
 
-                <?php
-                if (!empty($relatedNews)) {
-                    ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="related-heading">Related News</div>
-                        </div>
-                        <?php
-                        foreach ($relatedNews as $r) {
-                            ?>
-
-                            <div class="col-md-12">
-                                <div class="cb-blog-box cb-blog-box-small">
-                                    <div class="cb-blog-icon">
-                                        <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $r->image_location . '/' . $r->image); ?>"/>
-                                    </div>
-                                    <div class="cb-blog-title cb-blog-title-small">
-                                        <?= $r->title ?>
-                                    </div>
-                                    <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r->created_on)) ?></div>
-                                    <div class="cb-blob-web-name cb-blob-web-name-small">
-                                        <a href="<?= $r->slug ?>">Read</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <?php
-                        }
-                        ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="related-heading">Related News</div>
                     </div>
                     <?php
-                }
-                ?>
+                    if ($relatedNews) {
+                        $moreNews = $relatedNews;
+                    } else {
+                        $moreNews = $latestNews;
+                    }
+                    foreach ($moreNews as $r) {
+                        ?>
+                        <div class="col-md-12">
+                            <div class="cb-blog-box cb-blog-box-small">
+                                <div class="cb-blog-icon">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $r->image_location . '/' . $r->image); ?>"/>
+                                </div>
+                                <div class="cb-blog-title cb-blog-title-small">
+                                    <?= $r->title ?>
+                                </div>
+                                <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r->created_on)) ?></div>
+                                <div class="cb-blob-web-name cb-blob-web-name-small">
+                                    <a href="<?= $r->slug ?>">Read</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
                 <?= $this->render("/widgets/square_ads"); ?>
             </div>
         </div>
