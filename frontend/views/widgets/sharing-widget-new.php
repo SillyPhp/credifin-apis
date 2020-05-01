@@ -3,19 +3,24 @@
 use yii\helpers\Url;
 
 ?>
-    <div class="sh-heading">Share :</div>
+
     <div class="share-social">
-        <div class="facebook-share basis">
+        <div class="whatsapp-share basis">
             <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
-                <span><i class="fab fa-facebook-f marg"></i> Facebook</span>
+                <span><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
-        <div class="twitter-share basis">
+        <div class="teleg-share basis">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
+                <span><i class="fab fa-telegram-plane"></i> Telegram</span>
+            </a>
+        </div>
+        <div class="twi-share basis">
             <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
                 <span><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
-        <div class="linked-share basis">
+        <div class="link-share basis">
             <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
                 <span><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
@@ -23,20 +28,15 @@ use yii\helpers\Url;
     </div>
 <?php
 $this->registercss('
-.sh-heading{
-	font-size: 18px;
-	padding-top: 10px;
-	font-family: roboto;
-}
 .share-social {
 	display: flex;
 	align-items: stretch;
-	margin:5px 0 10px 0;
+	margin:10px 0;
 }
 .basis{
     flex-basis:50%;
 }
-.facebook-share a, .twitter-share a, .linked-share a{
+.whatsapp-share a, .teleg-share a, .twi-share a, .link-share a{
 	display: block;
 	color: #fff;
 	padding: 8px 10px;
@@ -45,9 +45,10 @@ $this->registercss('
 	font-weight: 500;
 	margin-right: 10px;
 }
-.facebook-share a{background-color:#4667ab;}
-.twitter-share a{background-color:#1da1f2;}
-.linked-share a{background-color:#0073b1;}
+.whatsapp-share a{background-color:#36dc54;}
+.teleg-share a{background-color:#2399d7;}
+.twi-share a{background-color:#1da1f2;}
+.link-share a{background-color:#0073b1;}
 ');
 $script = <<<JS
 $('.sharing-box div .share-elem-main').each(function() {
