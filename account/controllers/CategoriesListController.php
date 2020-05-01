@@ -340,4 +340,15 @@ class CategoriesListController extends Controller
         return $primaryfields;
     }
 
+    public function actionGroups($q=null,$type=null,$is_parent=null)
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $sql = "SELECT DISTINCT `a`.`name` AS `word`, `a`.`category_enc_id` AS `id` FROM ".Categories::tableName()." `a` INNER JOIN ".AssignedCategories::tableName()." as `b` ON b.category_enc_id = a.category_enc_id WHERE (`b`.`parent_enc_id` IS NULL) AND (name LIKE '{$q}%' OR name LIKE '% {$q}%') AND (`b`.`status`='Approved') LIMIT 10";
+            $p = Yii::$app->db->createCommand($sql)
+                ->queryAll();
+            return $p;
+        }
+    }
+
 }
