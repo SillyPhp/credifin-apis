@@ -6,22 +6,22 @@ use yii\helpers\Url;
 
     <div class="share-social">
         <div class="whatsapp-share basis">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
         <div class="teleg-share basis">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-telegram-plane"></i> Telegram</span>
             </a>
         </div>
         <div class="twi-share basis">
-            <a href="https://twitter.com/home?status=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="link-share basis">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=" target="_blank" class="share-elem-main">
+            <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
                 <span><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
