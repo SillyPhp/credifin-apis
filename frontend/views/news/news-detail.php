@@ -18,12 +18,9 @@ use yii\helpers\Url;
                                 <?= $newsDetail->title ?>
                             </div>
                             <div class="vots">
-                                <span class="upv"><i
-                                            class="fas fa-thumbs-up"></i> <?= $newsDetail->upvote ?> upvotes</span>
-                                <span class="downv"><i class="fas fa-thumbs-down"></i> <?= $newsDetail->downvote ?> downvotes</span>
+                                <span class="upv"><i class="fas fa-thumbs-up vote-btn" data-id="upvoteBtn" data-key="<?= $newsDetail->news_enc_id ?>"></i> <font class="vote_value"><?= $newsDetail->upvote ?></font> upvotes</span>
+                                <span class="downv"><i class="fas fa-thumbs-down vote-btn" data-id="downvoteBtn" data-key="<?= $newsDetail->news_enc_id ?>"></i> <font class="vote_value"><?= $newsDetail->downvote ?></font> downvotes</span>
                             </div>
-                            <!--                            <div class="cb-blog-time">-->
-                            <? //= date('d-M-Y', strtotime($newsDetail->created_on)) ?><!--</div>-->
                             <div class="cb-quick-summery">
                                 <?= $newsDetail->description ?>
                             </div>
@@ -334,5 +331,49 @@ textarea::placeholder{
     width:auto;
     margin:auto;
 }
+.vote-btn{
+    cursor: pointer;
+}
 ');
-?>
+$script = <<<JS
+$(document).on('click', '.vote-btn', function (event) {
+    event.preventDefault();
+    var btn = $(this);
+    event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
+    
+    var id = btn.attr('data-id');
+    var key = btn.attr('data-key');
+    var valBox = btn.next();
+    var targetValue = valBox.text();
+    $.ajax({
+        url: '/news',
+        type: 'POST',
+        data: {id:id,key:key},
+        beforeSend: function () {
+            btn.attr('disabled', true);
+        },
+        success: function (response) {
+            btn.attr('disabled', false);
+            if (response.status == 200) {
+                var updateValue = parseInt(targetValue) + 1; 
+                valBox.text(updateValue);
+            } else {
+                toastr.error(response.message, response.title);
+            }
+        },
+        complete: function() {
+            btn.attr('disabled', false);
+        }
+    }).fail(function(data, textStatus, xhr) {
+         toastr.error('Network Problem', 'Please try later..');
+         btn.attr('disabled', false);
+    });
+});
+JS;
+$this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
