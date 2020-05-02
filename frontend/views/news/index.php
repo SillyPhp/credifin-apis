@@ -58,29 +58,33 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="news-content"><?= $n->description ?></div>
                                     <div class="use-flex">
-                                        <?php $sharingLink =  Url::base(true) . '/news/' . $n->slug ?>
+                                        <?php $sharingLink = Url::base(true) . '/news/' . $n->slug ?>
                                         <div class="share-news">
                                             <div class="wts-sh basis">
-                                                <a href="#!" onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                <a href="#!"
+                                                   onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
                                                     <span class="fb-btn" title="share on whatsapp"
                                                           data-toggle="tooltip"><i class="fab fa-whatsapp"></i></span>
                                                 </a>
                                             </div>
                                             <div class="tel-sh basis">
-                                                <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                <a href="#!"
+                                                   onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
                                                     <span class="tw-btn" title="share on telegram"
                                                           data-toggle="tooltip"><i
                                                                 class="fab fa-telegram-plane"></i></span>
                                                 </a>
                                             </div>
                                             <div class="tw-sh basis">
-                                                <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                <a href="#!"
+                                                   onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
                                                     <span class="tw-btn" title="share on twitter" data-toggle="tooltip"><i
                                                                 class="fab fa-twitter marg"></i></span>
                                                 </a>
                                             </div>
                                             <div class="li-sh basis">
-                                                <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                                <a href="#!"
+                                                   onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                                     <span class="li-btn" title="share on linkedIn"
                                                           data-toggle="tooltip"><i class="fab fa-linkedin-in marg"></i></span>
                                                 </a>
@@ -108,6 +112,13 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
 
 <?php
 $this->registercss('
