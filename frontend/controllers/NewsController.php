@@ -97,11 +97,17 @@ class NewsController extends Controller
             ->andWhere(['z.is_deleted' => 0])
             ->groupBy('z.news_enc_id')
             ->all();
+        $latestNews = ExternalNewsUpdate::find()
+            ->where(['is_deleted' => 0, 'status' => 1])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->limit(5)
+            ->all();
 
         $newsletterForm = new SubscribeNewsletterForm();
         return $this->render('news-detail', [
             'newsDetail' => $newsDetail,
             'relatedNews' => $relatedNews,
+            'latestNews' => $latestNews,
             'newsletterForm' => $newsletterForm,
         ]);
     }
