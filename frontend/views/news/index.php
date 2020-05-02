@@ -91,11 +91,11 @@ use yii\helpers\Url;
                                             </div>
                                         </div>
                                         <div class="news-btns">
-                                            <button id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                            <button data-id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
                                                     title="<?= $n->upvote ?>" data-toggle="tooltip"><i
                                                         class="fas fa-thumbs-up"></i>
                                             </button>
-                                            <button id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                            <button data-id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
                                                     title="<?= $n->downvote ?>" data-toggle="tooltip"><i
                                                         class="fas fa-thumbs-down"></i>
                                             </button>
@@ -274,7 +274,13 @@ $script = <<<JS
 $(document).on('click', '.vote-btn', function (event) {
     event.preventDefault();
     var btn = $(this);
-    var id = btn.attr('id');
+    event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
+    
+    var id = btn.attr('data-id');
     var key = btn.attr('data-key');
     var targetValue = btn.attr('data-original-title');
     $.ajax({
