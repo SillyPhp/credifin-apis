@@ -1,0 +1,338 @@
+<?php
+use yii\helpers\Url;
+Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var uid = "' . $uid . '"', \yii\web\View::POS_HEAD);
+Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
+?>
+    <style>
+        #watch-live-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 999;
+        }
+        #watch-live-overlay{
+            background: #111; /* Old browsers */
+            background: -moz-linear-gradient(-45deg,  #111 0%, #111 50%, #000 63%, #000 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#111), color-stop(50%,#111), color-stop(63%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(-45deg, #111 0%,#111 50%,#000 63%,#000 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* IE10+ */
+            background: linear-gradient(135deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#111', endColorstr='#000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+        }
+        #watch-live-overlay #overlay-container {
+            padding: 25px;
+            border-radius: 5px;
+            position: relative;
+            margin: 0 auto;
+            top: 35%;
+            width: 70%;
+        }
+        #watch-live-overlay button {
+            display: block;
+            color: #fff;
+            background: transparent;
+            border-color: transparent;
+        }
+
+        #watch-live-overlay img {
+            height: auto;
+            width: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        #watch-live-overlay button i {
+            padding: 0 10px;
+            font-size: 5.2rem;
+        }
+        #watch-live-overlay button span {
+            display: block;
+        }
+        .btn-xlg {
+            padding: 20px 35px;
+            font-size: 30px;
+            line-height: normal;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+        }
+        /* Respomnsive design */
+
+        @media only screen and (max-width: 795px) {
+            #watch-live-overlay #overlay-container {
+                width: 100%;
+            }
+        }
+
+        @media only screen and (max-height: 350px) {
+            #watch-live-overlay img {
+                height: auto;
+                width: 80%;
+            }
+
+            #watch-live-overlay #overlay-container {
+                top: 30%;
+            }
+
+            .btn-xlg {
+                font-size: 1rem;
+            }
+        }
+
+        @media only screen and (max-height: 400px) {
+            .btn-xlg {
+                font-size: 1.25rem;
+            }
+        }
+
+        @media only screen and (max-width: 400px) {
+            .btn-xlg {
+                padding: 10px 17px;
+            }
+
+            #buttons-container {
+                bottom: 0px;
+            }
+
+            .btn-group > .btn {
+                padding: 5px;
+            }
+
+            #buttons-container div {
+                max-width: 90px;
+                min-width: 90px;
+                margin: 5px;
+                margin-bottom: 5px;
+                padding: 0px 2px;
+            }
+        }
+        @media only screen and (max-width: 310px) {
+            #buttons-container .dropdown-toggle {
+                display: none;
+            }
+            #buttons-container .btn-block {
+                border-radius: .3rem;
+            }
+            #buttons-container .btn-group i {
+                padding: 0;
+            }
+            #buttons-container div {
+                max-width: 85px;
+                min-width: 70px;
+                margin: 2px;
+                padding: 0px 5px;
+            }
+        }
+    </style>
+    <style data-jss="" data-meta="MuiTooltip">
+        .MuiTooltip-popper {
+            top: 0;
+            flip: false;
+            left: 0;
+            z-index: 1500;
+            position: absolute;
+            pointer-events: none;
+        }
+        .MuiTooltip-popperInteractive {
+            pointer-events: auto;
+        }
+        .MuiTooltip-tooltip {
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 0.625rem;
+            max-width: 300px;
+            word-wrap: break-word;
+            font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif;
+            font-weight: 500;
+            line-height: 1.4em;
+            border-radius: 4px;
+            background-color: rgba(97, 97, 97, 0.9);
+        }
+        .MuiTooltip-touch {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            font-weight: 400;
+            line-height: 1.14286em;
+        }
+        .MuiTooltip-tooltipPlacementLeft {
+            margin: 0 24px ;
+            transform-origin: right center;
+        }
+        @media (min-width:600px) {
+            .MuiTooltip-tooltipPlacementLeft {
+                margin: 0 14px;
+            }
+        }
+        .MuiTooltip-tooltipPlacementRight {
+            margin: 0 24px;
+            transform-origin: left center;
+        }
+        @media (min-width:600px) {
+            .MuiTooltip-tooltipPlacementRight {
+                margin: 0 14px;
+            }
+        }
+        .MuiTooltip-tooltipPlacementTop {
+            margin: 24px 0;
+            transform-origin: center bottom;
+        }
+        @media (min-width:600px) {
+            .MuiTooltip-tooltipPlacementTop {
+                margin: 14px 0;
+            }
+        }
+        .MuiTooltip-tooltipPlacementBottom {
+            margin: 24px 0;
+            transform-origin: center top;
+        }
+        @media (min-width:600px) {
+            .MuiTooltip-tooltipPlacementBottom {
+                margin: 14px 0;
+            }
+        }
+    </style>
+    <style data-jss="" data-meta="makeStyles">
+        .jss1 {
+            height: 150px;
+            display: flex;
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+        .jss2 {
+            width: 50px;
+            cursor: pointer;
+            height: 50px;
+            border-radius: 26px;
+            background-size: 50px;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .jss3 {
+            flex: 1;
+            display: flex;
+            justify-content: space-evenly;
+        }
+        .jss4 {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+        .jss5 {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: absolute;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        .stream-uid
+        {
+            padding: 0px !important;
+        }
+
+        #child_remote,#parent_remote {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .fade_red{background-color: #dc3545;}
+
+    </style>
+    <div id="root">
+        <div class="meeting">
+            <div class="current-view">
+                <div class="flex-container">
+                    <div class="grid-layout position-related">
+                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 1 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 2 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 3 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 1 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 2 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 3 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 1 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 2 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 3 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 4 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 5 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 1 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 2 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 3 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 4 / auto / auto;"></div>
+                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 5 / auto / auto;"></div>
+                    </div>
+                    <div class="grid-layout z-index-5" id="full-screen-video">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="watch-live-overlay">
+            <div id="overlay-container">
+                <div class="col-md text-center">
+                    <button id="watch-live-btn" type="button" class="btn btn-block btn-xlg">
+                        <i id="watch-live-icon" class="fa fa-play-circle"></i>
+                        <span>Click here to Watch the Live Stream</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+$this->registerJs('
+executeAll();   
+function executeAll(){
+$("#content_main").show();
+function addScript(src) {
+  var s = document.createElement( "script" );
+  s.setAttribute( "src", src );
+  document.body.appendChild(s);
+}
+function addHeadScript(src) {
+  var s = document.createElement( "script" );
+  s.setAttribute( "src", src );
+  document.head.appendChild(s);
+}
+function addCssFile(src)
+{
+var link = document.createElement("link");
+link.href = src;
+link.type = "text/css";
+link.rel = "stylesheet";
+document.head.appendChild(link);
+}
+getTokenVarification(tokenId);
+function getTokenVarification(tokenId)
+{
+   $.ajax({
+    method: "POST",
+    url : base_url+"/api/v3/video-session/validate-tokens",
+    data:{"tokenId":tokenId},
+    success: function(response) { 
+       if(response.response.status===true)
+       {
+        app_id = response.response.app_id;
+        channel_name = response.response.channel_name;
+        access_token = response.response.token;
+        addScript("/assets/themes/ey/broadcast/js/multi-audience-script.js");
+       }
+       else
+       {
+        alert("Authentication Failed");
+       }
+      }
+    })  
+}
+} 
+');
+$this->registerCssFile('https://webdemo.agora.io/agora-web-showcase/examples/17-Multistream/static/css/main.419b49bd.chunk.css');
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+$this->registerCssFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css');
+$this->registerJsFile('https://cdn.agora.io/sdk/release/AgoraRTCSDK-3.1.0.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+?>
