@@ -11,6 +11,6 @@ class QuizController extends Controller
         return $this->render('dashboard');
     }
     public function actionCreate(){
-        return $this->render('create-quiz');
+        return $this->render('create-quiz-multi');
     }
 }
