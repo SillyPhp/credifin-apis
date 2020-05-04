@@ -43,4 +43,9 @@ class LiveStreamController extends Controller
             return $this->renderAjax('multi-stream', ['tokenId' => $id,'uid'=>$session->get('uid')]);
         }
     }
+
+    public function actionConnect()
+    {
+        return $this->renderAjax('connect');
+    }
 }
