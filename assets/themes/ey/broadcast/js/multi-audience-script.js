@@ -58,26 +58,18 @@ client.on("stream-removed", function(evt) {
 
 client.on("stream-subscribed", function(evt) {
     var remoteStream = evt.stream;
-    if ($("#full-screen-video .main-stream-player").length==0) {
-        $('#full-screen-video').append('<div class="stream-player grid-player main-stream-player" id="stream-player-'+remoteStream.getId()+'"></div>');
-        remoteStream.play("stream-player-"+remoteStream.getId()+"");
-    }
-    else {
-        $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+remoteStream.getId()+'" style="grid-area: auto"></div>');
-        remoteStream.play("stream-player-"+remoteStream.getId()+"");
-    }
-    peers_network.push(remoteStream.getId());
+    remoteStream.play("full-screen-video");
     console.log(
         "Successfully subscribed to remote stream: " + remoteStream.getId()
     );
 });
 // peer online status
 client.on("peer-online", function(evt) {
+
 });
 
 // remove the remote-container when a user leaves the channel
 client.on("peer-leave", function(evt) {
-    console.log(evt);
     console.log("Remote stream has left the channel: " + evt.uid);
     evt.stream.stop(); // stop the stream
 });
