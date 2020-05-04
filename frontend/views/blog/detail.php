@@ -40,8 +40,6 @@ $this->params['seo_tags'] = [
                 <div class="col-md-12">
                     <div class="pos-rel">
                         <div class="blog-title"><?= $post['title']; ?></div>
-                        <!--                    <div class="publish-date">-->
-                        <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                     </div>
                 </div>
             </div>
@@ -52,18 +50,13 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-9">
                     <div class="blog-division">
-                        <div class="blog-cover-image">
-                            <?php $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']; ?>
-                            <img src="<?= $feature_image; ?>">
-                        </div>
                         <div id="blog-description" class="blog-text">
                             <?= $post['description']; ?>
                         </div>
                     </div>
-                    <!--                    <div class="divider"></div>-->
                     <?=
                     $this->render('/widgets/mustache/discussion/discussion-box', [
-                    "controllerId" => Yii::$app->controller->id . "/comments"
+                        "controllerId" => Yii::$app->controller->id . "/comments"
                     ]);
                     ?>
                 </div>
@@ -94,20 +87,6 @@ $this->params['seo_tags'] = [
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <!--                            <div class="popular-heading about-heading"> About Blog</div>-->
-                            <!--                            <div class="blog-tags">-->
-                            <!--                                <span>Category:</span>-->
-                            <!--                                <ul>-->
-                            <!--                                    --><?php
-                            //                                    foreach ($post['postCategories'] as $cat) {
-                            //                                        echo '<li><a href="/blog/category/' . $cat['categoryEnc']['slug'] . '">' . $cat['categoryEnc']['name'] . '</a></li>';
-                            //                                    }
-                            //                                    ?>
-                            <!--                                </ul>-->
-                            <!--                            </div>-->
-                            <!--                            <div class="blog-pub">-->
-                            <!--                                <span>Published:</span> -->
-                            <? //= date("d-M-Y", strtotime($post['created_on'])) ?><!--</div>-->
                             <div class="blog-tags">
                                 <span>Tags:</span>
                                 <ul>
@@ -154,10 +133,10 @@ $this->params['seo_tags'] = [
                     </div>
                     <!--hotjobs Widget start-->
                     <?php
-                        echo $this->render('/widgets/hot-jobs');
+                    echo $this->render('/widgets/hot-jobs');
                     ?>
                     <!--hotjobs Widget ends-->
-                    <?= $this->render("/widgets/square_ads");?>
+                    <?= $this->render("/widgets/square_ads"); ?>
                 </div>
             </div>
         </div>
@@ -312,9 +291,9 @@ textarea::placeholder{
     border:1px solid #fff;
     border-radius:10px;
 }
-.blog-text{
-    padding:0 10px 10px 10px;
-}
+//.blog-text{
+//    padding:0 10px 10px 10px;
+//}
 .channel{
     text-align:center;
 }
