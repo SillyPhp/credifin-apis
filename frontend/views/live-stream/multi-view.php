@@ -5,6 +5,25 @@ Yii::$app->view->registerJs('var uid = "' . $uid . '"', \yii\web\View::POS_HEAD)
 Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
 ?>
     <style>
+       #full-screen-video div
+        {
+            border: 2px solid #5e5e77;
+            margin: 3px;
+            width: 250px !important;
+            height: 250px !important;
+           float: left;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            padding: 10px;
+        }
+        .grid-item {
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            font-size: 30px;
+            text-align: center;
+        }
         #watch-live-overlay {
             position: fixed;
             top: 0;
@@ -127,158 +146,31 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
                 margin: 2px;
                 padding: 0px 5px;
             }
-        }
-    </style>
-    <style data-jss="" data-meta="MuiTooltip">
-        .MuiTooltip-popper {
-            top: 0;
-            flip: false;
-            left: 0;
-            z-index: 1500;
-            position: absolute;
-            pointer-events: none;
-        }
-        .MuiTooltip-popperInteractive {
-            pointer-events: auto;
-        }
-        .MuiTooltip-tooltip {
-            color: #fff;
-            padding: 4px 8px;
-            font-size: 0.625rem;
-            max-width: 300px;
-            word-wrap: break-word;
-            font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", \"Roboto\", \"Oxygen\", \"Ubuntu\", \"Cantarell\", \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif;
-            font-weight: 500;
-            line-height: 1.4em;
-            border-radius: 4px;
-            background-color: rgba(97, 97, 97, 0.9);
-        }
-        .MuiTooltip-touch {
-            padding: 8px 16px;
-            font-size: 0.875rem;
-            font-weight: 400;
-            line-height: 1.14286em;
-        }
-        .MuiTooltip-tooltipPlacementLeft {
-            margin: 0 24px ;
-            transform-origin: right center;
-        }
-        @media (min-width:600px) {
-            .MuiTooltip-tooltipPlacementLeft {
-                margin: 0 14px;
-            }
-        }
-        .MuiTooltip-tooltipPlacementRight {
-            margin: 0 24px;
-            transform-origin: left center;
-        }
-        @media (min-width:600px) {
-            .MuiTooltip-tooltipPlacementRight {
-                margin: 0 14px;
-            }
-        }
-        .MuiTooltip-tooltipPlacementTop {
-            margin: 24px 0;
-            transform-origin: center bottom;
-        }
-        @media (min-width:600px) {
-            .MuiTooltip-tooltipPlacementTop {
-                margin: 14px 0;
-            }
-        }
-        .MuiTooltip-tooltipPlacementBottom {
-            margin: 24px 0;
-            transform-origin: center top;
-        }
-        @media (min-width:600px) {
-            .MuiTooltip-tooltipPlacementBottom {
-                margin: 14px 0;
+            .cover-media {
+                min-width: 200px;
+                min-height: 150px;
+                background-color: #999;
+                background-repeat: no-repeat;
+                background-size: 70px 70px;
+                background-position: 50%;
+                border-radius: 2px;
+                background-image: url(/agora-web-showcase/examples/17-Multistream/static/media/placeholder-audio-big.effcae22.png);
             }
         }
     </style>
-    <style data-jss="" data-meta="makeStyles">
-        .jss1 {
-            height: 150px;
-            display: flex;
-            z-index: 10;
-            align-items: center;
-            justify-content: center;
-        }
-        .jss2 {
-            width: 50px;
-            cursor: pointer;
-            height: 50px;
-            border-radius: 26px;
-            background-size: 50px;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .jss3 {
-            flex: 1;
-            display: flex;
-            justify-content: space-evenly;
-        }
-        .jss4 {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-        .jss5 {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            position: absolute;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-        .stream-uid
-        {
-            padding: 0px !important;
-        }
+    <div id="content_main">
+        <div class="container-fluid p-0">
+            <div id="full-screen-video">
 
-        #child_remote,#parent_remote {
-            position: absolute;
-            width: 100vw;
-            height: 100vh;
-        }
-
-        .fade_red{background-color: #dc3545;}
-
-    </style>
-    <div id="root">
-        <div class="meeting">
-            <div class="current-view">
-                <div class="flex-container">
-                    <div class="grid-layout position-related">
-                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 1 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 2 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 1 / 3 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 1 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 2 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 2 / 3 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 1 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 2 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 3 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 4 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 3 / 5 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 1 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 2 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 3 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 4 / auto / auto;"></div>
-                        <div class="stream-player cover-media grid-player " style="grid-area: 4 / 5 / auto / auto;"></div>
-                    </div>
-                    <div class="grid-layout z-index-5" id="full-screen-video">
-
-                    </div>
-                </div>
             </div>
-        </div>
-        <div id="watch-live-overlay">
-            <div id="overlay-container">
-                <div class="col-md text-center">
-                    <button id="watch-live-btn" type="button" class="btn btn-block btn-xlg">
-                        <i id="watch-live-icon" class="fa fa-play-circle"></i>
-                        <span>Click here to Watch the Live Stream</span>
-                    </button>
+            <div id="watch-live-overlay">
+                <div id="overlay-container">
+                    <div class="col-md text-center">
+                        <button id="watch-live-btn" type="button" class="btn btn-block btn-xlg">
+                            <i id="watch-live-icon" class="fa fa-play-circle"></i>
+                            <span>Click here to Watch the Live Stream</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

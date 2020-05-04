@@ -469,7 +469,7 @@ function enableUiControls() {
     $("#exit-btn").click(function(){
         if (confirm('Do you want to leave this page')) {
             leaveChannel();
-            window.location.replace("/");
+            alert('You ended this session');
         }
     });
 
