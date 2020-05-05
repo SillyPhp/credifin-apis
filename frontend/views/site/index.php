@@ -1330,6 +1330,7 @@ if (!Yii::$app->user->isGuest) {
         'getStats',
         'getTopCities',
         'getCompaniesWithUs',
+        'getNewsUpdate',
         'getTweets',
         'getShortcuts'
     ];
@@ -1347,6 +1348,7 @@ if (!Yii::$app->user->isGuest) {
         'getTopCities',
         'getHowItWorks',
         'getCompaniesWithUs',
+        'getNewsUpdate',
         'getTweets',
         'getNewsletter',
         'getShortcuts'
