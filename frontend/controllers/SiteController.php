@@ -867,4 +867,8 @@ class SiteController extends Controller
         return $this->render('all-mentors');
     }
 
+    public function actionWebinarView(){
+        return $this->render('webinar-view');
+    }
+
 }
