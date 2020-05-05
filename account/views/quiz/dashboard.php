@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
 <section>
     <div class="row">
@@ -30,7 +31,17 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
-
+            <div class="share-box">
+                <div class="sb-title">
+                    Share This Quiz
+                </div>
+                <div class="qz-logo">
+                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                </div>
+                <div class="sb-btn">
+                    <button type="button" class="ql-share">Share <i class="fa fa-share-alt"></i></button>
+                </div>
+            </div>
         </div>
         <div class="col-md-9">
             <div class="stats">
@@ -43,7 +54,7 @@ use yii\helpers\Url;
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-this-month.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-this-month.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -55,7 +66,7 @@ use yii\helpers\Url;
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-lifetime.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-lifetime.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -67,7 +78,7 @@ use yii\helpers\Url;
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/total-quiz.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/total-quiz.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -79,7 +90,7 @@ use yii\helpers\Url;
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-created-this-month.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-created-this-month.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -91,19 +102,19 @@ use yii\helpers\Url;
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/total-quiz-taken.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/total-quiz-taken.png') ?>">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="quiz-stats-box">
                             <div class="stats-details">
-                                <div class="qsb-heading">Quiz Taken This Month </div>
+                                <div class="qsb-heading">Quiz Taken This Month</div>
                                 <div class="qsb-price"><i class="fa fa-user"></i> 250</div>
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-taken-this-month.png')?>">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-taken-this-month.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -111,171 +122,128 @@ use yii\helpers\Url;
                 <div class="row">
                     <div class="col-md-6">
                         <div class="top-quiz">
-                            <div class="tq-heading">Top Quiz</div>
+                            <div class="tq-heading">
+                                <p>Top Quiz</p>
+                                <a href="my-quiz">View All</a>
+                            </div>
                             <ul>
                                 <li>
                                     <div class="tq-box">
                                         <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>">
                                         </div>
                                         <div class="tq-details">
-                                           <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                            <div class="tq-earn">Earnings: <span><i class="fa fa-inr"></i>1000</span></div>
+                                            <div class="tq-name"><a href="quiz-view">Basics of Social Media</a></div>
+                                            <div class="tq-flex">
+                                                <div class="tq-played">Played: <span>100</span></div>
+                                                <div class="tq-earn">
+                                                    Earnings: <span><i class="fa fa-inr"></i>1000</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tq-details-edit">
+                                            <a href="quiz-view"><i class="fa fa-pencil"></i></a>
+                                            <button href="quiz-view" class="top-quiz-delete"><i class="fa fa-trash"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-share-alt"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-eye-slash"></i></button>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="tq-box">
                                         <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>">
                                         </div>
                                         <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                            <div class="tq-earn">Earnings: <span><i class="fa fa-inr"></i>1000</span></div>
+                                            <div class="tq-name"><a href="quiz-view">Basics of Social Media</a></div>
+                                            <div class="tq-flex">
+                                                <div class="tq-played">Played: <span>100</span></div>
+                                                <div class="tq-earn">
+                                                    Earnings: <span><i class="fa fa-inr"></i>1000</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tq-details-edit">
+                                            <a href="quiz-view"><i class="fa fa-pencil"></i></a>
+                                            <button href="quiz-view" class="top-quiz-delete"><i class="fa fa-trash"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-share-alt"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-eye-slash"></i></button>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="tq-box">
                                         <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>">
                                         </div>
                                         <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                            <div class="tq-earn">Earnings: <span><i class="fa fa-inr"></i>1000</span></div>
+                                            <div class="tq-name"><a href="quiz-view">Basics of Social Media</a></div>
+                                            <div class="tq-flex">
+                                                <div class="tq-played">Played: <span>100</span></div>
+                                                <div class="tq-earn">
+                                                    Earnings: <span><i class="fa fa-inr"></i>1000</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="tq-box" >
-                                        <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
-                                        </div>
-                                        <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                            <div class="tq-earn">Earnings: <span><i class="fa fa-inr"></i>1000</span></div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="tq-box">
-                                        <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
-                                        </div>
-                                        <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                            <div class="tq-earn">Earnings: <span><i class="fa fa-inr"></i>1000</span></div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="quiz-taken">
-                            <div class="tq-heading">Quiz Taken</div>
-                            <ul>
-                                <li>
-                                    <div class="tq-box">
-                                        <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
-                                        </div>
-                                        <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>200</span></div>
-                                        </div>
-
-                                        <div class="tq-dots">
-                                            <button type="button" class="tqActions"><i class="fa fa-ellipsis-v"></i></button>
-                                        </div>
-
-                                        <div class="tq-btns">
-                                            <button type="button" class="btnview"><i class="fa fa-eye"></i></button>
-                                            <button type="button" class="btnedit"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btndelete"><i class="fa fa-trash-o"></i></button>
+                                        <div class="tq-details-edit">
+                                            <a href="quiz-view"><i class="fa fa-pencil"></i></a>
+                                            <button href="quiz-view" class="top-quiz-delete"><i class="fa fa-trash"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-share-alt"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-eye-slash"></i></button>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="tq-box">
                                         <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>">
                                         </div>
                                         <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>1000</span></div>
+                                            <div class="tq-name"><a href="quiz-view">Basics of Social Media</a></div>
+                                            <div class="tq-flex">
+                                                <div class="tq-played">Played: <span>100</span></div>
+                                                <div class="tq-earn">
+                                                    Earnings: <span><i class="fa fa-inr"></i>1000</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="tq-dots">
-                                            <button type="button" class="tqActions"><i class="fa fa-ellipsis-v"></i></button>
-                                        </div>
-
-                                        <div class="tq-btns">
-                                            <button type="button" class="btnview"><i class="fa fa-eye"></i></button>
-                                            <button type="button" class="btnedit"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btndelete"><i class="fa fa-trash-o"></i></button>
+                                        <div class="tq-details-edit">
+                                            <a href="quiz-view"><i class="fa fa-pencil"></i></a>
+                                            <button href="quiz-view" class="top-quiz-delete"><i class="fa fa-trash"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-share-alt"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-eye-slash"></i></button>
                                         </div>
                                     </div>
                                 </li>
                                 <li>
                                     <div class="tq-box">
                                         <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg') ?>">
                                         </div>
                                         <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>10</span></div>
+                                            <div class="tq-name"><a href="quiz-view">Basics of Social Media</a></div>
+                                            <div class="tq-flex">
+                                                <div class="tq-played">Played: <span>100</span></div>
+                                                <div class="tq-earn">
+                                                    Earnings: <span><i class="fa fa-inr"></i>1000</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="tq-dots">
-                                            <button type="button" class="tqActions"><i class="fa fa-ellipsis-v"></i></button>
-                                        </div>
-
-                                        <div class="tq-btns">
-                                            <button type="button" class="btnview"><i class="fa fa-eye"></i></button>
-                                            <button type="button" class="btnedit"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btndelete"><i class="fa fa-trash-o"></i></button>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="tq-box" >
-                                        <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
-                                        </div>
-                                        <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>100</span></div>
-                                        </div>
-                                        <div class="tq-dots">
-                                            <button type="button" class="tqActions"><i class="fa fa-ellipsis-v"></i></button>
-                                        </div>
-
-                                        <div class="tq-btns">
-                                            <button type="button" class="btnview"><i class="fa fa-eye"></i></button>
-                                            <button type="button" class="btnedit"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btndelete"><i class="fa fa-trash-o"></i></button>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="tq-box">
-                                        <div class="tq-icon">
-                                            <img src="<?= Url::to('@eyAssets/images/pages/blog/img-28.jpg')?>">
-                                        </div>
-                                        <div class="tq-details">
-                                            <div class="tq-name">Basics of Social Media</div>
-                                            <div class="tq-played">Played: <span>52</span></div>
-                                        </div>
-                                        <div class="tq-dots">
-                                            <button type="button" class="tqActions"><i class="fa fa-ellipsis-v"></i></button>
-                                        </div>
-
-                                        <div class="tq-btns">
-                                            <button type="button" class="btnview"><i class="fa fa-eye"></i></button>
-                                            <button type="button" class="btnedit"><i class="fa fa-pencil"></i></button>
-                                            <button type="button" class="btndelete"><i class="fa fa-trash-o"></i></button>
+                                        <div class="tq-details-edit">
+                                            <a href="quiz-view"><i class="fa fa-pencil"></i></a>
+                                            <button href="quiz-view" class="top-quiz-delete"><i class="fa fa-trash"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-share-alt"></i></button>
+                                            <button href="quiz-view" class="top-quiz-share"><i
+                                                        class="fa fa-eye-slash"></i></button>
                                         </div>
                                     </div>
                                 </li>
@@ -310,6 +278,7 @@ use yii\helpers\Url;
                                                     <span class="sr-only">70% Complete</span>
                                                 </div>
                                             </div>
+                                            <div class="m-income"><i class="fa fa-inr"></i> 2000</div>
                                         </div>
                                     </li>
                                     <li>
@@ -323,6 +292,7 @@ use yii\helpers\Url;
                                                     <span class="sr-only">70% Complete</span>
                                                 </div>
                                             </div>
+                                            <div class="m-income"><i class="fa fa-inr"></i> 2000</div>
                                         </div>
                                     </li>
                                     <li>
@@ -336,6 +306,7 @@ use yii\helpers\Url;
                                                     <span class="sr-only">100% Complete</span>
                                                 </div>
                                             </div>
+                                            <div class="m-income"><i class="fa fa-inr"></i> 3200</div>
                                         </div>
                                     </li>
                                     <li>
@@ -349,6 +320,7 @@ use yii\helpers\Url;
                                                     <span class="sr-only">80% Complete</span>
                                                 </div>
                                             </div>
+                                            <div class="m-income"><i class="fa fa-inr"></i> 2800</div>
                                         </div>
                                     </li>
                                     <li>
@@ -362,6 +334,7 @@ use yii\helpers\Url;
                                                     <span class="sr-only">50% Complete</span>
                                                 </div>
                                             </div>
+                                            <div class="m-income"><i class="fa fa-inr"></i> 1700</div>
                                         </div>
                                     </li>
                                 </ul>
@@ -374,8 +347,168 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
+<div id="shareQuizModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="qModal">
+            <h2>Share Quiz</h2>
+            <div class="qm-logo">
+                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" class="imagePath"
+                     alt="">
+            </div>
+            <p class="qm-name">Quiz on human ethics</p>
+            <div class="share-input">
+                <form>
+                    <input type="text" placeholder="" class="shareLinkInput">
+                    <button type="button" onclick="nextStep()"><i class="fa fa-copy"></i></button>
+                </form>
+            </div>
+            <p>If someone plays this quiz through this link, It will earn you 20 extra credits</p>
+            <h4>Share on</h4>
+            <ul class="qshare">
+                <li>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"
+                       onclick="appendLink(this)">
+                        <i class="fa fa-facebook-f"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href=" https://publish.twitter.com/" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/cws/share?url=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="whatsapp://send?text=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-whatsapp"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://t.me/share/url?url=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-telegram"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:?subject=[SUBJECT]&body=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="" onclick="downloadImage(this)" target="_blank">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss('
+.top-quiz-delete, .top-quiz-share{
+    background: transparent;
+    border: none;
+    padding: 0 0px;
+}
+.qm-logo{
+    max-width:100px;
+    max-height: 100px;    
+    margin: 0 auto;
+}
+.qm-name{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.qm-logo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+.qModal h4{
+    font-weight: bold;
+    color: #333;
+    font-family: roboto;
+    font-size: 20px;
+}
+.qModal h2{
+    font-weight: bold;
+    color: #00a0e3;
+    font-family: lora;
+    font-size: 30px;
+}
+.qModal p{
+    color: #333;
+    font-family: roboto;
+    font-size: 16px;
+}
+.qshare {
+    padding-inline-start: 0;
+}
+.qshare li{
+    list-style: none;
+    display: inline;
+    padding:10px 10px;
+}
+.qshare li a{
+    font-size: 23px;
+    color: #333; 
+}
+.qshare li a:hover{
+    color: #00a0e3; 
+}
+.share-box{
+    box-shadow: 0 0 10px rgba(0,0,0,.3);
+}
+.sb-title{
+    padding: 10px 10px;
+    color: #333;
+    font-family: lora;
+    font-size:16px;
+    font-weight: 600;
+}
+.sb-btn{
+    background: #fff;
+    height: 50px
+}
+.sb-btn button{
+    width: 100%;
+    height: 100%;
+    
+    background: #fff;
+    border: none;
+}
+.sb-btn button:hover{
+    color: #00a0e3;
+}
+.qz-logo {
+   width: 100%;
+   height: 200px;
+}
+.qz-logo img{
+    height: 100%;
+    width: 100%;
+    object-position: center;
+    object-fit: cover;
+}
+.earning-box{
+    position: relative; 
+    height: 30px;   
+}
+.m-income{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color:#333;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: roboto;
+}
 .btnview, .btnedit{
     background: #00a0e3;
     color: #fff;
@@ -445,7 +578,25 @@ $this->registerCss('
     font-family: lora;
     font-size: 20px;
     background: #f8f8f8;
-    padding: 10px 15px 
+    padding: 10px 15px ;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.tq-heading p{
+    margin: 0 0;
+}
+.tq-heading a{
+    color: #333;
+    font-family: roboto;
+    font-size: 14px;
+    font-weight: 500;
+}
+.tq-heading a:hover{
+    color: #00a0e3;
+}
+.tq-flex{
+    display: flex;
 }
 .top-quiz, .quiz-taken{
     box-shadow: 0 0 10px rgba(0,0,0,.3);
@@ -470,19 +621,38 @@ $this->registerCss('
     padding: 10px 15px
 }
 .tq-icon{
-    max-width: 80px;
-    max-height: 80px;
+    max-width: 70px;
+    height: 50px;
 }
 .tq-icon img{
     width: 100%;
     height:100%;
-    border-radius
+    object-fit: cover;
 }
 .tq-details{
     padding:0 0 0 10px;
+    width: 100%;
+    position: relative;
 }
-.tq-name, .tq-played, .tq-earn{
+.tq-details-edit{
+    position: absolute;
+    top: 3px;
+    right: 3px;
+}
+.tq-details-edit a, .tq-details-edit button{
+    color: #333;
+}
+.tq-details-edit a:hover, .tq-details-edit button:hover{
+    color: #00a0e3;
+    transition: .3s ease;
+}
+.tq-name a, .tq-played, .tq-earn{
     font-weight: bold;
+    color:#333;
+}
+.tq-played, .tq-earn{
+    flex:1
+    padding: 5px 0 0 0;
 }
 .tq-played span, .tq-earn span{
     font-weight: 400;
@@ -539,7 +709,7 @@ $this->registerCss('
     padding-inline-start: 0px;
 }
 .eq-list ul li{
-    padding: 20px;
+    padding: 20px 20px 10px;
 }
 .eq-list ul li:nth-child(even){
     background: #f8f8f8;   
@@ -642,7 +812,70 @@ $this->registerCss('
 .mentor-fields p{
     margin-top: 0px;
 }
+/*-------modal ----------*/
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 10px; /* Location of the box */
+  left: 0;
+  top: 100px;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: scroll; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
 
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin:5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  text-align: center;
+
+}
+
+/* The Close Button */
+.close, .closeInfo {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px
+}
+
+.close:hover,
+.closeInfo:hover,
+.close:focus,
+.closeInfo:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.share-input button{
+    padding: 8px 14px;
+    border: none;
+    background: #00a0e3;
+    color: #fff;
+    float: right;
+}
+.share-input{
+    max-width:500px;
+    width: 100%;
+    border:1px solid #eee;
+    margin: 0 auto;
+}
+.shareLinkInput{
+    width: 89%;
+    padding:8px 10px;
+//     border:1px solid #eee;
+    border:transparent;
+}
 ');
 $script = <<<JS
 
@@ -652,17 +885,58 @@ $this->registerJS($script);
 <script>
     let tqActions = document.getElementsByClassName('tqActions');
     console.log(tqActions);
-    for (let i = 0; i < tqActions.length; i++){
+    for (let i = 0; i < tqActions.length; i++) {
         tqActions[i].addEventListener('click', showTqBtns)
     }
+
     function showTqBtns(e) {
-       let tqDots = e.currentTarget.parentElement;
-       let tqBox = tqDots.parentElement;
-       let tqBtns = tqBox.querySelector('.tq-btns')
-       if(tqBtns.classList.contains('tq-btns-show')){
+        let tqDots = e.currentTarget.parentElement;
+        let tqBox = tqDots.parentElement;
+        let tqBtns = tqBox.querySelector('.tq-btns')
+        if (tqBtns.classList.contains('tq-btns-show')) {
             tqBox.querySelector('.tq-btns').classList.remove('tq-btns-show')
-       }else{
+        } else {
             tqBox.querySelector('.tq-btns').classList.add('tq-btns-show')
-       }
+        }
+    }
+
+    let qlBtn = document.querySelector('.ql-share');
+    let qlModal = document.getElementById("shareQuizModal");
+    qlBtn.addEventListener('click', openInfoModal);
+
+    function openInfoModal() {
+        qlModal.style.display = 'block';
+    }
+
+    var closeInfo = document.querySelector(".close");
+    closeInfo.onclick = function () {
+        qlModal.style.display = 'none';
+    }
+    window.onclick = function (event) {
+        if (event.target == qlModal) {
+            qlModal.style.display = "none";
+        }
+    }
+
+    function appendLink(e) {
+        let shareLink = document.querySelector('.shareLinkInput').value;
+        let attriBute = e.getAttribute('href');
+        e.setAttribute('href', attriBute + shareLink)
+    }
+
+    function downloadImage(e) {
+        let downImage = document.querySelector('.imagePath');
+        let imagePath = downImage.getAttribute('src');
+        e.setAttribute('href', imagePath);
+        e.setAttribute('download', imagePath);
+    }
+
+    let topQuizDelete = document.getElementsByClassName('top-quiz-delete');
+    for(let i = 0; i < topQuizDelete.length; i++){
+        topQuizDelete[i].addEventListener('click', deleteTopQuiz);
+    }
+    function deleteTopQuiz(e) {
+        let actionBtns = e.currentTarget.parentElement;
+        actionBtns.parentElement.remove();
     }
 </script>

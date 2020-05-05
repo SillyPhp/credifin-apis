@@ -13,4 +13,10 @@ class QuizController extends Controller
     public function actionCreate(){
         return $this->render('create-quiz');
     }
+    public function actionQuizView(){
+        return $this->render('quiz-view');
+    }
+    public function actionMyQuiz(){
+        return $this->render('my-quiz');
+    }
 }
