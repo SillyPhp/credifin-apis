@@ -54,6 +54,7 @@ client.on("stream-removed", function(evt) {
     stream.stop(); // stop the stream
     stream.close(); // clean up and close the camera stream
     console.log("Remote stream is removed " + stream.getId());
+    initializeUi();
 });
 
 client.on("stream-subscribed", function(evt) {
@@ -62,6 +63,7 @@ client.on("stream-subscribed", function(evt) {
     console.log(
         "Successfully subscribed to remote stream: " + remoteStream.getId()
     );
+    initializeUi();
 });
 // peer online status
 client.on("peer-online", function(evt) {
@@ -143,4 +145,24 @@ function leaveChannel() {
 function generateToken() {
     // make a restful call to token server
     return null; // TODO: add a token generation
+}
+
+function initializeUi() {
+    var window_width = window.outerWidth;
+    if(window.innerHeight < $('#full-screen-video').height()){
+        $('body').css('overflow-y','scroll');
+    }
+    if(window_width < 500) {
+        var childrens = $('#full-screen-video > div').length;
+        $('#full-screen-video').attr('class','elem' + childrens);
+        if (childrens > 3) {
+            if(!$('#full-screen-video').hasClass('multiple')) {
+                $('#full-screen-video').addClass('multiple');
+            }
+        }
+    } else {
+        if (childrens > 10) {
+
+        }
+    }
 }
