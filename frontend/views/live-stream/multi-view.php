@@ -1,29 +1,33 @@
 <?php
+
 use yii\helpers\Url;
+
 Yii::$app->view->registerJs('var tokenId = "' . $tokenId . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var uid = "' . $uid . '"', \yii\web\View::POS_HEAD);
 Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\web\View::POS_HEAD);
 ?>
     <style>
-       #full-screen-video div
-        {
+        #full-screen-video > div {
             border: 2px solid #5e5e77;
             margin: 3px;
             width: 250px !important;
             height: 250px !important;
-           float: left;
+            float: left;
         }
+
         .grid-container {
             display: grid;
             grid-template-columns: auto auto auto;
             padding: 10px;
         }
+
         .grid-item {
             border: 1px solid rgba(0, 0, 0, 0.8);
             padding: 20px;
             font-size: 30px;
             text-align: center;
         }
+
         #watch-live-overlay {
             position: fixed;
             top: 0;
@@ -33,16 +37,18 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             text-align: center;
             z-index: 999;
         }
-        #watch-live-overlay{
+
+        #watch-live-overlay {
             background: #111; /* Old browsers */
-            background: -moz-linear-gradient(-45deg,  #111 0%, #111 50%, #000 63%, #000 100%); /* FF3.6+ */
-            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#111), color-stop(50%,#111), color-stop(63%,#000), color-stop(100%,#000)); /* Chrome,Safari4+ */
-            background: -webkit-linear-gradient(-45deg, #111 0%,#111 50%,#000 63%,#000 100%); /* Chrome10+,Safari5.1+ */
-            background: -o-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* Opera 11.10+ */
-            background: -ms-linear-gradient(-45deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* IE10+ */
-            background: linear-gradient(135deg,  #111 0%,#111 50%,#000 63%,#000 100%); /* W3C */
-            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#111', endColorstr='#000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+            background: -moz-linear-gradient(-45deg, #111 0%, #111 50%, #000 63%, #000 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, #111), color-stop(50%, #111), color-stop(63%, #000), color-stop(100%, #000)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(-45deg, #111 0%, #111 50%, #000 63%, #000 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(-45deg, #111 0%, #111 50%, #000 63%, #000 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(-45deg, #111 0%, #111 50%, #000 63%, #000 100%); /* IE10+ */
+            background: linear-gradient(135deg, #111 0%, #111 50%, #000 63%, #000 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#111', endColorstr='#000', GradientType=1); /* IE6-9 fallback on horizontal gradient */
         }
+
         #watch-live-overlay #overlay-container {
             padding: 25px;
             border-radius: 5px;
@@ -51,6 +57,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             top: 35%;
             width: 70%;
         }
+
         #watch-live-overlay button {
             display: block;
             color: #fff;
@@ -69,9 +76,11 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             padding: 0 10px;
             font-size: 5.2rem;
         }
+
         #watch-live-overlay button span {
             display: block;
         }
+
         .btn-xlg {
             padding: 20px 35px;
             font-size: 30px;
@@ -80,11 +89,64 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
             -moz-border-radius: 8px;
             border-radius: 8px;
         }
+
+        .fl-container {
+            display: flex;
+            position: relative;
+            align-items: center;
+            background-color: #666;
+            height: 100vh;
+        }
+
+        #full-screen-video {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            margin: auto;
+        }
+
         /* Respomnsive design */
+        @media only screen and (max-width: 500px) {
+            #full-screen-video.elem1 > div{
+                width: 100% !Important;
+                height: 50vh !important;
+                margin-top: 25vh;
+            }
+            #full-screen-video.elem2 > div{
+                width: 100% !Important;
+                height: 50vh !important;
+                margin-top: 0%;
+            }
+            #full-screen-video.elem3 > div{
+                width: 50% !Important;
+                height: 50vh !important;
+                margin-top: 0%;
+            }
+            #full-screen-video.elem3 > div:last-child{
+                width: 100% !Important;
+            }
+            #full-screen-video.multiple > div{
+                width: 50% !Important;
+                height: 50vh !important;
+                margin-top: 0%;
+            }
+        }
+
+        @media only screen and (min-width: 1200px) {
+            #full-screen-video {
+                max-width: 90%;
+            }
+        }
 
         @media only screen and (max-width: 795px) {
             #watch-live-overlay #overlay-container {
                 width: 100%;
+            }
+
+            body {
+                overflow-y: scroll;
             }
         }
 
@@ -130,22 +192,27 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
                 padding: 0px 2px;
             }
         }
+
         @media only screen and (max-width: 310px) {
             #buttons-container .dropdown-toggle {
                 display: none;
             }
+
             #buttons-container .btn-block {
                 border-radius: .3rem;
             }
+
             #buttons-container .btn-group i {
                 padding: 0;
             }
+
             #buttons-container div {
                 max-width: 85px;
                 min-width: 70px;
                 margin: 2px;
                 padding: 0px 5px;
             }
+
             .cover-media {
                 min-width: 200px;
                 min-height: 150px;
@@ -159,7 +226,7 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
         }
     </style>
     <div id="content_main">
-        <div class="container-fluid p-0">
+        <div class="container-fluid p-0 fl-container">
             <div id="full-screen-video">
 
             </div>

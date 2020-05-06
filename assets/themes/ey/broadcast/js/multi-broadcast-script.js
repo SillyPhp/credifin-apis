@@ -67,6 +67,7 @@ AgoraRTC.Logger.setLogLevel(AgoraRTC.Logger.NONE);
 // client callbacks
 client.on("stream-published", function(evt) {
     console.log("Publish local stream successfully");
+    initializeUi();
 });
 // when a remote stream is added
 client.on("stream-added", function(evt) {
@@ -93,6 +94,7 @@ client.on("stream-subscribed", function (evt) {
     $('#full-screen-video').append('<div class="stream-player grid-player" id="stream-player-'+id+'" style="grid-area: auto"> <div class="stream-uid">UID: '+id+'</div></div>');
     remoteStream.play("stream-player-"+id+"");
     console.log('stream-subscribed remote-uid: ', id);
+    initializeUi();
 })
 client.on("stream-removed", function(evt) {
     var stream = evt.stream;
@@ -129,6 +131,7 @@ client.on("streamInjectedStatus", function(evt) {
 client.on("peer-leave", function(evt) {
     $('#stream-player-'+evt.stream.getId()+'').remove();
     console.log("Remote stream has left the channel: " + evt.stream.getId());
+    initializeUi();
 });
 
 // show mute icon whenever a remote has muted their mic
@@ -562,3 +565,22 @@ $("#background-color-picker").change(event, function() {
         $('#background-color-picker').val(backgroundColorPicker);
     }
 });
+function initializeUi() {
+    var window_width = window.outerWidth;
+    if(window.innerHeight < $('#full-screen-video').height()){
+        $('body').css('overflow-y','scroll');
+    }
+    if(window_width < 500) {
+        var childrens = $('#full-screen-video > div').length;
+        $('#full-screen-video').attr('class','elem' + childrens);
+        if (childrens > 3) {
+            if(!$('#full-screen-video').hasClass('multiple')) {
+                $('#full-screen-video').addClass('multiple');
+            }
+        }
+    } else {
+        if (childrens > 10) {
+
+        }
+    }
+}
