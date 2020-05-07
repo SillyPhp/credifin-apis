@@ -13,7 +13,9 @@ use yii\helpers\Url;
                         A New Way Of <br>Funding Career Development
                     </div>
                     <div class="mentor-apply-btn">
-                        <button type="button" class="mentorSignupModal">Find Mentor</button>
+                        <a href="/site/all-mentors">
+                            <button type="button">Find Mentors</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -28,13 +30,13 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-6">
                     <?= $this->render('/widgets/mentorships/mentorship-card') ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-6">
                     <?= $this->render('/widgets/mentorships/mentorship-card') ?>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 col-sm-6">
                     <?= $this->render('/widgets/mentorships/mentorship-card') ?>
                 </div>
             </div>
@@ -78,5 +80,8 @@ $this->registerCSS('
     margin-bottom:20px;
     text-transform: capitalize;
     text-align:center;
+}
+.footer{
+    margin-top:0 !important;
 }
 ');

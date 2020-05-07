@@ -3,185 +3,54 @@
 use yii\helpers\Url;
 ?>
 
-<section class="mt50">
-    <div class="container">
+<section style="background:#c8e6f3;padding: 80px 0 20px;">
+    <div class="container headsec">
         <div class="row">
-            <div class="col-md-4 col-sm-6">
-                <div class="mentorship-card-bg">
-                    <div class="md-flex">
-                        <div class="mentorship-card-profile">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                        </div>
-                        <div class="mentor-details">
-                            <p class="mentor-name">Mr. Tarry</p>
-                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 200 Per Hour</p>
-                            <p class="mentor-designation">20 Sessions</p>
-                            <div class="mentor-demo">
-                                <button type="button">Demo Available</button>
-                            </div>
-                        </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 pull-right">
+                    <div class="mentee-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/mentor/mentee-heading.png'); ?>" align="right"
+                             class="responsive"/>
                     </div>
-                    <div class="career-c">Career Counselling</div>
-                    <div class="md-flex spaceBetween">
-                        <div class="md-rating">9.7 <span>Rating</span></div>
-                        <div class="md-progress">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                    <span class="sr-only">70% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-like">
-                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                    <div class="men-box-fields">
-                        <h4>Area Of Mentorship</h4>
-                        <ul class="mentor-skills-taught">
-                            <li>Web Designing</li>
-                            <li>Web Development</li>
-                            <li>Personality Development</li>
-                        </ul>
-                    </div>
-                    <div class="ask-mentee">
-                        <h4>Mentor Skills</h4>
-                        <ul class="ask-people">
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
-                        </ul>
-                    </div>
-                    <div class="btn-flex">
-                        <div class="apply-btn">
-                            <button type="button">Apply</button>
-                        </div>
-                        <div class="apply-btn">
-                            <button type="button">View Profile</button>
-                        </div>
-                        <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
-                        </div>
-                    </div>
-                </div>
             </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="mentorship-card-bg">
-                    <div class="md-flex">
-                        <div class="mentorship-card-profile">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                        </div>
-                        <div class="mentor-details">
-                            <p class="mentor-name">Mr. Tarry</p>
-                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 200 Per Hour</p>
-                            <p class="mentor-designation">20 Sessions</p>
-                            <div class="mentor-demo">
-                                <button type="button">Demo Available</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="career-c">Career Counselling</div>
-                    <div class="md-flex spaceBetween">
-                        <div class="md-rating">9.7 <span>Rating</span></div>
-                        <div class="md-progress">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                    <span class="sr-only">70% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-like">
-                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                    <div class="men-box-fields">
-                        <h4>Area Of Mentorship</h4>
-                        <ul class="mentor-skills-taught">
-                            <li>Web Designing</li>
-                            <li>Web Development</li>
-                            <li>Personality Development</li>
-                        </ul>
-                    </div>
-                    <div class="ask-mentee">
-                        <h4>Mentor Skills</h4>
-                        <ul class="ask-people">
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
-                        </ul>
-                    </div>
-                    <div class="btn-flex">
-                        <div class="apply-btn">
-                            <button type="button">Apply</button>
-                        </div>
-                        <div class="apply-btn">
-                            <button type="button">View Profile</button>
-                        </div>
-                        <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <div class="mentorship-card-bg">
-                    <div class="md-flex">
-                        <div class="mentorship-card-profile">
-                            <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>">
-                        </div>
-                        <div class="mentor-details">
-                            <p class="mentor-name">Mr. Tarry</p>
-                            <p class="mentor-designation"><i class="fas fa-rupee-sign"></i> 200 Per Hour</p>
-                            <p class="mentor-designation">20 Sessions</p>
-                            <div class="mentor-demo">
-                                <button type="button">Demo Available</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="career-c">Career Counselling</div>
-                    <div class="md-flex spaceBetween">
-                        <div class="md-rating">9.7 <span>Rating</span></div>
-                        <div class="md-progress">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="width:70%">
-                                    <span class="sr-only">70% Complete</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="md-like">
-                            <button type="button" title="shortlist"><i class="far fa-bookmark"></i></button>
-                        </div>
-                    </div>
-                    <div class="men-box-fields">
-                        <h4>Area Of Mentorship</h4>
-                        <ul class="mentor-skills-taught">
-                            <li>Web Designing</li>
-                            <li>Web Development</li>
-                            <li>Personality Development</li>
-                        </ul>
-                    </div>
-                    <div class="ask-mentee">
-                        <h4>Mentor Skills</h4>
-                        <ul class="ask-people">
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"></li>
-                            <li><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/dummyModel.jpg') ?>"></li>
-                        </ul>
-                    </div>
-                    <div class="btn-flex">
-                        <div class="apply-btn">
-                            <button type="button">Apply</button>
-                        </div>
-                        <div class="apply-btn">
-                            <button type="button">View Profile</button>
-                        </div>
-                        <div class="share-btn">
-                            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
-                        </div>
+            <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
+                <div class="mentor-heading-set">
+                    <h3 class="ment-up">Find The best mentor</h3>
+                    <h3 class="ment-down">Only on <span class="em">Empower</span><span class="yo">Youth</span></h3>
+                    <div class="search-box1">
+                        <form action="<?= Url::to('#') ?>">
+                            <input type="text" placeholder="Search" name="keyword" id="get-mentors">
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 <section>
     <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-sm-6">
+                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
+            </div>
+            <div class="col-md-4 col-sm-6">
+                <?= $this->render('/widgets/mentorships/mentorship-card') ?>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="mentee-heading">Top Webinars</p>
+            </div>
+        </div>
         <div class="row">
             <?= $this->render('/widgets/mentorships/webinar-card') ?>
         </div>
@@ -189,191 +58,95 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
-.career-c {
-    font-size: 18px;
+.mentee-heading{
+    font-size:30px;
     font-family: lora;
-    font-weight: bold;
-    margin-top: 15px;
-}
-.mentor-demo button{
-    padding: 0px 00px;
-    border: none;
-    background: transparent;
-    color:#00a0e3;
-    font-size: 13px; 
-    letter-spacing: .5px;
-}
-.btn-flex{
-    display: flex;
-    margin-top: 20px;
-}
-.apply-btn{
-    flex-basis: 50%;
-}
-.apply-btn button, .share-btn button{
-    width: 100%;
-    padding: 10px 0;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: #00a0e3;
-    color: #fff;
-    border: 1px solid #fff;
-    font-family: roboto;
-    font-weight: 500;
-}
-.apply-btn button:hover, .share-btn button:hover{
-    box-shadow: 0 0 8px rgba(0,0,0,.3);
-    background: #fff;
-    color:#00a0e3;
-    transition: .2s ease;
-    transform: scale(1.03);
-}
-.ask-people{
-    margin-top: 10px;
-}
-.ask-people li{
-    width: 50px;
-    height: 50px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: -20px;
-}
-.ask-people li img{
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.md-flex{
-    display: flex;
-    align-items: center;
-}
-.md-progress{
-    width: 50%; 
-}
-.md-progress .progress {
-    height: 6px;
-    margin-bottom: 0px;
-    background-color: #f5f5f5;
-    border-radius: 4px;
-    width: 100%;
-    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-}
-.md-progress .progress-bar{
-    background-color:#00a0e3;
-}
-.spaceBetween{
-    justify-content: space-between;
-//    margin-top: 5px;
-}
-.md-like button{
-    background: transparent;
-    border: 1px solid #eee;
-    padding: 11px 10px 9px 10px;
-    border-radius: 50px;
-    line-height: 13px;
-}
-.md-like button:hover{
-    color:#00a0e3;
-    border-color: #00a0e3;
-    transition: .3s ease;
-}
-.md-rating{
-    font-size: 16px;
-    font-weight: bold;
     color:#333;
+    margin-bottom:20px;
+    text-transform: capitalize;
+    text-align:center;
 }
-.md-rating span{
-    font-size: 14px;
-    font-weight: normal;   
+.topp-pad{
+    margin-top: 80px !important;
 }
-.mentor-skills-taught{
-    margin-top: 10px;
+.mentee-img{
+    width: 400px;
+    margin: auto;
 }
-.mentor-skills-taught li{
-    display: inline-block;
-    font-size: 14px !important;
-    color: #333 !important;
-    background: #f7f8fa;
-    padding: 5px 15px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-}
-.mt50{
-    padding-top: 50px;
-}
-.mentorship-card-bg{
-    box-shadow: 0 0 10px rgba(0,0,0,.1);
-    padding: 20px 20px;
-    border-radius: 0px;
-    font-family: roboto;
-    margin-bottom: 25px;
-    position: relative;
-}
-.mentorship-card-profile {
-    min-width: 90px;
-    max-width: 9px;
-    height: 100px;
-    border-radius: 20px;
-    -webkit-border-radius: 20px;
-    -ms-border-radius: 20px;
-    background: #fff;
-    
-    overflow: hidden;
-}
-.mentorship-card-profile img {
+.mentee-img img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    
+    height: auto;
 }
-.mentor-details{
-    margin-left: 20px;
-    font-family: roboto;
-    color:#333;   
-    text-transform: capitalize;  
+.ment-up {
+	font-size: 32px;
+	font-family: lora;
+	margin: 0;
+	text-transform: capitalize;
+	color: #fff;
+	padding-left: 10px;
 }
-.mentor-details .mentor-name{
-    color:#333;
-    font-family: lora;
-    font-size:20px;
-    font-weight: bold;
-       margin-bottom: 5px;
+.ment-down {
+	font-size: 36px;
+	margin: 0;
+	font-family: lora;
+    padding-left: 10px;
 }
-.mentor-details p, .men-box-fields p{
-    margin: 0px;
-    font-size: 14px;
-    line-height: 20px;
-    color: #333;
+.em{
+    color:#00a0e3;
 }
-.men-box-fields h4, .ask-mentee h4{
-    font-family: lora;
-    font-weight: bold;
-    margin-bottom: 0;
+.yo{
+    color:#ff7803;
 }
-.men-box-fields{
-    margin-top: 15px
+.search-box1{
+    max-width:500px;
+//  border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 3px;
+    margin: 15px 0 0 0;
 }
-
-.mentor-pay{
-    margin-top: 20px;
-//    background: #00a0e3;
-    color: #00a0e3;
-    text-align: center;
-    font-family: roboto;
+.search-box1 form{
+    margin-bottom:0px;
+}
+.search-box1 input[type=text] {
+    padding: 11px;
     font-size: 15px;
-    padding: 10px 0;
+    border:none ;
+    border-radius:10px 0 0 10px;
+    width: calc(100% - 38px);
+}
+.search-box1 .search_init input{
     width: 100%;
+}
+.search_init{
+    width: calc(100% - 38px);
+}
+.search-box1 input:focus{
+    outline: none;
+    border:0px;
+    box-shadow:none !important;
+}
+.search-box1 button {
+    float: right;
+    width:38px;
+    padding: 9px 10px;
+    background: #fff;
+    font-size: 18px;
+    border-radius:0 10px 10px 0;
     border: none;
-    border-radius: 0 0 10px 10px;
+    cursor: pointer;
 }
-.share-btn button i{
-    padding:0 10px;
+.search-box1 button:hover {
+    color: #ff7803; 
 }
+@media(max-width:550px){
+.mentee-img{
+    width: 320px;
+}
+.topp-pad {
+    margin-top: 30px !important;
+}
+}
+
 ');
 $script = <<<JS
 
