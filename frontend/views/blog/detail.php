@@ -1,14 +1,14 @@
 <?php
 $this->params['header_dark'] = true;
-$this->title = $post['title'];
+$this->title = $post->title;
 
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$keywords = $post['meta_keywords'];
-$description = $post['excerpt'];
-$image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post['featured_image_location'] . DIRECTORY_SEPARATOR . $post['featured_image']);
+$keywords = $post->meta_keywords;
+$description = $post->excerpt;
+$image = Yii::$app->urlManager->createAbsoluteUrl(Yii::$app->params->upload_directories->posts->featured_image . $post->featured_image_location . DIRECTORY_SEPARATOR . $post->featured_image);
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
@@ -39,7 +39,7 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-12">
                     <div class="pos-rel">
-                        <div class="blog-title"><?= $post['title']; ?></div>
+                        <div class="blog-title"><?= $post->title; ?></div>
                     </div>
                 </div>
             </div>
@@ -50,8 +50,22 @@ $this->params['seo_tags'] = [
             <div class="row">
                 <div class="col-md-9">
                     <div class="blog-division">
+                        <?php
+                        $postCat = $post->postCategories;
+                        foreach ($postCat as $cat){
+                            $cat_name = $cat->categoryEnc->name;
+                        }
+                        if (!$cat_name) {
+                            ?>
+                            <div class="blog-cover-image">
+                                <?php $feature_image = Yii::$app->params->upload_directories->posts->featured_image . $post->featured_image_location . DIRECTORY_SEPARATOR . $post->featured_image; ?>
+                                <img src="<?= $feature_image; ?>">
+                            </div>
+                            <?php
+                        }
+                        ?>
                         <div id="blog-description" class="blog-text">
-                            <?= $post['description']; ?>
+                            <?= $post->description; ?>
                         </div>
                     </div>
                     <?=
@@ -66,24 +80,26 @@ $this->params['seo_tags'] = [
                             <a href="javascript:;">
                                 <div class="channel-icon">
                                     <?php
-                                    $name = $image = NULL;
-                                    if (!empty($post['image'])) {
-                                        $image = Yii::$app->params->upload_directories->users->image . $post['image_location'] . DIRECTORY_SEPARATOR . $post['image'];
-                                    }
-                                    $name = $post['name'];
-                                    if ($image):
+                                    $author = $post->authorEnc;
+                                    $name = $author->first_name . ' ' . $author->last_name;
+                                    if ($author->image) {
+                                        $image = Yii::$app->params->upload_directories->users->image . $author->image_location . DIRECTORY_SEPARATOR . $author->image;
                                         ?>
                                         <img src="<?= $image; ?>" alt="<?= $name; ?>"/>
-                                    <?php else: ?>
+                                        <?php
+                                    } else {
+                                        ?>
                                         <canvas class="user-icon img-circle img-responsive" name="<?= $name; ?>"
-                                                color="<?= $post['initials_color']; ?>" width="125" height="125"
+                                                color="<?= $author->initials_color; ?>" width="125" height="125"
                                                 font="60px"></canvas>
-                                    <?php endif; ?>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </a>
                             <div class="channel-details">
-                                <div class="channel-name"><a href=""><?= $post['name'] ?></a></div>
-                                <div class="channel-des"><?= $post['user_about'] ?></div>
+                                <div class="channel-name"><a href=""><?= $name ?></a></div>
+                                <div class="channel-des"><?= $author->description ?></div>
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -91,8 +107,10 @@ $this->params['seo_tags'] = [
                                 <span>Tags:</span>
                                 <ul>
                                     <?php
-                                    foreach ($post['postTags'] as $tags) {
-                                        echo '<li><a href="/blog/tag/' . $tags['tagEnc']['slug'] . '">' . $tags['tagEnc']['name'] . '</a></li>';
+                                    $postTags = $post->postTags;
+                                    foreach ($postTags as $tags) {
+                                        $tag = $tags->tagEnc;
+                                        echo '<li><a href="/blog/tag/' . $tag->slug . '">' . $tag->name . '</a></li>';
                                     }
                                     ?>
                                 </ul>
@@ -107,21 +125,21 @@ $this->params['seo_tags'] = [
                             </div>
                             <?php
                             foreach ($similar_posts as $related) {
-                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related['featured_image_location'];
-                                $image = $path . DIRECTORY_SEPARATOR . $related['featured_image'];
-                                if (empty($related['featured_image'])) {
+                                $path = Yii::$app->params->upload_directories->posts->featured_image . $related->featured_image_location;
+                                $image = $path . DIRECTORY_SEPARATOR . $related->featured_image;
+                                if (empty($related->featured_image)) {
                                     $image = '//placehold.it/250x200';
                                 }
                                 ?>
                                 <div class="col-md-12 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1">
                                     <div class="video-container">
-                                        <a href="/blog/<?= $related['slug'] ?>">
+                                        <a href="/blog/<?= $related->slug ?>">
                                             <div class="video-icon">
                                                 <img src="<?= $image ?>">
                                             </div>
                                             <div class="r-video">
-                                                <div class="r-v-name"><?= $related['title'] ?></div>
-                                                <div class="r-ch-name"><?= $related['excerpt'] ?></div>
+                                                <div class="r-v-name"><?= $related->title ?></div>
+                                                <div class="r-ch-name"><?= $related->excerpt ?></div>
                                             </div>
                                         </a>
                                     </div>
