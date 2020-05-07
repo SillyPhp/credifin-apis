@@ -320,7 +320,7 @@ if (!empty($quotes)) {
         <div class="my-container">
             <div class="container pt-20 pb-5">
                 <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food Of Thoughts'); ?></h3>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food for Thoughts'); ?></h3>
                 <div class="row">
                     <div class="col-md-12">
                         <article class="post clearfix">
