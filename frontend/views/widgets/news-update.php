@@ -22,7 +22,7 @@ use yii\helpers\Url;
                 $newsUpdates = ExternalNewsUpdate::find()
                     ->where(['is_deleted' => 0, 'status' => 1])
                     ->orderBy(['created_on' => SORT_DESC])
-                    ->limit(6)
+                    ->limit(9)
                     ->all();
                 foreach ($newsUpdates as $n) {
                     ?>
