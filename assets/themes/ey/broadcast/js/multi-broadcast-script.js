@@ -72,13 +72,13 @@ client.on("stream-published", function(evt) {
 // when a remote stream is added
 client.on("stream-added", function(evt) {
     var remoteStream = evt.stream;
-    client.setRemoteVideoStreamType(remoteStream, 1);
-    client.setLowStreamParameter({
-        width: 120,
-        height: 120,
-        framerate: 15,
-        bitrate: 120,
-    });
+    // client.setRemoteVideoStreamType(remoteStream, 1);
+    // client.setLowStreamParameter({
+    //     width: 120,
+    //     height: 120,
+    //     framerate: 15,
+    //     bitrate: 120,
+    // });
     var id = remoteStream.getId();
     if (id !== uid) {
         client.subscribe(remoteStream, function (err) {
@@ -184,6 +184,11 @@ function joinChannel() {
             console.log("[ERROR] : join channel failed", err);
         }
     );
+    // client.enableDualStream(function() {
+    //     console.log("Enable dual stream success!")
+    // }, function(err) {
+    //     console.log(err)
+    // })
 }
 
 // video streams for channel
@@ -237,7 +242,6 @@ function createCameraStream(uid, deviceIds) {
             console.log("[ERROR] : getUserMedia failed", err);
         }
     );
-    client.enableDualStream();
 }
 
 function leaveChannel() {
