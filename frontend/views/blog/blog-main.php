@@ -232,14 +232,6 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
     <!--    </section>-->
     <section class="blog-section-2">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-6">
-                    <h2 class="heading-style"><?= Yii::t('frontend', 'Other Blogs'); ?></h2>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <?= $this->render('/widgets/follow-widget')?>
-                </div>
-            </div>
             <div class="col-md-3 col-sm-12">
                 <div class="row">
                     <div class="col-md-12">
@@ -264,6 +256,11 @@ $this->registerCssFile('@eyAssets/css/blog-main.css');
             </div>
             <div class="col-md-3">
                 <div class="trending-posts">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <?= $this->render('/widgets/follow-widget')?>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="trending-heading">Trending Posts</div>
@@ -323,7 +320,7 @@ if (!empty($quotes)) {
         <div class="my-container">
             <div class="container pt-20 pb-5">
                 <hr style="color: #ff704d;width: 50px;margin-left: 5px; border-top:3px solid #ff704d;margin-bottom: 0px;"/>
-                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food Of Thoughts'); ?></h3>
+                <h3 style="font-family:lobster;font-size:28pt;color:#FFF;margin-top:3px;"><?= Yii::t('frontend', 'Food for Thoughts'); ?></h3>
                 <div class="row">
                     <div class="col-md-12">
                         <article class="post clearfix">

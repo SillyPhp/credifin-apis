@@ -22,7 +22,7 @@ use yii\helpers\Url;
                 $newsUpdates = ExternalNewsUpdate::find()
                     ->where(['is_deleted' => 0, 'status' => 1])
                     ->orderBy(['created_on' => SORT_DESC])
-                    ->limit(6)
+                    ->limit(9)
                     ->all();
                 foreach ($newsUpdates as $n) {
                     ?>
@@ -88,7 +88,7 @@ $this->registercss('
 }
 .news-logo {
     max-width: 70px;
-    line-height:55px;
+    line-height:50px;
 }
 .news-name {
 	padding-left: 14px;
@@ -103,7 +103,6 @@ $this->registercss('
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: #fff;
-	padding-top: 6px;
 }
 .news-bx:hover .news-name {
 	color: #000;
