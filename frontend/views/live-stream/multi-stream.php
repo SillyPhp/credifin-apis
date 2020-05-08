@@ -243,7 +243,14 @@ Yii::$app->view->registerJs('var base_url = "' . Url::base('https') . '"', \yii\
 <input type="hidden" id="share_link_aud" value="<?= Url::base('https').'/live-stream/audience/'.$tokenId?>">
 <?php
 $script = <<< JS
-executeAll();   
+browserAccess();
+function browserAccess()
+{ 
+if (top === self) {
+     $("body").html("Access Denied");
+} 
+else{executeAll();}
+}  
 function executeAll(){
 $("#content_main").show();
 function addScript(src) {
