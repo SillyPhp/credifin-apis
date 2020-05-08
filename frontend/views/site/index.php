@@ -12,14 +12,16 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
-<!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
-<!--                            </li>-->
-<!--                            <li class="slideHome">-->
-<!--                                <img src="--><?//= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
-<!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
-<!--                            </li>-->
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
+                            <!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
+                            <!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
+                            <!--                            </li>-->
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
                                      alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>
@@ -71,7 +73,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Employers</div>
-<!--                            <div class="h-text">I want to recruit talent</div>-->
+                            <!--                            <div class="h-text">I want to recruit talent</div>-->
                         </a>
                     </div>
                 </div>
@@ -86,7 +88,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Candidates</div>
-<!--                            <div class="h-text">I'm the talent</div>-->
+                            <!--                            <div class="h-text">I'm the talent</div>-->
                         </a>
                     </div>
                 </div>
@@ -101,25 +103,25 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Schools</div>
-<!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
+                            <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                         </a>
                     </div>
                 </div>
                 <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in three">
-<!--                        <div class="box-overlay">-->
-                            <a href="/colleges">
-                                <div class="icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                         alt="Universities & Colleges" title="Universities and Colleges">
-                                </div>
-                                <div class="icon2">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
-                                         alt="Employers" title="Employers"></div>
-                                <div class="h-heading">Colleges</div>
-<!--                                <div class="h-text">I'm the future</div>-->
-                            </a>
-<!--                        </div>-->
+                        <!--                        <div class="box-overlay">-->
+                        <a href="/colleges">
+                            <div class="icon">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
+                                     alt="Universities & Colleges" title="Universities and Colleges">
+                            </div>
+                            <div class="icon2">
+                                <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
+                                     alt="Employers" title="Employers"></div>
+                            <div class="h-heading">Colleges</div>
+                            <!--                                <div class="h-text">I'm the future</div>-->
+                        </a>
+                        <!--                        </div>-->
                         <!--                        <div class="overlay">-->
                         <!--                            <div class="text">Coming Soon</div>-->
                         <!--                        </div>-->
@@ -136,7 +138,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Universities</div>
-<!--                            <div class="h-text">I want to enroll talent</div>-->
+                            <!--                            <div class="h-text">I want to enroll talent</div>-->
                         </div>
                         <div class="overlay">
                             <div class="text">Coming Soon</div>
@@ -154,7 +156,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Recruiters</div>
-<!--                            <div class="h-text">I want to find the best match for talent</div>-->
+                            <!--                            <div class="h-text">I want to find the best match for talent</div>-->
                         </div>
                         <div class="overlay">
                             <div class="text">Coming Soon</div>
@@ -1261,28 +1263,36 @@ $("html, body").animate({ scrollTop: 0 }, "slow");
 var load_content = true;
 var loadNth = 0;
 var errorNth = 0;
-window.onscroll = function() {scrollFunction()};
+// window.onscroll = function() {scrollFunction()};
 function scrollFunction() {
-     var doc_height = $(document).height() - $(window).height();
-  if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
+     // var doc_height = $(document).height() - $(window).height();
+  // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
+  console.log(loadElems.length);
+  // for(var l =0;l<loadElems.length;l++){
       if(load_content && loadElems[loadNth]){
         load_content = false;
+        $('#sectionIsLoading').fadeIn(500);
         $.ajax({
             url: "/site/load-data",
             method: "POST",
+            async:false,
             data: {type:loadElems[loadNth]},
             beforeSend:function(){
-                $('#sectionIsLoading').fadeIn(500);
+                
             },
             success: function (response) {
-                $('#sectionIsLoading').fadeOut(800);
-                $(this).animate({scrollTop : -500}, 400);
+                
+                // $(this).animate({scrollTop : -500}, 400);
                 $('#app-data').append(response);
                 loadNth++;
                 errorNth = 0;
             },
             complete: function() {
                 load_content = true;
+                $('#sectionIsLoading').fadeOut(800);
+                setTimeout(function() {
+                    scrollFunction();
+                }, 700);
             },
             error: function(xhr, textStatus, errorThrown){
                scrollFunction();
@@ -1293,9 +1303,10 @@ function scrollFunction() {
             }
         });
       }
-  }
-}
-        
+      }
+  // }
+// }
+    scrollFunction();    
   jQuery(function($) {
   $('.main-slider-sec').slick({
 	  slidesToShow: 1,
@@ -1373,7 +1384,7 @@ $this->registerJsFile('https://maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbG
     // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    for(var i=0; i< btn.length; i++){
+    for (var i = 0; i < btn.length; i++) {
         btn[i].onclick = function () {
             modal.style.display = "block";
         }
