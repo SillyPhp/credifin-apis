@@ -1,5 +1,12 @@
 <?php
+
 use yii\helpers\Url;
+
+if ($type == 'internships') {
+    $url = '/internships-in-';
+} else {
+    $url = '/jobs-in-';
+}
 ?>
 
     <section id="scroll-here">
