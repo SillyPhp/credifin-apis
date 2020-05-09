@@ -282,7 +282,7 @@ class UsersController extends Controller
     }
 
     public function actionUpdateBasicDetail()
-    {
+    { 
         $basicDetails = new UserProfileBasicEdit();
         if ($basicDetails->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
