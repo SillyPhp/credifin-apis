@@ -62,18 +62,18 @@ $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name']
                         <div class="profile-form-edit col-md-12">
                             <div class="row">
                                 <?php $basicDetails->gender = ((Yii::$app->user->identity->gender) ? Yii::$app->user->identity->gender : ''); ?>
-                                <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-3"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                <?= $form->field($basicDetails, 'gender', ['template' => '<div class="col-lg-4"><span class="pf-title">Gender</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
                                     [1 => 'Male', 2 => 'Female', 3 => 'Transgender', 4 => 'Rather not to say'], [
                                     'prompt' => 'Select Gender',
                                     'id' => 'gender_drp',
                                     'class' => 'chosen'])->label(false); ?>
                                 <?php $basicDetails->category = (($getName) ? $getName['parent_enc_id'] : ''); ?>
-                                <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-3"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
+                                <?= $form->field($basicDetails, 'category', ['template' => '<div class="col-lg-4"><span class="pf-title">Choose Job Profile</span><div class="pf-field">{input}{error}</div></div>', 'options' => []])->dropDownList(
                                     $industry, [
                                     'prompt' => 'Select Category',
                                     'id' => 'category_drp',
                                     'class' => 'chosen'])->label(false); ?>
-                                <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-3"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
+                                <?= $form->field($basicDetails, 'job_title', ['template' => '<div class="col-lg-4"><span class="pf-title">Select Job Title</span><div class="pf-field"><div class="cat_wrapper">
                                         <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>{input}{error}</div></div></div>', 'options' => []])->textInput(['placeholder' => 'Select Job Profile', 'value' => (($getName) ? $getName['title'] : ''), 'class' => 'valid_input form-control'])->label(false) ?>
                             </div>
                             <div class="row">
@@ -624,12 +624,16 @@ content: attr(data-text);
 ");
 $url = Url::to('/' . Yii::$app->user->identity->username);
 $script = <<< JS
+var parent = null;
 $(document).on('click', '.view_profile_btn', function(e){ 
     e.preventDefault(); 
     var url = $(this).attr('href'); 
     window.open("$url", '_blank');
 });
 $(document).on('change','#category_drp',function() {
+      $('#job_title').val('');
+      $('#job_title').typeahead('destroy');
+      fetchJobProfile($(this).val());
   if($(this).val()=='')
       {
           $('#job_title').val('');
@@ -855,15 +859,15 @@ $('#search-language').typeahead(null, {
       add_tags($(this),'languages_tag_list','languages');
    }).blur(validateSelection);
 
-fetchJobProfile();
+fetchJobProfile(null);
 
-function fetchJobProfile()
+function fetchJobProfile(parent)
 {
   var job_titles = new Bloodhound({
   datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
   remote: {
-    url: '/account/categories-list/job-profiles?q=%QUERY', 
+    url: '/account/categories-list/job-profiles?q=%QUERY&parent='+parent,  
     wildcard: '%QUERY',
     cache: true,     
         filter: function(list) {
