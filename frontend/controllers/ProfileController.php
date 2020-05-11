@@ -10,7 +10,7 @@ use common\models\Usernames;
 class ProfileController extends Controller
 {
 
-    public function actionIndex($username, $type = '', $slug = '')
+    public function actionIndex($username, $type = null, $slug = null)
     {
         $user = Usernames::find()
             ->where(['username' => $username])

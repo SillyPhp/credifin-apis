@@ -246,7 +246,7 @@ $this->params['header_dark'] = false;
                 </div>
             </div>
             <?php
-            if (!empty($job_preference)) {
+            if (array_filter($job_preference)) {
                 ?>
                 <div class="sidebar-container" style="border: 2px solid #ff7803;border-bottom: 3px solid #ff7803;">
                     <div class="prefer" style="background-color:#ff7803; color:#fff;">Job Preferences</div>
@@ -280,7 +280,7 @@ $this->params['header_dark'] = false;
                 </div>
                 <?php
             }
-            if (!empty($internship_preference)) {
+            if (array_filter($internship_preference)) {
                 ?>
                 <div class="sidebar-container" style="border: 2px solid #00a0e3;border-bottom: 3px solid #00a0e3;">
                     <div class="prefer" style="background-color:#00a0e3; color:#fff;">Internship Preferences</div>
