@@ -1,6 +1,4 @@
 <?php
-use yii\widgets\Pjax;
-
 echo $this->render('/widgets/header/secondary-header', [
     'for' => 'Jobs',
 ]);
@@ -16,14 +14,12 @@ echo $this->render('/widgets/header/secondary-header', [
             </div>
             <div class="portlet-body">
                 <?php
-                Pjax::begin(['id' => 'pjax_active_jobs']);
                 if ($applications['total'] > 0) {
                     echo $this->render('/widgets/applications/card', [
                         'applications' => $applications['data'],
                         'per_row' => 4,
                     ]);
                 }
-                Pjax::end();
                 ?>
             </div>
         </div>
