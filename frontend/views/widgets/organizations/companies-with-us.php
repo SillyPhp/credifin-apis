@@ -4,10 +4,20 @@ use common\models\Organizations;
 use yii\helpers\Url;
 use yii\db\Expression;
 
+$controller_name = Yii::$app->controller->id;
+$action_name = Yii::$app->controller->action->id;
+switch ([$controller_name, $action_name]) {
+    case ['colleges', ''] :
+    case ['colleges', 'index'] :
+        $field = 'is_erexx_registered';
+        break;
+    default :
+        $field = 'is_featured';
+}
 $companies = Organizations::find()
     ->where(['not', ['logo' => null]])
     ->andWhere(['not', ['logo' => ""]])
-    ->andWhere(['status' => 'Active', 'is_deleted' => 0, 'is_featured' => 1])
+    ->andWhere(['status' => 'Active', 'is_deleted' => 0, $field => 1])
     ->orderby(new Expression('rand()'))
     ->limit(12)
     ->all();
