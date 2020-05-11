@@ -13,6 +13,7 @@ class LocationForm extends Model {
 
     public $name;
     public $address;
+    public $country;
     public $city;
     public $state;
     public $postal_code;
@@ -39,14 +40,14 @@ class LocationForm extends Model {
 
     public function rules() {
         return [
-            [['name', 'address', 'city', 'state', 'longitude', 'location_for'], 'required'],
+            [['name', 'address', 'city','country','state', 'longitude', 'location_for'], 'required'],
             ['email', 'email'],
             [['latitude'], 'required', 'message' => 'Get The Location First'],
             [['latitude', 'longitude'], 'number'],
-            [['email', 'address'], 'string', 'max' => 50],
+            [['email', 'name'], 'string', 'max' => 50],
+            [['address'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 15],
             [['postal_code'], 'string', 'max' => 7],
-            [['name'], 'string', 'max' => 100],
             [['phone'], PhoneInputValidator::className()],
         ];
     }
@@ -57,6 +58,7 @@ class LocationForm extends Model {
             'address' => Yii::t('account', 'Address'),
             'city' => Yii::t('account', 'City'),
             'state' => Yii::t('account', 'State'),
+            'country' => Yii::t('account', 'Country'),
             'postal_code' => Yii::t('account', 'Postal Code'),
             'email' => Yii::t('account', 'Email'),
             'phone' => Yii::t('account', 'Phone'),

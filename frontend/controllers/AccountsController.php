@@ -16,10 +16,13 @@ use frontend\models\accounts\ForgotPasswordForm;
 use frontend\models\accounts\ResetPasswordForm;
 use frontend\models\accounts\IndividualSignUpForm;
 use frontend\models\accounts\OrganizationSignUpForm;
-use frontend\models\accounts\UserEmails;
+use frontend\models\ChangePasswordForm;
+use common\models\Utilities;
 
 class AccountsController extends Controller
 {
+
+    public $layout = 'main-secondary';
 
     /**
      * @inheritdoc
@@ -47,7 +50,12 @@ class AccountsController extends Controller
         ];
     }
 
-    public $layout = 'main-secondary';
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
+    }
 
     public function actionLogin()
     {
@@ -56,10 +64,29 @@ class AccountsController extends Controller
         }
 
         $loginFormModel = new LoginForm();
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+                return $response = [
+                    'status' => 200,
+                    'title' => 'Success',
+                    'message' => 'Successfully Login',
+                ];
+            } else {
+                return $response = [
+                    'status' => 201,
+                    'title' => 'Error',
+                    'message' => 'Incorrect username or password.',
+                ];
+            }
+        }
         if (!Yii::$app->session->has("backURL")) {
             Yii::$app->session->set("backURL", Yii::$app->request->referrer);
         }
         if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
+            if ($loginFormModel->isMaster) {
+                Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
+            }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
 
@@ -76,6 +103,7 @@ class AccountsController extends Controller
 
     public function actionSignup($type)
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -110,16 +138,6 @@ class AccountsController extends Controller
             ]);
         } elseif ($type == 'organization') {
             $model = new OrganizationSignUpForm();
-            $organization_types = \common\models\extended\OrganizationTypes::find()
-                ->select(['organization_type_enc_id', 'organization_type'])
-                ->orderBy([new \yii\db\Expression('FIELD (organization_type, "Others") ASC, organization_type ASC')])
-                ->asArray()
-                ->all();
-            $business_activities = \common\models\extended\BusinessActivities::find()
-                ->select(['business_activity_enc_id', 'business_activity'])
-                ->orderBy([new \yii\db\Expression('FIELD (business_activity, "Others") ASC, business_activity ASC')])
-                ->asArray()
-                ->all();
 
             if (Yii::$app->request->isAjax) {
                 Yii::$app->response->format = Response::FORMAT_JSON;
@@ -142,11 +160,22 @@ class AccountsController extends Controller
             }
             return $this->render('signup/organization', [
                 'model' => $model,
-                'organization_types' => $organization_types,
-                'business_activities' => $business_activities,
             ]);
         } else {
             throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    private function login($data = [])
+    {
+        $loginFormModel = new LoginForm();
+        $loginFormModel->username = $data['username'];
+        $loginFormModel->password = $data['password'];
+        $loginFormModel->rememberMe = true;
+        if ($loginFormModel->login()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -158,15 +187,15 @@ class AccountsController extends Controller
 
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $is_organization = true;
             $id = Yii::$app->user->identity->organization->organization_enc_id;
+            $response = false;
             if (!$id) {
-                $id = Yii::$app->user->identity->user_enc_id;
-                $is_organization = false;
+                $response = Yii::$app->individualSignup->registrationEmail(Yii::$app->user->identity->user_enc_id);
+            } else {
+                $response = Yii::$app->organizationSignup->registrationEmail($id);
             }
 
-            $userEmailsModel = new UserEmails();
-            if ($userEmailsModel->verificationEmail($id, $is_organization)) {
+            if ($response) {
                 return [
                     'status' => 200,
                     'title' => 'Success',
@@ -185,12 +214,12 @@ class AccountsController extends Controller
     public function actionVerify($token)
     {
         try {
-            $verifyEmailModel = new \frontend\models\accounts\VerifyEmail($token);
+            $verifyEmailModel = Yii::$app->verifyEmail->registerVerification($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($verifyEmailModel->emailVerification()) {
+        if ($verifyEmailModel) {
             return $this->render('/site/message', [
                 'status' => 'success',
                 'title' => 'Congratulations',
@@ -212,17 +241,16 @@ class AccountsController extends Controller
         }
         $model = new ForgotPasswordForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->forgotPassword()) {
-                $model = new ForgotPasswordForm();
+            if ($model->forgotPassword() === true) {
                 return $this->render('/site/message', [
-                    'status' => 'success',
-                    'title' => 'Congratulations',
                     'message' => 'An email with instructions has been sent to your email address (please also check your spam folder).'
+                ]);
+            } elseif($model->forgotPassword() === 'User Not Exist') {
+                return $this->render('/site/message', [
+                    'message' => 'Enter Valid Email Address.'
                 ]);
             } else {
                 return $this->render('/site/message', [
-                    'status' => 'error',
-                    'title' => 'Error',
                     'message' => 'An error has occurred. Please try again.'
                 ]);
             }
@@ -239,13 +267,14 @@ class AccountsController extends Controller
         }
 
         try {
-            $model = new ResetPasswordForm($token);
+            $user_id = Yii::$app->forgotPassword->verify($token);
         } catch (InvalidParamException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->resetPassword()) {
+        $model = new ResetPasswordForm();
+        if (Yii::$app->request->isPost) {
+            if (Yii::$app->forgotPassword->change($user_id, Yii::$app->request->post('new_password'))) {
                 return $this->render('/site/message', [
                     'status' => 'success',
                     'title' => 'Congratulations',
@@ -265,16 +294,29 @@ class AccountsController extends Controller
         ]);
     }
 
-    private function login($data = [])
+    public function actionChangePassword()
     {
-        $loginFormModel = new LoginForm();
-        $loginFormModel->username = $data['username'];
-        $loginFormModel->password = $data['password'];
-        $loginFormModel->rememberMe = true;
-        if ($loginFormModel->login()) {
-            return true;
-        } else {
-            return false;
+        if (Yii::$app->request->isAjax) {
+            $changePasswordForm = new ChangePasswordForm();
+            if ($changePasswordForm->load(Yii::$app->request->post())) {
+                Yii::$app->response->format = Response::FORMAT_JSON;
+                if ($changePasswordForm->changePassword()) {
+                    return $response = [
+                        'status' => 200,
+                        'title' => 'Success',
+                        'message' => 'Password has been changed.',
+                    ];
+                } else {
+                    return $response = [
+                        'status' => 201,
+                        'title' => 'Error',
+                        'message' => 'An error has occurred. Please try again.',
+                    ];
+                }
+            }
+            return $this->renderAjax('change-password', [
+                'changePasswordForm' => $changePasswordForm
+            ]);
         }
     }
 

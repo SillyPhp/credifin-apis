@@ -75,7 +75,7 @@ class FreelancersForm extends Model {
             }
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $freelancersDataModel->freelancer_data_enc_id = $utilitiesModel->encrypt();
-            $freelancersDataModel->created_on = date('Y-m-d h:i:s');
+            $freelancersDataModel->created_on = date('Y-m-d H:i:s');
             if ($freelancersDataModel->validate() && $freelancersDataModel->save()) {
                 return true;
             } else {

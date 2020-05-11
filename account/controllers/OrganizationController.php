@@ -2,6 +2,7 @@
 
 namespace account\controllers;
 
+use common\models\FollowedOrganizations;
 use Yii;
 use yii\web\Controller;
 use common\models\Utilities;
@@ -12,16 +13,22 @@ use common\models\ShortlistedOrganizations;
 class OrganizationController extends Controller
 {
 
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
+        return parent::beforeAction($action);
+    }
+
     public function actionShortlisted()
     {
-
-        $shortlist_org = ShortlistedOrganizations::find()
+        $shortlist_org = FollowedOrganizations::find()
             ->alias('a')
-            ->select(['a.shortlisted_enc_id', 'b.name as org_name', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
-            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id])
-            ->where(['a.shortlisted' => 1])
-            ->innerJoin(Organizations::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
-            ->innerJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
+            ->select(['b.establishment_year','a.followed_enc_id', 'b.name as org_name', 'b.initials_color', 'c.industry', 'b.logo', 'b.logo_location', 'b.slug'])
+            ->where(['a.created_by' => Yii::$app->user->identity->user_enc_id, 'a.followed' => 1])
+            ->joinWith(['organizationEnc b'=>function($a){
+                $a->where(['is_deleted'=>0]);
+            }],false)
+            ->leftJoin(Industries::tableName() . 'as c', 'c.industry_enc_id = b.industry_enc_id')
             ->orderBy(['a.id' => SORT_DESC])
             ->asArray()
             ->all();
@@ -61,14 +68,14 @@ class OrganizationController extends Controller
                 }
             } else if ($status == 1) {
                 $update = Yii::$app->db->createCommand()
-                    ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
                     return 'unshort';
                 }
             } else if ($status == 0) {
                 $update = Yii::$app->db->createCommand()
-                    ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d h:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
+                    ->update(ShortlistedOrganizations::tableName(), ['shortlisted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['created_by' => Yii::$app->user->identity->user_enc_id, 'organization_enc_id' => $org_id])
                     ->execute();
                 if ($update == 1) {
                     return 'short';

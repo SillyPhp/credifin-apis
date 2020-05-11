@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use borales\extensions\phoneInput\PhoneInput;
 
 $states = ArrayHelper::map($statesModel->find()->select(['state_enc_id', 'name'])->where(['country_enc_id' => 'b05tQ3NsL25mNkxHQ2VMoGM2K3loZz09'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'state_enc_id', 'name');
+$countries = ArrayHelper::map($countriesModel->find()->select(['country_enc_id', 'name'])->orderBy(['name' => SORT_ASC])->asArray()->all(), 'country_enc_id', 'name');
 ?>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -29,7 +30,7 @@ $form = ActiveForm::begin([
         $form->field($locationFormModel, 'phone')->widget(PhoneInput::className(), [
             'jsOptions' => [
                 'allowExtensions' => false,
-                'onlyCountries' => ['in'],
+                'preferredCountries' => ['in'],
                 'nationalMode' => false,
             ]
         ])->label(false);
@@ -40,17 +41,40 @@ $form = ActiveForm::begin([
     </div>
 </div>
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <?=
+        $form->field($locationFormModel, 'country')->label('<i class="fa fa-location-arrow"></i> Country')->dropDownList(
+            $countries, [
+            'prompt' => 'Select Country',
+            'id' => 'country_drp',
+            'onchange' => '
+                                    $("#states_drp").empty().append($("<option>", { 
+                                        value: "",
+                                        text : "Select State" 
+                                    }));
+                                    $.post(
+                                        "' . Url::toRoute("cities/get-state") . '", 
+                                        {id: $(this).val(),_csrf: $("input[name=_csrf]").val()}, 
+                                        function(res){
+                                            if(res.status === 200) {
+                                                drp_down("states_drp", res.states);
+                                            }
+                                        }
+                                    );',
+        ])->label(false);
+        ?>
+    </div>
+    <div class="col-md-3">
         <?=
         $form->field($locationFormModel, 'state')->label('<i class="fa fa-location-arrow"></i> State')->dropDownList(
-                $states, [
+                 [],[
             'prompt' => 'Select State',
             'id' => 'states_drp',
             'onchange' => '
                                     $("#cities_drp").empty().append($("<option>", { 
                                         value: "",
                                         text : "Select City" 
-                                    }));
+                                    })); 
                                     $.post(
                                         "' . Url::toRoute("cities/get-cities-by-state") . '", 
                                         {id: $(this).val(),_csrf: $("input[name=_csrf]").val()}, 
@@ -63,7 +87,7 @@ $form = ActiveForm::begin([
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?=
         $form->field($locationFormModel, 'city')->label('<i class="fa fa-map-marker"></i> City')->dropDownList(
                 [], [
@@ -72,7 +96,7 @@ $form = ActiveForm::begin([
         ])->label(false);
         ?>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="md-checkbox-inline">
             <?=
             $form->field($locationFormModel, 'location_for')->checkBoxList([
@@ -81,7 +105,7 @@ $form = ActiveForm::begin([
                     ], [
                 'item' => function($index, $label, $name, $checked, $value) {
                     $return = '<div class="md-checkbox">';
-                    $return .= '<input type="checkbox" id="location_for' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . $checked . ' >';
+                    $return .= '<input type="checkbox" id="location_for' . $value . $index . '" name="' . $name . '" value="' . $value . '" class="md-check" ' . (($checked) ? 'checked' : '') . '>';
                     $return .= '<label for="location_for' . $value . $index . '">';
                     $return .= '<span></span>';
                     $return .= '<span class="check"></span>';
@@ -128,6 +152,18 @@ $form->field($locationFormModel, 'longitude', [
 </div>
 <?php ActiveForm::end(); ?>
 <?php
+$this->registerCss('
+.has-error .form-group .help-block.help-block-error{
+    opacity: 1 !important;
+    color: #e73d4a !important;
+    filter: alpha(opacity=100);
+   
+}
+.country-list
+{
+z-index:999 !important;
+}
+');
 $script = <<<JS
 
     function drp_down(id, data) {
@@ -146,11 +182,10 @@ $script = <<<JS
         $('#longitude').val('');
     });
 
-    $(document).on('keydown keyup', '#location-button', function (e) {
-        if (e.which == 9)
-            $(this).trigger("click");
-    });
-    "use strict";
+    // $(document).on('keydown keyup', '#location-button', function (e) {
+    //     if (e.which == 9)
+    //         $(this).trigger("click");
+    // });
     var geocoder;
     var map;
    
@@ -191,7 +226,7 @@ $script = <<<JS
         });
     };
 
-    $(document).on('click', '.location_btn', function () {
+    $('.location_btn').click(function () {
         var address = $("#address").val();
         var city = $("#cities_drp option:selected").text();
         var state = $("#states_drp option:selected").text();
@@ -211,23 +246,26 @@ $script = <<<JS
     tab_count = $('.tab-pane.active').attr('id');
 
     $(document).on('submit', '#location-form', function (event) {
-        event.stopImmediatePropagation();
+        var l_btn = $('.sav_loc');
         event.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+        event.stopImmediatePropagation();
+        if ( l_btn.data('requestRunning') ) {
+            return false;
+        }
+        
+        l_btn.data('requestRunning', true);
         $.ajax({
-            url: url,
+            url: '/account/locations/create',
             type: 'post',
-            data: data,
+            data: $(this).serialize(),
             beforeSend: function () {
-                $("#wait").css("display", "block");
-                $('.sav_loc').prop('disabled', 'disabled');
+                $("#page-loading").css("display", "block");
             },
             success: function (response) {
                 if (response.status == 'success') {
                     toastr.success(response.message, response.title);
-                    $("#location-form")[0].reset();
-                    $("#wait").css("display", "none");
+                    // $("#location-form")[0].reset();
+                    $("#page-loading").css("display", "none");
                     if (tab_count == 'tab1') {
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#pjax_locations2', async: false});
@@ -238,13 +276,18 @@ $script = <<<JS
                         $.pjax.reload({container: '#pjax_locations1', async: false});
                         $.pjax.reload({container: '#location_map', async: false});
                     }
-                    $('#modal').modal('toggle');
+                    $('#modal').modal('hide');
                 } else {
-                    $("#wait").css("display", "none");
+                    $("#page-loading").css("display", "none");
                     toastr.error(response.message, response.title);
                 }
+            },
+            complete: function() {
+                l_btn.data('requestRunning', false);
             }
         });
     });
 JS;
 $this->registerJs($script);
+$this->registerJsFile('//maps.googleapis.com/maps/api/js?key=AIzaSyDYtKKbGvXpQ4xcx4AQcwNVN6w_zfzSg8c', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
+$this->registerJsFile('@backendAssets/global/plugins/gmaps/gmaps.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);

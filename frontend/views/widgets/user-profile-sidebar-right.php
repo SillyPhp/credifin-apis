@@ -2,89 +2,128 @@
 
 use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\widgets\Pjax;
+
 ?>
-<div class="profiles-sidebar">
-    <span class="close-profile"><i class="fa fa-close"></i></span>
-    <div class="can-detail-s">
-        <div class="cst">
-
-            <?php
-            $name = $image = NULL;
-            if (Yii::$app->user->identity->organization) {
-                if (Yii::$app->user->identity->organization->logo) {
-                    $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+    <div class="profiles-sidebar">
+        <span class="close-profile"><i class="fas fa-times"></i></span>
+        <div class="can-detail-s">
+            <?php Pjax::begin(['id' => 'pjax_profile_icon_sidebar']); ?>
+            <div class="cst">
+                <?php
+                $name = $image = $color = NULL;
+                if (Yii::$app->user->identity->organization) {
+                    if (Yii::$app->user->identity->organization->logo) {
+                        $image = Yii::$app->params->upload_directories->organizations->logo . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo;
+                    }
+                    $name = Yii::$app->user->identity->organization->name;
+                    $color = Yii::$app->user->identity->organization->initials_color;
+                    $email = Yii::$app->user->identity->organization->email;
+                } else {
+                    if (Yii::$app->user->identity->image) {
+                        $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
+                    }
+                    $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
+                    $color = Yii::$app->user->identity->initials_color;
+                    $email = Yii::$app->user->identity->email;
                 }
-                $name = Yii::$app->user->identity->organization->name;
-            } else {
-                if (Yii::$app->user->identity->image) {
-                    $image = Yii::$app->params->upload_directories->users->image . Yii::$app->user->identity->image_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->image;
-                }
-                $name = Yii::$app->user->identity->first_name . ' ' . Yii::$app->user->identity->last_name;
-            }
-
-            if ($image):
-                ?>
-                <span><img src="<?= $image; ?>" alt="<?= $name; ?>" /></span>
-            <?php else: ?>
-                <span><canvas class="user-icon" name="<?= $name; ?>" width="40" height="40" font="20px"></canvas></span>
-            <?php endif; ?>
+                if ($image):
+                    ?>
+                    <span><img src="<?= $image; ?>" alt="<?= $name; ?>"/></span>
+                <?php else: ?>
+                    <span><canvas class="user-icon" name="<?= $name; ?>" color="<?= $color; ?>" width="140" height="140"
+                                  font="60px"></canvas></span>
+                <?php endif; ?>
+            </div>
+            <?php Pjax::end(); ?>
+            <h3 class="capitalize"><?= $name; ?></h3>
+            <p><?= $email ?></p>
         </div>
-        <h3><?= Yii::$app->user->identity->first_name . '  ' . Yii::$app->user->identity->last_name ?></h3>
-        <p><?= Yii::$app->user->identity->email ?></p>
-    </div>
-    <div class="tree_widget-sec">
-        <ul>
-            <?php
-            $userType = Yii::$app->user->identity->type->user_type;
-            if($userType === 'Individual') :
-            ?>
-            <li class="inner-child">
-                <a href="/user/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
+        <div class="tree_widget-sec">
+            <ul>
+                <?php
+                $userType = Yii::$app->user->identity->type->user_type;
+                if ($userType === 'Individual') :
+                    ?>
+                    <li class="inner-child">
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
+                                    class="far fa-file-alt"></i>My Profile</a>
 
-            </li>
-            <li class="inner-child">
-                <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i class="fa fa-money"></i>Shorlisted Job</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/<?= Yii::$app->user->identity->username; ?>/edit" title="" class="tree-toggler"><i
+                                    class="fas fa-edit"></i>Edit Profile</a>
 
-            </li>
-            <li class="inner-child">
-                <a href="/account/jobs/applied" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Applied Job</a>
-            </li>
-            <li>
-                <a href="#" url="/site/changepass" id="open-modal" data-toggle="modal" data-target="#myModal2" data-backdrop="static" data-keyboard="false"><i class="fa fa-key"></i> Change Password</a>
-                <div class="modal fade" id="myModal2" role="dialog">
-                    <div class="modal-dialog modal-md">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>" alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
-                                <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span> </div>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/jobs/shortlisted" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Shorlisted
+                            Jobs</a>
+
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/jobs/applied" title="" class="tree-toggler"><i
+                                    class="far fa-paper-plane"></i>Applied Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/preferences" title="" class="tree-toggler">
+                            <i class="fas fa-cog"></i>
+                            My Preferences
+                        </a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/resume-builder" title="" class="tree-toggler">
+                            <i class="far fa-address-card"></i>
+                            Build Resume
+                        </a>
+                    </li>
+                <?php elseif ($userType === 'Organization Admin'): ?>
+                    <!--            Organization Menu Items-->
+                    <li class="inner-child">
+                        <a href="/<?= Yii::$app->user->identity->username; ?>" title=""
+                           class="tree-toggler"><i
+                                    class="far fa-file-alt"></i>My Profile</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/jobs" title="" class="tree-toggler"><i class="far fa-money-bill-alt"></i>Active
+                            Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/internships" title="" class="tree-toggler"><i class="far fa-paper-plane"></i>Active
+                            Internships</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/jobs/create" title="" class="tree-toggler"><i
+                                    class="far fa-money-bill-alt"></i>Create
+                            Jobs</a>
+                    </li>
+                    <li class="inner-child">
+                        <a href="/account/internships/create" title="" class="tree-toggler"><i
+                                    class="far fa-paper-plane"></i>Create Internships</a>
+                    </li>
+                <?php endif; ?>
+                <li>
+                    <a href="#" url="/change-password" id="open-modal" data-toggle="modal" data-target="#myModal2"
+                       data-backdrop="static" data-keyboard="false"><i class="fas fa-key"></i> Change Password</a>
+                    <div class="modal fade" id="myModal2" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                                         alt="<?= Yii::t('frontend', 'Loading'); ?>" class="loading">
+                                    <span> &nbsp;&nbsp;<?= Yii::t('frontend', 'Loading'); ?>... </span></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-            <?php elseif ($userType === 'Organization Admin'): ?>
-<!--            Organization Menu Items-->
-                <li class="inner-child">
-                    <a href="/company/<?= Yii::$app->user->identity->username ?>" title="" class="tree-toggler"><i class="fa fa-file-text-o"></i>My Profile</a>
                 </li>
                 <li class="inner-child">
-                    <a href="/account/jobs" title="" class="tree-toggler"><i class="fa fa-money"></i>Active Jobs</a>
+                    <a href="<?= Url::to('/logout'); ?>" data-method="post"><i
+                                class="fas fa-sign-out-alt"></i>Logout</a>
                 </li>
-                <li class="inner-child">
-                    <a href="/account/internships" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Active Internships</a>
-                </li>
-                <li class="inner-child">
-                    <a href="/account/jobs/create" title="" class="tree-toggler"><i class="fa fa-money"></i>Create Jobs</a>
-                </li>
-                <li class="inner-child">
-                    <a href="/account/internships/create" title="" class="tree-toggler"><i class="fa fa-paper-plane-o"></i>Create Internships</a>
-                </li>
-            <?php endif; ?>
-            <li class="inner-child">
-                <a href="<?= Url::to('/logout'); ?>" data-method="post"><i class="fa fa-sign-out"></i>Logout</a>
-            </li>
-        </ul>
+            </ul>
+        </div>
     </div>
-</div>
 <?php
 $this->registerCss('
 .my-profiles-sec {

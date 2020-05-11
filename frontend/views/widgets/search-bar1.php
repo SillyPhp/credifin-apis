@@ -1,51 +1,39 @@
 <?php
-
 use yii\helpers\Url;
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <div class="col-md-12">
     <div class="overlay-white-9">
         <div id="header-search">
-            <form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?'); ?>">
+            <form class="form-inline" action="/" method="GET" id="search_bar_form">
                 <div class="set-scroll-fixed mb-20">
                     <div class="row content-search">
-                        <div class="col-md-4 col-xs-6 ">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <span style="width: 40px;" class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                                 <?php
                                     if(Yii::$app->request->get('keyword')){
                                 ?>
-                                <input type="text" name="keyword" value="<?=Yii::$app->request->get('keyword')?>" class="form-control">
+                                <input type="text" id="keywords" name="keyword" value="<?=str_replace("-"," ",Yii::$app->request->get('keyword')); Yii::$app->request->get('company');?>" class="form-control">
                                         <?php }else{ ?>
-                                        <input type="text" name="keyword" placeholder="Job Title or Keywords" class="form-control">
+                                        <input type="text" id="keywords" name="keyword" placeholder="<?= (($placeholder)?$placeholder:'Job Title or Keywords or Company') ?>" class="form-control">
                                         <?php }?>
                             </div>
                         </div>
-                        <div class="col-md-3 col-xs-6">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-building fa-lg"></i></span>
-                                <?php
-                                if(Yii::$app->request->get('company')){
-                                    ?>
-                                    <input type="text" name="company" value="<?=Yii::$app->request->get('company')?>" class="form-control">
-                                <?php }else{ ?>
-                                    <input type="text" name="company" placeholder="Company" class="form-control">
-                                <?php }?>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-xs-6">
+                        <div class="col-md-5 col-xs-12 col-sm-6">
                             <div class="input-group display-flex">
-                                <span class="input-group-addon set-heights"><i class="fa fa-map-marker fa-lg"></i></span>
+                                <span class="input-group-addon set-heights"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                                 <?php
                                 if(Yii::$app->request->get('location')){
                                     ?>
-                                    <input type="text" name="location" id="cities" value="<?=Yii::$app->request->get('location')?>" class="form-control">
+                                    <input type="text" name="location" id="cities" value="<?=str_replace("-"," ",Yii::$app->request->get('location'))?>" class="form-control">
                                 <?php }else{ ?>
                                     <input type="text" name="location" id="cities" placeholder="Location" class="form-control">
                                 <?php }?>
-                                <i class="Typeahead-spinner fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                             </div>
                         </div>
-                        <div class="col-md-2 col-xs-6 text-center">
+                        <div class="col-md-2 col-xs-12 col-sm-6 text-center">
                             <input type="submit" class="form-control submit-next hvr-float search-button" id="form_control_1" value="Search">
                         </div>
                     </div>
@@ -68,6 +56,10 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.twitter-typeahead input{
+    width:100% !important;
+}
+#header-search{height:55px;}
 .input-group{
     width: 100%;
     margin-bottom:10px;
@@ -114,7 +106,7 @@ $this->registerCss('
 .stickyheader{
     position: fixed;
     top: -100%;
-    width: 81%;
+    width: 80.3%;
     margin-top: 0;
     border-bottom: 1px solid #ccc;
     z-index: 999;
@@ -195,9 +187,60 @@ $this->registerCss('
     border-radius: 4px;
     width:100% !important;
 }
+@media only screen and (max-width: 991px) {
+    #header-search {
+        height: 110px;
+    }
+    .stickyheader {
+        width: 69.3%;
+    }
+    .twitter-typeahead input{
+        width:100% !important;
+    }
+}
+@media only screen and (max-width: 767px) {
+    .stickyheader {
+        width: auto;
+        position: relative !important;
+        top: 0 !important;
+        background-color: transparent;
+        border-bottom: none !important;
+        box-shadow: none;
+    }
+    #header-search {
+        height: 225px;
+    }
+    .set-heights {
+        padding-right: 30px;
+    }
+}
+@media screen and (max-width: 1160px) and (min-width: 992px) {
+    .twitter-typeahead input{
+        max-width:165px;
+    }
+    .twitter-typeahead .tt-menu{
+        max-width:165px;
+    }
+}
 ');
-$script = <<<JS
-        
+$script = <<< JS
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname&&kname) 
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname)
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      }
+})     
 var searchelem = document.getElementById("search_preview");    
 var getParams = function (url) {
 	var params = {};
@@ -217,10 +260,10 @@ var getParams = function (url) {
         if(Object.keys(getParams(window.location.href))[0]!=""){
             $.each(getParams(window.location.href), function(name, value) {
                 value = value.split('+').join(" ");
-                if(!($.trim(value)==="")){
+                if(!($.trim(value)==="") && value != "undefined"){
                     results.push(value);
        
-                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fa fa-close'></i></a></span>");
+                    $("#search_preview").append("<span class='preview_tags'>"+ value +"<a href='#'><i class='fas fa-times'></i></a></span>");
                 }
             });
         }
@@ -245,16 +288,16 @@ $('#cities').typeahead(null, {
   source: city,
    limit: 15,
    hint:false,
+   cache:true,
 }).on('typeahead:asyncrequest', function() {
     $('.Typeahead-spinner').show();
   }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    
-    $('.Typeahead-spinner').hide();
+      $('.Typeahead-spinner').hide();
   });
         
 $(window).scroll(function () {
     if( $(window).scrollTop() > $('.set-scroll-fixed').offset().top + 120 && !($('.set-scroll-fixed').hasClass('stickyheader'))){
-        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"50px"}, 1000);
+        $('.set-scroll-fixed').addClass('stickyheader').animate({"top":"60px"}, 1000);
     } else if ($(window).scrollTop() == 0){
         $('.set-scroll-fixed').removeClass('stickyheader').css({"top":"-100%"});
     }

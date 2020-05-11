@@ -1,27 +1,69 @@
 <?php
-$this->title = Yii::t('frontend', 'Internships');
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $this->title = Yii::$app->request->get('keyword') . ' internship vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+} elseif (Yii::$app->request->get('location')) {
+    $this->title = 'Total internship vacancies available in ' . Yii::$app->request->get('location') . ' - ' . date('M Y');
+} elseif (Yii::$app->request->get('keyword')) {
+    $this->title =  Yii::$app->request->get('keyword') . ' internship vacancies available - ' . date('M Y');
+} else {
+    $this->title = 'Total internship vacancies available';
+}
+
 $this->params['header_dark'] = true;
 
-$this->registerCssFile('https://fonts.googleapis.com/css?family=Crimson+Text');
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = Yii::$app->request->get('keyword').' internship vacancies, internships in '. $location .', latest '.Yii::$app->request->get('keyword').' internships in '.$location.', latest '.Yii::$app->request->get('keyword').' internships';
+} elseif (Yii::$app->request->get('location')) {
+    $location = Yii::$app->request->get('location');
+    $keywords = 'Total internships vacancies available in ' . $location . ', ' . $location . ' careers, ' . $location . ' internship listings, ' . $location . ' internship search,' . $location . ' internships';
+} elseif (Yii::$app->request->get('keyword')) {
+    $keyword = Yii::$app->request->get('keyword');
+    $keywords = 'Internships, ' . $keyword . ' internship vacancies available, ' . $keyword . ' careers, ' . $keyword . ' internship listings, ' . $keyword . ' internship search,' . $keyword . ' internships';
+} else {
+    $keywords = 'internship vacancies, Empower Youth, latest internships vacancies available in Porsche country, Porsche countries internships';
+}
+
+if (Yii::$app->request->get('location') && Yii::$app->request->get('keyword')) {
+    $description = Yii::$app->request->get('keyword').' internships vacancies available in '.Yii::$app->request->get('location').' - '.date('M Y').'. Signup and apply on empoweryouth.com for free of cost.  Also, if not having a resume than build with us.';
+} elseif (Yii::$app->request->get('location')) {
+    $description = 'Total internships vacancies available in ' . Yii::$app->request->get('location') . ' on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} elseif (Yii::$app->request->get('keyword')) {
+    $description = Yii::$app->request->get('keyword') . ' internship vacancies available on empoweryouth.com. Signup and apply for free. Also, build a resume with us.';
+} else {
+    $description = 'Total internship vacancies are available in countries. Explore, signup and apply now.';
+}
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 $this->registerCss('
 .change-hr{
     margin-bottom: 30px;
     margin-top: 15px;
     border-top: 1px solid #ccc;
     width:100%;
-}
-.blogbox{
-    margin:0px;
-    margin-bottom: 20px;
-}
-a:hover {
-    text-decoration: none;
-}
-.btn-div{
-    border-top: 1px solid transparent;
-    margin-top: 20px;
-    padding-top: 20px;
-    margin-bottom: 20px;
 }
 .border-top-set{
     border-top: 1px solid #ccc;
@@ -30,482 +72,27 @@ a:hover {
 .main-content{
     min-height:100vh !important;
 }
-.not-found{
-    width: 300px;
-    margin: auto;
-    display: block;
-}
 ');
 ?>
 
-    <section>
-        <div class="row">
-            <div class="col-md-2 col-sm-3">
+    <section class="applications-cards-list">
+        <div class="row m-0">
+            <div class="col-md-2 col-sm-3 sidebar-review-bar pl-0">
                 <?=
                 $this->render('/widgets/sidebar-review', [
                     'type' => 'internships',
                 ]);
                 ?>
             </div>
-            <div class="col-md-10 col-sm-9 ">
+            <div class="col-md-10 col-sm-9">
                 <?=
-                $this->render('/widgets/search-bar1');
+                $this->render('/widgets/search-bar1',['type'=>'internships']);
                 ?>
-                <div class=" col-md-12 col-sm-12">
-                    <div id="cardBlock" class="row work-load blogbox border-top-set"></div>
-                    <div class="loader-main">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="product shadow iconbox-border iconbox-theme-colored">
-                                <span class="tag-load pl-20 pr-20 ">
-                                    <div class="loader anim"></div>
-                                </span>
-                                    <div class="row">
-                                        <div class="col-md-4 col-xs-4 pt-5">
-                                            <a href="#" class="icon set_logo">
-                                                <div class="loader anim"></div>
-                                            </a>
-                                        </div>
-                                        <div class="col-md-8 col-xs-8 pt-20">
-                                            <h4 class="icon-box-title">
-                                                <strong>
-                                                    <div class="loader anim"></div>
-                                                </strong>
-                                            </h4>
-                                            <h5>
-                                                <i class="locations">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                            <h5>
-                                                <i class="periods">
-                                                    <div class="loader anim"></div>
-                                                </i>
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <hr class="hr">
-                                    <div class="col-md-6">
-                                        <h6 class="pull-left custom_set2" align="center"><strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                            <br>
-                                            <div class="last-date">
-                                                <div class="loader anim"></div>
-                                            </div>
-                                        </h6>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <h4 class="pull-right pt-20 custom_set" align="center">
-                                            <strong>
-                                                <div class="loader anim"></div>
-                                            </strong>
-                                        </h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="btn-div" align="center">
+                <div class="col-md-12 col-sm-12">
+                    <div id="cardBlock" class="row work-load blogbox border-top-set m-0 mb-20"></div>
+                    <?= $this->render('/widgets/preloader-application-card-with-skills'); ?>
                         <a href="#" id="loadMore"
-                           class="ajax-paginate-link btn btn-border btn-more btn--primary load-more">
+                           class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">
                             <span class="load-more-text">Load More</span>
                             <svg class="load-more-spinner" viewBox="0 0 57 57" xmlns="http://www.w3.org/2000/svg"
                                  stroke="currentColor">
@@ -536,112 +123,59 @@ a:hover {
                                 </g>
                             </svg>
                         </a>
-                    </div>
-                    <hr class="change-hr">
-                    <?= $this->render('/widgets/featured-employers-carousel'); ?>
                 </div>
-                <!--</div>-->
             </div>
         </div>
     </section>
 <?php
+echo $this->render('/widgets/mustache/application-card', [
+    'type' => 'Internships',
+]);
 $script = <<<JS
-let page = 0;
-function jobcards(cards){
-    
-    var card = $('#application-card').html();
-    var cardslength = cards.length;
-    if(cardslength%3 !==0)
-        $('#loadMore').hide();
-    var norows = Math.ceil(cardslength / 3);
-    var j = 0;
-    for(var i=1; i<=norows; i++){
-        $(".blogbox").append('<div class="row">' + Mustache.render(card, cards.slice(j, j+3)) + '</div>');
-        j+=3;
-    }
-}
-        
-$('#loadMore').on('click', function(e){
+
+var loading = false;
+var load_more_cards = true;
+$(window).animate({scrollTop:0}, '300');
+$('body').css('overflow','hidden');
+setTimeout(
+    function(){
+    $('body').css('overflow','inherit');
+}, 1300);
+
+setTimeout(
+    function(){
+        loading = true;
+    }, 900);
+
+$(window).scroll(function() { //detact scroll
+            
+            
+			if($(window).scrollTop() + $(window).height() >= $(document).height() - ($('#footer').height() + 80)){ //scrolled to bottom of the page
+                if(load_more_cards && loading){
+                    loading = false;
+                    $('#loadMore').removeClass("loading_more");
+                    $('.load-more-text').css('visibility', 'hidden');
+                    $('.load-more-spinner').css('visibility', 'visible');
+				    getCards("Internships");
+                    setTimeout(
+                        function(){
+				            loading = true;
+				    }, 900);
+                }
+			}
+		});
+
+$(document).on('click','.loading_more', function(e){
     e.preventDefault();
-    getJobs();
+    $('#loadMore').removeClass("loading_more");
+    getCards("Internships");
 });
-
-$('#review-internships').scroll(function(){
-    if($(this).scrollTop() + $(this).height() >= $(window).height()){
-        sidebarpage+=2;
-        $.ajax({
-            method: "GET",
-            url : "/internships/review-list?sidebarpage="+sidebarpage,
-            beforeSend: function(){
-                $('.side-loader').show();
-            },
-            success: function(response) {
-                $('.side-loader').hide();
-                reviewlists(response);
-            }
-        });
-    }
-});
-
-function getJobs(type = "Internships") {
-    let data = {};
-    page += 1;
-    const searchParams = new URLSearchParams(window.location.search);
-    if(searchParams.has('page')) {
-        searchParams.set("page", page);
-    } else {
-        searchParams.append("page", page);
-    }
-    for(var pair of searchParams.entries()) {
-        data[pair[0]] = pair[1];                                                                                                                                                                                                              ; 
-    }
-    
-    data['type'] = type;
-    $.ajax({
-        method: "POST",
-        url : window.location.pathname,
-        data: data,
-        beforeSend: function(){
-           $('.loader-main').show();
-           $('.load-more-text').css('visibility', 'hidden');
-           $('.load-more-spinner').css('visibility', 'visible');
-        },
-        success: function(response) {
-            $('.loader-main').hide();
-            $('.load-more-text').css('visibility', 'visible');
-            $('.load-more-spinner').css('visibility', 'hidden');
-            if(response.status === 200) {
-                jobcards(response.jobcards);
-                utilities.initials();
-            } else {
-                utilities.initials();
-                $(".blogbox").append('<img src="/assets/themes/ey/images/pages/jobs/not-found.png" class="not-found" alt="Not Found"/><h2 class="text-center">Internships not found.</h2>');
-                $('#loadMore').hide();
-            }
-        }
-    }).done(function(){
-        $.each($('.application-card-main'), function(){
-            $(this).draggable({
-                helper: "clone",
-            });
-        });
-    });
-}
-
-getJobs();
+loader = true;
+draggable = true;
+getCards("Internships");
+var sidebarpage = 1;
+getReviewList(sidebarpage);
 JS;
 $this->registerJs($script);
-$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@eyAssets/js/jquery-ui.min.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache',
-]);
-
-echo $this->render('/widgets/application-card', [
-    'type' => 'mustache-company',
-]);
-
-//echo $this->render('/widgets/job-alerts');
-?>

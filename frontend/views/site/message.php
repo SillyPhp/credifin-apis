@@ -1,27 +1,30 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert-box text-center">
-            <h1>
-                <?php
-                if ($status == 'success') {
-                    echo '<i class="fa fa-check-circle-o"></i>';
-                }
-                ?> 
-                <?php
-                if ($status == 'error') {
-                    echo '<i class="fa fa-times-circle-o"></i>';
-                }
-                ?> 
-<?php echo $title ?>
-            </h1>
-            <h4><?php echo $message ?></h4>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert-box text-center">
+                <?php if (!empty($title)): ?>
+                    <h1>
+                        <?php
+                        if ($status == 'success') {
+                            echo '<i class="far fa-check-circle"></i>';
+                        }
+                        ?>
+                        <?php
+                        if ($status == 'error') {
+                            echo '<i class="far fa-times-circle"></i>';
+                        }
+                        ?>
+                        <?= $title; ?>
+                    </h1>
+                <?php endif; ?>
+                <h4><?= $message; ?></h4>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 $this->registerCss('
@@ -41,10 +44,12 @@ body{
     width: 100%;
     background-color: #ffffffd9;
     border: 1px solid #cacaca8c;
-    color: #fff !important;
     border-radius: 8px;
     padding: 20px;
     padding-top: 10px;
+}
+.alert-box h4{
+    line-height:28px;
 }
 .alert-box h1{
     font-size:40px;
@@ -53,3 +58,4 @@ body{
 .alert-box h2{
     margin-top: -15px;
 }');
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');

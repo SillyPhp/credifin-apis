@@ -43,7 +43,7 @@ class ImageForm extends Model {
                         $organizationImagesModel->title = $image->baseName;
                         $organizationImagesModel->alt = $image->baseName;
                         $organizationImagesModel->created_by = Yii::$app->user->identity->user_enc_id;
-                        $organizationImagesModel->created_on = date('Y-m-d h:i:s');
+                        $organizationImagesModel->created_on = date('Y-m-d H:i:s');
                         if ($organizationImagesModel->validate() && $organizationImagesModel->save()) {
                             return true;
                         } else {

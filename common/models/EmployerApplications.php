@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use Yii;
+
 /**
  * This is the model class for table "{{%employer_applications}}".
  *
@@ -9,12 +11,13 @@ namespace common\models;
  * @property string $application_enc_id Application Encrypted ID
  * @property int $application_number Application Number
  * @property string $organization_enc_id Foreign Key to Organizations Table
+ * @property string $unclaimed_organization_enc_id Foreign Key to unclaimed Organizations Table
  * @property string $application_type_enc_id Foreign Key to Application Types Table
  * @property string $slug Application Slug
  * @property string $description Application Description
  * @property string $title Foreign Key to Assigned Categories Table
  * @property string $designation_enc_id Foreign Key to Designations Table
- * @property string $type Type (Full Time, Part Time, Work from Home)
+ * @property string $type Type (Full Time, Part Time, Work From Home)
  * @property string $preferred_industry Foreign Key to Industries Table
  * @property string $interview_process_enc_id Foreign Key to Organization Interview Process
  * @property string $timings_from Timings From
@@ -23,13 +26,14 @@ namespace common\models;
  * @property string $last_date Last Date to Apply
  * @property string $experience Minimum Experience Required
  * @property string $preferred_gender Preferred Gender (1 as Male, 2 as Female, 3 as Both)
- * @property int $has_questionnaire Has Questionnaire (0 as No, 1 as Yes)
- * @property int $has_benefits Has Benefits (0 as No, 1 as Yes)
  * @property int $is_sponsored Is Application Sponsored (0 as False, 1 as True)
  * @property int $is_featured Is Application Featured (0 as False, 1 as True)
+ * @property int $for_careers Is Application for Careers (0 as False, 1 as True)
  * @property string $published_on On which date application was published
  * @property string $image Application Image
  * @property string $image_location Application Image Path
+ * @property int $application_for 0 for Both, 1 for Empower Youth, 2 for Erexx
+ * @property int $for_all_colleges 0 for choosed colleges, 1 for all colleges
  * @property string $created_on On which date Application information was added to database
  * @property string $created_by By which User Application information was added
  * @property string $last_updated_on On which date Application information was updated
@@ -43,19 +47,27 @@ namespace common\models;
  * @property ApplicationInterviewQuestionnaire[] $applicationInterviewQuestionnaires
  * @property ApplicationJobDescription[] $applicationJobDescriptions
  * @property ApplicationOptions[] $applicationOptions
+ * @property ApplicationPlacementCities[] $applicationPlacementCities
  * @property ApplicationPlacementLocations[] $applicationPlacementLocations
  * @property ApplicationSkills[] $applicationSkills
+ * @property ApplicationUnclaimOptions[] $applicationUnclaimOptions
  * @property AppliedApplications[] $appliedApplications
+ * @property DropResumeApplicationTitles[] $dropResumeApplicationTitles
+ * @property DropResumeApplications[] $dropResumeApplications
  * @property ApplicationTypes $applicationTypeEnc
- * @property AssignedCategories $title
+// * @property AssignedCategories $title
+ * @property AssignedCategories $title0
  * @property Industries $preferredIndustry
  * @property OrganizationInterviewProcess $interviewProcessEnc
  * @property Designations $designationEnc
+ * @property UnclaimedOrganizations $unclaimedOrganizationEnc
  * @property Organizations $organizationEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
  * @property InterviewScheduler[] $interviewSchedulers
+ * @property OrganizationBlogInformationApplications[] $organizationBlogInformationApplications
  * @property ReviewedApplications[] $reviewedApplications
+ * @property ScheduledInterview[] $scheduledInterviews
  * @property ShortlistedApplications[] $shortlistedApplications
  */
 class EmployerApplications extends \yii\db\ActiveRecord
@@ -74,11 +86,11 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['application_enc_id', 'application_number', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location', 'created_by'], 'required'],
-            [['application_number', 'has_questionnaire', 'has_benefits', 'is_sponsored', 'is_featured', 'is_deleted'], 'integer'],
+            [['application_enc_id', 'application_number', 'application_type_enc_id', 'slug', 'title', 'type', 'timings_from', 'timings_to', 'joining_date', 'last_date', 'preferred_gender', 'published_on', 'image', 'image_location'], 'required'],
+            [['application_number', 'is_sponsored', 'is_featured', 'for_careers', 'application_for', 'for_all_colleges', 'is_deleted'], 'integer'],
             [['description', 'type', 'experience', 'preferred_gender', 'status'], 'string'],
             [['timings_from', 'timings_to', 'joining_date', 'last_date', 'published_on', 'created_on', 'last_updated_on'], 'safe'],
-            [['application_enc_id', 'organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['application_enc_id', 'organization_enc_id', 'unclaimed_organization_enc_id', 'application_type_enc_id', 'slug', 'title', 'designation_enc_id', 'preferred_industry', 'interview_process_enc_id', 'image', 'image_location', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['application_enc_id'], 'unique'],
             [['application_number'], 'unique'],
             [['slug'], 'unique'],
@@ -87,11 +99,16 @@ class EmployerApplications extends \yii\db\ActiveRecord
             [['preferred_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['preferred_industry' => 'industry_enc_id']],
             [['interview_process_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationInterviewProcess::className(), 'targetAttribute' => ['interview_process_enc_id' => 'interview_process_enc_id']],
             [['designation_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Designations::className(), 'targetAttribute' => ['designation_enc_id' => 'designation_enc_id']],
+            [['unclaimed_organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => UnclaimedOrganizations::className(), 'targetAttribute' => ['unclaimed_organization_enc_id' => 'organization_enc_id']],
             [['organization_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_enc_id' => 'organization_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
 
     /**
      * @return \yii\db\ActiveQuery
@@ -144,6 +161,14 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApplicationPlacementCities()
+    {
+        return $this->hasMany(ApplicationPlacementCities::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getApplicationPlacementLocations()
     {
         return $this->hasMany(ApplicationPlacementLocations::className(), ['application_enc_id' => 'application_enc_id']);
@@ -160,9 +185,33 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApplicationUnclaimOptions()
+    {
+        return $this->hasMany(ApplicationUnclaimOptions::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getAppliedApplications()
     {
         return $this->hasMany(AppliedApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDropResumeApplicationTitles()
+    {
+        return $this->hasMany(DropResumeApplicationTitles::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDropResumeApplications()
+    {
+        return $this->hasMany(DropResumeApplications::className(), ['application_enc_id' => 'application_enc_id']);
     }
 
     /**
@@ -177,6 +226,14 @@ class EmployerApplications extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getTitle()
+    {
+        return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTitle0()
     {
         return $this->hasOne(AssignedCategories::className(), ['assigned_category_enc_id' => 'title']);
     }
@@ -203,6 +260,14 @@ class EmployerApplications extends \yii\db\ActiveRecord
     public function getDesignationEnc()
     {
         return $this->hasOne(Designations::className(), ['designation_enc_id' => 'designation_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedOrganizationEnc()
+    {
+        return $this->hasOne(UnclaimedOrganizations::className(), ['organization_enc_id' => 'unclaimed_organization_enc_id']);
     }
 
     /**
@@ -240,6 +305,14 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getOrganizationBlogInformationApplications()
+    {
+        return $this->hasMany(OrganizationBlogInformationApplications::className(), ['blog_information_enc_id' => 'blog_information_enc_id', 'created_by' => 'user_enc_id', 'application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getReviewedApplications()
     {
         return $this->hasMany(ReviewedApplications::className(), ['application_enc_id' => 'application_enc_id']);
@@ -248,8 +321,24 @@ class EmployerApplications extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getScheduledInterviews()
+    {
+        return $this->hasMany(ScheduledInterview::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getShortlistedApplications()
     {
         return $this->hasMany(ShortlistedApplications::className(), ['application_enc_id' => 'application_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getErexxEmployerApplications()
+    {
+        return $this->hasMany(ErexxEmployerApplications::className(), ['employer_application_enc_id' => 'application_enc_id']);
     }
 }

@@ -2,16 +2,16 @@
 
 namespace frontend\models\accounts;
 
+use common\models\EmailLogs;
+use frontend\models\referral\Referral;
 use Yii;
 use yii\base\Model;
 use common\models\RandomColors;
 use common\models\Utilities;
 use common\models\UserTypes;
 use common\models\Users;
+use common\models\Usernames;
 use common\models\Organizations;
-use common\models\OrganizationTypes;
-use common\models\BusinessActivities;
-use common\models\Industries;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use borales\extensions\phoneInput\PhoneInputBehavior;
 
@@ -26,9 +26,6 @@ class OrganizationSignUpForm extends Model
     public $last_name;
     public $phone;
     public $countryCode;
-    public $organization_type;
-    public $organization_business_activity;
-    public $organization_industry;
     public $organization_name;
     public $organization_email;
     public $organization_website;
@@ -54,14 +51,16 @@ class OrganizationSignUpForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
-            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_type', 'organization_business_activity', 'organization_industry', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone'], 'required'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'trim'],
+            [['username', 'email', 'first_name', 'last_name', 'phone', 'new_password', 'confirm_password', 'organization_name', 'organization_email', 'organization_phone', 'organization_website'], 'filter', 'filter' => '\yii\helpers\HtmlPurifier::process'],
             [['organization_name'], 'string', 'max' => 100],
-            [['username', 'email', 'organization_email'], 'string', 'max' => 50],
-            [['new_password', 'confirm_password'], 'string', 'max' => 20],
+            [['username'], 'string', 'length' => [3, 20]],
+            [['email', 'organization_email'], 'string', 'max' => 50],
+            [['new_password', 'confirm_password'], 'string', 'length' => [8, 20]],
             [['first_name', 'last_name'], 'string', 'max' => 30],
             [['phone', 'organization_phone'], 'string', 'max' => 15],
-            [['username'], 'match', 'pattern' => '/^[a-z]\w*$/i'],
+            [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
             [['email', 'organization_email'], 'email'],
             [['organization_website'], 'url', 'defaultScheme' => 'http'],
             [['phone', 'organization_phone'], PhoneInputValidator::className()],
@@ -70,38 +69,25 @@ class OrganizationSignUpForm extends Model
             ['organization_email', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_email' => 'email'], 'message' => 'This email address has already been used.'],
             ['organization_phone', 'unique', 'targetClass' => Organizations::className(), 'targetAttribute' => ['organization_phone' => 'phone'], 'message' => 'This phone number has already been used.'],
             ['phone', 'unique', 'targetClass' => Users::className(), 'targetAttribute' => ['phone' => 'phone'], 'message' => 'This phone number has already been used.'],
-            ['username', 'unique', 'targetClass' => Users::className(), 'message' => 'This username has already been taken.'],
-            [['organization_type'], 'exist', 'skipOnError' => true, 'targetClass' => OrganizationTypes::className(), 'targetAttribute' => ['organization_type' => 'organization_type_enc_id']],
-            [['organization_business_activity'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_business_activity' => 'business_activity_enc_id']],
-            [['organization_industry'], 'exist', 'skipOnError' => true, 'targetClass' => Industries::className(), 'targetAttribute' => ['organization_industry' => 'industry_enc_id']],
+            ['username', 'unique', 'targetClass' => Usernames::className(), 'targetAttribute' => ['username' => 'username'], 'message' => 'This username has already been taken.'],
             [['user_type'], 'exist', 'skipOnError' => true, 'targetClass' => UserTypes::className(), 'targetAttribute' => ['user_type' => 'user_type']],
-            [
-                ['organization_industry'], 'required', 'when' => function ($model, $attribute) {
-                return $model->organization_business_activity == 'Others';
-            }, 'whenClient' => "function (attribute, value) {
-                        return $('#organization_business_activity').val() == 'Others';
-                }"
-            ],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'username' => Yii::t('frontend', 'Username'),
+            'username' => Yii::t('frontend', 'Organization Username'),
             'email' => Yii::t('frontend', 'Email'),
             'password' => Yii::t('frontend', 'Password'),
             'confirm_password' => Yii::t('frontend', 'Confirm Password'),
             'first_name' => Yii::t('frontend', 'First Name'),
             'last_name' => Yii::t('frontend', 'Last Name'),
             'phone' => Yii::t('frontend', 'Contact Number'),
-            'organization_name' => Yii::t('frontend', 'Name'),
-            'organization_email' => Yii::t('frontend', 'Email'),
+            'organization_name' => Yii::t('frontend', 'Organization Name'),
+            'organization_email' => Yii::t('frontend', 'Organization Email'),
             'organization_website' => Yii::t('frontend', 'Website'),
             'organization_phone' => Yii::t('frontend', 'Phone'),
-            'organization_type' => Yii::t('frontend', 'Type of Organization'),
-            'organization_business_activity' => Yii::t('frontend', 'Business Activity'),
-            'organization_industry' => Yii::t('frontend', 'Industry'),
         ];
     }
 
@@ -121,12 +107,23 @@ class OrganizationSignUpForm extends Model
 
         $transaction = Yii::$app->db->beginTransaction();
         try {
+            $usernamesModel = new Usernames();
+            $usernamesModel->username = strtolower($this->username);
+            $usernamesModel->assigned_to = 2;
+            if (!$usernamesModel->validate() || !$usernamesModel->save()) {
+                $this->_flag = false;
+                $transaction->rollback();
+                return false;
+            } else {
+                $this->_flag = true;
+            }
+
             $utilitiesModel = new Utilities();
             $usersModel = new Users();
-            $usersModel->username = $this->username;
-            $usersModel->first_name = $this->first_name;
-            $usersModel->last_name = $this->last_name;
-            $usersModel->email = $this->email;
+            $usersModel->username = strtolower($this->username);
+            $usersModel->first_name = ucfirst(strtolower($this->first_name));
+            $usersModel->last_name = ucfirst(strtolower($this->last_name));
+            $usersModel->email = strtolower($this->email);
             $usersModel->phone = $this->phone;
             $usersModel->initials_color = RandomColors::one();
             $utilitiesModel->variables['password'] = $this->new_password;
@@ -135,28 +132,33 @@ class OrganizationSignUpForm extends Model
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
             $usersModel->user_enc_id = $utilitiesModel->encrypt();
             $usersModel->auth_key = Yii::$app->security->generateRandomString();
-            $usersModel->created_on = $usersModel->last_updated_on = date('Y-m-d H:i:s');
             $usersModel->status = 'Active';
 
             if (!$usersModel->validate() || !$usersModel->save()) {
-                $transaction->rollBack();
-            } else {
-                $this->_flag = true;
+                $this->_flag = false;
+                $transaction->rollback();
+                return false;
+            }
+
+            if($this->_flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->user_enc_id = $referralModel->created_by = $usersModel->user_enc_id;
+
+                if (!$referralModel->create()) {
+                    $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
+                } else {
+                    $this->_flag = true;
+                }
             }
 
             if ($this->_flag) {
                 $organizationsModel = new Organizations();
                 $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                 $organizationsModel->organization_enc_id = $utilitiesModel->encrypt();
-                $organizationsModel->organization_type_enc_id = $this->organization_type;
-                $organizationsModel->business_activity_enc_id = $this->organization_business_activity;
-                if ($this->organization_industry) {
-                    $organizationsModel->industry_enc_id = $this->organization_industry;
-                } else {
-                    $organizationsModel->industry_enc_id = NULL;
-                }
                 $organizationsModel->name = $this->organization_name;
-                $organizationsModel->email = $this->organization_email;
+                $organizationsModel->email = strtolower($this->organization_email);
                 $organizationsModel->initials_color = RandomColors::one();
                 $organizationsModel->phone = $this->organization_phone;
                 $organizationsModel->website = $this->organization_website;
@@ -168,30 +170,69 @@ class OrganizationSignUpForm extends Model
                 $organizationsModel->slug = $utilitiesModel->create_slug();
                 $organizationsModel->status = 'Active';
                 if (!$organizationsModel->validate() || !$organizationsModel->save()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
                 }
 
                 $usersModel->organization_enc_id = $organizationsModel->organization_enc_id;
                 if (!$usersModel->validate() || !$usersModel->update()) {
-                    $transaction->rollBack();
                     $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
+                }
+            }
+
+            if($this->_flag) {
+                $referralModel = new \common\models\crud\Referral();
+                $referralModel->created_by = $usersModel->user_enc_id;
+                $referralModel->is_organization = true;
+                $referralModel->organization_enc_id = $organizationsModel->organization_enc_id;
+
+                if (!$referralModel->create()) {
+                    $this->_flag = false;
+                    $transaction->rollback();
+                    return false;
+                } else {
+                    $this->_flag = true;
                 }
             }
 
             if ($this->_flag) {
-                $userEmailsModel = new UserEmails();
-                $userEmailsModel->verificationEmail($organizationsModel->organization_enc_id, true);
+                Yii::$app->organizationSignup->registrationEmail($organizationsModel->organization_enc_id);
+                $mail = Yii::$app->mail;
+                $mail->receivers = [];
+                $mail->receivers[] = [
+                    "name" => $this->organization_name,
+                    "email" => $this->organization_email,
+                ];
+                $mail->subject = 'Welcome to Empower Youth';
+                $mail->template = 'thank-you';
+                if($mail->send()){
+                    $mail_logs = new EmailLogs();
+                    $utilitesModel = new Utilities();
+                    $utilitesModel->variables['string'] = time() . rand(100, 100000);
+                    $mail_logs->email_log_enc_id = $utilitesModel->encrypt();
+                    $mail_logs->email_type = 5;
+                    $mail_logs->organization_enc_id = $organizationsModel->organization_enc_id;
+                    $mail_logs->user_enc_id = $usersModel->user_enc_id;
+                    $mail_logs->receiver_name = $organizationsModel->name;
+                    $mail_logs->receiver_email = $usersModel->email;
+                    $mail_logs->receiver_phone = $usersModel->phone;
+                    $mail_logs->subject = 'Welcome to Empower Youth';
+                    $mail_logs->template = 'thank-you';
+                    $mail_logs->is_sent = 1;
+                    $mail_logs->save();
+                }
+                Referral::widget(['user_org_id' => $organizationsModel->organization_enc_id]);
                 $transaction->commit();
+                return true;
+            } else {
+                $transaction->rollBack();
+                return false;
             }
         } catch (Exception $e) {
             $transaction->rollBack();
-            return false;
-        }
-
-        if ($this->_flag) {
-            return true;
-        } else {
             return false;
         }
     }

@@ -5,202 +5,252 @@ namespace frontend\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\web\HttpException;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\Posts;
-use common\models\PostTypes;
 use common\models\PostTags;
 use common\models\PostCategories;
-use common\models\PostMedia;
-use common\models\MediaTypes;
 use common\models\Users;
 use common\models\Tags;
 use common\models\Categories;
+use yii\helpers\ArrayHelper;
 
-class BlogController extends Controller {
-    
-    /**
-     * @inheritdoc
-     */
-    
-    public function actions() {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
+class BlogController extends Controller
+{
+
+    public function beforeAction($action)
+    {
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
+        Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
+        return parent::beforeAction($action);
     }
-    
-    public function actionBlogMain(){
+
+    public function actionIndex()
+    {
         $postsModel = new Posts();
         $posts = $postsModel->find()
-                ->where(['status' => 'Active', 'is_deleted' => 'false'])
-                ->orderby(['created_on' => SORT_ASC])
+            ->select(['featured_image_location', 'featured_image', 'featured_image_alt', 'featured_image_title', 'title', '(CASE WHEN is_crawled = "0" THEN CONCAT("c/",slug) ELSE slug END) as slug'])
+            ->where(['status' => 'Active', 'is_deleted' => 0])
+            ->orderby(['created_on' => SORT_ASC])
+            ->limit(8)
+            ->asArray()
+            ->all();
+        $quotes = Posts::find()
+            ->alias('a')
+            ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+            ->innerJoinWith(['postCategories b' => function ($b) {
+                $b->innerJoinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['c.name' => 'Quotes'])
+            ->groupBy(['a.post_enc_id'])
+            ->orderby(new Expression('rand()'))
+            ->limit(6)
+            ->asArray()
+            ->all();
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $popular_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->joinWith(['postCategories b' => function ($b) {
+                    $b->joinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->orderby(new Expression('rand()'))
                 ->limit(4)
                 ->asArray()
                 ->all();
+            return $response = [
+                'status' => 200,
+                'message' => 'Success',
+                'popular_posts' => $popular_posts,
+            ];
+        }
         return $this->render('blog-main', [
             'posts' => $posts,
+            'quotes' => $quotes,
         ]);
     }
 
-    public function actionIndex() {
-        $postsModel = new Posts();
-        $posts = $postsModel->find()
-                ->where(['status' => 'Active', 'is_deleted' => 'false'])
-                ->orderby(['created_on' => SORT_ASC])
+    public function actionTrendingPosts()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $popular_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
                 ->limit(4)
                 ->asArray()
                 ->all();
-        $quotes = $postsModel->find()->alias('a')
-                ->select(['a.*', 'd.first_name', 'd.last_name'])
-                ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-                ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => 'quotes', 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-                ->orderby(['created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
-        $similar_posts = $postsModel->find()
-                ->limit(4)
-                ->orderBy(['created_on' => SORT_DESC])
-                ->asArray()
-                ->all();
 
-        return $this->render('index', [
-                    'posts' => $posts,
-                    'quotes' => $quotes,
-                    'similar_posts' => $similar_posts,
-        ]);
-    }
+            $exclusions = [];
 
-    public function actionGetPostsByCategory($ctidk) {
-        $postsModel = new Posts();
-        $posts = $postsModel->find()->alias('a')
-                ->select(['a.*', 'd.first_name', 'd.last_name'])
-                ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-                ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $ctidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-                ->orderby(['a.created_on' => SORT_DESC])
+            foreach ($popular_posts as $p) {
+                array_push($exclusions, $p['post_enc_id']);
+            }
+
+            $whats_new_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['not in', 'a.post_enc_id', $exclusions])
+                ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
+                ->limit(6)
                 ->asArray()
                 ->all();
 
-        return $this->render('posts-by-category', [
-                    'posts' => $posts,
-        ]);
-    }
+            foreach ($whats_new_posts as $w) {
+                array_push($exclusions, $w['post_enc_id']);
+            }
 
-    public function actionGetPostsByTag($tgidk) {
-        $postsModel = new Posts();
-        $posts = $postsModel->find()->alias('a')
-                ->select(['a.*', 'd.first_name', 'd.last_name'])
-                ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-                ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
-                ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
-                ->where(['c.slug' => $tgidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-                ->orderby(['a.created_on' => SORT_DESC])
+            $trending_posts = Posts::find()
+                ->alias('a')
+                ->select(['a.post_enc_id', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'a.excerpt', 'c.name', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
+                ->innerJoinWith(['postCategories b' => function ($b) {
+                    $b->innerJoinWith(['categoryEnc c'], false);
+                }], false)
+                ->where(['not in', 'a.post_enc_id', $exclusions])
+                ->andWhere(['a.status' => 'Active', 'a.is_deleted' => 0])
+                ->andWhere(['not', ['c.name' => 'Infographics']])
+                ->andWhere(['not', ['c.name' => 'Quotes']])
+                ->groupBy(['a.post_enc_id'])
+                ->orderby(new Expression('rand()'))
+                ->limit(12)
                 ->asArray()
                 ->all();
 
-        return $this->render('posts-by-tag', [
-                    'posts' => $posts,
-        ]);
-    }
-
-    public function actionGetPostById($idk) {
-        $postsModel = new Posts();
-        $post = $postsModel->find()->alias('a')
-                ->select(['a.*', 'c.first_name', 'c.last_name'])
-                ->innerJoin(PostTypes::tableName() . ' as b', 'a.post_type_enc_id = b.post_type_enc_id')
-                ->innerJoin(Users::tablename() . ' as c', 'c.user_enc_id = a.author_enc_id')
-                ->where(['a.slug' => $idk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-                ->asArray()
-                ->one();
-
-        if (count($post) > 0) {
-            $categoriesModel = new Categories();
-            $post_categories = $categoriesModel->find()->alias('a')
-                    ->select(['a.name', 'a.slug', 'a.category_enc_id'])
-                    ->innerJoin(PostCategories::tableName() . ' as d', 'd.category_enc_id = a.category_enc_id')
-                    ->where(['d.post_enc_id' => $post['post_enc_id']])
-                    ->asArray()
-                    ->all();
-
-            $tagsModel = new Tags();
-            $post_tags = $tagsModel->find()->alias('a')
-                    ->select(['a.name', 'a.slug', 'a.tag_enc_id'])
-                    ->innerJoin(PostTags::tableName() . ' as f', 'f.tag_enc_id = a.tag_enc_id')
-                    ->where(['f.post_enc_id' => $post['post_enc_id']])
-                    ->asArray()
-                    ->all();
-
-            $postMediaModel = new PostMedia();
-            $post_media = $postMediaModel->find()->alias('a')
-                    ->select(['a.*', 'h.media_type'])
-                    ->innerJoin(MediaTypes::tableName() . ' as h', 'h.media_type_enc_id = a.media_type_enc_id')
-                    ->where(['a.post_enc_id' => $post['post_enc_id']])
-                    ->asArray()
-                    ->all();
-
-            $similar_posts = $postsModel->find()->alias('a')
-                    ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'd.name', 'd.tag_enc_id'])
-                    ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-                    ->innerJoin(PostTags::tableName() . ' as c', 'c.post_enc_id = a.post_enc_id')
-                    ->innerJoin(Tags::tableName() . ' as d', 'd.tag_enc_id = c.tag_enc_id')
-                    ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-                    ->andWhere(['c.tag_enc_id' => $post_tags[0]['tag_enc_id']])
-                    ->limit(4)
-                    ->orderBy(['a.created_on' => SORT_DESC])
-                    ->asArray()
-                    ->all();
-
-            $random_posts = $postsModel->find()->alias('a')
-                    ->select(['a.title', 'a.slug', 'a.excerpt', 'a.featured_image', 'a.featured_image_location', 'a.featured_image_alt', 'a.featured_image_title', 'a.created_on'])
-                    ->innerJoin(PostCategories::tableName() . ' as b', 'b.post_enc_id = a.post_enc_id')
-                    ->where(['!=', 'a.post_enc_id', $post['post_enc_id']])
-                    ->limit(4)
-                    ->orderBy(['a.created_on' => SORT_DESC])
-                    ->asArray()
-                    ->all();
-
-            return $this->render('detail', [
-                        'post' => $post,
-                        'post_categories' => $post_categories,
-                        'post_tags' => $post_tags,
-                        'post_media' => $post_media,
-                        'similar_posts' => $similar_posts,
-                        'random_posts' => $random_posts,
-            ]);
+            return $response = [
+                'status' => 200,
+                'message' => 'Success',
+                'popular_posts' => $popular_posts,
+                'whats_new_posts' => $whats_new_posts,
+                'trending_posts' => $trending_posts,
+            ];
         }
     }
 
-    public function actionCategoryPosts($ctidk) {
-        Yii::$app->response->format = Response::FORMAT_JSON;
+    public function actionDetail($slug)
+    {
+        return $this->_getPostDetails($slug, 1);
+    }
+
+    private function _getPostDetails($slug, $is_crawled = 1)
+    {
+        $post = Posts::findOne(['is_deleted' => 0, 'slug' => $slug, 'status' => 'Active', 'is_crawled' => $is_crawled]);
+        $tags = ArrayHelper::getColumn($post->postTags, 'tagEnc.name');
+        if ($post) {
+            $similar_posts = Posts::find()
+                ->alias('z')
+                ->joinWith(['postTags a' => function ($a) use ($tags) {
+                    $a->joinWith(['tagEnc a1' => function ($a1) use ($tags) {
+                        $a1->where(['in', 'a1.name', $tags]);
+                    }]);
+                }])
+                ->andWhere(['!=', 'z.post_enc_id', $post->post_enc_id])
+                ->andWhere(['z.status' => 'Active', 'z.is_deleted' => 0])
+                ->orderBy(['z.created_on' => SORT_DESC])
+                ->limit(3)
+                ->all();
+
+            return $this->render('detail', [
+                'post' => $post,
+                'similar_posts' => $similar_posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionGetPostsByCategory($slug)
+    {
         $postsModel = new Posts();
-        if (!empty($ctidk)) {
+        $posts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if ($posts) {
+            if ($slug === "articles" || $slug === "infographics") {
+                $page = 'category-landing-page';
+            } else {
+                $page = 'posts-by-category';
+            }
+            return $this->render($page, [
+                'posts' => $posts,
+                'slug' => $slug,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionGetPostsByTag($slug)
+    {
+        $postsModel = new Posts();
+        $posts = $postsModel->find()->alias('a')
+            ->select(['a.*', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'd.first_name', 'd.last_name'])
+            ->innerJoin(PostTags::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+            ->innerJoin(Tags::tableName() . 'as c', 'c.tag_enc_id = b.tag_enc_id')
+            ->innerJoin(Users::tableName() . 'as d', 'd.user_enc_id = a.author_enc_id')
+            ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+            ->orderby(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if ($posts) {
+            return $this->render('posts-by-tag', [
+                'posts' => $posts,
+            ]);
+        } else {
+            throw new HttpException(404, Yii::t('frontend', 'Page not found.'));
+        }
+    }
+
+    public function actionCategoryPosts($slug)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        if (!empty($slug)) {
+            $postsModel = new Posts();
             $posts = $postsModel->find()
-                    ->alias('a')
-                    ->distinct()
-                    ->select(['a.title', 'CONCAT("' . Url::to('/blog/') . '", a.slug) AS url',
-                        'a.excerpt', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',
-                        'a.featured_image_title AS image_title',
-                        'a.featured_image_alt AS image_alt',
-                        'a.created_on AS date',
-                        'CONCAT(f.first_name," ",f.last_name) AS name'])
-                    ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
-                    ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
-                    ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
-                    ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
-                    ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
-                    ->where(['c.slug' => $ctidk, 'a.status' => 'Active', 'a.is_deleted' => 'false'])
-                    ->orderBy(['a.created_on' => SORT_DESC])
-                    ->limit(5)
-                    ->asArray()
-                    ->all();
+                ->alias('a')
+                ->distinct()
+                ->select(['a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("' . Url::to('/blog/c/') . '",a.slug) ELSE CONCAT(a.slug) END) as url',
+                    'a.excerpt', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location,"/",a.featured_image) AS image',
+                    'a.featured_image_title AS image_title',
+                    'a.featured_image_alt AS image_alt',
+                    'a.created_on AS date',
+                    'CONCAT(f.first_name," ",f.last_name) AS name'])
+                ->innerJoin(PostCategories::tableName() . 'as b', 'b.post_enc_id = a.post_enc_id')
+                ->innerJoin(Categories::tableName() . 'as c', 'c.category_enc_id = b.category_enc_id')
+                ->innerJoin(PostTags::tableName() . 'as d', 'd.post_enc_id = a.post_enc_id')
+                ->innerJoin(Tags::tableName() . 'as e', 'e.tag_enc_id = d.tag_enc_id')
+                ->innerJoin(Users::tableName() . 'as f', 'f.user_enc_id = a.author_enc_id')
+                ->where(['c.slug' => $slug, 'a.status' => 'Active', 'a.is_deleted' => 0])
+                ->orderBy(['a.created_on' => SORT_DESC])
+                ->limit(5)
+                ->asArray()
+                ->all();
             for ($i = 1; $i <= count($posts); $i++) {
                 if ($i == 1) {
                     $featured = $posts[$i - 1];
@@ -228,6 +278,11 @@ class BlogController extends Controller {
         }
 
         return $response;
+    }
+
+    public function actionUncralwedPost($slug)
+    {
+        return $this->_getPostDetails($slug, 0);
     }
 
 }

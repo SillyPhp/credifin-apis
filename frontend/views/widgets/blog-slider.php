@@ -6,14 +6,14 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-9">
-                <h2 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h2>
+                <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Blog'); ?></h1>
             </div>
             <div class="col-md-3">
                 <!-- Controls -->
                 <div class="controls pull-right hidden-xs">
-                    <a class="left fa fa-chevron-left btn btn-success cs-button" href="#carousel-example"
+                    <a class="left fas fa-chevron-left btn btn-success cs-button" href="#carousel-example"
                        data-slide="prev"></a>
-                    <a class="right fa fa-chevron-right btn btn-success cs-button" href="#carousel-example"
+                    <a class="right fas fa-chevron-right btn btn-success cs-button" href="#carousel-example"
                        data-slide="next"></a>
                 </div>
             </div>
@@ -61,8 +61,8 @@ $('#carousel-example').owlCarousel({
     margin: 20,
     responsiveClass: true,
     navText: [
-    '<i class="fa fa-angle-left set_icon"></i>',
-    '<i class="fa fa-angle-right set_icon"></i>'
+    '<i class="fas fa-angle-left set_icon"></i>',
+    '<i class="fas fa-angle-right set_icon"></i>'
     ],
     responsive: {
         0: {

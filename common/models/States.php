@@ -2,31 +2,32 @@
 
 namespace common\models;
 
-use Yii;
-
 /**
  * This is the model class for table "{{%states}}".
  *
- * @property integer $id
- * @property string $state_enc_id
- * @property string $name
- * @property string $country_enc_id
+ * @property int $id Primary Key
+ * @property string $state_enc_id State Encrypted ID
+ * @property string $name State Name
+ * @property string $country_enc_id Foreign Key to Countries Table
  *
+ * @property Cities[] $cities
  * @property Countries $countryEnc
  */
-class States extends \yii\db\ActiveRecord {
-
+class States extends \yii\db\ActiveRecord
+{
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return '{{%states}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['state_enc_id', 'name', 'country_enc_id'], 'required'],
             [['state_enc_id', 'country_enc_id'], 'string', 'max' => 100],
@@ -37,21 +38,18 @@ class States extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @inheritdoc
+     * @return \yii\db\ActiveQuery
      */
-    public function attributeLabels() {
-        return [
-            'state_enc_id' => Yii::t('common', 'State'),
-            'name' => Yii::t('common', 'State'),
-            'country_enc_id' => Yii::t('common', 'Country'),
-        ];
+    public function getCities()
+    {
+        return $this->hasMany(Cities::className(), ['state_enc_id' => 'state_enc_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCountryEnc() {
+    public function getCountryEnc()
+    {
         return $this->hasOne(Countries::className(), ['country_enc_id' => 'country_enc_id']);
     }
-
 }

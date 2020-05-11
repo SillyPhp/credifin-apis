@@ -6,7 +6,7 @@ use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 use yii\web\JsExpression;
 
-$this->title = 'Careers';
+$this->title = 'Salary Submitter';
 $this->params['background_image'] = Url::to('@eyAssets/images/backgrounds/bg-sign-up.jpg');
 $keywords = 'Career, Future, Scope, Growth, Opportunities, Sales, Business Development, Marketing, Information Technology, Human Resource, Operation, Government Jobs, Accounts, Finance, Legal, Company Secretary';
 $description = 'Empower Youth brings a visionary tool to help future generations to look ahead and create a road map for ultimate success in their careers.';
@@ -107,7 +107,7 @@ $form->field($careerFormModel, 'city')->widget(Select2::classname(), [
             'errorLoading' => new JsExpression("function () { return 'Waiting for results...'; }"),
         ],
         'ajax' => [
-            'url' => Url::to(['cities/city-list']),
+            'url' => Url::to(['/cities/career-city-list']),
             'dataType' => 'json',
             'data' => new JsExpression('function(params) { return {q:params.term}; }')
         ],
@@ -129,9 +129,9 @@ $form->field($careerFormModel, 'city')->widget(Select2::classname(), [
     <h2 class="subscribe-head">Subscribe <span>Us</span></h2> 
   <div class="effect jaques">
     <div class="buttons">
-      <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-      <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-      <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+      <a href="https://www.facebook.com/empower/" class="fb" target="_blank" title="Join us on Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+      <a href="https://twitter.com/EmpowerYouth2" class="tw" target="_blank" title="Join us on Twitter"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+      <a href="https://www.instagram.com/empoweryouth.in/" class="insta" target="_blank" title="Join us on Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>
     </div>
   </div>
 </div>
@@ -225,45 +225,6 @@ $this->registerCss('
 .effect.jaques a:hover {
   border-radius: 50%;
 }
-//.rotated-text {
-//    position:fixed;
-//    right:0;
-//    top:32%;
-//    overflow: hidden;
-//    background-color: #000000a1;
-//    padding: 15px 10px 15px 10px;
-//    width: 1.8em;
-//    border-radius: 10px 0px 0px 10px;
-//}
-//.rotated-text-inner {
-//    display: inline-block;
-//    white-space: nowrap;
-//    /* this is for shity "non IE" browsers
-//       that dosn\'t support writing-mode */
-//    -webkit-transform: translate(1.1em,0) rotate(90deg);
-//       -moz-transform: translate(1.1em,0) rotate(90deg);
-//         -o-transform: translate(1.1em,0) rotate(90deg);
-//            transform: translate(1.1em,0) rotate(90deg);
-//    -webkit-transform-origin: 0 0;
-//       -moz-transform-origin: 0 0;
-//         -o-transform-origin: 0 0;
-//            transform-origin: 0 0;
-//   /* IE9+ */
-//   -ms-transform: none;
-//   -ms-transform-origin: none;
-//   /* IE8+ */
-//   -ms-writing-mode: tb-rl;
-//   /* IE7 and below */
-//   *writing-mode: tb-rl;
-//}
-//.rotated-text-inner:before {
-//    content: "";
-//    float: left;
-//    margin-top: 100%;
-//}
-//.rotated-text-inner a{
-//    color:#fff;
-//}
 @media screen and (min-width: 768px) {
   .row-offcanvas {
     position: relative;
@@ -276,15 +237,12 @@ $this->registerCss('
   }
   .row-offcanvas.active {
     right: 0;
-    /* 3 columns */
   }
   .row-offcanvas.active .content {
     width: 100%;
-    /* 12 columns */
   }
   .row-offcanvas .content {
     width: 75%;
-    /* 9 columns */
     float: right;
     -webkit-transition: all 0.3s ease-out;
     -moz-transition: all 0.3s ease-out;
@@ -296,9 +254,7 @@ $this->registerCss('
     position: absolute;
     top: 0;
     width: 25%;
-    /* 3 columns */
     right: -25%;
-    /* 3 columns */
   }
 }
 @media screen and (max-width: 767px) {
@@ -313,16 +269,13 @@ $this->registerCss('
   }
   .row-offcanvas.active {
     right: 50%;
-    /* 6 columns */
   }
 
   .sidebar-offcanvas {
     position: absolute;
     top: 0;
     width: 50%;
-    /* 6 columns */
     right: -50%;
-    /* 6 columns */
   }
 }
 /* styling the sidebar and the toggle button */
@@ -366,6 +319,107 @@ $this->registerCss('
 .row-offcanvas.active .btn-collapse i {
   transform: rotate(180deg);
 }
+.typeahead {
+  background-color: #fff;
+}
+.typeahead:focus {
+  border: 2px solid #0097cf;
+}
+.tt-query {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+  color: #999
+}
+.tt-menu {
+  width: 100%;
+  margin: 0px 0;
+  text-align:left;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 0px 0px 6px 6px;
+     -moz-border-radius: 0px 0px 6px 6px;
+          border-radius: 0px 0px 6px 6px;
+  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          box-shadow: 0 5px 10px rgba(0,0,0,.2);
+          max-height:158px;
+          overflow-y:auto;
+}
+.tt-suggestion {
+    padding: 4px 15px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #222;
+    border-bottom: 1px solid #dddddda3;
+}
+.tt-suggestion:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #0097cf;
+}
+.tt-suggestion p {
+  margin: 0;
+}
+.Typeahead-spinner{
+    position: absolute;
+    color: #222;
+    z-index: 999;
+    right: 0;
+    top: 10px;
+    font-size: 25px;
+    display: none;
+}
+.twitter-typeahead{
+    float:left;
+    width:100%;
+}
+/*Load Suggestions loader css starts*/
+.load-suggestions{
+    display:none;
+    position: absolute;
+    right: 20px;
+    top:1px;
+}
+.load-suggestions span{
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: #3498db;
+  margin: 35px 1px;
+}
+.load-suggestions span:nth-child(1){
+  animation: bounce 1s ease-in-out infinite;
+}
+.load-suggestions span:nth-child(2){
+  animation: bounce 1s ease-in-out 0.33s infinite;
+}
+.load-suggestions span:nth-child(3){
+  animation: bounce 1s ease-in-out 0.66s infinite;
+}
+@keyframes bounce{
+  0%, 75%, 100%{
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+  25%{
+    -webkit-transform: translateY(-15px);
+    -ms-transform: translateY(-15px);
+    -o-transform: translateY(-15px);
+    transform: translateY(-15px);
+  }
+}
+/*Load Suggestions loader css ends */
 
 ');
 
@@ -386,8 +440,7 @@ $(document).ready(function () {
   return this;
 };
 });
-        
-        
+
 $(".field-hidden").hide();
 
 $(document).on('change', '#job_profile', function () {
@@ -398,6 +451,9 @@ $(document).on('change', '#job_profile', function () {
         $(".field-hidden").hide();
     }
 });
+
+
 JS;
 $this->registerJs($script);
 $this->registerJsFile('//platform-api.sharethis.com/js/sharethis.js#property=5aab8e2735130a00131fe8db&product=sticky-share-buttons', ['depends' => [\yii\web\JqueryAsset::className()], 'async' => 'async']);
+$this->registerCssFile('https://use.fontawesome.com/releases/v5.8.2/css/all.css');

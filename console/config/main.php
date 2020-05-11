@@ -1,9 +1,6 @@
 <?php
 $params = array_merge(
-    require __DIR__ . '/../../common/config/params.php',
-    require __DIR__ . '/../../common/config/params-local.php',
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
+    require __DIR__ . '/params.php'
 );
 
 return [
@@ -11,10 +8,7 @@ return [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'console\controllers',
-    'aliases' => [
-        '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
-    ],
+    'params' => json_decode(json_encode($params)),
     'controllerMap' => [
         'fixture' => [
             'class' => 'yii\console\controllers\FixtureController',
@@ -30,6 +24,21 @@ return [
                 ],
             ],
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            // send all mails to a file by default. You have to set
+            // 'useFileTransport' to false and configure a transport
+            // for the mailer to send real emails.
+            'useFileTransport' => false,
+//            'viewPath' => '@common/mail',
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => $params['smtp_settings']['hostname'],
+                'username' => $params['smtp_settings']['username'],
+                'password' => $params['smtp_settings']['password'],
+                'port' => $params['smtp_settings']['port'],
+                'encryption' => $params['smtp_settings']['encryption'],
+            ],
+        ],
     ],
-    'params' => $params,
 ];

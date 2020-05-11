@@ -2,9 +2,9 @@
 
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-
+use yii\bootstrap\Modal;
+use frontend\models\applications\UserOpinion;
 ?>
-<div class="loader"><img src='https://image.ibb.co/c0WrEK/check1.gif'/></div>
 <div class="row">
     <?php
         Pjax::begin(['id' => 'widgets']);
@@ -55,8 +55,8 @@ use yii\widgets\Pjax;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
-                        <span data-counter="counterup" data-value="89">0</span> </div>
+                    <div class="number">
+                        <span data-counter="counterup" data-value="89"><?= $total_accepted ?></span> </div>
                     <div class="desc"> Applications Accepted</div>
                 </div>
             </a>
@@ -67,7 +67,7 @@ use yii\widgets\Pjax;
                     <i class="fa fa-globe"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_pending; ?></span> </div>
                     <div class="desc">Applications Pending</div>
                 </div>
@@ -79,9 +79,9 @@ use yii\widgets\Pjax;
                     <i class="fa fa-building"></i>
                 </div>
                 <div class="details">
-                    <div class="number"> 
+                    <div class="number">
                         <span data-counter="counterup" data-value="89"><?= $total_shortlist_org; ?></span> </div>
-                    <div class="desc">Companies Shortlisted</div>
+                    <div class="desc">Followed Companies</div>
                 </div>
             </a>
         </div>
@@ -116,17 +116,19 @@ use yii\widgets\Pjax;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line text-center">
                 <div class="caption col-lg-11">
                     <ul class="tabs" id="head-tabs">
                         <li data-tab="tab-1" data-url="/account/jobs/reviewed" class="tab-link current caption-subject font-dark uppercase" >Review List</li>
                         |
-                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li> 
+                        <li data-tab="tab-2" data-url="/account/jobs/shortlisted" class="tab-link caption-subject font-dark  uppercase">Shortlisted</li>
                         |
                         <li data-tab="tab-3" data-url="/account/jobs/applied" class="tab-link caption-subject font-dark uppercase">Applications Applied</li>
                         |
                         <li data-tab="tab-4" data-url="/account/jobs/accepted" class="tab-link caption-subject font-dark uppercase">Accepted Applications</li>
+                        |
+                        <li data-tab="tab-5" data-url="/account/jobs/shortlisted-resume" class="tab-link caption-subject font-dark uppercase">Shortlisted Resume</li>
 
                     </ul>
                 </div>
@@ -146,16 +148,13 @@ use yii\widgets\Pjax;
 
                                         foreach ($reviewlist as $review) {
                                             ?>
-                                            <div class="col-md-3 col-sm-6 hr-j-box">
-                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>"> 
+                                            <div class="col-md-3 col-sm-6 hr-j-box rev_box" id="<?= $review['application_enc_id']; ?>">
+                                                <div class="topic-con" data-key="<?= $review['application_enc_id']; ?>">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $review["icon"]); ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
-                                                            <?= $review['org_name']; ?>
-                                                        </div>
-                                                        <div class="hr-com-field">
                                                             <?= $review['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
@@ -163,19 +162,29 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay">
                                                             <div class="col-md-12">
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob1">Apply</a></div>
-                                                                <div class="text-o col-md-6"><a class="over-bttn ob2" id="shortlist" value="<?= $review['app_id']; ?>">Shortlist</a></div>
+                                                                <div class="text-o col-md-5">
+                                                                    <?php if($review['applied_application_enc_id']){?>
+                                                                        <a class="over-bttn ob1" disabled="disabled">Applied</a>
+                                                                    <?php }else{?>
+                                                                        <a href="/job/<?= $review['slug']; ?>" class="over-bttn ob1 hover_short apply-btn">Apply</a>
+                                                                    <?php } ?>
+                                                                </div>
+                                                                <div class="text-o col-md-7">
+                                                                    <a class="over-bttn ob2 shortlist" id="<?= $review['slug'];?>" data-key="<?= $review['application_enc_id']; ?>" >
+                                                                            <span class="hover-change"><i class="fa fa-heart-o"></i> Shortlist</span>
+                                                                    </a>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class="j-cross">
-                                                                        <button value="<?= $review['review_enc_id']; ?>" class="rmv_review">
+                                                                        <button value="<?= $review['application_enc_id']; ?>" class="rmv_review">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
                                                                     </div>
-                                                                    <div class="j-grid"> 
+                                                                    <div class="j-grid">
                                                                         <a  href="/job/<?= $review['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -183,35 +192,32 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>  
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                        <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/reviewlist.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Select any jobs for review.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-2" class="tab-con" > 
+                                <div id="tab-2" class="tab-con" >
                                     <?php
                                     Pjax::begin(['id' => 'pjax_shortlist']);
                                     if ($shortlisted) {
                                         foreach ($shortlisted as $shortlist) {
                                             ?>
                                             <div class="col-md-3 hr-j-box">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
@@ -226,17 +232,24 @@ use yii\widgets\Pjax;
                                                             <?= $shortlist["positions"]; ?> Openings
                                                         </div>
                                                         <div class="overlay2">
-                                                            <div class="text-o"><a class="over-bttn ob2 hover_short" href="/job/<?= $shortlist['slug']; ?>">Apply</a></div>
+                                                            <div class="text-o">
+                                                                <?php if($shortlist['applied_application_enc_id']){?>
+                                                                    <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                                        <i class="fa fa-check"></i>Applied</a>
+                                                                <?php }else{?>
+                                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                                <?php } ?>
+                                                            </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row ">
                                                                 <div class="col-md-12 col-sm-12 minus-15-pad">
                                                                     <div class=" j-cross">
-                                                                        <button class="rmv_list" value="<?= $shortlist['shortlisted_enc_id']; ?>">
+                                                                        <button class="rmv_list" value="<?= $shortlist['application_enc_id']; ?>">
                                                                             <i class="fa fa-times"></i>
                                                                         </button>
-                                                                    </div> 
-                                                                    <div class=" j-grid"> 
+                                                                    </div>
+                                                                    <div class=" j-grid">
                                                                         <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
                                                                     </div>
                                                                 </div>
@@ -244,34 +257,31 @@ use yii\widgets\Pjax;
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> 
+                                            </div>
                                             <?php
                                         }
                                     } else {
                                         ?>
-                                        <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlist-icon.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Shortlisted any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                         <?php
                                     }
                                     Pjax::end();
                                     ?>
                                 </div>
-                                <div id="tab-3" class="tab-con" > 
+                                <div id="tab-3" class="tab-con" >
                                     <?php
                                     if ($applied) {
                                         foreach ($applied as $apply) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
                                                             <img src="<?= Url::to('@commonAssets/categories/' . $apply["icon"]); ?>" class="img-responsive ">
@@ -287,7 +297,7 @@ use yii\widgets\Pjax;
                                                         </div>
                                                         <div class="overlay1">
                                                             <div class="text-o">
-                                                                <a class="over-bttn ob1">View Application</a>
+                                                                <a href="/account/process-applications/<?= $apply['app_id']; ?>" class="over-bttn ob1">View Application</a>
                                                             </div>
                                                         </div>
                                                         <div class="hr-com-jobs">
@@ -301,30 +311,27 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
-                                        <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                        ?>
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/appliedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
                                                     <div class="">You haven't Applied any jobs.</div>
                                                 </div>
                                             </div>
-                                        </div>
                                     <?php } ?>
                                 </div>
-                                <div id="tab-4" class="tab-con" > 
+                                <div id="tab-4" class="tab-con" >
                                     <?php
                                     if ($accepted) {
                                         foreach ($accepted as $accept) {
-                                            ?>  
+                                            ?>
                                             <div class="col-md-3">
-                                                <div class="topic-con"> 
+                                                <div class="topic-con">
                                                     <div class="hr-company-box">
                                                         <div class="hr-com-icon">
-                                                            <img src="<?= Url::to('/assets/common/logos/logo-vertical.svg'); ?>" class="img-responsive ">
+                                                            <img src="<?= Url::to('/assets/common/categories/'. $accept['job_icon']) ?>" class="img-responsive ">
                                                         </div>
                                                         <div class="hr-com-name">
                                                             <?= $accept['org_name']; ?>
@@ -333,10 +340,10 @@ use yii\widgets\Pjax;
                                                             <?= $accept['title']; ?>
                                                         </div>
                                                         <div class="opening-txt">
-                                                            <?= $accept['positions']; ?> Openings Openings
+                                                            <?= $accept['positions']; ?> Openings
                                                         </div>
                                                         <div class="overlay1">
-                                                            <div class="text-o"><a class="over-bttn ob2">View Application</a></div>
+                                                            <div class="text-o"><a href="/account/process-applications/<?= $accept['app_id']; ?>" class="over-bttn ob2">View Application</a></div>
                                                         </div>
                                                         <div class="hr-com-jobs">
                                                             <div class="row minus-15-pad">
@@ -349,19 +356,71 @@ use yii\widgets\Pjax;
                                             <?php
                                         }
                                     } else {
-                                        ?>  
-                                        <div class="col-md-12">
-                                            <div class="tab-empty"> 
+                                        ?>
+                                            <div class="tab-empty">
                                                 <div class="tab-empty-icon">
-                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/acceptedapplication.png'); ?>" class="img-responsive" alt=""/>
                                                 </div>
                                                 <div class="tab-empty-text">
-                                                    <div class="">There are no Jobs to show.</div>
-                                                    <div class="">You haven't Applied any jobs.</div>
+                                                    <div class="">You haven't Accepted any jobs.</div>
+                                                </div>
+                                            </div>
+                                    <?php } ?>
+                                </div>
+                                <div id="tab-5" class="tab-con">
+                                    <?php
+                                    if ($shortlist1) {
+                                        foreach ($shortlist1 as $shortlist) {
+                                            ?>
+                                    <div class="col-md-3 hr-j-box">
+                                        <div class="topic-con">
+                                            <div class="hr-company-box">
+                                                <div class="hr-com-icon">
+                                                    <img src="<?= Url::to('@commonAssets/categories/' . $shortlist["icon"]); ?>" class="img-responsive ">
+                                                </div>
+                                                <div class="hr-com-name">
+                                                    <?= $shortlist['org_name'] ?>
+                                                </div>
+                                                <div class="hr-com-field">
+                                                    <?= $shortlist['name']?>
+                                                </div>
+                                                <div class="overlay2">
+                                                    <div class="text-o">
+                                                <?php if($shortlist['appliedApplications']){?>
+                                                        <a class="over-bttn ob2 hover_short" disabled="disabled">
+                                                            <i class="fa fa-check"></i>Applied</a>
+                                                <?php }else{?>
+                                                    <a href="/job/<?= $shortlist['slug']; ?>" class="over-bttn ob2 hover_short apply-btn">Apply</a>
+                                                <?php } ?>
+                                                    </div>
+
+                                                </div>
+                                                <div class="hr-com-jobs">
+                                                    <div class="row ">
+                                                        <div class="col-md-12 col-sm-12 minus-15-pad">
+                                                            <div class=" j-grid">
+                                                                <a  href="/job/<?= $shortlist['slug']; ?>" title="">VIEW JOB</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php } ?>
+                                    </div>
+                                            <?php
+                                        }
+                                    } else {
+                                        ?>
+                                            <div class="tab-empty">
+                                                <div class="tab-empty-icon">
+                                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/shortlistresume.png'); ?>" class="img-responsive" alt=""/>
+                                                </div>
+                                                <div class="tab-empty-text">
+                                                    <div class="">You haven't Shortlisted any jobs.</div>
+                                                </div>
+                                            </div>
+                                        <?php
+                                    } ?>
                                 </div>
                             </div>
                         </div>
@@ -373,96 +432,48 @@ use yii\widgets\Pjax;
 </div>
 <div class="row">
     <div class="col-lg-12 col-xs-12 col-sm-12">
-        <div class="portlet light ">
+        <div class="portlet light nd-shadow">
             <div class="portlet-title tabbable-line">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
-                    <span class="caption-subject font-dark bold uppercase">Companies shortlisted</span>
+                    <span class="caption-subject font-dark bold uppercase">Followed Companies<span data-toggle="tooltip" title="Here you will find all companies that you are following">
+                            <i class="fa fa-info-circle"></i>
+                        </span>
+                    </span>
                 </div>
                 <div class="actions">
-                    <a href="<?= Url::to('/account/shortlist-companies') ?>" title="" class="viewall-jobs">View All</a>
+                    <a href="<?= Url::to('/account/organization/shortlisted') ?>" title="" class="viewall-jobs">View All</a>
                 </div>
             </div>
             <div class="portlet-body">
                 <div class="row">
-                    <?php
-                    Pjax::begin(['id' => 'pjax_org']);
-                    if ($shortlist_org) {
-                        foreach ($shortlist_org as $shortlist) {
-                            $logo = $shortlist['logo'];
-                            ?>
-                            <div class="col-md-3 hr-j-box">
-                                <div class="topic-con"> 
-                                    <div class="hr-company-box">
-                                        <a href="/company/<?= $shortlist['slug']; ?>"> 
-                                            <div class="hr-com-icon">
-                                                <?php
-                                                if (empty($shortlist['logo_location'])) {
-                                                    ?>
-                                                    <canvas class="user-icon" name="<?= $shortlist['org_name'] ?>" width="80" height="80" font="35px"></canvas>
-                                                    <?php
-                                                } else {
-                                                    $logo_location = $shortlist['logo_location'];
-                                                    $logo_image = Yii::$app->params->upload_directories->organizations->logo . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    $logo_base_path = Yii::$app->params->upload_directories->organizations->logo_path . $logo_location . DIRECTORY_SEPARATOR . $logo;
-                                                    if (!file_exists($logo_base_path)) {
-                                                        $logo_image = "http://www.placehold.it/150x150/EFEFEF/AAAAAA&amp;text=No+Logo";
-                                                    }
-                                                    ?>
-                                                    <img src="<?= Url::to($logo_image); ?>" class="img-responsive ">
-                                                    <?php
-                                                }
-                                                ?>
-                                            </div>
-                                            <div class="hr-com-name">
-                                                <?= $shortlist['org_name']; ?>
-                                            </div>
-                                            <div class="hr-com-field">
-                                                <?= $shortlist['industry']; ?>
-                                            </div>
-                                        </a>
-                                        <div class="hr-com-jobs">
-                                            <div class="row">
-                                                <div class="col-md-1 j-cross"><button value="<?= $shortlist['shortlisted_enc_id']; ?>" class="rmv_org"><i class="fa fa-times"></i></button></div> 
-                                                <div class="col-md-offset-3 col-md-6 minus-15-pad j-grid"> 
-                                                    <a  href="/company/<?= $shortlist['slug']; ?>" title="">VIEW PROFILE</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php
-                        }
-                    } else {
-                        ?>
-                        <div class="col-md-12">
-                            <div class="tab-empty"> 
-                                <div class="tab-empty-icon">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/sr.png'); ?>" class="img-responsive" alt=""/>
-                                </div>
-                                <div class="tab-empty-text">
-                                    <div class="">There are no Jobs to show.</div>
-                                    <div class="">You haven't Shortlisted any Company.</div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                    }
-                    Pjax::end();
+                    <?=
+                    $this->render('/widgets/organization/card', [
+                        'organization_data' => $shortlist_org,
+                    ]);
                     ?>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <?php
 $this->registerCss('
+.font-dark > span > i {
+    font-size: 13px;
+    margin-left: 5px;
+    color:darkgray;
+}
+.portlet.light > .portlet-title > .actions{
+    padding:0px !important;
+}
 .tab-empty{
     padding:20px;
 }
 .tab-empty-icon img{
-    max-width:200px; 
+    height:170px;
     margin:0 auto;
 }
 .tab-empty-text{
@@ -486,17 +497,20 @@ $this->registerCss('
   height: 0;
   transition: .5s ease;
 }
-.loader{
-    display:none;
-    position:fixed;
-    top:50%;
-    left:50%;
-    padding:2px;
-    z-index:99999;
-}
+//.loader{
+//    display:none;
+//    position:fixed;
+//    top:50%;
+//    left:50%;
+//    padding:2px;
+//    z-index:99999;
+//}
 .topic-con:hover .overlay, .topic-con:hover .overlay1,.topic-con:hover .overlay2 {
-  height: 80%;
+  height: 78%;
   border-radius:10px 10px 0px 0px !important;
+}
+.topic-con:hover .opening-txt ~ .overlay, .topic-con:hover .opening-txt ~ .overlay1,.topic-con:hover .opening-txt ~ .overlay2 {
+    height:80%;
 }
 button.over-bttn, .ob1, button.over-bttn, .ob2{
     background:#00a0e3 !important; 
@@ -533,6 +547,9 @@ ul.tabs li{
     display: inline-block;
     padding: 10px 15px;
     cursor: pointer;
+    font-family: roboto;
+    font-size: 16px;
+    font-weight: 500;
 }
 .caption > ul.tabs > li.tab-link:hover{
     color:#00a0e3 !important;
@@ -583,71 +600,116 @@ li.current{
 a:hover{
     text-decoration:none;
 }
+
+#new_resume,#use_existing{
+        display:none;
+    }
+    
+#warn{
+        color:#e9465d;
+        display:none;
+    }
+    
+.sub_description_1,sub_description_2{
+        display:none;
+     } 
+     
+.fader{
+      width:100%;
+      height:100%;
+      position:fixed;
+      top:0;
+      left:0;
+      display:none;
+      z-index:99;
+      background-color:#fff;
+      opacity:0.7;
+    }
 ');
 $script = <<<JS
+
 $("ul[id*=head-tabs] li").click(function(){
     $('#view-all').attr('href',$(this).attr('data-url'));
 })
 
-$(document).on('click','#shortlist',function(){
-   var app_id = $(this).attr('value');
-    $.ajax({
-        url:'/account/jobs/shortlist-job',
-        data: {app_id:app_id},
-        method: 'post',
-        success:function(data){
-            console.log("in success");
-            console.log(data);
-        }
-
-    });
-});
-            
+      
 function Ajax_call(rmv_id,url,pjax_refresh_id)
     {
         $.ajax({
-                url:url,
-                data:{rmv_id:rmv_id},
-                method:'post',
+            url:url,
+            data:{rmv_id:rmv_id},
+            method:'post',
+            beforeSend: function()
+            {
+                // $(".loader").css("display", "block");
+            },
+            success:function(data){
+                $.pjax.reload({container: pjax_refresh_id, async: false});
+                $.pjax.reload({container: '#widgets', async: false});
+                if(data == true) {
+                    // $(".loader").css("display", "none");
+                    toastr.success(data.message, 'Success');
+                } else{
+                    toastr.error('Something went wrong. Please try again.', 'Opps!!');
+                }
+            }
+        })
+    }
+    
+    function Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent)
+    {
+        $.ajax({
+                url : url,
+                data : {rmv_id:rmv_id},
+                method : 'POST',
                 beforeSend: function()
-                {
-                    $(".loader").css("display", "block");
+                {   
+                    parent.hide();
+                    // $(".loader").css("display", "block");
                 },
-                success:function(data)
-                       {
-                        if(data == true)
+                success:function(data){
+                        if(data.status == 'true')
                           {
-                            $(".loader").css("display", "none");
+                            // $(".loader").css("display", "none");
                             $.pjax.reload({container: pjax_refresh_id, async: false});
-                            $.pjax.reload({container: '#widgets', async: false});
+                            $.pjax.reload({container: pjax_refresh_idd, async: false});
+                            toastr.success(data.message, data.title);
+                           } 
+                        else if(data.status == 'false') {
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            toastr.error(data.message, data.title);
                            }
                        }
               })
     }
-        
         
 $(document).on('click','.rmv_list',function()
     {
       var  url = '/account/jobs/shortlist-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_shortlist';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.hr-j-box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
    })   
         
-$(document).on('click','.rmv_review',function()
-    {
+$(document).on('click','.rmv_review',function(){
       var  url = '/account/jobs/review-delete';
       var rmv_id = $(this).val();
       var  pjax_refresh_id = '#pjax_review';
+      var main_card = $(this).parentsUntil(".topic-con").closest('.rev_box');
+      main_card.remove();
       Ajax_call(rmv_id,url,pjax_refresh_id);
    }) 
-        
-$(document).on('click','.rmv_org',function()
+   
+   $(document).on('click','.shortlist',function()
     {
-      var  url = '/account/jobs/org-delete';
-      var rmv_id = $(this).val();
-      var  pjax_refresh_id = '#pjax_org';
-      Ajax_call(rmv_id,url,pjax_refresh_id);
+      var  url = '/account/jobs/review-shortlist';
+      var rmv_id = $(this).attr('data-key');
+      var  pjax_refresh_id = '#pjax_review';
+      var  pjax_refresh_idd = '#pjax_shortlist';
+      var parent = $(this).parents().eq(5);
+      Ajax_call_two(rmv_id,url,pjax_refresh_id,pjax_refresh_idd,parent);
    }) 
         
         
@@ -665,6 +727,14 @@ $(document).on('click', '#removejob', function(){
     $(this).closest('.hr-j-box').remove();
 });   
 
+$(document).on('click','#close_btn',function()
+ {
+    $('.fader').css('display','none');
+    $(this).parent().removeClass('show');
+});
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');

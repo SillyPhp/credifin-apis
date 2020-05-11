@@ -2,6 +2,8 @@
 
 namespace frontend\controllers;
 
+use common\models\AssignedCategories;
+use common\models\Categories;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -44,6 +46,20 @@ class IndustriesController extends Controller
 
             return $response;
         }
+    }
+
+    public function actionProfiles()
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $param1 = (new \yii\db\Query())
+            ->select(['industry value'])
+            ->from(Industries::tableName().'as a');
+
+        $param2 = (new \yii\db\Query())
+            ->select(['business_activity value'])
+            ->from(BusinessActivities::tableName().'as a');
+
+        return $param1->union($param2)->all();
     }
 
 }

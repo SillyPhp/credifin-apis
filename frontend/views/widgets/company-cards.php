@@ -8,7 +8,7 @@ if ($type == 'mustache-explore-company-card') {
         {{#.}}
         <div class="col-md-3 col-sm-6">
                 <div class="cards-outer">
-                    <a href="/company/{{organization_link}}">
+                    <a href="/{{organization_link}}">
                         <div class="post-module">
                             <div class="thumbnail">
                                 <img src="{{cover_image}}"/>
@@ -56,7 +56,7 @@ if ($type == 'mustache-explore-company-card') {
         </div>
         <div class="card-flap flap2">
         <div class="card-actions">
-        <a href="/company/{{organization_link}}" class="toogle-btn">View Profile</a>
+        <a href="/{{organization_link}}" class="toogle-btn">View Profile</a>
         </div>
         </div>
         </div>

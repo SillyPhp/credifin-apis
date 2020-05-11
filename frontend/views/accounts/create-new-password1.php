@@ -1,5 +1,5 @@
 <?php
-$this->title = Yii::t('dsbedutech', 'Create New Password');
+$this->title = Yii::t('frontend', 'Create New Password');
 $this->params['background_image'] = '/assets/images/bg/bg19.jpg';
 
 use yii\helpers\Html;

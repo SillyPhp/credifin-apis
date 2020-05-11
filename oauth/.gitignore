@@ -1,0 +1,10 @@
+/index.php
+/robots.txt
+/runtime
+/tests
+/.htaccess
+/codeception.yml
+/error_log
+/favicon.ico
+/assets
+/views

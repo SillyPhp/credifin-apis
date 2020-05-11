@@ -69,7 +69,7 @@ class AddExperienceForm extends Model {
 //            $userWorkExperienceModel->to_date = $this->exp_to;
 //            $userWorkExperienceModel->is_current = 1;
 //        }
-        $userWorkExperienceModel->created_on = date('Y-m-d h:i:s');
+        $userWorkExperienceModel->created_on = date('Y-m-d H:i:s');
         $userWorkExperienceModel->created_by = Yii::$app->user->identity->user_enc_id;
         $userWorkExperienceModel->user_enc_id = Yii::$app->user->identity->user_enc_id;
         if (!$userWorkExperienceModel->validate() || !$userWorkExperienceModel->save()) {

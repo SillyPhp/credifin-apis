@@ -4,7 +4,7 @@ use yii\helpers\Url;
 ?>
 <div class="alerts">
     <?=
-    Html::button('<i class="fa fa-envelope"></i> Email Jobs', [
+    Html::button('<i class="fas fa-envelope"></i> Email Jobs', [
         'class' => 'btn btn-md bubbly-button',
         'url' => Url::to('/' . Yii::$app->controller->id . '/' . 'jobalert'),
         'id' => 'open-modal',
