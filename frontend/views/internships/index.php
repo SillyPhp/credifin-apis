@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Url;
-
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <section class="backgrounds">
@@ -13,10 +13,10 @@ use yii\helpers\Url;
                 <h2 class="intern-banner-heading mt-0 heading-text">
                     <?= Yii::t('frontend', 'Intern With The Best'); ?></h2>
                 <div class="search-by-type row">
-                    <form class="form-inline" action="<?= Url::to('/internships/list?'); ?>">
+                    <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" name="keyword" class="form-control"
+                            <input type="text" name="keyword" class="form-control" id="keywords"
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
                         <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
@@ -832,6 +832,23 @@ $('#cities').typeahead(null, {
 getCards("Internships");
 getCategories("Internships");
 addToReviewList();
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname&&kname) 
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname)
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      }
+}) 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
