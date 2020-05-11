@@ -293,14 +293,15 @@ class JobsController extends Controller
             ->all();
 
         $tweets = $this->_getTweets(null, null, "Jobs", 4, "");
-
+        $type = 'jobs';
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'type' => $type
         ]);
     }
 
