@@ -56,7 +56,7 @@ use yii\helpers\Url;
                                             ?>
                                         </ul>
                                     </div>
-                                    <div class="news-content"><?= $n->description ?></div>
+                                    <div class="news-content"><?= strip_tags($n->description) ?></div>
                                     <div class="use-flex">
                                         <?php $sharingLink = Url::base(true) . '/news/' . $n->slug ?>
                                         <div class="share-news">
