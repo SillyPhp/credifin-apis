@@ -1,7 +1,16 @@
 <?php
 
+use common\models\Organizations;
 use yii\helpers\Url;
+use yii\db\Expression;
 
+$companies = Organizations::find()
+    ->where(['not', ['logo' => null]])
+    ->andWhere(['not', ['logo' => ""]])
+    ->andWhere(['status' => 'Active', 'is_deleted' => 0, 'is_featured' => 1])
+    ->orderby(new Expression('rand()'))
+    ->limit(12)
+    ->all();
 ?>
     <section class="companies">
         <div class="container">
