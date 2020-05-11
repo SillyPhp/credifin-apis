@@ -47,6 +47,7 @@ use common\models\Users;
 use yii\web\UploadedFile;
 use frontend\models\account\locations\OrganizationLocationForm;
 use frontend\models\questionnaire\QuestionnaireForm;
+use yii\db\Expression;
 
 /**
  * Site controller
@@ -741,7 +742,16 @@ class SiteController extends Controller
                 }
                 break;
             case 'getCompaniesWithUs':
-                return $this->renderAjax('/widgets/companies-with-us');
+                $companies = Organizations::find()
+                    ->where(['not', ['logo' => null]])
+                    ->andWhere(['not', ['logo' => ""]])
+                    ->andWhere(['status' => 'Active', 'is_deleted' => 0, 'is_featured' => 1])
+                    ->orderby(new Expression('rand()'))
+                    ->limit(12)
+                    ->all();
+                return $this->renderAjax('/widgets/organizations/companies-with-us',[
+                    'companies' => $companies
+                ]);
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');
