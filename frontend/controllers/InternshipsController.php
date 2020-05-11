@@ -205,13 +205,15 @@ class InternshipsController extends Controller
 
 
         $tweets = $this->_getTweets($keywords = null, $location = null, $type = "Internships", $limit = 4, $offset = null);
+        $type = 'internships';
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'type' => $type,
 
         ]);
     }

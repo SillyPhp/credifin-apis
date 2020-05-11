@@ -241,7 +241,7 @@ $this->params['header_dark'] = false;
                     <div class="service-box ser-box-green">
                         <div class="ser-icons">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
+                                 alt="latest recruitment in chandigarh, it internships,empoweryouth,online marketing jobs from home, latest jobs in ludhiana">
                         </div>
                         <div class="ser-heading">Career Advice</div>
                     </div>

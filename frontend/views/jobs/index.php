@@ -2,7 +2,7 @@
 $this->params['header_dark'] = false;
 
 use yii\helpers\Url;
-
+Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HEAD);
 ?>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
@@ -13,10 +13,10 @@ use yii\helpers\Url;
                 <h2 class="text-white1"><?= Yii::t('frontend', 'The Easiest Way to Get Your New Job'); ?></h2>
                 <h4 class="text-white2"><?= Yii::t('frontend', 'Find Jobs, Employment &amp; Career Opportunities.'); ?></h4>
                 <div class="search-by-type">
-                    <form class="form-inline" action="<?= Url::to('/jobs/list?'); ?>">
+                    <form class="form-inline" action="/" method="GET" id="search_bar_form">
                         <div class="input-group mb-10 mr-10 col-md-5">
                             <span class="input-group-addon"><i class="fas fa-user"></i></span>
-                            <input type="text" name="keyword" class="form-control"
+                            <input type="text" name="keyword" class="form-control"                                  id="keywords"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
                         <div class="input-group mb-10 mr-10 col-md-3">
@@ -892,6 +892,23 @@ $(window).on('load', function() {
               '</style>';
     jQuery(head).append(css);
 });
+$(document).on('submit','#search_bar_form',function(e) {
+  e.preventDefault();
+  var cname = $('#cities').val().trim().replace(/[^a-z0-9\s]/gi, ''); 
+  var kname = $('#keywords').val().trim().replace(/[^a-z0-9\s]/gi, '');
+  if (cname&&kname) 
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (cname) 
+      {
+          window.location.assign('/'+_type+'-in-'+cname.replace(/\s+/g, '-'));
+      }
+  else if (kname)
+      {
+          window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
+      }
+}) 
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
