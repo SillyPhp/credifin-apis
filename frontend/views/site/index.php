@@ -12,6 +12,16 @@ $this->params['header_dark'] = false;
                 <div class="col-lg-12 no-padd">
                     <div class="main-featured-sec style2">
                         <ul class="main-slider-sec style2 text-arrows">
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image2.jpg') ?><!--"-->
+                            <!--                                     alt="internship, software developer, internships near me,web developer jobs,software engineer jobs"/>-->
+                            <!--                            </li>-->
+                            <!--                            <li class="slideHome">-->
+                            <!--                                <img src="-->
+                            <? //= Url::to('@eyAssets/images/pages/index2/nslider-image.jpg') ?><!--"-->
+                            <!--                                     alt="data science internship,web design jobs,online internships, digital marketing internship, free course site, software developer jobs"/>-->
+                            <!--                            </li>-->
                             <li class="slideHome">
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"
                                      alt="marketing internships, machine learning internship, hr internships, software jobs, best online course sites, website design jobs"/>

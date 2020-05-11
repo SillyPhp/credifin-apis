@@ -53,7 +53,7 @@ use yii\widgets\Pjax;
                                                 <div class="row ">
                                                     <div class="col-md-12 col-sm-12 minus-15-pad">
                                                         <div class=" j-cross">
-                                                            <button class="rmv_list" value="<?= $review['review_enc_id']; ?>">
+                                                            <button class="rmv_list" value="<?= $review['application_enc_id']; ?>">
                                                                 <i class="fa fa-times"></i>
                                                             </button>
                                                         </div>
@@ -189,7 +189,7 @@ $script = <<<JS
         $(document).on("click", ".rmv_list", function() {
         var rmv_id = $(this).val();
         $.ajax({
-        url : '/account/review-delete',
+        url : '/account/internships/review-delete',
         method : 'post',
         data : {rmv_id:rmv_id},
         beforeSend: function()
