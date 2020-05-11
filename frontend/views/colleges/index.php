@@ -406,7 +406,7 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/companies-with-us') ?>
+<?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
 
 <!-- The Modal -->

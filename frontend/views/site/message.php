@@ -29,7 +29,7 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 body{
-    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco_bg.jpg") . ' );
+    background-image: url( ' . Url::to("@eyAssets/images/backgrounds/lco.png") . ' );
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
