@@ -2,7 +2,7 @@
 
 namespace api\modules\v2\models;
 
-use api\modules\v1\models\Candidates;
+use api\modules\v2\models\Candidates;
 use common\models\crud\Referral;
 use common\models\Departments;
 use common\models\EducationalRequirements;
@@ -49,17 +49,17 @@ class IndividualSignup extends Model
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
 
-            ['phone', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'phone number already registered'],
+            ['phone', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'phone number already registered'],
 
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
-            ['username', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'username already taken'],
+            ['username', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'username already taken'],
 
             ['starting_year', 'safe'],
             ['ending_year', 'safe'],
 
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'email already taken'],
+            ['email', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'email already taken'],
 
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
