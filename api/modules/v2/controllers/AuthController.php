@@ -11,7 +11,7 @@ use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
 use Yii;
 use yii\helpers\Url;
-use api\modules\v1\models\Candidates;
+use api\modules\v2\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
 use common\models\EmailLogs;
