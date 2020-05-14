@@ -23,11 +23,7 @@ use yii\helpers\Url;
                         <h2 class="quiz-heading">Search Or Create Group</h2>
                         <div class="quiz-top">
                             <form>
-                                <input type="text" placeholder="Enter Group Name" class="topic-input type-group" id="groupInput">
-                                <div class="type_load">
-                                    <img src="https://gifimage.net/wp-content/uploads/2017/09/ajax-loader-gif-5.gif" width="35" height="35">
-                                    <span class="text_load">Loading Results...</span>
-                                </div>
+                                <input type="text" placeholder="Enter Group Name" class="topic-input" id="groupInput">
                                 <button type="button" onclick="creteGroup()"><i class="fa fa-share"></i></button>
                             </form>
                         </div>
@@ -614,110 +610,13 @@ $this->registerCss('
 .ca-message{
     margin: 10px 0 0 20px;
 }
-
-.typeahead,
-.tt-query,
- {
-  width: 396px;
-  height: 30px;
-  padding: 8px 12px;
-  font-size: 18px;
-  line-height: 30px;
-  border: 2px solid #ccc;
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  outline: none;
-}
-.typeahead {
-  background-color: #fff;
-}
-.typeahead:focus {
-  border: 2px solid #0097cf;
-}
-.tt-query {
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-}
-
-
-
-.tt-hint {
-  color: #999
-}
-.tt-menu {
-  width: 98%;
-  margin: 12px 0;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-border-radius: 8px;
-     -moz-border-radius: 8px;
-          border-radius: 8px;
-  -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-     -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          box-shadow: 0 5px 10px rgba(0,0,0,.2);
-          max-height:158px;
-          overflow-y:auto;
-}
-.tt-suggestion {
-  padding: 3px 20px;
-  font-size: 14px;
-  line-height: 24px;
-}
-.tt-suggestion:hover {
-  cursor: pointer;
-  color: #fff;
-  background-color: #0097cf;
-}
-.tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: #0097cf;
-}
-.tt-suggestion p {
-  margin: 0;
-}
-.Typeahead-input {
-    position: relative;
-    background-color: transparent;
-    outline: none;
-}
-.twitter-typeahead {
-     width: 89% !important;
-}
-.type_load{
-text-align: center;
-    position: absolute;
-    top: 100%;
-    left: 16px;
-    z-index: 100;
-    background: #fff;
-    display:none;
-    width: 89%;
-    margin: 12px 0;
-    padding: 8px 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
-    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    box-shadow: 0 5px 10px rgba(0,0,0,.2);
-    max-height: 158px;
-    overflow-y: auto;
-}
-.text_load
-{
-font-style: italic;
-}
 ');
+$script = <<<JS
+JS;
+$this->registerJS($script);
 ?>
 <script>
-let customRadio = document.getElementsByClassName('customRadio');
+    let customRadio = document.getElementsByClassName('customRadio');
     for (let i = 0; i < customRadio.length; i++) {
         customRadio[i].addEventListener('change', nextStep)
     }
@@ -808,32 +707,6 @@ let customRadio = document.getElementsByClassName('customRadio');
             customRadio[i].addEventListener('change', nextStep)
         }
     }
+
 </script>
-<?php
-$script = <<< JS
-function genrateTypeahead(element,data,url) {
-            var datum = new Bloodhound({
-                datumTokenizer: function (d) { 
-                    return Bloodhound.tokenizers.whitespace(d);
-                },
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                //local: data
-                remote: {
-                url: url+'?q=%QUERY',
-                wildcard: '%QUERY',
-                cache: true,     
-                },
-            });
-            datum.initialize();
-            jQuery('.type-' + element).typeahead(null, {displayKey: 'word',highlight: true,delay:500,source: datum.ttAdapter()}).on('typeahead:asyncrequest', function() {
-            $('.type_load').show();
-            }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-            $('.type_load').hide();
-             });
-            } 
-genrateTypeahead('group', null,'/account/categories-list/groups');
-JS;
-$this->registerJs($script);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-?>
 
