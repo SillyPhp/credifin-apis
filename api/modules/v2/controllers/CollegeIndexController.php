@@ -12,10 +12,11 @@ use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
 use common\models\OrganizationReviews;
 use common\models\Referral;
+use common\models\Teachers;
 use common\models\UserOtherDetails;
 use common\models\Users;
 use Yii;
-Use \yii\db\Expression;
+use \yii\db\Expression;
 use yii\helpers\Url;
 use common\models\Utilities;
 use yii\web\UploadedFile;
@@ -454,7 +455,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
-                ->joinWith(['courseEnc cc'],false)
+                ->joinWith(['courseEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.user_enc_id' => $data['user_id']])
                 ->asArray()
@@ -466,7 +467,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->joinWith(['cityEnc b1']);
                 }], false)
-                ->joinWith(['courseEnc cc'],false)
+                ->joinWith(['courseEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id'], 'a.college_actions' => 0])
                 ->asArray()
@@ -590,7 +591,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['userEnc b' => function ($b) {
                     $b->select(['b.user_enc_id']);
                 }], true)
-                ->joinWith(['courseEnc cc'],false)
+                ->joinWith(['courseEnc cc'], false)
                 ->joinWith(['departmentEnc c'], false)
                 ->where(['a.organization_enc_id' => $req['college_id']]);
             if (isset($data['course_name']) && !empty($data['course_name'])) {
@@ -1010,6 +1011,46 @@ class CollegeIndexController extends ApiBaseController
                     }
                 }
             }
+        }
+    }
+
+    public function actionCollegeTeachers()
+    {
+        if ($this->isAuthorized()) {
+            $college_id = $this->getOrgId();
+
+            $teachers = Teachers::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.teacher_enc_id',
+                    'b.username',
+                    'CASE WHEN b.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", b.image_location, "/", b.image) END image',
+                    'b.first_name',
+                    'b.last_name',
+                    'b.email',
+                    'b.phone',
+                    'b.description',
+                    'c.name college_name',
+                    'd.name city_name',
+                    'e.user_type role'
+                ])
+                ->joinWith(['userEnc b'=>function($b){
+                    $b->joinWith(['cityEnc d'],false);
+                }], false)
+                ->joinWith(['collegeEnc c'],false)
+                ->joinWith(['role0 e'],false)
+                ->where(['a.college_enc_id' => $college_id])
+                ->asArray()
+                ->all();
+
+            if ($teachers) {
+                return $this->response(200, ['status' => 200, 'data' => $teachers]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

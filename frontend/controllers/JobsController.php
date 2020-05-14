@@ -361,11 +361,16 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
-            $cardsApi = ApplicationCards::gitjobs($options['page'],$options['keyword'],$options['location']);
             $cardsDb = ApplicationCards::jobs($options);
-            $merg = array_merge($cardsDb,$cardsApi);
-            $merg = array_slice($merg, 0, 27);
+            if (empty($options['company'])) {
+                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+                $merg = array_merge($cardsDb, $cardsApi);
+                $merg = array_slice($merg, 0, 27);
+            }
+            else
+            {
+                $merg = $cardsDb;
+            }
             if (count($merg) > 0) {
                 $response = [
                     'status' => 200,
