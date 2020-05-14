@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 use yii\helpers\Html;
 
-$this->title = Yii::t('frontend', $organization['name']);
+$this->title = Yii::t('frontend', htmlspecialchars_decode($organization['name']));
 $keywords = $industry['industry'] . "," . $organization['tag_line'];
 $description = $organization['description'];
 $image = Yii::$app->urlManager->createAbsoluteUrl((!empty($organization['cover_image']) ? Yii::$app->params->upload_directories->organizations->cover_image . $organization['cover_image_location'] . DIRECTORY_SEPARATOR . $organization['cover_image'] : '/assets/common/logos/empower_fb.png'));
@@ -65,7 +65,7 @@ if ($organization['cover_image']) {
                                         if (!empty($image_path)):
                                             ?>
                                             <img id="logo-img" src="<?= Url::to($image); ?>"
-                                                 alt="<?= Html::encode($organization['name']) ?>"/>
+                                                 alt="<?= htmlspecialchars_decode($organization['name']) ?>"/>
                                         <?php else: ?>
                                             <canvas class="user-icon" name="<?= $image; ?>"
                                                     color="<?= $organization['initials_color'] ?>" width="200"
@@ -74,17 +74,17 @@ if ($organization['cover_image']) {
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= Html::encode($organization['name']) ?></div>
+                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
                                     <?php if (!empty($organization['tag_line'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Tagline:</span> -->
-                                            <?= Html::encode($organization['tag_line']); ?>
+                                            <?= htmlspecialchars_decode($organization['tag_line']); ?>
                                         </div>
                                     <?php } ?>
                                     <?php if (!empty($industry['industry'])) { ?>
                                         <div class="com-establish">
                                             <!--                                        <span class="detail-title">Industry:</span> -->
-                                            <?= Html::encode($industry['industry']); ?>
+                                            <?= htmlspecialchars_decode($industry['industry']); ?>
                                         </div>
                                     <?php } ?>
                                 </div>
@@ -120,16 +120,16 @@ if ($organization['cover_image']) {
                     </div>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= Html::encode($organization['facebook']) ?>" class="facebook" target="_blank"><i
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook" target="_blank"><i
                                         class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
-                            href="<?= Html::encode($organization['twitter']) ?>" class="twitter" target="_blank"><i
+                            href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter" target="_blank"><i
                                         class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= Html::encode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
                                         class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
-                            href="<?= Html::encode($organization['website']) ?>" class="web" target="_blank"><i
+                            href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank"><i
                                         class="fas fa-link"></i> </a><?php } ?>
                     </div>
                 </div>
@@ -142,13 +142,13 @@ if ($organization['cover_image']) {
                 <div id="home" class="tab-pane fade in active">
                     <div class="row">
                         <div class="heading-style">
-                            About <?= Html::encode($organization['name']) ?>
+                            About <?= htmlspecialchars_decode($organization['name']) ?>
                         </div>
                         <div class="divider"></div>
 
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description">
-                                <?= Html::encode($organization['description']) ?>
+                                <?= htmlspecialchars_decode($organization['description']) ?>
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
@@ -158,7 +158,7 @@ if ($organization['cover_image']) {
                                         <div class="">
                                             <div class="about-det">
                                                 <div class="det">
-                                                    <?= $organization['number_of_employees'] ? Html::encode($organization['number_of_employees']) : 'N/A' ?>
+                                                    <?= $organization['number_of_employees'] ? htmlspecialchars_decode($organization['number_of_employees']) : 'N/A' ?>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
@@ -197,7 +197,7 @@ if ($organization['cover_image']) {
                                             Mission
                                         </div>
                                         <div class="mv-text">
-                                            <?= Html::encode($organization['mission']) ?>
+                                            <?= htmlspecialchars_decode($organization['mission']) ?>
                                         </div>
                                     <?php }
                                     if (!empty($organization['vision'])) {
@@ -207,7 +207,7 @@ if ($organization['cover_image']) {
                                                 Vision
                                             </div>
                                             <div class="mv-text">
-                                                <?= Html::encode($organization['vision']) ?>
+                                                <?= htmlspecialchars_decode($organization['vision']) ?>
                                             </div>
                                         </div>
                                     <?php } ?>
@@ -236,10 +236,10 @@ if ($organization['cover_image']) {
                                                     }
                                                     ?>
                                                     <img src="<?= Url::to($benefits['icon']); ?>"
-                                                         alt="<?= Html::encode($benefits['benefit']); ?>"/>
+                                                         alt="<?= htmlspecialchars_decode($benefits['benefit']); ?>"/>
                                                 </div>
                                                 <div class="bb-text">
-                                                    <?= Html::encode($benefits['benefit']); ?>
+                                                    <?= htmlspecialchars_decode($benefits['benefit']); ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -255,7 +255,7 @@ if ($organization['cover_image']) {
                         <div class="row">
                             <div class="office-view">
                                 <div class="heading-style">
-                                    Inside <?= Html::encode($organization['name']) ?>
+                                    Inside <?= htmlspecialchars_decode($organization['name']) ?>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="office-pics">
@@ -267,7 +267,7 @@ if ($organization['cover_image']) {
                                                 <a href="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
                                                    data-fancybox="image">
                                                     <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->image . $g_image['image_location'] . DIRECTORY_SEPARATOR . $g_image['image']) ?>"
-                                                         alt="Inside <?= Html::encode($organization['name']) ?>">
+                                                         alt="Inside <?= htmlspecialchars_decode($organization['name']) ?>">
                                                 </a>
                                             </div>
                                         </div>
@@ -293,7 +293,7 @@ if ($organization['cover_image']) {
                                             <div class="p-preview-img">
                                                 <a href="" data-fancybox="images">
                                                     <img src=""
-                                                         alt="<?= Html::encode($organization['name']) ?> Products">
+                                                         alt="<?= htmlspecialchars_decode($organization['name']) ?> Products">
                                                 </a>
                                             </div>
                                         </div>
@@ -342,23 +342,23 @@ if ($organization['cover_image']) {
                                                 <a href="#">
                                                     <div class="team-icon">
                                                         <img src="<?= Url::to(Yii::$app->params->upload_directories->organizations->employees->image . $team['image_location'] . DIRECTORY_SEPARATOR . $team['image']) ?>"
-                                                             alt="<?= Html::encode($team['first_name'] . " " . $team['last_name']); ?>"/>
+                                                             alt="<?= htmlspecialchars_decode($team['first_name'] . " " . $team['last_name']); ?>"/>
                                                         <?php if (!empty($team['facebook']) || !empty($team['linkedin']) || !empty($team['twitter'])) { ?>
                                                             <div class="team-overlay">
                                                                 <div class="team-text">
                                                                     <div class="know-bet">Know me better</div>
                                                                     <?php if (!empty($team['facebook'])) { ?><a
-                                                                        href="<?= Html::encode($team['facebook']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['facebook']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-facebook-f t-fb"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['linkedin'])) { ?><a
-                                                                        href="<?= Html::encode($team['linkedin']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['linkedin']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-linkedin-in t-ln"></i>
                                                                         </a><?php } ?>
                                                                     <?php if (!empty($team['twitter'])) { ?><a
-                                                                        href="<?= Html::encode($team['twitter']); ?>"
+                                                                        href="<?= htmlspecialchars_decode($team['twitter']); ?>"
                                                                         target="_blank"><i
                                                                                     class="fab fa-twitter t-tw"></i>
                                                                         </a><?php } ?>
@@ -367,8 +367,8 @@ if ($organization['cover_image']) {
                                                         <?php } ?>
                                                     </div>
                                                     <div class="t-member">
-                                                        <div class="t-name"><?= Html::encode($team['first_name'] . " " . $team['last_name']); ?></div>
-                                                        <div class="t-post"><?= Html::encode($team['designation']) ?></div>
+                                                        <div class="t-name"><?= htmlspecialchars_decode($team['first_name'] . " " . $team['last_name']); ?></div>
+                                                        <div class="t-post"><?= htmlspecialchars_decode($team['designation']) ?></div>
                                                     </div>
                                                 </a>
                                             </div>
@@ -386,7 +386,7 @@ if ($organization['cover_image']) {
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
-                                <a href="/jobs/list?company=<?= Html::encode($organization['name']) ?>"
+                                <a href="/jobs/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
                                    class="write-review">View
                                     All</a>
                             </div>
@@ -404,7 +404,7 @@ if ($organization['cover_image']) {
                             <div class="heading-style">
                                 Available Internships
                                 <div class="pull-right">
-                                    <a href="/internships/list?company=<?= Html::encode($organization['name']) ?>"
+                                    <a href="/internships/list?company=<?= htmlspecialchars_decode($organization['name']) ?>"
                                        class="write-review">View All</a>
                                 </div>
                             </div>
@@ -441,7 +441,7 @@ if ($organization['cover_image']) {
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
-                                <?= Html::encode($organization['name']) ?> Reviews
+                                <?= htmlspecialchars_decode($organization['name']) ?> Reviews
                                 <div class="pull-right">
                                     <a href="/<?= $organization['slug'] ?>/reviews" class="write-review">Write
                                         Review</a>
@@ -470,7 +470,7 @@ if ($organization['cover_image']) {
             </div>
         </div>
     </div>
-    <input type="hidden" id="organisation_id" value="<?= Html::encode($organization['organization_enc_id']) ?>"/>
+    <input type="hidden" id="organisation_id" value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
     <section>
         <div class="container">
             <div class="empty-field">
