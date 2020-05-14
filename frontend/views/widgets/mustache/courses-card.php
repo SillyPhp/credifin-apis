@@ -32,6 +32,9 @@
 </script>
 <?php
 $this->registerCss('
+.m-0{
+    margin:0px !important;
+}
 .course-box {
     position: relative;
     box-shadow: 0 1px 3px 0px #797979;
@@ -95,6 +98,7 @@ $this->registerCss('
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    height: 28px;
 }
 .course-skills {
     border-top: 2px solid #eee;
