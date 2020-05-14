@@ -24,60 +24,24 @@ use yii\helpers\Url;
                                     <h2 class="quiz-heading">Create New Group or Choose One Below</h2>
                                     <div class="quiz-top">
                                         <input type="text" placeholder="Enter Group Name" class="topic-input" id="groupInput">
-                                        <button type="button" onclick="creteGroup()"><i class="fa fa-share"></i></button>
+                                        <button type="button" id="grpinputbtn"><i class="fa fa-share"></i></button>
                                     </div>
                                 </div>
                             </div>
                             <h2 class="quiz-heading">Select Group</h2>
                             <div class="row" id="group-row">
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">9th</div>
+                                <?php if (!empty($categories)){
+                                    foreach ($categories as $cat){ ?>
+                                        <div class="col-md-2">
+                                            <label class="radioLabel">
+                                                <input type="radio" name="group" txtvalue="<?= $cat['name'] ?>"  value="<?= $cat['id'] ?>" class="customRadio">
+                                                <div class="quiz-group-box">
+                                                    <div class="quiz-class"><?= $cat['name'] ?></div>
+                                                </div>
+                                            </label>
                                         </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">10th</div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">+1</div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">+2</div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">JEE</div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label class="radioLabel">
-                                        <input type="radio" name="group" value="small" class="customRadio">
-                                        <div class="quiz-group-box">
-                                            <div class="quiz-class">IEEE</div>
-                                        </div>
-                                    </label>
-                                </div>
+                                  <?php  }
+                                } ?>
                             </div>
                             <div class="row">
                                 <div class="step-next-btn">
@@ -91,12 +55,10 @@ use yii\helpers\Url;
                     <div id="Subject" class="w3-container steps">
                         <div class="row">
                             <div class="col-md-6">
-                                <h2 class="quiz-heading">Search or Create Subject</h2>
+                                <h2 class="quiz-heading">Create New Group or Choose One Below</h2>
                                 <div class="quiz-top">
-                                    <form>
-                                        <input type="text" placeholder="Enter Subject Name" class="topic-input">
-                                        <button type="button" onclick="nextStep()"><i class="fa fa-share"></i></button>
-                                    </form>
+                                        <input type="text" placeholder="Enter Subject Name" class="topic-input" id="subjectInput">
+                                        <button type="button" id="subjectinputbtn"><i class="fa fa-share"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -105,55 +67,18 @@ use yii\helpers\Url;
                                 <h2 class="quiz-heading">Select Subject</h2>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" id="subject-row">
+                            <?php if (!empty($subject)){
+                            foreach ($subject as $sub){ ?>
                             <div class="col-md-2">
                                 <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
+                                    <input type="radio" name="subject" txtvalue="<?= $sub['name'] ?>"  value="<?= $sub['id'] ?>" class="customRadio">
                                     <div class="quiz-group-box">
-                                        <div class="quiz-subject">Maths</div>
+                                        <div class="quiz-subject"><?= $sub['name'] ?></div>
                                     </div>
                                 </label>
                             </div>
-                            <div class="col-md-2">
-                                <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
-                                    <div class="quiz-group-box">
-                                        <div class="quiz-subject">English</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
-                                    <div class="quiz-group-box">
-                                        <div class="quiz-subject">Physics</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
-                                    <div class="quiz-group-box">
-                                        <div class="quiz-subject">Computer Science</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
-                                    <div class="quiz-group-box">
-                                        <div class="quiz-subject">Data Structure and Algorithms</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="col-md-2">
-                                <label class="radioLabel">
-                                    <input type="radio" name="subject" value="small" class="customRadio">
-                                    <div class="quiz-group-box">
-                                        <div class="quiz-class">Accountancy</div>
-                                    </div>
-                                </label>
-                            </div>
+                            <?php } } ?>
                         </div>
                         <div class="row">
                             <div class="step-next-btn">
@@ -184,7 +109,7 @@ use yii\helpers\Url;
                             </div>
                             <div class="col-md-6">
                                 <div class="previous-topics">
-                                    <h2 class="quiz-heading">Previous Topics</h2>
+                                    <h2 class="quiz-heading">Create Or Choose One Topics</h2>
                                     <ul>
                                         <li class="topicList">Tokyo is the capital of Japan.</li>
                                         <li class="topicList">It is the center of the Greater Tokyo Area</li>
@@ -873,12 +798,97 @@ button[disabled] {
 ?>
 <?php
 $script = <<< JS
+var grp_names = [];
+var subject_names = [];
+$(document).on('click','#grpinputbtn',function(e) {
+  e.preventDefault();
+  creteGroup();
+})
+$(document).on('click','#subjectinputbtn',function(e) {
+  e.preventDefault();
+  creteSubject(); 
+})
+function creteGroup() {
+        let newGroupName = document.getElementById('groupInput').value;
+             newGroupName = $.trim(newGroupName).toLowerCase();
+        if ($.trim(newGroupName)!=='') {
+            $('#group-row').find('input').each(function(index) {
+            grp_names.push($.trim($(this).attr('txtValue')).toLowerCase());
+           });
+            if (grp_names.includes(newGroupName)===false) {
+            const groupRow = document.getElementById('group-row');
+            let newDiv = document.createElement('div');
+            newDiv.setAttribute('class', 'col-md-2');
+            newDiv.innerHTML = '<label class="radioLabel"><input type="radio" name="group" txtValue="'+newGroupName+'" value="small" class="customRadio"><div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
+            groupRow.appendChild(newDiv);
+            document.getElementById('groupInput').value = "";
+            document.getElementById("groupInput").style.border = "none";
+            ajax_run(newGroupName,'/account/quiz/add-groups');
+            }
+            else
+                {
+                    document.getElementById("groupInput").style.border = "1px solid red";
+                }
+        }
+        else {
+            document.getElementById("groupInput").style.border = "1px solid red";
+        }
+    }
+ function creteSubject() { 
+        let newGroupName = document.getElementById('subjectInput').value;
+             newGroupName = $.trim(newGroupName).toLowerCase();
+        if ($.trim(newGroupName)!=='') {
+            $('#subject-row').find('input').each(function(index) {
+            subject_names.push($.trim($(this).attr('txtValue')).toLowerCase());
+           });
+            if (subject_names.includes(newGroupName)===false) {
+            const groupRow = document.getElementById('subject-row');
+            let newDiv = document.createElement('div');
+            newDiv.setAttribute('class', 'col-md-2');
+            newDiv.innerHTML = '<label class="radioLabel"><input type="radio" name="subject" txtValue="'+newGroupName+'" value="small" class="customRadio"><div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
+            groupRow.appendChild(newDiv);
+            document.getElementById('subjectInput').value = "";
+            document.getElementById("subjectInput").style.border = "none";
+            ajax_run(newGroupName,'/account/quiz/add-subject');
+            }
+            else 
+                {
+                    document.getElementById("subjectInput").style.border = "1px solid red";
+                }
+        }
+        else {
+            document.getElementById("subjectInput").style.border = "1px solid red";
+        }
+    }   
 $('#groupInput').keypress(function(event){
     var keycode = (event.keyCode ? event.keyCode : event.which);
 	if(keycode == '13'){
 		creteGroup();
 	}
 });
+$('#subjectInput').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		creteSubject();
+	}
+});
+
+//ajax query  for handling user data
+function ajax_run(data,url)
+{
+    $.ajax({
+      url:url,
+      data:{data:data},
+      method:'post',
+      success:function(res)
+      {
+          if (!res)
+              {
+                  toastr.error('Internal Server Error!!', 'Failed');
+              }
+      }
+    })
+}
 //steps form
 var navListItems = $('.steps-btn'),
             allWells = $('.setup-content'),
@@ -904,21 +914,43 @@ var navListItems = $('.steps-btn'),
         var curStep = $(this).closest(".setup-content"),
             curStepBtn = curStep.attr("id"),
             nextStepWizard = $('.stepsList button[value="#' + curStepBtn + '"]').next(),
-            curInputs = curStep.find("input[type='text'],input[type='url']"),
-            isValid = true;
-
-        $(".form-group").removeClass("has-error");
-        for(var i=0; i<curInputs.length; i++){
-            if (!curInputs[i].validity.valid){
-                isValid = false;
-                $(curInputs[i]).closest(".form-group").addClass("has-error");
-            }
-        }
-
-        if (isValid)
-            nextStepWizard.removeAttr('disabled').trigger('click');
+            isValid = false;
+           switch (curStepBtn) {
+               case 'step-1':
+               validate_tab_first(isValid,nextStepWizard);
+               break;
+               case 'step-2':
+               validate_tab_second(isValid,nextStepWizard);
+               break;
+           }
     });
+function validate_tab_first(isValid,nextStepWizard) {
+    if ($('input[name="group"]:checked').length!==0)
+        {
+            isValid = true;
+        }
+    else
+        {
+            alert('Please Select One Group');
+        }
+  if (isValid){
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        }
+}
 
+function validate_tab_second(isValid,nextStepWizard) {
+    if ($('input[name="subject"]:checked').length!==0)
+        {
+            isValid = true;
+        }
+    else
+        {
+            alert('Please Select One Subject');
+        }
+  if (isValid){
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        }
+}
 JS;
 $this->registerJs($script);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
