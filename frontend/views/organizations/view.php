@@ -147,7 +147,7 @@ if ($organization['cover_image']) {
                         <div class="divider"></div>
 
                         <div class="col-md-7 col-xs-12">
-                            <div class="com-description">
+                            <div class="com-description more">
                                 <?= htmlspecialchars_decode($organization['description']) ?>
                             </div>
                         </div>
@@ -1018,6 +1018,19 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position: absolute;
     background-color: #00000057;
 }
+.more{
+    display:none;
+}
+.morecontent span {
+    display: none;
+}
+.morelink {
+    display: inline-block;
+    color: #00a0e3;
+}
+.morelink:focus, .morelink:hover{
+    color: #00a0e3;
+}
 ');
 $script = <<<JS
 $(document).on('click','.follow',function(e){
@@ -1061,6 +1074,38 @@ $(document).on('mouseover', '.p-img-thumbnail', function(){
     var path = $(this).find('a').attr('href');
     $('.p-preview-img a').attr('href', path);
     $('.p-preview-img a img').attr('src', path);
+});
+$(document).ready(function() {
+    // Configure/customize these variables.
+    var showChar = 800;  // How many characters are shown by default
+    var ellipsestext = "...";
+    var moretext = "Show more";
+    var lesstext = "Show less";
+    
+
+    $('.more').each(function() {
+        var content = $(this).html();
+        if(content.length > showChar) {
+            var c = content.substr(0, showChar);
+            var h = content.substr(showChar, content.length - showChar);
+            var html = c + '<span class="moreellipses">' + ellipsestext+ '&nbsp;</span><span class="morecontent"><span>' + h + '</span>&nbsp;&nbsp;<a href="" class="morelink">' + moretext + '</a></span>';
+            $(this).html(html);
+        }
+        $(this).css('display','block');
+    });
+ 
+    $(".morelink").click(function(){
+        if($(this).hasClass("less")) {
+            $(this).removeClass("less");
+            $(this).html(moretext);
+        } else {
+            $(this).addClass("less");
+            $(this).html(lesstext);
+        }
+        $(this).parent().prev().toggle();
+        $(this).prev().toggle();
+        return false;
+    });
 });
 JS;
 $this->registerJs("
