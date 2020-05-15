@@ -870,5 +870,8 @@ class SiteController extends Controller
     public function actionWebinarView(){
         return $this->render('webinar-view');
     }
+    public function actionPricingWidget(){
+        return $this->render('pricing-widget');
+    }
 
 }

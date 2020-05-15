@@ -13,4 +13,10 @@ class MentorsController extends Controller
     public function actionAllMentee(){
         return $this->render('all-mentee');
     }
+    public function actionMyWebinar(){
+        return $this->render('my-webinar');
+    }
+    public function actionCreateWebinar(){
+        return $this->render('create-webinar');
+    }
 }

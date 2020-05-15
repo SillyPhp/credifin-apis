@@ -112,6 +112,23 @@ use yii\helpers\Url;
                         <button>See All</button>
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <h4 class="mentor-heading">Webinar Earning</h4>
+                    <div class="md-stats-box">
+                        <div class="md-earning"><i class="fa fa-inr"></i> 464</div>
+                        <div>Last webinar on 25th jan 2020</div>
+                        <div>on Web Designing</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="mentor-heading">Total Webinar</h4>
+                    <div class="md-stats-box">
+                        <div class="md-earning">5</div>
+                        <div>Last Webinar on 25th jan 2020</div>
+                        <div>Next Webinar on 20th May 2020</div>
+                        <a href="my-webinar">See All</a>
+                    </div>
+                </div>
             </div>
 
             <div class="row mt3">
@@ -222,11 +239,104 @@ use yii\helpers\Url;
                             </tbody>
                         </table>
 
-                   </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt3">
+                <div class="col-md-6">
+                    <div class="mentor-heading">Earnings</div>
+                    <div class="md-earning-box">
+                        <div class="md-earning-table">
+                            <ul>
+                                <li><i class="fa fa-inr"></i></li>
+                                <li>500</li>
+                                <li>1000</li>
+                                <li>1500</li>
+                                <li>2000</li>
+                                <li>2500</li>
+                                <li>3000</li>
+                                <li>3500</li>
+                            </ul>
+                        </div>
+                        <div class="eq-list">
+                            <ul>
+                                <li>
+                                    <div class="earning-box">
+                                        <div class="month">
+                                            Jan
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                                <span class="sr-only">70% Complete</span>
+                                            </div>
+                                        </div>
+                                        <div class="m-income"><i class="fa fa-inr"></i> 2000</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="earning-box">
+                                        <div class="month">
+                                            Feb
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                                <span class="sr-only">70% Complete</span>
+                                            </div>
+                                        </div>
+                                        <div class="m-income"><i class="fa fa-inr"></i> 2000</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="earning-box">
+                                        <div class="month">
+                                            Mar
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                                                <span class="sr-only">100% Complete</span>
+                                            </div>
+                                        </div>
+                                        <div class="m-income"><i class="fa fa-inr"></i> 3200</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="earning-box">
+                                        <div class="month">
+                                            Apr
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:80%">
+                                                <span class="sr-only">80% Complete</span>
+                                            </div>
+                                        </div>
+                                        <div class="m-income"><i class="fa fa-inr"></i> 2800</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="earning-box">
+                                        <div class="month">
+                                            May
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                                 aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                                <span class="sr-only">50% Complete</span>
+                                            </div>
+                                        </div>
+                                        <div class="m-income"><i class="fa fa-inr"></i> 1700</div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 <?php
 $this->registerCss('
@@ -312,6 +422,8 @@ $this->registerCss('
     text-transform: capitalize;
     position: relative;
     border-radius: 10px; 
+    min-height: 135px;
+    margin-bottom: 20px;
 } 
 .md-earning{
     font-size: 25px; 
@@ -319,14 +431,14 @@ $this->registerCss('
     color:#000;
     font-weight: bold;
 }
-.md-stats-box button{
+.md-stats-box button, .md-stats-box a{
     padding: 0px;
     border: none;
     background: transparent;
     color: #000; 
     font-weight: bold;
 }
-.md-stats-box button:hover{
+.md-stats-box button:hover, .md-stats-box a:hover{
     color: #00a0e3;
     transition: .3s all;
 }
@@ -423,6 +535,56 @@ $this->registerCss('
 thead{
     border-bottom: 1px solid #eee;
 }
+
+.month{
+    float: left;
+    margin: -5px 10px 0 0;
+}
+.progress{
+    margin-bottom: 0px;
+    background: transparent;
+}
+.md-earning-box{
+     box-shadow: 0px 1px 10px 2px #eee !important;
+     margin-top: 20px;
+}
+.eq-list ul{
+    list-style: none;
+    padding-inline-start: 0px;
+}
+.eq-list ul li{
+    padding: 20px 20px 10px;
+}
+.eq-list ul li:nth-child(even){
+    background: #f8f8f8;   
+}
+.md-earning-table{
+    overflow: hidden;
+    background: #f8f8f8; 
+}
+.md-earning-table ul{
+    padding-inline-start: 0px;
+    padding: 10px 0 0 5px;
+}
+.md-earning-table ul li{
+    display: inline;
+    padding: 5px 10px;
+}
+.earning-box{
+    position: relative; 
+    height: 30px;   
+}
+.m-income{
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color:#333;
+    font-weight: bold;
+    font-size: 12px;
+    font-family: roboto;
+}
+
 ');
 $script = <<<JS
 

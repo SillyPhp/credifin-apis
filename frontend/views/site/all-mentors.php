@@ -189,6 +189,7 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+
 .career-c {
     font-size: 18px;
     font-family: lora;
