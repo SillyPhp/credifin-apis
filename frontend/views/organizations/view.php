@@ -488,7 +488,10 @@ if ($organization['cover_image']) {
                             <h4 class="modal-title"></h4>
                         </div>
                         <div class="modal-body">
-                            <p>Please Login as Candidate to drop your resume</p>
+                            <div class="warn-img">
+                                <img src="<?= Url::to('@eyAssets/images/pages/landing/login-warn.png'); ?>">
+                            </div>
+                            <p class="warn-p">Please Login as Candidate to drop your resume</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -543,6 +546,17 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.warn-img {
+	width: 300px;
+	margin: auto;
+}
+.warn-p {
+	text-align: center;
+	padding: 20px 0 0;
+	font-size: 22px;
+	font-family: roboto;
+	font-weight: 500;
+}
 .write-review{
     font-family: "Open Sans", sans-serif;
     font-size: 14px;
