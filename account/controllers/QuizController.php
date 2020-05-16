@@ -19,16 +19,11 @@ class QuizController extends Controller
         return $this->render('dashboard');
     }
     public function actionCreate(){
-//        $categories = $this->_data('Groups');
-//        $sub = $this->_data('Subject');
-//        $rec_topics = $this->_topics($is_rec=true);
-//        $user_topics = $this->_topics($is_rec=false);
-//        $intros_Desc = $this->_desc();
-        $categories = [];
-        $sub = [];
-        $rec_topics = [];
-        $user_topics = [];
-        $intros_Desc = [];
+        $categories = $this->_data('Groups');
+        $sub = $this->_data('Subject');
+        $rec_topics = $this->_topics($is_rec=true);
+        $user_topics = $this->_topics($is_rec=false);
+        $intros_Desc = $this->_desc();
         return $this->render('create-quiz-multi',['categories'=>$categories,
             'subject'=>$sub,
             'recommend_topics'=>$rec_topics,
