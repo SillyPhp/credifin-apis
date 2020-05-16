@@ -195,7 +195,7 @@ use yii\widgets\Pjax;
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No active Internships</div>
+                                        <div class="">There Are No Active Internships In This Company</div>
                                     </div>
                                 </div>
                             <?php }
@@ -241,7 +241,11 @@ use yii\widgets\Pjax;
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No Active Erexx Internships</div>
+                                        <div class="">You Have Not Posted Any Internships</div>
+                                        <span class="create-new-i">
+                                        <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
+                                           title="Add New">CREATE</a>
+                                        </span>
                                     </div>
                                 </div>
                             <?php }
@@ -405,6 +409,14 @@ use yii\widgets\Pjax;
 
 <?php
 $this->registerCss('
+.create-new-i a {
+	background: #00a0e3;
+	color: #fff;
+	border-radius: 6px;
+	padding: 5px 25px;
+	font-family: roboto;
+	font-size: 23px;
+}
 .padd-top-20{
     padding-top:30px;
 }

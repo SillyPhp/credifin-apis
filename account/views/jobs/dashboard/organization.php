@@ -202,7 +202,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No Active Jobs</div>
+                                        <div class="">There Are No Active Jobs In This Company</div>
                                     </div>
                                 </div>
                             <?php }
@@ -245,7 +245,11 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No Active Erexx Jobs</div>
+                                        <div class="">You Have Not Posted Any Job</div>
+                                        <span class="create-new-j">
+                                        <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                           title="Add New">CREATE</a>
+                                        </span>
                                     </div>
                                 </div>
                             <?php }
@@ -411,6 +415,14 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
 <?php
 $this->registerCss('
+.create-new-j a {
+	background: #00a0e3;
+	color: #fff;
+	border-radius: 6px;
+	padding: 5px 25px;
+	font-family: roboto;
+	font-size: 23px;
+}
 .padd-top-20{
     padding-top:30px; 
 }
