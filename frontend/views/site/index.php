@@ -1096,7 +1096,6 @@ var errorNth = 0;
 function scrollFunction() {
      // var doc_height = $(document).height() - $(window).height();
   // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
-  console.log(loadElems.length);
   // for(var l =0;l<loadElems.length;l++){
       if(load_content && loadElems[loadNth]){
         load_content = false;
