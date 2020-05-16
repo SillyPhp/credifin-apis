@@ -26,7 +26,7 @@ if($type == 'internships'){
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="heading-set">
-                            <h1 class="heading-style mt-50">Popular Countries</h1>
+                            <h1 class="heading-style mt-50">Find Your Dream Job In</h1>
                         </div><!-- Heading -->
                         <div class="cat-sec">
                             <div class="row no-gape">

@@ -20,17 +20,23 @@ use yii\helpers\Url;
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="btn-for-job">
+                    <a href="">View all jobs</a>
+                </div>
+            </div>
         </div>
     </section>
 <?php
 echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
-.widget-heading{
-    text-align:center;
-    font-size:25px;
-    padding-bottom:20px;
-    color:#333;
-    font-family: roboto;
+.widget-heading {
+	text-align: center;
+	font-size: 27px;
+	padding-bottom: 20px;
+	color: #333;
+	font-family: lora;
+	font-weight: 600;
 }
 .fj-wa a{
     font-size:18px;
@@ -64,6 +70,28 @@ $this->registerCss('
     background:#00a0e3;
     padding:10px 10px;
     border:none;
+}
+.btn-for-job {
+	text-align: center;
+	margin: 15px 0 20px;
+}
+.btn-for-job a {
+	background: #fff;
+	color: #333;
+	padding: 8px 20px;
+	font-size: 20px;
+	border-radius: 4px;
+	text-transform: capitalize;
+	word-spacing: 2px;
+	border: 1px solid #000;
+	transition: all .3s;
+	font-family: roboto;
+}
+.btn-for-job a:hover {
+	background: #00a0e3;
+	color: #fff;
+	border: 1px solid #00a0e3;
+	box-shadow: 0 0 11px 5px #eee;
 }
 ');
 $script = <<<JS
