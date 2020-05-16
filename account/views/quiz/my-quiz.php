@@ -164,7 +164,7 @@ $this->registerCss('
 }
 .qz-logo {
    width: 100%;
-   height: 20.take-quiz-20px;
+   height: 200px;
 }
 .qz-logo img{
     height: 100%;
