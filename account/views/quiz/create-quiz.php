@@ -10,10 +10,11 @@ use yii\helpers\Url;
             <button class="w3-bar-item w3-button tablink active" onclick="openCity(event, 'Group')">Group</button>
             <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Subject')">Subject</button>
             <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Topic')">Topic</button>
-            <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Introduction')">Introduction
+            <button class="w3-bar-item w3-button tablink"
+                    onclick="openCity(event, 'Introduction')">Introduction
             </button>
             <button class="w3-bar-item w3-button tablink" onclick="openCity(event, 'Questions')">Questions</button>
-            <button class="w3-bar-item w3-button tablink payLink" onclick="openCity(event, 'Payment')">Payment</button>
+            <button class="w3-bar-item w3-button tablink payLink" onclick="openCity(event, 'Rules')">Rules</button>
         </div>
 
         <div class="ml250">
@@ -210,84 +211,177 @@ use yii\helpers\Url;
 
             <div id="Questions" class="w3-container steps" style="display:none">
                 <div class="row">
-                    <div class="col-md-7">
+                    <div class="col-md-6">
                         <h2 class="quiz-heading">Enter Questions And Choose Correct Answer</h2>
                         <div class="quiz-ques">
-                            <div class="">
-                                <input type="text" placeholder="Enter Question" class="ques-input">
+                            <div class="quiz-textarea">
+                                <textarea placeholder="Enter Question" class="ques-input"></textarea>
+                            </div>
+                            <div class="optionList">
+                                <div class="dis-flex">
+                                    <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                    <label class="checkbox-container correctAns">
+                                        <input type="radio" name="answer" class="ca-ans">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <p class="ca-message"></p>
+                                </div>
+                                <div class="dis-flex">
+                                    <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                    <label class="checkbox-container correctAns">
+                                        <input type="radio" name="answer" class="ca-ans">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <p class="ca-message"></p>
+                                </div>
+                                <div class="dis-flex">
+                                    <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                    <label class="checkbox-container correctAns" value="">
+                                        <input type="radio" name="answer" class="ca-ans">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <p class="ca-message"></p>
+                                    <button type="button" class="deleteBtn" onclick="deleteOption(this)"><i
+                                                class="fa fa-trash"></i></button>
+                                </div>
+                                <div class="dis-flex">
+                                    <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                    <label class="checkbox-container correctAns">
+                                        <input type="radio" name="answer" class="ca-ans">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <p class="ca-message"></p>
+                                    <button type="button" class="deleteBtn" onclick="deleteOption(this)"><i
+                                                class="fa fa-trash"></i></button>
+                                </div>
                             </div>
                             <div class="dis-flex">
-                                <input type="text" placeholder="Enter Option" class="ques-input max200">
-                                <label class="checkbox-container correctAns">
-                                    <input type="radio" name="answer" class="ca-ans">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <p class="ca-message"></p>
+                                <button type="button" onclick="addOption()">Add Option</button>
                             </div>
-                            <div class="dis-flex">
-                                <input type="text" placeholder="Enter Option" class="ques-input max200">
-                                <label class="checkbox-container correctAns">
-                                    <input type="radio" name="answer" class="ca-ans">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <p class="ca-message"></p>
+
+                            <div class="quiz-button-flex">
+                                <button type="button">Create Question</button>
+                                <p>Question <br> 4/4</p>
+                                <button type="button" onclick="finishQuiz()">Finish Quiz</button>
                             </div>
-                            <div class="dis-flex">
-                                <input type="text" placeholder="Enter Option" class="ques-input max200">
-                                <label class="checkbox-container correctAns" value="">
-                                    <input type="radio" name="answer" class="ca-ans">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <p class="ca-message"></p>
-                            </div>
-                            <div class="dis-flex">
-                                <input type="text" placeholder="Enter Option" class="ques-input max200">
-                                <label class="checkbox-container correctAns">
-                                    <input type="radio" name="answer" class="ca-ans">
-                                    <span class="checkmark"></span>
-                                </label>
-                                <p class="ca-message"></p>
-                            </div>
-                            <button type="button">Create Question</button>
-                            <button type="button" onclick="finishQuiz()">Finish Quiz</button>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <h2 class="quiz-heading">Questions Created</h2>
-                        <div class="created-ques">
-                            <div class="c-ques"><span>Q1:</span> Capital Of India</div>
-                            <ul>
-                                <li>Ludhiana</li>
-                                <li>Delhi</li>
-                                <li>Mumbai</li>
-                                <li>Jalandhar</li>
-                            </ul>
+                        <div class="card">
+                            <div class="card-header" role="tab" id="quesThree">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                                   aria-expanded="false"
+                                   aria-controls="collapseOne" class="collapsed flex2">
+                                    <div class="q1">
+                                        <div class=""><span>Q:</span>Lorem Ipsum is simply dummy text of the printing
+                                            and
+                                            typesetting industry. Lorem Ipsum has
+                                        </div>
+                                    </div>
+                                </a>
+                                <span class="btnedit"><i class="fa fa-pencil"></i></span>
+                                <span class="btndelete"><i class="fa fa-trash-o"></i></span>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                                   aria-expanded="false"
+                                   aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a>
+                            </div>
+                            <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="quesThree"
+                                 aria-expanded="false">
+                                <div class="card-block">
+                                    <div class="q-ans">
+                                        <ul>
+                                            <li>Ludhiana</li>
+                                            <li class="correct">Delhi</li>
+                                            <li>Mumbai</li>
+                                            <li>Jalandhar</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="Payment" class="w3-container steps" style="display: none">
+            <div id="Rules" class="w3-container steps" style="display: none">
                 <div class="row">
-                    <div class="col-md-12">
-                        <h2 class="quiz-heading">Payment</h2>
-                        <div class="payment-text">Would you like to charge students for this quiz</div>
-                        <div class="pay-btns">
-                            <button type="button" onclick="showPatment()"> Yes</button>
-                            <button type="button" onclick="createQuiz()"> No</button>
-                        </div>
-                        <div id="payment-details">
-                            <div class="pay-form">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="payment-text">Total Marks</div>
                                 <div class="pay-input">
-                                    <input type="text" placeholder="Enter Amount">
-                                    <span><i class="fa fa-inr"></i></span>
-                                </div>
-                                <div class="pay-btns">
-                                    <button type="button" onclick="">Create Quiz</button>
+                                    <input type="text" placeholder="Marks">
                                 </div>
                             </div>
-                            <div class="note-text">
-                                <span>Note: </span> We Charge 20% as maintenance charges
+                            <div class="col-md-6">
+                                <div class="payment-text">Time Duration</div>
+                                <div class="pay-input">
+                                    <input type="text" placeholder="Minutes / Hours">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt20">
+                                <div class="payment-text">Marks For Every Correct answer</div>
+                                <div class="pay-input">
+                                    <input type="text" placeholder="Marks">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt20">
+                                <div class="payment-text">Would you like to negative marking for this quiz</div>
+                                <div class="pay-btns">
+                                    <button type="button" onclick="showMarking()"> Yes</button>
+                                    <button type="button"> No</button>
+                                </div>
+                                <div id="marking-details">
+                                    <div class="payment-text">Penalty For Every Wrong answer</div>
+                                    <div class="pay-input">
+                                        <input type="text" placeholder="Penalty">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 mt20">
+                                <div class="payment-text">Would you like to charge students for this quiz</div>
+                                <div class="pay-btns">
+                                    <button type="button" onclick="showPatment()"> Yes</button>
+                                    <button type="button" onclick="createQuiz()"> No</button>
+                                </div>
+
+                                <div id="payment-details">
+                                    <div class="pay-form">
+                                        <div class="pay-input">
+                                            <input type="text" placeholder="Enter Amount">
+                                            <span><i class="fa fa-inr"></i></span>
+                                        </div>
+                                        <div class="pay-btns">
+                                            <button type="button" onclick="createQuiz()">Create Quiz</button>
+                                        </div>
+                                    </div>
+                                    <div class="note-text">
+                                        <span>Note: </span> We Charge 20% as maintenance charges
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="quiz-name">
+                            <div class="quiz-title">
+                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting</p>
+                            </div>
+                            <div class="qm-logo">
+                                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"
+                                     alt="">
+                            </div>
+                            <div class="quiz-details">
+                                <p><span>Total Questions:</span> 5</p>
+                                <p><span>Group:</span> 9th</p>
+                                <p><span>Subject:</span> GK</p>
+                                <p><span>Last Edited:</span> 20-09-2019</p>
+                            </div>
+                            <div class="quiz-info">
+                                <p><span>Introduction:</span> Tokyo is the capital of Japan. It is the center of the
+                                    Greater Tokyo Area
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -295,12 +389,103 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
+    </div>
 
 
 </section>
+<div id="shareQuizModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="qModal">
+            <h2>Share Quiz</h2>
+            <div class="qm-logo">
+                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+            </div>
+            <p class="qm-name">Quiz on human ethics</p>
+            <div class="share-input">
+                <form>
+                    <input type="text" placeholder="" class="shareLinkInput">
+                    <button type="button" onclick="nextStep()"><i class="fa fa-copy"></i></button>
+                </form>
+            </div>
+            <p>If someone plays this quiz through this link, It will earn you 20 extra credits</p>
+            <h4>Share on</h4>
+            <ul class="qshare">
+                <li>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank"
+                       onclick="appendLink(this)">
+                        <i class="fa fa-facebook-f"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href=" https://publish.twitter.com/" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-twitter"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.linkedin.com/cws/share?url=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-linkedin"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="whatsapp://send?text=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-whatsapp"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://t.me/share/url?url=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-telegram"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="mailto:?subject=[SUBJECT]&body=" target="_blank" onclick="appendLink(this)">
+                        <i class="fa fa-envelope"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="" onclick="downloadImage(this)" target="_blank">
+                        <i class="fa fa-download"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss('
-#payment-details{
+
+.mt20{
+    margin-top: 20px;
+}
+.quiz-title{
+    background: #f8f8f8;
+    color: #000;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-family: lora;
+    display: flex;
+    align-items: center;
+}
+.quiz-details p span, .quiz-info p span{
+    font-weight: bold;
+}
+#Rules{
+    margin: 40px 0 0 0;
+}
+.ml15{
+    margin-left: 15px;
+}
+.quiz-textarea textarea{
+    height: 100px;
+    resize: none;
+}
+.quiz-button-flex{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    align-items: center;
+}
+#payment-details, #marking-details{
     display: none;
 }
 .recom-charac{
@@ -376,28 +561,41 @@ $this->registerCss('
 }
 .dis-flex{
     display: flex;
+    position: relative;
+    margin: 0px 0 16px 0;
+    max-width: 425px;
+}
+.dis-flex textarea{
+    height: 60px;
+    resize: none;
 }
 .quiz-ques{
     display: flex;
     flex-direction: column;
 }
 .ques-input{
-    width: 400px;
-//    width: 100%;
+//    max-width: 400px;
+    width: 100%;
     border:1px solid #eee;
     padding: 8px 10px;
     margin-bottom: 10px;
     overflow-wrap: break-word;
 }
-.max200{
-    max-width: 200px;
+.max300{
+    max-width: 400px;
 }
 .quiz-ques button, .quiz-intro button, .pay-btns button{
     max-width: 200px;
     background: #00a0e3;
     color: #fff;
     border: none;
-    padding: 10px 0;
+    padding: 10px 15px;
+}
+.quiz-ques button{
+    padding: 10px 15px;
+}
+.quiz-button-flex p{
+    text-align: center;
 }
 .quiz-ques button, .pay-btns button{
     margin-bottom: 10px;
@@ -437,7 +635,7 @@ $this->registerCss('
     width:100%;
     border:1px solid #eee;
 }
-.quiz-top button, .quiz-search button{
+.quiz-top button, .quiz-search button, .share-input button{
     padding: 8px 14px;
     border: none;
     background: #00a0e3;
@@ -453,7 +651,32 @@ $this->registerCss('
 //     border:1px solid #eee;
     border:transparent;
 }
+.share-input{
+    max-width:500px;
+    width: 100%;
+    border:1px solid #eee;
+    margin: 0 auto;
+}
+.shareLinkInput{
+    width: 89%;
+    padding:8px 10px;
+//     border:1px solid #eee;
+    border:transparent;
+}
 
+.deleteBtn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 8px 6px !important;
+    background: transparent !important;
+    border:1px solid #00a0e3 !important;
+    color: #00a0e3 !important;   
+}
+.deleteBtn:hover{
+    background: #00a0e3 !important;
+       color: #fff !important;   
+}
 .quiz-class{
     font-size: 20px;
     font-family: lora; 
@@ -536,7 +759,7 @@ $this->registerCss('
 .checkbox-container {
   display: block;
   position: relative;
-  margin: 6px;
+  margin: 0px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
@@ -561,7 +784,7 @@ $this->registerCss('
   left: 0;
   height: 25px;
   width: 25px;
-  border: 2px solid #eee;
+  border: 1px solid #00a0e3;    
 }
 
 /* On mouse-over, add a grey background color */
@@ -608,8 +831,165 @@ $this->registerCss('
     display:none;
 }
 .ca-message{
-    margin: 10px 0 0 20px;
+    margin: 10px 0 0 00px;
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    color: #00a0e3;
 }
+
+.card {
+    -moz-box-direction: normal;
+    -moz-box-orient: vertical;
+    background-color: #fff;
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-bottom:20px;
+    border:none;
+    box-shadow: 0 0 10px rgba(0,0,0,.1);
+}
+.card-header:first-child {
+    border-radius: 0;
+}
+
+.card-header {
+    background-color: #f7f7f9;
+    margin-bottom: 0;
+    padding: 10px 1.25rem;
+    border: none;
+    display: flex;
+    
+}
+.card-header i{      
+    font-size:17px;
+    margin-top:15px;
+    margin-right:10px;
+}
+.flex2{
+    flex:2;
+}
+.card-header a{
+    float:left;
+    color:#333;
+}
+.card-header a:focus{
+    text-decoration: none;
+}
+.card-header p{
+    margin:0;
+}
+
+.card-header h3{
+    margin:0 0 0px;
+    font-size:20px;
+    font-family: lora
+    font-weight:bold;
+    color:#3fc199;
+}
+.card-block {
+    -moz-box-flex: 1;
+    flex: 1 1 auto;
+    padding: 20px;
+    color:#232323;
+    border-radius:0;
+}
+
+/*-------modal ----------*/
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 10px; /* Location of the box */
+  left: 0;
+  top: 100px;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: scroll; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin:5% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  text-align: center;
+
+}
+
+/* The Close Button */
+.close, .closeInfo {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 10px
+}
+
+.close:hover,
+.closeInfo:hover,
+.close:focus,
+.closeInfo:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.qModal h4{
+    font-weight: bold;
+    color: #333;
+    font-family: roboto;
+    font-size: 20px;
+}
+.qModal h2{
+    font-weight: bold;
+    color: #00a0e3;
+    font-family: lora;
+    font-size: 30px;
+}
+.qModal p{
+    color: #333;
+    font-family: roboto;
+    font-size: 16px;
+}
+.qshare {
+    padding-inline-start: 0;
+}
+.qshare li{
+    list-style: none;
+    display: inline;
+   padding:10px 10px;
+}
+.qshare li a{
+    font-size: 23px;
+    color: #333; 
+}
+.qshare li a:hover{
+    color: #00a0e3; 
+}
+.qm-logo{
+    max-width:100px;
+    max-height: 100px;    
+    margin: 0 auto;
+}
+.qm-name{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.qm-logo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+
 ');
 $script = <<<JS
 JS;
@@ -682,13 +1062,13 @@ $this->registerJS($script);
         document.getElementById('payment-details').style.display = "block";
     }
 
+    function showMarking() {
+        document.getElementById('marking-details').style.display = "block";
+    }
+
     function finishQuiz() {
         document.querySelector('.payLink').style.display = "block";
         nextStep()
-    }
-
-    function createQuiz() {
-        alert('Your Quiz Has Been Created')
     }
 
     function creteGroup() {
@@ -708,5 +1088,52 @@ $this->registerJS($script);
         }
     }
 
-</script>
+    let qlModal = document.getElementById("shareQuizModal");
 
+    function createQuiz() {
+        qlModal.style.display = 'block';
+    }
+
+    var closeInfo = document.querySelector(".close");
+    closeInfo.onclick = function () {
+        qlModal.style.display = 'none';
+    }
+    window.onclick = function (event) {
+        if (event.target == qlModal) {
+            qlModal.style.display = "none";
+        }
+    }
+
+    function appendLink(e) {
+        let shareLink = document.querySelector('.shareLinkInput').value;
+        let attriBute = e.getAttribute('href');
+        e.setAttribute('href', attriBute + shareLink)
+    }
+
+    function downloadImage(e) {
+        let downImage = document.querySelector('.imagePath');
+        let imagePath = downImage.getAttribute('src');
+        e.setAttribute('href', imagePath);
+        e.setAttribute('download', imagePath);
+    }
+
+    function deleteOption(e) {
+        e.parentElement.remove();
+    }
+
+    function addOption() {
+        let optionList = document.querySelector('.optionList');
+
+        let newOption = document.createElement('div');
+        newOption.setAttribute('class', 'dis-flex');
+        newOption.innerHTML = '<textarea placeholder="Enter Option" class="ques-input max300"></textarea>\n' +
+            '    <label class="checkbox-container correctAns">\n' +
+            '        <input type="radio" name="answer" class="ca-ans">\n' +
+            '        <span class="checkmark"></span>\n' +
+            '    </label>\n' +
+            '    <p class="ca-message"></p>\n' +
+            '    <button type="button" class="deleteBtn" onclick="deleteOption(this)"><i class="fa fa-trash"></i></button>';
+
+        optionList.appendChild(newOption);
+    }
+</script>
