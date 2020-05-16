@@ -122,11 +122,11 @@ $industries = Json::encode($industries);
                                     </div>
                                 </div>
                                 <div class="com-details">
-                                    <div class="com-name"><?= Html::encode($organization['name']) ?></div>
+                                    <div class="com-name"><?= htmlspecialchars_decode($organization['name']) ?></div>
                                     <div class="com-establish"><span class="detail-title">Tagline:</span> <span
                                                 class="model" id="tag_line" data-type="text" data-pk="tag_line"
                                                 data-name="tag_line"
-                                                data-value="<?= Html::encode($organization['tag_line']); ?>"></span>
+                                                data-value="<?= htmlspecialchars_decode($organization['tag_line']); ?>"></span>
                                         <span data-for="tag_line" class="edit-box"><i class="fas fa-pencil-alt"></i></span>
                                     </div>
                                     <div class="com-establish"><span class="detail-title">Industry:</span> <span
@@ -158,16 +158,16 @@ $industries = Json::encode($industries);
                     </div>
                     <div class="social-btns">
                         <a href="javascript:;" data-pk="facebook" data-name="facebook" data-type="url"
-                           data-value="<?= Html::encode($organization['facebook']) ?>" class="facebook model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook model-link"><i
                                     class="fab fa-facebook-f"></i> </a>
                         <a href="javascript:;" data-pk="twitter" data-name="twitter" data-type="url"
-                           data-value="<?= Html::encode($organization['twitter']) ?>" class="twitter model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter model-link"><i
                                     class="fab fa-twitter"></i> </a>
                         <a href="javascript:;" data-pk="linkedin" data-name="linkedin" data-type="url"
-                           data-value="<?= Html::encode($organization['linkedin']) ?>" class="linkedin model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin model-link"><i
                                     class="fab fa-linkedin-in"></i> </a>
                         <a href="javascript:;" data-pk="website" data-name="website" data-type="url"
-                           data-value="<?= Html::encode($organization['website']) ?>" class="web model-link"><i
+                           data-value="<?= htmlspecialchars_decode($organization['website']) ?>" class="web model-link"><i
                                     class="fas fa-link"></i> </a>
                     </div>
                 </div>
@@ -180,7 +180,7 @@ $industries = Json::encode($industries);
                 <div id="home" class="tab-pane fade in active">
                     <div class="row">
                         <div class="heading-style">
-                            About <?= Html::encode($organization['name']) ?>
+                            About <?= htmlspecialchars_decode($organization['name']) ?>
                             <span data-for="description" class="edit-box"><i
                                         class="fas fa-pencil-alt"></i></span>
                         </div>
@@ -190,7 +190,7 @@ $industries = Json::encode($industries);
                             <div class="com-description">
                                 <span href="#" class="model" id="description" data-pk="description"
                                       data-name="description" data-type="textarea"
-                                      data-value="<?= Html::encode($organization['description']) ?>"></span>
+                                      data-value="<?= htmlspecialchars_decode($organization['description']) ?>"></span>
                             </div>
                         </div>
                         <div class="col-md-5 col-xs-12">
@@ -203,7 +203,7 @@ $industries = Json::encode($industries);
                                                 <div class="det">
                                                     <span class="model" id="employees" data-pk="number_of_employees"
                                                           data-name="number_of_employees" data-type="number"
-                                                          data-value="<?= Html::encode($organization['number_of_employees']) ?>"></span>
+                                                          data-value="<?= htmlspecialchars_decode($organization['number_of_employees']) ?>"></span>
                                                 </div>
                                                 <div class="det-heading">Employees</div>
                                             </div>
@@ -249,7 +249,7 @@ $industries = Json::encode($industries);
                                 <div class="mv-text">
                                     <span href="#" class="model" id="mission" data-pk="mission" data-name="mission"
                                           data-type="textarea"
-                                          data-value="<?= Html::encode($organization['mission']) ?>"></span>
+                                          data-value="<?= htmlspecialchars_decode($organization['mission']) ?>"></span>
                                 </div>
                                 <div class="vission-box">
                                     <div class="mv-heading">
@@ -259,7 +259,7 @@ $industries = Json::encode($industries);
                                     <div class="mv-text">
                                         <span href="#" class="model" id="vision" data-pk="vision" data-name="vision"
                                               data-type="textarea"
-                                              data-value="<?= Html::encode($organization['vision']) ?>"></span>
+                                              data-value="<?= htmlspecialchars_decode($organization['vision']) ?>"></span>
                                     </div>
                                 </div>
                             </div>
@@ -319,7 +319,7 @@ $industries = Json::encode($industries);
                     <div class="row">
                         <div class="office-view">
                             <div class="heading-style">
-                                Inside <?= Html::encode($organization['name']) ?>
+                                Inside <?= htmlspecialchars_decode($organization['name']) ?>
                                 <div class="button_location pull-right">
                                     <button type="button" class="i-review-nx modal-load-class"
                                             value="/organizations/add-gallery-images">
@@ -433,7 +433,7 @@ $industries = Json::encode($industries);
                             <div class="col-md-12 col-sm-6 col-xs-12 no-padd">
                                 <h4>Brief Desciption <span data-for="p_description" class="edit-box"><i class="fas fa-pencil-alt"></i></span></h4>
                                 <p>
-                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= Html::encode($org_products['description']) ?>"></span>
+                                    <span href="#" class="model-product" id="p_description" data-pk="description" data-name="description" data-type="textarea" data-value="<?= htmlspecialchars_decode($org_products['description']) ?>"></span>
                                 </p>
                             </div>
                         </div>
@@ -580,7 +580,7 @@ $industries = Json::encode($industries);
                 <div id="menu4" class="tab-pane fade">
                     <div class="row">
                         <div class="address-division">
-                            <div class="heading-style"><?= Html::encode($organization['name']) ?> Reviews</div>
+                            <div class="heading-style"><?= htmlspecialchars_decode($organization['name']) ?> Reviews</div>
                             <div class="divider"></div>
                             <div id="org-reviews"></div>
                             <div class="viewbtn">
