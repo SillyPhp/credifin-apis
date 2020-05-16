@@ -183,41 +183,58 @@ use yii\helpers\Url;
 <div id="editQuizInfo" class="modal">
     <div class="modal-content">
         <span class="closeInfo">&times;</span>
-        <div class="updateInfo">
-            <div class="pos-rel">
-                <label class="text-bold">Quiz Name</label>
+        <div class="row max800">
+            <div class="col-md-12">
+                <div class="updateInfo">
+                    <div class="pos-rel">
+                        <label class="text-bold">Quiz Name</label>
+                    </div>
+                    <input type="text" placeholder="" class="ques-input">
+                </div>
             </div>
-            <input type="text" placeholder="" class="ques-input">
-        </div>
-        <div class="updateInfo">
-            <div class="pos-rel">
-                <label class="text-bold">Group</label>
+            <div class="col-md-6">
+                <div class="updateInfo">
+                    <div class="pos-rel">
+                        <label class="text-bold">Group</label>
+                    </div>
+                    <input type="text" placeholder="" class="ques-input max200">
+                </div>
             </div>
-            <input type="text" placeholder="" class="ques-input max200">
-        </div>
-
-        <div class="updateInfo">
-            <div class="pos-rel">
-                <label class="text-bold">Subject</label>
+            <div class="col-md-6">
+                <div class="updateInfo">
+                    <div class="pos-rel">
+                        <label class="text-bold">Subject</label>
+                    </div>
+                    <input type="text" placeholder="" class="ques-input max200">
+                </div>
             </div>
-            <input type="text" placeholder="" class="ques-input max200">
-        </div>
-
-        <div class="updateInfo">
-            <div class="pos-rel">
-                <label class="text-bold">Intoduction</label>
+            <div class="col-md-12">
+                <div class="updateInfo">
+                    <div class="pos-rel">
+                        <label class="text-bold">Intoduction</label>
+                    </div>
+                    <textarea placeholder="" class="ques-input max200"></textarea>
+                </div>
             </div>
-            <textarea placeholder="" class="ques-input max200"></textarea>
+            <button type="button" class="ui-btn">Update Information</button>
         </div>
-        <button type="button" class="ui-btn">Update Information</button>
     </div>
 </div>
 <?php
 $this->registerCss('
+.max800{
+    max-width: 800px;
+    margin: 0 auto;
+}
 .ui-btn{
     padding: 10px 15px; 
     background: #00a0e3;
     color: #fff;
+    border: none;
+}
+.ui-btn:hover{
+    box-shadow: 0 0 8px rgba(0,0,0,.3);
+    transition: .3s ease;
 }
 .q-flex{
     display: flex;
@@ -318,7 +335,6 @@ $this->registerCss('
     background: transparent;
     color: #333333;
     border: none;
-//    padding: 3px 8px;
     font-size: 12px;
 }
 .quiz-name{
@@ -391,6 +407,9 @@ $this->registerCss('
     cursor: pointer;
     color: #00a0e3;
 }
+textarea{
+    resize: none;   
+}
 /*-------modal ----------*/
 .modal {
   display: none; /* Hidden by default */
@@ -451,16 +470,14 @@ $this->registerCss('
     max-width: 400px;
     margin: 10px auto;
 }
-.max200{
-    max-width: 400px;
-}
+
 .quiz-ques{
     display: flex;
     flex-direction: column;
 }
 .ques-input{
-    width: 600px;
-//    width: 100%;
+//    width: 600px;
+    width: 100%;
     border:1px solid #eee;
     padding: 8px 10px;
     margin-bottom: 10px;

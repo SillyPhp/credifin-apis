@@ -7,11 +7,11 @@ use yii\helpers\Url;
     <div class="row">
         <div class="col-md-4 col-sm-6">
             <div class="quiz-name">
-                <div class="quiz-title">
-                    <p>Name of the quiz</p>
-                </div>
                 <div class="qz-logo">
                     <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                </div>
+                <div class="quiz-title">
+                    <p>Name of the quiz</p>
                 </div>
                 <div class="quiz-info">
                     <div class="qd">
@@ -22,6 +22,7 @@ use yii\helpers\Url;
                     <div class="qd">
                         <p><span>Plays:</span> 5</p>
                         <p><span>Earning:</span> <i class="fa fa-inr"></i> 500</p>
+                        <p><span>Duration :</span> 5min</p>
                     </div>
                 </div>
                 <div class="quiz-btn">
@@ -30,39 +31,6 @@ use yii\helpers\Url;
                         <a href="quiz-view">Edit</a>
                         <button>Delete</button>
                         <button  type="button" class="ql-share"><i class="fa fa-share-alt"></i> </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 col-sm-6 ">
-            <div class="qz-main">
-                <div class="qz-logo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
-                </div>
-                <div class="qz-count">
-                    <span class="qz-q">16 question</span>
-                    <span class="qz-plays">200 plays</span>
-                </div>
-                <div class="qz-inner">
-                    <div class="qz-name">type of insurance</div>
-                    <div class="qz-creater">
-                        <div class="creator-name">
-                    <span class="creator-img">
-                        <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>"
-                             alt="">
-                    </span>
-                            <span>Pooja</span>
-                        </div>
-                    </div>
-                    <div class="qz-border"></div>
-                    <div class="qz-cat"><span>Category :</span> Marketing</div>
-                    <div class="qz-duration"><span>Duration :</span> 5min</div>
-                    <div class="qz-price"><span>Price :</span> $12</div>
-                    <div class="take-quiz">
-                        <a href="quiz-view">View</a>
-                        <a href="quiz-view">Edit</a>
-                        <button>Delete</button>
-                        <button type="button" class="ql-share"><i class="fa fa-share-alt"></i> </button>
                     </div>
                 </div>
             </div>
@@ -196,7 +164,7 @@ $this->registerCss('
 }
 .qz-logo {
    width: 100%;
-   height: 140px;
+   height: 20.take-quiz-20px;
 }
 .qz-logo img{
     height: 100%;
@@ -259,7 +227,7 @@ $this->registerCss('
     margin-top: 5px;
 }
 .take-quiz-2{
-    padding: 0px 0 6px 0;
+    padding: 0px 0 0px 0;
 }
 .take-quiz a,
 .take-quiz-2 a,
@@ -288,11 +256,12 @@ $this->registerCss('
     margin-top: 20px;
 }
 .quiz-title{
-    background: #00a0e3;
-    color: #fff;
-    padding: 10px 15px;
+//    background: #00a0e3;
+    color: #333;
+    padding: 5px 15px;
     font-size: 18px;
     font-family: lora;
+        border-bottom: 1px solid #eee;
 }
 .quiz-details{
     padding: 10px 15px 0;
