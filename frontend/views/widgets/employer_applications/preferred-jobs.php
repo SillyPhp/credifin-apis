@@ -76,7 +76,7 @@ $script = <<<JS
      loc = city + ', ' + state + ', ' + country;
      getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
      if(city != ""){
-        $('#prefer-heading').html('Preferred Jobs in ' + city);
+        $('#prefer-heading').html('Jobs in ' + city);
      }
  }
 function ipLookUp () {
