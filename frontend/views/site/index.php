@@ -162,84 +162,9 @@ $this->params['header_dark'] = false;
 <?= $this->render('/widgets/online-classes', [
     'model' => $model,
 ]) ?>
-<!--------services section starts-------->
 
-<section class="services-section">
-    <div class="container">
-        <h1 class="heading-style ">Our Services</h1>
-        <div class="services row">
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/jobs'); ?>">
-                    <div class="service-box">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/job.png') ?>"
-                                 alt="web developer jobs for freshers, job openings in chandigarh data science job opportunities, it software engineer"
-                                 title="Jobs"/>
-                        </div>
-                        <div class="ser-heading">Jobs</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/internships'); ?>">
-                    <div class="service-box ser-box-orange">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/internships.png') ?>"
-                                 alt="free learning sites, free internship, best online learning sites, free online courses sites,internship jobs near me"
-                                 title="Internships"/>
-                        </div>
-                        <div class="ser-heading">Internships</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/learning'); ?>">
-                    <div class="service-box ser-box-yellow">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/learning-icon-set.png') ?>"
-                                 alt="international internships, web developer career, software engineer career">
-                        </div>
-                        <div class="ser-heading">Learning Hub</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/reviews'); ?>">
-                    <div class="service-box ser-box-purple">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/review-icon.png') ?>"
-                                 alt="research internship, software developer career internship websites, best learning websites"
-                                 title="Reviews"/>
-                        </div>
-                        <div class="ser-heading">Reviews</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/training-programs'); ?>">
-                    <div class="service-box ser-box-maroon">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/training.png') ?>"
-                                 alt="market research internship, jobs in ludhiana city, latest jobs in chandigarh for freshers, software engineer work">
-                        </div>
-                        <div class="ser-heading">Training Courses</div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <a href="<?= Url::to('/career-advice'); ?>">
-                    <div class="service-box ser-box-green">
-                        <div class="ser-icons">
-                            <img src="<?= Url::to('@eyAssets/images/pages/index2/careerAdvice.png') ?>"
-                                 alt="latest recruitment in chandigarh, it internships, online marketing jobs from home, latest jobs in ludhiana">
-                        </div>
-                        <div class="ser-heading">Career Advice</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<?= $this->render('/widgets/our-services')?>
+
 <div id="app-data"></div>
 <div id="sectionIsLoading" class="sectionIsLoading">
     <div></div>
@@ -501,92 +426,6 @@ $this->registerCss('
 .box-border:hover .overlay {
     height: 35%;
 }
-/*services section starts*/
-.services{
-    padding: 0px 0 25px 0; 
-    text-align:center !important;
-}
-.service-box{ 
-    background:url(' . Url::to('@eyAssets/images/pages/index2/orange-bg.png') . ');
-    padding:20px 20px;
-    border-radius:10px;
-    border-width:5px 0px 0px 0px; 
-    border-color:transparent;
-    border-style:solid;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    width: 95%;
-    margin: auto;
-    margin-bottom:20px;
-    box-shadow: 0px 2px 13px 0px #ddddddb8;
-    background-size: 100% !important;
-    background-position: 0px -8px !important;
-    background-repeat:no-repeat !important;
-}
-.service-box:hover{
-    box-shadow: 0px 2px 13px 3px #ddddddb8;
-    border-top:5px solid #ff7803;
-    transition:.3s all;
-    -webkit-transition:.3s all;
-    -moz-transition:.3s all;
-    -o-transition:.3s all;
-    color:#ff7803;
-}
-.ser-box-orange{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/bgq.png') . ');
-}
-.ser-box-orange:hover{
-    border-top:5px solid #00a0e3;
-    color:#00a0e3;
-}
-.ser-box-purple{
-    background:url(' . Url::to('@eyAssets/images/pages/index2/review-box-bg.png') . ');
-}
-.ser-box-purple:hover{
-    border-top:5px solid #5E4795;
-    color:#5E4795;
-}
-.ser-box-yellow{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/learningbg.png') . ');
-}
-.ser-box-yellow:hover{
-    border-top: 5px solid #f8b321;
-    color:#f8b321
-}
-.ser-box-maroon{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/trainingbg.png') . ');
-}
-.ser-box-maroon:hover{
-    border-top: 5px solid #c76692;
-    color:#c76692
-}
-.ser-box-green{
-    background: url(' . Url::to('@eyAssets/images/pages/index2/careerAdviceBg.png') . ');
-}
-.ser-box-green:hover{
-    border-top: 5px solid #047c7d;
-    color:#047c7d
-}
-.ser-icons{
-    text-align:center;
-}
-.ser-icons img{
-    max-height: 75px; 
-    max-width: 75px;
-}
-.serv-center{
-    padding:0 30px;
-}
-.ser-heading{
-    padding: 10px 0 0 0;
-    text-transform: uppercase;
-    font-size: 20px;
-    text-align:center;
-    font-family:lora;
-}
-/*services section ends*/
 /*how it works section starts*/
 .how-it-works{
     padding: 20px 0 45px 0;
@@ -1257,7 +1096,6 @@ var errorNth = 0;
 function scrollFunction() {
      // var doc_height = $(document).height() - $(window).height();
   // if (document.documentElement.scrollTop > doc_height - $('#footer').height()) {
-  console.log(loadElems.length);
   // for(var l =0;l<loadElems.length;l++){
       if(load_content && loadElems[loadNth]){
         load_content = false;

@@ -9,13 +9,7 @@ use yii\helpers\Url;
             <div class="row">
                 <div class="col-md-12">
                     <div class="widget-heading">
-                        <span><img src="" alt=""></span>
-                        <span>Preferred Jobs</span>
-                        <span class="fj-wa" data-toggle="tooltip" title="Click to join us on whatsapp">
-                <a href="https://chat.whatsapp.com/JTzFN51caeqIRrdWGneBOi">
-<!--                    <i class="fab fa-whatsapp-square"></i> Join Us-->
-                </a>
-            </span>
+                        <span id="prefer-heading">Prefered Jobs</span>
                     </div>
                 </div>
             </div>
@@ -81,6 +75,9 @@ $script = <<<JS
  function result() {
      loc = city + ', ' + state + ', ' + country;
      getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
+     if(city != ""){
+        $('#prefer-heading').html('Jobs in ' + city);
+     }
  }
 function ipLookUp () {
     city = localStorage.getItem("city");
@@ -90,7 +87,6 @@ function ipLookUp () {
         result();
     } else {
         $.getJSON('https://ipapi.co/json', function(data){
-            console.error(data);
             city = data.city;
             state = data.region;
             country = data.country_name;
@@ -104,7 +100,6 @@ function getLocation() {
     } else {
         x = "Geolocation is not supported by this browser.";
         ipLookUp();
-        console.error(x);
     }
 }
 function showPosition(position) {
@@ -129,14 +124,12 @@ function showError(error) {
             break;
     }
     ipLookUp();
-    console.error(x);
 }
 function geocodeLatLng(lat, lng) {
     geocoder = new google.maps.Geocoder();
     latlng = new google.maps.LatLng(lat, lng);
     geocoder.geocode({'latLng': latlng}, function(results, status) {
         if (status === 'OK') {
-            console.log(results);
             for (var i = 0; i < results[0].address_components.length; i++) {
                 for (var b = 0; b < results[0].address_components[i].types.length; b++) {
                     switch (results[0].address_components[i].types[b]) {

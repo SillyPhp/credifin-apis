@@ -21,9 +21,6 @@ use yii\helpers\Url;
 
 <section>
     <div class="container">
-        <div class="row">
-            <div class="heading-style">Courses</div>
-        </div>
         <div class="row" id="list-main"></div>
         <?= $this->render('/widgets/preloader-application-card'); ?>
         <a href="#" id="loadMore" class="ajax-paginate-link btn btn-border btn-more btn--primary load-more loading_more">

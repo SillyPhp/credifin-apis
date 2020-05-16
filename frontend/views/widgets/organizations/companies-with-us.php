@@ -83,7 +83,7 @@ $this->registercss('
 .cmp-main {
     border: 2px solid transparent;
     text-align: center;
-    padding: 15px;
+    padding: 10px 5px;
     margin-bottom: 20px;
     background-color:#fff;
     border-radius: 5px;
@@ -108,7 +108,11 @@ $this->registercss('
     font-size: 15px;
     font-family: roboto;
     line-height: 22px;
-    padding: 10px 5px 0 5px;
+    padding:5px;
     font-weight: 500;
+    display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
 }
 ');

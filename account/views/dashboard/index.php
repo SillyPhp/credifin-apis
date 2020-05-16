@@ -290,7 +290,7 @@ endif;
                                          class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
-                                    <div class="">No Active Jobs</div>
+                                    <div class="">There Are No Active Jobs In This Company</div>
                                 </div>
                             </div>
                         <?php }
@@ -341,7 +341,7 @@ endif;
                                          class="img-responsive" alt=""/>
                                 </div>
                                 <div class="tab-empty-text">
-                                    <div class="">No Active Internships</div>
+                                    <div class="">There Are No Internships Open Right Now</div>
                                 </div>
                             </div>
                         <?php }
