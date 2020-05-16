@@ -4,8 +4,8 @@ use yii\helpers\Url;
 <div class="wizard-navigation">
     <ul class="nav nav-pills">
         <li><a href="<?= Url::to('/' . Yii::$app->user->identity->username . '/edit'); ?>">Edit Profile</a></li>
-        <li><a href="<?= Url::to('/account/preferences'); ?>">Candidate Preferences</a></li>
         <li><a href="<?= Url::to('/account/resume-builder'); ?>">Resume Builder</a></li>
+        <li><a href="<?= Url::to('/account/preferences'); ?>">Candidate Preferences</a></li>
     </ul>
 </div>
 <?php

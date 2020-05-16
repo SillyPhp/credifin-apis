@@ -1008,8 +1008,7 @@ class ApplicationForm extends Model
             ->alias('a')
             ->distinct()
             ->where(['a.application_enc_id' => $aidk])
-            ->select(['a.application_enc_id','a.preferred_gender','a.description',
-                'm.name as cat_name', 'l.name', 'l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
+            ->select(['a.application_enc_id','a.preferred_gender','a.description','m.name as cat_name', 'l.name', 'l.icon_png', 'a.type','a.interview_process_enc_id','a.slug','o.*','(CASE
                 WHEN a.experience = "0" THEN "No Experience"
                 WHEN a.experience = "1" THEN "Less Than 1 Year"
                 WHEN a.experience = "2" THEN "1 Year"

@@ -41,6 +41,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
     <section>
         <div class="container">
             <div class="row">

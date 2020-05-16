@@ -9,7 +9,7 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="wm-pos-rel">
                         <div class="whats-abso">
-                            <h1 class="whats-main-heading">Join Our WhatsApp Community</h1>
+                            <h1 class="whats-main-heading">Join Our Social Communities</h1>
                             <div class="whats-sub-heading">Get Latest Job Updates</div>
                         </div>
                     </div>
@@ -43,15 +43,34 @@ use yii\helpers\Url;
                                 </div>
                                 <?php
                                 foreach ($d['socialLinks'] as $social) {
+                                    switch ($social['platform_name']){
+                                        case 'Facebook' :
+                                            $bg = '#3b5998';
+                                            break;
+                                        case 'WhatsApp' :
+                                            $bg = '#25d366';
+                                            break;
+                                        case 'Instagram' :
+                                            $bg = '#c13584';
+                                            break;
+                                        case 'twitter' :
+                                            $bg = '#1da1f2';
+                                            break;
+                                        case 'Telegram' :
+                                            $bg = '#0088cc';
+                                            break;
+                                        default :
+                                            $bg = '#ff7803';
+                                    }
                                     ?>
                                     <div class="col-md-3 col-sm-4">
                                         <div class="gr-link">
                                             <a href="<?= $social['link'] ?>">
-                                                <div class="wab-icon">
-                                                    <img src="<?= Url::to('https://www.empoweryouth.com/assets/themes/ey/images/pages/custom/whatsapp-logo.png') ?>"
+                                                <div class="wab-icon" onMouseOver="this.style.background='<?=$bg?>'" onMouseLeave="this.style.background='white'">
+                                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->quiz->background->image . $social['icon_location'] . '/' . $social['icon']) ?>"
                                                          alt="">
                                                 </div>
-                                                <div class="wab-name">
+                                                <div class="wab-name" onMouseOver="this.style.color='<?=$bg?>'" onMouseLeave="this.style.color='black'">
                                                     <span><?= $social['title'] ?></span>
                                                 </div>
                                             </a>
@@ -309,12 +328,12 @@ $this->registerCss('
     text-align:center;
 }
 .gr-link:hover .wab-icon{
-    background: #4cc453;
+//    background: #4cc453;
     border-radius: 10px 10px 0 0;
     transition:.3s all;
 }
 .gr-link:hover .wab-name{
-    color: #46b63f;
+//    color: #46b63f;
     transition:.3s all;
 }
 ');
