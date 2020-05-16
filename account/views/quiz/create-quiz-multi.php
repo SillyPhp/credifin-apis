@@ -12,10 +12,10 @@ use yii\helpers\Url;
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-3" disabled="disabled">Topic</button>
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-4" disabled="disabled">Introduction</button>
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-5" disabled="disabled">Questions</button>
-            <button class="w3-bar-item w3-button steps-btn tablink payLink" value="#step-6" disabled="disabled">Rules</button>
+            <button class="w3-bar-item w3-button steps-btn tablink payLink" value="#step-6" disabled="disabled">Payments</button>
         </div>
         <div class="ml250">
-            <form role="form">
+            <div id="form-data">
                 <div class="row setup-content" id="step-1">
                     <div class="col-md-12">
                         <div id="Group" class="w3-container steps">
@@ -23,18 +23,18 @@ use yii\helpers\Url;
                                 <div class="col-md-6">
                                     <h2 class="quiz-heading">Create New Group or Choose One Below</h2>
                                     <div class="quiz-top">
-                                        <input type="text" placeholder="Enter Group Name" class="topic-input" id="groupInput">
+                                        <input type="text" maxlength="50" placeholder="Enter Group Name" class="topic-input" id="groupInput">
                                         <button type="button" id="grpinputbtn"><i class="fa fa-share"></i></button>
                                     </div>
                                 </div>
                             </div>
                             <h2 class="quiz-heading">Select Group</h2>
                             <div class="row" id="group-row">
-                                <?php if (!empty($categories)){
-                                    foreach ($categories as $cat){ ?>
+                                <?php if (!empty($categories)){ ?>
+                                   <?php foreach ($categories as $cat){ ?>
                                         <div class="col-md-2">
                                             <label class="radioLabel">
-                                                <input type="radio" name="group" txtvalue="<?= $cat['name'] ?>"  value="<?= $cat['id'] ?>" class="customRadio">
+                                                <input type="radio" name="group"  txtvalue="<?= $cat['name'] ?>"  value="<?= $cat['id'] ?>" class="customRadio">
                                                 <div class="quiz-group-box">
                                                     <div class="quiz-class"><?= $cat['name'] ?></div>
                                                 </div>
@@ -55,9 +55,9 @@ use yii\helpers\Url;
                     <div id="Subject" class="w3-container steps">
                         <div class="row">
                             <div class="col-md-6">
-                                <h2 class="quiz-heading">Create New Group or Choose One Below</h2>
+                                <h2 class="quiz-heading">Create New Subject or Choose One Below</h2>
                                 <div class="quiz-top">
-                                        <input type="text" placeholder="Enter Subject Name" class="topic-input" id="subjectInput">
+                                        <input type="text" maxlength="50" placeholder="Enter Subject Name" class="topic-input" id="subjectInput">
                                         <button type="button" id="subjectinputbtn"><i class="fa fa-share"></i></button>
                                 </div>
                             </div>
@@ -68,8 +68,8 @@ use yii\helpers\Url;
                             </div>
                         </div>
                         <div class="row" id="subject-row">
-                            <?php if (!empty($subject)){
-                            foreach ($subject as $sub){ ?>
+                            <?php if (!empty($subject)){ ?>
+                           <?php foreach ($subject as $sub){ ?>
                             <div class="col-md-2">
                                 <label class="radioLabel">
                                     <input type="radio" name="subject" txtvalue="<?= $sub['name'] ?>"  value="<?= $sub['id'] ?>" class="customRadio">
@@ -91,30 +91,42 @@ use yii\helpers\Url;
                     <div id="Topic" class="w3-container steps">
                         <div class="row">
                             <div class="col-md-6">
-                                <h2 class="quiz-heading">Select Topic</h2>
+                                <h2 class="quiz-heading">Create New Topic or Choose One From Below</h2>
                                 <div class="quiz-top">
-                                    <form>
-                                        <input type="text" placeholder="Enter Topic" class="topic-input">
-                                        <button type="button" onclick="nextStep()"><i class="fa fa-share"></i></button>
-                                    </form>
+                                        <input type="text" maxlength="100" placeholder="Enter Topic" class="topic-input" id="topicinput">
+                                        <button type="button" id="topicinputbtn"><i class="fa fa-share"></i></button>
                                 </div>
                                 <div class="previous-topics">
                                     <h2 class="quiz-heading">Recommendation</h2>
-                                    <ul>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                        <li class="topicList">It is the center of the Greater Tokyo Area</li>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                    </ul>
+                                    <?php if (!empty($recommend_topics)) { ?>
+                                    <?php  echo '<ul>';
+                                        foreach ($recommend_topics as $rec){ ?>
+                                            <label class="radio_topics">
+                                                <input type="radio" name="topic" txtvalue="<?= $rec['name'] ?>"  value="<?= $rec['id'] ?>" class="customRadio_topic">
+                                                <li class="topicList"><?= $rec['name'] ?></li>
+                                            </label>
+                                       <?php }
+                                        echo '</ul>';
+                                    }
+                                        ?>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="previous-topics">
                                     <h2 class="quiz-heading">Create Or Choose One Topics</h2>
-                                    <ul>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                        <li class="topicList">It is the center of the Greater Tokyo Area</li>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                    </ul>
+                                    <div id="user_topic_divs">
+                                        <?php if (!empty($user_topics)) { ?>
+                                            <?php  echo '<ul id="user_topics">';
+                                            foreach ($user_topics as $tp){ ?>
+                                                <label class="radio_topics">
+                                                    <input type="radio" name="topic" txtvalue="<?= $tp['name'] ?>"  value="<?= $tp['id'] ?>" class="customRadio_topic">
+                                                    <li class="topicList"><?= $tp['name'] ?></li>
+                                                </label>
+                                            <?php }
+                                            echo '</ul>';
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,19 +142,25 @@ use yii\helpers\Url;
                         <div class="row">
                             <div class="col-md-6">
                                 <h2 class="quiz-heading">Introduction To Quiz</h2>
-                                <p class="recom-charac">Minimum 300 characters recommended</p>
+                                <p class="recom-charac">Minimum 160 characters recommended</p>
                                 <div class="quiz-intro">
-                                    <textarea class="quiz-intro-textarea" placeholder="Enter Quiz Intro"></textarea>
+                                    <textarea class="quiz-intro-textarea" maxlength="280" id="inro_input" placeholder="Enter Quiz Intro"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="previous-topics">
                                     <h2 class="quiz-heading">Previous Introductions</h2>
-                                    <ul>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                        <li class="topicList">It is the center of the Greater Tokyo Area</li>
-                                        <li class="topicList">Tokyo is the capital of Japan.</li>
-                                    </ul>
+                                    <?php if (!empty($intros_Desc)) { ?>
+                                    <?php echo '<ul id="user_intros">';
+                                        foreach ($intros_Desc as $int){ ?>
+                                            <label class="radio_topics">
+                                                <input type="radio" name="intros" txtvalue="<?= $int['name'] ?>"  value="<?= $int['id'] ?>" class="customRadio_topic">
+                                                <li class="topicList"><?= $int['name'] ?></li>
+                                            </label>
+                                        <?php }
+                                        echo '</ul>';
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -160,125 +178,111 @@ use yii\helpers\Url;
                                 <h2 class="quiz-heading">Enter Questions And Choose Correct Answer</h2>
                                 <div class="quiz-ques">
                                     <div class="quiz-textarea">
-                                        <textarea placeholder="Enter Question" class="ques-input"></textarea>
+                                        <textarea placeholder="Enter Question" id="input_question" class="ques-input"></textarea>
                                     </div>
                                     <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                        <textarea placeholder="Enter Option" id="input_answer1" class="ques-input max300"></textarea>
                                         <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" class="ca-ans">
+                                            <input type="radio" name="answer" value="1" class="ca-ans">
                                             <span class="checkmark"></span>
                                         </label>
                                         <p class="ca-message"></p>
                                     </div>
                                     <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                        <textarea placeholder="Enter Option" id="input_answer2" class="ques-input max300"></textarea>
                                         <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" class="ca-ans">
+                                            <input type="radio" name="answer" value="2" class="ca-ans">
                                             <span class="checkmark"></span>
                                         </label>
                                         <p class="ca-message"></p>
                                     </div>
                                     <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                        <textarea placeholder="Enter Option" id="input_answer3" class="ques-input max300"></textarea>
                                         <label class="checkbox-container correctAns" value="">
-                                            <input type="radio" name="answer" class="ca-ans">
+                                            <input type="radio" name="answer" value="3" class="ca-ans">
                                             <span class="checkmark"></span>
                                         </label>
                                         <p class="ca-message"></p>
                                     </div>
                                     <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" class="ques-input max300"></textarea>
+                                        <textarea placeholder="Enter Option" id="input_answer4" class="ques-input max300"></textarea>
                                         <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" class="ca-ans">
+                                            <input type="radio" name="answer" value="4" class="ca-ans">
                                             <span class="checkmark"></span>
                                         </label>
                                         <p class="ca-message"></p>
                                     </div>
                                     <div class="quiz-button-flex">
-                                        <button type="button">Create Question</button>
-                                        <button type="button" onclick="finishQuiz()">Finish Quiz</button>
+                                        <button type="button" id="create_question">Create Question</button>
+                                        <button type="button" id="finish_quiz">Finish & Submit Quiz</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <h2 class="quiz-heading">Questions Created</h2>
-                                <div class="card">
-                                    <div class="card-header" role="tab" id="quesThree">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2">
-                                            <div class="q1">
-                                                <div class=""><span>Q:</span>Lorem Ipsum is simply dummy text of the printing and
-                                                    typesetting industry. Lorem Ipsum has
-                                                </div>
-                                            </div>
-                                        </a>
-                                        <span class="btnedit"><i class="fa fa-pencil"></i></span>
-                                        <span class="btndelete"><i class="fa fa-trash-o"></i></span>
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a>
-                                    </div>
-                                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false">
-                                        <div class="card-block">
-                                            <div class="q-ans">
-                                                <ul>
-                                                    <li>Ludhiana</li>
-                                                    <li class="correct">Delhi</li>
-                                                    <li>Mumbai</li>
-                                                    <li>Jalandhar</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="question_created_zone"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row setup-content" id="step-6">
-                    <div id="Rules" class="w3-container steps">
+                    <div id="Payment" class="w3-container steps">
                         <div class="row">
                             <div class="col-md-12">
-                                <h2 class="quiz-heading">Quiz Rules</h2>
-                                <div class="payment-text">Total Marks Quiz</div>
-                                <div class="pay-input">
-                                    <input type="text" placeholder="Enter Marks">
-                                </div>
-                                <div class="payment-text">Quiz Time Duration </div>
-                                <div class="pay-input">
-                                    <input type="text" placeholder="Enter Marks">
-                                </div>
-                                <div class="payment-text">Marks for every Correct answer </div>
-                                <div class="pay-input">
-                                    <input type="text" placeholder="Enter Marks">
-                                    <span><i class="fa fa-plus"></i></span>
-                                </div>
-                                <div class="payment-text">Marks for every Wrong answer </div>
-                                <div class="pay-input">
-                                    <input type="text" placeholder="Enter Marks">
-                                    <span><i class="fa fa-minus"></i></span>
-                                </div>
+                                <h2 class="quiz-heading">Payment</h2>
                                 <div class="payment-text">Would you like to charge students for this quiz</div>
                                 <div class="pay-btns">
-                                    <button type="button" onclick="showPatment()"> Yes</button>
-                                    <button type="button" onclick="createQuiz()"> No</button>
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <label class="radioLabel">
+                                                <input type="radio" name="choice_payment" txtvalue="yes"  value="1" class="customRadio">
+                                                <div class="quiz-group-box btn-shape">
+                                                    <div class="quiz-subject">Yes</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="radioLabel">
+                                                <input type="radio" name="choice_payment" txtvalue="no"  value="0" class="customRadio">
+                                                <div class="quiz-group-box btn-shape">
+                                                    <div class="quiz-subject">No</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div id="payment-details">
                                     <div class="pay-form">
                                         <div class="pay-input">
-                                            <input type="text" placeholder="Enter Amount">
+                                            <input type="text" id="p_input" placeholder="Enter Amount">
                                             <span><i class="fa fa-inr"></i></span>
                                         </div>
                                         <div class="pay-btns">
-                                            <button type="button" onclick="createQuiz()">Create Quiz</button>
+                                            <button type="button" id="sbt_btn_p">Submit Quiz</button>
+                                            <button class="buttonload">
+                                                <i class="fa fa-refresh fa-spin"></i>Loading
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="note-text">
                                         <span>Note: </span> We Charge 20% as maintenance charges
                                     </div>
                                 </div>
+                                <div id="final-details">
+                                    <div class="pay-form">
+                                        <div class="pay-btns">
+                                            <button type="button" id="sbt_btn_wp" >Submit Quiz</button>
+                                            <button class="buttonload">
+                                                <i class="fa fa-refresh fa-spin"></i>Loading
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </section>
@@ -313,7 +317,7 @@ $this->registerCss('
     justify-content: space-between;
     margin-top: 50px;
 }
-#payment-details{
+#payment-details,#final-details{
     display: none;
 }
 .recom-charac{
@@ -352,10 +356,10 @@ $this->registerCss('
     border:none;
     padding: 8px 10px; 
 }
-.radioLabel{
+.radioLabel,.radio_topics{
     width: 100%;
 }
-.customRadio { 
+.customRadio,.customRadio_topic { 
   position: absolute;
   opacity: 0;
   width: 0;
@@ -374,6 +378,13 @@ $this->registerCss('
     padding: 5px;
 }
 .customRadio:checked ~ .quiz-group-box {
+    background: #00a0e3;
+    color: #fff;
+    transition: .3s ease;
+    cursor: pointer;
+}
+
+.customRadio_topic:checked ~ .topicList {
     background: #00a0e3;
     color: #fff;
     transition: .3s ease;
@@ -794,12 +805,29 @@ button[disabled] {
     opacity: 1 !important;
     filter: alpha(opacity=100) !important;
 }
+.btn-shape
+{
+    border-radius: 21px !important;
+    min-height: 20px !important;
+}
+.buttonload {
+  background-color: #4CAF50; /* Green background */
+  border: none; /* Remove borders */
+  color: white; /* White text */
+  padding: 12px 16px; /* Some padding */
+  font-size: 16px /* Set a font size */
+}
+.buttonload
+{
+display:none;
+}
 ');
 ?>
 <?php
 $script = <<< JS
 var grp_names = [];
 var subject_names = [];
+var topics = [];
 $(document).on('click','#grpinputbtn',function(e) {
   e.preventDefault();
   creteGroup();
@@ -808,22 +836,29 @@ $(document).on('click','#subjectinputbtn',function(e) {
   e.preventDefault();
   creteSubject(); 
 })
+
+$(document).on('click','#topicinputbtn',function(e) {
+  e.preventDefault();
+  creteTopic();
+})
 function creteGroup() {
         let newGroupName = document.getElementById('groupInput').value;
-             newGroupName = $.trim(newGroupName).toLowerCase();
-        if ($.trim(newGroupName)!=='') {
+             comparetxt = $.trim(newGroupName).toLowerCase();
+        if (comparetxt!=='') {
             $('#group-row').find('input').each(function(index) {
             grp_names.push($.trim($(this).attr('txtValue')).toLowerCase());
            });
-            if (grp_names.includes(newGroupName)===false) {
+            if (grp_names.includes(comparetxt)===false) {
             const groupRow = document.getElementById('group-row');
             let newDiv = document.createElement('div');
+            let elem_c = Math.floor((Math.random() * 1000) + 1);
             newDiv.setAttribute('class', 'col-md-2');
-            newDiv.innerHTML = '<label class="radioLabel"><input type="radio" name="group" txtValue="'+newGroupName+'" value="small" class="customRadio"><div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
-            groupRow.appendChild(newDiv);
+            let last_input = '<input type="radio" name="group" id="gp'+elem_c+'" txtValue="'+newGroupName+'" value="small" class="customRadio" checked>';
+            newDiv.innerHTML = '<label class="radioLabel">'+last_input+'<div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
+            groupRow.insertBefore(newDiv,groupRow.firstChild);
             document.getElementById('groupInput').value = "";
             document.getElementById("groupInput").style.border = "none";
-            ajax_run(newGroupName,'/account/quiz/add-groups');
+            ajax_run(newGroupName,'/account/quiz/add-groups',$("#gp"+elem_c));
             }
             else
                 {
@@ -836,20 +871,22 @@ function creteGroup() {
     }
  function creteSubject() { 
         let newGroupName = document.getElementById('subjectInput').value;
-             newGroupName = $.trim(newGroupName).toLowerCase();
-        if ($.trim(newGroupName)!=='') {
+             comparetxt = $.trim(newGroupName).toLowerCase();
+        if (comparetxt!=='') {
             $('#subject-row').find('input').each(function(index) {
             subject_names.push($.trim($(this).attr('txtValue')).toLowerCase());
            });
-            if (subject_names.includes(newGroupName)===false) {
+            if (subject_names.includes(comparetxt)===false) {
             const groupRow = document.getElementById('subject-row');
             let newDiv = document.createElement('div');
+            let elem_c = Math.floor((Math.random() * 1000) + 1);
             newDiv.setAttribute('class', 'col-md-2');
-            newDiv.innerHTML = '<label class="radioLabel"><input type="radio" name="subject" txtValue="'+newGroupName+'" value="small" class="customRadio"><div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
-            groupRow.appendChild(newDiv);
+            let last_input = '<input type="radio" name="subject" id="sb'+elem_c+'" txtValue="'+newGroupName+'" value="small" class="customRadio" checked>';
+            newDiv.innerHTML = '<label class="radioLabel">'+last_input+'<div class="quiz-group-box"><div class="quiz-class">' + newGroupName + '</div></div></label>'
+            groupRow.insertBefore(newDiv,groupRow.firstChild);
             document.getElementById('subjectInput').value = "";
             document.getElementById("subjectInput").style.border = "none";
-            ajax_run(newGroupName,'/account/quiz/add-subject');
+            ajax_run(newGroupName,'/account/quiz/add-subject',$("#sb"+elem_c));
             }
             else 
                 {
@@ -858,6 +895,41 @@ function creteGroup() {
         }
         else {
             document.getElementById("subjectInput").style.border = "1px solid red";
+        }
+    } 
+    
+ function creteTopic() { 
+        if ($("#user_topics").length==0){
+            const newRow = document.getElementById('user_topic_divs');
+            let newUl = document.createElement('ul'); 
+            newUl.setAttribute('id', 'user_topics');
+            newRow.appendChild(newUl);
+        }
+        let newGroupName = document.getElementById('topicinput').value;
+             comparetxt = $.trim(newGroupName).toLowerCase();
+        if (comparetxt!=='') {
+            $('#user_topics').find('input').each(function(index) {
+            topics.push($.trim($(this).attr('txtValue')).toLowerCase());
+           });
+            if (topics.includes(comparetxt)===false) { 
+            const groupRow = document.getElementById('user_topics');
+            let newDiv = document.createElement('label');
+            newDiv.setAttribute('class', 'radio_topics');
+            let elem_c = Math.floor((Math.random() * 1000) + 1);
+            let last_input = '<input type="radio" name="topic" id="tp'+elem_c+'" txtvalue="'+newGroupName+'" value="small" class="customRadio_topic" checked>';
+            newDiv.innerHTML = last_input+'<li class="topicList">'+newGroupName+'</li>';
+            groupRow.insertBefore(newDiv,groupRow.firstChild);
+            document.getElementById('topicinput').value = "";
+            document.getElementById("topicinput").style.border = "none";
+            ajax_run(newGroupName,'/account/quiz/add-topic',$("#tp"+elem_c));
+            }
+            else 
+                {
+                    document.getElementById("topicinput").style.border = "1px solid red";
+                }
+        }
+        else {
+            document.getElementById("topicinput").style.border = "1px solid red";
         }
     }   
 $('#groupInput').keypress(function(event){
@@ -873,21 +945,104 @@ $('#subjectInput').keypress(function(event){
 	}
 });
 
+$('#topicinput').keypress(function(event){
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+	if(keycode == '13'){
+		creteTopic();
+	}
+});
+
+$(document).on('change','input[name="intros"]', function(){
+    const radio = $(this);
+    if (radio.is(':checked')) {
+      $('#inro_input').val($.trim(radio.attr('txtvalue')));
+    }
+});
+$(document).on('click','#finish_quiz', function(e){
+   e.preventDefault();
+   if (question_list.length!==0){
+       document.querySelector('.payLink').style.display = "block";
+       var curStep = $(this).closest(".setup-content"),
+            curStepBtn = curStep.attr("id"),
+            nextStepWizard = $('.stepsList button[value="#' + curStepBtn + '"]').next();
+            nextStepWizard.removeAttr('disabled').trigger('click');
+   }
+   else
+       {
+           alert('Please create atleast one question');
+       }
+});
 //ajax query  for handling user data
-function ajax_run(data,url)
+function ajax_run(data,url,elem)
 {
     $.ajax({
       url:url,
       data:{data:data},
       method:'post',
+      dataType: 'text',
       success:function(res)
       {
-          if (!res)
+          var res = JSON.parse(res);
+          if (res.status==true)
               {
-                  toastr.error('Internal Server Error!!', 'Failed');
+                  elem.attr('value',res.id);
               }
-      }
+          else{
+              toastr.error('Internal Server Error!!', 'Failed');
+          }
+      },error: function() {
+            toastr.error('Some Module Error!!', 'Failed');
+        } 
     })
+}
+$(document).on('click','#create_question',function(e) {
+  e.preventDefault();
+  create_question();
+});
+var question_list = [];
+function create_question()
+{
+    let q =  $.trim($('#input_question').val());
+    let a1 = $.trim($('#input_answer1').val());
+    let a2 = $.trim($('#input_answer2').val());
+    let a3 = $.trim($('#input_answer3').val());
+    let a4 = $.trim($('#input_answer4').val());
+    let rad_answer = $('input[name="answer"]:checked');
+    let elem_no = Math.floor((Math.random() * 1000) + 1);
+    if (a1.length!==0&&a2.length!==0&&a3.length!==0&&a4.length!==0&&q.length!==0&&rad_answer.length!==0)
+        { 
+            var obj = {
+                    'q': q, 
+                    'a1': a1,
+                    'a2': a2,
+                    'a3': a3,
+                    'a4': a4,
+                    'ra': rad_answer.val(),
+                    'elem':'collapse'+elem_no
+                }
+            question_list.push(obj);
+            $('.question_created_zone').prepend('<div class="card"><div class="card-header" role="tab"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2"><div class="q1"><span>Q:</span>'+q+'</div></a><span class="btndelete" value="collapse'+elem_no+'"><i class="fa fa-trash-o"></i></span><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a></div><div id="collapse'+elem_no+'" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false"><div class="card-block"><div class="q-ans"><ul><li>'+a1+'</li><li class="correct">'+a2+'</li><li>'+a3+'</li><li>'+a4+'</li></ul></div></div></div></div>');
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+            toastr.success('One New Question Created', 'Success');
+        } 
+    else
+        {
+            alert('Please Make sure all the Answers and Question are filled up correctly along With right Answer');
+        }
+}
+
+//array and object remove function
+var removeByAttr = function(arr, attr, value){
+    var i = arr.length;
+    while(i--){
+       if( arr[i] 
+           && arr[i].hasOwnProperty(attr) 
+           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+           arr.splice(i,1);
+       }
+    }
+    return arr;
 }
 //steps form
 var navListItems = $('.steps-btn'),
@@ -922,6 +1077,12 @@ var navListItems = $('.steps-btn'),
                case 'step-2':
                validate_tab_second(isValid,nextStepWizard);
                break;
+               case 'step-3':
+               validate_tab_third(isValid,nextStepWizard);
+               break;
+               case 'step-4':
+               validate_tab_fourth(isValid,nextStepWizard);
+               break;
            }
     });
 function validate_tab_first(isValid,nextStepWizard) {
@@ -951,8 +1112,146 @@ function validate_tab_second(isValid,nextStepWizard) {
             nextStepWizard.removeAttr('disabled').trigger('click');
         }
 }
+function validate_tab_third(isValid,nextStepWizard) {
+    if ($('input[name="topic"]:checked').length!==0)
+        {
+            isValid = true;
+        }
+    else
+        {
+            alert('Please Select One Topic');
+        }
+  if (isValid){
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        }
+}
+
+$(document).on('click','.btndelete',function(e) {
+  e.preventDefault();
+  if (confirm('Do You Want To Delete This Question ?'))
+      {
+          let elem = $(this).attr('value');
+          removeByAttr(question_list, 'elem', elem); 
+          $(this).parent().parent().remove();
+      }
+})
+function validate_tab_fourth(isValid,nextStepWizard) {
+  let intro_value =  $('#inro_input').val();
+    intro_value = $.trim($('#inro_input').val());
+    if (intro_value.length!==0)
+         {
+            isValid = true;
+        }
+    else
+        {
+            alert('Please Fill Up The Introduction');
+        }
+  if (isValid){
+            nextStepWizard.removeAttr('disabled').trigger('click');
+        }
+}
+$(document).on('change','input[name="choice_payment"]',function(e) {
+  e.preventDefault();
+  let v = $(this).val();
+  if (v==1){
+      showPayment();
+  }
+  else {
+      showSubmit();
+  }
+})
+function showPayment() {
+        document.getElementById('final-details').style.display = "none";
+        document.getElementById('payment-details').style.display = "block";
+    }
+  function showSubmit() {
+        document.getElementById('final-details').style.display = "block";
+        document.getElementById('payment-details').style.display = "none";
+    }
+
+function submitForm(payment=false,amount=null)
+{
+    var formData = new FormData();
+    formData.append('subject',$("input[name='subject']:checked"). val());
+    formData.append('topic',$("input[name='topic']:checked"). val());
+    formData.append('group',$("input[name='group']:checked"). val());
+    formData.append('intro',$("#inro_input").val());
+    formData.append('questions',JSON.stringify(question_list));
+    if (payment)
+        {
+            formData.append('payment_status',1);
+            formData.append('amount',amount);
+        }
+    else {
+        formData.append('payment_status',0); 
+    }
+$.ajax({
+      url:'/account/quiz/submit-form',
+      dataType: 'text',
+      cache: false,
+      contentType: false,
+      processData: false,
+      data: formData,
+      type: 'post',
+      beforeSend:function()
+      {
+          $('#sbt_btn_p').css('display','none');
+          $('#sbt_btn_wp').css('display','none');
+          $('.buttonload').css('display','block');
+      },
+      success:function(res)
+      {
+          var res = JSON.parse(res);
+          $('#sbt_btn_p').css('display','block');
+          $('#sbt_btn_wp').css('display','block');
+          $('.buttonload').css('display','none');
+          if (res.status==false)
+              {
+                  toastr.error(res.response, 'Failed');
+              }
+          else if (res.status==true)
+              {
+                  swal({
+                            title: "Submitted!",
+                            text: "Your Quiz Has Been Created ! Click on Below Link To Share And Play",
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonClass: "btn-primary",
+                            confirmButtonText: "View Quiz",
+                            closeOnConfirm: false,
+                            closeOnCancel: false
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                window.location.pathname = "/quiz/"+res.slug; 
+                            }
+                        });
+              }
+      }
+    })
+}    
+    
+$(document).on('click','#sbt_btn_p',function(e) {
+  e.preventDefault();
+  let newGroupName = document.getElementById('p_input').value;
+  comparetxt = $.trim(newGroupName).toLowerCase().replace(/,/g, '');
+  if (comparetxt==''||comparetxt<=0) {
+      document.getElementById("p_input").style.border = "1px solid red";
+      return false;
+  }
+  submitForm(payment=true,amount=comparetxt);
+})  
+
+$(document).on('click','#sbt_btn_wp',function(e) {
+  e.preventDefault();
+  submitForm(payment=false,ammount=null);
+});
+$('#p_input').mask("#,#0,#00", {reverse: true});  
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.13.4/jquery.mask.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
