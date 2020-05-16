@@ -31,7 +31,7 @@ use yii\widgets\Pjax;
                                                 <?= $pend['org_name']; ?>
                                             </div>
                                             <div class="hr-com-field">
-                                                <?= $pend['name']; ?>
+                                                <?= $pend['title']; ?>
                                             </div>
                                             <div class="opening-txt">
                                                 <?= $pend["positions"]; ?> Openings
@@ -43,7 +43,7 @@ use yii\widgets\Pjax;
                                                 <div class="row ">
                                                     <div class="col-md-12 col-sm-12 minus-15-pad">
                                                         <div class=" j-cross">
-                                                            <button class="rmv_list" value="<?= $pend['shortlisted_enc_id']; ?>">
+                                                            <button class="rmv_list" value="<?= $pend['application_enc_id']; ?>">
                                                                 <i class="fa fa-times"></i>
                                                             </button>
                                                         </div> 
@@ -96,18 +96,7 @@ $this->registerCss('
     margin:10px 0;
     padding: 6px 12px;  
 }
-//.job-grid > a:hover {
-//    background: #00a0e3 !important;
-//    color: #ffffff;
-//    transition: all 0.4s ease 0s;
-//    text-decoration:none;
-//}                                
-//.dashboard-button a, .dashboard-button button{    
-//    margin-left:10px !important;
-//}
-//.intl-tel-input {
-//    width: 100%;
-//}
+
 .tab-empty{
     padding:20px;
 }
@@ -123,23 +112,7 @@ $this->registerCss('
     padding-top:20px;
 }
 
-//.thumbnail{
-//    padding: 0px !important;
-//    margin: 20px auto 25px auto !important;
-//}
-//.thumbnail img{
-//    width: 100%;
-//    height: 100%;
-//}
-//.js-title-step span{
-//    display:none;
-//}
-//.custom-buttons{
-//    width:100%;
-//    font-size: 10px !important;
-//    padding: 8px 0px !important;
-//    margin-bottom:20px;
-//}
+
 .hr-company-box{text-align:center;border:2px solid #eef1f5; background:#fff; padding:20px 10px;
                     border-radius:14px !important; margin-bottom:20px; text-decoration:none; }
 .hr-company-box:hover{border-color:#fff; box-shadow:0 0 20px rgb(0,0,0,.3); transition:.3s all;
@@ -158,189 +131,44 @@ $this->registerCss('
 a:hover{
     text-decoration:none;
 }
-//.btn.btn-outline.orange {
-//    border-color: #ff7803;
-//    color: #ff7803;
-//    background: 0 0;
-//}
-//.btn.btn-outline.orange.active, .btn.btn-outline.orange:active, .btn.btn-outline.orange:active:focus, .btn.btn-outline.orange:active:hover, .btn.btn-outline.orange:focus, .btn.btn-outline.orange:hover {
-//    border-color: #ff7803;
-//    color: #fff;
-//    background-color: #ff7803;
-//}
-//.manage-jobs-sec > h3 {
-//    float: left;
-//    width: 100%;
-//    margin-top: 40px;
-//    font-size: 20px;
-//    color: #202020;
-//    font-weight: bold;
-//    margin: 0;
-//    margin-top: 0px;
-//    padding-bottom: 20px;
-//    padding-left: 30px;
-//    margin-top: 40px;
-//}
-//.manage-jobs-sec {
-//    float: left;
-//    width: 100%;
-//    padding:20px 10px;
-//}
-//.manage-jobs-sec .extra-job-info {
-//    border: 2px solid #e8ecec;
-//    padding: 20px 30px;
-//    margin-left: 30px;
-//    
-//    -webkit-border-radius: 8px;
-//    -moz-border-radius: 8px;
-//    -ms-border-radius: 8px;
-//    -o-border-radius: 8px;
-//    border-radius: 8px;
-//
-//}
-//.manage-jobs-sec .extra-job-info > span {
-//    float: left;
-//    width: 32.334%;
-//    padding: 0;
-//    border: none;
-//    margin: 0;
-//}
-//.manage-jobs-sec > table {
-//    float: left;
-//    width: calc(100% - 30px);
-//    margin-top: 50px;
-//    margin-bottom: 60px;
-//    margin-left: 30px
-//}
-//.manage-jobs-sec > table thead tr td {
-//    font-size: 15px;
-//    font-weight: bold;
-//    color: #fb236a;
-//    padding-bottom: 14px;
-//}
-//.manage-jobs-sec > table thead {
-//    border-bottom: 1px solid #e8ecec;
-//} 
-//.cat-sec {
-//    float: left;
-//    width: 100%;
-//}
-//.p-category {
-//    float: left;
-//    width: 100%;
-//    z-index: 1;
-//    position: relative;
-//}
-//.p-category > a {
-//    float: left;
-//    width: 100%;
-//    text-align: center;
-//    padding-bottom: 30px;
-//    border-bottom: 1px solid #e8ecec;
-//    border-right: 1px solid #e8ecec;
-//}
-//.p-category > a i {
-//    float: left;
-//    width: 100%;
-//    color: #00a0e3;
-//    font-size: 40px;
-//   margin:50px 0 0 0 !important;
-//}
-//.p-category > a span {
-//    float: left;
-//    width: 100%;
-//    font-family: Open Sans;
-//    font-size: 15px;
-//    color: #202020;
-//    margin-top: 18px;
-//}
-//.p-category > a p {
-//    float: left;
-//    width: 100%;
-//    font-size: 13px;
-//    margin: 0;
-//        margin-top: 0px;
-//    margin-top: 3px;
-//}
-//.cat-sec .row > div:last-child a {
-//    border-right-color: #ffffff;
-//}
-//.cat-sec:last-child a {
-//    border-bottom-color: #ffffff;
-//}
-//.p-category:hover a {
-//    border-color: #ffffff;
-//    transition: .3s all;
-//    -webkit-transition: .3s all;
-//    -moz-transition: .3s all;
-//    -o-transition: .3s all;
-//}
-//.p-category:hover {
-//    background: #ffffff;
-//      transition: .2s all;
-//    -webkit-transition: .2s all;
-//    -moz-transition: .2s all;
-//    -o-transition: .2s all;
-//    
-//    -webkit-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -moz-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -ms-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    -o-box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//    box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
-//
-//    
-//    -webkit-border-radius: 8px;
-//    -moz-border-radius: 8px;
-//    -ms-border-radius: 8px;
-//    -o-border-radius: 8px;
-//    border-radius: 8px;
-//
-//   width: 104%; 
-//   margin-left: -2%;
-//   height: 102%;
-//   z-index: 10;
-//
-//}
-//.row.no-gape{
-//  margin: 0;
-//}
-//.row.no-gape > div{
-//  padding: 0;
-//}
-//.viewall-jobs {
-//    background: #00a0e3;
-//    padding:5px 15px;
-//    color: #ffffff !important;
-//    font-family: Open Sans;
-//    font-size: 13px;
-//    
-//    -webkit-border-radius: 40px !important;
-//    -moz-border-radius: 40px !important;
-//    -ms-border-radius: 40px !important;
-//    -o-border-radius: 40px !important;
-//    border-radius: 40px !important;
-//}
-//.viewall-jobs:hover {
-//    -webkit-border-radius: 8px !important;
-//    -moz-border-radius: 8px !important;
-//    -ms-border-radius: 8px !important;
-//    -o-border-radius: 8px !important;
-//    border-radius: 8px !important;
-//    color: #ffffff;
-//   
-//    transition:.3s all;
-//    -webkit-transition:.3s all;
-//    -moz-transition:.3s all;
-//    -ms-transition:.3s all;
-//    -o-transition:.3s all;
-//    
-//}
+
 ');
 $script = <<<JS
-                                    
-$(document).on("click", "#uploadcv", function () {
-    $(".load-modal").load($(this).attr("url"));
-});         
+
+function Ajax_call(rmv_id,url,pjax_refresh_id)
+    {
+        $.ajax({
+                url:url,
+                data:{rmv_id:rmv_id},
+                method:'post',
+                beforeSend: function()
+                {
+                    $(".loader").css("display", "block");
+                },
+                success:function(data)
+                       {
+                        if(data == true)
+                          {
+                            $(".loader").css("display", "none");
+                            $.pjax.reload({container: pjax_refresh_id, async: false});
+                            $.pjax.reload({container: '#widgets', async: false});
+                           }
+                       }
+              })
+    }
+
+$(document).on('click','.rmv_list',function(e)
+    {
+        e.preventDefault();
+        if (window.confirm("Do you really want to Delete the current Application?")) {
+            var  url = '/account/jobs/pending-delete';
+            var rmv_id = $(this).val();
+            var  pjax_refresh_id = '#pjax_shortlist';
+            Ajax_call(rmv_id,url,pjax_refresh_id);
+        }
+   })   
+ 
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.css');

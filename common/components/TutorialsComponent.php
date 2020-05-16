@@ -23,7 +23,6 @@ class TutorialsComponent extends Component
 
     public function getTutorialsByUser($options = [])
     {
-        return 1;
         $this->__setOptions($options);
         $tutorials = \common\models\WidgetTutorials::find()
             ->alias('a')
@@ -34,8 +33,6 @@ class TutorialsComponent extends Component
         if ($this->_where) {
             $tutorials->where($this->_where);
         }
-
-        return $tutorials->createCommand()->getRawSql();
 
         $total = $tutorials->count();
 
