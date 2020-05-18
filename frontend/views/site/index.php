@@ -76,7 +76,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="Candidates"></div>
                         <div class="h-heading">Candidates</div>
                         <!--                            <div class="h-text">I'm the talent</div>-->
                     </a>
@@ -87,11 +87,11 @@ $this->params['header_dark'] = false;
                     <a href="/schools">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/school.png') ?>"
-                                 alt="Candidates" title="Candidates">
+                                 alt="Candidates" title="schools">
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="schools"></div>
                         <div class="h-heading">Schools</div>
                         <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
@@ -101,11 +101,11 @@ $this->params['header_dark'] = false;
                     <a href="/training-programs">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-blue.png') ?>"
-                                 alt="Candidates" title="Candidates">
+                                 alt="Candidates" title="Educational Institute">
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/educational-institute-white.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="Educational Institute"></div>
                         <div class="h-heading">Educational Institute</div>
                         <!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                     </a>
@@ -116,11 +116,11 @@ $this->params['header_dark'] = false;
                     <a href="/colleges">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/colg.png') ?>"
-                                 alt="Universities & Colleges" title="Universities and Colleges">
+                                 alt="Universities & Colleges" title="Colleges">
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="Colleges"></div>
                         <div class="h-heading">Colleges</div>
                         <!--                                <div class="h-text">I'm the future</div>-->
                     </a>
@@ -135,11 +135,11 @@ $this->params['header_dark'] = false;
                     <div class="box-overlay">
                         <div class="icon">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/colleges.png') ?>"
-                                 alt="Universities & Colleges" title="Universities and Colleges">
+                                 alt="Universities & Colleges" title="Universities">
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="Universities"></div>
                         <div class="h-heading">Universities</div>
                         <!--                            <div class="h-text">I want to enroll talent</div>-->
                     </div>
@@ -157,7 +157,7 @@ $this->params['header_dark'] = false;
                         </div>
                         <div class="icon2">
                             <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
-                                 alt="Employers" title="Employers"></div>
+                                 alt="Employers" title="Recruiters"></div>
                         <div class="h-heading">Recruiters</div>
                         <!--                            <div class="h-text">I want to find the best match for talent</div>-->
                     </div>
