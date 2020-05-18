@@ -7,9 +7,17 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <div class="widget-heading">
-                        <span id="prefer-heading">Prefered Jobs</span>
+                <div class="col-md-6 col-sm-8 col-xs-12">
+                    <h1 class="heading-style" id="prefer-heading">Prefered Jobs</h1>
+                </div>
+                <div class="col-md-6 col-sm-4 col-xs-12">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/jobs'); ?> " class="btn btn-3" id="65af4d5a" >
+                                <span class="txting"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -18,11 +26,6 @@ use yii\helpers\Url;
                     <div id="featured-job-cards">
                         <?= $this->render('/widgets/preloaders/preferred-application-card'); ?>
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="btn-for-job">
-                    <a id="65af4d5a" href="/jobs">View all jobs</a>
                 </div>
             </div>
         </div>

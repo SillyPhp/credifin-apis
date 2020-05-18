@@ -204,6 +204,7 @@ $this->registercss('
 .news-tags {
     min-height: 30px;
     max-height: 30px;
+    overflow:hidden;
 }
 .news-tags ul li{
     font-size: 13px;
