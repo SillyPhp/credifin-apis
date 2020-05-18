@@ -121,6 +121,16 @@ $this->registercss('
 	text-align: center;
 	color:#333;
 }
+@media(max-width:1200px){
+.service-txt {
+	font-size: 15px;
+	}
+}
+@media(max-width:990px){
+.service-txt {
+	font-size: 17px;
+	}
+}
 @media(max-width:550px){
 .u-p{
     padding:0 8px !important;
