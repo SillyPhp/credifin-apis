@@ -22,7 +22,7 @@ use yii\helpers\Url;
             </div>
             <div class="row">
                 <div class="btn-for-job">
-                    <a href="">View all jobs</a>
+                    <a id="65af4d5a" href="/jobs">View all jobs</a>
                 </div>
             </div>
         </div>
@@ -105,6 +105,7 @@ $script = <<<JS
      getCards(type = 'Jobs',container = '#featured-job-cards', url = '/jobs/preferred-list',loc, 6, 'ai');
      if(city != ""){
         $('#prefer-heading').html('Jobs in ' + city);
+        $('#65af4d5a').prop('href','/jobs-in-' + city)
      }
  }
 function ipLookUp () {
