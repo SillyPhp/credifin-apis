@@ -228,6 +228,10 @@ class OrganizationsController extends Controller
                     ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
                     ->asArray()
                     ->one();
+                $reviews_count = OrganizationReviews::find()
+                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
+                    ->asArray()
+                    ->count();
 
                 return $this->render('view', [
                     'organization' => $organization,
@@ -239,6 +243,7 @@ class OrganizationsController extends Controller
                     'count_opportunities' => $count_opportunities,
                     'org_products' => $org_products,
                     'review_stats' => $stats,
+                    'reviews_count' => $reviews_count,
                 ]);
             }
         } else {
