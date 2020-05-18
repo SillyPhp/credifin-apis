@@ -258,6 +258,8 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.last_date',
+                    'b.joining_date',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -337,6 +339,8 @@ class SearchController extends ApiBaseController
                     'ee.name title',
                     'a.employer_application_enc_id',
                     'b.slug',
+                    'b.last_date',
+                    'b.joining_date',
                     'm.fixed_wage as fixed_salary',
                     'm.wage_type salary_type',
                     'm.max_wage as max_salary',
@@ -467,6 +471,8 @@ class SearchController extends ApiBaseController
             $data['org_slug'] = $j['org_slug'];
             $data['title'] = $j['title'];
             $data['slug'] = $j['slug'];
+            $data['last_date'] = $j['last_date'];
+            $data['joining_date'] = $j['joining_date'];
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
             foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
