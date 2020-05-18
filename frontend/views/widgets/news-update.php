@@ -1,66 +1,80 @@
 <?php
+
+use common\models\ExternalNewsUpdate;
 use yii\helpers\Url;
+
 ?>
 
-<section class="news-updation">
-    <div class="container">
-        <div class="row">
-            <div class="n-heading">News Update</div>
+    <section class="news-updation">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="n-heading">Latest News Update</div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="view-all-news">
+                        <a href="<?= Url::to('/news')?>">View All</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <?php
+                $newsUpdates = ExternalNewsUpdate::find()
+                    ->where(['is_deleted' => 0, 'status' => 1])
+                    ->orderBy(['created_on' => SORT_DESC])
+                    ->limit(9)
+                    ->all();
+                foreach ($newsUpdates as $n) {
+                    ?>
+                    <div class="col-md-4 col-sm-6">
+                        <a href="<?= Url::to('/news/' . $n->slug) ?>">
+                            <div class="news-bx">
+                                <div class="news-logo">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"
+                                         alt=""/>
+                                </div>
+                                <div class="news-name"><?= $n->title ?></div>
+                            </div>
+                        </a>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-               <div class="news-bx">
-                   <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                   <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-               </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="news-bx">
-                    <div class="news-logo"><img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt=""></div>
-                    <div class="news-name">Get Latest Job UpdatesGet Latest Job Updates Get Latest Job UpdatesGet Latest Job Updates </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
+    </section>
 <?php
 $this->registercss('
 .news-updation {
 	background-color: #000;
 	padding: 0px 0 30px;
+	margin:20px 0;
 }
 .n-heading {
-	text-align: center;
+	text-align: left;
 	margin: 0px 0 20px;
 	font-size: 34px;
 	font-family: lora;
 	font-weight: 600;
 	color: #fff;
+}
+.view-all-news a{
+	text-align: right;
+	font-size: 16px;
+	font-family: roboto;
+	color: #000;
+	background-color: #fff;
+	float: right;
+	padding: 2px 17px;
+	margin-top: 12px;
+	border-radius: 4px;
+	transition:all .3s;
+	border:2px solid transparent;
+}
+.view-all-news:hover a{
+    background-color:#000;
+    color:#fff;
+    border:2px solid #fff;
 }
 .news-bx {
 	display: flex;
@@ -74,6 +88,7 @@ $this->registercss('
 }
 .news-logo {
     max-width: 70px;
+    line-height:50px;
 }
 .news-name {
 	padding-left: 14px;
@@ -88,7 +103,6 @@ $this->registercss('
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: #fff;
-	padding-top: 6px;
 }
 .news-bx:hover .news-name {
 	color: #000;

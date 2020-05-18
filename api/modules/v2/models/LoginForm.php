@@ -2,7 +2,7 @@
 
 namespace api\modules\v2\models;
 
-use api\modules\v1\models\Candidates;
+use api\modules\v2\models\Candidates;
 use Yii;
 use yii\base\Model;
 
@@ -28,6 +28,7 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password, $user->password)) {
+//                $this->addError($attribute, $this->_checkPassword($user));
                 if (!$this->_checkPassword($user)) {
                     $this->addError($attribute, 'Incorrect username or password.');
                 }

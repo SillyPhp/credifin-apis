@@ -5,7 +5,20 @@ use yii\helpers\Url;
 
 ?>
 
-    <Section class="news-bg"></Section>
+    <Section class="news-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="get-latest">Get Latest News Updates</div>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <div class="get-logo">
+                        <img src="<?= Url::to('@eyAssets/images/pages/news-update/news2.png'); ?>"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Section>
 
     <section>
         <div class="container">
@@ -14,44 +27,83 @@ use yii\helpers\Url;
                 foreach ($news as $n) {
                     ?>
                     <div class="col-md-4 col-sm-6">
-                        <div class="news-box">
-                            <div class="news-img">
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"/>
-                            </div>
-                            <div class="news-main">
-                                <a href="<?= Url::to('/news/' . $n->slug) ?>">
-                                    <div class="news-heading"><?= $n->title ?></div>
-                                </a>
-                                <div class="news-date"><?= date('d M Y', strtotime($n->created_on)) ?></div>
-                                <div class="news-tags">
-                                    <ul>
-                                        <?php
-                                        $index = 1;
-                                        foreach ($n->newsTags as $tag) {
-                                            if ($tag->is_deleted == 0) {
-                                                $t = $tag->assignedTagEnc->tagEnc;
-                                                ?>
-                                                <li><?= $t->name ?></li>
-                                                <?php
-                                                if ($index == 3) {
-                                                    break;
+                        <a href="<?= Url::to('/news/' . $n->slug) ?>">
+                            <div class="news-box">
+                                <div class="news-img">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $n->image_location . '/' . $n->image); ?>"/>
+                                </div>
+                                <div class="news-main">
+                                    <a href="<?= Url::to('/news/' . $n->slug) ?>">
+                                        <div class="news-heading"><?= $n->title ?></div>
+                                    </a>
+                                    <div class="news-date"><?= date('d M Y', strtotime($n->created_on)) ?></div>
+                                    <div class="news-tags">
+                                        <ul>
+                                            <?php
+                                            $index = 1;
+                                            foreach ($n->newsTags as $tag) {
+                                                if ($tag->is_deleted == 0) {
+                                                    $t = $tag->assignedTagEnc->tagEnc;
+                                                    ?>
+                                                    <li><?= $t->name ?></li>
+                                                    <?php
+                                                    if ($index == 3) {
+                                                        break;
+                                                    }
+                                                    $index++;
                                                 }
-                                                $index++;
                                             }
-                                        }
-                                        ?>
-                                    </ul>
-                                </div>
-                                <div class="news-content"><?= $n->description ?></div>
-                                <div class="news-btns">
-                                    <button id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
-                                            title="upvote"><i class="fas fa-chevron-up"></i></button>
-                                    <button id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
-                                            title="downvote"><i class="fas fa-chevron-down"></i>
-                                    </button>
+                                            ?>
+                                        </ul>
+                                    </div>
+                                    <div class="news-content"><?= strip_tags($n->description) ?></div>
+                                    <div class="use-flex">
+                                        <?php $sharingLink = Url::base(true) . '/news/' . $n->slug ?>
+                                        <div class="share-news">
+                                            <div class="wts-sh basis">
+                                                <a href="#!"
+                                                   onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                    <span class="fb-btn" title="share on whatsapp"
+                                                          data-toggle="tooltip"><i class="fab fa-whatsapp"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="tel-sh basis">
+                                                <a href="#!"
+                                                   onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                    <span class="tw-btn" title="share on telegram"
+                                                          data-toggle="tooltip"><i
+                                                                class="fab fa-telegram-plane"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="tw-sh basis">
+                                                <a href="#!"
+                                                   onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                    <span class="tw-btn" title="share on twitter" data-toggle="tooltip"><i
+                                                                class="fab fa-twitter marg"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="li-sh basis">
+                                                <a href="#!"
+                                                   onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                                    <span class="li-btn" title="share on linkedIn"
+                                                          data-toggle="tooltip"><i class="fab fa-linkedin-in marg"></i></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="news-btns">
+                                            <button data-id="upvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                                    title="<?= $n->upvote ?>" data-toggle="tooltip"><i
+                                                        class="fas fa-thumbs-up"></i>
+                                            </button>
+                                            <button data-id="downvoteBtn" data-key="<?= $n->news_enc_id ?>" class="vote-btn"
+                                                    title="<?= $n->downvote ?>" data-toggle="tooltip"><i
+                                                        class="fas fa-thumbs-down"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <?php
                 }
@@ -60,24 +112,56 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <!--Subscribe Widget start-->
 <?php
-echo $this->render('/widgets/news-update');
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
 ?>
+    <!--Subscribe Widget ends-->
 
 <?php
 $this->registercss('
-.news-bg{
-    background:url(' . Url::to('@eyAssets/images/pages/news-update/newsbg.png') . ');
-    min-height:450px;
-    background-position: right;
-    background-repeat: no-repeat;
-    background-size: cover;  
+.news-bg {
+	background-color: #f59f0c;
+	padding: 20px 0;
+}
+.get-latest {
+	font-size: 45px;
+	font-family: lora;
+	font-weight: 600;
+	margin-top: 155px;
+	color: #fff;
+}
+@media(max-width:1199px){
+.get-latest {
+	margin-top: 100px;
+}
+}
+@media(max-width:768px){
+.get-latest {
+	margin-top: 50px;
+}
+}
+@media(max-width:550px){
+.get-latest {
+	font-size:32px;
+	text-align:center;
+}
+.get-logo {
+	width: 250px;
+	margin: auto;
+}
 }
 .news-box {
     border-radius: 8px;
-    overflow: hidden;
     box-shadow: 0 0 6px 1px #eee;
     margin-bottom:20px;
+    transition:all .3s;
+}
+.news-box:hover {
+	transform: translatey(-5px);
+	box-shadow: 0 0 15px 6px #eee;
 }
 .news-img {
     width: 100%;
@@ -88,6 +172,7 @@ $this->registercss('
     width: 100%;
     min-height: 160px;
     max-height: 160px;
+    border-radius:8px 8px 0px 0px; 
 }
 .news-main {
     padding:10px 15px;
@@ -157,9 +242,6 @@ $this->registercss('
 	text-overflow: ellipsis;
 	margin-bottom: 5px;
 }
-.news-btns {
-    text-align:right;
-}
 .news-btns button {
 	background-color: #00a0e3;
 	border: none;
@@ -168,15 +250,39 @@ $this->registercss('
 	font-size: 16px;
 	border-radius: 2px;
 }
+.use-flex {
+	display: flex;
+	justify-content: space-between;
+	padding: 2px 0;
+}
+.share-news {
+    display: flex;
+}
+.basis a {
+	margin-right: 10px;
+	color: #fff;
+	padding: 4px 6px;
+	border-radius: 3px;
+}
+.wts-sh a{background-color:#36dc54;}
+.tel-sh a{background-color:#2399d7;}
+.tw-sh a{background-color:#1da1f2;}
+.li-sh a{background-color:#0073b1;}
 ');
 
 $script = <<<JS
 $(document).on('click', '.vote-btn', function (event) {
     event.preventDefault();
     var btn = $(this);
-    console.log(btn);
-    var id = btn.attr('id');
+    event.stopImmediatePropagation();
+    if ( btn.data('requestRunning') ) {
+        return false;
+    }
+    btn.data('requestRunning', true);
+    
+    var id = btn.attr('data-id');
     var key = btn.attr('data-key');
+    var targetValue = btn.attr('data-original-title');
     $.ajax({
         type: 'POST',
         data: {id:id,key:key},
@@ -187,6 +293,8 @@ $(document).on('click', '.vote-btn', function (event) {
             btn.attr('disabled', false);
             if (response.status == 200) {
                 toastr.success(response.message, response.title);
+                var updateValue = parseInt(targetValue) + 1; 
+                btn.attr('data-original-title', updateValue);
             } else {
                 toastr.error(response.message, response.title);
             }
@@ -198,6 +306,9 @@ $(document).on('click', '.vote-btn', function (event) {
          toastr.error('Network Problem', 'Please try later..');
          btn.attr('disabled', false);
     });
+});
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();   
 });
 JS;
 $this->registerJs($script);

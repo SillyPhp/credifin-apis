@@ -2,7 +2,7 @@
 
 namespace api\modules\v2\models;
 
-use api\modules\v1\models\Candidates;
+use api\modules\v2\models\Candidates;
 use common\models\crud\Referral;
 use common\models\Departments;
 use common\models\EducationalRequirements;
@@ -49,22 +49,22 @@ class IndividualSignup extends Model
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
 
-            ['phone', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'phone number already registered'],
+            ['phone', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'phone number already registered'],
 
             [['username'], 'string', 'length' => [3, 20]],
             [['username'], 'match', 'pattern' => '/^([A-Za-z]+[0-9]|[0-9]+[A-Za-z]|[a-zA-Z])[A-Za-z0-9]+$/', 'message' => 'Username can only contain alphabets and numbers'],
-            ['username', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'username already taken'],
+            ['username', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'username already taken'],
 
             ['starting_year', 'safe'],
             ['ending_year', 'safe'],
 
             ['email', 'email'],
-            ['email', 'unique', 'targetClass' => 'api\modules\v1\models\Candidates', 'message' => 'email already taken'],
+            ['email', 'unique', 'targetClass' => 'api\modules\v2\models\Candidates', 'message' => 'email already taken'],
 
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            [['college', 'department', 'course_id', 'semester', 'roll_number'], 'required'],
+            [['college','course_id', 'semester', 'roll_number'], 'required'],
 
             ['source', 'required']
         ];
@@ -108,24 +108,26 @@ class IndividualSignup extends Model
         $user_other_details->organization_enc_id = $this->college;
         $user_other_details->user_enc_id = $user->user_enc_id;
 
-        $d = Departments::find()
-            ->where([
-                'name' => $this->department
-            ])
-            ->one();
+        if($this->department != '') {
+            $d = Departments::find()
+                ->where([
+                    'name' => $this->department
+                ])
+                ->one();
 
-        if ($d) {
-            $user_other_details->department_enc_id = $d->department_enc_id;
-        } else {
-            $department = new Departments();
-            $utilitiesModel = new \common\models\Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $department->department_enc_id = $utilitiesModel->encrypt();
-            $department->name = $this->department;
-            if (!$department->save()) {
-                return false;
+            if ($d) {
+                $user_other_details->department_enc_id = $d->department_enc_id;
+            } else {
+                $department = new Departments();
+                $utilitiesModel = new \common\models\Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $department->department_enc_id = $utilitiesModel->encrypt();
+                $department->name = $this->department;
+                if (!$department->save()) {
+                    return false;
+                }
+                $user_other_details->department_enc_id = $department->department_enc_id;
             }
-            $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
 //        $e = EducationalRequirements::find()
@@ -158,21 +160,21 @@ class IndividualSignup extends Model
         $user_other_details->university_roll_number = $this->roll_number;
 
 
-        if ($this->job_start_month) {
-            $user_other_details->job_start_month = $this->job_start_month;
-        }
-
-        if ($this->job_year) {
-            $user_other_details->job_year = $this->job_year;
-        }
-
-        if ($this->internship_duration) {
-            $user_other_details->internship_duration = $this->internship_duration;
-        }
-
-        if ($this->internship_start_date) {
-            $user_other_details->internship_start_date = $date = date('Y-m-d', strtotime($this->internship_start_date));
-        }
+//        if ($this->job_start_month) {
+//            $user_other_details->job_start_month = $this->job_start_month;
+//        }
+//
+//        if ($this->job_year) {
+//            $user_other_details->job_year = $this->job_year;
+//        }
+//
+//        if ($this->internship_duration) {
+//            $user_other_details->internship_duration = $this->internship_duration;
+//        }
+//
+//        if ($this->internship_start_date) {
+//            $user_other_details->internship_start_date = $date = date('Y-m-d', strtotime($this->internship_start_date));
+//        }
 
         if (!$user_other_details->save()) {
             return false;

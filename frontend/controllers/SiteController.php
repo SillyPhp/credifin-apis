@@ -741,7 +741,10 @@ class SiteController extends Controller
                 }
                 break;
             case 'getCompaniesWithUs':
-                return $this->renderAjax('/widgets/companies-with-us');
+                return $this->renderAjax('/widgets/organizations/companies-with-us');
+                break;
+            case 'getNewsUpdate':
+                return $this->renderAjax('/widgets/news-update');
                 break;
             case 'getTweets':
                 return $this->renderAjax('/widgets/homepage_components/tweets');

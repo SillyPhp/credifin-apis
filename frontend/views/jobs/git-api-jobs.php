@@ -162,9 +162,14 @@ if (!Yii::$app->user->isGuest) {
                         </div>
                     </div>
                     <div class="actions-main">
+                        <?php if (Yii::$app->user->isGuest): ?>
+                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
+                                    class="fas fa-paper-plane"></i>Login to apply</a>
+                        <?php else: ?>
                         <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" ><i class="fas fa-paper-plane hvr-icon"></i>Apply
                             On
                             Website</a>
+                        <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
