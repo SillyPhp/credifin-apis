@@ -858,8 +858,8 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionCreatorProfile(){
+    public function actionCreatorProfile()
+    {
         return $this->render('creator-profile');
     }
-
 }

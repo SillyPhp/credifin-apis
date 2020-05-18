@@ -1,4 +1,5 @@
 <?php
+$this->params['header_dark'] = true;
 
 use yii\helpers\Url;
 
@@ -13,7 +14,17 @@ use yii\helpers\Url;
                         </div>
                         <div class="mentor-details">
                             <p class="mentor-name">Mr. Tarry</p>
-                            <p class="mentor-designation">CTO <br> Empower Youth</p>
+                            <p class="work-set"><span>CTO at</span> Empower Youth</p>
+                            <p class="college-name"></p>
+                        </div>
+                        <div class="mentor-name">About Me</div>
+                        <div class="mentor-description">
+                            <p>
+                                Tarry started photography to find happiness, and he lives to put that enthusiasm
+                                into Mophie Photography. He creates intuitive, creative, and adventurous
+                                experiences within the process of shooting that make the process itself
+                                memorable.
+                            </p>
                         </div>
                         <div class="btn-flex use-p">
                             <div class="apply-btn">
@@ -54,114 +65,217 @@ use yii\helpers\Url;
                             </ul>
                         </div>
                     </div>
-
-                    <div class="mentor-expertise">
-                        <h4>Expertise</h4>
-                        <ul>
-                            <li>International: Exporting and Importing</li>
-                            <li>International: Outsourcing</li>
-                            <li>Sales: Customer Service and CRM</li>
-                            <li>Sales: Selling Services</li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="col-md-8">
-                    <div class="mentor-padding-50">
-                        <div class="row mb3">
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>25</h4> <span>Total Quiz</span>
-                                </div>
+                    <div class="col-md-12">
+                        <div class="mentor-heading">All Quizzes</div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="what-popular-box">
+                            <div class="wp-box-icon">
+                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-default.png') ?>"
+                                                alt="Blog testing"></a>
                             </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>15</h4> <span>Paid Quiz</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>10</h4> <span>Unpaid Quiz</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">About Me</div>
-                                <div class="mentor-description">
-                                    <p>
-                                        Tarry started photography to find happiness, and he lives to put that enthusiasm
-                                        into Mophie Photography. He creates intuitive, creative, and adventurous
-                                        experiences within the process of shooting that make the process itself
-                                        memorable.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">Field Of Expertise</div>
-                                <ul class="skills-taught">
-                                    <li>Web Designing</li>
-                                    <li>Web Development</li>
-                                    <li>Personality Development</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">Experience</div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="ex-box">
-                                            <ul class="exp-field">
-                                                <li>Business Management <br> <span>14-15 Years</span></li>
-                                            </ul>
+                            <div class="wn-box-details">
+                                <a href="">
+                                    <div class="qz-box-title">Lorem Ipsum is simply dummy</div>
+                                </a>
+                                <div class="qz-box-des">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><span>Questions:</span> 5</p>
                                         </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="ex-box">
-                                            <ul class="exp-field">
-                                                <li>Ownership <br> <span>14-15 Years</span></li>
-                                            </ul>
+                                        <div class="col-md-6">
+                                            <p><span>Group:</span> 9th</p>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="ment-exp-box">
-                                            <p><span>Job Title: </span>Director</p>
-                                            <p><span>Company: </span>Empower Youth</p>
-                                            <p><span>Working Period </span>06 Aug 2018 - Currently Working Here</p>
-                                            <p><span>Job Description: </span>Going to the next level, after having
-                                                business for more than 2yrs or a very well
-                                                product/service designed. NOW focusing on Management, MKT estrategies/PR
-                                                and
-                                                Financials.</p>
+                                        <div class="col-md-6">
+                                            <p><span>Subject:</span> GK</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Duration :</span> 5min</p>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">Featured Quiz</div>
-                            </div>
-                            <?= $this->render('/widgets/mentorships/mentor-blogs') ?>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="what-popular-box">
+                            <div class="wp-box-icon">
+                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/mentorship/thumbnail1.png') ?>"
+                                                alt="Blog testing"></a>
+                            </div>
+                            <div class="wn-box-details">
+                                <a href="">
+                                    <div class="qz-box-title">Lorem Ipsum is simply dummy</div>
+                                </a>
+                                <div class="qz-box-des">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><span>Questions:</span> 5</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Group:</span> 9th</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Subject:</span> GK</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Duration :</span> 5min</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="what-popular-box">
+                            <div class="wp-box-icon">
+                                <a href=""><img src="<?= Url::to('@eyAssets/images/pages/mentorship/thumbnail1.png') ?>"
+                                                alt="Blog testing"></a>
+                            </div>
+                            <div class="wn-box-details">
+                                <a href="">
+                                    <div class="qz-box-title">Lorem Ipsum is simply dummy</div>
+                                </a>
+                                <div class="qz-box-des">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><span>Questions:</span> 5</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Group:</span> 9th</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Subject:</span> GK</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><span>Duration :</span> 5min</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row mb4">
             </div>
         </div>
     </section>
 <?php
 $this->registerCss('
+.about-box {
+    border: 1px solid transparent;
+    border-radius: 20px;
+    padding: 10px 20px;
+    box-shadow: 0 0 5px 1px #eee;
+    margin-bottom: 20px;
+}
+.bg-gray{
+    background: #f4f8ff;
+    text-align: center;
+    border-radius: 20px;
+}
+.what-popular-box {
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.wp-box-icon {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    position: relative;
+}
+.wp-box-icon img {
+    border-radius: 5px 5px 0 0;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: .5s ease;
+    backface-visibility: hidden;
+    object-fit: cover;
+}
+.what-popular-box:hover .wp-box-icon img {
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+    opacity: 1;
+}
+.wn-box-details {
+    border-top: none;
+    padding: 5px 10px 10px 8px;
+    border: 1px solid rgba(230, 230, 230, .3);
+    border-radius: 0 0 5px 5px;
+}
+.qz-box-title{
+    font-weight: bold;
+}
+.work-set {
+    font-size: 15px;
+    padding: 0 20px;
+}
+.college-name {
+    font-size: 18px;
+    font-weight: 500;
+    font-family: roboto;
+}
+.work-set span{
+    font-family: roboto;
+    font-weight: 500;
+}
+.qz-box-des {
+    padding-top: 15px;
+    font-size: 13px;
+}
+.qz-box-des p span{
+    font-weight: bold;
+}
+.button {
+    display: inline-block;
+    background-color: #00a0e3;
+    border-radius: 5px;
+    border: none;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 13px;
+    padding: 8px 15px;
+    // width: 200px;
+    transition: all 0.3s;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.button:hover{
+    color: #fff;
+}
+.what-popular-box:hover {
+    box-shadow: 0 0 15px rgba(73, 72, 72, 0.28);
+}
+
+
 .use-p{
     padding:0 20px;
-    margin-top:5px;
+    margin-top:15px;
 }
 .mentor-social-links{
     text-align: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .mentor-social-links ul li{
     display: inline;
@@ -267,6 +381,7 @@ $this->registerCss('
     font-family: lora;
     color:#000;
     text-transform: capitalize;
+    padding: 0 20px;
 }
 .mb4{
     margin-bottom: 40px;
@@ -275,7 +390,7 @@ $this->registerCss('
     margin-bottom: 30px;
 }
 .mt30{
-    margin-top: 80px;
+    margin-top: 10px;
 }
 .mentor-header{
     background: url(' . Url::to('@eyAssets/images/pages/mentorship/mentor-profile-header.png') . ');
@@ -313,7 +428,7 @@ $this->registerCss('
     background: #fff;
     
     overflow: hidden;
-    margin: 0 auto 30px;
+    margin: 0 auto 20px;
 }
 .turitor-instructor-profile img {
     width: 100%;
@@ -324,14 +439,15 @@ $this->registerCss('
     color:#333;   
     text-transform: capitalize;  
 }
-.mentor-details .mentor-name{
+.mentor-name{
     color:#333;
     font-family: lora;
     font-size:23px;
     font-weight: bold;
-    margin-bottom: 5px;
+    text-align: center;
+    margin-bottom: 0px;
 }
-.mentor-details p, mentor-fields p{
+.mentor-fields p{
     margin: 0px;
     font-size: 16px;
     line-height: 25px;
@@ -362,8 +478,12 @@ $this->registerCss('
 }
 
 .mentor-stats {
-    padding: 10px 0;
+    padding: 30px 0;
     position: relative;
+    border-right: 1px solid #eee
+}
+.border-none{
+    border-right: none;
 }
 
 .mentor-stats h4{
@@ -382,13 +502,12 @@ $this->registerCss('
     color:#333;
 }
 .mentor-description, .mpb-text{
-        font-size: 16px;
+    font-size: 15px;
     line-height: 25px;
     color: #333;
     font-family: roboto;
-//    border-top: 1px solid #eee;
-    padding: 10px 0 0 0;
-    text-align: justify;   
+    padding: 0px 20px 0 20px;
+    text-align: center;   
 }
 
 .mentee-btn{

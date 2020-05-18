@@ -74,7 +74,7 @@ use yii\helpers\Url;
                         <div class="quiz-stats-box">
                             <div class="stats-details">
                                 <div class="qsb-heading">Total Quiz</div>
-                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
+                                <div class="qsb-price">250</div>
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                         <div class="quiz-stats-box">
                             <div class="stats-details">
                                 <div class="qsb-heading">Quiz Created This Month</div>
-                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
+                                <div class="qsb-price">250</div>
                                 <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
                             </div>
                             <div class="qsb-icons">

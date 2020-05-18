@@ -8,7 +8,7 @@ use yii\helpers\Url;
         <div class="col-md-4 col-sm-6">
             <div class="quiz-name">
                 <div class="qz-logo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-default.png') ?>" alt="">
                 </div>
                 <div class="quiz-title">
                     <p>Name of the quiz</p>
