@@ -208,8 +208,8 @@ class AuthController extends ApiBaseController
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->login()) {
-//                $source = Yii::$app->request->post()['source'];
-                $source = Yii::$app->getRequest()->getUserIP();
+                $source = Yii::$app->request->post()['source'];
+//                $source = Yii::$app->getRequest()->getUserIP();
                 $user = $this->findUser($model);
                 if ($user->organization_enc_id) {
                     $user_type = Users::find()
