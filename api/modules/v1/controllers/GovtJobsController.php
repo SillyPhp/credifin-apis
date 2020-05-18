@@ -138,13 +138,36 @@ class GovtJobsController extends ApiBaseController
             if ($val['MatchedObjectId'] == $objectid) {
                 $flag = true;
                 $get = $val['MatchedObjectDescriptor'];
+                $data = [];
+                $data['DepartmentName'] = $get['DepartmentName'];
+                $data['PositionTitle'] = $get['PositionTitle'];
+                $data['PositionSchedule'] = $get['PositionSchedule'][0]['Name'];
+                $data['PositionLocationDisplay'] = $get['PositionLocationDisplay'];
+                $data['PositionStartDate'] = $get['PositionStartDate'];
+                $data['PositionEndDate'] = $get['PositionEndDate'];
+                $data['PositionRemuneration'] = $get['PositionRemuneration'];
+                $data['Service'] = 'Excepted';
+                $data['PositionOfferingType'] = $get['PositionOfferingType'][0]['Name'];
+                $data['QualificationSummary'] = $get['QualificationSummary'];
+                $data['PositionLocation'] = $get['PositionLocation'];
+                $data['OrganizationName'] = $get['OrganizationName'];
+                $data['PositionID'] = $get['PositionID'];
+                $data['ApplyURI'] = $get['ApplyURI'][0];
+                $data['PositionURI'] = $get['PositionURI'];
+                $data['UserArea'] = $get['UserArea'];
+
+                if ($get['UserArea']['Details']['LowGrade'] != $get['UserArea']['Details']['HighGrade']){
+                    $data['JobGrade'] = $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['LowGrade'] . "-" . $get['UserArea']['Details']['HighGrade'];
+                }else{
+                    $data['JobGrade'] = $get['JobGrade'][0]['Code'] . " " . $get['UserArea']['Details']['HighGrade'];
+                }
             }
         }
 
         if (!$flag) {
             return $this->response(404, 'not found');
         } else {
-            return $this->response(200, $get);
+            return $this->response(200, $data   );
         }
     }
 
@@ -191,7 +214,7 @@ class GovtJobsController extends ApiBaseController
                 ->asArray()
                 ->one();
             if (!empty($data['image']) && !empty($data['image_location'])) {
-                $get[$i]['logo'] = Yii::$app->params->upload_directories->usa_jobs->departments->image . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image,'https') . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
             } else {
                 $get[$i]['logo'] = null;
             }
