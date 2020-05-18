@@ -862,4 +862,8 @@ class SiteController extends Controller
     {
         return $this->render('creator-profile');
     }
+
+    public function actionTransactionTable(){
+        return $this->render('transaction-table');
+    }
 }
