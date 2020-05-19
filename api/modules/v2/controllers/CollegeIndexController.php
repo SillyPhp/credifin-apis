@@ -329,7 +329,7 @@ class CollegeIndexController extends ApiBaseController
                     $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug']);
                     $b->joinWith(['title d' => function ($d) {
-                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc e']);
                     }], false);
                     $b->joinWith(['applicationPlacementLocations f' => function ($f) {
                         $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
@@ -342,6 +342,8 @@ class CollegeIndexController extends ApiBaseController
                 }], true)
                 ->where(['a.college_enc_id' => $college_id,
                     'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 0,
                     'z.name' => $type,

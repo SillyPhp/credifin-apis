@@ -44,7 +44,7 @@ class IndividualSignup extends Model
     public function rules()
     {
         return [
-            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation','section_id'], 'safe'],
+            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation','section_id','course_id'], 'safe'],
 
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
@@ -64,7 +64,7 @@ class IndividualSignup extends Model
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            [['college','course_id', 'semester', 'roll_number'], 'required'],
+            [['college', 'semester', 'roll_number'], 'required'],
 
             ['source', 'required']
         ];

@@ -443,6 +443,8 @@ class CollegeProfileController extends ApiBaseController
                 ->where([
                     'a.college_enc_id' => $college_id,
                     'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'bb.is_deleted' => 0,
                     'a.status' => 'Active',
 //                    'a.is_college_approved' => 1,
                     'bb.is_erexx_approved' => 1,
