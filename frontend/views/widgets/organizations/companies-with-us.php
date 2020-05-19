@@ -37,7 +37,7 @@ $companies = Organizations::find()
                 <?php
                 foreach ($companies as $c) {
                     ?>
-                    <div class="col-md-2 col-sm-4">
+                    <div class="col-md-2 col-sm-4 col-xs-6">
                         <a href="/<?= $c->slug ?>" title="<?= $c->name ?>">
                             <div class="cmp-main">
                                 <div class="cmp-log">
@@ -87,7 +87,7 @@ $this->registercss('
     margin-bottom: 20px;
     background-color:#fff;
     border-radius: 5px;
-    height: 147px !important;
+    height: 140px !important;
     cursor: pointer;
     transition: all 0.3s;
 }
