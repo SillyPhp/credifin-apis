@@ -85,8 +85,69 @@ use yii\helpers\Html;
             </div>
         </div>
     </div>
-
 </div>
+<div id="mentorRegister" class="mentorRegisterModal">
+    <div class="mentor-register-modal">
+        <span class="close">&times;</span>
+        <div class="">
+            <div class="col-md-6">
+                <div class="cmc-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/college/online-class-white.png') ?>">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="csu-heading">Join our mentorship program today</div>
+                <?php
+                $form = ActiveForm::begin([
+                    'id' => 'enquiry-form',
+                    'enableClientValidation' => true,
+                    'validateOnBlur' => false,
+                    'options' => [
+                        'enctype' => 'multipart/form-data',
+                        'class' => 'mx-600',
+                    ],
+                ]);
+                ?>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
+                    </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
+                    </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'teaching_field')->textInput(['autocomplete' => 'off', 'placeholder' => 'Teaching Field', 'class' => 'uname-in'])->label(false); ?>
+                        <p class="help-block help-block-error"></p>
+                    </div>
+                </div>
+                <div class="uname">
+                    <div class="form-group field-username required">
+                        <?= $form->field($model, 'experience')->dropDownList([1 => 'fresher', 2 => 'experienced'], ['prompt' => 'select experience', 'class' => 'uname-in'])->label(false) ?>
+                        <p class="help-block help-block-error"></p>
+                    </div>
+                </div>
+
+                <div class="uname">
+                    <?=
+                    $form->field($model, 'phone')->textInput(['placeholder' => 'Phone number', 'class' => 'uname-in'])->label(false);
+                    ?>
+                    <p class="help-block help-block-error"></p>
+                </div>
+                <div class="modal-oc">
+                    <?= Html::submitButton('Sign Up', ['id' => 'enquiryBtn']); ?>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
 $this->registerCSS('
 .footer{
@@ -126,7 +187,7 @@ $this->registerCSS('
     padding:15px 20px;
     border: 1px solid #00a0e3
 }
-.mentorSignUpmodal {
+.mentorSignUpmodal, .mentorRegisterModal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -329,15 +390,18 @@ $this->registerJs($script);
 ?>
 <script>
     var modal = document.getElementById("mentorModal");
+    var modalRegister = document.getElementById("mentorRegister");
 
-    var btn = document.getElementsByClassName("mentorSignupModal");
+    var btn = document.querySelector(".mentorSignupModal");
+    var Regbtn = document.querySelector(".mentorRegisterModal");
 
     var span = document.getElementsByClassName("close")[0];
 
-    for (var i = 0; i < btn.length; i++) {
-        btn[i].onclick = function () {
-            modal.style.display = "block";
-        }
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+    Regbtn.onclick = function(){
+        modalRegister.style.display = "block";
     }
     span.onclick = function () {
         modal.style.display = "none";
