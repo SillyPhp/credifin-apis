@@ -67,8 +67,10 @@ class AuthController extends ApiBaseController
     public function actionTeacherSignup()
     {
         $model = new TeacherSignup();
-        $model->source = Yii::$app->getRequest()->getUserIP();
         if ($model->load(Yii::$app->request->post(), '')) {
+            if(!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
             if ($model->validate()) {
 
                 if (!$this->usernameValid($model)) {
@@ -98,8 +100,10 @@ class AuthController extends ApiBaseController
     {
 
         $model = new IndividualSignup();
-        $model->source = Yii::$app->getRequest()->getUserIP();
         if ($model->load(Yii::$app->request->post(), '')) {
+            if(!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
             if ($model->validate()) {
 
                 if (!$this->usernameValid($model)) {
@@ -209,7 +213,9 @@ class AuthController extends ApiBaseController
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->login()) {
                 $source = Yii::$app->request->post()['source'];
-//                $source = Yii::$app->getRequest()->getUserIP();
+                if(!$source) {
+                    $source = Yii::$app->getRequest()->getUserIP();
+                }
                 $user = $this->findUser($model);
                 if ($user->organization_enc_id) {
                     $user_type = Users::find()
