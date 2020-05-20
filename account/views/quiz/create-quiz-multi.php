@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 ?>
 <section>
     <div class="row">
@@ -12,7 +10,7 @@ use yii\helpers\Url;
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-3" disabled="disabled">Topic</button>
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-4" disabled="disabled">Introduction</button>
             <button class="w3-bar-item w3-button steps-btn tablink" value="#step-5" disabled="disabled">Questions</button>
-            <button class="w3-bar-item w3-button steps-btn tablink payLink" value="#step-6" disabled="disabled">Payments</button>
+            <button class="w3-bar-item w3-button steps-btn tablink payLink" value="#step-6" disabled="disabled">Rules</button>
         </div>
         <div class="ml250">
             <div id="form-data">
@@ -84,6 +82,9 @@ use yii\helpers\Url;
                             <div class="step-next-btn">
                                 <button class="btn btn-primary btn-md nextBtn pull-right" type="button" >Next</button>
                             </div>
+                            <div class="step-next-prev">
+                                <button class="btn btn-primary btn-md prevBtn" type="button" >Back</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,6 +135,9 @@ use yii\helpers\Url;
                             <div class="step-next-btn">
                                 <button class="btn btn-primary btn-md nextBtn pull-right" type="button" >Next</button>
                             </div>
+                            <div class="step-next-prev">
+                                <button class="btn btn-primary btn-md prevBtn" type="button" >Back</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -168,6 +172,9 @@ use yii\helpers\Url;
                             <div class="step-next-btn">
                                 <button class="btn btn-primary btn-md nextBtn pull-right" type="button" >Next</button>
                             </div>
+                            <div class="step-next-prev">
+                                <button class="btn btn-primary btn-md prevBtn" type="button" >Back</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,41 +187,50 @@ use yii\helpers\Url;
                                     <div class="quiz-textarea">
                                         <textarea placeholder="Enter Question" id="input_question" class="ques-input"></textarea>
                                     </div>
-                                    <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" id="input_answer1" class="ques-input max300"></textarea>
-                                        <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" value="1" class="ca-ans">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <p class="ca-message"></p>
+                                    <div class="optionList">
+                                        <div class="dis-flex">
+                                            <textarea placeholder="Enter Option" id="input_answer1" class="ques-input max300"></textarea>
+                                            <label class="checkbox-container correctAns">
+                                                <input type="radio" name="answer" class="ca-ans">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <p class="ca-message"></p>
+                                        </div>
+                                        <div class="dis-flex">
+                                            <textarea placeholder="Enter Option" id="input_answer2" class="ques-input max300"></textarea>
+                                            <label class="checkbox-container correctAns">
+                                                <input type="radio" name="answer" class="ca-ans">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <p class="ca-message"></p>
+                                        </div>
+                                        <div class="dis-flex">
+                                            <textarea placeholder="Enter Option" id="input_answer3" class="ques-input max300"></textarea>
+                                            <label class="checkbox-container correctAns" value="">
+                                                <input type="radio" name="answer" class="ca-ans">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <p class="ca-message"></p>
+                                            <button type="button" class="deleteBtn" onclick="this.parentElement.remove()"><i
+                                                    class="fa fa-trash"></i></button>
+                                        </div>
+                                        <div class="dis-flex">
+                                            <textarea placeholder="Enter Option" id="input_answer4" class="ques-input max300"></textarea>
+                                            <label class="checkbox-container correctAns">
+                                                <input type="radio" name="answer" class="ca-ans">
+                                                <span class="checkmark"></span>
+                                            </label>
+                                            <p class="ca-message"></p>
+                                            <button type="button" class="deleteBtn" onclick="this.parentElement.remove()"><i
+                                                    class="fa fa-trash"></i></button>
+                                        </div>
                                     </div>
                                     <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" id="input_answer2" class="ques-input max300"></textarea>
-                                        <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" value="2" class="ca-ans">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <p class="ca-message"></p>
-                                    </div>
-                                    <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" id="input_answer3" class="ques-input max300"></textarea>
-                                        <label class="checkbox-container correctAns" value="">
-                                            <input type="radio" name="answer" value="3" class="ca-ans">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <p class="ca-message"></p>
-                                    </div>
-                                    <div class="dis-flex">
-                                        <textarea placeholder="Enter Option" id="input_answer4" class="ques-input max300"></textarea>
-                                        <label class="checkbox-container correctAns">
-                                            <input type="radio" name="answer" value="4" class="ca-ans">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                        <p class="ca-message"></p>
+                                        <button type="button" id="add_options_btn">Add More Options</button>
                                     </div>
                                     <div class="quiz-button-flex">
                                         <button type="button" id="create_question">Create Question</button>
-                                        <button type="button" id="finish_quiz">Finish & Submit Quiz</button>
+                                        <button type="button" id="finish_quiz">Proceed To Final Step</button>
                                     </div>
                                 </div>
                             </div>
@@ -226,56 +242,122 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="row setup-content" id="step-6">
-                    <div id="Payment" class="w3-container steps">
+                    <div id="Rules" class="w3-container steps">
                         <div class="row">
-                            <div class="col-md-12">
-                                <h2 class="quiz-heading">Payment</h2>
-                                <div class="payment-text">Would you like to charge students for this quiz</div>
-                                <div class="pay-btns">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label class="radioLabel">
-                                                <input type="radio" name="choice_payment" txtvalue="yes"  value="1" class="customRadio">
-                                                <div class="quiz-group-box btn-shape">
-                                                    <div class="quiz-subject">Yes</div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label class="radioLabel">
-                                                <input type="radio" name="choice_payment" txtvalue="no"  value="0" class="customRadio">
-                                                <div class="quiz-group-box btn-shape">
-                                                    <div class="quiz-subject">No</div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="payment-details">
-                                    <div class="pay-form">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="payment-text">Total Marks</div>
                                         <div class="pay-input">
-                                            <input type="text" id="p_input" placeholder="Enter Amount">
-                                            <span><i class="fa fa-inr"></i></span>
-                                        </div>
-                                        <div class="pay-btns">
-                                            <button type="button" id="sbt_btn_p">Submit Quiz</button>
-                                            <button class="buttonload">
-                                                <i class="fa fa-refresh fa-spin"></i>Loading
-                                            </button>
+                                            <input type="text" maxlength="4" id="input_m" placeholder="Marks">
                                         </div>
                                     </div>
-                                    <div class="note-text">
-                                        <span>Note: </span> We Charge 20% as maintenance charges
+                                    <div class="col-md-6">
+                                        <div class="payment-text">Time Duration</div>
+                                        <div class="pay-input">
+                                            <input type="text" maxlength="4" id="input_t" placeholder="In Minutes">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt20">
+                                        <div class="payment-text">Marks For Every Correct answer</div>
+                                        <div class="pay-input">
+                                            <input type="text" maxlength="4" id="input_cam" placeholder="Marks">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt20">
+                                        <div class="payment-text">Would you like to negative marking for this quiz</div>
+                                        <div class="pay-btns">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="choice_marks_system" txtvalue="yes"  value="1" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">Yes</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="choice_marks_system" txtvalue="no"  value="0" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">No</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="marking-details">
+                                            <div class="payment-text">Penalty For Every Wrong answer</div>
+                                            <div class="pay-input">
+                                                <input type="text" maxlength="3" id="penelty_score" placeholder="Penalty">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 mt20">
+                                        <div class="payment-text">Would you like to charge students for this quiz</div>
+                                        <div class="pay-btns">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="choice_payment" txtvalue="yes"  value="1" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">Yes</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="radioLabel">
+                                                        <input type="radio" name="choice_payment" txtvalue="no"  value="0" class="customRadio">
+                                                        <div class="quiz-group-box btn-shape">
+                                                            <div class="quiz-subject">No</div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="payment-details">
+                                            <div class="pay-form">
+                                                <div class="pay-input">
+                                                    <input type="text" id="p_input" placeholder="Enter Amount">
+                                                    <span><i class="fa fa-inr"></i></span>
+                                                </div>
+                                                <div class="pay-btns">
+                                                    <button type="button" id="sbt_btn_p">Submit Quiz</button>
+                                                    <button class="buttonload">
+                                                        <i class="fa fa-refresh fa-spin"></i>Loading
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="note-text">
+                                                <span>Note: </span> We Charge 20% as maintenance charges
+                                            </div>
+                                        </div>
+                                        <div id="final-details">
+                                            <div class="pay-form">
+                                                <div class="pay-btns">
+                                                    <button type="button" id="sbt_btn_wp" >Submit Quiz</button>
+                                                    <button class="buttonload">
+                                                        <i class="fa fa-refresh fa-spin"></i>Loading
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div id="final-details">
-                                    <div class="pay-form">
-                                        <div class="pay-btns">
-                                            <button type="button" id="sbt_btn_wp" >Submit Quiz</button>
-                                            <button class="buttonload">
-                                                <i class="fa fa-refresh fa-spin"></i>Loading
-                                            </button>
-                                        </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="quiz-name">
+                                    <div class="quiz-title">
+                                        <p id="quiz_question_topic"></p>
+                                    </div>
+                                    <div class="quiz-details">
+                                        <p><span>Total Questions:</span> <span id="quiz_question_counts" class="font-weight-500"></span></p>
+                                        <p><span>Group:</span> <span id="quiz_question_group" class="font-weight-500"></span></p>
+                                        <p><span>Subject:</span> <span id="quiz_question_subject" class="font-weight-500"></span></p>
+                                    </div>
+                                    <div class="quiz-info">
+                                        <p><span>Introduction:</span> <p id="quiz_question_intro" class="font-weight-500"></p>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -308,6 +390,10 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+#marking-details
+{
+display:none;
+}
 .quiz-textarea textarea{
     height: 100px;
     resize: none;
@@ -567,7 +653,7 @@ $this->registerCss('
 .checkbox-container {
   display: block;
   position: relative;
-  margin: 6px;
+  margin: 0px;
   cursor: pointer;
   font-size: 22px;
   -webkit-user-select: none;
@@ -592,7 +678,7 @@ $this->registerCss('
   left: 0;
   height: 25px;
   width: 25px;
-  border: 2px solid #eee;
+  border: 1px solid #00a0e3;    
 }
 
 /* On mouse-over, add a grey background color */
@@ -821,9 +907,114 @@ button[disabled] {
 {
 display:none;
 }
+.quiz-title {
+    background: #f8f8f8;
+    color: #000;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-family: lora;
+    display: flex;
+    align-items: center;
+}
+.mt20{
+    margin-top: 20px;
+}
+.quiz-title{
+    background: #f8f8f8;
+    color: #000;
+    padding: 10px 15px;
+    font-size: 18px;
+    font-family: lora;
+    display: flex;
+    align-items: center;
+}
+.quiz-details p span, .quiz-info p span{
+    font-weight: bold;
+}
+#Rules{
+    margin: 40px 0 0 0;
+}
+.qModal h4{
+    font-weight: bold;
+    color: #333;
+    font-family: roboto;
+    font-size: 20px;
+}
+.qModal h2{
+    font-weight: bold;
+    color: #00a0e3;
+    font-family: lora;
+    font-size: 30px;
+}
+.qModal p{
+    color: #333;
+    font-family: roboto;
+    font-size: 16px;
+}
+.qshare {
+    padding-inline-start: 0;
+}
+.qshare li{
+    list-style: none;
+    display: inline;
+   padding:10px 10px;
+}
+.qshare li a{
+    font-size: 23px;
+    color: #333; 
+}
+.qshare li a:hover{
+    color: #00a0e3; 
+}
+.qm-logo{
+    max-width:100px;
+    max-height: 100px;    
+    margin: 0 auto;
+}
+.qm-name{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+.qm-logo img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+.font-weight-500{font-weight: 500 !important;}
+.deleteBtn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 8px 6px !important;
+    background: transparent !important;
+    border:1px solid #00a0e3 !important;
+    color: #00a0e3 !important;   
+}
+.deleteBtn:hover{
+    background: #00a0e3 !important;
+       color: #fff !important;   
+}
+.dis-flex{
+    display: flex;
+    position: relative;
+    margin: 0px 0 16px 0;
+    max-width: 425px;
+}
+.dis-flex textarea{
+    height: 60px;
+    resize: none;
+}
 ');
-?>
-<?php
+$script = <<< JS
+$('#p_input').mask("#,#0,#00", {reverse: true});
+$('#input_m').mask("#000", {reverse: true});
+$('#input_t').mask("#000", {reverse: true});
+$('#input_cam').mask("#000", {reverse: true});
+$('#penelty_score').mask("#000", {reverse: true});
+JS;
+$this->registerJs($script);
 $this->registerJsFile('/assets/themes/ey/quiz/quiz-nano.js',['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
 $this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

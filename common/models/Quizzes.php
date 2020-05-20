@@ -1,6 +1,6 @@
 <?php
 namespace common\models;
-use Yii;
+
 /**
  * This is the model class for table "{{%quizzes}}".
  *
@@ -10,6 +10,10 @@ use Yii;
  * @property string $currency_enc_id Foreign Key to Currencies Table
  * @property string $name Name of the Quiz
  * @property double $price Price of Quiz
+ * @property int $total_marks
+ * @property int $time_duration
+ * @property int $correct_answer_marks
+ * @property int $negetive_marks
  * @property string $assigned_category_enc_id Foreign Key to AssignedCategories Table
  * @property string $slug Quiz Slug
  * @property int $type 1 as Cricket
@@ -58,7 +62,7 @@ class Quizzes extends \yii\db\ActiveRecord
         return [
             [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'slug', 'type', 'num_of_ques', 'template', 'created_by'], 'required'],
             [['price'], 'number'],
-            [['type', 'num_of_ques', 'template', 'display', 'is_login', 'is_paid', 'duration', 'status', 'is_deleted'], 'integer'],
+            [['total_marks', 'time_duration', 'correct_answer_marks', 'negetive_marks', 'type', 'num_of_ques', 'template', 'display', 'is_login', 'is_paid', 'duration', 'status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
             [['quiz_enc_id', 'quiz_pool_enc_id', 'currency_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
             [['description'], 'string', 'max' => 300],

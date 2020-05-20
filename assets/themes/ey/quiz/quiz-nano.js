@@ -138,13 +138,22 @@ $(document).on('click','#finish_quiz', function(e){
         var curStep = $(this).closest(".setup-content"),
             curStepBtn = curStep.attr("id"),
             nextStepWizard = $('.stepsList button[value="#' + curStepBtn + '"]').next();
-        nextStepWizard.removeAttr('disabled').trigger('click');
+            fillupall();
+            nextStepWizard.removeAttr('disabled').trigger('click');
     }
     else
     {
-        alert('Please create atleast one question');
+        swal({
+            title:"",
+            text: "Please Create Atleast One Question !!",
+        });
     }
 });
+
+$(document).on('click','.payLink',function (e) {
+        fillupall();
+})
+
 //ajax query  for handling user data
 function ajax_run(data,url,elem)
 {
@@ -175,34 +184,66 @@ $(document).on('click','#create_question',function(e) {
 var question_list = [];
 function create_question()
 {
+    var li_list = '';
     let q =  $.trim($('#input_question').val());
-    let a1 = $.trim($('#input_answer1').val());
-    let a2 = $.trim($('#input_answer2').val());
-    let a3 = $.trim($('#input_answer3').val());
-    let a4 = $.trim($('#input_answer4').val());
+    let optionList = document.querySelector('.optionList');
+    question_txts = optionList.getElementsByTagName('textarea');
+    var options_list = [];
+    $.each(question_txts,function (index,value) {
+        let opt = $.trim(this.value);
+        if (index<=1)
+        {
+            if (opt==''||opt==null){
+                swal({
+                    title:"",
+                    text: "Pleas Fill Out Atleas Two Answers !!",
+                });
+                return false;
+            }
+        }
+     if (opt!==''){
+         options_list.push(opt);
+     }
+    })
     let rad_answer = $('input[name="answer"]:checked');
     let elem_no = Math.floor((Math.random() * 1000) + 1);
-    if (a1.length!==0&&a2.length!==0&&a3.length!==0&&a4.length!==0&&q.length!==0&&rad_answer.length!==0)
+    if (q.length!==0&&rad_answer.length!==0)
     {
         var obj = {
             'q': q,
-            'a1': a1,
-            'a2': a2,
-            'a3': a3,
-            'a4': a4,
+            'options':options_list,
             'ra': rad_answer.val(),
             'elem':'collapse'+elem_no
         }
         question_list.push(obj);
-        $('.question_created_zone').prepend('<div class="card"><div class="card-header" role="tab"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2"><div class="q1"><span>Q:</span>'+q+'</div></a><span class="btndelete" value="collapse'+elem_no+'"><i class="fa fa-trash-o"></i></span><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a></div><div id="collapse'+elem_no+'" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false"><div class="card-block"><div class="q-ans"><ul><li>'+a1+'</li><li class="correct">'+a2+'</li><li>'+a3+'</li><li>'+a4+'</li></ul></div></div></div></div>');
+        for (var i=0;i<options_list.length;i++){
+            li_list += '<li>'+options_list[i]+'</li>';
+        }
+        console.log(options_list);
+        console.log(options_list.length);
+        $('.question_created_zone').prepend('<div class="card"><div class="card-header" role="tab"><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed flex2"><div class="q1"><span>Q:</span>'+q+'</div></a><span class="btndelete" value="collapse'+elem_no+'"><i class="fa fa-trash-o"></i></span><a data-toggle="collapse" data-parent="#accordion" href="#collapse'+elem_no+'" aria-expanded="false" aria-controls="collapseOne" class="collapsed"><i class="fa fa-plus"></i></a></div><div id="collapse'+elem_no+'" class="collapse" role="tabpanel" aria-labelledby="quesThree" aria-expanded="false"><div class="card-block"><div class="q-ans"><ul>'+li_list+'</ul></div></div></div></div>');
         document.body.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         toastr.success('One New Question Created', 'Success');
+        clearQuestion();
+        li_list = '';
     }
     else
     {
-        alert('Please Make sure all the Answers and Question are filled up correctly along With right Answer');
+        swal({
+            title:"",
+            text: "Please Make sure all the Answers and Question are filled up correctly along With right Answer !!",
+        });
     }
+}
+
+function clearQuestion() {
+    $('#input_question').val("");
+    $('#input_answer1').val("");
+    $('#input_answer2').val("");
+    $('#input_answer3').val("");
+    $('#input_answer4').val("");
+    document.querySelector('input[name="answer"]:checked').checked = false;
 }
 
 //array and object remove function
@@ -221,6 +262,7 @@ var removeByAttr = function(arr, attr, value){
 var navListItems = $('.steps-btn'),
     allWells = $('.setup-content'),
     allNextBtn = $('.nextBtn');
+    allPrevBtn = $('.prevBtn');
 
 allWells.hide();
 $('#step-1').show();
@@ -258,6 +300,12 @@ allNextBtn.click(function(){
             break;
     }
 });
+allPrevBtn.click(function () {
+    var prevStep = $(this).closest(".setup-content").prev("div"),
+        prevStepBtn = prevStep.attr("id"),
+        prevStepWizard = $('.stepsList button[value="#' + prevStepBtn + '"]');
+        prevStepWizard.trigger('click');
+})
 function validate_tab_first(isValid,nextStepWizard) {
     if ($('input[name="group"]:checked').length!==0)
     {
@@ -265,7 +313,10 @@ function validate_tab_first(isValid,nextStepWizard) {
     }
     else
     {
-        alert('Please Select One Group');
+        swal({
+            title:"",
+            text: "Please Select Or Create One Group !!",
+        });
     }
     if (isValid){
         nextStepWizard.removeAttr('disabled').trigger('click');
@@ -279,7 +330,10 @@ function validate_tab_second(isValid,nextStepWizard) {
     }
     else
     {
-        alert('Please Select One Subject');
+        swal({
+            title:"",
+            text: "Please Select Or Create One Subject !!",
+        });
     }
     if (isValid){
         nextStepWizard.removeAttr('disabled').trigger('click');
@@ -292,7 +346,10 @@ function validate_tab_third(isValid,nextStepWizard) {
     }
     else
     {
-        alert('Please Select One Topic');
+        swal({
+            title:"",
+            text: "Please Select Or Create One Topic !!",
+        });
     }
     if (isValid){
         nextStepWizard.removeAttr('disabled').trigger('click');
@@ -317,7 +374,10 @@ function validate_tab_fourth(isValid,nextStepWizard) {
     }
     else
     {
-        alert('Please Fill Up The Introduction');
+        swal({
+            title:"",
+            text: "Please Fill Up The Introduction !!",
+        });
     }
     if (isValid){
         nextStepWizard.removeAttr('disabled').trigger('click');
@@ -333,6 +393,24 @@ $(document).on('change','input[name="choice_payment"]',function(e) {
         showSubmit();
     }
 })
+
+$(document).on('change','input[name="choice_marks_system"]',function(e) {
+    e.preventDefault();
+    let v = $(this).val();
+    if (v==1){
+        showMarking();
+    }
+    else {
+        unshowMarking();
+    }
+})
+
+function showMarking() {
+    document.getElementById('marking-details').style.display = "block";
+}
+function unshowMarking() {
+    document.getElementById('marking-details').style.display = "none";
+}
 function showPayment() {
     document.getElementById('final-details').style.display = "none";
     document.getElementById('payment-details').style.display = "block";
@@ -342,7 +420,7 @@ function showSubmit() {
     document.getElementById('payment-details').style.display = "none";
 }
 
-function submitForm(payment=false,amount=null)
+function submitForm(payment=false,amount=null,is_negetive=false,ngm=null)
 {
     var formData = new FormData();
     formData.append('subject',$("input[name='subject']:checked"). val());
@@ -350,6 +428,9 @@ function submitForm(payment=false,amount=null)
     formData.append('group',$("input[name='group']:checked"). val());
     formData.append('intro',$("#inro_input").val());
     formData.append('questions',JSON.stringify(question_list));
+    formData.append('t_marks',$("#input_m").val());
+    formData.append('time_dur',$("#input_t").val());
+    formData.append('correct_marks',$("#input_cam").val());
     if (payment)
     {
         formData.append('payment_status',1);
@@ -357,6 +438,10 @@ function submitForm(payment=false,amount=null)
     }
     else {
         formData.append('payment_status',0);
+    }
+
+    if (is_negetive){
+        formData.append('negetive_marks',ngm);
     }
     $.ajax({
         url:'/account/quiz/submit-form',
@@ -404,19 +489,180 @@ function submitForm(payment=false,amount=null)
     })
 }
 
+function fillupall()
+{
+    let sbj = $.trim($("input[name='subject']:checked").attr("txtvalue"));
+    let tpc = $.trim($("input[name='topic']:checked").attr("txtvalue"));
+    let grp = $.trim($("input[name='group']:checked").attr("txtvalue"));
+    let intro_txt = $.trim($("#inro_input").val());
+    let question_count = question_list.length;
+    $('#quiz_question_topic').html(tpc);
+    $('#quiz_question_group').html(grp);
+    $('#quiz_question_subject').html(sbj);
+    $('#quiz_question_intro').html(intro_txt);
+    $('#quiz_question_counts').html(question_count);
+}
+
 $(document).on('click','#sbt_btn_p',function(e) {
     e.preventDefault();
     let newGroupName = document.getElementById('p_input').value;
+    let input_m = document.getElementById('input_m').value;
+    let input_t = document.getElementById('input_t').value;
+    let input_cam = document.getElementById('input_cam').value;
+    let pv = $("input[name='choice_marks_system']:checked").val();
     comparetxt = $.trim(newGroupName).toLowerCase().replace(/,/g, '');
+    comparetxt1 = $.trim(input_m).toLowerCase().replace(/,/g, '');
+    comparetxt2 = $.trim(input_t).toLowerCase().replace(/,/g, '');
+    comparetxt3 = $.trim(input_cam).toLowerCase().replace(/,/g, '');
     if (comparetxt==''||comparetxt<=0) {
-        document.getElementById("p_input").style.border = "1px solid red";
+        document.getElementById("p_input").style.border = "1px solid #ff0000";
+        document.getElementById("p_input").focus();
         return false;
     }
-    submitForm(payment=true,amount=comparetxt);
+    else
+    {
+        document.getElementById("p_input").style.border = "1px solid #26c22bsubmit";
+    }
+    if (comparetxt1==''||comparetxt1<=0) {
+        document.getElementById("input_m").style.border = "1px solid #ff0000";
+        document.getElementById("input_m").focus();
+        return false;
+    }
+    else
+    {
+        document.getElementById("input_m").style.border = "1px solid #26c22b";
+    }
+    if (comparetxt2==''||comparetxt2<=0) {
+        document.getElementById("input_t").style.border = "1px solid #ff0000";
+        document.getElementById("input_t").focus();
+        return false;
+    }
+    else {
+        document.getElementById("input_t").style.border = "1px solid #26c22b";
+    }
+    if (comparetxt3==''||comparetxt3<=0) {
+        document.getElementById("input_cam").style.border = "1px solid #ff0000";
+        document.getElementById("input_cam").focus();
+        return false;
+    }else{
+        document.getElementById("input_cam").style.border = "1px solid #26c22b";
+    }
+    if (pv==1){
+        let ps = $.trim($('#penelty_score').val());
+        if (ps=='')
+        {
+            document.getElementById("penelty_score").style.border = "1px solid #ff0000";
+            document.getElementById("penelty_score").focus();
+            return false;
+        }
+        else {
+            ngm = ps;
+            is_negetive = true;
+            document.getElementById("penelty_score").style.border = "1px solid #26c22b";
+        }
+    }
+    else if (pv==0)
+    {
+        ngm = null;
+        is_negetive = false;
+    }
+    else{
+        swal({
+            title:"",
+            text: "Please select Weather you allow negetive marking or not !!",
+        });
+        return  false;
+    }
+    submitForm(payment=true,amount=comparetxt,is_negetive=is_negetive,ngm=ngm);
 })
 
 $(document).on('click','#sbt_btn_wp',function(e) {
     e.preventDefault();
-    submitForm(payment=false,ammount=null);
+    let input_m = document.getElementById('input_m').value;
+    let input_t = document.getElementById('input_t').value;
+    let input_cam = document.getElementById('input_cam').value;
+    let pv = $("input[name='choice_marks_system']:checked").val();
+    comparetxt1 = $.trim(input_m).toLowerCase().replace(/,/g, '');
+    comparetxt2 = $.trim(input_t).toLowerCase().replace(/,/g, '');
+    comparetxt3 = $.trim(input_cam).toLowerCase().replace(/,/g, '');
+    if (comparetxt1==''||comparetxt1<=0) {
+        document.getElementById("input_m").style.border = "1px solid #ff0000";
+        document.getElementById("input_m").focus();
+        return false;
+    }
+    else
+    {
+        document.getElementById("input_m").style.border = "1px solid #26c22b";
+    }
+    if (comparetxt2==''||comparetxt2<=0) {
+        document.getElementById("input_t").style.border = "1px solid #ff0000";
+        document.getElementById("input_t").focus();
+        return false;
+    }
+    else {
+        document.getElementById("input_t").style.border = "1px solid #26c22b";
+    }
+    if (comparetxt3==''||comparetxt3<=0) {
+        document.getElementById("input_cam").style.border = "1px solid #ff0000";
+        document.getElementById("input_cam").focus();
+        return false;
+    }else{
+        document.getElementById("input_cam").style.border = "1px solid #26c22b";
+    }
+     if (pv==1){
+        let ps = $.trim($('#penelty_score').val());
+        if (ps=='')
+        {
+            document.getElementById("penelty_score").style.border = "1px solid #ff0000";
+            document.getElementById("penelty_score").focus();
+            return false;
+        }
+        else {
+            ngm = ps;
+            is_negetive = true;
+            document.getElementById("penelty_score").style.border = "1px solid #26c22b";
+        }
+    }
+    else if (pv==0)
+    {
+        ngm = null;
+        is_negetive = false;
+    }
+    else{
+         swal({
+             title:"",
+             text: "Please select Weather you allow negetive marking or not !!",
+         });
+         return  false;
+     }
+    submitForm(payment=false,ammount=null,is_negetive=is_negetive,ngm=ngm);
 });
-$('#p_input').mask("#,#0,#00", {reverse: true});
+$(document).on('click','#add_options_btn',function(e)
+{
+    e.preventDefault();
+    addOption();
+})
+function addOption() {
+    let optionList = document.querySelector('.optionList');
+    let count_elem = optionList.getElementsByTagName('textarea').length;
+    if (count_elem<=5){
+        let newOption = document.createElement('div');
+        let elem_c = Math.floor((Math.random() * 1000) + 1);
+        newOption.setAttribute('class', 'dis-flex');
+        newOption.innerHTML = '<textarea placeholder="Enter Option" id="input'+elem_c+'" class="ques-input max300"></textarea>\n' +
+            '    <label class="checkbox-container correctAns">\n' +
+            '        <input type="radio" name="answer" class="ca-ans">\n' +
+            '        <span class="checkmark"></span>\n' +
+            '    </label>\n' +
+            '    <p class="ca-message"></p>\n' +
+            '    <button type="button" class="deleteBtn" onclick="this.parentElement.remove()"><i class="fa fa-trash"></i></button>';
+
+        optionList.appendChild(newOption);
+    }
+    else {
+        swal({
+            title:"",
+            text: "You Can Have Maximum 6 Options Only !!",
+        });
+    }
+}

@@ -21,12 +21,16 @@ class QuizModel extends Model
     public $amount;
     public $questions;
     public $intro;
+    public $t_marks;
+    public $time_dur;
+    public $correct_marks;
+    public $negetive_marks;
 
     public function rules()
     {
         return [
-            [['topic','group','subject','payment_status','questions','intro'], 'required'],
-            [['amount'], 'safe'],
+            [['topic','group','subject','payment_status','questions','intro','t_marks','time_dur','correct_marks'], 'required'],
+            [['amount','negetive_marks'], 'safe'],
             [['amount'], 'number'],
             [['group', 'topic', 'subject',], 'string', 'max' => 100],
             [['intro'], 'string', 'max' => 300],
@@ -71,6 +75,10 @@ class QuizModel extends Model
             $quiz->slug = $utilitiesModel->create_slug();
             $quiz->template = 3;
             $quiz->type = 1;
+            $quiz->time_duration = $this->time_dur;
+            $quiz->total_marks = $this->t_marks;
+            $quiz->correct_answer_marks = $this->correct_marks;
+            $quiz->negetive_marks = $this->negetive_marks;
             $quiz->num_of_ques = count($questions);
             if ($quiz->save())
             {
@@ -84,14 +92,14 @@ class QuizModel extends Model
                     $quizQuestionPool->question = $this->utf8ize($question['q']);
                     if ($quizQuestionPool->save())
                     {
-                        for ($k=1;$k<=4;$k++) {
+                        for ($k=0;$k<count($question['options']);$k++) {
                             $quizAnswerPool = new QuizAnswersPool();
                             $utilitiesModel = new Utilities();
                             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
                             $quizAnswerPool->quiz_answer_pool_enc_id = $utilitiesModel->encrypt();
                             $quizAnswerPool->quiz_question_pool_enc_id = $quizQuestionPool->quiz_question_pool_enc_id;
-                            $quizAnswerPool->answer = $this->utf8ize($question['a'.$k]);
-                            if ($question['ra']==$k){
+                            $quizAnswerPool->answer = $this->utf8ize($question['options'][$k]);
+                            if ($question['ra']==$k){ 
                                 $quizAnswerPool->is_answer = 1;
                             }
                             if (!$quizAnswerPool->save())

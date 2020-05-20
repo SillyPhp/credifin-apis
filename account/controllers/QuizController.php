@@ -163,7 +163,7 @@ class QuizController extends Controller
             $is_validate = ActiveForm::validate($model);
             if (empty($is_validate))
             {
-                $res = $model->submit();
+                $res = $model->submit(); 
                 if ($res['status']==true){
                     return [
                         'status'=>true,
