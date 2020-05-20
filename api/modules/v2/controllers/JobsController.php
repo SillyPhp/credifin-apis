@@ -292,6 +292,7 @@ class JobsController extends ApiBaseController
                 $x->onCondition(['o.is_deleted' => 0]);
                 $x->joinWith(['locationEnc s' => function ($x) {
                     $x->joinWith(['cityEnc t'], false);
+                    $x->groupBy(['s.city_enc_id']);
                 }], false);
                 $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
             }])

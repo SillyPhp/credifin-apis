@@ -44,7 +44,7 @@ class IndividualSignup extends Model
     public function rules()
     {
         return [
-            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation','section_id','course_id'], 'safe'],
+            [['internship_start_date', 'internship_duration', 'job_start_month', 'job_year', 'ref', 'invitation', 'section_id', 'course_id', 'semester'], 'safe'],
 
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'required'],
             [['first_name', 'last_name', 'phone', 'username', 'email'], 'trim'],
@@ -64,7 +64,7 @@ class IndividualSignup extends Model
             ['password', 'required'],
             [['password'], 'string', 'length' => [8, 20]],
 
-            [['college', 'semester', 'roll_number'], 'required'],
+            [['college', 'roll_number'], 'required'],
 
             ['source', 'required']
         ];
@@ -108,7 +108,7 @@ class IndividualSignup extends Model
         $user_other_details->organization_enc_id = $this->college;
         $user_other_details->user_enc_id = $user->user_enc_id;
 
-        if($this->department != '') {
+        if ($this->department != '') {
             $d = Departments::find()
                 ->where([
                     'name' => $this->department
