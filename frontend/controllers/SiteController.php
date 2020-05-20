@@ -461,6 +461,11 @@ class SiteController extends Controller
         return $this->render('privacy-policy');
     }
 
+    public function actionSignUpCandidate()
+    {
+        return $this->renderAjax('sign-up-candidate');
+    }
+
     public function actionUpdateProfile()
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
