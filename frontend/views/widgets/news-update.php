@@ -89,6 +89,8 @@ $this->registercss('
 .news-logo {
     max-width: 70px;
     line-height:50px;
+    height:55px;
+    overflow:hidden;
 }
 .news-name {
 	padding-left: 14px;
