@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -125,7 +125,7 @@ $form = ActiveForm::begin([
 <?php
 $this->registerCss('
 
-.intl-tel-input {
+.intl-tel-input, .iti {
     width: 100%;
 }
 .input-group-addon{

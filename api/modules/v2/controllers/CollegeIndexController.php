@@ -329,19 +329,22 @@ class CollegeIndexController extends ApiBaseController
                     $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug']);
                     $b->joinWith(['title d' => function ($d) {
-                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc e']);
                     }], false);
                     $b->joinWith(['applicationPlacementLocations f' => function ($f) {
                         $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
                 ->where(['a.college_enc_id' => $college_id,
                     'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 0,
                     'z.name' => $type,
@@ -368,8 +371,10 @@ class CollegeIndexController extends ApiBaseController
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['college_enc_id'] = $j['college_enc_id'];
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
-                    array_push($locations, $l['name']);
-                    $positions += $l['positions'];
+                    if (!in_array($l['name'], $locations)) {
+                        array_push($locations, $l['name']);
+                        $positions += $l['positions'];
+                    }
                 }
                 $data['location'] = implode(',', $locations);
                 $data['positions'] = $positions;
