@@ -184,7 +184,7 @@ class IndividualSignup extends Model
             $this->saveRefferal($user->user_enc_id, $this->ref);
         }
 
-        return true;
+        return $user->user_enc_id;
     }
 
     private function saveRefferal($user_id, $ref_code)

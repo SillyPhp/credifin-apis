@@ -97,7 +97,7 @@ class TeacherSignup extends Model
             $this->saveRefferal($user->user_enc_id, $this->ref);
         }
 
-        return true;
+        return $user->user_enc_id;
     }
 
 
