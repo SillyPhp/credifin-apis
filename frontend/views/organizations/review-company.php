@@ -243,7 +243,9 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                 </div>
+                <div class="review-summary mt-40">
                 <?= $this->render("/widgets/square_ads");?>
+                </div>
             </div>
         </div>
     </div>
