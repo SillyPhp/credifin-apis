@@ -252,15 +252,12 @@ $this->registerCss('
     border-color: #ffffff;
 }
 .p-category:hover {
-    background:#ffffff;
+    background: #ffffff;
     box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
     border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    margin-top: -2%;
-    height: 104%;
     z-index: 10;
-    transition: all 0.4s ease 0s;
+    transition: all 0.3s ease 0s;
+    transform: scale(1.05);
 }
 .p-category > a span{
     font-family: roboto;
