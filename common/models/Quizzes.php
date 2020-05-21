@@ -1,5 +1,4 @@
 <?php
-
 namespace common\models;
 
 /**
@@ -8,7 +7,13 @@ namespace common\models;
  * @property int $id Primary Key
  * @property string $quiz_enc_id Quiz Encrypted ID
  * @property string $quiz_pool_enc_id Foreign Key to QuizPool Table
+ * @property string $currency_enc_id Foreign Key to Currencies Table
  * @property string $name Name of the Quiz
+ * @property double $price Price of Quiz
+ * @property int $total_marks
+ * @property int $time_duration
+ * @property int $correct_answer_marks
+ * @property int $negetive_marks
  * @property string $assigned_category_enc_id Foreign Key to AssignedCategories Table
  * @property string $slug Quiz Slug
  * @property int $type 1 as Cricket
@@ -27,14 +32,17 @@ namespace common\models;
  * @property string $last_updated_by
  * @property int $display 1 as true , 0 as False
  * @property int $is_login 1 as true 0 as false
+ * @property int $is_paid 0 as Free, 1 as Paid
  * @property int $duration quiz timing in min
  * @property int $status
  * @property int $is_deleted
  *
+ * @property QuizAssignedGroup[] $quizAssignedGroups
  * @property QuizPool $quizPoolEnc
  * @property AssignedCategories $assignedCategoryEnc
  * @property Users $createdBy
  * @property Users $lastUpdatedBy
+ * @property Currencies $currencyEnc
  */
 class Quizzes extends \yii\db\ActiveRecord
 {
@@ -53,17 +61,31 @@ class Quizzes extends \yii\db\ActiveRecord
     {
         return [
             [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'slug', 'type', 'num_of_ques', 'template', 'created_by'], 'required'],
-            [['type', 'num_of_ques', 'template', 'display', 'is_login', 'duration', 'status', 'is_deleted'], 'integer'],
+            [['price'], 'number'],
+            [['total_marks', 'time_duration', 'correct_answer_marks', 'negetive_marks', 'type', 'num_of_ques', 'template', 'display', 'is_login', 'is_paid', 'duration', 'status', 'is_deleted'], 'integer'],
             [['created_on', 'last_updated_on'], 'safe'],
-            [['quiz_enc_id', 'quiz_pool_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
-            [['description'], 'string', 'max' => 160],
+            [['quiz_enc_id', 'quiz_pool_enc_id', 'currency_enc_id', 'name', 'assigned_category_enc_id', 'slug', 'background_image', 'background_image_location', 'sharing_image', 'sharing_image_location', 'title', 'keywords', 'created_by', 'last_updated_by'], 'string', 'max' => 100],
+            [['description'], 'string', 'max' => 300],
             [['quiz_enc_id'], 'unique'],
             [['name', 'slug', 'type', 'is_deleted'], 'unique', 'targetAttribute' => ['name', 'slug', 'type', 'is_deleted']],
             [['quiz_pool_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => QuizPool::className(), 'targetAttribute' => ['quiz_pool_enc_id' => 'quiz_pool_enc_id']],
             [['assigned_category_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => AssignedCategories::className(), 'targetAttribute' => ['assigned_category_enc_id' => 'assigned_category_enc_id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
             [['last_updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['last_updated_by' => 'user_enc_id']],
+            [['currency_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => Currencies::className(), 'targetAttribute' => ['currency_enc_id' => 'currency_enc_id']],
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getQuizAssignedGroups()
+    {
+        return $this->hasMany(QuizAssignedGroup::className(), ['quiz_pool_enc_id' => 'quiz_enc_id']);
     }
 
     /**
@@ -96,5 +118,13 @@ class Quizzes extends \yii\db\ActiveRecord
     public function getLastUpdatedBy()
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'last_updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCurrencyEnc()
+    {
+        return $this->hasOne(Currencies::className(), ['currency_enc_id' => 'currency_enc_id']);
     }
 }
