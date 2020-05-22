@@ -685,8 +685,10 @@ $this->registerJS($script);
     window.onscroll = () => {
     let mDetails = allMentorships.getElementsByClassName('m-details');
         for(let i = 0; i < mDetails.length; i++){
-            console.log(mDetails[i].getBoundingClientRect())
-        }
+            if((mDetails[i].offsetTop + 90px) <= window.pageYOffset) {
+
+            }
+          }
     }
 
 
