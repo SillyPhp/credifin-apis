@@ -1,40 +1,46 @@
 <?php
-
 use yii\helpers\Url;
-
 ?>
 <section>
     <div class="row">
-        <div class="col-md-4 col-sm-6">
+        <?php
+        if (!empty($my_quizs)){
+        foreach ($my_quizs as $quiz){
+            if (!empty($quiz['quizzes'])){
+            ?>
+        <div class="col-md-4 col-sm-6 quiz_cards_layout">
             <div class="quiz-name">
                 <div class="qz-logo">
                     <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-default.png') ?>" alt="">
                 </div>
                 <div class="quiz-title">
-                    <p>Name of the quiz</p>
+                    <p><?= $quiz['quizzes'][0]['quiz_name'] ?></p>
                 </div>
                 <div class="quiz-info">
                     <div class="qd">
-                        <p><span>Questions:</span> 5</p>
-                        <p><span>Group:</span> 9th</p>
-                        <p><span>Subject:</span> GK</p>
+                        <p><span>Questions:</span> <?= $quiz['total_que'] ?></p>
+                        <p><span>Group:</span> <?= $quiz['group'] ?></p>
+                        <p><span>Subject:</span> <?= $quiz['subject'] ?></p>
                     </div>
                     <div class="qd">
                         <p><span>Plays:</span> 5</p>
-                        <p><span>Earning:</span> <i class="fa fa-inr"></i> 500</p>
-                        <p><span>Duration :</span> 5min</p>
+                        <p><span>Total Marks:</span> <?= $quiz['quizzes'][0]['total_marks'] ?></p>
+                        <p><span>Duration (Minutes) :</span> <?= $quiz['quizzes'][0]['time_duration'] ?></p>
                     </div>
                 </div>
                 <div class="quiz-btn">
                     <div class="take-quiz-2">
-                        <a href="quiz-view">View</a>
-                        <a href="quiz-view">Edit</a>
-                        <button>Delete</button>
-                        <button  type="button" class="ql-share"><i class="fa fa-share-alt"></i> </button>
+                        <a href="<?= URL::to('/quiz/'.$quiz['quizzes'][0]['slug']) ?>" target="_blank">View</a>
+<!--                        <a href="quiz-view">Edit</a>-->
+                        <button id="dltbtn" value="<?= $quiz['quiz_pool_enc_id'] ?>">Delete</button>
+                        <button  type="button" class="ql-share" data-link="<?= URL::to('/quiz/'.$quiz['quizzes'][0]['slug'],true) ?>" data-id="<?= $quiz['quiz_pool_enc_id'] ?>"><i class="fa fa-share-alt"></i> </button>
                     </div>
                 </div>
             </div>
         </div>
+        <?php } } } else { ?>
+            <h3>No Quiz Has Been Created Yet</h3>
+       <?php } ?>
     </div>
 </section>
 
@@ -44,16 +50,13 @@ use yii\helpers\Url;
         <div class="qModal">
             <h2>Share Quiz</h2>
             <div class="qm-logo">
-                <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-default.png') ?>" alt="">
             </div>
             <p class="qm-name">Quiz on human ethics</p>
             <div class="share-input">
-                <form>
-                    <input type="text" placeholder="" class="shareLinkInput">
-                    <button type="button" onclick="nextStep()"><i class="fa fa-copy"></i></button>
-                </form>
+                    <input type="text" id="share_manually" placeholder="" class="shareLinkInput">
+                    <button type="button"  onclick="copyToClipboard()"><i class="fa fa-copy"></i></button>
             </div>
-            <p>If someone plays this quiz through this link, It will earn you 20 extra credits</p>
             <h4>Share on</h4>
             <ul class="qshare">
                 <li>
@@ -78,26 +81,22 @@ use yii\helpers\Url;
                     </a>
                 </li>
                 <li>
-                    <a href="https://t.me/share/url?url=" target="_blank" onclick="appendLink(this)">
-                        <i class="fa fa-telegram"></i>
-                    </a>
-                </li>
-                <li>
                     <a href="mailto:?subject=[SUBJECT]&body=" target="_blank" onclick="appendLink(this)">
                         <i class="fa fa-envelope"></i>
                     </a>
                 </li>
-                <li>
-                    <a href="" onclick="downloadImage(this)" target="_blank">
-                        <i class="fa fa-download"></i>
-                    </a>
-                </li>
             </ul>
+            <p class="fade-in-text">If someone plays this quiz through this link, It will earn you 20 extra credits</p>
         </div>
     </div>
 </div>
 <?php
 $this->registerCss('
+.fade-in-text{
+    font-size: 14px !important;
+    color: #cec9c9 !important;
+    font-weight: 300 !important;
+}
 .qm-logo{
     max-width:100px;
     max-height: 100px;    
@@ -372,10 +371,59 @@ $this->registerCss('
 //     border:1px solid #eee;
     border:transparent;
 }
+p{text-transform: capitalize !important;}
 ');
 $script = <<<JS
+$(document).on('click','#dltbtn',function(e) {
+  var btn = $(this);  
+  main_card = btn.parentsUntil('.quiz-name').closest(".quiz_cards_layout");
+  e.preventDefault();
+  swal({
+      title: "",
+      text: "Do You Really Wanna Delete This Quiz ???",
+      type:'warning',
+      showCancelButton: true,  
+      confirmButtonClass: "btn-primary",
+      confirmButtonText: "Yes",
+      closeOnConfirm: true, 
+      closeOnCancel: true
+      },
+      function (isConfirm) { 
+      if (isConfirm) {
+          main_card.hide();
+         var data = btn.attr('value');
+         console.log(data);
+         var url = "/account/quiz/delete";
+        $.ajax({
+            url:url,
+            data:{data:data},
+            method:'post',
+            dataType: 'text',
+            success:function(res){
+                var res = JSON.parse(res);
+                  if(res==true) {
+                      toastr.success('Deleted Successfully', 'Success');
+                    }
+                   else {
+                       main_card.show();
+                      toastr.error('Something went wrong. Please try again.', 'Server Error');
+                   }
+                 }
+          });
+      }
+      });
+})
 
+$(document).on("click", ".ql-share", function () {
+     var link = $(this).data('link');
+     $(".modal-content .share-input .shareLinkInput").val(link);
+     // As pointed out in comments, 
+     // it is unnecessary to have to manually call the modal.
+     // $('#addBookDialog').modal('show');
+});
 JS;
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJS($script);
 ?>
 
@@ -409,5 +457,11 @@ $this->registerJS($script);
         let imagePath = downImage.getAttribute('src');
         e.setAttribute('href', imagePath);
         e.setAttribute('download', imagePath);
+    }
+    function copyToClipboard() {
+        var copyText = document.getElementById("share_manually");
+        copyText.select();
+        document.execCommand("copy");
+         toastr.success("", "Copied");
     }
 </script>
