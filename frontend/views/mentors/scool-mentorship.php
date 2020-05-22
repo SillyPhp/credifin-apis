@@ -55,9 +55,9 @@ use yii\helpers\Url;
 
                 <div class="mSticky">
                     <h4>Mentorships Available</h4>
-                    <ul>
-                        <li class="mentor-active"><a href="#MentorshipOne"> 3D Printing</a></li>
-                        <li class="mentor-active"><a href="#MentorshipTwo"> 3D Printing</a></li>
+                    <ul id="mentorship-links">
+                        <li><a href="#MentorshipOne" class="m-link"> 3D Printing</a></li>
+                        <li><a href="#MentorshipTwo" class="m-link"> 3D Printing</a></li>
                     </ul>
                 </div>
 
@@ -92,7 +92,7 @@ use yii\helpers\Url;
                         </div>
                     </div>
                     <div id="all-mentorships">
-                        <div class="row mb4" id="MentorshipOne">
+                        <div class="row mb4 m-details" id="MentorshipOne">
                             <div class="col-md-12">
                                 <div class="mentor-heading">Mentorship in 3D Printing</div>
                             </div>
@@ -108,10 +108,13 @@ use yii\helpers\Url;
                                         <li>Understanding Printing Materials and making multi-material objects</li>
                                         <li>Troubleshooting challenges in running a 3D Printer</li>
                                     </ul>
-                                    <p>How to make a 3D printer for yourself and calibrate and adjust it perfectly. You will
+                                    <p>How to make a 3D printer for yourself and calibrate and adjust it perfectly. You
+                                        will
                                         get to know how to solve and prevent common problems and discover alternative
-                                        solutions to tailor your 3D printer to your liking and needs. Designing 3D Models,
-                                        printing it to perfection, and managing your printer effectively are the key life
+                                        solutions to tailor your 3D printer to your liking and needs. Designing 3D
+                                        Models,
+                                        printing it to perfection, and managing your printer effectively are the key
+                                        life
                                         skills you build from this course.</p>
                                     <p>Schedule.</p>
                                     <ul>
@@ -136,8 +139,11 @@ use yii\helpers\Url;
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h3>Mentorship Pricing</h3>
-                                            <p class="line-through"><span>Actual Price:</span> <i class="fas fa-rupee-sign"></i> 24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
-                                            <p><span>Empower Youth Price:</span> <i class="fas fa-rupee-sign"></i> 24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
+                                            <p class="line-through"><span>Actual Price:</span> <i
+                                                        class="fas fa-rupee-sign"></i> 24,995 - <i
+                                                        class="fas fa-rupee-sign"></i> 49,990 </p>
+                                            <p><span>Empower Youth Price:</span> <i class="fas fa-rupee-sign"></i>
+                                                24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <h3>Price</h3>
@@ -154,7 +160,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb4" id="MentorshipTwo">
+                        <div class="row mb4 m-details" id="MentorshipTwo">
                             <div class="col-md-12">
                                 <div class="mentor-heading">Mentorship in 3D Printing</div>
                             </div>
@@ -170,10 +176,13 @@ use yii\helpers\Url;
                                         <li>Understanding Printing Materials and making multi-material objects</li>
                                         <li>Troubleshooting challenges in running a 3D Printer</li>
                                     </ul>
-                                    <p>How to make a 3D printer for yourself and calibrate and adjust it perfectly. You will
+                                    <p>How to make a 3D printer for yourself and calibrate and adjust it perfectly. You
+                                        will
                                         get to know how to solve and prevent common problems and discover alternative
-                                        solutions to tailor your 3D printer to your liking and needs. Designing 3D Models,
-                                        printing it to perfection, and managing your printer effectively are the key life
+                                        solutions to tailor your 3D printer to your liking and needs. Designing 3D
+                                        Models,
+                                        printing it to perfection, and managing your printer effectively are the key
+                                        life
                                         skills you build from this course.</p>
                                     <p>Schedule.</p>
                                     <ul>
@@ -198,8 +207,11 @@ use yii\helpers\Url;
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h3>Mentorship Pricing</h3>
-                                            <p class="line-through"><span>Actual Price:</span> <i class="fas fa-rupee-sign"></i> 24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
-                                            <p><span>Empower Youth Price:</span> <i class="fas fa-rupee-sign"></i> 24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
+                                            <p class="line-through"><span>Actual Price:</span> <i
+                                                        class="fas fa-rupee-sign"></i> 24,995 - <i
+                                                        class="fas fa-rupee-sign"></i> 49,990 </p>
+                                            <p><span>Empower Youth Price:</span> <i class="fas fa-rupee-sign"></i>
+                                                24,995 - <i class="fas fa-rupee-sign"></i> 49,990 </p>
                                         </div>
                                         <div class="col-md-6 text-center">
                                             <h3>Price</h3>
@@ -224,6 +236,9 @@ use yii\helpers\Url;
 </section>
 <?php
 $this->registerCss('
+.mentor-active{
+    color: #00a0e3;
+}
 .line-through{
     text-decoration: line-through;
 }
@@ -640,8 +655,8 @@ html{
     color: #00a0e3;
     transition: .3s ease;
 }
-.mentor-active a{
-    color: #00a0e3;
+.mentor-active{
+    color: #00a0e3 !important;
 }
 ');
 $script = <<<JS
@@ -655,11 +670,25 @@ $this->registerJS($script);
     let mHeight = menHeight.offsetHeight;
     stickyHeight.style.height = mHeight + 'px';
 
-    let allMentorship = document.querySelector('#all-mentorships');
-    let allChild = allMentorship.children;
-    console.log(allChild);
-    for(let i = 0; i < allChild.length; i++){
-        let allId = allChild[i].getAttribute('id');
-
+    let mlinks = document.getElementsByClassName('m-link');
+    for (let i = 0; i < mlinks.length; i++) {
+        mlinks[i].addEventListener('click', function (event) {
+            let current = document.getElementsByClassName('mentor-active');
+            if (current.length > 0) {
+                current[0].className = current[0].className.replace(" mentor-active", " ");
+            }
+            event.currentTarget.className += ' mentor-active';
+        });
     }
+
+    let allMentorships = document.getElementById('all-mentorships');
+    window.onscroll = () => {
+    let mDetails = allMentorships.getElementsByClassName('m-details');
+        for(let i = 0; i < mDetails.length; i++){
+            console.log(mDetails[i].getBoundingClientRect())
+        }
+    }
+
+
+
 </script>
