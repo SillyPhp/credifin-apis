@@ -96,7 +96,7 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                <div class="text-center"><a href="" class="button"><span>Take Quiz</span></a>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +127,7 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                <div class="text-center"><a href="" class="button"><span>Take Quiz</span></a>
                                 </div>
                             </div>
                         </div>
@@ -158,7 +158,7 @@ use yii\helpers\Url;
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-center"><a href="/blog/blog-testing" class="button"><span>Take Quiz</span></a>
+                                <div class="text-center"><a href="" class="button"><span>Take Quiz</span></a>
                                 </div>
                             </div>
                         </div>
