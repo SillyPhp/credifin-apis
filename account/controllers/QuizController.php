@@ -3,6 +3,8 @@
 namespace account\controllers;
 use account\models\quiz\QuizModel;
 use common\models\Categories;
+use common\models\EmployerApplications;
+use common\models\QuizPool;
 use common\models\QuizTopics;
 use common\models\Quizzes;
 use common\models\Topics;
@@ -153,7 +155,31 @@ class QuizController extends Controller
     }
     public function actionMyQuiz()
     {
-        return $this->render('my-quiz');
+        $my_quizs = QuizPool::find()
+            ->alias('a')
+            ->select(['a.is_deleted','COUNT(q.quiz_question_pool_enc_id) total_que','a.quiz_pool_enc_id','a.name quiz_pool_name','x.name subject','y.name group','d.name topic'])
+            ->where(['a.created_by'=>Yii::$app->user->identity->user_enc_id])
+            ->andWhere(['a.status'=>1,'a.is_deleted'=>0])
+            ->joinWith(['subjectEnc b'=>function($x)
+            {
+                $x->joinWith(['categoryEnc x'],false,'INNER JOIN');
+            }],false,'INNER JOIN')
+            ->joinWith(['groupEnc c'=>function($x)
+            {
+                $x->joinWith(['categoryEnc y'],false,'INNER JOIN');
+            }],false,'INNER JOIN')
+            ->joinWith(['topicEnc d'],false,'INNER JOIN')
+            ->joinWith(['quizzes p'=>function($x)
+            {
+                $x->select(['p.quiz_enc_id','p.quiz_pool_enc_id','p.name quiz_name','p.slug','p.total_marks','p.time_duration']);
+                $x->andWhere(['p.status'=>1,'p.is_deleted'=>0,'p.display'=>1]);
+            }],'INNER JOIN')
+            ->joinWith(['quizQuestionsPools q'],false)
+            ->groupBy('q.quiz_pool_enc_id')
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->asArray()
+            ->all();
+        return $this->render('my-quiz',['my_quizs'=>$my_quizs]);
     }
     public function actionSubmitForm()
     {
@@ -182,6 +208,28 @@ class QuizController extends Controller
                     'status'=>false,
                     'response'=>$is_validate
                 ];
+            }
+        }
+    }
+
+    public function actionDelete()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $id = Yii::$app->request->post('data');
+            if ($id){
+                $update = Yii::$app->db->createCommand()
+                    ->update(QuizPool::tableName(), ['is_deleted' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => Yii::$app->user->identity->user_enc_id], ['quiz_pool_enc_id' => $id])
+                    ->execute();
+                if ($update==1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
     }
