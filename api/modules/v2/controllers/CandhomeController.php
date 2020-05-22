@@ -125,9 +125,21 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $applied_applications = AppliedApplications::find()
+            $applied_jobs = AppliedApplications::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                     $b->joinWith(['organizationEnc d']);
@@ -135,31 +147,71 @@ class CandhomeController extends ApiBaseController
                         $e->joinWith(['parentEnc e1']);
                         $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
-                        $b->select(['b.application_enc_id',
-                            'b.title',
-                            'b.slug',
-                            'd.slug comp_slug',
-                            'e1.category_enc_id',
-                            'g.name city',
-                            'e2.name profile',
-                            'e1.name parent_name',
-                            'b.organization_enc_id',
-                            'd.name organization_name',
-                            'CONCAT("' . Url::to('/', 'https') . '", d.slug) profile_link',
-                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                            'f.placement_location_enc_id',
-                            'COUNT(f.placement_location_enc_id) cnt']);
-                        $f->joinWith(['locationEnc f1' => function ($f1) {
-                            $f1->joinWith(['cityEnc g']);
-                        }], false);
-                        $b->groupBy('f.placement_location_enc_id');
-                    }]);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
                 }])
                 ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->andWhere(['g.name' => 'Jobs'])
                 ->limit(6)
                 ->asArray()
                 ->all();
+
+            $i = 0;
+            foreach ($applied_jobs as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied_jobs[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
+
+            $applied_internships = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                    $b->joinWith(['organizationEnc d']);
+                    $b->joinWith(['title e' => function ($e) {
+                        $e->joinWith(['parentEnc e1']);
+                        $e->joinWith(['categoryEnc e2']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
+                }])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->andWhere(['g.name' => 'Internships'])
+                ->limit(6)
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($applied_internships as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied_internships[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
 
             $followed_org = ErexxCollaborators::find()
                 ->alias('a')
@@ -193,10 +245,13 @@ class CandhomeController extends ApiBaseController
                 'companies_cnt' => $companies_cnt,
                 'shortlisted_cnt' => [0 => ['shortlisted_cnt' => $shortlisted_cnt]],
                 'organization' => $companies,
-                'applied_application' => $applied_applications,
+                'applied_jobs' => $applied_jobs,
+                'applied_internships' => $applied_internships,
                 'followed' => $followed_org,
             ];
             return $this->response(200, $counts);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -205,9 +260,29 @@ class CandhomeController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $id = $user->user_enc_id;
 
-            $applied_applications = AppliedApplications::find()
+            $param = Yii::$app->request->post();
+
+            if (isset($param['type']) && !empty($param['type'])) {
+                $type = $param['type'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $applied = AppliedApplications::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                     $b->joinWith(['organizationEnc d']);
@@ -215,35 +290,34 @@ class CandhomeController extends ApiBaseController
                         $e->joinWith(['parentEnc e1']);
                         $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
-                        $b->select(['b.application_enc_id',
-                            'b.title',
-                            'b.slug',
-                            'd.slug comp_slug',
-                            'e1.category_enc_id',
-                            'g.name city',
-                            'e2.name profile',
-                            'e1.name parent_name',
-                            'b.organization_enc_id',
-                            'd.name organization_name',
-                            'CONCAT("' . Url::to('/', 'https') . '", d.slug) profile_link',
-                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                            'f.placement_location_enc_id',
-                            'COUNT(f.placement_location_enc_id) cnt']);
-                        $f->joinWith(['locationEnc f1' => function ($f1) {
-                            $f1->joinWith(['cityEnc g']);
-                        }], false);
-                        $b->groupBy('f.placement_location_enc_id');
-                    }]);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
                 }])
                 ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
-                ->limit(6)
+                ->andWhere(['g.name' => $type])
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $applied_applications]);
+            $i = 0;
+            foreach ($applied as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
+
+            if ($applied) {
+                return $this->response(200, ['status' => 200, 'data' => $applied]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         } else {
-            return false;
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 

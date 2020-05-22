@@ -27,7 +27,7 @@ $companies = Organizations::find()
             <div class="row">
                 <div class="col-md-12">
                     <div class="com-grid">
-                        <h1 class="heading-style">Companies With Us</h1>
+                        <h1 class="heading-style">Featured Companies</h1>
                         <div class="ac-subheading">Companies recruiting top talent from our portal.</div>
                         <div class="all-coms"><a href="/organizations">View All Companies</a></div>
                     </div>
@@ -37,7 +37,7 @@ $companies = Organizations::find()
                 <?php
                 foreach ($companies as $c) {
                     ?>
-                    <div class="col-md-2 col-sm-4">
+                    <div class="col-md-2 col-sm-4 col-xs-6">
                         <a href="/<?= $c->slug ?>" title="<?= $c->name ?>">
                             <div class="cmp-main">
                                 <div class="cmp-log">
@@ -87,7 +87,7 @@ $this->registercss('
     margin-bottom: 20px;
     background-color:#fff;
     border-radius: 5px;
-    height: 147px !important;
+    height: 140px !important;
     cursor: pointer;
     transition: all 0.3s;
 }

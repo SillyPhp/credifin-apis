@@ -113,6 +113,9 @@ function gitHubJobs() {
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
+let return_message = false;
+let jobs_parent;
+let internships_parent;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
@@ -174,6 +177,18 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                     }
                     $('#loadMore').hide();
                     load_more_cards = false;
+                } else {
+                    if(return_message === true){
+                        if(type === 'Jobs'){
+                            $(jobs_parent).addClass('hidden');
+                        } else {
+                            $(internships_parent).addClass('hidden');
+                        }
+                        if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            $(jobs_parent).html('<h2 class="text-center">The company has not created any jobs or internships yet</h2>');
+                            $(jobs_parent).removeClass('hidden');
+                        }
+                    }
                 }
             }
         }

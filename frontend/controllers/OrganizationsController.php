@@ -223,6 +223,15 @@ class OrganizationsController extends Controller
                     ->where(['industry_enc_id' => $organization['industry_enc_id']])
                     ->asArray()
                     ->one();
+                $stats = OrganizationReviews::find()
+                    ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
+                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
+                    ->asArray()
+                    ->one();
+                $reviews_count = OrganizationReviews::find()
+                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
+                    ->asArray()
+                    ->count();
 
                 return $this->render('view', [
                     'organization' => $organization,
@@ -233,6 +242,8 @@ class OrganizationsController extends Controller
                     'industry' => $industry,
                     'count_opportunities' => $count_opportunities,
                     'org_products' => $org_products,
+                    'review_stats' => $stats,
+                    'reviews_count' => $reviews_count,
                 ]);
             }
         } else {

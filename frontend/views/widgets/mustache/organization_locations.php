@@ -102,6 +102,8 @@ function getLocations() {
                   });
                 }
                 // renderLocations(response.locations);
+            } else{
+                $('.location_tab').css('display','none');
             }
         }
     });

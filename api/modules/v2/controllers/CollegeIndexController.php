@@ -98,9 +98,15 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->one();
 
-            $candidate_count = UserOtherDetails::find()
+            $approved_candidates = UserOtherDetails::find()
                 ->select(['count(user_enc_id) candidate_count'])
-                ->where(['organization_enc_id' => $req['college_id']])
+                ->where(['organization_enc_id' => $req['college_id'], 'college_actions' => 0])
+                ->asArray()
+                ->one();
+
+            $pending_candidates = UserOtherDetails::find()
+                ->select(['count(user_enc_id) candidate_count'])
+                ->where(['organization_enc_id' => $req['college_id'], 'college_actions' => null])
                 ->asArray()
                 ->one();
 
@@ -176,6 +182,11 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $pending_jobs = $this->getJobsCount(0,'Jobs',$req['college_id']);
+            $pending_internships = $this->getJobsCount(0,'Internships',$req['college_id']);
+            $approved_jobs = $this->getJobsCount(1,'Jobs',$req['college_id']);
+            $approved_internships = $this->getJobsCount(1,'Internships',$req['college_id']);
+
             $college_settings = CollegeSettings::find()
                 ->alias('a')
                 ->select(['a.value'])
@@ -186,8 +197,13 @@ class CollegeIndexController extends ApiBaseController
 
             $result = [];
             $result['company_count'] = $company_count['company_count'];
-            $result['candidate_count'] = $candidate_count['candidate_count'];
+            $result['approved_candidate_count'] = $approved_candidates['candidate_count'];
+            $result['pending_candidate_count'] = $pending_candidates['candidate_count'];
             $result['companies'] = $companies;
+            $result['pending_jobs'] = $pending_jobs;
+            $result['pending_internships'] = $pending_internships;
+            $result['approved_jobs'] = $approved_jobs;
+            $result['approved_internships'] = $approved_internships;
             $result['candidates'] = $candidates;
             $result['placements_count'] = $placements_count;
             $result['jobs_auto_approve'] = ($college_settings['value'] == 2 ? true : false);
@@ -195,6 +211,18 @@ class CollegeIndexController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $result]);
 
         }
+    }
+
+    private function getJobsCount($condition,$type,$college_id)
+    {
+        return ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b' => function ($b) {
+                $b->joinWith(['applicationTypeEnc c']);
+            }], false)
+            ->where(['a.is_college_approved' => $condition, 'a.college_enc_id' => $college_id, 'a.is_deleted' => 0,'b.is_deleted' => 0])
+            ->andWhere(['c.name' => $type])
+            ->count();
     }
 
 //    public function actionCompanySelection()
@@ -250,39 +278,51 @@ class CollegeIndexController extends ApiBaseController
 //        }
 //    }
 //
-//    public function actionCompanyApprove()
-//    {
-//        if ($user = $this->isAuthorized()) {
-//            $req = Yii::$app->request->post();
-//
-//            $approve = ErexxCollaborators::find()
-//                ->where(['collaboration_enc_id' => $req['collaborator_enc_id'], 'college_approvel' => 0])
-//                ->one();
-//
-//            if (!empty($approve)) {
-//                if ($req['action'] == 'Accept') {
-//                    $approve->college_approvel = 1;
-//                } elseif ($req['action'] == 'Reject') {
-//                    $approve->is_deleted = 1;
-//                }
-//                $approve->last_updated_by = $user->user_enc_id;
-//                $approve->last_updated_on = date('Y-m-d H:i:s');
-//
-//                if ($approve->update()) {
-//                    return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
-//                } else {
-//                    return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
-//                }
-//
-//
-//            } else {
-//                return $this->response(404, ['status' => 404, 'message' => 'not found']);
-//            }
-//
-//        } else {
-//            return $this->response(401, ['status' => 401]);
-//        }
-//    }
+    public function actionCompanyApprove()
+    {
+        if ($user = $this->isAuthorized()) {
+            $req = Yii::$app->request->post();
+
+            if (isset($req['collaborator_enc_id']) && !empty($req['collaborator_enc_id'])) {
+                $collaborator_enc_id = $req['collaborator_enc_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            if (isset($req['action']) && !empty($req['action'])) {
+                $action = $req['action'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $approve = ErexxCollaborators::find()
+                ->where(['collaboration_enc_id' => $collaborator_enc_id, 'college_approvel' => 0])
+                ->one();
+
+            if (!empty($approve)) {
+                if ($action == 'Accept') {
+                    $approve->college_approvel = 1;
+                } elseif ($action == 'Reject') {
+                    $approve->is_deleted = 1;
+                }
+                $approve->last_updated_by = $user->user_enc_id;
+                $approve->last_updated_on = date('Y-m-d H:i:s');
+
+                if ($approve->update()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'An error occured']);
+                }
+
+
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401]);
+        }
+    }
 
     public function actionJobsSelection()
     {
@@ -310,19 +350,22 @@ class CollegeIndexController extends ApiBaseController
                     $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug']);
                     $b->joinWith(['title d' => function ($d) {
-                        $d->joinWith(['parentEnc e']);
+                        $d->joinWith(['categoryEnc e']);
                     }], false);
                     $b->joinWith(['applicationPlacementLocations f' => function ($f) {
                         $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
                 ->where(['a.college_enc_id' => $college_id,
                     'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 0,
                     'z.name' => $type,
@@ -349,8 +392,10 @@ class CollegeIndexController extends ApiBaseController
                 $data['application_enc_id'] = $j['application_enc_id'];
                 $data['college_enc_id'] = $j['college_enc_id'];
                 foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
-                    array_push($locations, $l['name']);
-                    $positions += $l['positions'];
+                    if (!in_array($l['name'], $locations)) {
+                        array_push($locations, $l['name']);
+                        $positions += $l['positions'];
+                    }
                 }
                 $data['location'] = implode(',', $locations);
                 $data['positions'] = $positions;
@@ -508,7 +553,7 @@ class CollegeIndexController extends ApiBaseController
             $companies = ErexxCollaborators::find()
                 ->alias('aa')
                 ->distinct()
-                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id', 'aa.college_approvel'])
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
                     $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
@@ -535,10 +580,10 @@ class CollegeIndexController extends ApiBaseController
                 }])
                 ->where(['aa.college_enc_id' => $req['college_id'],
                     'aa.organization_approvel' => 1,
-                    'aa.college_approvel' => 1,
+//                    'aa.college_approvel' => 1,
                     'aa.is_deleted' => 0,
-                    'f.is_deleted' => 0,
-                    'f.is_college_approved' => 1,
+//                    'f.is_deleted' => 0,
+//                    'f.is_college_approved' => 1,
                     'f.status' => 'Active',
                     'b.is_erexx_approved' => 1,
                     'b.has_placement_rights' => 1
@@ -1035,11 +1080,11 @@ class CollegeIndexController extends ApiBaseController
                     'd.name city_name',
                     'e.user_type role'
                 ])
-                ->joinWith(['userEnc b'=>function($b){
-                    $b->joinWith(['cityEnc d'],false);
+                ->joinWith(['userEnc b' => function ($b) {
+                    $b->joinWith(['cityEnc d'], false);
                 }], false)
-                ->joinWith(['collegeEnc c'],false)
-                ->joinWith(['role0 e'],false)
+                ->joinWith(['collegeEnc c'], false)
+                ->joinWith(['role0 e'], false)
                 ->where(['a.college_enc_id' => $college_id])
                 ->asArray()
                 ->all();

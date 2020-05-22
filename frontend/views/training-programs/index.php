@@ -273,7 +273,7 @@ a.company-inner {
 ');
 $script = <<< JS
 loader = false;
-getCards("Trainings");
+getCards("Trainings", ".blogbox", "/training-programs/load-cards");
 getCategories("Trainings");
 getInstitutes();
 JS;
