@@ -17,14 +17,14 @@ use yii\helpers\Url;
     <section class="mt30">
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-4 sticky-height">
                     <div class="mentor-details-bg">
                         <div class="turitor-instructor-profile">
                             <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>">
                         </div>
                         <div class="mentor-details">
-                            <p class="mentor-name">Mr. Tarry</p>
-                            <p class="mentor-designation">CTO <br> Empower Youth</p>
+                            <p class="mentor-name">Taha Malik</p>
+                            <p class="mentor-designation">Co-founder <br> Orbind and Baari Labs</p>
                         </div>
                         <div class="btn-flex use-p">
                             <div class="apply-btn">
@@ -80,76 +80,46 @@ use yii\helpers\Url;
                             <li>Sales: Selling Services</li>
                         </ul>
                     </div>
-                    <div class="mentor-expertise">
-                        <?= $this->render('/widgets/mentorships/video-slider')?>
+                    <div class="mSticky">
+                        <h4>Mentorships Available</h4>
+                        <ul>
+                            <li><a href="#MentorshipOne"> Career Mentorship</a></li>
+                            <li><a href="#MentorshipTwo"> Business Mentorship</a></li>
+                            <li><a href="#MentorshipThree"> Marketing Mentorship</a></li>
+                            <li><a href="#MentorshipFour"> Startup Mentorship</a></li>
+                        </ul>
                     </div>
+
                 </div>
                 <div class="col-md-8">
-                    <div class="mentor-padding-50">
-                        <div class="row mb3">
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>25</h4> <span>Person Mentored</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>100+</h4> <span>Hours Mentored</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>4</h4> <span>Person Mentoring</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>$25 <span>per hour</span></h4> <span>Mentoring Fee</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mentor-stats">
-                                    <h4>9</h4> <span>Endorsements</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">How Can I help</div>
-                                <div class="mentor-description">
-                                    <p>Tarry started photography to find happiness, and he lives to put that enthusiasm
-                                        into Mophie Photography. He creates intuitive, creative, and adventurous
-                                        experiences
-                                        within the process of shooting that make the process itself memorable.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">Skills Taught By Mentor</div>
-                                <ul class="skills-taught">
-                                    <li>Web Designing</li>
-                                    <li>Web Development</li>
-                                    <li>Personality Development</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="row mb4">
-                            <div class="col-md-12">
-                                <div class="mentor-heading">Mentorship Details</div>
-                                <div class="mentor-description">
-                                    Coding for beginners might seem hard. However, starting with the basics is a great
-                                    way
-                                    to
-                                    familiarise yourself with the syntax and the process of what it takes to create a
-                                    website.
-                                    This course teaches you HTML and CSS. Furthermore, all of the code that you will
-                                    write
-                                    will
-                                    be visually represented within the course
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mentor-padding-50 mentor-height">
+<!--                        <div class="row mb3">-->
+<!--                            <div class="col-md-4">-->
+<!--                                <div class="mentor-stats">-->
+<!--                                    <h4>25</h4> <span>Person Mentored</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-4">-->
+<!--                                <div class="mentor-stats">-->
+<!--                                    <h4>100+</h4> <span>Hours Mentored</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-4">-->
+<!--                                <div class="mentor-stats">-->
+<!--                                    <h4>4</h4> <span>Person Mentoring</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-4">-->
+<!--                                <div class="mentor-stats">-->
+<!--                                    <h4>$25 <span>per hour</span></h4> <span>Mentoring Fee</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="col-md-4">-->
+<!--                                <div class="mentor-stats">-->
+<!--                                    <h4>9</h4> <span>Endorsements</span>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
                         <div class="row mb4">
                             <div class="col-md-12">
                                 <div class="mentor-heading">About Mentor</div>
@@ -232,6 +202,90 @@ use yii\helpers\Url;
                         </div>
                         <div class="row mb4">
                             <div class="col-md-12">
+                                <div class="mentor-heading">How Can I help</div>
+                                <div class="mentor-description">
+                                    <p>Tarry started photography to find happiness, and he lives to put that enthusiasm
+                                        into Mophie Photography. He creates intuitive, creative, and adventurous
+                                        experiences
+                                        within the process of shooting that make the process itself memorable.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Skills Taught By Mentor</div>
+                                <ul class="skills-taught">
+                                    <li>Web Designing</li>
+                                    <li>Web Development</li>
+                                    <li>Personality Development</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row mb4">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Mentorship Details</div>
+                                <div class="mentor-description">
+                                    Coding for beginners might seem hard. However, starting with the basics is a great
+                                    way
+                                    to
+                                    familiarise yourself with the syntax and the process of what it takes to create a
+                                    website.
+                                    This course teaches you HTML and CSS. Furthermore, all of the code that you will
+                                    write
+                                    will
+                                    be visually represented within the course
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb4" id="MentorshipOne">
+                            <div class="col-md-12">
+                               <div class="mentor-heading">Career Mentorship</div>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Just use the knowledge gained by experience, and learn what all you can with whatever
+                                   new stuff ahead.”- is his life motto. Mr Tarry is a leading photographer and proprietor
+                                    of Mophie Photography.</p>
+
+                                <p>Tarry started photography to find happiness, and he lives to put that enthusiasm into
+                                    Mophie Photography. He creates intuitive, creative, and adventurous experiences within
+                                    the process of shooting that make the process itself memorable.</p>
+                            </div>
+                        </div>
+                        <div class="row mb4" id="MentorshipTwo">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Business Mentorship</div>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Just use the knowledge gained by experience, and learn what all you can with whatever
+                                    new stuff ahead.”- is his life motto. Mr Tarry is a leading photographer and proprietor
+                                    of Mophie Photography.</p>
+
+                                <p>Tarry started photography to find happiness, and he lives to put that enthusiasm into
+                                    Mophie Photography. He creates intuitive, creative, and adventurous experiences within
+                                    the process of shooting that make the process itself memorable.</p>
+                            </div>
+                        </div>
+                        <div class="row mb4" id="MentorshipThree">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Marketing Mentorship</div>
+                            </div>
+                            <div class="col-md-12">
+                                <p>Just use the knowledge gained by experience, and learn what all you can with whatever
+                                    new stuff ahead.”- is his life motto. Mr Tarry is a leading photographer and proprietor
+                                    of Mophie Photography.</p>
+
+                                <p>Tarry started photography to find happiness, and he lives to put that enthusiasm into
+                                    Mophie Photography. He creates intuitive, creative, and adventurous experiences within
+                                    the process of shooting that make the process itself memorable.</p>
+                            </div>
+                        </div>
+                        <div class="row mb4" id="MentorshipFour">
+                            <div class="col-md-12">
+                                <div class="mentor-heading">Marketing Mentorship</div>
+                            </div>
+                            <div class="col-md-12">
                                 <div class="mentor-heading">Stages Of The Startups That I Prefer Helping</div>
                                 <div class="support-list">
                                     <ul>
@@ -245,6 +299,7 @@ use yii\helpers\Url;
                                 </div>
                             </div>
                         </div>
+
                         <div class="row mb4">
                             <div class="col-md-12">
                                 <div class="mentor-heading">Mentor Blogs</div>
@@ -274,6 +329,16 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+html{
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+#MentorshipOne, #MentorshipTwo, #MentorshipThree{
+//    scroll-margin-top: 90px;
+    padding-top: 90px;
+  margin-top: -90px;
+}
+
 .use-p{
     padding:0 20px;
     margin-top:5px;
@@ -460,7 +525,7 @@ $this->registerCss('
     font-family: roboto;
     margin-top: 10px;
 }
-.mentor-fields h4, .mentor-social-links h4, .mentor-expertise h4{
+.mentor-fields h4, .mentor-social-links h4, .mentor-expertise h4, .mSticky h4{
     color: #333;
     font-family: lora;
     font-size: 23px;
@@ -634,9 +699,36 @@ $this->registerCss('
     transition: .2s ease;
     transform: scale(1.03);
 }
+.mSticky{
+    padding: 20px;
+    margin-bottom: 20px;
+    font-family: roboto;
+    position: sticky;
+    top: 80px;
+}
+.mSticky ul li{
+    padding: 10px 5px;
+    border-bottom: 1px solid #eee;
+}
+.mSticky ul li a{
+    color: #333;
+    font-size: 16px;
+}
+.mSticky ul li a:hover{
+    color: #00a0e3;
+    transition: .3s ease;
+}
 ');
 $script = <<<JS
 
 JS;
 $this->registerJS($script);
 ?>
+<script>
+    let menHeight = document.querySelector('.mentor-height');
+    let stickyHeight = document.querySelector('.sticky-height');
+    let mHeight = menHeight.offsetHeight;
+    console.log(mHeight)
+    stickyHeight.style.height = mHeight + 'px';
+    console.log(menHeight.offsetHeight);
+</script>

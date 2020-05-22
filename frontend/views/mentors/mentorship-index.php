@@ -3,13 +3,14 @@
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+
 ?>
 <section class="mentor-header">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="m-banner-text">
-                A New Way Of <br>Funding Career Development
+                    A New Way Of <br>Funding Career Development
                 </div>
                 <div class="mentor-apply-btn">
                     <button type="button" class="mentorSignupModal">Apply to be a mentor</button>
@@ -18,13 +19,12 @@ use yii\helpers\Html;
         </div>
     </div>
 </section>
-<?= $this->render('/widgets/mentorships/mentoring-program')?>
-<?= $this->render('/widgets/mentorships/whats-in-for-you')?>
-<?= $this->render('/widgets/mentorships/features')?>
-<?= $this->render('/widgets/mentorships/benefits')?>
-<?= $this->render('/widgets/mentorships/how-it-works')?>
+<?= $this->render('/widgets/mentorships/mentoring-program') ?>
+<?= $this->render('/widgets/mentorships/whats-in-for-you') ?>
+<?= $this->render('/widgets/mentorships/features') ?>
+<?= $this->render('/widgets/mentorships/benefits') ?>
+<?= $this->render('/widgets/mentorships/how-it-works') ?>
 <div id="mentorModal" class="mentorSignUpmodal">
-
     <!-- Modal content -->
     <div class="mentor-modal-content">
         <span class="close">&times;</span>
@@ -87,8 +87,8 @@ use yii\helpers\Html;
     </div>
 </div>
 <div id="mentorRegister" class="mentorRegisterModal">
-    <div class="mentor-register-modal">
-        <span class="close">&times;</span>
+    <div class="mentor-modal-content">
+        <span class="close close2">&times;</span>
         <div class="">
             <div class="col-md-6">
                 <div class="cmc-icon">
@@ -96,60 +96,82 @@ use yii\helpers\Html;
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="csu-heading">Join our mentorship program today</div>
-                <?php
-                $form = ActiveForm::begin([
-                    'id' => 'enquiry-form',
-                    'enableClientValidation' => true,
-                    'validateOnBlur' => false,
-                    'options' => [
-                        'enctype' => 'multipart/form-data',
-                        'class' => 'mx-600',
-                    ],
-                ]);
-                ?>
-                <div class="uname">
-                    <div class="form-group field-username required">
-                        <?= $form->field($model, 'full_name')->textInput(['autofocus' => true, 'autocomplete' => 'off', 'placeholder' => 'Full Name', 'class' => 'uname-in'])->label(false); ?>
-                        <p class="help-block help-block-error"></p>
+                <div class="csu-heading">Become A Mentor</div>
+                <div class="">
+                    <div class="col-md-12">
+                        <div class="uname">
+                            <input type="text" id="full_name" class="uname-in" name="full_name" autofocus=""
+                                   autocomplete="off" placeholder="Full Name" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="uname">
+                            <input type="text" id="email" class="uname-in" name="email" autofocus=""
+                                   autocomplete="off" placeholder="Email" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="uname">
+                            <input type="text" id="number" class="uname-in" name="number" autofocus=""
+                                   autocomplete="off" placeholder="Number" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group field-username required">
+                            <div class="input-group">
+                                <span class="input-group-addon">https://empoweryouth.com/</span>
+                                <input type="text" id="username" class="lowercase form-control" name="username"
+                                       autocomplete="off" placeholder="Username" aria-required="true">
+                            </div>
+                            <p class="help-block help-block-error"></p>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="uname">
+                            <input type="text" id="number" class="uname-in" name="number" autofocus=""
+                                   autocomplete="off" placeholder="Password" aria-required="true">
+                            <p class="help-block help-block-error"></p>
+                        </div>
                     </div>
                 </div>
-                <div class="uname">
-                    <div class="form-group field-username required">
-                        <?= $form->field($model, 'email')->textInput(['autocomplete' => 'off', 'placeholder' => 'Email', 'class' => 'uname-in'])->label(false); ?>
-                        <p class="help-block help-block-error"></p>
-                    </div>
-                </div>
-                <div class="uname">
-                    <div class="form-group field-username required">
-                        <?= $form->field($model, 'teaching_field')->textInput(['autocomplete' => 'off', 'placeholder' => 'Teaching Field', 'class' => 'uname-in'])->label(false); ?>
-                        <p class="help-block help-block-error"></p>
-                    </div>
-                </div>
-                <div class="uname">
-                    <div class="form-group field-username required">
-                        <?= $form->field($model, 'experience')->dropDownList([1 => 'fresher', 2 => 'experienced'], ['prompt' => 'select experience', 'class' => 'uname-in'])->label(false) ?>
-                        <p class="help-block help-block-error"></p>
-                    </div>
-                </div>
-
-                <div class="uname">
-                    <?=
-                    $form->field($model, 'phone')->textInput(['placeholder' => 'Phone number', 'class' => 'uname-in'])->label(false);
-                    ?>
-                    <p class="help-block help-block-error"></p>
-                </div>
-                <div class="modal-oc">
-                    <?= Html::submitButton('Sign Up', ['id' => 'enquiryBtn']); ?>
-                </div>
-                <?php ActiveForm::end(); ?>
             </div>
         </div>
     </div>
 </div>
 
+
 <?php
 $this->registerCSS('
+
+.uname-in {
+    padding: 13px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 13px;
+}
+.input-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+}
+.input-group-addon:first-child {
+    border-right: 0;
+}
+.input-group .form-control {
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    margin-bottom: 0;
+}
+.input-group-addon {
+    color: #555 !Important;
+    background-color: #eee !Important;
+}
 .footer{
     margin-top:0px !important;
 }
@@ -163,7 +185,7 @@ $this->registerCSS('
     font-family: roboto;
 }
 .mentor-header{
-    background: url('. Url::to('@eyAssets/images/pages/mentorship/mentors-main-banner.png').');
+    background: url(' . Url::to('@eyAssets/images/pages/mentorship/mentors-main-banner.png') . ');
     background-size: cover;
     min-height: 400px;
     display: flex;
@@ -393,27 +415,33 @@ $this->registerJs($script);
     var modalRegister = document.getElementById("mentorRegister");
 
     var btn = document.querySelector(".mentorSignupModal");
-    var Regbtn = document.querySelector(".mentorRegisterModal");
+    var Regbtn = document.querySelector(".apply-mentor-btn");
 
-    var span = document.getElementsByClassName("close")[0];
+    var span = document.querySelector(".close");
+    var closeTwo = document.querySelector(".close2");
 
     btn.onclick = function () {
         modal.style.display = "block";
     }
-    Regbtn.onclick = function(){
+    Regbtn.onclick = function () {
         modalRegister.style.display = "block";
     }
     span.onclick = function () {
         modal.style.display = "none";
     }
+    closeTwo.onclick = function () {
+        modalRegister.style.display = "none";
+    }
     window.onclick = function (event) {
-        if (event.target == modal) {
+        if (event.target == modal || event.target == modalRegister) {
             modal.style.display = "none";
+            modalRegister.style.display = "none";
         }
     }
     window.onkeyup = function (event) {
-        if(event.keyCode == 27){
+        if (event.keyCode == 27) {
             modal.style.display = "none";
+            modalRegister.style.display = "none";
         }
     }
 </script>

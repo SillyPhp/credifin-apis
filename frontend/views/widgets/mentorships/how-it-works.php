@@ -94,7 +94,7 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="apply-program">
                         <p>Apply for our mentorship program today</p>
-                        <button type="button" class="mentorRegisterModal">Apply now</button>
+                        <button type="button" class="apply-mentor-btn">Apply now</button>
                     </div>
                 </div>
             </div>
