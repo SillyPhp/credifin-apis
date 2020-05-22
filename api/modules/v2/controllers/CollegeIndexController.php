@@ -182,10 +182,10 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $pending_jobs = $this->getJobsCount(0,'Jobs',$req['college_id']);
-            $pending_internships = $this->getJobsCount(0,'Internships',$req['college_id']);
-            $approved_jobs = $this->getJobsCount(1,'Jobs',$req['college_id']);
-            $approved_internships = $this->getJobsCount(1,'Internships',$req['college_id']);
+            $pending_jobs = $this->getJobsCount(0, 'Jobs', $req['college_id']);
+            $pending_internships = $this->getJobsCount(0, 'Internships', $req['college_id']);
+            $approved_jobs = $this->getJobsCount(1, 'Jobs', $req['college_id']);
+            $approved_internships = $this->getJobsCount(1, 'Internships', $req['college_id']);
 
             $college_settings = CollegeSettings::find()
                 ->alias('a')
@@ -213,14 +213,22 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
-    private function getJobsCount($condition,$type,$college_id)
+    private function getJobsCount($condition, $type, $college_id)
     {
         return ErexxEmployerApplications::find()
             ->alias('a')
             ->joinWith(['employerApplicationEnc b' => function ($b) {
                 $b->joinWith(['applicationTypeEnc c']);
             }], false)
-            ->where(['a.is_college_approved' => $condition, 'a.college_enc_id' => $college_id, 'a.is_deleted' => 0,'b.is_deleted' => 0])
+            ->where([
+                'a.college_enc_id' => $college_id,
+                'a.is_college_approved' => $condition,
+                'a.status' => 'Active',
+                'a.is_deleted' => 0,
+                'b.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => [0, 2]
+            ])
             ->andWhere(['c.name' => $type])
             ->count();
     }
