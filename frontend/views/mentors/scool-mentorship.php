@@ -660,6 +660,6 @@ $this->registerJS($script);
     console.log(allChild);
     for(let i = 0; i < allChild.length; i++){
         let allId = allChild[i].getAttribute('id');
-        
+
     }
 </script>
