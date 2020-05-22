@@ -40,7 +40,10 @@ class NewsController extends Controller
 
     public function actionIndex()
     {
-        $news = ExternalNewsUpdate::findAll(['is_deleted' => 0, 'status' => 1]); // status 1 as published
+        $news = ExternalNewsUpdate::find()
+            ->where(['is_deleted' => 0, 'status' => 1])
+            ->orderBy(['created_on' => SORT_DESC])
+            ->all(); // status 1 as published
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
