@@ -182,6 +182,11 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $pending_jobs = $this->getJobsCount(0, 'Jobs', $req['college_id']);
+            $pending_internships = $this->getJobsCount(0, 'Internships', $req['college_id']);
+            $approved_jobs = $this->getJobsCount(1, 'Jobs', $req['college_id']);
+            $approved_internships = $this->getJobsCount(1, 'Internships', $req['college_id']);
+
             $college_settings = CollegeSettings::find()
                 ->alias('a')
                 ->select(['a.value'])
@@ -195,6 +200,10 @@ class CollegeIndexController extends ApiBaseController
             $result['approved_candidate_count'] = $approved_candidates['candidate_count'];
             $result['pending_candidate_count'] = $pending_candidates['candidate_count'];
             $result['companies'] = $companies;
+            $result['pending_jobs'] = $pending_jobs;
+            $result['pending_internships'] = $pending_internships;
+            $result['approved_jobs'] = $approved_jobs;
+            $result['approved_internships'] = $approved_internships;
             $result['candidates'] = $candidates;
             $result['placements_count'] = $placements_count;
             $result['jobs_auto_approve'] = ($college_settings['value'] == 2 ? true : false);
@@ -202,6 +211,26 @@ class CollegeIndexController extends ApiBaseController
             return $this->response(200, ['status' => 200, 'data' => $result]);
 
         }
+    }
+
+    private function getJobsCount($condition, $type, $college_id)
+    {
+        return ErexxEmployerApplications::find()
+            ->alias('a')
+            ->joinWith(['employerApplicationEnc b' => function ($b) {
+                $b->joinWith(['applicationTypeEnc c']);
+            }], false)
+            ->where([
+                'a.college_enc_id' => $college_id,
+                'a.is_college_approved' => $condition,
+                'a.status' => 'Active',
+                'a.is_deleted' => 0,
+                'b.status' => 'Active',
+                'b.is_deleted' => 0,
+                'b.application_for' => [0, 2]
+            ])
+            ->andWhere(['c.name' => $type])
+            ->count();
     }
 
 //    public function actionCompanySelection()

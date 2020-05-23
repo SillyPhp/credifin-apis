@@ -415,7 +415,13 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                <?= $this->render("/widgets/square_ads");?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
+                            <?= $this->render("/widgets/square_ads");?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <?php

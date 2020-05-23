@@ -15,6 +15,7 @@ use common\models\CollegeSettings;
 use common\models\ErexxEmployerApplications;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
+use common\models\Teachers;
 use common\models\User;
 use common\models\Users;
 use Yii;
@@ -638,6 +639,8 @@ class CollegeProfileController extends ApiBaseController
                     'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'a.is_college_approved' => 1,
+                    'b.status' => 'Active',
+                    'b.application_for' => [0, 2],
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1
                 ]);
@@ -826,6 +829,30 @@ class CollegeProfileController extends ApiBaseController
             } else {
                 return $this->response(404, ['status' => 404, 'message' => 'Not Found']);
             }
+        }
+    }
+
+    public function actionTeacherCollegeDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+            $detail = Teachers::find()
+                ->alias('a')
+                ->select(['b.name', 'b.phone', 'b.email', 'b.organization_enc_id college_id', 'c.code referral_code',
+                    'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE NULL END logo',])
+                ->joinWith(['collegeEnc b' => function ($b) {
+                    $b->joinWith(['referrals c'], false);
+                }], false)
+                ->where(['a.user_enc_id' => $user->user_enc_id])
+                ->asArray()
+                ->one();
+
+            if ($detail) {
+                return $this->response(200, ['status' => 200, 'data' => $detail]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unathorized']);
         }
     }
 

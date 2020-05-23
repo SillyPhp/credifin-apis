@@ -870,4 +870,12 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionCreatorProfile()
+    {
+        return $this->render('creator-profile');
+    }
+
+    public function actionTransactionTable(){
+        return $this->render('transaction-table');
+    }
 }

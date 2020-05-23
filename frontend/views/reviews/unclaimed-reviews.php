@@ -251,7 +251,9 @@ Yii::$app->view->registerJs('var slug = "' . $slug . '"', \yii\web\View::POS_HEA
                         </div>
                     </div>
                 </div>
-                <?= $this->render("/widgets/square_ads");?>
+                <div class="review-summary mt-40">
+                    <?= $this->render("/widgets/square_ads"); ?>
+                </div>
             </div>
         </div>
     </div>

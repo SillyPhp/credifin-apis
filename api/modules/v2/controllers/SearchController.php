@@ -296,6 +296,7 @@ class SearchController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
@@ -377,6 +378,7 @@ class SearchController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
+                        $f->onCondition(['f.is_deleted' => 0]);
                         $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
@@ -476,8 +478,10 @@ class SearchController extends ApiBaseController
             $data['designation'] = $j['designation'];
             $data['salary'] = $j['salary'];
             foreach ($j['employerApplicationEnc']['applicationPlacementLocations'] as $l) {
-                array_push($locations, $l['name']);
-                $positions += $l['positions'];
+                if (!in_array($l['name'], $locations)) {
+                    array_push($locations, $l['name']);
+                    $positions += $l['positions'];
+                }
             }
 
             foreach ($j['employerApplicationEnc']['applicationEducationalRequirements'] as $a) {
