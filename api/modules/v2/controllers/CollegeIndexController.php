@@ -336,7 +336,15 @@ class CollegeIndexController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
-            $type = Yii::$app->request->post('type');
+            $req = Yii::$app->request->post();
+
+            if (isset($req['type']) && !empty($req['type'])) {
+                $type = $req['type'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $limit = $req['limit'];
 
 
             $jobs = ErexxEmployerApplications::find()
@@ -378,9 +386,11 @@ class CollegeIndexController extends ApiBaseController
                     'a.is_college_approved' => 0,
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1])
-                ->limit(6)
-                ->asArray()
+                    'bb.has_placement_rights' => 1]);
+            if ($limit) {
+                $jobs->limit($limit);
+            }
+            $jobs = $jobs->asArray()
                 ->all();
 
 
@@ -412,7 +422,7 @@ class CollegeIndexController extends ApiBaseController
 
             return $this->response(200, ['status' => 200, 'jobs' => $result]);
         } else {
-            return $this->response(401);
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
