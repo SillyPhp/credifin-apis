@@ -306,6 +306,7 @@ class CollegeProfileController extends ApiBaseController
                 if (!empty($course)) {
                     $course->course_name = $req['course_name'];
                     $course->course_duration = $req['course_duration'];
+                    $course->type = $req['type'];
                     $course->updated_by = $user->user_enc_id;
                     $course->updated_on = date('Y-m-d H:i:s');
                     if ($course->update()) {
