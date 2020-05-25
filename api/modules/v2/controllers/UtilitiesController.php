@@ -43,7 +43,7 @@ class UtilitiesController extends ApiBaseController
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -90,7 +90,7 @@ class UtilitiesController extends ApiBaseController
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -138,7 +138,7 @@ class UtilitiesController extends ApiBaseController
         foreach ($organizations as $o) {
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);

@@ -11,7 +11,8 @@ use Yii;
  * @property string $college_course_enc_id
  * @property string $organization_enc_id organization_enc_id
  * @property string $course_name Course Name
- * @property int $course_duration Course duration
+ * @property int $course_duration Course Durations
+ * @property string $type year and semesters
  * @property string $created_by user_enc_id
  * @property string $created_on created on
  * @property string $updated_on
@@ -21,6 +22,8 @@ use Yii;
  * @property Organizations $organizationEnc
  * @property Users $updatedBy
  * @property CollegeSections[] $collegeSections
+ * @property OnlineClasses[] $onlineClasses
+ * @property UserOtherDetails[] $userOtherDetails
  */
 class CollegeCourses extends \yii\db\ActiveRecord
 {
@@ -38,8 +41,9 @@ class CollegeCourses extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['college_course_enc_id', 'organization_enc_id', 'course_name', 'course_duration', 'created_by', 'created_on'], 'required'],
+            [['college_course_enc_id', 'organization_enc_id', 'course_name', 'course_duration', 'type', 'created_by', 'created_on'], 'required'],
             [['course_duration'], 'integer'],
+            [['type'], 'string'],
             [['created_on', 'updated_on'], 'safe'],
             [['college_course_enc_id', 'organization_enc_id', 'course_name', 'created_by', 'updated_by'], 'string', 'max' => 100],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['created_by' => 'user_enc_id']],
@@ -78,5 +82,21 @@ class CollegeCourses extends \yii\db\ActiveRecord
     public function getCollegeSections()
     {
         return $this->hasMany(CollegeSections::className(), ['college_course_enc_id' => 'college_course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOnlineClasses()
+    {
+        return $this->hasMany(OnlineClasses::className(), ['course_enc_id' => 'college_course_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserOtherDetails()
+    {
+        return $this->hasMany(UserOtherDetails::className(), ['course_enc_id' => 'college_course_enc_id']);
     }
 }
