@@ -12,7 +12,7 @@ use yii\helpers\Url;
                             <h1 class="whats-main-heading">Join Our Social Community</h1>
                             <div class="whats-sub-heading">Get Latest Job Updates</div>
                             <div class="whats-href">
-                                <a href="<?= Url::to('/whatsapp-community') ?>">
+                                <a href="<?= Url::to('/social-community') ?>">
                                     View Links
                                     <span><i class="fas fa-long-arrow-alt-right"></i></span>
                                 </a>
@@ -23,42 +23,52 @@ use yii\helpers\Url;
                 <div class="col-md-6">
                     <div class="s-top">
                         <div class="col-md-6 col-sm-4 col-xs-6">
-                            <div class="social-main" style="background-color:#34bd34">
-                                <div class="social-logo">
-                                    <i class="fab fa-whatsapp"></i>
-                                </div>
+                            <div class="social-main" >
+                                <a href="/social-community#whatsapp">
+                                    <div class="social-logo" style="background-color:#34bd34">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#fff">
-                                <div class="social-logo">
-                                    <i class="fab fa-facebook-f"></i>
-                                </div>
+                            <div class="social-main" >
+                                <a href="/social-community#facebook">
+                                    <div class="social-logo" style="background-color:#fff">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="smid">
                         <div class="col-md-12  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#00a0e3">
-                                <div class="social-logo">
-                                    <i class="fab fa-telegram-plane"></i>
-                                </div>
+                            <div class="social-main" >
+                                <a href="/social-community#telegram">
+                                    <div class="social-logo" style="background-color:#00a0e3">
+                                        <i class="fab fa-telegram-plane"></i>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="s-bottom">
                         <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" style="background-color:#dc004a">
-                                <div class="social-logo">
-                                    <i class="fab fa-instagram"></i>
-                                </div>
+                            <div class="social-main" >
+                                <a href="/social-community#instagram">
+                                    <div class="social-logo" style="background-color:#dc004a">
+                                        <i class="fab fa-instagram"></i>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                         <div class="col-md-6  col-sm-4  col-xs-12">
-                            <div class="social-main" style="background-color:#85ceec">
-                                <div class="social-logo">
-                                    <i class="fab fa-twitter"></i>
-                                </div>
+                            <div class="social-main">
+                                <a href="/social-community#twitter">
+                                    <div class="social-logo"  style="background-color:#85ceec">
+                                        <i class="fab fa-twitter"></i>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -68,15 +78,18 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
-.social-main {
+.social-main,  a .social-logo {
     border: 1px solid transparent;
     width: 100px;
     margin: auto;
     height: 100px;
     border-radius: 10px;
     text-align: center;
-    padding: 20px;
+//    padding: 20px;
     margin-bottom:20px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center
 }
 .social-logo .fab.fa-whatsapp, .social-logo .fab.fa-telegram-plane,
 .social-logo .fab.fa-instagram, .social-logo .fab.fa-twitter {
