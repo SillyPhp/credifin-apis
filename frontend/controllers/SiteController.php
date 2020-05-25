@@ -216,7 +216,7 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
-    public function actionWhatsappCommunity()
+    public function actionSocialCommunity()
     {
         $data = SocialGroups::find()
             ->alias('a')
