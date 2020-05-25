@@ -32,6 +32,9 @@ use yii\helpers\Url;
                 </div>
             </div>
             <div class="share-box">
+                <div class="blur">
+                    This Feature Is Comming Soon
+                </div>
                 <div class="sb-title">
                     Share This Quiz
                 </div>
@@ -46,30 +49,6 @@ use yii\helpers\Url;
         <div class="col-md-9">
             <div class="stats">
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="quiz-stats-box">
-                            <div class="stats-details">
-                                <div class="qsb-heading">Earnings This Month</div>
-                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
-                                <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
-                            </div>
-                            <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-this-month.png') ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="quiz-stats-box">
-                            <div class="stats-details">
-                                <div class="qsb-heading">Earnings Lifetime</div>
-                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
-                                <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
-                            </div>
-                            <div class="qsb-icons">
-                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-lifetime.png') ?>">
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-md-4">
                         <div class="quiz-stats-box">
                             <div class="stats-details">
@@ -115,6 +94,36 @@ use yii\helpers\Url;
                             </div>
                             <div class="qsb-icons">
                                 <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-taken-this-month.png') ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="quiz-stats-box">
+                            <div class="blur">
+                                This Feature Is Comming Soon
+                            </div>
+                            <div class="stats-details">
+                                <div class="qsb-heading">Earnings This Month</div>
+                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
+                                <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
+                            </div>
+                            <div class="qsb-icons">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-this-month.png') ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="quiz-stats-box">
+                            <div class="blur">
+                                This Feature Is Comming Soon
+                            </div>
+                            <div class="stats-details">
+                                <div class="qsb-heading">Earnings Lifetime</div>
+                                <div class="qsb-price"><i class="fa fa-inr"></i> 250</div>
+                                <div class="qsb-rise"><i class="fa fa-arrow-up"></i> 30</div>
+                            </div>
+                            <div class="qsb-icons">
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/earnings-lifetime.png') ?>">
                             </div>
                         </div>
                     </div>
@@ -252,6 +261,9 @@ use yii\helpers\Url;
                     </div>
                     <div class="col-md-6">
                         <div class="earning-quiz">
+                            <div class="blur">
+                                This Feature Is Comming Soon
+                            </div>
                             <div class="tq-heading">Earnings</div>
                             <div class="earning-table">
                                 <ul>
@@ -408,6 +420,25 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+. pos-rel{
+    position: relative;
+}
+.blur{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(255,255,255,.9);
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#chat-icon{
+    z-index: 3;
+}
 .top-quiz-delete, .top-quiz-share{
     background: transparent;
     border: none;
@@ -463,6 +494,7 @@ $this->registerCss('
 }
 .share-box{
     box-shadow: 0 0 10px rgba(0,0,0,.3);
+    position: relative;
 }
 .sb-title{
     padding: 10px 10px;
@@ -531,6 +563,8 @@ $this->registerCss('
     padding: 10px 20px;
     align-items: center;
     margin-bottom: 20px;
+    position: relative
+    
 }
 .stats-details{
     flex: 2;
@@ -703,6 +737,7 @@ $this->registerCss('
 .earning-quiz{
      box-shadow: 0 0 10px rgba(0,0,0,.3);
      margin-top: 20px;
+    position: relative;
 }
 .eq-list ul{
     list-style: none;

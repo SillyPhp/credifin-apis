@@ -1,6 +1,7 @@
 <?php
 
 namespace account\controllers;
+use account\models\bankDetails\BankDetailForm;
 use account\models\quiz\QuizModel;
 use common\models\Categories;
 use common\models\QuizTopics;
@@ -185,5 +186,13 @@ class QuizController extends Controller
             }
         }
     }
+
+    public function actionBankDetails(){
+        $model = new BankDetailForm();
+        return $this->render('bank-details',[
+            'model' => $model
+        ]);
+    }
+
 }
 
