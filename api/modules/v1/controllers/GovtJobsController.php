@@ -3,7 +3,10 @@
 
 namespace api\modules\v1\controllers;
 
+use common\models\IndianGovtDepartments;
+use common\models\IndianGovtJobs;
 use common\models\UsaDepartments;
+use frontend\models\applications\ApplicationCards;
 use Yii;
 use yii\helpers\Url;
 
@@ -20,6 +23,9 @@ class GovtJobsController extends ApiBaseController
                 'us-jobs' => ['POST'],
                 'usa-jobs-detail' => ['POST'],
                 'get-dept-cards' => ['POST'],
+                'in-departments' => ['POST'],
+                'in-dept-jobs' => ['POST'],
+                'in-job-detail' => ['POST'],
             ]
         ];
         return $behaviors;
@@ -269,7 +275,7 @@ class GovtJobsController extends ApiBaseController
                 ->asArray()
                 ->one();
             if (!empty($data['image']) && !empty($data['image_location'])) {
-                $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image,'https') . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
+                $get[$i]['logo'] = Url::to(Yii::$app->params->upload_directories->usa_jobs->departments->image, 'https') . $data['image_location'] . DIRECTORY_SEPARATOR . $data['image'];
             } else {
                 $get[$i]['logo'] = null;
             }
@@ -281,6 +287,190 @@ class GovtJobsController extends ApiBaseController
         } else {
             return $this->response(404, 'not found');
         }
+    }
+
+    public function actionInDepartments()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        } else {
+            $limit = 10;
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        } else {
+            $page = 1;
+        }
+
+        $data = IndianGovtDepartments::find()
+            ->select(['Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo'])
+            ->asArray()
+            ->orderBy(['total_applications' => SORT_DESC])
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->all();
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionInJobs()
+    {
+
+        $params = Yii::$app->request->post();
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        } else {
+            $limit = 10;
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        } else {
+            $page = 1;
+        }
+
+        $keywords = $params['keywords'];
+        $search = trim($keywords, " ");
+        $search_pattern = $this->makeSQL_search_pattern($search);
+        $data = IndianGovtJobs::find()
+            ->alias('a')
+            ->select(['job_id id', 'c.slug company_slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo', 'a.slug', 'a.Organizations', 'a.Location', 'a.Position', 'a.Eligibility', 'a.Last_date'])
+            ->andWhere(['a.is_deleted' => 0])
+            ->andFilterWhere([
+                'or',
+                ['REGEXP', 'a.Organizations', $search_pattern],
+                ['REGEXP', 'a.Location', $search_pattern],
+                ['REGEXP', 'a.Position', $search_pattern],
+                ['REGEXP', 'a.Eligibility', $search_pattern],
+            ])
+            ->joinWith(['assignedIndianJobs b' => function ($b) {
+                $b->joinWith(['deptEnc c'], false);
+            }], false, 'LEFT JOIN')
+            ->limit($limit)
+            ->offset(($page - 1) * $limit)
+            ->orderBy(['job_id' => SORT_DESC])
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionInDeptJobs()
+    {
+
+        $params = Yii::$app->request->post();
+
+        if (isset($params['limit']) && !empty($params['limit'])) {
+            $limit = $params['limit'];
+        } else {
+            $limit = 10;
+        }
+
+        if (isset($params['page']) && !empty($params['page'])) {
+            $page = $params['page'];
+        } else {
+            $page = 1;
+        }
+
+        if (isset($params['dept_id']) && !empty($params['dept_id'])) {
+            $dept_id = $params['dept_id'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $data = IndianGovtJobs::find()
+            ->alias('a')
+            ->select(['a.job_enc_id id', 'a.slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo', 'c.Value Organizations', 'Location', 'Position', 'Eligibility', 'Last_date'])
+            ->joinWith(['assignedIndianJobs b' => function ($b) use ($dept_id) {
+                $b->joinWith(['deptEnc c'], false);
+                $b->andWhere(['b.dept_enc_id' => $dept_id]);
+            }], false, 'LEFT JOIN')
+            ->limit($limit)
+            ->orderBy(['a.created_on' => SORT_DESC])
+            ->offset(($page - 1) * $limit)
+            ->asArray()
+            ->all();
+
+        if ($data) {
+            return $this->response(200, $data);
+        } else {
+            return $this->response(404, 'not found');
+        }
+    }
+
+    public function actionInJobDetail()
+    {
+        $params = Yii::$app->request->post();
+
+        if (isset($params['slug']) && isset($params['slug'])) {
+            $slug = $params['slug'];
+        } else {
+            return $this->response(422, 'missing information');
+        }
+
+        $get = IndianGovtJobs::find()
+            ->select(['job_enc_id', 'slug', 'Organizations', 'Location', 'Position', 'Eligibility', 'Last_date', 'Pdf_link', 'Data'])
+            ->where(['slug' => $slug])
+            ->asArray()
+            ->indexBy('job_enc_id')
+            ->one();
+
+        if ($get) {
+            return $this->response(200, $get);
+        } else {
+            return $this->response(404, 'not found');
+        }
+
+    }
+
+    private function makeSQL_search_pattern($search)
+    {
+        if ($search == null || empty($search)) {
+            return "";
+        }
+        $search_pattern = false;
+        $wordArray = preg_split('/[^-\w\']+/', $search, -1, PREG_SPLIT_NO_EMPTY);
+        $search = $this->optimizeSearchString($wordArray);
+        $search = str_replace('"', "''", $search);
+        $search = str_replace('^', "\\^", $search);
+        $search = str_replace('$', "\\$", $search);
+        $search = str_replace('.', "\\.", $search);
+        $search = str_replace('[', "\\[", $search);
+        $search = str_replace(']', "\\]", $search);
+        $search = str_replace('|', "\\|", $search);
+        $search = str_replace('*', "\\*", $search);
+        $search = str_replace('+', "\\+", $search);
+        $search = str_replace('{', "\\{", $search);
+        $search = str_replace('}', "\\}", $search);
+        $search = preg_split('/ /', $search, null, PREG_SPLIT_NO_EMPTY);
+        for ($i = 0; $i < count($search); $i++) {
+            if ($i > 0 && $i < count($search)) {
+                $search_pattern .= "|";
+            }
+            $search_pattern .= $search[$i];
+        }
+        return $search_pattern;
+    }
+
+    private function optimizeSearchString($wordArray)
+    {
+        $articles = ['in', 'is', 'jobs', 'job', 'internship', 'internships'];
+        $newArray = array_udiff($wordArray, $articles, 'strcasecmp');
+        if (!empty($newArray))
+            return implode(" ", $newArray);
+        else
+            return "";
     }
 
 

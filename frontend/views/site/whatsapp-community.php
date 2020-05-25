@@ -36,8 +36,10 @@ use yii\helpers\Url;
                         </div>
                         <?php
                         foreach ($data as $d) {
+                            $groupid = strtolower(trim($d['socialLinks'][0]['platform_name']));
+                            $groupid =  str_replace(' ', '-', $groupid);
                             ?>
-                            <div class="row marginTop">
+                            <div class="row marginTop" id="<?= $groupid ?>">
                                 <div class="col-md-12">
                                     <div class="form-heading"><?= $d['name'] ?></div>
                                 </div>
@@ -206,7 +208,12 @@ use yii\helpers\Url;
 <?php
 $this->registerCss('
 .marginTop{
-    margin-top:15px;
+    padding-top: 90px;
+    margin-top: -90px;
+}
+html{
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 .form-name-field{
     padding:10px 0 5px 0;

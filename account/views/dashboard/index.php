@@ -312,6 +312,15 @@ endif;
                                    title="Create AI Internship">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/ai-job.png'); ?>">
                                 </a>
+                                <?php
+                                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                                    ?>
+                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>" data-toggle="tooltip"
+                                       title="Campus Hiring" class="ai">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
+                                    <?php
+                                }
+                                ?>
                                 <a href="<?= Url::toRoute('/internships/create'); ?>" data-toggle="tooltip"
                                    title="Post Internship Tweet">
                                     <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-tweet.png'); ?>">

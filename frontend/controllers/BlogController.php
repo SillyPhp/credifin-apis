@@ -30,20 +30,26 @@ class BlogController extends Controller
     {
         $postsModel = new Posts();
         $posts = $postsModel->find()
-            ->select(['featured_image_location', 'featured_image', 'featured_image_alt', 'featured_image_title', 'title', '(CASE WHEN is_crawled = "0" THEN CONCAT("c/",slug) ELSE slug END) as slug'])
-            ->where(['status' => 'Active', 'is_deleted' => 0])
-            ->orderby(['created_on' => SORT_ASC])
+            ->alias('a')
+            ->select(['a.post_enc_id', 'a.featured_image_location', 'a.featured_image', 'a.featured_image_alt', 'featured_image_title', 'a.title', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug'])
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
+            }], false)
+            ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
+            ->andWhere(['not', ['c.category_enc_id' => null]])
+            ->orderby(['a.created_on' => SORT_ASC])
             ->limit(8)
             ->asArray()
             ->all();
+
         $quotes = Posts::find()
             ->alias('a')
             ->select(['a.post_enc_id', '(CASE WHEN a.is_crawled = "0" THEN CONCAT("c/",a.slug) ELSE a.slug END) as slug', 'CONCAT("' . Yii::$app->params->upload_directories->posts->featured_image . '", a.featured_image_location, "/", a.featured_image) image'])
-            ->innerJoinWith(['postCategories b' => function ($b) {
-                $b->innerJoinWith(['categoryEnc c'], false);
+            ->joinWith(['postCategories b' => function ($b) {
+                $b->joinWith(['categoryEnc c'], false);
             }], false)
             ->where(['a.status' => 'Active', 'a.is_deleted' => 0])
-            ->andWhere(['c.name' => 'Quotes'])
+            ->andWhere(['c.name' => null])
             ->groupBy(['a.post_enc_id'])
             ->orderby(new Expression('rand()'))
             ->limit(6)
