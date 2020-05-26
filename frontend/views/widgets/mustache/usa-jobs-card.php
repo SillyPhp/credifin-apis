@@ -73,7 +73,7 @@
                             {{#ApplicationCloseDate}}
                             <h5 class="last_date"><i class="far fa-calendar-alt"></i> Last_date: {{ApplicationCloseDate}}</h5>
                             {{/ApplicationCloseDate}}
-                            <h5 class="loc"><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>
+                            <h5 class="loc"><i class="fas fa-map-marker-alt"></i> {{Location}}</h5>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -212,6 +212,7 @@ color:#3d80d4;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
