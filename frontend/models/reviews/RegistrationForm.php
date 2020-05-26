@@ -92,8 +92,6 @@ class RegistrationForm extends Model {
                     'status'=>201,
                 ];
             }
-
-
         }
         else
         {

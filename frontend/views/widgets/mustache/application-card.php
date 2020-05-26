@@ -395,7 +395,7 @@ text-overflow: ellipsis;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
