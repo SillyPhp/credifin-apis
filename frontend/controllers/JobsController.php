@@ -1,7 +1,5 @@
 <?php
-
 namespace frontend\controllers;
-
 use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
@@ -15,8 +13,11 @@ use common\models\IndianGovtDepartments;
 use common\models\OrganizationLocations;
 use common\models\States;
 use common\models\TwitterJobs;
+use common\models\UnclaimAssignedIndustries;
 use common\models\UnclaimedOrganizations;
+use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
+use common\models\Usernames;
 use frontend\models\applications\PreferredApplicationCards;
 use Yii;
 use yii\filters\AccessControl;
@@ -43,6 +44,8 @@ use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
 use yii\db\Query;
+use common\models\Utilities;
+use common\models\RandomColors;
 
 class JobsController extends Controller
 {
@@ -1306,6 +1309,101 @@ class JobsController extends Controller
         if ($get)
         {
             return $this->render('git-api-jobs',['get'=>$get]);
+        }
+    }
+
+    public function actionTest($id=null)
+    {
+        $url = "https://www.themuse.com/api/public/companies?page=".$id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result,true);
+        $busActivity = BusinessActivities::findOne(['business_activity'=>'Business']);
+        $array_l = [1,2];
+        if (!empty($result))
+        {
+            foreach ($result['results'] as $res)
+            {
+                $model = new UnclaimedOrganizations();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $model->organization_enc_id = $utilitiesModel->encrypt();
+                $model->organization_type_enc_id = $busActivity->business_activity_enc_id;
+                $utilitiesModel->variables['name'] = $res['short_name'];
+                $utilitiesModel->variables['table_name'] = UnclaimedOrganizations::tableName();
+                $utilitiesModel->variables['field_name'] = 'slug';
+                $model->slug = $utilitiesModel->create_slug();
+                $model->name = $res['name'];
+                $model->twitter_username = $res['twitter'];
+                $model->size = $res['size']['name'];
+                $model->tags = $res['tags'][0]['name'];
+                $model->created_by = Yii::$app->user->identity->user_enc_id;
+                $model->initials_color = RandomColors::one();
+                $model->status = 1;
+                $model->short_description = $res['description'];
+                $model->source = 'api';
+                if ($model->save())
+                {
+                    $username = new Usernames();
+                    $username->username = $model->slug;
+                    $username->assigned_to = 3;
+                    if ($username->save())
+                    {
+                        if (!empty($res['locations']))
+                        {
+                            foreach ($res['locations'] as $rl)
+                            {
+                                $modelLocation = new UnclaimOrganizationLocations();
+                                $utilitiesModel = new Utilities();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $modelLocation->location_enc_id = $utilitiesModel->encrypt();
+                                $modelLocation->unclaim_organization_enc_id = $model->organization_enc_id;
+                                $modelLocation->location_name = $rl['name'];
+                                $modelLocation->created_by = Yii::$app->user->identity->user_enc_id;
+                                $modelLocation->location_for = json_encode($array_l);
+                                if (!$modelLocation->save())
+                                {
+                                   print_r($modelLocation->getErrors());
+                                }
+                            }
+                        }
+
+                        if (!empty($res['industries']))
+                        {
+                            foreach ($res['industries'] as $ri)
+                            {
+                                $modelIndus = new UnclaimAssignedIndustries();
+                                $utilitiesModel = new Utilities();
+                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                                $modelIndus->assigned_industry_enc_id = $utilitiesModel->encrypt();
+                                $modelIndus->created_by = Yii::$app->user->identity->user_enc_id;
+                                $modelIndus->unclaim_oragnizations_enc_id = $model->organization_enc_id;
+                                if (!$modelIndus->save())
+                                {
+                                    print_r($modelIndus->getErrors());
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        print_r($username->getErrors());
+                    }
+                }
+                else
+                {
+                    print_r($model->getErrors());
+                }
+                return 123;
+            }
         }
     }
 }
