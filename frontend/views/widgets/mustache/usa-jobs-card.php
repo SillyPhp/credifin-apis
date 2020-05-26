@@ -73,7 +73,7 @@
                             {{#ApplicationCloseDate}}
                             <h5 class="last_date"><i class="far fa-calendar-alt"></i> Last_date: {{ApplicationCloseDate}}</h5>
                             {{/ApplicationCloseDate}}
-                            <h5><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>
+                            <h5 class="loc"><i class="fas fa-map-marker-alt"></i>{{Location}}</h5>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -182,9 +182,15 @@ $this->registerCss("
 {
 color:#3d80d4;
 }
-.last_date
-{
-font-weight:normal !important;
+.last_date{
+    font-weight:normal !important;
+    padding-left:15px;
+}
+.loc{
+    padding-left:15px;
+}
+.application-card-img{
+    margin-top:20px !important;
 }
 .application-card-description h5{
     margin-top:0px !important;
@@ -216,7 +222,7 @@ font-weight:normal !important;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -259,6 +265,7 @@ font-weight:normal !important;
     position:absolute !important;
     right: -4px !important;
     top: -3px !important;
+    max-width:265px;
 }
 .clear{
     clear:both;
