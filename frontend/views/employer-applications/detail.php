@@ -424,9 +424,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                 </div>
             </div>
         </div>
-        <?php
-        if (!empty($data2)) {
-            ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
@@ -437,9 +434,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                     <div class="blogbox"></div>
                 </div>
             </div>
-            <?php
-        }
-        ?>
         <?php if ($settings["showRelatedOpportunities"]): ?>
             <div class="row m-0">
                 <div class="col-md-12">
@@ -1483,9 +1477,7 @@ $.ajax({
 loader = false;
 //getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
-if (!empty($data2)) {
 $this->registerJs("
 getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
 ");
-}
 ?>
