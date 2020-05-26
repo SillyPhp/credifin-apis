@@ -33,13 +33,14 @@ use yii\helpers\Url;
             </div>
             <div class="share-box">
                 <div class="blur">
-                    This Feature Is Comming Soon
+                    <img src="<?= Url::to('@eyAssets/images/pages/quiz/comingsoon.png') ?>">
+                    <p>This Feature Is Comming Soon</p>
                 </div>
                 <div class="sb-title">
                     Share This Quiz
                 </div>
                 <div class="qz-logo">
-                    <img src="<?= Url::to('@eyAssets/images/pages/candidate-profile/Girls2.jpg') ?>" alt="">
+                    <img src="<?= Url::to('@eyAssets/images/pages/quiz/quiz-default.png') ?>" alt="">
                 </div>
                 <div class="sb-btn">
                     <button type="button" class="ql-share">Share <i class="fa fa-share-alt"></i></button>
@@ -100,7 +101,8 @@ use yii\helpers\Url;
                     <div class="col-md-4">
                         <div class="quiz-stats-box">
                             <div class="blur">
-                                This Feature Is Comming Soon
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/comingsoon.png') ?>">
+                                <p>This Feature Is Comming Soon</p>
                             </div>
                             <div class="stats-details">
                                 <div class="qsb-heading">Earnings This Month</div>
@@ -115,7 +117,8 @@ use yii\helpers\Url;
                     <div class="col-md-4">
                         <div class="quiz-stats-box">
                             <div class="blur">
-                                This Feature Is Comming Soon
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/comingsoon.png') ?>">
+                                <p>This Feature Is Comming Soon</p>
                             </div>
                             <div class="stats-details">
                                 <div class="qsb-heading">Earnings Lifetime</div>
@@ -262,7 +265,8 @@ use yii\helpers\Url;
                     <div class="col-md-6">
                         <div class="earning-quiz">
                             <div class="blur">
-                                This Feature Is Comming Soon
+                                <img src="<?= Url::to('@eyAssets/images/pages/quiz/comingsoon.png') ?>">
+                                <p>This Feature Is Comming Soon</p>
                             </div>
                             <div class="tq-heading">Earnings</div>
                             <div class="earning-table">
@@ -435,6 +439,20 @@ $this->registerCss('
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+.blur p{
+    font-size: 17px;
+    font-weight: bold;
+}
+.blur img{
+    max-width: 150px;
+}
+.quiz-stats-box .blur p{
+    font-size: 14px;
+    margin: 0px !important;
+}
+.quiz-stats-box .blur img{
+    max-width: 50px;
 }
 #chat-icon{
     z-index: 3;
