@@ -1352,51 +1352,53 @@ class JobsController extends Controller
                 $model->source = 'api';
                 if ($model->save())
                 {
-                    $username = new Usernames();
-                    $username->username = $model->slug;
-                    $username->assigned_to = 3;
-                    if ($username->save())
-                    {
-                        if (!empty($res['locations']))
-                        {
-                            foreach ($res['locations'] as $rl)
-                            {
-                                $modelLocation = new UnclaimOrganizationLocations();
-                                $utilitiesModel = new Utilities();
-                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                                $modelLocation->location_enc_id = $utilitiesModel->encrypt();
-                                $modelLocation->unclaim_organization_enc_id = $model->organization_enc_id;
-                                $modelLocation->location_name = $rl['name'];
-                                $modelLocation->created_by = Yii::$app->user->identity->user_enc_id;
-                                $modelLocation->location_for = json_encode($array_l);
-                                if (!$modelLocation->save())
-                                {
-                                   print_r($modelLocation->getErrors());
-                                }
-                            }
-                        }
-
-                        if (!empty($res['industries']))
-                        {
-                            foreach ($res['industries'] as $ri)
-                            {
-                                $modelIndus = new UnclaimAssignedIndustries();
-                                $utilitiesModel = new Utilities();
-                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                                $modelIndus->assigned_industry_enc_id = $utilitiesModel->encrypt();
-                                $modelIndus->created_by = Yii::$app->user->identity->user_enc_id;
-                                $modelIndus->unclaim_oragnizations_enc_id = $model->organization_enc_id;
-                                if (!$modelIndus->save())
-                                {
-                                    print_r($modelIndus->getErrors());
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        print_r($username->getErrors());
-                    }
+//                    $username = new Usernames();
+//                    $username->username = $model->slug;
+//                    $username->assigned_to = 3;
+//                    if ($username->save())
+//                    {
+//                        if (!empty($res['locations']))
+//                        {
+//                            foreach ($res['locations'] as $rl)
+//                            {
+//                                $modelLocation = new UnclaimOrganizationLocations();
+//                                $utilitiesModel = new Utilities();
+//                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                                $modelLocation->location_enc_id = $utilitiesModel->encrypt();
+//                                $modelLocation->unclaim_organization_enc_id = $model->organization_enc_id;
+//                                $modelLocation->location_name = $rl['name'];
+//                                $modelLocation->created_by = Yii::$app->user->identity->user_enc_id;
+//                                $modelLocation->location_for = json_encode($array_l);
+//                                if (!$modelLocation->save())
+//                                {
+//                                   print_r($modelLocation->getErrors());
+//                                }
+//                            }
+//                        }
+//
+//                        if (!empty($res['industries']))
+//                        {
+//                            foreach ($res['industries'] as $ri)
+//                            {
+//                                $modelIndus = new UnclaimAssignedIndustries();
+//                                $utilitiesModel = new Utilities();
+//                                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//                                $modelIndus->assigned_industry_enc_id = $utilitiesModel->encrypt();
+//                                $modelIndus->created_by = Yii::$app->user->identity->user_enc_id;
+//                                $modelIndus->unclaim_oragnizations_enc_id = $model->organization_enc_id;
+//                                $modelIndus->industry_string_value = $ri['name'];
+//                                $modelIndus->created_by = Yii::$app->user->identity->user_enc_id;
+//                                if (!$modelIndus->save())
+//                                {
+//                                    print_r($modelIndus->getErrors());
+//                                }
+//                            }
+//                        }
+//                    }
+//                    else
+//                    {
+//                        print_r($username->getErrors());
+//                    }
                 }
                 else
                 {
