@@ -306,7 +306,7 @@ class GovtJobsController extends ApiBaseController
         }
 
         $data = IndianGovtDepartments::find()
-            ->select(['Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo'])
+            ->select(['dept_enc_id dept_id', 'Value', 'total_applications', 'slug', 'CASE WHEN image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->indian_jobs->departments->image, 'https') . '", image_location, "/", image) ELSE NULL END logo'])
             ->asArray()
             ->orderBy(['total_applications' => SORT_DESC])
             ->limit($limit)
@@ -358,6 +358,14 @@ class GovtJobsController extends ApiBaseController
             ->orderBy(['job_id' => SORT_DESC])
             ->asArray()
             ->all();
+
+        $i = 0;
+        foreach ($data as $d){
+            if(!$d['Eligibility']){
+                $data[$i]['Eligibility'] = 'View In Details';
+            }
+            $i++;
+        }
 
         if ($data) {
             return $this->response(200, $data);
