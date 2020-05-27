@@ -86,9 +86,13 @@ class ListController extends ApiBaseController
                     'aa.organization_approvel' => 1,
                     'aa.college_approvel' => 1,
                     'aa.is_deleted' => 0,
+                    'aa.status' => 'Active',
+                    'b.has_placement_rights' => 1,
+                    'b.is_deleted' => 0,
+                    'b.status' => 'Active',
                     'f.is_deleted' => 0,
                     'f.is_college_approved' => 1,
-                    'f.status'=>'Active'])
+                    'f.status' => 'Active'])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -109,6 +113,7 @@ class ListController extends ApiBaseController
                     $x->andWhere(['in', 'b.application_for', [0, 2]]);
                 }], false)
                 ->where([
+                    'a.status' => 'Approved',
                     'a.is_deleted' => 0,
                 ])
                 ->limit(6)
@@ -126,7 +131,12 @@ class ListController extends ApiBaseController
                     $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                 }])
-                ->where(['b.has_placement_rights' => 1, 'aa.is_deleted' => 0])
+                ->where([
+                    'b.has_placement_rights' => 1,
+                    'b.is_deleted' => 0,
+                    'b.status' => 'Active',
+                    'aa.is_deleted' => 0,
+                    'aa.status' => 'Active'])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -155,6 +165,7 @@ class ListController extends ApiBaseController
                     $x->andWhere(['in', 'b.application_for', [0, 2]]);
                 }], false)
                 ->where([
+                    'a.status' => 'Approved',
                     'a.is_deleted' => 0,
                 ])
                 ->limit(6)
