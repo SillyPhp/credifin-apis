@@ -186,6 +186,9 @@ $this->params['header_dark'] = false;
 
 <?php
 $this->registerCss('
+#app-data{
+    overflow-x: hidden;
+}
 .header-row {
     margin-top: -150px;
     background-color:#ffffff2b;
@@ -681,8 +684,8 @@ how-icon{
 }
 @media screen and (max-width: 550px){
      .box-border{
-        min-width: 150px !important;
-        max-width: 150px !important;
+        min-width: 145px !important;
+        max-width: 145px !important;
         margin: 0 10px 10px;
          padding: 20px 20px 15px;
          min-height: 150px;

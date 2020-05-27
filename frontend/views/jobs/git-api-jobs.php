@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
-
+$type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
@@ -197,7 +197,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
                             <a href="#"
@@ -233,6 +233,16 @@ if (!Yii::$app->user->isGuest) {
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Jobs You May Like </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="blogbox"></div>
+            </div>
+        </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
             <div class="row m-0">
                 <div class="col-md-12">
@@ -263,6 +273,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .desc strong
 {
@@ -1508,4 +1519,7 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
+$this->registerJs("                  
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-related-titles?title=" .$get['title']. "');    
+");
 ?>

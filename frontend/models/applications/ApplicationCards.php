@@ -515,7 +515,6 @@ class ApplicationCards
                 ->orderBy(['created_on' => SORT_DESC])
                 ->all();
         }
-
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));

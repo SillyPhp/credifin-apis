@@ -47,8 +47,7 @@ use yii\helpers\Url;
 $this->registercss('
 .news-updation {
 	background-color: #000;
-	padding: 0px 0 30px;
-	margin:20px 0;
+	padding:20px 0 40px;
 }
 .n-heading {
 	text-align: left;

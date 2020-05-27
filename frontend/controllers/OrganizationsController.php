@@ -773,6 +773,35 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionOrganizationRelatedTitles($title)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 6;
+            $options['page'] = 1;
+            $options['keyword'] = $title;
+            if ($type == 'Jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } else {
+                $cards = ApplicationCards::internships($options);
+            }
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
     public function actionFeatured()
     {
         if (Yii::$app->request->isAjax) {
