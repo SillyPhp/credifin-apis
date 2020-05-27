@@ -34,7 +34,7 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Learning Hub Category</div>
+                <div class="heading-style">Courses By Category</div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -108,7 +108,7 @@ use yii\helpers\Url;
 <?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <div class="row">
-            <div class="heading-style">Learning Videos</div>
+            <div class="heading-style">Free Learning Videos</div>
         </div>
     </div>
     <div>
