@@ -190,7 +190,7 @@ color:#3d80d4;
     padding-left:15px;
 }
 .application-card-img{
-    margin-top:20px !important;
+    margin-top:25px !important;
 }
 .application-card-description h5{
     margin-top:0px !important;
