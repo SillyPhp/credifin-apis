@@ -897,7 +897,7 @@ class OrganizationsController extends Controller
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo'])
             ->where([
                 'slug' => $slug,
                 'is_deleted' => 0
@@ -906,7 +906,7 @@ class OrganizationsController extends Controller
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
@@ -982,7 +982,7 @@ class OrganizationsController extends Controller
                 return $this->render('review-college-company', ['review_type' => $review_type, 'follow' => $follow, 'reviews_students' => $reviews_students, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats_students' => $stats_students, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
             }
         }
-        return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
+        return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews]);
     }
 
     public function actionPostReviews($slug = null, $request_type = null)
