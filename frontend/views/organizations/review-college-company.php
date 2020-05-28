@@ -11,7 +11,7 @@ $overall_avg = array_sum($stats) / count($stats);
 $overall_college_avg = array_sum($stats_students) / count($stats_students);
 $round_avg = round($overall_avg);
 $round_students_avg = round($overall_college_avg);
-$logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
+$logo_image = $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
@@ -530,14 +530,14 @@ border: 2px solid #cadfe8 !important;
 .logo-box{
     height: 150px;
     width: 150px;
-    padding: 0 0px;
     background: #fff;
     text-align: center;
     overflow: hidden;
     position: relative;
 } 
 .logo-box canvas{
-//    border-radius:6px;
+        width:100%;
+        height:100%;
 }
 .logo-box img{
     width: 100%;
