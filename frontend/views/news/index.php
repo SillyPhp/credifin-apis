@@ -62,7 +62,7 @@ use yii\helpers\Url;
                                         <div class="share-news">
                                             <div class="wts-sh basis">
                                                 <a href="#!"
-                                                   onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                   onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
                                                     <span class="fb-btn" title="share on whatsapp"
                                                           data-toggle="tooltip"><i class="fab fa-whatsapp"></i></span>
                                                 </a>

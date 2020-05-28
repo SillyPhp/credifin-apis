@@ -25,7 +25,7 @@ use yii\helpers\Url;
             </a>
         </div>
         <div class="wa-share">
-            <a href="wa.me/?text=" target="_blank" class="share-elem-main">
+            <a href="https://api.whatsapp.com/send?text=" target="_blank" class="share-elem-main">
                 <span class="wa-btn"><i class="fab fa-whatsapp marg"></i> Whatsapp</span>
             </a>
         </div>

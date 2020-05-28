@@ -6,7 +6,7 @@ use yii\helpers\Url;
 
     <div class="share-social">
         <div class="whatsapp-share basis">
-            <a href="#!" onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="#!" onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
