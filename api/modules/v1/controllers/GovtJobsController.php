@@ -412,6 +412,16 @@ class GovtJobsController extends ApiBaseController
             ->asArray()
             ->all();
 
+        if($data) {
+            $i = 0;
+            foreach ($data as $d) {
+                if (!$d['Eligibility']) {
+                    $data[$i]['Eligibility'] = 'View In Details';
+                }
+                $i++;
+            }
+        }
+
         if ($data) {
             return $this->response(200, $data);
         } else {
