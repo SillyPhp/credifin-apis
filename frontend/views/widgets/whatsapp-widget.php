@@ -21,54 +21,54 @@ use yii\helpers\Url;
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="s-top">
-                        <div class="col-md-6 col-sm-4 col-xs-6">
-                            <div class="social-main" >
-                                <a href="/social-community#whatsapp">
-                                    <div class="social-logo" style="background-color:#34bd34">
-                                        <i class="fab fa-whatsapp"></i>
-                                    </div>
-                                </a>
+                    <div class="row mt10">
+                        <div class="mobile-flex">
+                            <div class="col-md-6 col-md-offset-0 col-sm-2 col-sm-offset-1">
+                                <div class="social-main">
+                                    <a href="/social-community#whatsapp">
+                                        <div class="social-logo" style="background-color:#34bd34">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" >
-                                <a href="/social-community#facebook">
-                                    <div class="social-logo" style="background-color:#fff">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </div>
-                                </a>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#facebook">
+                                        <div class="social-logo" style="background-color:#fff">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="smid">
-                        <div class="col-md-12  col-sm-4  col-xs-6">
-                            <div class="social-main" >
-                                <a href="/social-community#telegram">
-                                    <div class="social-logo" style="background-color:#00a0e3">
-                                        <i class="fab fa-telegram-plane"></i>
-                                    </div>
-                                </a>
+
+                            <div class="col-md-12  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#telegram">
+                                        <div class="social-logo" style="background-color:#00a0e3">
+                                            <i class="fab fa-telegram-plane"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="s-bottom">
-                        <div class="col-md-6  col-sm-4  col-xs-6">
-                            <div class="social-main" >
-                                <a href="/social-community#instagram">
-                                    <div class="social-logo" style="background-color:#dc004a">
-                                        <i class="fab fa-instagram"></i>
-                                    </div>
-                                </a>
+
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#instagram">
+                                        <div class="social-logo" style="background-color:#dc004a">
+                                            <i class="fab fa-instagram"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6  col-sm-4  col-xs-12">
-                            <div class="social-main">
-                                <a href="/social-community#twitter">
-                                    <div class="social-logo"  style="background-color:#85ceec">
-                                        <i class="fab fa-twitter"></i>
-                                    </div>
-                                </a>
+                            <div class="col-md-6  col-sm-2">
+                                <div class="social-main">
+                                    <a href="/social-community#twitter">
+                                        <div class="social-logo" style="background-color:#85ceec">
+                                            <i class="fab fa-twitter"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -78,6 +78,9 @@ use yii\helpers\Url;
     </section>
 <?php
 $this->registerCss('
+.mt10{
+    margin-top: 20px;
+}
 .social-main,  a .social-logo {
     border: 1px solid transparent;
     width: 100px;
@@ -164,16 +167,28 @@ $this->registerCss('
 .s-top {
     padding-top: 12px;
 }
-@media(max-width:768px){
-.wm-pos-rel{
-    height:250px;
+@media screen and (max-width: 992px){
+    .wm-pos-rel{
+        position: relative;
+        height:220px;
+        text-align: center;
+    }
+    .whats-abso{
+        position: relative;
+        
+    }
 }
+@media(max-width:768px){
+    .wm-pos-rel{
+        height:250px;
+    }
+    .mobile-flex{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
 @media(max-width:500px){
-.social-main {
-    width: 80px;
-    height: 80px;
-}
 .social-logo .fab.fa-facebook-f, .social-logo .fab.fa-whatsapp,
 .social-logo .fab.fa-telegram-plane, .social-logo .fab.fa-instagram,
 .social-logo .fab.fa-twitter {

@@ -385,6 +385,7 @@ text-overflow: ellipsis;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
@@ -395,7 +396,7 @@ text-overflow: ellipsis;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -438,6 +439,7 @@ text-overflow: ellipsis;
     position:absolute !important;
     right: -4px !important;
     top: -3px !important;
+    max-width:255px;
 }
 .clear{
     clear:both;

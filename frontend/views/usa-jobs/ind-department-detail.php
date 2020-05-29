@@ -76,7 +76,7 @@ echo $this->render('/widgets/mustache/application-card-bk');
 $this->registerCss('
 .application-card-main
 {
-height:210px;
+height:175px;
 }
 .align_btn
 {
@@ -124,13 +124,6 @@ margin:auto
     font-size:15px;
     padding: 53px 10px 0px 8px;  
     }
-}
-.application-card-img {
-    margin-left: 0px;
-    margin-top: 30px;
-}
-.application-card-description {
-    margin: 20px 0 0 15px !important;
 }
 ');
 echo $this->render('/widgets/mustache/usa-jobs-card');

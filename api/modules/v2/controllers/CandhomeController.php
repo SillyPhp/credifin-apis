@@ -609,6 +609,10 @@ class CandhomeController extends ApiBaseController
                 foreach ($webinar as $w) {
                     $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
                     $webinar[$i]['is_registered'] = $user_registered;
+                    $date = new \DateTime($w['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $webinar[$i]['seconds'] = $seconds;
+                    $webinar[$i]['is_started'] = ($seconds < 0 ? true : false);
                     $i++;
                 }
             }
@@ -726,9 +730,12 @@ class CandhomeController extends ApiBaseController
                 ->one();
 
             if (!empty($webinar)) {
-
                 $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
                 $webinar['is_registered'] = $user_registered;
+                $date = new \DateTime($webinar['start_datetime']);
+                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                $webinar['seconds'] = $seconds;
+                $webinar['is_started'] = ($seconds < 0 ? true : false);
             }
 
 

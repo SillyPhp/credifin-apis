@@ -228,6 +228,9 @@ $this->registerCss('
     margin: 0;
     display: flex;
 }
+.p-0{
+    padding:0;
+}
 .p-category {
     float: left;
     width: 100%;
@@ -250,12 +253,13 @@ $this->registerCss('
     background:#ffffff;
     box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
     border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    margin-top: -2%;
-    height: 104%;
+//    width: 104%;
+//    margin-left: -2%;
+//    margin-top: -2%;
+//    height: 104%;
     z-index: 10;
     transition: all 0.4s ease 0s;
+    transform: scale(1.03);
 }
 .p-category > a span{
     font-family: roboto;

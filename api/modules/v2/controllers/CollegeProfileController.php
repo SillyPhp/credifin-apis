@@ -108,7 +108,7 @@ class CollegeProfileController extends ApiBaseController
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -264,7 +264,7 @@ class CollegeProfileController extends ApiBaseController
 
                     $courses = CollegeCourses::find()
                         ->alias('a')
-                        ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
+                        ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                         ->joinWith(['collegeSections b' => function ($b) {
                             $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                             $b->onCondition(['b.is_deleted' => 0]);
@@ -313,7 +313,7 @@ class CollegeProfileController extends ApiBaseController
                         $this->updateSections($req['sections'], $req['course_id'], $user->user_enc_id);
                         $courses = CollegeCourses::find()
                             ->alias('a')
-                            ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
+                            ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                             ->joinWith(['collegeSections b' => function ($b) {
                                 $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                                 $b->onCondition(['b.is_deleted' => 0]);
@@ -778,11 +778,18 @@ class CollegeProfileController extends ApiBaseController
     {
         if ($user = $this->isAuthorized()) {
             $college_id = $this->getOrgId();
-            $slug = Yii::$app->request->post('slug');
+            $param = Yii::$app->request->post();
+
+            if (isset($param['slug']) && !empty($param['slug'])) {
+                $slug = $param['slug'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
             $process = AppliedApplications::find()
                 ->alias('a')
                 ->select(['a.applied_application_enc_id', 'b.slug', 'c.name', 'a.status', 'f.user_enc_id',
-                    'f.username, CONCAT(f.first_name, " ", f.last_name) name, CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image) . '", f.image_location, "/", f.image) ELSE NULL END image',
+                    'f.username, CONCAT(f.first_name, " ", f.last_name) name, CASE WHEN f.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", f.image_location, "/", f.image) ELSE NULL END image',
                     'COUNT(CASE WHEN cc.is_completed = 1 THEN 1 END) as active',
                     'COUNT(cc.is_completed) total',
                     'gg.name title'])
@@ -796,7 +803,21 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', 'dd.icon']);
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name','(CASE
+                        WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
+                        WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
+                        WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
+                        WHEN dd.icon = "fa fa-cogs" THEN "fas fa-cogs"
+                        WHEN dd.icon = "fa fa-user-circle" THEN "fas fa-user-circle"
+                        WHEN dd.icon = "fa fa-users" THEN "fas fa-users"
+                        WHEN dd.icon = "fa fa-video-camera" THEN "fas fa-video"
+                        WHEN dd.icon = "fa fa-check" THEN "fas fa-check"
+                        WHEN dd.icon = "fa fa-pencil-square-o" THEN "fas fa-pen-square"
+                        WHEN dd.icon = "fa fa-envelope" THEN "fas fa-envelope"
+                        WHEN dd.icon = "fa fa-question" THEN "fas fa-question"
+                        WHEN dd.icon = "fa fa-paper-plane" THEN "fas fa-paper-plane"
+                        ELSE "fas fa-plus"
+                        END) as icon']);
                 }])
                 ->innerJoinWith(['createdBy f' => function ($f) {
                     $f->innerJoinWith(['userOtherInfo g']);
@@ -830,6 +851,10 @@ class CollegeProfileController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+
+                if($user_data['skill'] != null) {
+                    $user_data['skill'] = explode(',', $user_data['skill']);
+                }
                 $process[$i]['user_data'] = $user_data;
                 $i++;
             }
