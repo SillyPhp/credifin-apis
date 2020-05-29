@@ -189,7 +189,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="#"
