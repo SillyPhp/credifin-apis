@@ -81,6 +81,19 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     }
 
 
+    public function getEmployerApplications()
+    {
+        return $this->hasMany(EmployerApplications::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNewOrganizationReviews()
+    {
+        return $this->hasMany(NewOrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -88,6 +101,39 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Reviews::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUnclaimedFollowedOrganizations()
+    {
+        return $this->hasMany(UnclaimedFollowedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserEncs()
+    {
+        return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%unclaimed_followed_organizations}}', ['organization_enc_id' => 'organization_enc_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getOrganizationTypeEnc()
+    {
+        return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'organization_type_enc_id']);
+    }
+
 
     /**
      * @return \yii\db\ActiveQuery
@@ -137,19 +183,4 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
         return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCreatedBy()
-    {
-        return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOrganizationTypeEnc()
-    {
-        return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'organization_type_enc_id']);
-    }
 }
