@@ -180,7 +180,7 @@ if (!Yii::$app->user->isGuest) {
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('jobs/api/' . strtolower($get['company']) . '/' . $get['id'], true); ?>
+                    <?php $link = Url::to('jobs/api/'.$slug.'/'.$get['id'], true); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
