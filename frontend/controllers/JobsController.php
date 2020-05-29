@@ -19,6 +19,9 @@ use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
 use common\models\Usernames;
 use frontend\models\applications\PreferredApplicationCards;
+use frontend\models\curl\RollingCurl;
+use frontend\models\curl\RollingCurlRequest;
+use frontend\models\curl\RollingRequest;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -46,7 +49,6 @@ use account\models\applications\ApplicationForm;
 use yii\db\Query;
 use common\models\Utilities;
 use common\models\RandomColors;
-
 class JobsController extends Controller
 {
 
@@ -1311,4 +1313,14 @@ class JobsController extends Controller
             return $this->render('git-api-jobs',['get'=>$get]);
         }
     }
+
+    public function actionTest()
+    {
+        $page = 1;
+        $urls = array("https://jobs.github.com/positions.json?page=".$page,
+              "https://www.themuse.com/api/public/jobs?page=".$page,
+            );
+        $rc = new RollingRequest();
+        $rc->run($urls);
+   }
 }
