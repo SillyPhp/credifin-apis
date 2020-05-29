@@ -1,11 +1,9 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
-
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
