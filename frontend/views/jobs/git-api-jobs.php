@@ -1,15 +1,17 @@
 <?php
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
+$type = 'Job';
 $separator = Yii::$app->params->seo_settings->title_separator;
 echo $this->render('/widgets/drop_resume', [
     'username' => Yii::$app->user->identity->username,
     'type' => 'application'
 ]);
-$this->title = $get['company'] . ' is hiring for '.$get['title'];
-$keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,'.$get['title'].' Jobs,  MBA Jobs, Career, Walk-ins '.$get['title'].',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,'.$get['title'].' jobs in india for freshers';
+$this->title = $get['company'] . ' is hiring for ' . $get['title'];
+$keywords = $get['company'] . ' jobs,Freshers jobs,Software Jobs,IT Jobs, Technical Jobs,' . $get['title'] . ' Jobs,  MBA Jobs, Career, Walk-ins ' . $get['title'] . ',Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,' . $get['title'] . ' jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 $this->params['seo_tags'] = [
@@ -55,10 +57,11 @@ if (!Yii::$app->user->isGuest) {
                     <div class="agency-name-top">
                         <h1><?= $get['company'] ?></h1>
                     </div>
-                    <div class="job-title"><?= $get['title'];?></div>
+                    <div class="job-title"><?= $get['title']; ?></div>
                     <div class="job-statistic">
                         <div class="job-time"><?= $get['type'] ?></div>
-                        <div class="job-location"><i class="fas fa-map-marker-alt marg"></i> <?=$get['location'] ?></div>
+                        <div class="job-location"><i class="fas fa-map-marker-alt marg"></i> <?= $get['location'] ?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,38 +145,42 @@ if (!Yii::$app->user->isGuest) {
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
             <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 z-index-9">
-        <!--  org details-->
+                <!--  org details-->
                 <div class="job-single-head style2 overlay-top">
                     <div class="job-thumb">
-                        <?php if ($get['company_logo']){ ?>
-                        <img src="<?= $get['company_logo']; ?>" id="logo_img" alt=""/>
+                        <?php if ($get['company_logo']) { ?>
+                            <img src="<?= $get['company_logo']; ?>" id="logo_img" alt=""/>
                         <?php } else { ?>
-                        <canvas class="user-icon" name="<?= $get['company'] ?>" width="100" height="100" color="#73ef9c" font="48px"></canvas>
+                            <canvas class="user-icon" name="<?= $get['company'] ?>" width="100" height="100"
+                                    color="#73ef9c" font="48px"></canvas>
                         <?php } ?>
                     </div>
                     <div class="job-head-info">
                         <h4><?= $get['company'] ?></h4>
                         <div class="organization-details">
-                            <?php if ($get['company_url']):?>
-                            <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>" target="_blank"><?= $get['company_url'] ?></a></p>
+                            <?php if ($get['company_url']): ?>
+                                <p><i class="fas fa-unlink"></i><a href="<?= $get['company_url'] ?>"
+                                                                   target="_blank"><?= $get['company_url'] ?></a></p>
                             <?php endif; ?>
                         </div>
                     </div>
                     <div class="actions-main">
                         <?php if (Yii::$app->user->isGuest): ?>
-                        <a href="javascript:;" data-toggle="modal" data-target="#loginModal" class="apply-job-btn single-btn"><i
-                                    class="fas fa-paper-plane"></i>Login to apply</a>
+                            <a href="javascript:;" data-toggle="modal" data-target="#loginModal"
+                               class="apply-job-btn single-btn"><i
+                                        class="fas fa-paper-plane"></i>Login to apply</a>
                         <?php else: ?>
-                        <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse" ><i class="fas fa-paper-plane hvr-icon"></i>Apply
-                            On
-                            Website</a>
+                            <a href="<?= $get['url'] ?>" target="_blank" class="apply-job-btn hvr-icon-pulse"><i
+                                        class="fas fa-paper-plane hvr-icon"></i>Apply
+                                On
+                                Website</a>
                         <?php endif; ?>
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/' . $get['company'].'/'.$get['id'], true); ?>
+                    <?php $link = Url::to('job/' . $get['company'] . '/' . $get['id'], true); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
@@ -182,7 +189,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-facebook-f"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="#"
@@ -190,7 +197,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-whatsapp"></i>
                             </a>
                             <a href="#"
@@ -202,20 +209,38 @@ if (!Yii::$app->user->isGuest) {
                             <div class="col-lg-12">
                                 <h4 class="text-white">or</h4>
                                 <div class="pf-field">
-                                    <input type="text" title="Click to Copy" id="share_manually" onclick="copyToClipboard()" class="form-control" value="<?=$link ?>" readonly="">
+                                    <input type="text" title="Click to Copy" id="share_manually"
+                                           onclick="copyToClipboard()" class="form-control" value="<?= $link ?>"
+                                           readonly="">
                                     <i class="far fa-copy"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-        <!--  org details-->
+                <!--  org details-->
                 <?php
                 if (Yii::$app->user->isGuest) {
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                <?= $this->render("/widgets/square_ads");?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
+                            <?= $this->render("/widgets/square_ads"); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="heading-style">Jobs You May Like </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="blogbox"></div>
             </div>
         </div>
         <?php if ($settings["showRelatedOpportunities"]): ?>
@@ -248,6 +273,7 @@ if ($settings["showNewPositionsWidget"]):
     }
 </script>
 <?php
+echo $this->render('/widgets/mustache/application-card');
 $this->registerCss('
 .desc strong
 {
@@ -1493,4 +1519,7 @@ $this->registerCss("
     }
     /* Profile icons css ends */
     ");
+$this->registerJs("                  
+getCards('" . $type . 's' ."','.blogbox','/organizations/organization-related-titles?title=" .$get['title']. "');    
+");
 ?>

@@ -26,7 +26,7 @@ if($type == 'internships'){
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="heading-set">
-                            <h1 class="heading-style mt-50">Popular Countries</h1>
+                            <h1 class="heading-style mt-50">Find Your Dream Job In</h1>
                         </div><!-- Heading -->
                         <div class="cat-sec">
                             <div class="row no-gape">
@@ -228,6 +228,9 @@ $this->registerCss('
     margin: 0;
     display: flex;
 }
+.p-0{
+    padding:0;
+}
 .p-category {
     float: left;
     width: 100%;
@@ -250,12 +253,13 @@ $this->registerCss('
     background:#ffffff;
     box-shadow: 0px 0px 25px rgba(0,0,0,0.1);
     border-radius: 8px;
-    width: 104%;
-    margin-left: -2%;
-    margin-top: -2%;
-    height: 104%;
+//    width: 104%;
+//    margin-left: -2%;
+//    margin-top: -2%;
+//    height: 104%;
     z-index: 10;
     transition: all 0.4s ease 0s;
+    transform: scale(1.03);
 }
 .p-category > a span{
     font-family: roboto;

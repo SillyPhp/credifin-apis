@@ -217,7 +217,7 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
-    public function actionWhatsappCommunity()
+    public function actionSocialCommunity()
     {
         $data = SocialGroups::find()
             ->alias('a')
@@ -460,6 +460,11 @@ class SiteController extends Controller
     public function actionPrivacyPolicy()
     {
         return $this->render('privacy-policy');
+    }
+
+    public function actionSignUpCandidate()
+    {
+        return $this->renderAjax('sign-up-candidate');
     }
 
     public function actionUpdateProfile()
@@ -742,7 +747,7 @@ class SiteController extends Controller
                 }
                 break;
             case 'getCompaniesWithUs':
-                return $this->renderAjax('/widgets/companies-with-us');
+                return $this->renderAjax('/widgets/organizations/companies-with-us');
                 break;
             case 'getNewsUpdate':
                 return $this->renderAjax('/widgets/news-update');
@@ -864,26 +869,6 @@ class SiteController extends Controller
         return $this->render('college-index', [
             'model' => $model,
         ]);
-    }
-
-    public function actionMentorshipIndex(){
-        $model = new \frontend\models\mentorship\MentorshipEnquiryForm();
-
-        return $this->render('mentorship-index',[
-            'model' => $model,
-        ]);
-    }
-
-    public function actionMentorProfile(){
-        return $this->render('mentor-profile');
-    }
-
-    public function actionMenteeIndex(){
-        return $this->render('mentee-index');
-    }
-
-    public function actionAllMentors(){
-        return $this->render('all-mentors');
     }
 
 }

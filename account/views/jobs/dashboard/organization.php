@@ -202,7 +202,7 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                                              class="img-responsive" alt=""/>
                                     </div>
                                     <div class="tab-empty-text">
-                                        <div class="">No Active Jobs</div>
+                                        <div class="">There Are No Active Jobs In This Company</div>
                                     </div>
                                 </div>
                             <?php }
@@ -211,48 +211,58 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
                     </div>
                 </div>
 
-                <div class="col-lg-12 col-xs-12 col-sm-12">
-                    <div class="portlet light nd-shadow">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class=" icon-social-twitter font-dark hide"></i>
-                                <span class="caption-subject font-dark bold uppercase">Campus Placement Jobs
+                <?php
+                if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
+                    ?>
+                    <div class="col-lg-12 col-xs-12 col-sm-12">
+                        <div class="portlet light nd-shadow">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class=" icon-social-twitter font-dark hide"></i>
+                                    <span class="caption-subject font-dark bold uppercase">Campus Placement Jobs
                             <span data-toggle="tooltip" title="Here you will find jobs that are active on Erexx"><i
                                         class="fa fa-info-circle"></i></span></span>
-                            </div>
-                            <div class="actions">
-                                <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip" title="Add New">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
-                                <?php if ($erexx_applications['total'] > 8): ?>
-                                    <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
-                                       title="View All">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="portlet-body">
-                            <?php
-                            if ($erexx_applications['total'] > 0) {
-                                echo $this->render('/widgets/applications/card', [
-                                    'applications' => $erexx_applications['data'],
-                                    'col_width' => 'col-lg-3 col-md-4 col-sm-6',
-                                ]);
-                            } else {
-                                ?>
-                                <div class="tab-empty">
-                                    <div class="tab-empty-icon">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/activeerexx.png'); ?>"
-                                             class="img-responsive" alt=""/>
-                                    </div>
-                                    <div class="tab-empty-text">
-                                        <div class="">No Active Erexx Jobs</div>
-                                    </div>
                                 </div>
-                            <?php }
-                            ?>
+                                <div class="actions">
+                                    <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                       title="Add New">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/dashboard/add-new.png'); ?>"></a>
+                                    <?php if ($erexx_applications['total'] > 8): ?>
+                                        <a href="<?= Url::toRoute('/jobs/active-erexx-jobs'); ?>" data-toggle="tooltip"
+                                           title="View All">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <?php
+                                if ($erexx_applications['total'] > 0) {
+                                    echo $this->render('/widgets/applications/card', [
+                                        'applications' => $erexx_applications['data'],
+                                        'col_width' => 'col-lg-3 col-md-4 col-sm-6',
+                                    ]);
+                                } else {
+                                    ?>
+                                    <div class="tab-empty">
+                                        <div class="tab-empty-icon">
+                                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/activeerexx.png'); ?>"
+                                                 class="img-responsive" alt=""/>
+                                        </div>
+                                        <div class="tab-empty-text">
+                                            <div class="">You Have Not Posted Any Job</div>
+                                            <span class="create-new-j">
+                                        <a href="<?= Url::toRoute('/jobs/create'); ?>" data-toggle="tooltip"
+                                           title="Add New">CREATE</a>
+                                        </span>
+                                        </div>
+                                    </div>
+                                <?php }
+                                ?>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php }
+                ?>
             </div>
             <div class="row">
                 <div class="col-lg-6 col-xs-12 col-sm-12">
@@ -411,6 +421,14 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
 <?php
 $this->registerCss('
+.create-new-j a {
+	background: #00a0e3;
+	color: #fff;
+	border-radius: 6px;
+	padding: 5px 25px;
+	font-family: roboto;
+	font-size: 23px;
+}
 .padd-top-20{
     padding-top:30px; 
 }

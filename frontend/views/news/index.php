@@ -56,13 +56,13 @@ use yii\helpers\Url;
                                             ?>
                                         </ul>
                                     </div>
-                                    <div class="news-content"><?= $n->description ?></div>
+                                    <div class="news-content"><?= strip_tags($n->description) ?></div>
                                     <div class="use-flex">
                                         <?php $sharingLink = Url::base(true) . '/news/' . $n->slug ?>
                                         <div class="share-news">
                                             <div class="wts-sh basis">
                                                 <a href="#!"
-                                                   onclick="window.open('https://wa.me/?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
+                                                   onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')">
                                                     <span class="fb-btn" title="share on whatsapp"
                                                           data-toggle="tooltip"><i class="fab fa-whatsapp"></i></span>
                                                 </a>
@@ -204,6 +204,7 @@ $this->registercss('
 .news-tags {
     min-height: 30px;
     max-height: 30px;
+    overflow:hidden;
 }
 .news-tags ul li{
     font-size: 13px;

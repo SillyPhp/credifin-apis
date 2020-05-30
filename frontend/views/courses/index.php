@@ -34,7 +34,7 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Learning Hub Category</div>
+                <div class="heading-style">Courses By Category</div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -45,7 +45,7 @@ use yii\helpers\Url;
     </section>
 
     <section class="popular-skills">
-        <h3>Popular Skills</h3>
+        <h3>Popular Categories</h3>
         <div class="container" id="popular-category"></div>
     </section>
 
@@ -87,22 +87,28 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Courses</div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="heading-style">Courses</div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                    <div class="type-1">
+                        <div>
+                            <a href="<?= Url::to('/courses/courses-list'); ?>" class="btn btn-3">
+                                <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                                <span class="round"><i class="fas fa-chevron-right"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="row" id="card-main"></div>
         </div>
     </section>
 
-<?php
-echo $this->render('/widgets/courses-subscribe', [
-    'model' => $model,
-]);
-?>
-
 <?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <div class="row">
-            <div class="heading-style">Learning Videos</div>
+            <div class="heading-style">Free Learning Videos</div>
         </div>
     </div>
     <div>
@@ -192,6 +198,14 @@ echo $this->render('/widgets/courses-subscribe', [
     </div>
 <?php } ?>
 
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
     <script id="courses-categories" type="text/template">
         {{#.}}
         <div class="col-md-2 col-sm-4 col-xs-6 pr-0 pc-main">
@@ -209,6 +223,10 @@ echo $this->render('/widgets/courses-subscribe', [
 <?php
 echo $this->render('/widgets/mustache/courses-card');
 $this->registerCss('
+.type-1 .txt-v {
+    font-size: 14px;
+    line-height: 1.45;
+}
 #mixedSlider .MS-content .item {
     display: inline-block;
     width: 31.7%;

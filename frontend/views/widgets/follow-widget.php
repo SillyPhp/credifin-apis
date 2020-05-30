@@ -51,28 +51,30 @@ $this->registercss('
 	display: flex;
 	justify-content: center;
 }
+
+.fb, .tw, .ig {
+	text-align: center;
+	flex-basis: 50%;
+	background-color: #eee;
+	margin: 0 5px 0 0;
+	transition: all .3s;
+	border-radius:4px;
+}
+.fb a, .tw a, .ig a {
+	display: block;
+	padding: 10px 0 5px;
+}
 .i-text {
-	font-size: 14px;
+	font-size: 13px;
 	font-family: roboto;
 	color: #000;
-}
-.fb a, .tw a, .ig a{
-    background-color: #eee;
-    display: block;
-    padding: 8px 5px 5px;
-    margin:0 2px;
-    border-radius:4px;
-    transition:all .3s;
 }
 .fb:hover, .tw:hover, .ig:hover{
     transform: scale(1.09);
 }
-.fb, .tw, .ig{
-    text-align:center;
-}
+
 .fb i, .tw i, .ig i {
 	font-size: 20px;
-	margin: 0 25px;
 }
 .fb i{
     color:#3b5998;

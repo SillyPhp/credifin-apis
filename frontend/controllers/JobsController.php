@@ -1,7 +1,5 @@
 <?php
-
 namespace frontend\controllers;
-
 use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
@@ -15,9 +13,15 @@ use common\models\IndianGovtDepartments;
 use common\models\OrganizationLocations;
 use common\models\States;
 use common\models\TwitterJobs;
+use common\models\UnclaimAssignedIndustries;
 use common\models\UnclaimedOrganizations;
+use common\models\UnclaimOrganizationLocations;
 use common\models\UsaDepartments;
+use common\models\Usernames;
 use frontend\models\applications\PreferredApplicationCards;
+use frontend\models\curl\RollingCurl;
+use frontend\models\curl\RollingCurlRequest;
+use frontend\models\curl\RollingRequest;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -43,7 +47,8 @@ use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
 use yii\db\Query;
-
+use common\models\Utilities;
+use common\models\RandomColors;
 class JobsController extends Controller
 {
 
@@ -293,14 +298,15 @@ class JobsController extends Controller
             ->all();
 
         $tweets = $this->_getTweets(null, null, "Jobs", 4, "");
-
+        $type = 'jobs';
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'type' => $type
         ]);
     }
 
@@ -360,11 +366,16 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
-            $cardsApi = ApplicationCards::gitjobs($options['page'],$options['keyword'],$options['location']);
             $cardsDb = ApplicationCards::jobs($options);
-            $merg = array_merge($cardsDb,$cardsApi);
-            $merg = array_slice($merg, 0, 27);
+            if (empty($options['company'])) {
+                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+                $merg = array_merge($cardsDb, $cardsApi);
+                $merg = array_slice($merg, 0, 27);
+            }
+            else
+            {
+                $merg = $cardsDb;
+            }
             if (count($merg) > 0) {
                 $response = [
                     'status' => 200,
@@ -1302,4 +1313,14 @@ class JobsController extends Controller
             return $this->render('git-api-jobs',['get'=>$get]);
         }
     }
+
+    public function actionTest()
+    {
+        $page = 1;
+        $urls = array("https://jobs.github.com/positions.json?page=".$page,
+              "https://www.themuse.com/api/public/jobs?page=".$page,
+            );
+        $rc = new RollingRequest();
+        $rc->run($urls);
+   }
 }

@@ -18,7 +18,7 @@ use yii\helpers\Url;
 class UtilitiesController extends ApiBaseController
 {
 
-    public function actionGetCompany($ref = null,$invitation = null)
+    public function actionGetCompany($ref = null, $invitation = null)
     {
         if ($ref != null && $invitation != null) {
             $organization = Referral::find()
@@ -26,24 +26,24 @@ class UtilitiesController extends ApiBaseController
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
-                ->joinWith(['organizationEnc b'=>function($b){
-                    $b->joinWith(['businessActivityEnc c'],false);
+                ->joinWith(['organizationEnc b' => function ($b) {
+                    $b->joinWith(['businessActivityEnc c'], false);
                 }], false)
                 ->where([
                     'b.is_erexx_registered' => 1,
                     'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'a.code' => $ref,
-                    'c.business_activity'=>'College'
-                    ])
+                    'c.business_activity' => 'College'
+                ])
                 ->asArray()
                 ->one();
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -54,43 +54,43 @@ class UtilitiesController extends ApiBaseController
                 ->all();
 
             $invi = EmailLogs::find()
-                ->where(['email_log_enc_id'=>$invitation])
+                ->where(['email_log_enc_id' => $invitation])
                 ->asArray()
                 ->one();
 
-            if($invi && $invi['type'] == 2){
+            if ($invi && $invi['type'] == 2) {
                 $organization['is_teacher'] = true;
-            }else{
-                $organization['is_teacher']= false;
+            } else {
+                $organization['is_teacher'] = false;
             }
 
             $organization[0]['courses'] = $courses;
 
             return $organization;
-        }elseif($ref != null){
+        } elseif ($ref != null) {
             $organization = Referral::find()
                 ->alias('a')
                 ->select(['a.referral_enc_id', 'b.organization_enc_id', 'b.name', '(CASE
                 WHEN b.logo IS NULL OR b.logo = "" THEN
                 CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") ELSE
-                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo,'https') . '", b.logo_location, "/", b.logo) END
+                CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) END
                 ) organization_logo'])
-                ->joinWith(['organizationEnc b'=>function($b){
-                    $b->joinWith(['businessActivityEnc c'],false);
+                ->joinWith(['organizationEnc b' => function ($b) {
+                    $b->joinWith(['businessActivityEnc c'], false);
                 }], false)
                 ->where([
                     'b.is_erexx_registered' => 1,
                     'b.status' => 'Active',
                     'b.is_deleted' => 0,
                     'a.code' => $ref,
-                    'c.business_activity'=>'College'
+                    'c.business_activity' => 'College'
                 ])
                 ->asArray()
                 ->one();
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -124,21 +124,24 @@ class UtilitiesController extends ApiBaseController
                 'is_erexx_registered' => 1,
                 'status' => 'Active',
                 'is_deleted' => 0,
-                'b.business_activity'=>'College'
-            ])
-            ->andWhere([
+                'b.business_activity' => 'College'
+            ]);
+        if ($search) {
+            $organizations->
+            andWhere([
                 'or',
                 ['like', 'name', $search],
                 ['like', 'slug', $search]
-            ])
-            ->asArray()
+            ]);
+        }
+        $organizations = $organizations->asArray()
             ->all();
 
         $i = 0;
         foreach ($organizations as $o) {
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -158,6 +161,7 @@ class UtilitiesController extends ApiBaseController
     public function actionProfiles($type)
     {
         $q = Categories::find()
+            ->distinct()
             ->alias('a')
             ->select(['a.name', 'a.category_enc_id'])
             ->innerJoin(AssignedCategories::tableName() . 'as b', 'b.category_enc_id = a.category_enc_id')

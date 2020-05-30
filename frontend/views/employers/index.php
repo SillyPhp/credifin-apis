@@ -9,19 +9,7 @@ $this->params['header_dark'] = false;
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="header-content">
-                        <!--                        <div class="vertically-center">-->
-                        <!--                            <div class="main-tagline">Want to attract top talent ?</div>-->
-                        <!--                            <div class="main-text">Showcase Your Profile, Create your Brand, Find Empowered Candidates &-->
-                        <!--                                Save Time On Hiring Candidates.-->
-                        <!--                            </div>-->
-                        <!--                            <div class="main-text"><span>Increase Your Efficiency & Effectiveness.</span></div>-->
-                        <!--                            <div class="main-bttn">-->
-                        <!--                                <a href="/signup/organization" class="button2">Create Account-->
-                        <!--                                    <span><i class="fas fa-arrow-right"></i></span> </a>-->
-                        <!--                            </div>-->
-                        <!--                        </div>-->
-                    </div>
+                    <div class="header-content"></div>
                 </div>
             </div>
         </div>
@@ -34,39 +22,6 @@ if (Yii::$app->user->isGuest) {
     ]);
 } ?>
 
-    <!--    <section class="showcase">-->
-    <!--        <div class="container">-->
-    <!--            <div class="row">-->
-    <!--                <div class="col-md-12">-->
-    <!--                    <div class="showcase-heading">-->
-    <!--                        <span>Showcase Your employer brand</span>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--                </div>-->
-    <!--                <div class="row">-->
-    <!--                <div class="showcase-subparts">-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/create-profile.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Create Company Profile</span></div>-->
-    <!--                    </div>-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/hiring.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Hiring Posters</span></div>-->
-    <!--                    </div>-->
-    <!--                    <div class="col-md-4">-->
-    <!--                        <div class="showcase-icon">-->
-    <!--                            <img src="--><? //= Url::to('@eyAssets/images/pages/index2/responsive.png')?><!--">-->
-    <!--                        </div>-->
-    <!--                        <div class="showcase-title"><span>Responsiveness to Candidates</span></div>-->
-    <!--                    </div>-->
-    <!--                </div>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </section>-->
     <section class="hwn">
         <div class="container">
             <div class="row">
@@ -375,7 +330,7 @@ if (Yii::$app->user->isGuest) {
         </div>
     </section>
 
-<?= $this->render('/widgets/companies-with-us'); ?>
+<?= $this->render('/widgets/organizations/companies-with-us'); ?>
 
 <?= $this->render('/widgets/partner-with-us-and-feedback-form', [
     'feedbackFormModel' => $feedbackFormModel,

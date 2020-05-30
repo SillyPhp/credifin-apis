@@ -223,6 +223,15 @@ class OrganizationsController extends Controller
                     ->where(['industry_enc_id' => $organization['industry_enc_id']])
                     ->asArray()
                     ->one();
+                $stats = OrganizationReviews::find()
+                    ->select(['ROUND(AVG(job_security)) job_avg', 'ROUND(AVG(growth)) growth_avg', 'ROUND(AVG(organization_culture)) avg_cult', 'ROUND(AVG(compensation)) avg_compensation', 'ROUND(AVG(work)) avg_work', 'ROUND(AVG(work_life)) avg_work_life', 'ROUND(AVG(skill_development)) avg_skill'])
+                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
+                    ->asArray()
+                    ->one();
+                $reviews_count = OrganizationReviews::find()
+                    ->where(['organization_enc_id' => $organization['organization_enc_id'], 'status' => 1])
+                    ->asArray()
+                    ->count();
 
                 return $this->render('view', [
                     'organization' => $organization,
@@ -233,6 +242,8 @@ class OrganizationsController extends Controller
                     'industry' => $industry,
                     'count_opportunities' => $count_opportunities,
                     'org_products' => $org_products,
+                    'review_stats' => $stats,
+                    'reviews_count' => $reviews_count,
                 ]);
             }
         } else {
@@ -762,6 +773,35 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionOrganizationRelatedTitles($title)
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $type = Yii::$app->request->post('type');
+            $options = [];
+            $options['limit'] = 6;
+            $options['page'] = 1;
+            $options['keyword'] = $title;
+            if ($type == 'Jobs') {
+                $cards = ApplicationCards::jobs($options);
+            } else {
+                $cards = ApplicationCards::internships($options);
+            }
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
+    }
+
     public function actionFeatured()
     {
         if (Yii::$app->request->isAjax) {
@@ -857,7 +897,7 @@ class OrganizationsController extends Controller
         $model = new ApplicationForm();
         $primary_cat = $model->getPrimaryFields();
         $org = Organizations::find()
-            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'CONCAT(slug, "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",logo_location, "/", logo) END logo'])
             ->where([
                 'slug' => $slug,
                 'is_deleted' => 0
@@ -866,7 +906,7 @@ class OrganizationsController extends Controller
             ->one();
         $unclaimed_org = UnclaimedOrganizations::find()
             ->alias('a')
-            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email', 'logo', 'logo_location'])
+            ->select(['organization_enc_id', 'b.business_activity', 'CONCAT(slug, "/reviews", "' . $referral . '") as slug', 'initials_color', 'name', 'website', 'email','CASE WHEN logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",logo_location, "/", logo) END logo'])
             ->joinWith(['organizationTypeEnc b'], false)
             ->where([
                 'slug' => $slug,
@@ -942,7 +982,7 @@ class OrganizationsController extends Controller
                 return $this->render('review-college-company', ['review_type' => $review_type, 'follow' => $follow, 'reviews_students' => $reviews_students, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats_students' => $stats_students, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
             }
         }
-        return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews, 'stats' => $stats]);
+        return $this->render('review-company', ['review_type' => $review_type, 'follow' => $follow, 'primary_cat' => $primary_cat, 'editReviewForm' => $editReviewForm, 'edit' => $edit_review, 'slug' => $slug, 'stats' => $stats, 'org_details' => $org, 'reviews' => $reviews]);
     }
 
     public function actionPostReviews($slug = null, $request_type = null)

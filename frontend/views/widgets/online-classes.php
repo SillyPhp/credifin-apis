@@ -456,6 +456,11 @@ $this->registerCss('
         max-width: 200px;
     }
 }
+@media screen and (max-width: 550px){
+    .online-content{
+        margin-left: 0px;
+    }
+}
 ');
 $script = <<<JS
 $(document).on('submit', '#enquiry-form', function (event) {

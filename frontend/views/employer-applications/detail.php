@@ -1,11 +1,9 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use frontend\models\applications\CandidateApply;
-
 $separator = Yii::$app->params->seo_settings->title_separator;
 $slug = $org['slug'];
 $this->params['url'] = $org['website'];
@@ -415,12 +413,15 @@ $this->render('/widgets/employer_applications/top-banner', [
                     echo $this->render('/widgets/best-platform');
                 }
                 ?>
-                <?= $this->render("/widgets/square_ads");?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="job-single-head style2 overlay-top mt-40" style="background-color: transparent">
+                            <?= $this->render("/widgets/square_ads");?>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <?php
-        if (!empty($data2)) {
-            ?>
             <div class="row">
                 <div class="col-md-12">
                     <div class="heading-style">More <?= $type . 's'; ?> By This Company</div>
@@ -431,9 +432,6 @@ $this->render('/widgets/employer_applications/top-banner', [
                     <div class="blogbox"></div>
                 </div>
             </div>
-            <?php
-        }
-        ?>
         <?php if ($settings["showRelatedOpportunities"]): ?>
             <div class="row m-0">
                 <div class="col-md-12">
@@ -1477,9 +1475,7 @@ $.ajax({
 loader = false;
 //getCards('" . $type . "','.similar-application','/" . $smililars . "/similar-application?slug=" . $application_details['slug'] . "');
 ");
-if (!empty($data2)) {
 $this->registerJs("
 getCards('" . $type . 's' ."','.blogbox','/organizations/organization-opportunities/?org=" . $org['slug'] . "');    
 ");
-}
 ?>

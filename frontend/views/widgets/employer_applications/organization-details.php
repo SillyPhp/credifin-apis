@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_logo_location . DIRECTORY_SEPARATOR . $org_logo;
 ?>
     <div class="job-single-head style2 overlay-top">
@@ -130,7 +128,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <i class="fab fa-facebook-f"></i>
             </a>
             <a href="#" class="twitter-t"
-               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-twitter"></i>
             </a>
             <a href="#" class="linked-l"
@@ -138,7 +136,7 @@ $logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_
                 <i class="fab fa-linkedin-in"></i>
             </a>
             <a href="#" class="whatsapp-w"
-               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                 <i class="fab fa-whatsapp"></i>
             </a>
             <a href="#" class="enve-e"

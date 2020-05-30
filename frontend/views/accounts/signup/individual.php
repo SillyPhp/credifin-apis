@@ -92,7 +92,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end(); ?>
 <?php
 $this->registerCss('
-.intl-tel-input {
+.intl-tel-input, .iti {
     width: 100%;
 }
 .input-group-addon{

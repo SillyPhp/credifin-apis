@@ -11,7 +11,7 @@ use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
 use Yii;
 use yii\helpers\Url;
-use api\modules\v1\models\Candidates;
+use api\modules\v2\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
 use common\models\EmailLogs;
@@ -67,8 +67,10 @@ class AuthController extends ApiBaseController
     public function actionTeacherSignup()
     {
         $model = new TeacherSignup();
-        $model->source = Yii::$app->getRequest()->getUserIP();
         if ($model->load(Yii::$app->request->post(), '')) {
+            if (!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
             if ($model->validate()) {
 
                 if (!$this->usernameValid($model)) {
@@ -80,8 +82,20 @@ class AuthController extends ApiBaseController
                 if ($model->ref != '' && $model->invitation != '') {
                     $invi = EmailLogs::findOne(['email_log_enc_id' => $model->invitation]);
                     if ($this->getRef($model) && $invi->type == 2) {
-                        if ($model->saveTeacher()) {
-                            return $this->response(200, ['status' => 200]);
+                        if ($user_id = $model->saveTeacher()) {
+                            $token = $this->findToken($user_id, $model->source);
+                            if (empty($token)) {
+                                if ($token = $this->newToken($user_id, $model->source)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            } else {
+                                if ($token = $this->onlyTokens($token)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            }
+//                            return $this->response(200, ['status' => 200]);
                         } else {
                             return $this->response(500, ['status' => 500]);
                         }
@@ -98,8 +112,10 @@ class AuthController extends ApiBaseController
     {
 
         $model = new IndividualSignup();
-        $model->source = Yii::$app->getRequest()->getUserIP();
         if ($model->load(Yii::$app->request->post(), '')) {
+            if (!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
             if ($model->validate()) {
 
                 if (!$this->usernameValid($model)) {
@@ -110,8 +126,20 @@ class AuthController extends ApiBaseController
 
                 if ($model->ref != '') {
                     if ($this->getRef($model)) {
-                        if ($model->saveUser()) {
-                            return $this->response(200, ['status' => 200]);
+                        if ($user_id = $model->saveUser()) {
+                            $token = $this->findToken($user_id, $model->source);
+                            if (empty($token)) {
+                                if ($token = $this->newToken($user_id, $model->source)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            } else {
+                                if ($token = $this->onlyTokens($token)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            }
+//                            return $this->response(200, ['status' => 200]);
                         } else {
                             return $this->response(500, ['status' => 500]);
                         }
@@ -119,7 +147,19 @@ class AuthController extends ApiBaseController
                         return $this->response(404, ['status' => 404, 'message' => 'Invalid Link']);
                     }
                 } else {
-                    if ($model->saveUser()) {
+                    if ($user_id = $model->saveUser()) {
+                        $token = $this->findToken($user_id, $model->source);
+                        if (empty($token)) {
+                            if ($token = $this->newToken($user_id, $model->source)) {
+                                $data = $this->returnData($user_id, $token);
+                                return $this->response(200, ['status' => 200, $data]);
+                            }
+                        } else {
+                            if ($token = $this->onlyTokens($token)) {
+                                $data = $this->returnData($user_id, $token);
+                                return $this->response(200, ['status' => 200, $data]);
+                            }
+                        }
                         return $this->response(200, ['status' => 200]);
                     } else {
                         return $this->response(500, ['status' => 500]);
@@ -208,8 +248,10 @@ class AuthController extends ApiBaseController
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->login()) {
-//                $source = Yii::$app->request->post()['source'];
-                $source = Yii::$app->getRequest()->getUserIP();
+                $source = Yii::$app->request->post()['source'];
+                if (!$source) {
+                    $source = Yii::$app->getRequest()->getUserIP();
+                }
                 $user = $this->findUser($model);
                 if ($user->organization_enc_id) {
                     $user_type = Users::find()

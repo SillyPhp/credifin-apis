@@ -3,6 +3,7 @@
 namespace api\modules\v2\controllers;
 
 use common\models\AppliedApplications;
+use common\models\AssignedWebinarTo;
 use common\models\ClassNotes;
 use common\models\ErexxCollaborators;
 use common\models\FollowedOrganizations;
@@ -12,6 +13,9 @@ use common\models\ShortlistedApplications;
 use common\models\UserAccessTokens;
 use common\models\UserOtherDetails;
 use common\models\Users;
+use common\models\WebinarRegistrations;
+use common\models\Webinars;
+use common\models\Utilities;
 use Yii;
 use yii\helpers\Url;
 use yii\filters\auth\HttpBearerAuth;
@@ -121,9 +125,21 @@ class CandhomeController extends ApiBaseController
                 ->asArray()
                 ->all();
 
-            $applied_applications = AppliedApplications::find()
+            $applied_jobs = AppliedApplications::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                     $b->joinWith(['organizationEnc d']);
@@ -131,31 +147,71 @@ class CandhomeController extends ApiBaseController
                         $e->joinWith(['parentEnc e1']);
                         $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
-                        $b->select(['b.application_enc_id',
-                            'b.title',
-                            'b.slug',
-                            'd.slug comp_slug',
-                            'e1.category_enc_id',
-                            'g.name city',
-                            'e2.name profile',
-                            'e1.name parent_name',
-                            'b.organization_enc_id',
-                            'd.name organization_name',
-                            'CONCAT("' . Url::to('/', 'https') . '", d.slug) profile_link',
-                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                            'f.placement_location_enc_id',
-                            'COUNT(f.placement_location_enc_id) cnt']);
-                        $f->joinWith(['locationEnc f1' => function ($f1) {
-                            $f1->joinWith(['cityEnc g']);
-                        }], false);
-                        $b->groupBy('f.placement_location_enc_id');
-                    }]);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
                 }])
                 ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->andWhere(['g.name' => 'Jobs'])
                 ->limit(6)
                 ->asArray()
                 ->all();
+
+            $i = 0;
+            foreach ($applied_jobs as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied_jobs[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
+
+            $applied_internships = AppliedApplications::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
+                ->joinWith(['applicationEnc b' => function ($b) {
+                    $b->innerJoinWith(['erexxEmployerApplications c']);
+                    $b->joinWith(['organizationEnc d']);
+                    $b->joinWith(['title e' => function ($e) {
+                        $e->joinWith(['parentEnc e1']);
+                        $e->joinWith(['categoryEnc e2']);
+                    }], false);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
+                }])
+                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->andWhere(['g.name' => 'Internships'])
+                ->limit(6)
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($applied_internships as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied_internships[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
 
             $followed_org = ErexxCollaborators::find()
                 ->alias('a')
@@ -189,10 +245,13 @@ class CandhomeController extends ApiBaseController
                 'companies_cnt' => $companies_cnt,
                 'shortlisted_cnt' => [0 => ['shortlisted_cnt' => $shortlisted_cnt]],
                 'organization' => $companies,
-                'applied_application' => $applied_applications,
+                'applied_jobs' => $applied_jobs,
+                'applied_internships' => $applied_internships,
                 'followed' => $followed_org,
             ];
             return $this->response(200, $counts);
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -201,9 +260,29 @@ class CandhomeController extends ApiBaseController
         if ($user = $this->isAuthorized()) {
             $id = $user->user_enc_id;
 
-            $applied_applications = AppliedApplications::find()
+            $param = Yii::$app->request->post();
+
+            if (isset($param['type']) && !empty($param['type'])) {
+                $type = $param['type'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $applied = AppliedApplications::find()
+                ->distinct()
                 ->alias('a')
-                ->select(['DISTINCT(a.application_enc_id) application_enc_id', 'a.current_round'])
+                ->select([
+                    'a.applied_application_enc_id',
+                    'a.application_enc_id',
+                    'a.current_round',
+                    'g.name application_type',
+                    'b.slug',
+                    'd.slug comp_slug',
+                    'd.name organization_name',
+                    'e2.name title',
+                    'e1.name profile',
+                    'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
+                ])
                 ->joinWith(['applicationEnc b' => function ($b) {
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                     $b->joinWith(['organizationEnc d']);
@@ -211,35 +290,34 @@ class CandhomeController extends ApiBaseController
                         $e->joinWith(['parentEnc e1']);
                         $e->joinWith(['categoryEnc e2']);
                     }], false);
-                    $b->joinWith(['applicationPlacementLocations f' => function ($f) use ($b) {
-                        $b->select(['b.application_enc_id',
-                            'b.title',
-                            'b.slug',
-                            'd.slug comp_slug',
-                            'e1.category_enc_id',
-                            'g.name city',
-                            'e2.name profile',
-                            'e1.name parent_name',
-                            'b.organization_enc_id',
-                            'd.name organization_name',
-                            'CONCAT("' . Url::to('/', 'https') . '", d.slug) profile_link',
-                            'CASE WHEN d.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", d.logo_location, "/", d.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", d.name, "&size=200&rounded=false&background=", REPLACE(d.initials_color, "#", ""), "&color=ffffff") END logo',
-                            'f.placement_location_enc_id',
-                            'COUNT(f.placement_location_enc_id) cnt']);
-                        $f->joinWith(['locationEnc f1' => function ($f1) {
-                            $f1->joinWith(['cityEnc g']);
-                        }], false);
-                        $b->groupBy('f.placement_location_enc_id');
-                    }]);
+                    $b->joinWith(['applicationTypeEnc g']);
+                }], false)
+                ->joinWith(['appliedApplicationLocations f' => function ($f) {
+                    $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
+                    $f->joinWith(['cityEnc f1'], false);
                 }])
                 ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
-                ->limit(6)
+                ->andWhere(['g.name' => $type])
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $applied_applications]);
+            $i = 0;
+            foreach ($applied as $a) {
+                $cities = [];
+                foreach ($a['appliedApplicationLocations'] as $c) {
+                    array_push($cities, $c['city_name']);
+                }
+                $applied[$i]['cities'] = implode(',', $cities);
+                $i++;
+            }
+
+            if ($applied) {
+                return $this->response(200, ['status' => 200, 'data' => $applied]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         } else {
-            return false;
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 
@@ -474,6 +552,209 @@ class CandhomeController extends ApiBaseController
         $seconds = strtotime($date . $start_time) - strtotime($time1);
 
         return $seconds;
+    }
+
+    public function actionGetWebinar()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $dt = new \DateTime();
+            $tz = new \DateTimeZone('Asia/Kolkata');
+            $dt->setTimezone($tz);
+            $date_now = $dt->format('Y-m-d H:i:s');
+
+            $user_id = $user->user_enc_id;
+
+            $college_id = UserOtherDetails::find()
+                ->select(['organization_enc_id'])
+                ->where(['user_enc_id' => $user_id])
+                ->asArray()
+                ->one();
+
+            $webinar = Webinars::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.webinar_enc_id',
+                    'a.title',
+                    'a.start_datetime',
+                    'a.end_datetime',
+                    'a.availability',
+                    'a.image',
+                    'a.image_location',
+                    'a.description',
+                ])
+                ->joinWith(['assignedWebinarTos b'], false)
+                ->joinWith(['webinarRegistrations d' => function ($d) {
+                    $d->select(['d.webinar_enc_id',
+                        'd.register_enc_id',
+                        'd.register_enc_id',
+                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    ]);
+                    $d->joinWith(['createdBy d1'], false);
+                    $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
+                }])
+                ->joinWith(['assignedWebinarTopics c' => function ($c) {
+                    $c->select(['c.webinar_enc_id', 'c1.name']);
+                    $c->joinWith(['topicEnc c1'], false);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['b.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0])
+                ->andWhere(['>=', 'a.end_datetime', $date_now])
+                ->asArray()
+                ->all();
+
+            if (!empty($webinar)) {
+                $i = 0;
+                foreach ($webinar as $w) {
+                    $user_registered = $this->userRegistered($w['webinar_enc_id'], $user_id);
+                    $webinar[$i]['is_registered'] = $user_registered;
+                    $date = new \DateTime($w['start_datetime']);
+                    $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                    $webinar[$i]['seconds'] = $seconds;
+                    $webinar[$i]['is_started'] = ($seconds < 0 ? true : false);
+                    $i++;
+                }
+            }
+
+            if ($webinar) {
+                return $this->response(200, ['status' => 200, 'data' => $webinar]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionJoinWebinar()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+                $webinar_id = $param['webinar_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $register_user = WebinarRegistrations::find()
+                ->where(['webinar_enc_id' => $webinar_id, 'created_by' => $user->user_enc_id])
+                ->one();
+
+            if ($register_user) {
+                return $this->response(409, ['status' => 409, 'message' => 'already registered']);
+            }
+
+            $model = new WebinarRegistrations();
+            $utilitiesModel = new Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $model->register_enc_id = $utilitiesModel->encrypt();
+            $model->webinar_enc_id = $webinar_id;
+            $model->status = 1;
+            $model->created_by = $user->user_enc_id;
+            $model->created_on = date('Y-m-d h:i:s');
+            if ($model->save()) {
+                return $this->response(200, ['status' => 200, 'message' => 'Joined Successfully']);
+            } else {
+                return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    public function actionWebinarDetail()
+    {
+        if ($user = $this->isAuthorized()) {
+
+            $user_id = $user->user_enc_id;
+
+            $college_id = UserOtherDetails::find()
+                ->select(['organization_enc_id'])
+                ->where(['user_enc_id' => $user_id])
+                ->asArray()
+                ->one();
+
+            $param = Yii::$app->request->post();
+
+            if (isset($param['webinar_id']) && !empty($param['webinar_id'])) {
+                $webinar_id = $param['webinar_id'];
+            } else {
+                return $this->response(422, ['status' => 422, 'message' => 'missing information']);
+            }
+
+            $webinar = Webinars::find()
+                ->distinct()
+                ->alias('a')
+                ->select([
+                    'a.webinar_enc_id',
+                    'a.title',
+                    'a.start_datetime',
+                    'a.end_datetime',
+                    'a.availability',
+                    'a.image',
+                    'a.image_location',
+                    'a.description',
+                ])
+                ->joinWith(['assignedWebinarTos b'], false)
+                ->joinWith(['webinarSpeakers bb' => function ($bb) {
+                    $bb->select(['bb.webinar_enc_id',
+                        'bb.user_enc_id', 'bb1.first_name',
+                        'bb1.last_name', 'bb1.username',
+                        'bb1.description',
+                        'CASE WHEN bb1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb1.image_location, "/", bb1.image) END image'
+                    ]);
+                    $bb->joinWith(['userEnc bb1'], false);
+                    $bb->onCondition(['bb.is_deleted' => 0]);
+                }])
+                ->joinWith(['webinarRegistrations d' => function ($d) {
+                    $d->select(['d.webinar_enc_id',
+                        'd.register_enc_id',
+                        'd.register_enc_id',
+                        'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
+                    ]);
+                    $d->joinWith(['createdBy d1'], false);
+                    $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
+                }])
+                ->joinWith(['assignedWebinarTopics c' => function ($c) {
+                    $c->select(['c.webinar_enc_id', 'c1.name']);
+                    $c->joinWith(['topicEnc c1'], false);
+                    $c->onCondition(['c.is_deleted' => 0]);
+                }])
+                ->where(['b.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.webinar_enc_id' => $webinar_id])
+                ->asArray()
+                ->one();
+
+            if (!empty($webinar)) {
+                $user_registered = $this->userRegistered($webinar['webinar_enc_id'], $user_id);
+                $webinar['is_registered'] = $user_registered;
+                $date = new \DateTime($webinar['start_datetime']);
+                $seconds = $this->timeDifference($date->format('H:i:s'), $date->format('Y-m-d'));
+                $webinar['seconds'] = $seconds;
+                $webinar['is_started'] = ($seconds < 0 ? true : false);
+            }
+
+
+            if ($webinar) {
+                return $this->response(200, ['status' => 200, 'data' => $webinar]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
+    private function userRegistered($webinar_id, $user_id)
+    {
+        return WebinarRegistrations::find()
+            ->where(['created_by' => $user_id, 'webinar_enc_id' => $webinar_id])
+            ->exists();
     }
 
 //    public function actionGetCompanies()
