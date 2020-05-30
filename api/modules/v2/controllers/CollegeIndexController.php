@@ -6,10 +6,12 @@ namespace api\modules\v2\controllers;
 use common\models\AppliedApplications;
 use common\models\CollegeCourses;
 use common\models\CollegeSettings;
+use common\models\EmployeeBenefits;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\ErexxSettings;
 use common\models\ErexxWhatsappInvitation;
+use common\models\OrganizationEmployeeBenefits;
 use common\models\OrganizationReviews;
 use common\models\Referral;
 use common\models\Teachers;
@@ -233,59 +235,53 @@ class CollegeIndexController extends ApiBaseController
             ->count();
     }
 
-//    public function actionCompanySelection()
-//    {
-//
-//        if ($user = $this->isAuthorized()) {
-//
-//            $organizations = Users::find()
-//                ->alias('a')
-//                ->select(['b.organization_enc_id college_id'])
-//                ->joinWith(['organizationEnc b'], false)
-//                ->where(['a.user_enc_id' => $user->user_enc_id])
-//                ->asArray()
-//                ->one();
-//
-//            $req = [];
-//            $req['college_id'] = $organizations['college_id'];
-//
-//            $companies = ErexxCollaborators::find()
-//                ->alias('aa')
-//                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
-//                ->distinct()
-//                ->innerJoinWith(['organizationEnc b' => function ($x) {
-//                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, true) . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
-//                    $x->joinWith(['businessActivityEnc e'], false);
-//                    $x->joinWith(['employerApplications c' => function ($y) {
-//                        $y->select(['c.organization_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name'])
-//                            ->joinWith(['applicationTypeEnc d'], false)
-//                            ->onCondition([
-//                                'c.status' => 'Active',
-//                                'c.is_deleted' => 0,
-//                                'c.application_for' => 0
-//                            ])
-//                            ->orOnCondition([
-//                                'c.status' => 'Active',
-//                                'c.is_deleted' => 0,
-//                                'c.application_for' => 2
-//                            ])
-//                            ->groupBy(['c.application_type_enc_id']);
-//                    }]);
-//                }])
-//                ->where(['aa.college_enc_id' => $req['college_id'], 'aa.organization_approvel' => 1, 'aa.college_approvel' => 0, 'aa.is_deleted' => 0, 'aa.status' => 'Active'])
-//                ->asArray()
-//                ->all();
-//
-//            if (!empty($companies)) {
-//                return $this->response(200, ['status' => 200, 'companies' => $companies]);
-//            } else {
-//                return $this->response(404, ['status' => 404]);
-//            }
-//        } else {
-//            return $this->response(401, ['status' => 401]);
-//        }
-//    }
-//
+    public function actionCompanySelection()
+    {
+
+        if ($user = $this->isAuthorized()) {
+
+            $college_id = $this->getOrgId();
+
+            $companies = ErexxCollaborators::find()
+                ->alias('aa')
+                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id'])
+                ->distinct()
+                ->innerJoinWith(['organizationEnc b' => function ($x) {
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->joinWith(['businessActivityEnc e'], false);
+                    $x->joinWith(['employerApplications c' => function ($y) {
+                        $y->select(['c.organization_enc_id', 'COUNT(c.application_enc_id) application_type', 'd.name'])
+                            ->joinWith(['applicationTypeEnc d'], false)
+                            ->onCondition([
+                                'c.status' => 'Active',
+                                'c.is_deleted' => 0,
+                                'c.application_for' => [0, 2]
+                            ])
+                            ->groupBy(['c.application_type_enc_id']);
+                    }]);
+                }])
+                ->where([
+                    'aa.college_enc_id' => $college_id,
+                    'aa.organization_approvel' => 1,
+                    'aa.college_approvel' => 0,
+                    'aa.is_deleted' => 0,
+                    'aa.status' => 'Active',
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0
+                ])
+                ->asArray()
+                ->all();
+
+            if (!empty($companies)) {
+                return $this->response(200, ['status' => 200, 'data' => $companies]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionCompanyApprove()
     {
         if ($user = $this->isAuthorized()) {
@@ -547,7 +543,7 @@ class CollegeIndexController extends ApiBaseController
 
             $courses = CollegeCourses::find()
                 ->alias('a')
-                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration','a.type'])
+                ->select(['a.college_course_enc_id', 'a.course_name', 'a.course_duration', 'a.type'])
                 ->joinWith(['collegeSections b' => function ($b) {
                     $b->select(['b.college_course_enc_id', 'b.section_enc_id', 'b.section_name']);
                     $b->onCondition(['b.is_deleted' => 0]);
@@ -574,7 +570,18 @@ class CollegeIndexController extends ApiBaseController
                 ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id', 'aa.college_approvel'])
                 ->joinWith(['organizationEnc b' => function ($x) use ($req) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count',
+                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug',
+                        'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
+                        'b.facebook',
+                        'b.google',
+                        'b.twitter',
+                        'b.instagram',
+                        'b.fax',
+                        'b.linkedin',
+                        'b.phone'
+                        ]);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -617,6 +624,16 @@ class CollegeIndexController extends ApiBaseController
                     ->asArray()
                     ->one();
 
+                $benefit = OrganizationEmployeeBenefits::find()
+                    ->alias('a')
+                    ->select(['a.organization_benefit_enc_id', 'b.benefit', 'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon, 'https') . '", b.icon_location, "/", b.icon) END icon'])
+                    ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
+                    ->where(['a.organization_enc_id' => $c['organization_enc_id']])
+                    ->andWhere(['a.is_deleted' => 0])
+                    ->asArray()
+                    ->all();
+
+                $companies[$i]['organizationEnc']['benefits'] = $benefit;
                 $companies[$i]['organizationEnc']['organizationReviews'][0] = $reviews;
                 $i++;
             }

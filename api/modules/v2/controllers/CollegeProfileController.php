@@ -420,7 +420,9 @@ class CollegeProfileController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->joinWith(['organizationEnc bb' => function ($bb) {
+                        $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
+                    }], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
                         $y->select(['y.interview_process_enc_id']);
@@ -460,7 +462,10 @@ class CollegeProfileController extends ApiBaseController
                     'bb.is_deleted' => 0,
                     'a.status' => 'Active',
                     'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1
+                    'bb.has_placement_rights' => 1,
+                    'b1.is_deleted' => 0,
+                    'b1.status' => 'Active',
+                    'b1.college_approvel' => 1
                 ]);
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);
@@ -803,7 +808,7 @@ class CollegeProfileController extends ApiBaseController
                 }], false)
                 ->joinWith(['appliedApplicationProcesses cc' => function ($cc) {
                     $cc->joinWith(['fieldEnc dd'], false);
-                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name','(CASE
+                    $cc->select(['cc.applied_application_enc_id', 'cc.process_enc_id', 'cc.field_enc_id', 'dd.field_name', '(CASE
                         WHEN dd.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN dd.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN dd.icon = "fa fa-user" THEN "fas fa-user"
@@ -852,7 +857,7 @@ class CollegeProfileController extends ApiBaseController
                     ->one();
 
 
-                if($user_data['skill'] != null) {
+                if ($user_data['skill'] != null) {
                     $user_data['skill'] = explode(',', $user_data['skill']);
                 }
                 $process[$i]['user_data'] = $user_data;

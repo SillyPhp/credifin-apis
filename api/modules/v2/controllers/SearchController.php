@@ -104,7 +104,10 @@ class SearchController extends ApiBaseController
                         $y->andWhere([
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
-                            'f.college_enc_id' => $college_id['organization_enc_id']
+                            'f.college_enc_id' => $college_id['organization_enc_id'],
+                            'f.is_deleted' => 0,
+                            'f.is_college_approved' => 1,
+                            'f.status' => 'Active',
                         ]);
                     }], false)
                         ->joinWith(['organizationLocations ee' => function ($e) {
@@ -122,9 +125,6 @@ class SearchController extends ApiBaseController
                     'aa.organization_approvel' => 1,
                     'aa.college_approvel' => 1,
                     'aa.is_deleted' => 0,
-                    'f.is_deleted' => 0,
-                    'f.is_college_approved' => 1,
-                    'f.status' => 'Active',
                     'b.is_erexx_approved' => 1,
                     'b.has_placement_rights' => 1]);
 
@@ -269,7 +269,9 @@ class SearchController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb'], false);
+                    $b->joinWith(['organizationEnc bb' => function ($bb) {
+                        $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
+                    }], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
                         $y->select(['y.interview_process_enc_id']);
@@ -312,7 +314,10 @@ class SearchController extends ApiBaseController
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                     'bb.status' => 'Active',
-                    'bb.is_deleted' => 0
+                    'bb.is_deleted' => 0,
+                    'b1.is_deleted' => 0,
+                    'b1.status' => 'Active',
+                    'b1.college_approvel' => 1
                 ]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
