@@ -44,7 +44,9 @@ use yii\widgets\Pjax;
                     if ($arr['status'] == 'Hired') {
                         $tempfieldMain = "result";
                         $fieldName = "Hired";
-                    } else {
+                    } else if ($arr['status'] == 'Rejected') {
+                        $fieldName = "Rejected";
+                    } else{
                         $fieldName = "Applied";
                         $tempfieldMain = "";
                     }
