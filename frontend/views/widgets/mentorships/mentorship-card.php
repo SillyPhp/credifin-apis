@@ -52,12 +52,85 @@ use yii\helpers\Url;
             <button type="button">View Profile</button>
         </div>
         <div class="share-btn">
-            <button type="button" title="share with friend"><i class="fas fa-share-alt"></i></button>
+            <div class="sharing-links" id="share">
+                <i class="fa fa-share-alt new-share"></i>
+                <div class="set">
+                    <div class="fb">
+                        <a href="<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link); ?>"
+                           target="blank">
+                            <span><i class="fab fa-facebook-f"></i></span></a>
+                    </div>
+                    <div class="tw">
+                        <a href="<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>"
+                           target="blank">
+                            <span><i class="fab fa-twitter"></i></span></a>
+                    </div>
+                    <div class="male">
+                        <a href="<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>"
+                           target="blank">
+                            <span><i class="fab fa-linkedin"></i></span></a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 <?php
 $this->registerCss('
+.wts-app, .fb, .tw, .male{
+    width: 30px;
+    text-align: center;
+    border-radius: 50px;
+    height: 30px;
+    font-size: 15px;
+    padding-top: 3px;
+    margin-bottom: 4px;
+}
+.wts-app{ background-color: #25D366;}
+.male{  background-color: #d3252b;}
+.tw{ background-color: #1c99e9;}
+.fb{background-color: #236dce;}
+.wts-app a, .male a, .tw a, .fb a{color:white;}
+.set {
+	position: absolute;
+	bottom: 90%;
+	right: -25%;
+	padding: 0px;
+	border-radius: 10px;
+	height: 0px;
+	overflow: hidden;
+	-moz-transition: all 0.3s ease-out;
+	-webkit-transition: all 0.3s ease-out;
+	-o-transition: all 0.3s ease-out;
+	transition: all 0.3s ease-out;
+}
+.share-btn {
+	flex-basis: 10%;
+	position: relative;
+}
+.sharing-links {
+	position: absolute;
+	width: 100%;
+	left: 7%;
+	top: 4%;
+}
+.new-share {
+	font-size: 18px;
+	background: #00a0e3;
+	color: #fff;
+	padding: 8px 8px;
+}
+.new-share:hover {
+	box-shadow: 0 0 8px rgba(0,0,0,.3);
+	background: #fff;
+	color: #00a0e3;
+	transition: .2s ease;
+	transform: scale(1.01);
+}
+.sharing-links:hover .set{
+    height:110px;
+    padding: 5px;
+}
 .career-c {
     font-size: 18px;
     font-family: lora;
@@ -79,7 +152,7 @@ $this->registerCss('
 .apply-btn{
     flex-basis: 50%;
 }
-.apply-btn button, .share-btn button{
+.apply-btn button{
     width: 100%;
     padding: 10px 0;
     font-size: 12px;
@@ -91,7 +164,7 @@ $this->registerCss('
     font-family: roboto;
     font-weight: 500;
 }
-.apply-btn button:hover, .share-btn button:hover{
+.apply-btn button:hover{
     box-shadow: 0 0 8px rgba(0,0,0,.3);
     background: #fff;
     color:#00a0e3;
@@ -240,10 +313,8 @@ $this->registerCss('
     border: none;
     border-radius: 0 0 10px 10px;
 }
-button i{
-    padding:0 10px;
-}
 ')
+
 ?>
 
 <script>

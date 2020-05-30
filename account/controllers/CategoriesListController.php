@@ -126,6 +126,7 @@ class CategoriesListController extends Controller
         $languages = SpokenLanguages::find()
             ->select(['language_enc_id id', 'language value'])
             ->where('language LIKE "%' . $q . '%"')
+            ->andWhere(['status'=>'Publish'])
             ->asArray()
             ->all();
         return $languages;
@@ -197,17 +198,19 @@ class CategoriesListController extends Controller
 
     public function actionSkillsData($q)
     {
-
         $categories = Skills::find()
-            ->select(['skill as value', 'skill_enc_id as id'])
+            ->alias('a')
+            ->select(['a.skill value', 'a.skill_enc_id id'])
             ->where('skill LIKE "%' . $q . '%"')
             ->andWhere([
                 'or',
-                ['=', 'status', 'Publish'],
+                ['=', 'a.status', 'Publish'],
                 ['organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id]
             ])
-            ->andWhere(['is_deleted' => 0])
+            ->andWhere(['a.is_deleted' => 0])
+            ->groupBy('skill')
             ->asArray()
+            ->distinct('skill')
             ->limit(20)
             ->all();
         return json_encode($categories);

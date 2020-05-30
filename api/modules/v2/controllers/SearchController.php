@@ -6,6 +6,7 @@ use common\models\ApplicationTypes;
 use common\models\EmployerApplications;
 use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
+use common\models\OrganizationReviews;
 use common\models\Organizations;
 use common\models\UserOtherDetails;
 use Yii;
@@ -95,7 +96,7 @@ class SearchController extends ApiBaseController
                 ->distinct()
                 ->joinWith(['organizationEnc b' => function ($x) use ($college_id) {
                     $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
+                    $x->select(['b.organization_enc_id', 'b.name organization_name', 'b.website', 'b.description', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 1 END) as internships_count', 'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 1 END) as jobs_count', 'b.slug org_slug', 'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo']);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -105,7 +106,17 @@ class SearchController extends ApiBaseController
                             'c.is_deleted' => 0,
                             'f.college_enc_id' => $college_id['organization_enc_id']
                         ]);
-                    }], false);
+                    }], false)
+                        ->joinWith(['organizationLocations ee' => function ($e) {
+                            $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
+                            $e->joinWith(['cityEnc ff' => function ($ff) {
+                                $ff->groupBy(['ff.city_enc_id']);
+                            }], false)
+                                ->orOnCondition([
+                                    'ee.is_deleted' => 0,
+                                ]);
+                            $e->groupBy(['ee.organization_enc_id']);
+                        }]);
                 }])
                 ->where(['aa.college_enc_id' => $college_id,
                     'aa.organization_approvel' => 1,
@@ -130,7 +141,20 @@ class SearchController extends ApiBaseController
                 $org->offset = ($page - 1) * 6;
             }
 
+
             $result = $org->asArray()->all();
+
+            $i = 0;
+            foreach ($result as $c) {
+                $reviews = OrganizationReviews::find()
+                    ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
+                    ->where(['organization_enc_id' => $c['organization_enc_id']])
+                    ->asArray()
+                    ->one();
+
+                $result[$i]['organizationEnc']['organizationReviews'][0] = $reviews;
+                $i++;
+            }
             return $this->response(200, $result);
         } else {
             $org = ErexxCollaborators::find()
@@ -274,7 +298,7 @@ class SearchController extends ApiBaseController
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1,'bb.is_erexx_approved' => 1,
+                ->where(['a.college_enc_id' => $college_id, 'a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1, 'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
@@ -286,8 +310,8 @@ class SearchController extends ApiBaseController
                     ['like', 'e.name', $options['keyword']],
                 ]);
             }
-            if(isset($options['slug'])){
-                $jobs->andWhere(['bb.slug'=>$options['slug']]);
+            if (isset($options['slug'])) {
+                $jobs->andWhere(['bb.slug' => $options['slug']]);
             }
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);
@@ -353,7 +377,7 @@ class SearchController extends ApiBaseController
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
-                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1,'bb.is_erexx_approved' => 1,
+                ->where(['a.is_deleted' => 0, 'a.status' => 'Active', 'a.is_college_approved' => 1, 'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1]);
             if (isset($options['keyword'])) {
                 $jobs->andWhere([
@@ -365,8 +389,8 @@ class SearchController extends ApiBaseController
                     ['like', 'e.name', $options['keyword']],
                 ]);
             }
-            if(isset($options['slug'])){
-                $jobs->andWhere(['bb.slug'=>$options['slug']]);
+            if (isset($options['slug'])) {
+                $jobs->andWhere(['bb.slug' => $options['slug']]);
             }
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);

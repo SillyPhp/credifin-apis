@@ -7,6 +7,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
 use common\models\Cities;
 use common\models\EmployerApplications;
+use common\models\ExternalNewsUpdate;
 use common\models\OrganizationLocations;
 use common\models\Quiz;
 use common\models\SocialGroups;
@@ -84,7 +85,7 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest && Yii::$app->user->identity->organization->organization_enc_id) {
             return Yii::$app->runAction('employers/index');
         }
-        return $this->render('index',[
+        return $this->render('index', [
             'model' => $model
         ]);
     }
@@ -211,6 +212,11 @@ class SiteController extends Controller
         return $this->render('about-us');
     }
 
+    public function actionMentorCareer()
+    {
+        return $this->render('mentor-career');
+    }
+
     public function actionWhatsappCommunity()
     {
         $data = SocialGroups::find()
@@ -231,6 +237,7 @@ class SiteController extends Controller
             'data' => $data
         ]);
     }
+
     public function actionContactUs()
     {
         $contactFormModel = new ContactForm();
@@ -715,6 +722,9 @@ class SiteController extends Controller
             case 'getWhatsappCommunity':
                 return $this->renderAjax('/widgets/whatsapp-widget');
                 break;
+            case 'getInternationalJobs':
+                return $this->renderAjax('/widgets/international-jobs');
+                break;
             case 'getStats':
                 return $this->renderAjax('/widgets/info-stats');
                 break;
@@ -733,6 +743,9 @@ class SiteController extends Controller
                 break;
             case 'getCompaniesWithUs':
                 return $this->renderAjax('/widgets/companies-with-us');
+                break;
+            case 'getNewsUpdate':
+                return $this->renderAjax('/widgets/news-update');
                 break;
             case 'getTweets':
                 return $this->renderAjax('/widgets/homepage_components/tweets');
@@ -833,31 +846,44 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionUserFeedbackPage(){
+    public function actionUserFeedbackPage()
+    {
         $feedbackFormModel = new FeedbackForm();
-        return $this->render('user-feedback-page',[
+        return $this->render('user-feedback-page', [
             'feedbackFormModel' => $feedbackFormModel,
         ]);
     }
 
-    public function actionCollegeIndex(){
+    public function actionCollegeIndex()
+    {
         $model = new ClassEnquiryForm();
         if (Yii::$app->request->post() && $model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return $model->save();
         }
-        return $this->render('college-index',[
+        return $this->render('college-index', [
             'model' => $model,
         ]);
     }
 
+    public function actionMentorshipIndex(){
+        $model = new \frontend\models\mentorship\MentorshipEnquiryForm();
 
-
-    public function actionWebinarView(){
-        return $this->render('webinar-view');
+        return $this->render('mentorship-index',[
+            'model' => $model,
+        ]);
     }
-    public function actionPricingWidget(){
-        return $this->render('pricing-widget');
+
+    public function actionMentorProfile(){
+        return $this->render('mentor-profile');
+    }
+
+    public function actionMenteeIndex(){
+        return $this->render('mentee-index');
+    }
+
+    public function actionAllMentors(){
+        return $this->render('all-mentors');
     }
 
 }

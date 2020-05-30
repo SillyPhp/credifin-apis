@@ -1,17 +1,39 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
 <div class="col-md-6">
     <div class="webinar-box">
         <div class="webinar-icon">
-            <img src="<?= Url::to('@eyAssets/images/pages/jobs/default-cover.png')?>">
+            <img src="<?= Url::to('@eyAssets/images/pages/jobs/default-cover.png') ?>">
         </div>
-        <div class="web-date"><span class="cont">12</span><br><span class="abs">july</span></div>
+        <div class="web-date">
+            <span class="cont">12</span>
+            <span class="abs">july</span>
+        </div>
         <div class="webinar-details">
             <div class="webinar-title">Business Conferences 2020</div>
             <div class="webinar-city"><i class="far fa-clock"></i> 12:00pm</div>
-            <div class="webinar-desc">Lorem ipsum dolor sit amet elit. Cum veritatis sequi nulla nihil, dolor voluptatum nemo adipisci eligendi! Sed nisi perferendis, totam harum dicta.</div>
+            <div class="webinar-desc">Lorem ipsum dolor sit amet elit. Cum veritatis sequi nulla nihil, dolor voluptatum
+                nemo adipisci eligendi! Sed nisi perferendis, totam harum dicta.
+            </div>
+        </div>
+        <div class="avatars">
+            <span class="avatar">
+                <img src="https://picsum.photos/70">
+            </span>
+            <span class="avatar">
+                <img src="https://picsum.photos/80">
+            </span>
+            <span class="avatar">
+                <img src="https://picsum.photos/90">
+            </span>
+            <span class="avatar">
+               <img src="https://picsum.photos/100">
+            </span>
+            <!-- Variable amount more avatars -->
+            <p>4 People</p>
         </div>
         <div class="new-btns">
             <div class="join-btn naam">
@@ -38,7 +60,7 @@ $this->registerCss('
 	border: none;
 	color: #fff;
 	margin: 0 2px;
-	padding: 7px 18px;
+	padding: 7px 20px;
 	font-size: 16px;
 	border-radius: 4px;
 	font-family: roboto;
@@ -61,25 +83,26 @@ $this->registerCss('
 	margin: auto;
 	background-color: #00a0e3;
 	color: #fff;
-	padding: 21px 0;
+	padding: 27px 0;
 	border-radius: 100px;
 	margin-top: -70px;
     position: relative;
     z-index: 1;
 }
 .cont{
-    font-size: 65px;
+    font-size: 50px;
     line-height: 50px;
     font-family: roboto;
     font-weight: 600;
+    display: block;
 }
 .abs{
-    font-size: 22px;
+    font-size: 18px;
     text-transform: uppercase;
     font-family: roboto;
 }
 .webinar-title {
-    font-size: 32px;
+    font-size: 28px;
     text-align: center;
     font-family: roboto;
     font-weight: 600;
@@ -98,6 +121,35 @@ $this->registerCss('
     font-size: 16px;
     font-family: roboto;
     text-align: center;
+}
+.webinar-icon > img {
+    width: 100%;
+}
+
+.avatars {
+    display: inline-flex;
+    padding-left: 30px;
+    margin-top:20px;
+}
+.avatars p{
+    font-size: 16px;
+    line-height: 40px;
+    padding-left: 15px;
+}
+
+.avatar {
+    margin-left: -20px;
+    position: relative;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+}
+
+.avatar img {
+    width: 40px;
+    height: 40px;
 }
 ')
 

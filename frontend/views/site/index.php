@@ -61,7 +61,7 @@ $this->params['header_dark'] = false;
     <div class="header-row">
         <div class="container">
             <div class="header-boxs">
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in one">
                         <a href="/employers">
                             <div class="icon">
@@ -71,11 +71,11 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/employerw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Employers</div>
-                            <div class="h-text">I want to recruit talent</div>
+<!--                            <div class="h-text">I want to recruit talent</div>-->
                         </a>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in two">
                         <a href="/candidates/features">
                             <div class="icon">
@@ -86,11 +86,11 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/candidatew.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Candidates</div>
-                            <div class="h-text">I'm the talent</div>
+<!--                            <div class="h-text">I'm the talent</div>-->
                         </a>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in two">
                         <a href="/schools">
                             <div class="icon">
@@ -101,11 +101,11 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/schoolw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Schools</div>
-                            <div class="h-text">COVID-19 <br>(Online Classes)</div>
+<!--                            <div class="h-text">COVID-19 <br>(Online Classes)</div>-->
                         </a>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in three">
 <!--                        <div class="box-overlay">-->
                             <a href="/colleges">
@@ -117,7 +117,7 @@ $this->params['header_dark'] = false;
                                     <img src="<?= Url::to('@eyAssets/images/pages/index2/colgw.png') ?>"
                                          alt="Employers" title="Employers"></div>
                                 <div class="h-heading">Colleges</div>
-                                <div class="h-text">I'm the future</div>
+<!--                                <div class="h-text">I'm the future</div>-->
                             </a>
 <!--                        </div>-->
                         <!--                        <div class="overlay">-->
@@ -125,7 +125,7 @@ $this->params['header_dark'] = false;
                         <!--                        </div>-->
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in three">
                         <div class="box-overlay">
                             <div class="icon">
@@ -136,14 +136,14 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/collegesw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Universities</div>
-                            <div class="h-text">I want to enroll talent</div>
+<!--                            <div class="h-text">I want to enroll talent</div>-->
                         </div>
                         <div class="overlay">
                             <div class="text">Coming Soon</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2 col-sm-6 col-xs-6">
+                <div class="col-md-2 col-sm-4 col-xs-6">
                     <div class="box-border fade-in four">
                         <div class="box-overlay">
                             <div class="icon">
@@ -154,7 +154,7 @@ $this->params['header_dark'] = false;
                                 <img src="<?= Url::to('@eyAssets/images/pages/index2/recruiterw.png') ?>"
                                      alt="Employers" title="Employers"></div>
                             <div class="h-heading">Recruiters</div>
-                            <div class="h-text">I want to find the best match for talent</div>
+<!--                            <div class="h-text">I want to find the best match for talent</div>-->
                         </div>
                         <div class="overlay">
                             <div class="text">Coming Soon</div>
@@ -257,7 +257,7 @@ $this->params['header_dark'] = false;
 <?php
 $this->registerCss('
 .header-row {
-    margin-top: -177px;
+    margin-top: -150px;
     background-color:#ffffff2b;
     padding:0;
 }
@@ -468,7 +468,7 @@ $this->registerCss('
 .box-border{
     border-left:1px solid #ffffff4f;
     border-right:1px solid #ffffff4f;
-    padding: 18px 20px 10px;
+    padding:20px;
     text-align: center;
     position:relative;
     -ms-transition:.3s all; 
@@ -507,7 +507,7 @@ $this->registerCss('
     opacity: 0.1;
 }
 .box-border:hover .overlay {
-    height: 20%;
+    height: 35%;
 }
 /*services section starts*/
 .services{
@@ -762,14 +762,23 @@ how-icon{
 }
 /*<!---- view-all button css ends --->*/
 
-@media screen and (min-width: 993px){
+@media screen and (min-width: 1200px){
     .box-border{
          min-width: 191px !important;
          max-width: 191px !important;
-         height: 170px;
+    }
+}
+@media screen and (max-width: 1200px){
+    .box-border{
+         min-width: 157px !important;
+         max-width: 157px !important;
     }
 }
 @media screen and (max-width: 992px) {
+.box-border{
+         min-width:-moz-available !important;
+         max-width:-moz-available !important;
+    }
     .header-boxs{
         display:inline;
     }
@@ -777,7 +786,7 @@ how-icon{
         margin-top:-100px;
     }
     .box-border{
-        min-height: 215px;
+        min-height: 170px;
         margin-bottom:20px;
         margin-left: 0px;
         background: #fff;
@@ -818,9 +827,6 @@ how-icon{
         text-align: right;
         margin-bottom: 30px;
     }
-    .box-border{
-        min-height: 215px;
-        }
 }
 .job-field select{
     float: left;
@@ -848,9 +854,6 @@ how-icon{
     .header-row{
         margin-top:20px;
     }
-    .box-border{
-        min-height:240px;
-     }
 }
 
 .tab-sec {
@@ -1322,10 +1325,12 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedJobs',
         'getOpportunities',
         'getWhatsappCommunity',
+        'getInternationalJobs',
         'getLearningTopics',
         'getStats',
         'getTopCities',
         'getCompaniesWithUs',
+        'getNewsUpdate',
         'getTweets',
         'getShortcuts'
     ];
@@ -1337,11 +1342,13 @@ if (!Yii::$app->user->isGuest) {
         'getFeaturedJobs',
         'getOpportunities',
         'getWhatsappCommunity',
+        'getInternationalJobs',
         'getLearningTopics',
         'getStats',
         'getTopCities',
         'getHowItWorks',
         'getCompaniesWithUs',
+        'getNewsUpdate',
         'getTweets',
         'getNewsletter',
         'getShortcuts'
