@@ -26,4 +26,8 @@ class MentorsController extends Controller
     public function actionScoolMentorship(){
         return $this->render('scool-mentorship');
     }
+
+    public function actionWebinarDetails(){
+        return $this->render('webinar-details');
+    }
 }
