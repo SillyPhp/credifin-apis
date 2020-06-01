@@ -50,7 +50,7 @@ class DashboardController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id,2);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader('account/' . Yii::$app->controller->id, 2);
         return parent::beforeAction($action);
     }
 
@@ -82,10 +82,9 @@ class DashboardController extends Controller
 
         if (Yii::$app->user->identity->organization) {
             $viewed = $this->hasViewed();
-            $this->_condition = ['b.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id];
             $applications = [
-                'jobs' => $this->_applications(3),
-                'internships' => $this->_applications(3, 'Internships'),
+                'jobs' => $this->__jobs(3, 'Jobs'),
+                'internships' => $this->__jobs(3, 'Internships'),
             ];
         } else {
             $viewed = $this->hasViewed();
@@ -93,6 +92,7 @@ class DashboardController extends Controller
         }
 
         $applied_app = NULL;
+        $viewed = $this->hasViewed();
         if (empty(Yii::$app->user->identity->organization)) {
             $applied_app = EmployerApplications::find()
                 ->alias('a')
@@ -303,7 +303,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    private function __jobs($limit = NULL)
+    private function __jobs($limit = NULL, $type = NULL)
     {
         if (!empty(Yii::$app->user->identity->organization)) {
             $options = [
