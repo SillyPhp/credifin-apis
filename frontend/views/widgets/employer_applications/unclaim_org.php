@@ -130,7 +130,7 @@ $logo_image = Yii::$app->params->upload_directories->unclaimed_organizations->lo
                     <i class="fab fa-twitter"></i>
                 </a>
                 <a href="#"
-                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                   onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
                 <a href="#"

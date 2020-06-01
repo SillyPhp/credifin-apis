@@ -1310,7 +1310,7 @@ class JobsController extends Controller
         $get = $this->gitjobs($eaidk);
         if ($get)
         {
-            return $this->render('git-api-jobs',['get'=>$get]);
+            return $this->render('git-api-jobs',['get'=>$get,'slug'=>$comp]);
         }
     }
 

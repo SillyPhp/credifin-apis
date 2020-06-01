@@ -180,7 +180,7 @@ if (!Yii::$app->user->isGuest) {
                         <a href="/jobs/list" title="" class="view-all-a">View all
                             Jobs</a>
                     </div>
-                    <?php $link = Url::to('job/' . $get['company'] . '/' . $get['id'], true); ?>
+                    <?php $link = Url::to('jobs/api/'.$slug.'/'.$get['id'], true); ?>
                     <div class="effect thurio">
                         <h3 class="text-white">Share</h3>
                         <div class="buttons">
@@ -193,7 +193,7 @@ if (!Yii::$app->user->isGuest) {
                                 <i class="fab fa-twitter"></i>
                             </a>
                             <a href="#"
-                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                               onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
                             <a href="#"
