@@ -3,35 +3,52 @@
 use yii\helpers\Url;
 
 ?>
-
-    <div class="col-md-4 col-sm-6">
-        <div class="company-main">
-            <div class="comp-featured">Featured</div>
-            <div class="total-vacancies">
-                <a href="#">25 Vacancies</a>
-            </div>
-            <div class="comp-logo">
-                <img src="<?= Url::to('@eyAssets/images/pages/index2/capital-small-finance.png') ?>"/>
-            </div>
-            <h3 class="comp-Name">Colors of India Tours Private Limited</h3>
-            <h3 class="comp-relate">Others</h3>
-            <div class="comp-ratings">
-                <span><i class="fas fa-star"></i></span>
-                <span><i class="fas fa-star"></i></span>
-                <span><i class="fas fa-star"></i></span>
-                <span><i class="fas fa-star"></i></span>
-                <span><i class="fas fa-star-half-alt"></i></span>
-                <span class="rate-in">4.0</span>
-            </div>
-            <div class="comp-jobs-intern">
-                <span class="jobs">10 Jobs</span>
-                <span class="interns">15 Internships</span>
-            </div>
-            <div class="follow-btn">
-                <a href="#">Follow</a>
+    <script id="companies-card-all" type="text/template">
+        {{#.}}
+        <div class="col-md-4 col-sm-6">
+            <div class="company-main">
+                <a href="{{slug}}">
+                    {{#is_featured}}
+                    <div class="comp-featured">Featured</div>
+                    {{/is_featured}}
+                    <div class="total-vacancies">
+                        <a href="#">25 Vacancies</a>
+                    </div>
+                    <div class="comp-logo">
+                        {{#logo}}
+                        <a href="/{{slug}}">
+                            <img src="{{logo}}">
+                        </a>
+                        {{/logo}}
+                        {{^logo}}
+                        <a href="/{{slug}}">
+                            <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                                    color="{{color}}" font="35px"></canvas>
+                        </a>
+                        {{/logo}}
+                    </div>
+                    <h3 class="comp-Name"><a href="{{slug}}">{{name}}</a></h3>
+                    <h3 class="comp-relate">{{business_activity}}</h3>
+                    <div class="comp-ratings">
+                        <span><i class="fas fa-star"></i></span>
+                        <span><i class="fas fa-star"></i></span>
+                        <span><i class="fas fa-star"></i></span>
+                        <span><i class="fas fa-star"></i></span>
+                        <span><i class="fas fa-star-half-alt"></i></span>
+                        <span class="rate-in">4.0</span>
+                    </div>
+                    <div class="comp-jobs-intern">
+                        <span class="jobs">10 Jobs</span>
+                        <span class="interns">15 Internships</span>
+                    </div>
+                    <div class="follow-btn">
+                        <a href="#">Follow</a>
+                    </div>
+                </a>
             </div>
         </div>
-    </div>
+        {{/.}}
+    </script>
 <?php
 $this->registercss('
 .company-main {
@@ -82,9 +99,10 @@ $this->registercss('
 }
 .comp-relate {
 	margin: 0;
-	font-size: 20px;
+	font-size: 18px;
 	font-family: roboto;
 	color: #9fa0a2;
+	height:26px;
 }
 .comp-ratings {
 	display: inline-flex;
