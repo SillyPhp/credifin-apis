@@ -50,11 +50,29 @@ $this->registercss('
 	font-weight: 500;
 	margin-right: 10px;
 }
-.whatsapp-share a{background-color:#36dc54;}
-.teleg-share a{background-color:#2399d7;}
-.twi-share a{background-color:#1da1f2;}
-.link-share a{background-color:#0073b1;}
-.reddit-share a{background-color:#ff4500;}
+.whatsapp-share a{
+    background-color:#36dc54;
+}
+.teleg-share a{
+    background-color:#2399d7;
+}
+.twi-share a{
+    background-color:#1da1f2;
+}
+.link-share a{
+    background-color:#0073b1;
+}
+.reddit-share a{
+    background-color:#ff4500;
+}
+.whatsapp-share a:hover, 
+.teleg-share a:hover, 
+.twi-share a:hover, 
+.link-share a:hover, 
+.reddit-share a:hover{
+    box-shadow: 0 6px 8px rgba(0,0,0,.2);
+    transition: .3s ease;
+}
 ');
 $script = <<<JS
 $('.sharing-box div .share-elem-main').each(function() {

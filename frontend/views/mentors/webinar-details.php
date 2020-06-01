@@ -110,7 +110,9 @@ use yii\helpers\Url;
                                     People Registered</p>
                             </div>
                             <div class="register-action">
-                                <a href="">Register</a>
+                                <button class="ra-btn" id="interested">Interested</button>
+                                <button class="ra-btn" id="notInterested">Not Interested</button>
+                                <button class="ra-btn" id="attending">Attending</button>
                             </div>
                         </div>
                     </div>
@@ -328,14 +330,6 @@ use yii\helpers\Url;
 
         </div><!-- row end-->
     </div><!-- container end-->
-
-    <!-- shap img-->
-    <div class="speaker-shap">
-        <img class="shap1" src="images/shap/home_speaker_memphis1.png" alt="">
-        <img class="shap2" src="images/shap/home_speaker_memphis2.png" alt="">
-        <img class="shap3" src="images/shap/home_speaker_memphis3.png" alt="">
-    </div>
-    <!-- shap img end-->
 </section>
 <!-- ts speaker end-->
 <!-- ts intro start -->
@@ -413,11 +407,11 @@ use yii\helpers\Url;
 <!-- ts sponsors end-->
 
 <div id="elements" class="bottom-social">
-    <a href="" class="fab fa-twitter"></a>
-    <a href="" class="fab fa-linkedin-in"></a>
-    <a href="" class="fab fa-instagram"></a>
-    <a href="" class="fab fa-telegram-plane"></a>
-    <a href="" class="fab fa-whatsapp"></a>
+    <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="fab fa-twitter"></a>
+    <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="fab fa-linkedin-in"></a>
+    <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="fab fa-telegram-plane"></a>
+    <a href="#!" onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')"  class="fab fa-whatsapp"></a>
+    <a href="#!" onclick="window.open('http://www.reddit.com/submit?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="fab fa-reddit"></a>
 </div>
 <?php
 $this->registerCss('
@@ -432,6 +426,8 @@ $this->registerCss('
 .flex2{
     display:flex;
     justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
 }
 .dis-flex p{
     flex: 1;
@@ -603,6 +599,7 @@ $this->registerCss('
 
 .speaker-classic {
     padding-top: 50px;
+    margin-top: 50px;
     background-image:url(' . Url::to('@eyAssets/images/pages/webinar/speakers-bg.png') . ');
     background-repeat: no-repeat;
     background-size: cover;
@@ -971,6 +968,20 @@ a:link, a:visited {
     text-decoration: none;
     cursor: pointer;
 }
+.ra-btn{
+    font-size: 14px;
+    height: 40px;
+    padding: 0 0;
+    width: 150px;
+    background: #00a0e3;
+    color: #fff;
+    border: none;
+    margin:5px 5px;
+}
+.ra-btn:hover{
+    box-shadow: 0 6px 8px rgba(0,0,0,.2);
+    transition: .3s ease;
+}
 /*--*/
 .bottom-social {
     padding: 40px 0;
@@ -1101,25 +1112,9 @@ div.icon span {
 }
 
 .register-action {
-    display: block;
+    display: flex;
+    
 }
-
-.register-action a {
-    background: #00a0e3;
-    padding: 10px 35px;
-    color: #fff;
-    border-radius: 10px 0px 10px 0;
-    font-size: 18px;
-    display: inline-block;
-    margin-top: 20px;
-}
-
-.register-action a:hover {
-    text-decoration: none;
-    border-radius: 0px;
-    transition: .5s all;
-}
-
 .speaker-author {
     margin-right: 15px;
     float: left;
@@ -1152,7 +1147,6 @@ div.icon span {
 .avatars {
     display: flex;
     align-items: center;
-    margin-top: 20px;
     margin-left: -20px;
 }
 .avatars p {
@@ -1175,6 +1169,15 @@ div.icon span {
 .avatar img {
     width: 40px;
     height: 40px;
+}
+#attending.actionColor{
+    background: #ff7803;
+}
+#notInterested.actionColor{
+    background: #FF0000;
+}
+#interested.actionColor{
+    background: #32CD32
 }
 ');
 $script = <<<JS
@@ -1211,3 +1214,17 @@ $this->registerJsFile('@eyAssets/js/magnific-popup.min.js', ['depends' => [\yii\
 $this->registerJsFile('@eyAssets/js/jquery-jCounter.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerCssFile('@eyAssets/css/magnific-popup.min.css');
 ?>
+<script>
+    let actionBtns = document.getElementsByClassName('ra-btn');
+    for(let i = 0; i<actionBtns.length; i++){
+        actionBtns[i].addEventListener('click', function () {
+           let actionColors = document.getElementsByClassName('actionColor');
+            if(actionColors.length > 0){
+                actionColors[0].classList.remove('actionColor')
+            }
+            clickedEle = event.currentTarget;
+            clickId = event.currentTarget.getAttribute('id');
+            clickedEle.classList.toggle('actionColor');
+        })
+    }
+</script>
