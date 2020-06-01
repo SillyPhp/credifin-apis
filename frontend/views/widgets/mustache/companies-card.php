@@ -57,7 +57,7 @@ $this->registercss('
 	border-radius: 6px;
 	text-align: center;
 	position: relative;
-	margin:30px 0 20px;
+	margin:10px 0 20px;
 	overflow: hidden;
 	padding: 30px 0px 10px;
 	transition:all .3s;
