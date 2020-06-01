@@ -73,15 +73,37 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['organizationEnc bb']);
                     $b->innerJoinWith(['erexxEmployerApplications c']);
                 }], false)
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'bb.is_erexx_approved' => 1,
-                    'bb.has_placement_rights' => 1])
+                ->where([
+                    'a.created_by' => $id,
+                    'a.is_deleted' => 0,
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0,
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'b.application_for' => [0, 2],
+                    'c.is_deleted' => 0,
+                    'c.status' => 'Active',
+                    'c.is_college_approved' => 1
+                ])
                 ->count();
 
             $companies_cnt = ErexxCollaborators::find()
                 ->alias('a')
                 ->select(['COUNT(a.college_enc_id) companies_count'])
-                ->joinWith(['organizationEnc bb'])
-                ->where(['a.college_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
+                ->joinWith(['organizationEnc bb'], false)
+                ->where([
+                    'a.college_enc_id' => $college_id['organization_enc_id'],
+                    'a.is_deleted' => 0,
+                    'a.organization_approvel' => 1,
+                    'a.college_approvel' => 1,
+                    'a.status' => 'Active',
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0
+                ])
                 ->asArray()
                 ->all();
 
@@ -92,8 +114,20 @@ class CandhomeController extends ApiBaseController
                     $c->joinWith(['organizationEnc bb']);
                     $c->innerJoinWith(['erexxEmployerApplications cc']);
                 }], false)
-                ->where(['a.created_by' => $id, 'a.shortlisted' => 1,
-                    'cc.status' => 'Active', 'cc.is_deleted' => 0, 'bb.is_erexx_approved' => 1, 'bb.has_placement_rights' => 1])
+                ->where([
+                    'a.created_by' => $id,
+                    'a.shortlisted' => 1,
+                    'cc.status' => 'Active',
+                    'cc.is_deleted' => 0,
+                    'cc.is_college_approved' => 1,
+                    'c.status' => 'Active',
+                    'c.is_deleted' => 0,
+                    'c.application_for' => [0, 2],
+                    'bb.is_erexx_approved' => 1,
+                    'bb.has_placement_rights' => 1,
+                    'bb.status' => 'Active',
+                    'bb.is_deleted' => 0,
+                ])
                 ->count();
 
             $companies = ErexxCollaborators::find()
@@ -110,17 +144,25 @@ class CandhomeController extends ApiBaseController
                         $y->andWhere([
                             'c.status' => 'Active',
                             'c.is_deleted' => 0,
-                            'f.college_enc_id' => $college_id
+                            'f.college_enc_id' => $college_id,
+                            'f.is_college_approved' => 1,
+                            'f.status' => 'Active',
+                            'f.is_deleted' => 0
                         ]);
                         $y->andWhere(['in', 'c.application_for', [0, 2]]);
                     }], false);
                 }])
-                ->where(['aa.college_enc_id' => $college_id,
+                ->where([
+                    'aa.college_enc_id' => $college_id,
                     'aa.organization_approvel' => 1,
                     'aa.college_approvel' => 1,
                     'aa.is_deleted' => 0,
+                    'aa.status' => 'Active',
                     'b.is_erexx_approved' => 1,
-                    'b.has_placement_rights' => 1])
+                    'b.has_placement_rights' => 1,
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0
+                ])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -153,7 +195,20 @@ class CandhomeController extends ApiBaseController
                     $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
                     $f->joinWith(['cityEnc f1'], false);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->where([
+                    'a.created_by' => $id,
+                    'a.is_deleted' => 0,
+                    'd.is_erexx_approved' => 1,
+                    'd.has_placement_rights' => 1,
+                    'd.is_deleted' => 0,
+                    'd.status' => 'Active',
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'b.application_for' => [0, 2],
+                    'c.status' => 'Active',
+                    'c.is_deleted' => 0,
+                    'c.is_college_approved' => 1
+                ])
                 ->andWhere(['g.name' => 'Jobs'])
                 ->limit(6)
                 ->asArray()
@@ -197,7 +252,20 @@ class CandhomeController extends ApiBaseController
                     $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
                     $f->joinWith(['cityEnc f1'], false);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->where([
+                    'a.created_by' => $id,
+                    'a.is_deleted' => 0,
+                    'd.is_erexx_approved' => 1,
+                    'd.has_placement_rights' => 1,
+                    'd.is_deleted' => 0,
+                    'd.status' => 'Active',
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'b.application_for' => [0, 2],
+                    'c.status' => 'Active',
+                    'c.is_deleted' => 0,
+                    'c.is_college_approved' => 1
+                ])
                 ->andWhere(['g.name' => 'Internships'])
                 ->limit(6)
                 ->asArray()
@@ -227,7 +295,10 @@ class CandhomeController extends ApiBaseController
                         $y->andWhere([
                             'cc.status' => 'Active',
                             'cc.is_deleted' => 0,
-                            'f.college_enc_id' => $college_id
+                            'f.college_enc_id' => $college_id,
+                            'f.status' => 'Active',
+                            'f.is_deleted' => 0,
+                            'f.is_college_approved' => 1
                         ]);
                         $y->andWhere(['in', 'cc.application_for', [0, 2]]);
                     }], false);
@@ -235,7 +306,17 @@ class CandhomeController extends ApiBaseController
                     $b->andWhere(['c.followed' => 1, 'c.user_enc_id' => $id]);
                     $b->joinWith(['businessActivityEnc e'], false);
                 }])
-                ->where(['a.college_enc_id' => $college_id, 'a.organization_approvel' => 1, 'a.college_approvel' => 1, 'a.is_deleted' => 0, 'b.is_erexx_approved' => 1, 'b.has_placement_rights' => 1])
+                ->where([
+                    'a.college_enc_id' => $college_id,
+                    'a.organization_approvel' => 1,
+                    'a.college_approvel' => 1,
+                    'a.status' => 'Active',
+                    'a.is_deleted' => 0,
+                    'b.is_erexx_approved' => 1,
+                    'b.has_placement_rights' => 1,
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0
+                ])
                 ->limit(6)
                 ->asArray()
                 ->all();
@@ -296,7 +377,20 @@ class CandhomeController extends ApiBaseController
                     $f->select(['f.application_location_enc_id', 'f.applied_application_enc_id', 'f.city_enc_id', 'f1.name city_name']);
                     $f->joinWith(['cityEnc f1'], false);
                 }])
-                ->where(['a.created_by' => $id, 'a.is_deleted' => 0, 'd.is_erexx_approved' => 1, 'd.has_placement_rights' => 1])
+                ->where([
+                    'a.created_by' => $id,
+                    'a.is_deleted' => 0,
+                    'b.status' => 'Active',
+                    'b.is_deleted' => 0,
+                    'b.application_for' => [0, 2],
+                    'd.is_erexx_approved' => 1,
+                    'd.has_placement_rights' => 1,
+                    'd.status' => 'Active',
+                    'd.is_deleted' => 0,
+                    'c.status' => 'Active',
+                    'c.is_deleted' => 0,
+                    'c.is_college_approved' => 1
+                ])
                 ->andWhere(['g.name' => $type])
                 ->asArray()
                 ->all();
@@ -358,7 +452,11 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
                 ->joinWith(['courseEnc d'], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'c.organization_enc_id' => $user['college_id']])
+                ->where([
+                    'a.status' => 'Active',
+                    'a.is_deleted' => 0,
+                    'c.organization_enc_id' => $user['college_id']
+                ])
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
@@ -434,7 +532,10 @@ class CandhomeController extends ApiBaseController
                     }], false);
                     $b->joinWith(['courseEnc d'], false);
                 }], false)
-                ->where(['a.is_deleted' => 0, 'b.is_deleted' => 0, 'b3.organization_enc_id' => $user['college_id']])
+                ->where([
+                    'a.is_deleted' => 0,
+                    'b.is_deleted' => 0,
+                    'b3.organization_enc_id' => $user['college_id']])
                 ->andWhere(
                     [
                         'b.semester' => $user['semester'],
@@ -518,7 +619,10 @@ class CandhomeController extends ApiBaseController
                     $b->joinWith(['collegeEnc c'], false);
                 }], false)
                 ->joinWith(['courseEnc d'], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0, 'c.organization_enc_id' => $user['college_id']])
+                ->where([
+                    'a.status' => 'Active',
+                    'a.is_deleted' => 0,
+                    'c.organization_enc_id' => $user['college_id']])
                 ->andWhere(
                     [
                         'a.semester' => $user['semester'],
@@ -540,7 +644,6 @@ class CandhomeController extends ApiBaseController
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
-
 
     private function timeDifference($start_time, $date)
     {
@@ -599,7 +702,10 @@ class CandhomeController extends ApiBaseController
                     $c->joinWith(['topicEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['b.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0])
+                ->where([
+                    'b.organization_enc_id' => $college_id['organization_enc_id'],
+                    'a.is_deleted' => 0
+                ])
                 ->andWhere(['>=', 'a.end_datetime', $date_now])
                 ->asArray()
                 ->all();
@@ -725,7 +831,11 @@ class CandhomeController extends ApiBaseController
                     $c->joinWith(['topicEnc c1'], false);
                     $c->onCondition(['c.is_deleted' => 0]);
                 }])
-                ->where(['b.organization_enc_id' => $college_id['organization_enc_id'], 'a.is_deleted' => 0, 'a.webinar_enc_id' => $webinar_id])
+                ->where([
+                    'b.organization_enc_id' => $college_id['organization_enc_id'],
+                    'a.is_deleted' => 0,
+                    'a.webinar_enc_id' => $webinar_id
+                ])
                 ->asArray()
                 ->one();
 
