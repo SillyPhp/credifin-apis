@@ -19,13 +19,13 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                             <input type="text" name="keyword" class="form-control" id="keywords"
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
-                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
+                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 sett-marg">
                             <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
-                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
+                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn sett-marg">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
                                    value="Search">
                         </div>
@@ -795,6 +795,11 @@ $this->registerCss('
     .search-by-type{
         width:90%;
     }
+}
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
 }
 ');
 echo $this->render('/widgets/blogs/whats-new', [

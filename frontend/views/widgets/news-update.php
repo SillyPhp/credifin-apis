@@ -66,6 +66,7 @@ $this->registercss('
 	float: right;
 	padding: 2px 17px;
 	margin-top: 12px;
+	margin-bottom: 12px;
 	border-radius: 4px;
 	transition:all .3s;
 	border:2px solid transparent;

@@ -19,14 +19,14 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                             <input type="text" name="keyword" class="form-control"                                  id="keywords"
                                    placeholder="Job Title or Keywords or Company"/>
                         </div>
-                        <div class="input-group mb-10 mr-10 col-md-3">
+                        <div class="input-group mb-10 mr-10 col-md-3 sett-marg">
                                 <span class="input-group-addon set-heights"><i
                                             class="fas fa-map-marker-alt"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
-                        <div class="form-group mb-10 mr-10">
+                        <div class="form-group mb-10 mr-10 sett-marg">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
                                    value="Search">
                         </div>
@@ -56,10 +56,10 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
 <section>
     <div class="container">
         <div class="row mt-20">
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Most Active Profiles'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/profiles'); ?>" class="btn btn-3">
@@ -88,10 +88,10 @@ echo $this->render('/widgets/top-cities', [
 <section class="bg-lighter">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <h1 class="heading-style"><?= Yii::t('frontend', 'Featured Jobs'); ?></h1>
             </div>
-            <div class="col-md-6 col-sm-6 col-xs-6">
+            <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="type-1">
                     <div>
                         <a href="<?= Url::to('/jobs/list'); ?>" class="btn btn-3">
@@ -456,6 +456,7 @@ $this->registerCss('
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -525,7 +526,6 @@ $this->registerCss('
     left: 12%;
     color: #FFF;
 }
-
 /*<!---- view-all button css ends --->*/
 
 .search-by-type {
@@ -851,7 +851,11 @@ $this->registerCss('
         margin-bottom: 30px;
     }
 }
-
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
+}
 ');
 $script = <<<JS
 var city = new Bloodhound({

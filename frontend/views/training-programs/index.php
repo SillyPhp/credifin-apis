@@ -19,13 +19,13 @@ $this->params['header_dark'] = false;
                                 <input type="text" name="keyword" class="form-control"
                                        placeholder="Course Title or Keywords or Institute"/>
                             </div>
-                            <div class="input-group mb-10 mr-10 col-md-3">
+                            <div class="input-group mb-10 mr-10 col-md-3 sett-marg">
                                 <span class="input-group-addon set-heights"><i
                                         class="fas fa-map-marker-alt"></i></span>
                                 <input type="text" name="location" class="form-control" autocomplete="off"
                                        placeholder="City or State"/>
                             </div>
-                            <div class="form-group mb-10 mr-10">
+                            <div class="form-group mb-10 mr-10 sett-marg">
                                 <input type="submit" class="form-control submit-next" id="form_control_1"
                                        value="Search">
                             </div>
@@ -54,10 +54,10 @@ $this->params['header_dark'] = false;
     <section class="bg-lighter">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <h1 class="heading-style">Featured Courses</h1>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-6">
+                <div class="col-md-6 col-sm-6 col-xs-12">
                     <div class="type-1">
                         <div>
                             <a href="<?=  Url::to('/training-programs/list'); ?>" class="btn btn-3">
@@ -194,6 +194,7 @@ a.company-inner {
 .type-1{
     float:right;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 .type-1 div a {
     text-decoration: none;
@@ -269,6 +270,11 @@ a.company-inner {
 }
 .application-card-description{
     margin:20px 0 0 15px !important;
+}
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
 }
 ');
 $script = <<< JS
