@@ -56,13 +56,25 @@ use yii\helpers\Url;
                 <div class="col-lg-12">
                     <div class="webinar-description">
                         <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+                            been the industry's standard dummy text ever since the 1500s, when an unknown printer took a
+                            galley of type and scrambled it to make a type specimen book. It has survived not only five
+                            centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+                            It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum
+                            passages, and more recently with desktop publishing software like Aldus PageMaker including
+                            versions of Lorem Ipsum.
                         </p>
                         <p>
-                            It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using
+                            It is a long established fact that a reader will be distracted by the readable content of a
+                            page when looking at its layout. The point of using Lorem Ipsum is that it has a
+                            more-or-less normal distribution of letters, as opposed to using
                         </p>
                         <p>
-                            'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).
+                            'Content here, content here', making it look like readable English. Many desktop publishing
+                            packages and web page editors now use Lorem Ipsum as their default model text, and a search
+                            for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have
+                            evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the
+                            like).
                         </p>
                     </div>
                     <div class="sidebar text-center">
@@ -109,46 +121,15 @@ use yii\helpers\Url;
         </div>
     </div>
 </section>
-<!-- ts intro start -->
-<section class="ts-intro-outcome">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    <span>Why Join us</span>
-                    Event Outcomes
-                </h2>
-            </div>
-        </div><!-- row end-->
-        <div class="row">
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-cogs"></i>
-                    <h3 class="ts-title">Building</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-bullhorn"></i>
-                    <h3 class="ts-title">Marketing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-brain"></i>
-                    <h3 class="ts-title">Planning</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
-            <div class="col-lg-3 col-md-6 outcome-item">
-                <div class="ts-single-outcome">
-                    <i class="fas fa-rupee-sign"></i>
-                    <h3 class="ts-title">Monetizing</h3>
-                </div><!-- single outcome end-->
-            </div><!-- col end-->
+<!-- sharing widget start -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <?php echo $this->render('/widgets/sharing-widget-webinar') ?>
         </div>
-    </div><!-- container end-->
-</section>
-<!-- ts intro end-->
+    </div>
+</div>
+<!-- sharing widget end -->
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
@@ -325,7 +306,8 @@ use yii\helpers\Url;
                             <div class="ts-speaker-popup-content">
                                 <h3 class="ts-title">David Robert</h3>
                                 <span class="speakder-designation">Cheif Architecture</span>
-                                <img class="company-logo" src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor-6.png') ?>" alt="">
+                                <img class="company-logo"
+                                     src="<?= Url::to('@eyAssets/images/pages/webinar/sponsor-6.png') ?>" alt="">
                                 <span class="speakder-designation">Creative Agency</span>
                                 <p>
                                     World is committed to making participation in the event a harass ment free
@@ -356,7 +338,46 @@ use yii\helpers\Url;
     <!-- shap img end-->
 </section>
 <!-- ts speaker end-->
-
+<!-- ts intro start -->
+<section class="ts-intro-outcome">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 mx-auto">
+                <h2 class="section-title text-center">
+                    <span>Why Join us</span>
+                    Event Outcomes
+                </h2>
+            </div>
+        </div><!-- row end-->
+        <div class="row">
+            <div class="col-lg-3 col-md-6 outcome-item">
+                <div class="ts-single-outcome">
+                    <i class="fas fa-cogs"></i>
+                    <h3 class="ts-title">Building</h3>
+                </div><!-- single outcome end-->
+            </div><!-- col end-->
+            <div class="col-lg-3 col-md-6 outcome-item">
+                <div class="ts-single-outcome">
+                    <i class="fas fa-bullhorn"></i>
+                    <h3 class="ts-title">Marketing</h3>
+                </div><!-- single outcome end-->
+            </div><!-- col end-->
+            <div class="col-lg-3 col-md-6 outcome-item">
+                <div class="ts-single-outcome">
+                    <i class="fas fa-brain"></i>
+                    <h3 class="ts-title">Planning</h3>
+                </div><!-- single outcome end-->
+            </div><!-- col end-->
+            <div class="col-lg-3 col-md-6 outcome-item">
+                <div class="ts-single-outcome">
+                    <i class="fas fa-rupee-sign"></i>
+                    <h3 class="ts-title">Monetizing</h3>
+                </div><!-- single outcome end-->
+            </div><!-- col end-->
+        </div>
+    </div><!-- container end-->
+</section>
+<!-- ts intro end-->
 <!-- ts sponsors start-->
 <section class="ts-intro-sponsors"
          style="background-image: url(<?= Url::to('@eyAssets/images/pages/webinar/sponsor_img.jpg') ?>)">
@@ -972,7 +993,7 @@ a:link, a:visited {
 }
 
 .title-main {
-    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') .');
+    background: url(' . Url::to('@eyAssets/images/pages/webinar/webinar-cover.png') . ');
     height: 90vh;
     background-size: cover;
     background-position: center;
