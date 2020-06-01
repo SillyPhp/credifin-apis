@@ -70,6 +70,44 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+    public function actionGetCollegeSettings()
+    {
+
+        if ($this->isAuthorized()) {
+
+            $collge_id = $this->getOrgId();
+
+            $college_settings = ErexxSettings::find()
+                ->alias('a')
+                ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                ->joinWith(['collegeSettings b' => function ($b) use ($collge_id) {
+                    $b->onCondition(['b.college_enc_id' => $collge_id]);
+                }], false)
+                ->where(['a.status' => 'Active'])
+                ->asArray()
+                ->all();
+
+            $i = 0;
+            foreach ($college_settings as $c) {
+                if ($c['value'] == 2) {
+                    $college_settings[$i]['value'] = true;
+                } else {
+                    $college_settings[$i]['value'] = false;
+                }
+                $i++;
+            }
+
+            if ($college_settings) {
+                return $this->response(200, ['status' => 200, 'data' => $college_settings]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
+
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
+        }
+    }
+
     public function actionCounts()
     {
         if ($user = $this->isAuthorized()) {
@@ -208,7 +246,7 @@ class CollegeIndexController extends ApiBaseController
             $result['approved_internships'] = $approved_internships;
             $result['candidates'] = $candidates;
             $result['placements_count'] = $placements_count;
-            $result['jobs_auto_approve'] = ($college_settings['value'] == 2 ? true : false);
+            $result['jobs_auto_approve'] = $college_settings['value'] == 2 ? true : false;
 
             return $this->response(200, ['status' => 200, 'data' => $result]);
 
@@ -581,7 +619,7 @@ class CollegeIndexController extends ApiBaseController
                         'b.fax',
                         'b.linkedin',
                         'b.phone'
-                        ]);
+                    ]);
                     $x->joinWith(['businessActivityEnc e'], false);
                     $x->joinWith(['employerApplications c' => function ($y) use ($req) {
                         $y->innerJoinWith(['erexxEmployerApplications f']);
@@ -937,40 +975,23 @@ class CollegeIndexController extends ApiBaseController
 
             $collge_id = $this->getOrgId();
 
-            $pref_exists = CollegeSettings::find()
-                ->where(['college_enc_id' => $collge_id])
-                ->exists();
-
-            if (!$pref_exists) {
-
-                $settings = ErexxSettings::find()
-                    ->where(['status' => 'Active'])
-                    ->asArray()
-                    ->all();
-
-                foreach ($settings as $s) {
-
-                    $model = new CollegeSettings();
-                    $utilities = new Utilities();
-                    $utilities->variables['string'] = time() . rand(100, 100000);
-                    $model->college_settings_enc_id = $utilities->encrypt();
-                    $model->college_enc_id = $collge_id;
-                    $model->setting_enc_id = $s['setting_enc_id'];
-                    $model->created_by = $user->user_enc_id;
-                    $model->created_on = date('Y-m-d H:i:s');
-                    if (!$model->save()) {
-                        return $this->response(500, ['status' => 500, 'message' => 'en error occurred']);
-                    }
-                }
-            }
-
-            $college_setings = CollegeSettings::find()
+            $college_setings = ErexxSettings::find()
                 ->alias('a')
-                ->select(['a.college_settings_enc_id', 'a.value', 'b.setting', 'b.title'])
-                ->innerJoinWith(['settingEnc b'], false)
-                ->where(['college_enc_id' => $collge_id, 'b.status' => 'Active'])
+                ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                ->joinWith(['collegeSettings b' => function ($b) use ($collge_id) {
+                    $b->onCondition(['b.college_enc_id' => $collge_id]);
+                }], false)
+                ->where(['a.status' => 'Active'])
                 ->asArray()
                 ->all();
+
+            $i = 0;
+            foreach ($college_setings as $c) {
+                if ($c['value'] == null) {
+                    $college_setings[$i]['value'] = 1;
+                }
+                $i++;
+            }
 
             if ($college_setings) {
                 return $this->response(200, ['status' => 200, 'data' => $college_setings]);
@@ -990,6 +1011,7 @@ class CollegeIndexController extends ApiBaseController
             $params = Yii::$app->request->post();
             $setting_enc_id = $params['college_settings_enc_id'];
             $value = $params['value'];
+            $name = $params['name'];
 
             $setting = CollegeSettings::find()
                 ->where(['college_settings_enc_id' => $setting_enc_id])
@@ -1007,7 +1029,26 @@ class CollegeIndexController extends ApiBaseController
                     return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
                 }
             } else {
-                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+
+                $setting_id = ErexxSettings::find()
+                    ->where(['setting' => $name])
+                    ->asArray()
+                    ->one();
+
+                $college_settings = new CollegeSettings();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $college_settings->college_settings_enc_id = $utilitiesModel->encrypt();
+                $college_settings->college_enc_id = $collge_id;
+                $college_settings->setting_enc_id = $setting_id['setting_enc_id'];
+                $college_settings->value = $value;
+                $college_settings->created_by = $user->user_enc_id;
+                $college_settings->created_on = date('Y-m-d H:i:s');
+                if ($college_settings->save()) {
+                    return $this->response(200, ['status' => 200, 'message' => 'updated']);
+                } else {
+                    return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                }
             }
 
         } else {

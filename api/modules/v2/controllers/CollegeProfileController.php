@@ -420,9 +420,7 @@ class CollegeProfileController extends ApiBaseController
                     'z.name job_type'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
-                    $b->joinWith(['organizationEnc bb' => function ($bb) {
-                        $bb->innerJoinWith(['erexxCollaborators0 b1'], false);
-                    }], false);
+                    $b->joinWith(['organizationEnc bb'], false);
                     $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
                     $b->joinWith(['interviewProcessEnc y' => function ($y) {
                         $y->select(['y.interview_process_enc_id']);
@@ -463,9 +461,6 @@ class CollegeProfileController extends ApiBaseController
                     'a.status' => 'Active',
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
-                    'b1.is_deleted' => 0,
-                    'b1.status' => 'Active',
-                    'b1.college_approvel' => 1
                 ]);
             if ($type) {
                 $jobs->andWhere(['z.name' => $type]);

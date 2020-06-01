@@ -6,6 +6,7 @@ use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
 use common\models\EducationalRequirements;
+use common\models\ErexxSettings;
 use common\models\UserOtherDetails;
 use common\models\ErexxWhatsappInvitation;
 use http\Env\Response;
@@ -404,6 +405,7 @@ class AuthController extends ApiBaseController
                 ->alias('a')
                 ->select(['a.user_enc_id', 'a.first_name',
                     'a.last_name',
+                    'a.organization_enc_id college_id',
                     'cc.college_enc_id',
                     'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
                     'a.username', 'a.phone', 'a.email',
@@ -422,11 +424,36 @@ class AuthController extends ApiBaseController
                 ->where(['a.user_enc_id' => $find_user['user_enc_id']])
                 ->asArray()
                 ->one();
+
+            $college_id = $user_detail['college_id'];
+            if ($college_id) {
+                $college_settings = ErexxSettings::find()
+                    ->alias('a')
+                    ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                    ->joinWith(['collegeSettings b' => function ($b) use ($college_id) {
+                        $b->onCondition(['b.college_enc_id' => $college_id]);
+                    }], false)
+                    ->where(['a.status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                $i = 0;
+                foreach ($college_settings as $c) {
+                    if ($c['value'] == 2) {
+                        $college_settings[$i]['value'] = true;
+                    } else {
+                        $college_settings[$i]['value'] = false;
+                    }
+                    $i++;
+                }
+            }
+
         }
 
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
+            'college_settings' => $college_settings,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['course_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],
