@@ -8,9 +8,13 @@ use yii\helpers\Url;
         <div class="col-md-4 col-sm-6">
             <div class="company-main">
                 <a href="{{slug}}">
-                    {{#is_featured}}
-                    <div class="comp-featured">Featured</div>
-                    {{/is_featured}}
+                    <div class="comp-featured">
+                        {{#is_featured}}
+                        <span  data-toggle="tooltip" title="Featured">
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/featured.png') ?>"/>
+                        </span>
+                        {{/is_featured}}
+                    </div>
                     <div class="total-vacancies">
                         <a href="#">25 Vacancies</a>
                     </div>
@@ -58,27 +62,19 @@ $this->registercss('
 	text-align: center;
 	position: relative;
 	margin:10px 0 20px;
-	overflow: hidden;
 	padding: 30px 0px 10px;
 	transition:all .3s;
 }
 .company-main:hover{
-    transform:scale(1.01);
-    box-shadow:0px 2px 15px rgba(0,0,0,0.10);
+//    transform:scale(1.01);
+    box-shadow:0px 10px 25px rgba(0,0,0,0.10);
 }
 .comp-featured {
 	position: absolute;
-	top: 17px;
-	left: -35px;
-	transform: rotate(-43deg);
-	background: #ff7803;
-	padding: 2px 35px;
-	color: #fff;
-	font-family: roboto;
-	font-weight: 500;
-	font-size: 18px;
-	border: 1px dashed #fff;
+	top: 5px;
+	left: 5px;
 }
+.comp-featured img{width:30px; }
 .comp-logo {
 	width: 110px;
 	height: 110px;
@@ -166,4 +162,5 @@ $this->registercss('
     font-weight: 500;
 }
 ');
+
 
