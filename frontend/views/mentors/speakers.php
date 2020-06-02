@@ -2,16 +2,20 @@
 
 use yii\helpers\Url;
 ?>
+<div class="speaker-header">
+    <div class="container">
+    <div class="row">
+        <div class="col-lg-12 mx-auto">
+            <h2 class="section-title">
+                Event Speakers
+            </h2>
+        </div><!-- col end-->
+    </div><!-- row end-->
+    </div>
+</div>
 <!-- ts speaker start-->
 <section id="ts-speakers" class="ts-speakers speaker-classic">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12 mx-auto">
-                <h2 class="section-title text-center">
-                    Event Speakers
-                </h2>
-            </div><!-- col end-->
-        </div><!-- row end-->
         <div class="row">
             <div class="col-lg-3 col-md-6">
                 <div class="ts-speaker">
@@ -427,6 +431,18 @@ use yii\helpers\Url;
 <!-- ts speaker end-->
 <?php
 $this->registerCss('
+.section-title{
+}
+.speaker-header{
+    background: url('. Url::to('@eyAssets/images/pages/webinar/speakers-header.png') .');
+    height: 500px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: bottom center;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
 #footer{
     margin-top: 0px;
 }
@@ -701,6 +717,13 @@ $this->registerCss('
    font-family: lora;
    color: #000;
    margin-bottom: 0px !important;
+}
+.section-title{
+    margin-bottom: 0px;
+    position: relative;
+    color: #fff;
+    font-family: lora;
+    font-size: 60px;
 }
 ');
 $script = <<<JS
