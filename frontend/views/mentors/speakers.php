@@ -1,16 +1,31 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
 <div class="speaker-header">
     <div class="container">
-    <div class="row">
-        <div class="col-lg-12 mx-auto">
-            <h2 class="section-title">
-                Event Speakers
-            </h2>
-        </div><!-- col end-->
-    </div><!-- row end-->
+        <div class="row">
+            <div class="header-flex">
+            <div class="col-lg-6 mx-auto order2">
+                <h2 class="section-title">
+                    Event Speakers
+                </h2>
+            </div><!-- col end-->
+            <div class="col-lg-6 order1">
+                <div class="speaker-header-icon">
+                    <img src="<?= Url::to('@eyAssets/images/pages/webinar/webinar-vector.png')?>">
+                </div>
+            </div>
+            </div>
+        </div><!-- row end-->
+    </div>
+    <div class="header-icons">
+        <img src="<?= Url::to('@eyAssets/images/pages/webinar/top-left.png')?>">
+        <img src="<?= Url::to('@eyAssets/images/pages/webinar/top-right.png')?>">
+        <img src="<?= Url::to('@eyAssets/images/pages/webinar/top-center.png')?>">
+        <img src="<?= Url::to('@eyAssets/images/pages/webinar/bottom-left.png')?>">
+        <img src="<?= Url::to('@eyAssets/images/pages/webinar/bottom-right.png')?>">
     </div>
 </div>
 <!-- ts speaker start-->
@@ -431,10 +446,57 @@ use yii\helpers\Url;
 <!-- ts speaker end-->
 <?php
 $this->registerCss('
-.section-title{
+.header-icons{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.header-icons img:nth-child(1){
+    top: 0;
+    left: 0;
+    position: absolute;
+    max-width: 175px;
+    width: 100%;
+}
+.header-icons img:nth-child(2){
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+.header-icons img:nth-child(3){
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    position: absolute;
+}
+.header-icons img:nth-child(4){
+    bottom: 0;
+    left: 0;
+    position: absolute; 
+}
+.header-icons img:nth-child(5){
+    bottom: 0;
+    right: 0;
+    position: absolute; 
+}
+@media screen and (max-width: 768px){
+    .header-flex{
+        flex-direction: column;
+    }
+    .order1{
+        order: 1;
+    }
+    .order2{
+        order: 2;
+    }
+}
+@media screen and (max-width: 650px){
+    .header-icons img{
+        display: none;  
+    }
 }
 .speaker-header{
-    background: url('. Url::to('@eyAssets/images/pages/webinar/speakers-header.png') .');
+    background: #000036;
     height: 500px;
     background-repeat: no-repeat;
     background-size: cover;
@@ -442,6 +504,11 @@ $this->registerCss('
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    position: relative;
+}
+.header-flex{
+    display: flex;
+    align-items: center;
 }
 #footer{
     margin-top: 0px;
