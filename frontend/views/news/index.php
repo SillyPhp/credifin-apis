@@ -2,7 +2,34 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+$this->title = 'News';
+$keywords = 'Jobs,Jobs in India';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 
     <Section class="news-bg">
@@ -58,7 +85,9 @@ use yii\helpers\Url;
                                     </div>
                                     <div class="news-content"><?= strip_tags($n->description) ?></div>
                                     <div class="use-flex">
-                                        <?php $sharingLink = Url::base(true) . '/news/' . $n->slug ?>
+                                        <?php $sharingLink = Url::base(true) . '/news/' . $n->slug;
+                                        $this->title = $n->title;
+                                        ?>
                                         <div class="share-news">
                                             <div class="wts-sh basis">
                                                 <a href="#!"

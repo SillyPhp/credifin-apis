@@ -2,7 +2,35 @@
 $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
-
+$this->title = $newsDetail['title'].' '.Yii::$app->params->seo_settings->title_separator.' Empower Youth';
+$link = Url::to($newsDetail->slug. '/news',true);
+$keywords = 'Jobs,Jobs in India';
+$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$image =  Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
 <section>
     <div class="container">
@@ -46,7 +74,9 @@ use yii\helpers\Url;
                             ?>
                             <?php $sharingLink = Url::base(true) . '/news/' . $newsDetail->slug ?>
                             <?= $this->render('/widgets/sharing-widget-new', [
-                                'sharingLink' => $sharingLink
+                                'sharingLink' => $sharingLink,
+                                'news_title' => $this->title,
+                                'link' => $link,
                             ]) ?>
                             <?php
                             if ($newsDetail->source) {
@@ -76,7 +106,10 @@ use yii\helpers\Url;
                 ?>
 
                 <?php
-                echo $this->render('/widgets/sharing-box');
+                echo $this->render('/widgets/sharing-box',[
+                    'news_title' => $this->title,
+                    'link' => $link,
+                ]);
                 ?>
 
                 <div class="row">
