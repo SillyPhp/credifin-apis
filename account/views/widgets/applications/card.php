@@ -52,7 +52,7 @@ if (!empty($total_applications)) {
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-trash-o" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="j-closed" data-toggle="tooltip" title="Closed Job"
+                            <button type="button" class="j-closed" data-toggle="tooltip" title="Close Job"
                                     value="<?= $applications[$next]['application_enc_id']; ?>">
                                 <i class="fa fa-times" aria-hidden="true"></i>
                             </button>
