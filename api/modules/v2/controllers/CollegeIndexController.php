@@ -486,36 +486,38 @@ class CollegeIndexController extends ApiBaseController
     private function __addCompany($org_id, $college_enc_id)
     {
 
-        $erexx_collab = ErexxCollaborators::find()
-            ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
-            ->exists();
-
-        if (!$erexx_collab) {
-            $save_collab = new ErexxCollaborators();
-            $utilitiesModel = new Utilities();
-            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-            $save_collab->collaboration_enc_id = $utilitiesModel->encrypt();
-            $save_collab->organization_enc_id = $org_id;
-            $save_collab->college_enc_id = $college_enc_id;
-            $save_collab->organization_approvel = 1;
-            $save_collab->college_approvel = 1;
-            $save_collab->created_on = date('Y-m-d H:i:s');
-            $save_collab->created_by = $college_enc_id;
-            if ($save_collab->save()) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            $erexx_comp = ErexxCollaborators::find()
+        if($user = $this->isAuthorized()) {
+            $erexx_collab = ErexxCollaborators::find()
                 ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
-                ->one();
+                ->exists();
 
-            if ($erexx_comp->college_approvel == 0) {
-                $erexx_comp->college_approvel = 1;
-                $erexx_comp->last_updated_by = $this->getOrgId();
-                if ($erexx_comp->update()) {
+            if (!$erexx_collab) {
+                $save_collab = new ErexxCollaborators();
+                $utilitiesModel = new Utilities();
+                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                $save_collab->collaboration_enc_id = $utilitiesModel->encrypt();
+                $save_collab->organization_enc_id = $org_id;
+                $save_collab->college_enc_id = $college_enc_id;
+                $save_collab->organization_approvel = 1;
+                $save_collab->college_approvel = 1;
+                $save_collab->created_on = date('Y-m-d H:i:s');
+                $save_collab->created_by = $college_enc_id;
+                if ($save_collab->save()) {
                     return true;
+                } else {
+                    return false;
+                }
+            } else {
+                $erexx_comp = ErexxCollaborators::find()
+                    ->where(['organization_enc_id' => $org_id, 'college_enc_id' => $college_enc_id])
+                    ->one();
+
+                if ($erexx_comp->college_approvel == 0) {
+                    $erexx_comp->college_approvel = 1;
+                    $erexx_comp->last_updated_by = $user->user_enc_id;
+                    if ($erexx_comp->update()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -587,95 +589,95 @@ class CollegeIndexController extends ApiBaseController
         }
     }
 
+//    public function actionCompanies()
+//    {
+//        if ($user = $this->isAuthorized()) {
+//
+//            $req = [];
+//            $req['college_id'] = $this->getOrgId();
+//
+//            $companies = ErexxCollaborators::find()
+//                ->alias('aa')
+//                ->distinct()
+//                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id', 'aa.college_approvel'])
+//                ->joinWith(['organizationEnc b' => function ($x) use ($req) {
+//                    $x->groupBy('organization_enc_id');
+//                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description',
+//                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count',
+//                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug',
+//                        'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
+//                        'b.facebook',
+//                        'b.google',
+//                        'b.twitter',
+//                        'b.instagram',
+//                        'b.fax',
+//                        'b.linkedin',
+//                        'b.phone'
+//                    ]);
+//                    $x->joinWith(['businessActivityEnc e'], false);
+//                    $x->joinWith(['employerApplications c' => function ($y) use ($req) {
+//                        $y->innerJoinWith(['erexxEmployerApplications f']);
+//                        $y->joinWith(['applicationTypeEnc d'], true);
+//                        $y->andWhere([
+//                            'c.status' => 'Active',
+//                            'c.is_deleted' => 0,
+//                            'f.college_enc_id' => $req['college_id']
+//                        ]);
+//                    }], false)
+//                        ->joinWith(['organizationLocations ee' => function ($e) {
+//                            $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
+//                            $e->joinWith(['cityEnc ff' => function ($ff) {
+//                                $ff->groupBy(['ff.city_enc_id']);
+//                            }], false)
+//                                ->orOnCondition([
+//                                    'ee.is_deleted' => 0,
+//                                ]);
+//                            $e->groupBy(['ee.organization_enc_id']);
+//                        }]);
+//                }])
+//                ->where([
+//                    'aa.college_enc_id' => $req['college_id'],
+//                    'aa.organization_approvel' => 1,
+////                    'aa.college_approvel' => 1,
+//                    'aa.is_deleted' => 0,
+////                    'f.is_deleted' => 0,
+////                    'f.is_college_approved' => 1,
+//                    'f.status' => 'Active',
+//                    'b.is_erexx_approved' => 1,
+//                    'b.has_placement_rights' => 1
+//                ])
+//                ->asArray()
+//                ->all();
+//
+//            $i = 0;
+//            foreach ($companies as $c) {
+//                $reviews = OrganizationReviews::find()
+//                    ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
+//                    ->where(['organization_enc_id' => $c['organization_enc_id']])
+//                    ->asArray()
+//                    ->one();
+//
+//                $benefit = OrganizationEmployeeBenefits::find()
+//                    ->alias('a')
+//                    ->select(['a.organization_benefit_enc_id',
+//                        'b.benefit',
+//                        'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon, 'https') . '", b.icon_location, "/", b.icon) END icon'])
+//                    ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
+//                    ->where(['a.organization_enc_id' => $c['organization_enc_id']])
+//                    ->andWhere(['a.is_deleted' => 0])
+//                    ->asArray()
+//                    ->all();
+//
+//                $companies[$i]['organizationEnc']['benefits'] = $benefit;
+//                $companies[$i]['organizationEnc']['organizationReviews'][0] = $reviews;
+//                $i++;
+//            }
+//
+//            return $this->response(200, ['status' => 200, 'companies' => $companies]);
+//        }
+//    }
+
     public function actionCompanies()
-    {
-        if ($user = $this->isAuthorized()) {
-
-            $req = [];
-            $req['college_id'] = $this->getOrgId();
-
-            $companies = ErexxCollaborators::find()
-                ->alias('aa')
-                ->distinct()
-                ->select(['aa.collaboration_enc_id', 'aa.organization_enc_id', 'aa.college_approvel'])
-                ->joinWith(['organizationEnc b' => function ($x) use ($req) {
-                    $x->groupBy('organization_enc_id');
-                    $x->select(['b.organization_enc_id', 'b.name', 'b.website', 'b.description',
-                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count',
-                        'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count', 'b.slug org_slug',
-                        'e.business_activity', 'CASE WHEN b.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", b.logo_location, "/", b.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=(230 B)https://ui-avatars.com/api/?name=", b.name, "&size=200&rounded=false&background=", REPLACE(b.initials_color, "#", ""), "&color=ffffff") END logo',
-                        'b.facebook',
-                        'b.google',
-                        'b.twitter',
-                        'b.instagram',
-                        'b.fax',
-                        'b.linkedin',
-                        'b.phone'
-                    ]);
-                    $x->joinWith(['businessActivityEnc e'], false);
-                    $x->joinWith(['employerApplications c' => function ($y) use ($req) {
-                        $y->innerJoinWith(['erexxEmployerApplications f']);
-                        $y->joinWith(['applicationTypeEnc d'], true);
-                        $y->andWhere([
-                            'c.status' => 'Active',
-                            'c.is_deleted' => 0,
-                            'f.college_enc_id' => $req['college_id']
-                        ]);
-                    }], false)
-                        ->joinWith(['organizationLocations ee' => function ($e) {
-                            $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
-                            $e->joinWith(['cityEnc ff' => function ($ff) {
-                                $ff->groupBy(['ff.city_enc_id']);
-                            }], false)
-                                ->orOnCondition([
-                                    'ee.is_deleted' => 0,
-                                ]);
-                            $e->groupBy(['ee.organization_enc_id']);
-                        }]);
-                }])
-                ->where([
-                    'aa.college_enc_id' => $req['college_id'],
-                    'aa.organization_approvel' => 1,
-//                    'aa.college_approvel' => 1,
-                    'aa.is_deleted' => 0,
-//                    'f.is_deleted' => 0,
-//                    'f.is_college_approved' => 1,
-                    'f.status' => 'Active',
-                    'b.is_erexx_approved' => 1,
-                    'b.has_placement_rights' => 1
-                ])
-                ->asArray()
-                ->all();
-
-            $i = 0;
-            foreach ($companies as $c) {
-                $reviews = OrganizationReviews::find()
-                    ->select(['organization_enc_id', 'ROUND(average_rating) average_rating', 'COUNT(review_enc_id) reviews_cnt'])
-                    ->where(['organization_enc_id' => $c['organization_enc_id']])
-                    ->asArray()
-                    ->one();
-
-                $benefit = OrganizationEmployeeBenefits::find()
-                    ->alias('a')
-                    ->select(['a.organization_benefit_enc_id',
-                        'b.benefit',
-                        'CASE WHEN b.icon IS NULL OR b.icon = "" THEN "' . Url::to('@commonAssets/employee-benefits/plus-icon.svg', 'https') . '" ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->benefits->icon, 'https') . '", b.icon_location, "/", b.icon) END icon'])
-                    ->innerJoin(EmployeeBenefits::tableName() . 'as b', 'b.benefit_enc_id = a.benefit_enc_id')
-                    ->where(['a.organization_enc_id' => $c['organization_enc_id']])
-                    ->andWhere(['a.is_deleted' => 0])
-                    ->asArray()
-                    ->all();
-
-                $companies[$i]['organizationEnc']['benefits'] = $benefit;
-                $companies[$i]['organizationEnc']['organizationReviews'][0] = $reviews;
-                $i++;
-            }
-
-            return $this->response(200, ['status' => 200, 'companies' => $companies]);
-        }
-    }
-
-    public function actionCompaniesNew()
     {
         if ($this->isAuthorized()) {
 
@@ -699,13 +701,15 @@ class CollegeIndexController extends ApiBaseController
                 ->distinct()
                 ->select([
                     'a.organization_enc_id',
+                    'a.business_activity_enc_id',
                     'a.name',
                     'a.website',
                     'a.description',
-                    'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count',
-                    'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count',
+//                    'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Internships" Then 0 END) as internships_count',
+//                    'count(CASE WHEN c.application_enc_id IS NOT NULL AND d.name = "Jobs" Then 0 END) as jobs_count',
                     'a.slug org_slug',
                     'b.business_activity',
+                    'h.industry',
                     'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", a.logo_location, "/", a.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", a.name, "&size=200&rounded=false&background=", REPLACE(a.initials_color, "#", ""), "&color=ffffff") END logo',
                     'a.facebook',
                     'a.google',
@@ -718,13 +722,16 @@ class CollegeIndexController extends ApiBaseController
                     'g.organization_approvel',
                 ])
                 ->joinWith(['employerApplications c' => function ($y) use ($college_id) {
-                    $y->joinWith(['applicationTypeEnc d'], true);
+                    $y->select(['c.organization_enc_id', 'c.application_type_enc_id', 'd.name type']);
+                    $y->joinWith(['applicationTypeEnc d'], false);
                     $y->onCondition([
                         'c.status' => 'Active',
                         'c.is_deleted' => 0,
                         'c.for_all_colleges' => 1,
+                        'c.application_for' => [0, 2]
                     ]);
-                }], false)
+                }])
+                ->joinWith(['industryEnc h'], false)
                 ->joinWith(['businessActivityEnc b'], false)
                 ->joinWith(['organizationLocations ee' => function ($e) {
                     $e->select(['ee.organization_enc_id', 'ff.city_enc_id', 'ff.name']);
@@ -744,16 +751,40 @@ class CollegeIndexController extends ApiBaseController
                     'a.status' => 'Active',
                     'a.is_deleted' => 0
                 ])
-                ->andWhere(['!=', 'b.business_activity', 'College'])
-                ->andWhere(['!=', 'b.business_activity', 'School'])
-                ->andWhere(['!=', 'b.business_activity', 'Educational Institute'])
-                ->orderBy(['g.college_approvel' => SORT_DESC, 'g.organization_approvel' => SORT_DESC])
+                ->andWhere(['not', ['in', 'b.business_activity', ['College', 'Educational Institute', 'School']]])
+                ->orderBy(['g.college_approvel' => SORT_DESC, 'g.organization_approvel' => SORT_DESC, 'c.for_all_colleges' => SORT_DESC])
                 ->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
 
-            return $this->response(200, ['status' => 200, 'data' => $companies]);
+            $jobs_cnt = 0;
+            $intern_cnt = 0;
+            $i = 0;
+            if ($companies) {
+                foreach ($companies as $c) {
+                    if ($c['employerApplications']) {
+                        foreach ($c['employerApplications'] as $cc) {
+                            if ($cc['type'] == 'Jobs') {
+                                $jobs_cnt++;
+                            } elseif ($cc['type'] == 'Internships') {
+                                $intern_cnt++;
+                            }
+                        }
+                    }
+                    $companies[$i]['jobs_count'] = $jobs_cnt;
+                    $companies[$i]['internships_count'] = $intern_cnt;
+                    $jobs_cnt = 0;
+                    $intern_cnt = 0;
+                    $i++;
+                }
+            }
+
+            if ($companies) {
+                return $this->response(200, ['status' => 200, 'data' => $companies]);
+            } else {
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
+            }
         } else {
             return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
