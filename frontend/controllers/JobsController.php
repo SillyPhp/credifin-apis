@@ -22,6 +22,9 @@ use frontend\models\applications\PreferredApplicationCards;
 use frontend\models\curl\RollingCurl;
 use frontend\models\curl\RollingCurlRequest;
 use frontend\models\curl\RollingRequest;
+use frontend\models\script\Box;
+use frontend\models\script\Color;
+use frontend\models\script\scriptModel;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -1314,13 +1317,44 @@ class JobsController extends Controller
         }
     }
 
-    public function actionTest()
+    public function actionImageScript()
     {
-        $page = 1;
-        $urls = array("https://jobs.github.com/positions.json?page=".$page,
-              "https://www.themuse.com/api/public/jobs?page=".$page,
-            );
-        $rc = new RollingRequest();
-        $rc->run($urls);
-   }
+      $model = new scriptModel();
+        if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->logo = UploadedFile::getInstance($model, 'logo');
+            $rand_dir = Yii::$app->getSecurity()->generateRandomString();
+            $file_logo = $rand_dir.'-'.$model->logo->baseName.'.'.$model->logo->extension;
+            $base_path = Url::to('@rootDirectory/assets/themes/ey/temp/'.$rand_dir);
+            if (!is_dir($base_path)) {
+                if (mkdir($base_path, 0755, true)) {
+                    if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
+                        $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
+                        if (isset($file)){
+                             $url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                             return [
+                                 'status'=>200,
+                                 'url'=>$url
+                             ];
+                        }
+                    }
+                }
+            }
+        }
+      return $this->render('test2',['model'=>$model]);
+    }
+
+//    public function actionTest()
+//    {
+//        $page = 1;
+//        $urls =["https://jobs.github.com/positions.json?page=".$page,
+//                "https://www.themuse.com/api/public/jobs?page=".$page];
+//        $rc = new RollingRequest();
+//        $rc->run($urls);
+//   }
+
+    public function actionTestApi()
+    {
+        return $this->render('test');
+    }
 }
