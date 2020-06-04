@@ -56,7 +56,7 @@ $this->registerCss('
 .flex-base{
     flex-basis:50%;
 }
-@media only screen and (min-width: 768px){
+@media only screen and (max-width:834px){
     .using-flex {flex-direction:column;}    
 }
 .note {
