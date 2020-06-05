@@ -216,6 +216,11 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
+    public function actionCovid19()
+    {
+        return $this->render('covid-19');
+    }
+
     public function actionSocialCommunity()
     {
         $data = SocialGroups::find()
