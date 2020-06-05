@@ -1148,7 +1148,9 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-
+    public function actionSafetyPosters(){
+        return $this->render('safety-posters');
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[
