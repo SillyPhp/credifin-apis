@@ -29,20 +29,20 @@ endif;
                 'services' => $services,
             ]);
             ?>
-            <section class="safty-posters nd-shadow">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="safty-icon">
-                            <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>"></div>
-                        <div class="safty-icon-text">
-                            <h2>Start Downloading Your Safty Posters</h2>
-                            <div class="quick-review-action" id="review_btn">
-                                <a href="/safety-posters">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<!--            <section class="safty-posters nd-shadow">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="safty-icon">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?><!--"></div>-->
+<!--                        <div class="safty-icon-text">-->
+<!--                            <h2>Start Downloading Your Safty Posters</h2>-->
+<!--                            <div class="quick-review-action" id="review_btn">-->
+<!--                                <a href="/safety-posters">Download</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </section>-->
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -185,13 +185,22 @@ endif;
                     <div class="row">
                         <div class="col-md-12">
                             <div class="quick-review">
+                                <h2>Start Downloading Your Safety Posters</h2>
                                 <div class="row quick-review-inner">
                                     <div class="col-md-3 quick-review-img">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png');?>"></div>
-                                    <div class="col-md-7 overflow-hidden set-heading-c">
-                                        <h2>Start Downloading Your Safty Posters</h2>
-                                        <div class="quick-review-action" id="review_btn">
-                                            <a href="/safety-posters">Download For Free</a>
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>">
+                                    </div>
+                                    <div class="col-md-7 col-md-offset-1 overflow-hidden set-heading-c">
+                                        <div class="col-md-12 mb-15">
+                                            <label class="cmp-name for-text">Enter Company Name</label>
+                                            <input type="text" class="form-control for-n-cmp">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="choose-logo for-text">Choose Your Logo</label>
+                                            <input type="file" class="form-control for-choose" id="FileAttachment" required="required" multiple="multiple">
+                                        </div>
+                                        <div class="col-md-12 dwn">
+                                            <button class="download">Download <i class="fa fa-download"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -463,6 +472,39 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.quick-review h2 {
+	text-align: center;
+	font-size: 27px;
+	font-family: roboto;
+	font-weight: 500;
+	margin-bottom: 20px !important;
+	width: 475px;
+	margin: 15px auto 10px;
+	border-bottom: 2px solid;
+}
+.dwn {
+	text-align: center;
+	margin-top: 15px;
+}
+.download {
+	background: #00a0e3;
+	border: none;
+	color: #fff;
+	padding: 5px 20px;
+	font-size: 18px;
+	font-family: roboto;
+	border-radius: 4px;
+}
+.mb-15{margin-bottom:15px;}
+.for-text {
+	font-size: 18px;
+	font-family: roboto;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+}
+.form-control.for-n-cmp, .form-control.for-choose {
+	height: 38px;
+}
 .safty-icon img{
     max-width: 150px;
 }
@@ -483,7 +525,7 @@ $this->registerCss("
 	text-align:center;
 	display:inline-block; 
     padding:5px 15px; 
-    background:#00a0e3; 
+//    background:#00a0e3; 
     border-radius:4px; 
     font-size:15px; 
     font-weight:500; 
@@ -700,7 +742,7 @@ p{
 	text-align:center;
 	display:inline-block; 
     padding:5px 15px; 
-    background:#00a0e3; 
+//    background:#00a0e3; 
     border-radius:4px; 
     font-size:15px; 
     font-weight:500; 
@@ -719,7 +761,7 @@ p{
 .quick-review{
 	border:2px solid #eee;
 	margin: 20px 0;
-	background-color:  #fbfcfc ;
+//	background-color:  #fbfcfc ;
 	border-radius: 5px;
 }
 .quick-review-inner{
