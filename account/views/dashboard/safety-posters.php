@@ -8,864 +8,1033 @@ $this->params['header_dark'] = true;
 <section>
     <div class="">
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="row" id="categories">
                     <div class="hideDiv showDiv" id="unwell">
-                        <div class="col-md-3 bg-shadow">
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/unwell.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/unwell.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/unwell.png') ?>"
-                                         class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/unwell.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="stayHome">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/stayHome.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/stayHome.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <p></p>
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/stayHome.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/stayHome.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="sanitizer">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizer.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizer.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizerOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizer.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizer.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="distance">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/physicalDistance.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/physicalDistance.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/physicalDistanceOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/physicalDistance.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/physicalDistance.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="social">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/socialDistance.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/socialDistance.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/socialDistanceOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/socialDistance.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/socialDistance.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="tissue">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/coverMouth.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/coverMouth.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/coverMouthOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/coverMouth.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/coverMouth.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="spitting">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/spitting.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/spitting.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/spitting.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/spitting.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="healthHazard">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/healthHazard.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/healthHazard.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/healthHazard.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/healthHazard.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="cleanHands">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHand.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHand.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHandsOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHand.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHand.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="work">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/work.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/work.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/work.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/work.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="seconds">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/20seconds.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/20seconds.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/20secondsOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/20seconds.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/20seconds.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="sanitizeHands">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="masksRequired">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/masksRequired.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/masksRequired.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/masksRequiredOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/masksRequired.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/masksRequired.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="glovesMasks">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/glovesMasks.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/glovesMasks.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/glovesMasksOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/glovesMasks.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/glovesMasks.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="throwTissues">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/throwTissues.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/throwTissues.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/throwTissuesOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/throwTissues.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/throwTissues.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="virus">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/virusCaution.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/virusCaution.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/virusCaution.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/virusCaution.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="avoidTouching">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/avoidTouching.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/avoidTouching.png') ?>">
+                                    </div>
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/avoidTouchingOne.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/avoidTouching.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/avoidTouching.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="proceed">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/proceed.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/proceed.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/proceed.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/proceed.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="workArea">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/workArea.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/workArea.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/workArea.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/workArea.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="protectOthers">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/protectOthers.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/protectOthers.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/protectOthers.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/protectOthers.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="dropOff">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dropOff.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dropOff.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dropOff.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dropOff.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="personalItems">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/personalItems.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/personalItems.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/personalItems.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/personalItems.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="extraCaution">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/extraCaution.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/extraCaution.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/extraCaution.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/extraCaution.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="handshake">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handshake.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handshake.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handshake.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handshake.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="limitedEntry">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/limitedEntry.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/limitedEntry.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/limitedEntry.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/limitedEntry.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="liftWalls">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/liftWalls.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/liftWalls.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/liftWalls.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/liftWalls.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="lineStart">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/lineStart.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/lineStart.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/lineStart.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/lineStart.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="sink">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/sink.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/sink.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/sink.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/sink.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="temperature">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temperature.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temperature.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temperature.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temperature.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="tempStation">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/tempStation.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/tempStation.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/tempStation.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/tempStation.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="disposing">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/disposing.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/disposing.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/disposing.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/disposing.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="waitHere">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/waitHere.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/waitHere.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/waitHere.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/waitHere.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="phoneEmail">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/phoneEmail.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/phoneEmail.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/phoneEmail.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/phoneEmail.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="takeAway">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/takeAway.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/takeAway.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/takeAway.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/takeAway.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="yourCar">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="handrails">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handrails.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handrails.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handrails.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/handrails.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="usingLift">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="parking">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="screening">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/screening.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/screening.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/screening.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/screening.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="ringTheBell">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ringTheBell.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ringTheBell.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ringTheBell.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ringTheBell.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="ppe">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="visitors">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/visitors.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/visitors.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/visitors.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/visitors.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="collectMasks">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>" class="mainImg">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="temporarily">
-                        <div class="col-md-3 bg-shadow">
-
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temporarily.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temporarily.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temporarily.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/temporarily.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="practiceSocial">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/practiceSocial.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/practiceSocial.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/practiceSocial.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/practiceSocial.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="dining">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dining.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dining.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dining.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/dining.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="permanently">
-                        <div class="col-md-3 bg-shadow">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
 
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/permanently.png') ?>">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/permanently.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/permanently.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/permanently.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="hideDiv" id="responsibly">
-                        <div class="col-md-3 bg-shadow">
-                            <div class="small-img">
-                                <div class="small-icons">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>">
+                        <div class="safety-flex">
+                            <div class="bg-shadow">
+                                <div class="small-img">
+                                    <div class="small-icons">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="covid-main">
-                                <div class="main-img">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>" class="mainImg">
+                            <div class="mainPoster">
+                                <div class="covid-main">
+                                    <div class="main-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>"
+                                             class="mainImg">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="dbutton">
+
+                    </div>
+
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-6">
                 <div class="upload-logo">
                     <div class="covid-heading">Add Company Details</div>
                     <form>
-                        <div class="form-group field-logo">
-                            <label class="control-label" for="logo">Add Company Logo</label>
-                            <input type="hidden" name="logo" value=""><input type="file" id="logo" name="logo" autocomplete="off" accept=".png">
-                            <p class="help-block help-block-error"></p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group field-logo">
+                                    <label class="control-label" for="logo">Company Logo</label>
+                                    <input type="hidden" name="logo" value=""><input type="file" id="logo" name="logo"
+                                                                                     autocomplete="off" accept=".png">
+                                    <p class="help-block help-block-error"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group field-company_name required">
+                                    <label class="control-label" for="company_name">Company Name</label>
+                                    <input type="text" id="company_name"class="capitalize form-control" name="company_name" aria-required="true">
+                                    <p class="help-block help-block-error"></p>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-success btn-md gnt-btn">Download</button>
+                            </div>
                         </div>
-                        <div class="form-group field-company_name required">
-                            <input type="text" id="company_name" class="capitalize form-control" name="company_name" placeholder="Company Name" aria-required="true">
-                            <p class="help-block help-block-error"></p>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-md gnt-btn">Download</button>
                     </form>
                 </div>
-                <div class="covid-list">
+                <div class="covid-list" id="safetyList">
                     <div class="covid-heading">Warnings <span>Designs</span></div>
                     <ul class="topicLists">
+                        <li class="liClick" id="sanitizer">Please use hand sanitizer before entering<span>2</span></li>
+                        <li class="liClick" id="distance">Please maintain physical distance<span>2</span></li>
+                        <li class="liClick" id="masksRequired">Masks required beyond this point<span>2</span></li>
+                        <li class="liClick" id="glovesMasks">Gloves & masks required beyond this point<span>2</span>
+                        </li>
+                        <li class="liClick" id="social">Thanks for practicing social distancing<span>2</span></li>
+                        <li class="liClick" id="tissue">Cover mouth & nose with flexed elbow or tissue when
+                            sneezing/coughing<span>2</span></li>
+                        <li class="liClick" id="throwTissues">Throw used tissues into closed bins
+                            immediately<span>2</span></li>
+                        <li class="liClick" id="cleanHands">Clean hands save lives<span>2</span></li>
+                        <li class="liClick" id="seconds">Wash your hands for atleast 20 seconds<span>2</span></li>
+                        <li class="liClick" id="avoidTouching">Avoid touching eyes, nose & mouth<span>2</span></li>
+                        <li class="liClick" id="practiceSocial">Please practice social distancing<span>1</span></li>
                         <li class="liClick activeLi" id="unwell">Do not enter if unwell<span>1</span></li>
                         <li class="liClick" id="stayHome">Stay home if you feel unwell<span>1</span></li>
-                        <li class="liClick" id="sanitizer">Please use hand sanitizer before entering<span>1</span></li>
-                        <li class="liClick" id="distance">Please maintain physical distance<span>1</span></li>
-                        <li class="liClick" id="practiceSocial">Please practice social distancing<span>1</span></li>
-                        <li class="liClick" id="social">Thanks for practicing social distancing<span>1</span></li>
-                        <li class="liClick" id="tissue">Cover mouth & nose with flexed elbow or tissue when sneezing/coughing<span>1</span></li>
                         <li class="liClick" id="spitting">Spitting could be dangerous<span>1</span></li>
                         <li class="liClick" id="healthHazard">Spitting in public is a health hazard<span>1</span></li>
-                        <li class="liClick" id="cleanHands">Clean hands save lives<span>1</span></li>
                         <li class="liClick" id="work">Clean your hands before getting back to work<span>1</span></li>
-                        <li class="liClick" id="seconds">Wash your hands for atleast 20 seconds<span>1</span></li>
                         <!--                        <li class="liClick" id="sanitizeHands">Sanitize your hands here<span>1</span></li>-->
-                        <li class="liClick" id="masksRequired">Masks required beyond this point<span>1</span></li>
-                        <li class="liClick" id="glovesMasks">Gloves & masks required beyond this point<span>1</span></li>
-                        <li class="liClick" id="throwTissues">Throw used tissues into closed bins immediately<span>1</span></li>
+
                         <li class="liClick" id="virus">Virus outbreak. Proceed with caution<span>1</span></li>
                         <li class="liClick" id="proceed">Please proceed this way<span>1</span></li>
-                        <li class="liClick" id="avoidTouching">Avoid touching eyes, nose & mouth<span>1</span></li>
                         <li class="liClick" id="workArea">Please sanitize your work area regularly<span>1</span></li>
                         <li class="liClick" id="protectOthers">Protect others from getting sick<span>1</span></li>
                         <li class="liClick" id="dropOff">Please drop off at this point<span>1</span></li>
@@ -887,7 +1056,8 @@ $this->params['header_dark'] = true;
                         <li class="liClick" id="usingLift">Please clean your hands after using lift<span>1</span></li>
                         <li class="liClick" id="parking">Maintain distance while parking<span>1</span></li>
                         <li class="liClick" id="screening">Covid-19 Screening<span>1</span></li>
-                        <li class="liClick" id="ringTheBell">Do not ring the bell call the concerned person<span>1</span></li>
+                        <li class="liClick" id="ringTheBell">Do not ring the bell call the concerned
+                            person<span>1</span></li>
                         <li class="liClick" id="ppe">Proper PPE required beyond this point<span>1</span></li>
                         <li class="liClick" id="visitors">No visitors allowed due to health safety<span>1</span></li>
                         <li class="liClick" id="collectMasks">Please collect your masks here<span>1</span></li>
@@ -901,9 +1071,14 @@ $this->params['header_dark'] = true;
         </div>
     </div>
 </section>
+
 <?php
 $this->registercss('
-.field-logo label{
+.safety-flex{
+    display: flex;
+    justify-content: center;    
+}
+.field-logo label, .field-company_name label{
     font-size: 15px;
     font-weight: 600;
     color:#333;
@@ -1094,7 +1269,7 @@ $this->registercss('
             let clickedLi = event.currentTarget;
             //add and remove active class from li
             let activeli = document.getElementsByClassName('activeLi');
-            if(activeli.length > 0){
+            if (activeli.length > 0) {
                 activeli[0].classList.remove('activeLi')
             }
             clickedLi.classList.add('activeLi');

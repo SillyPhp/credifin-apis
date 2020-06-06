@@ -25,6 +25,7 @@ use yii\helpers\Url;
                 <span><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
+
     </div>
 <?php
 $this->registercss('
@@ -36,7 +37,7 @@ $this->registercss('
 .basis{
     flex-basis:50%;
 }
-.whatsapp-share a, .teleg-share a, .twi-share a, .link-share a{
+.whatsapp-share a, .teleg-share a, .twi-share a, .link-share a, .download button{
 	display: block;
 	color: #fff;
 	padding: 8px 10px;
