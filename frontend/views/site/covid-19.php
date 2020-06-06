@@ -45,7 +45,7 @@ use yii\helpers\Url;
                         <li class="liClick activeLi" id="sanitizer">
                             Please use hand sanitizer before entering
                             <span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>"
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizer.png') ?>"
                                   class="data-img"></span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/handSanitizerOne.png') ?>"
                                   class="data-img"></span>
@@ -86,7 +86,7 @@ use yii\helpers\Url;
                         </li>
                         <li class="liClick" id="cleanHands">Clean hands save lives<span>2</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHand.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHandOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/cleanHandsOne.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="seconds">Wash your hands for atleast 20 seconds<span>2</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/20seconds.png') ?>" class="data-img"></span>
@@ -178,10 +178,10 @@ use yii\helpers\Url;
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="parking">Maintain distance while parking<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="screening">Covid-19 Screening<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/screening.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="ringTheBell">Do not ring the bell call the concerned
                             person<span>1</span>
@@ -191,7 +191,7 @@ use yii\helpers\Url;
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="visitors">No visitors allowed due to health safety<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/visitors.png') ?>" class="data-img"></span>
                         </li>
                         <li class="liClick" id="collectMasks">Please collect your masks here<span>1</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>" class="data-img"></span>
@@ -371,7 +371,7 @@ use yii\helpers\Url;
             </div>
         </section>
     </div>
-    <div class="container">
+    <div class="container mb3">
         <?= $this->render('/widgets/e-campus-safety-posters') ?>
     </div>
     <Section class="information">
@@ -413,13 +413,18 @@ use yii\helpers\Url;
                 </div>
             </div>
         </Section>
-    <div class="container">
+
         <?= $this->render('/widgets/our-services') ?>
-    </div>
 </section>
 
 <?php
 $this->registercss('
+#footer{
+    margin-top: 0px;
+}
+.mb3{
+    margin-bottom:70px;
+}
 .share-heading{
     margin-top: 30px;
     font-size: 30px;
@@ -474,21 +479,33 @@ $this->registercss('
     display: flex;
     justify-content: center;
     align-items: center;
-    	background: linear-gradient(140deg, #00C0FF, #236CD7, #4218B8) ;
+    background: linear-gradient(140deg, #00C0FF, #236CD7, #4218B8) ;
+    border-radius: 5px;
+    margin-top: 20px;
 }
 .download h2{
     text-transform: capitalize;
     padding-right: 20px;
     color: #fff; 
+    font-family: roboto;
+    font-size: 25px;
 }
 .download a{
-    background-color: #ffcc00;
+    background-color: #fff;
     max-width: 280px;
     width: 100%;
     max-height: 43px;
     height: 100%;
-    text-align: justify;
+    text-align: center;
     border: none;
+    color:#00a0e3;
+    border-radius: 4px;
+}
+.download a:hover, .quick-review-action a{
+    box-shadow: 0 0 10px rgba(0,0,0,.3);
+    transition: .3s ease;
+    background: #ffca05;
+    color:#fff;
 }
 .download a i{
     padding-right: 5px; 
@@ -506,6 +523,7 @@ $this->registercss('
     font-size: 40px;
     font-family: lora;
     max-width: 500px;
+    font-weight: bold;
 }
 .safety-bg{
     background: url(' . Url::to('@eyAssets/images/pages/safty-posters/speakers-bg.png') . ');
@@ -540,7 +558,8 @@ $this->registercss('
     color: #fff;
 }
 .liClick:hover, .activeLi{
-    color: #00a0e3;
+    color: #fff !important;
+    background: #ffcc00 !important;
     transition: .3s ease;
 }
 .quick-review-action a{  
@@ -564,10 +583,10 @@ $this->registercss('
     overflow:hidden;
 }
 .quick-review{
-	border:2px solid #eee;
 	margin: 20px;
 	background: linear-gradient(140deg, #00C0FF, #236CD7, #4218B8) ;
 	border-radius: 5px;
+	padding: 20px;
 }
 .quick-review-inner{
     margin:15px;
@@ -671,9 +690,6 @@ $this->registercss('
     float: right;
     margin-right: 10px;
 }
-.activeLi{
-    color:#00a0e3;
-}
 .hideDiv{
     display: none;
 }
@@ -687,6 +703,7 @@ $this->registercss('
 .e-background h2{
     color: #333;
     font-family: lora;
+    padding-top: 0px;
 }
 .e-inner{
     top: 0px;
