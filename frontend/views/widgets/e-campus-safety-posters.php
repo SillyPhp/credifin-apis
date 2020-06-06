@@ -4,7 +4,7 @@ use yii\helpers\Url;
 
 ?>
     <section class="e-background">
-        <h2>Campus Recruitment Programme For Organizations</h2>
+        <h2>Join Our Campus Recruitment Programme</h2>
     </section>
     <div class="container">
         <div class="row">

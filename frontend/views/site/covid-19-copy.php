@@ -117,6 +117,97 @@ use yii\helpers\Url;
                         <li class="liClick" id="virus">Virus outbreak. Proceed with caution<span>1</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/virusCaution.png') ?>" class="data-img"></span>
                         </li>
+                        <li class="liClick" id="proceed">Please proceed this way<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/proceed.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="workArea">Please sanitize your work area regularly<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/workArea.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="protectOthers">Protect others from getting sick<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/protectOthers.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="dropOff">Please drop off at this point<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/dropOff.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="personalItems">Do not share personal items<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/personalItems.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="extraCaution">Please exercise extra caution<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/extraCaution.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="handshake">Handshake-free zone<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/handshake.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="limitedEntry">Limited entry in lift<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/limitedEntry.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="liftWalls">Do not touch lift walls<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/liftWalls.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="lineStart">Line starts here<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/lineStart.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="sink">Sink is for hand washing only<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/sink.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="temperature">Temperature check mandatory<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/temperature.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="tempStation">Temperature check station<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/tempStation.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="disposing">This dustbin is for disposing medical gear<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/disposing.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="waitHere">Wait here until asked to step forward<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/waitHere.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="phoneEmail">We are open. Order by phone & email only<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/phoneEmail.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="takeAway">We are open. Take away & delivery only<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/takeAway.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="yourCar">We will bring your order to your car<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="handrails">Do not touch the handrails<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/handrails.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="usingLift">Please clean your hands after using lift<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/usingLift.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="parking">Maintain distance while parking<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/yourCar.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="screening">Covid-19 Screening<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/parking.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="ringTheBell">Do not ring the bell call the concerned
+                            person<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/ringTheBell.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="ppe">Proper PPE required beyond this point<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="visitors">No visitors allowed due to health safety<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/ppe.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="collectMasks">Please collect your masks here<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/collectMasks.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="temporarily">We are temporarily closed<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/temporarily.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="dining">Temporarily closed for dining<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/dining.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="permanently">We are permanently closed<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/permanently.png') ?>" class="data-img"></span>
+                        </li>
+                        <li class="liClick" id="responsibly">Please act responsibly<span>1</span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safty-posters/responsibly.png') ?>" class="data-img"></span>
+                        </li>
                     </ul>
             </div>
         </div>
