@@ -59,7 +59,7 @@ use yii\helpers\Url;
                         <span class="interns">{{total_internships}} Internships</span>
                     </div>
                     <div class="follow-btn">
-                        <a href="/{{profile_link}}" target="_blank">Follow</a>
+                        <a href="/{{review_link}}" target="_blank">Follow</a>
                     </div>
                 </a>
             </div>
