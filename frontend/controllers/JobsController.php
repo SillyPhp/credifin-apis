@@ -1344,14 +1344,48 @@ class JobsController extends Controller
       return $this->render('test2',['model'=>$model]);
     }
 
-//    public function actionTest()
-//    {
-//        $page = 1;
-//        $urls =["https://jobs.github.com/positions.json?page=".$page,
-//                "https://www.themuse.com/api/public/jobs?page=".$page];
-//        $rc = new RollingRequest();
-//        $rc->run($urls);
-//   }
+    public function actionCollectApi()
+    {
+        if (Yii::$app->request->post()) {
+            $muse_key = 'ecc017e088bb50fd3d47686f1a669033492e98111bbe1c60084214e48b45fe07';
+            $page = 1;
+            //$urls =["https://jobs.github.com/positions.json?page=".$page,
+            //"https://www.themuse.com/api/public/jobs?api_key=".$muse_key."&page=".$page];
+            //$rc = new RollingRequest();
+            //$rc->run($urls);
+            //return $this->render('test',['data'=>$rc->collect]);
+
+            // array of curl handles
+            $multiCurl = array();
+            // data to be returned
+            $result = array();
+            // multi handle
+            $mh = curl_multi_init();
+            $ids = [0, 1];
+            foreach ($ids as $i => $id) {
+                // URL from which data will be fetched
+                $fetchURL[0] = "https://www.themuse.com/api/public/jobs?api_key=" . $muse_key . "&page=" . $page;
+                $fetchURL[1] = "https://jobs.github.com/positions.json?page=" . $page;
+                $multiCurl[$i] = curl_init();
+                curl_setopt($multiCurl[$i], CURLOPT_URL, $fetchURL[$id]);
+                curl_setopt($multiCurl[$i], CURLOPT_HEADER, 0);
+                curl_setopt($multiCurl[$i], CURLOPT_RETURNTRANSFER, 1);
+                curl_multi_add_handle($mh, $multiCurl[$i]);
+            }
+            $index = null;
+            do {
+                curl_multi_exec($mh, $index);
+            } while ($index > 0);
+            // get content and remove handles
+            foreach ($multiCurl as $k => $ch) {
+                $result[$k] = curl_multi_getcontent($ch);
+                curl_multi_remove_handle($mh, $ch);
+            }
+            // close
+            curl_multi_close($mh);
+            return $result;
+        }
+    }
 
     public function actionTestApi()
     {
