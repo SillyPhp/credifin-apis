@@ -459,7 +459,7 @@ $(document).on('submit','#form_search_cmp',function(e)
 
 $(document).on('click','.filters li a',function(e) {
   e.preventDefault();
-  window.location.assign('?sortBy='+$(this).data('id'));
+  window.location.assign('?sortBy='+$(this).attr("data-id"));
 })
 $(document).on('click','#load_review_card_btn',function(e) {
   e.preventDefault();
