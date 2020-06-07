@@ -29,6 +29,20 @@ endif;
                 'services' => $services,
             ]);
             ?>
+<!--            <section class="safty-posters nd-shadow">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="safty-icon">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?><!--"></div>-->
+<!--                        <div class="safty-icon-text">-->
+<!--                            <h2>Start Downloading Your Safty Posters</h2>-->
+<!--                            <div class="quick-review-action" id="review_btn">-->
+<!--                                <a href="/safety-posters">Download</a>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </section>-->
         </div>
         <div class="col-md-9">
             <?php if (Yii::$app->user->identity->type->user_type == 'Individual'): ?>
@@ -120,9 +134,9 @@ endif;
                     'viewed' => $viewed
                 ]); ?>
                 <?= $this->render('/widgets/applications/reminder-applications', [
-                        'app_reminder' => $app_reminder,
-                        'app_reminder_form' => $app_reminder_form,
-                ]);?>
+                    'app_reminder' => $app_reminder,
+                    'app_reminder_form' => $app_reminder_form,
+                ]); ?>
 
             <?php elseif (Yii::$app->user->identity->organization): ?>
                 <div class="row marg">
@@ -167,6 +181,33 @@ endif;
                         </a>
                     </div>
                 </div>
+                <section>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="quick-review">
+                                <h2>Start Downloading Your Safety Posters</h2>
+                                <div class="row quick-review-inner">
+                                    <div class="col-md-3 quick-review-img">
+                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>">
+                                    </div>
+                                    <div class="col-md-7 col-md-offset-1 overflow-hidden set-heading-c">
+                                        <div class="col-md-12 mb-15">
+                                            <label class="cmp-name for-text">Enter Company Name</label>
+                                            <input type="text" class="form-control for-n-cmp">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="choose-logo for-text">Choose Your Logo</label>
+                                            <input type="file" class="form-control for-choose" id="FileAttachment" required="required" multiple="multiple">
+                                        </div>
+                                        <div class="col-md-12 dwn">
+                                            <button class="download">Download <i class="fa fa-download"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <?php
                 if ($viewed == 0) {
                     ?>
@@ -241,7 +282,8 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?><span
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Jobs'); ?>
+                                <span
                                         data-toggle="tooltip" title="Here you will find all your active jobs"><i
                                             class="fa fa-info-circle"></i></span></span>
                         </div>
@@ -302,7 +344,8 @@ endif;
                     <div class="portlet-title">
                         <div class="caption">
                             <i class=" icon-social-twitter font-dark hide"></i>
-                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?><span
+                            <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Active Internships'); ?>
+                                <span
                                         data-toggle="tooltip" title="Here you will find all your active internships"><i
                                             class="fa fa-info-circle"></i></span></span>
                         </div>
@@ -315,7 +358,8 @@ endif;
                                 <?php
                                 if (Yii::$app->user->identity->businessActivity->business_activity != "College" && Yii::$app->user->identity->businessActivity->business_activity != "School" && Yii::$app->user->identity->organization->has_placement_rights == 1) {
                                     ?>
-                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>" data-toggle="tooltip"
+                                    <a href="<?= Url::toRoute('/internships/campus-placement'); ?>"
+                                       data-toggle="tooltip"
                                        title="Campus Hiring" class="ai">
                                         <img src="<?= Url::to('@eyAssets/images/pages/dashboard/placement.png'); ?>"></a>
                                     <?php
@@ -358,6 +402,8 @@ endif;
                         ?>
                     </div>
                 </div>
+
+
             <?php endif; ?>
             <!--            <div class="portlet light portlet-fit nd-shadow">-->
             <!--                <div class="portlet-title" style="border-bottom:none;">-->
@@ -426,6 +472,72 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.quick-review h2 {
+	text-align: center;
+	font-size: 27px;
+	font-family: roboto;
+	font-weight: 500;
+	margin-bottom: 20px !important;
+	width: 475px;
+	margin: 15px auto 10px;
+	border-bottom: 2px solid;
+}
+.dwn {
+	text-align: center;
+	margin-top: 15px;
+}
+.download {
+	background: #00a0e3;
+	border: none;
+	color: #fff;
+	padding: 5px 20px;
+	font-size: 18px;
+	font-family: roboto;
+	border-radius: 4px;
+}
+.mb-15{margin-bottom:15px;}
+.for-text {
+	font-size: 18px;
+	font-family: roboto;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+}
+.form-control.for-n-cmp, .form-control.for-choose {
+	height: 38px;
+}
+.safty-icon img{
+    max-width: 150px;
+}
+.safty-posters{
+    margin-top: 25px;
+    text-align: center;
+    padding: 20px 10px;
+}
+.quick-review{
+    box-shadow: 0 0 10px rgba(0,0,0,.1);     
+}
+.safty-icon-text h2{
+    font-size: 18px;
+    font-family: roboto;
+    font-weight: 500;
+}
+.quick-review-action a{  
+	text-align:center;
+	display:inline-block; 
+    padding:5px 15px; 
+//    background:#00a0e3; 
+    border-radius:4px; 
+    font-size:15px; 
+    font-weight:500; 
+    color:#fff;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-family: roboto;
+}
+.quick-review-action a:hover, .quick-review-action a:focus, .quick-review-action:active{
+	outline: none;
+	box-shadow: none;
+} 
 .ps__rail-x{
     display:block !important;
 }
@@ -625,7 +737,46 @@ p{
         max-width:320px;
         margin:0 auto;
     }
+}
+.quick-review-action a{  
+	text-align:center;
+	display:inline-block; 
+    padding:5px 15px; 
+//    background:#00a0e3; 
+    border-radius:4px; 
+    font-size:15px; 
+    font-weight:500; 
+    color:#fff;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-family: roboto;
+}
+.quick-review-action a:hover, .quick-review-action a:focus, .quick-review-action:active{
+	outline: none;
+	box-shadow: none;
 } 
+.overflow-hidden{
+    overflow:hidden;
+}
+.quick-review{
+	border:2px solid #eee;
+	margin: 20px 0;
+//	background-color:  #fbfcfc ;
+	border-radius: 5px;
+}
+.quick-review-inner{
+    margin:15px;
+    display: flex;
+    align-items: center;
+}
+.quick-review-img{
+    text-align: center;
+}
+.quick-review-img img{
+	max-width: 150px;
+}
+
+ 
 ");
 $script = <<<JS
 $(document).ready(function(){
