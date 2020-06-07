@@ -72,9 +72,17 @@ class OrganizationsController extends Controller
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $get = new ReviewCards();
+            $options = [];
             $options = Yii::$app->request->post('params');
+            if (Yii::$app->request->get('keyword')){
+                $options['keyword'] = trim(Yii::$app->request->get('keyword'));
+            }
+            if (Yii::$app->request->get('sortBy')){
+                $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
+            }
+            $options['limit'] = 27;
             $cards = $get->getReviewCards($options);
-            if ($cards['total'] > 0) {
+            if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',

@@ -376,8 +376,7 @@ form {
 $script = <<<JS
 let page = 0;
 let total=0;
-function getCompanies(params,template,loader=true,is_clear=false,loader_btn=false) {
-    $('.load-more-bttn').hide();
+function getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=true,is_clear=false,loader_btn=false) {
         page += 1;
         params['page'] = page;
         $.ajax({
@@ -403,10 +402,12 @@ function getCompanies(params,template,loader=true,is_clear=false,loader_btn=fals
                     }
             },
             success:function (response) {
+                 $('.load-more-bttn').show();
                  $('#load_review_card_btn').html('Load More');
                  $('#load_review_card_btn').removeAttr('disabled');
                  $('#loading_img').css('display','none');
                 if(response.status == 200){
+                    total=total+response.cards.length;
                     var get_companies = $('#companies-card-all').html();
                     template.append(Mustache.render(get_companies, response.cards));
                     $('[data-toggle="tooltip"]').tooltip();
@@ -419,17 +420,16 @@ function getCompanies(params,template,loader=true,is_clear=false,loader_btn=fals
                     return $(this).attr('data-score');
                   }
                 });
-                 if (response.cards.length+total==response.total)
-                   {
-                       $('.load-more-bttn').hide();
-                   }
-                   else{
-                       $('.load-more-bttn').show();
-                   }
+                    if (total==response.total){
+                        $('.load-more-bttn').hide();
+                    }
                 }
                 else
                     {
-                      $('.empty').css('display','block');
+                    if(page === 1) {
+                        $('.empty').css('display','block');
+                    }
+                    $('.load-more-bttn').hide();
                     }
             }
         })
@@ -441,10 +441,10 @@ var activities = [
     'Banking & Finance Company',
     'Others',
     ];
-getCompanies(params={'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
+getCompanies();
 $(document).on('submit','#form_search_cmp',function(e)
 {
-    var k = $('input[name="search"]').val();
+    var k = $('input[name="search"]').val().trim().replace(/[^a-z0-9\s]/gi, '');
     e.preventDefault();
     if (k.length==0||k=='')
         {
@@ -453,20 +453,17 @@ $(document).on('submit','#form_search_cmp',function(e)
              text: "Please Enter Some Keyword To Search",
          });
             return false
-        } 
-    page = 0;
-    getCompanies(params={'keyword':k,'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
+        }
+    window.location.assign('?keyword='+k);
  });
 
 $(document).on('click','.filters li a',function(e) {
-  e.preventDefault();  
-  page = 0; 
-  getCompanies(params={'sorting_alphabets':$(this).data('id'),'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
+  e.preventDefault();
+  window.location.assign('?sortBy='+$(this).data('id'));
 })
 $(document).on('click','#load_review_card_btn',function(e) {
   e.preventDefault();
-  total = total+27;
-  getCompanies(params={'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=false,loader_btn=true);
+  getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=false,is_clear=false,loader_btn=true); 
 })
 JS;
 $this->registerJs($script);

@@ -55,8 +55,8 @@ class ReviewCards
                 ['like', 'g.name', $options['city']],
             ]);
         }
-        if (isset($options['sorting_alphabets'])) {
-            $q1->andWhere('a.name LIKE "'.$options['sorting_alphabets'].'%"');
+        if (isset($options['sortBy'])) {
+            $q1->andWhere('a.name LIKE "'.$options['sortBy'].'%"');
         }
         if (isset($options['most_reviewed'])) {
             $q1->orderBy(['total_reviews' => SORT_DESC]);
@@ -99,8 +99,8 @@ class ReviewCards
             $q2->orderBy(['total_reviews' => SORT_DESC]);
 
         }
-        if (isset($options['sorting_alphabets'])) {
-            $q2->andWhere('a.name LIKE "'.$options['sorting_alphabets'].'%"');
+        if (isset($options['sortBy'])) {
+            $q2->andWhere('a.name LIKE "'.$options['sortBy'].'%"');
         }
         if (isset($options['city'])) {
             $q2->andWhere([
