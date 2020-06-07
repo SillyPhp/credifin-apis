@@ -7,7 +7,7 @@ use yii\helpers\Url;
         {{#.}}
         <div class="col-md-4 col-sm-6">
             <div class="company-main">
-                <a href="{{profile_link}}">
+                <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_featured}}
                         <span  data-toggle="tooltip" title="Featured">
@@ -25,18 +25,18 @@ use yii\helpers\Url;
                     </div>
                     <div class="comp-logo">
                         {{#logo}}
-                        <a href="/{{profile_link}}">
+                        <a href="/{{profile_link}}" target="_blank">
                             <img src="{{logo}}">
                         </a>
                         {{/logo}}
                         {{^logo}}
-                        <a href="/{{profile_link}}">
+                        <a href="/{{profile_link}}" target="_blank">
                             <canvas class="user-icon" name="{{name}}" width="110" height="110"
                                     color="{{color}}" font="35px"></canvas>
                         </a>
                         {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}">{{name}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank">{{name}}</a></h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
                     <div class="com-rating comp-ratings">
@@ -59,7 +59,7 @@ use yii\helpers\Url;
                         <span class="interns">{{total_internships}} Internships</span>
                     </div>
                     <div class="follow-btn">
-                        <a href="#">Follow</a>
+                        <a href="/{{profile_link}}" target="_blank">Follow</a>
                     </div>
                 </a>
             </div>

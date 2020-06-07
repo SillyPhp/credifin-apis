@@ -33,7 +33,23 @@ use yii\helpers\Url;
         <div class="container">
             <div class="row">
                 <div class="padd-top-20">
+                    <div id="loading_img">
+                        <img src="/assets/themes/ey/images/loader/91.gif">
+                    </div>
                     <div id="companies-card"></div>
+                    <div class="col-md-12">
+                        <div class="load-more-bttn">
+                            <button type="button" id="load_review_card_btn">Load More</button>
+                        </div>
+                    </div>
+                    <div class="empty">
+                        <div class="es-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png') ?>">
+                        </div>
+                        <div class="es-text">
+                            Opps !! We Currently No Result Having For This Keyword
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -41,6 +57,61 @@ use yii\helpers\Url;
 <?php
 echo $this->render('/widgets/mustache/companies-card');
 $this->registerCss('
+.load-more-bttn
+{
+display:none;
+text-align:center;
+}
+#load_review_card_btn
+{
+background-color: #228b22;
+    color: #fff;
+    font-size: 20px;
+    font-family: roboto;
+    padding: 5px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    border:none;
+}
+.empty{
+    text-align:center;
+    display:none;
+}
+.es-text{
+     font-family: roboto;
+    font-size: 20px;
+    padding-top: 20px;
+    font-weight:bold;
+}
+.es-text2{
+     font-family: roboto;
+}
+#loading_img
+{
+  display:none;
+}
+#loading_img img
+{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width:100px;
+    height:100px
+}
+#loading_img.show
+{
+    display: block;
+    position: fixed;
+    z-index: 100;
+    opacity: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    left: 10%;
+    right: 0;
+    top: 50%;
+}
 .sbar-head{
     text-align:center;
     font-size:20px;
@@ -303,7 +374,12 @@ form {
 ');
 
 $script = <<<JS
-function getCompanies(params,template,loader=true,is_clear=false) {
+let page = 0;
+let total=0;
+function getCompanies(params,template,loader=true,is_clear=false,loader_btn=false) {
+    $('.load-more-bttn').hide();
+        page += 1;
+        params['page'] = page;
         $.ajax({
             url:window.location.href,
             method:"POST",
@@ -311,19 +387,28 @@ function getCompanies(params,template,loader=true,is_clear=false) {
             dataType:'JSON',
             beforeSend:function()
             {
+                $('.empty').css('display','none');
+                if (loader_btn)
+                    {
+                        $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                        $('#load_review_card_btn').attr('disabled',true);
+                    }
+                 if (is_clear)
+                    { 
+                        template.html('');
+                    }
                 if (loader)
                     {
-                        
+                 $('#loading_img').css('display','block');
                     }
             },
             success:function (response) {
+                 $('#load_review_card_btn').html('Load More');
+                 $('#load_review_card_btn').removeAttr('disabled');
+                 $('#loading_img').css('display','none');
                 if(response.status == 200){
-                    if (is_clear)
-                    { 
-                        template.html('');
-                     }
                     var get_companies = $('#companies-card-all').html();
-                    template.html(Mustache.render(get_companies, response.cards));
+                    template.append(Mustache.render(get_companies, response.cards));
                     $('[data-toggle="tooltip"]').tooltip();
                     utilities.initials();
                     $.fn.raty.defaults.path = '/assets/vendor/raty-master/new_stars'; 
@@ -334,7 +419,18 @@ function getCompanies(params,template,loader=true,is_clear=false) {
                     return $(this).attr('data-score');
                   }
                 });
+                 if (response.cards.length+total==response.total)
+                   {
+                       $('.load-more-bttn').hide();
+                   }
+                   else{
+                       $('.load-more-bttn').show();
+                   }
                 }
+                else
+                    {
+                      $('.empty').css('display','block');
+                    }
             }
         })
     } 
@@ -345,7 +441,7 @@ var activities = [
     'Banking & Finance Company',
     'Others',
     ];
-getCompanies(params={'limit':8,'offset':0,'business_activity':activities},$("#companies-card"),loader=true);
+getCompanies(params={'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
 $(document).on('submit','#form_search_cmp',function(e)
 {
     var k = $('input[name="search"]').val();
@@ -358,8 +454,20 @@ $(document).on('submit','#form_search_cmp',function(e)
          });
             return false
         } 
-    getCompanies(params={'keyword':k,'limit':8,'offset':0,'business_activity':activities},$("#companies-card"),loader=true);
+    page = 0;
+    getCompanies(params={'keyword':k,'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
  });
+
+$(document).on('click','.filters li a',function(e) {
+  e.preventDefault();  
+  page = 0; 
+  getCompanies(params={'sorting_alphabets':$(this).data('id'),'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=true,loader_btn=false);
+})
+$(document).on('click','#load_review_card_btn',function(e) {
+  e.preventDefault();
+  total = total+27;
+  getCompanies(params={'limit':27,'business_activity':activities},$("#companies-card"),loader=true,is_clear=false,loader_btn=true);
+})
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');

@@ -13,6 +13,10 @@ class ReviewCards
 
     public function getReviewCards($options = [])
     {
+        if (isset($options['limit'])) {
+            $limit = $options['limit'];
+            $offset = ($options['page'] - 1) * $options['limit'];
+        }
         $q1 = Organizations::find()->alias('a')
             ->select(['a.organization_enc_id','a.is_featured','a.name','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs','COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships','a.initials_color color', 'a.created_on', 'COUNT(distinct c.review_enc_id) total_reviews', 'a.slug profile_link', 'CONCAT(a.slug, "/reviews") review_link', 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo','b.business_activity', 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating','SUM(i.positions) total_vaccency'])
             ->where(['a.is_deleted' => 0])
@@ -30,7 +34,6 @@ class ReviewCards
             }], false)
             ->groupBy('a.organization_enc_id')
             ->orderBy(['a.created_on' => SORT_DESC]);
-
         if (isset($options['business_activity'])) {
             $q1->andWhere([
                 'or',
@@ -52,9 +55,8 @@ class ReviewCards
                 ['like', 'g.name', $options['city']],
             ]);
         }
-        if (isset($options['sort'])) {
-            $q1->orderBy(['c.created_on' => SORT_DESC]);
-
+        if (isset($options['sorting_alphabets'])) {
+            $q1->andWhere('a.name LIKE "'.$options['sorting_alphabets'].'%"');
         }
         if (isset($options['most_reviewed'])) {
             $q1->orderBy(['total_reviews' => SORT_DESC]);
@@ -97,9 +99,8 @@ class ReviewCards
             $q2->orderBy(['total_reviews' => SORT_DESC]);
 
         }
-        if (isset($options['sort'])) {
-            $q2->orderBy(['c.created_on' => SORT_DESC]);
-
+        if (isset($options['sorting_alphabets'])) {
+            $q2->andWhere('a.name LIKE "'.$options['sorting_alphabets'].'%"');
         }
         if (isset($options['city'])) {
             $q2->andWhere([
@@ -111,11 +112,13 @@ class ReviewCards
             $q2->orFilterHaving(['ROUND(AVG(c.average_rating))' => $options['rating']]);
         }
         $count = $q2->count()+$q1->count();
-        $q = $q1->union($q2)
-            ->limit(9)
-            ->offset(0)
+        $q  = (new \yii\db\Query())
+            ->from([
+                $q1->union($q2),
+            ])
+            ->limit($limit)
+            ->offset($offset)
             ->orderBy(['created_on' => SORT_DESC])
-            ->asArray()
             ->all();
         return [
             'total' => $count,
