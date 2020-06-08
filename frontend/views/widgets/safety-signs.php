@@ -9,6 +9,7 @@ use yii\helpers\Url;
                 <div class="safety-heading">
                     <h3>We Care For You</h3>
                     <p>Ensure Safety At Your Workplace With COVID-19 Safety Signs</p>
+                    <p  class="mb3">Download For Free</p>
                     <a href="/covid-19/warning-posters">View Posters</a>
                 </div>
             </div>
@@ -40,6 +41,8 @@ $this->registerCSS('
     font-size: 19px; 
     text-transform: capitalize;
     line-height: 25px;
+}
+.mb3{
     padding-bottom: 30px;
 }
 .safety-heading h3{

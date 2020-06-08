@@ -208,9 +208,9 @@ use yii\helpers\Url;
                         <li class="liClick" id="responsibly">Please act responsibly<span>1</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/responsibly.png') ?>" class="data-img"></span>
                         </li>
-                        <li class="liClick activeLi" id="sanitizer">
+                        <li class="liClick" id="sanitizer">
                             Please wash hands before returning to work
-                            <span>2</span>
+                            <span>1</span>
                             <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/pleaseWash.png') ?>"
                                   class="data-img"></span>
                         </li>
@@ -231,7 +231,7 @@ use yii\helpers\Url;
                 <h1 class="share-heading">Share With Your Friends And Create Awareness</h1>
                 <div class="share-social">
                     <div class="fb-share basis">
-                        <a href="#!" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                        <a href="#!" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                             <span class="fb-btn"><i class="fab fa-facebook-f"></i> Facebook</span>
                         </a>
                     </div>

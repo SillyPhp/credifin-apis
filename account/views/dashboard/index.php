@@ -447,16 +447,6 @@ endif;
     </script>
 <?php
 $this->registerCss("
-.quick-review h2 {
-	text-align: center;
-	font-size: 27px;
-	font-family: roboto;
-	font-weight: 500;
-	margin-bottom: 20px !important;
-	width: 475px;
-	margin: 15px auto 10px;
-	border-bottom: 2px solid;
-}
 .dwn {
 	text-align: center;
 	margin-top: 15px;
@@ -471,12 +461,7 @@ $this->registerCss("
 	border-radius: 4px;
 }
 .mb-15{margin-bottom:15px;}
-.for-text {
-	font-size: 18px;
-	font-family: roboto;
-	margin-bottom: 5px;
-	text-transform: uppercase;
-}
+
 .form-control.for-n-cmp, .form-control.for-choose {
 	height: 38px;
 }
@@ -747,9 +732,7 @@ p{
 .quick-review-img{
     text-align: center;
 }
-.quick-review-img img{
-	max-width: 150px;
-}
+
 
  
 ");
