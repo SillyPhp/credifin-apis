@@ -3,8 +3,9 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 $this->title = 'News';
-$keywords = 'Jobs,Jobs in India';
-$description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
+$keywords = 'Empower Youth News: Get Latest and Breaking News Updates of world';
+$description = 'Get Latest and Breaking News Updates of India and world, live world and India news headlines, and Read all latest India and world news & top news on Empower Youth.
+breaking news updates in hindi,breaking news updates india, 24/7 latest breaking news update,www breaking news,News Updates.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
 $this->params['seo_tags'] = [
     'rel' => [
