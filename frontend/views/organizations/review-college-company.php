@@ -389,19 +389,19 @@ $this->params['seo_tags'] = [
 <input type="hidden" name="hidden_city_location" class="hidden_city_location">
 <?php
 echo $this->render('/widgets/mustache/organization-unclaimed-reviews', [
-    'org_slug' => $slug
+    'org_slug' => $slug,
 ]);
 if ($org_details['business_activity'] == 'College') {
     echo $this->render('/widgets/mustache/organization-unclaimed-college-reviews', [
-        'org_slug' => $slug
+        'org_slug' => $slug,
     ]);
 } elseif ($org_details['business_activity'] == 'School') {
     echo $this->render('/widgets/mustache/organization-unclaimed-school-reviews', [
-        'org_slug' => $slug
+        'org_slug' => $slug,
     ]);
 } elseif ($org_details['business_activity'] == 'Educational Institute') {
     echo $this->render('/widgets/mustache/organization-unclaimed-institute-reviews', [
-        'org_slug' => $slug
+        'org_slug' => $slug,
     ]);
 }
 
