@@ -1325,7 +1325,8 @@ class JobsController extends Controller
         $result = json_decode($result,true);
         if ($result) {
             array_walk($result, function (&$item) {
-                $item['created_on'] = $item['created_at'];
+                $item['description'] = $item['contents'];
+                $item['title'] = $item['name'];
             });
         }
         return $result;
