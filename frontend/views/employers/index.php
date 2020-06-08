@@ -163,6 +163,7 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
+
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">

@@ -47,10 +47,10 @@ class UserOtherDetails extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'semester', 'starting_year', 'university_roll_number'], 'required'],
+            [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'starting_year', 'university_roll_number'], 'required'],
             [['semester', 'internship_duration', 'college_actions', 'is_deleted'], 'integer'],
             [['cgpa'], 'number'],
-            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'updated_on'], 'safe'],
+            [['starting_year', 'ending_year', 'internship_start_date', 'job_year', 'semester', 'updated_on'], 'safe'],
             [['job_start_month'], 'string'],
             [['user_other_details_enc_id', 'user_enc_id', 'organization_enc_id', 'department_enc_id', 'educational_requirement_enc_id', 'course_enc_id', 'section_enc_id'], 'string', 'max' => 100],
             [['university_roll_number'], 'string', 'max' => 30],

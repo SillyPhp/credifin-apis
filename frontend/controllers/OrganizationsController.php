@@ -71,27 +71,23 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $referral = Yii::$app->referral->getReferralCode();
-            $keyword = Yii::$app->request->post('keyword');
-            $organization = Organizations::find()
-                ->alias('a')
-                ->select(['a.organization_enc_id', 'a.name', 'CONCAT(a.slug, "' . $referral . '") as slug', '(CASE WHEN a.is_featured = "1" THEN "1" ELSE NULL END) as is_featured', 'CASE WHEN a.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '", a.logo_location, "/", a.logo) ELSE NULL END logo', 'b.business_activity'])
-                ->joinWith(['businessActivityEnc b'], false)
-                ->where(['a.status' => 'Active', 'a.is_deleted' => 0]);
-            if (!empty($keyword)) {
-                $organization->andWhere([
-                    'or',
-                    ['like', 'a.name', $keyword],
-                    ['like', 'a.slug', $keyword],
-                ]);
+            $get = new ReviewCards();
+            $options = [];
+            $options = Yii::$app->request->post('params');
+            if (Yii::$app->request->get('keyword')){
+                $options['keyword'] = trim(Yii::$app->request->get('keyword'));
             }
-            $with_logo = $organization->orderBy(['a.logo' => SORT_DESC])->asArray()->all();
-
-            if ($with_logo) {
+            if (Yii::$app->request->get('sortBy')){
+                $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
+            }
+            $options['limit'] = 27;
+            $cards = $get->getReviewCards($options);
+            if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
-                    'message' => 'Success',
-                    'organization' => $with_logo,
+                    'title' => 'Success',
+                    'total' => $cards['total'],
+                    'cards' => $cards['cards'],
                 ];
             } else {
                 $response = [
@@ -100,7 +96,7 @@ class OrganizationsController extends Controller
             }
             return $response;
         }
-        return $this->render('index');
+        return $this->render('index-1');
     }
 
     public function actionCompanies($q = null)
@@ -1615,8 +1611,5 @@ class OrganizationsController extends Controller
             ->where("replace(name, '.', '') LIKE '%$q%'")
             ->andWhere(['is_deleted' => 0]);
         return $params1->limit(20)->all();
-
-
     }
-
 }
