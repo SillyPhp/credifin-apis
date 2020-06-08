@@ -99,6 +99,7 @@ class NewsController extends Controller
             ->andWhere(['not', ['in', 'z.slug', $slug]])
             ->andWhere(['z.is_deleted' => 0])
             ->groupBy('z.news_enc_id')
+            ->limit(5)
             ->all();
         $latestNews = ExternalNewsUpdate::find()
             ->where(['is_deleted' => 0, 'status' => 1])
