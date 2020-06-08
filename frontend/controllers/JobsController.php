@@ -1309,19 +1309,41 @@ class JobsController extends Controller
             $result = json_decode($result,true);
         return $result;
     }
-
+    private function musejobs($id)
+    {
+        $url = "https://www.themuse.com/api/public/jobs/".$id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result,true);
+        if ($result) {
+            array_walk($result, function (&$item) {
+                $item['created_on'] = $item['created_at'];
+            });
+        }
+        return $result;
+    }
     public function actionApi($source='',$slugparams=null,$eaidk=null)
     {
         if ($source=='git-hub'){
         $get = $this->gitjobs($eaidk);
+        print_r($get);
+        die();
         if ($get)
         {
-            return $this->render('api-jobs',['get'=>$get,'slug'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
+            return $this->render('api-jobs',['get'=>$get,'slugparams'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
         }
     }
         else if ($source=='muse'){
-            $get = $this->gitjobs($eaidk);
-            return $this->render('api-jobs',['get'=>$get,'slug'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
+            $get = $this->musejobs($eaidk);
+            return $this->render('api-jobs',['get'=>$get,'slugparams'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
         }
     }
 
