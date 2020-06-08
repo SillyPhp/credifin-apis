@@ -437,14 +437,19 @@ class AuthController extends ApiBaseController
                     ->asArray()
                     ->all();
 
-                $i = 0;
+                $j = 0;
                 foreach ($college_settings as $c) {
-                    if ($c['value'] == 2) {
-                        $college_settings[$i]['value'] = true;
-                    } else {
-                        $college_settings[$i]['value'] = false;
+                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                        if ($c['value'] == null) {
+                            $college_settings[$j]['value'] = 2;
+                        }
                     }
-                    $i++;
+                    $j++;
+                }
+
+                $settings = [];
+                foreach ($college_settings as $c) {
+                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
                 }
             }
 
@@ -453,7 +458,7 @@ class AuthController extends ApiBaseController
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
-            'college_settings' => $college_settings,
+            'college_settings' => $settings,
             'image' => $user_detail['image'],
             'course_enc_id' => $user_detail['course_enc_id'],
             'section_enc_id' => $user_detail['section_enc_id'],

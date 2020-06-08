@@ -1,30 +1,31 @@
 <?php
 
 use yii\helpers\Url;
-
+$news_title = urlencode($news_title);
 ?>
 
     <div class="share-social">
         <div class="whatsapp-share basis">
-            <a href="#!" onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-whatsapp"></i> Whatsapp</span>
             </a>
         </div>
         <div class="teleg-share basis">
-            <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://telegram.me/share/url?url='. $link ); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-telegram-plane"></i> Telegram</span>
             </a>
         </div>
         <div class="twi-share basis">
-            <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$news_title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
                 <span><i class="fab fa-twitter marg"></i> Twitter</span>
             </a>
         </div>
         <div class="link-share basis">
-            <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
+            <a href="#!" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$news_title.'&summary='.$news_title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
                 <span><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
             </a>
         </div>
+
     </div>
 <?php
 $this->registercss('
@@ -36,7 +37,7 @@ $this->registercss('
 .basis{
     flex-basis:50%;
 }
-.whatsapp-share a, .teleg-share a, .twi-share a, .link-share a{
+.whatsapp-share a, .teleg-share a, .twi-share a, .link-share a, .download button{
 	display: block;
 	color: #fff;
 	padding: 8px 10px;
