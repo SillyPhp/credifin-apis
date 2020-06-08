@@ -370,15 +370,17 @@ class JobsController extends Controller
                 $options['company'] = $parameters['company'];
             }
             $cardsDb = ApplicationCards::jobs($options);
-            if (empty($options['company'])) {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
-            }
-            else
-            {
-                $merg = $cardsDb;
-            }
+//            if (empty($options['company'])) {
+//                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+//                $merg = array_merge($cardsDb, $cardsApi);
+//                $merg = array_slice($merg, 0, 27);
+//            }
+//            else
+//            {
+//                $merg = $cardsDb;
+//            }
+            $api = $this->CollectApi();
+            $merg = array_merge($cardsDb,$api);
             if (count($merg) > 0) {
                 $response = [
                     'status' => 200,
@@ -1308,12 +1310,18 @@ class JobsController extends Controller
         return $result;
     }
 
-    public function actionApi($comp,$eaidk)
+    public function actionApi($source='',$slugparams=null,$eaidk=null)
     {
+        if ($source=='git-hub'){
         $get = $this->gitjobs($eaidk);
         if ($get)
         {
-            return $this->render('git-api-jobs',['get'=>$get,'slug'=>$comp]);
+            return $this->render('api-jobs',['get'=>$get,'slug'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
+        }
+    }
+        else if ($source=='muse'){
+            $get = $this->gitjobs($eaidk);
+            return $this->render('api-jobs',['get'=>$get,'slug'=>$slugparams,'source'=>$source,'id'=>$eaidk]);
         }
     }
 
@@ -1344,9 +1352,8 @@ class JobsController extends Controller
       return $this->render('test2',['model'=>$model]);
     }
 
-    public function actionCollectApi()
+    private function CollectApi()
     {
-        if (Yii::$app->request->post()) {
             $muse_key = 'ecc017e088bb50fd3d47686f1a669033492e98111bbe1c60084214e48b45fe07';
             $page = 1;
             //$urls =["https://jobs.github.com/positions.json?page=".$page,
@@ -1383,12 +1390,59 @@ class JobsController extends Controller
             }
             // close
             curl_multi_close($mh);
+            $r1 = json_decode($result[0],true);
+            $r1 = $r1["results"];
+            $r2 = json_decode($result[1],true);
+            if ($r2) {
+                array_walk($r2, function (&$item) {
+                    $item['created_on'] = $item['created_at'];
+                    $item['organization_name'] = $item['company'];
+                    $item['logo'] = $item['company_logo'];
+                    $item['organization_link'] = $item['company_url'];
+                    $item['link'] = '/job/git-hub/'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['title']))).'-'.strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))).'/'.$item['id'];
+                    $item['city'] = $item['location'];
+                    $item['sal'] = 1;
+                    unset($item['created_at']);
+                    unset($item['company']);
+                    unset($item['company_logo']);
+                    unset($item['company_url']);
+                    unset($item['url']);
+                    unset($item['description']);
+                    unset($item['location']);
+                });
+            }
+        if ($r1) {
+            array_walk($r1, function (&$item) {
+                $item['created_on'] = $item['publication_date'];
+                $item['organization_name'] = $item['company']['name'];
+                $item['title'] = $item['name'];
+                $item['type'] = $item['levels'][0]['name'];
+                $item['logo'] = '';
+                $item['organization_link'] = $item['company']['short_name'];
+                $item['link'] = '/job/muse/'.$item['short_name'].'-'.$item['company']['short_name'].'/'.$item['id'];
+                $item['city'] = $item['locations'][0]['name'];
+                $item['sal'] = 1;
+                $item['sector'] = $item['categories'][0]['name'];
+                unset($item['contents']);
+                unset($item['company']);
+                unset($item['refs']);
+                unset($item['tags']);
+                unset($item['model_type']);
+                unset($item['publication_date']);
+                unset($item['locations']);
+                unset($item['levels']);
+                unset($item['type']);
+                unset($item['short_name']);
+                unset($item['categories']);
+            });
+            }
+        $result = array_merge($r1,$r2);
+        shuffle($result);
             return $result;
         }
-    }
 
     public function actionTestApi()
     {
-        return $this->render('test');
+        return $this->render('test3');
     }
 }
