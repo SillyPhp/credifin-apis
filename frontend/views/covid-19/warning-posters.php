@@ -76,137 +76,184 @@ use yii\helpers\Url;
                         </li>
                         <li class="liClick" id="tissue">Cover mouth & nose with flexed elbow or tissue when
                             sneezing/coughing<span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/coverMouth.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/coverMouthOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/coverMouth.png') ?>"
+                                  class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/coverMouthOne.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="throwTissues">Throw used tissues into closed bins
                             immediately<span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/throwTissues.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/throwTissuesOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/throwTissues.png') ?>"
+                                  class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/throwTissuesOne.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="cleanHands">Clean hands save lives<span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/cleanHand.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/cleanHandsOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/cleanHand.png') ?>"
+                                  class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/cleanHandsOne.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="seconds">Wash your hands for atleast 20 seconds<span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/20seconds.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/20secondsOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/20seconds.png') ?>"
+                                  class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/20secondsOne.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="avoidTouching">Avoid touching eyes, nose & mouth<span>2</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/avoidTouching.png') ?>" class="data-img"></span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/avoidTouchingOne.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/avoidTouching.png') ?>"
+                                  class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/avoidTouchingOne.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="practiceSocial">Please practice social distancing<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/practiceSocial.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/practiceSocial.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick " id="unwell">Do not enter if unwell<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/unwell.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/unwell.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="stayHome">Stay home if you feel unwell<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/stayHome.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/stayHome.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="spitting">Spitting could be dangerous<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/spitting.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/spitting.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="healthHazard">Spitting in public is a health hazard<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/healthHazard.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/healthHazard.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="work">Clean your hands before getting back to work<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/work.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/work.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="virus">Virus outbreak. Proceed with caution<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/virusCaution.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/virusCaution.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="proceed">Please proceed this way<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/proceed.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/proceed.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="workArea">Please sanitize your work area regularly<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/workArea.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/workArea.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="protectOthers">Protect others from getting sick<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/protectOthers.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/protectOthers.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="dropOff">Please drop off at this point<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/dropOff.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/dropOff.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="personalItems">Do not share personal items<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/personalItems.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/personalItems.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="extraCaution">Please exercise extra caution<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/extraCaution.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/extraCaution.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="handshake">Handshake-free zone<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/handshake.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/handshake.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="limitedEntry">Limited entry in lift<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/limitedEntry.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/limitedEntry.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="liftWalls">Do not touch lift walls<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/liftWalls.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/liftWalls.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="lineStart">Line starts here<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/lineStart.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/lineStart.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="sink">Sink is for hand washing only<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/sink.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/sink.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="temperature">Temperature check mandatory<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/temperature.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/temperature.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="tempStation">Temperature check station<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/tempStation.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/tempStation.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="disposing">This dustbin is for disposing medical gear<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/disposing.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/disposing.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="waitHere">Wait here until asked to step forward<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/waitHere.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/waitHere.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="phoneEmail">We are open. Order by phone & email only<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/phoneEmail.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/phoneEmail.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="takeAway">We are open. Take away & delivery only<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/takeAway.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/takeAway.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="yourCar">We will bring your order to your car<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/yourCar.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/yourCar.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="handrails">Do not touch the handrails<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/handrails.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/handrails.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="usingLift">Please clean your hands after using lift<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/usingLift.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/usingLift.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="parking">Maintain distance while parking<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/parking.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/parking.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="screening">Covid-19 Screening<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/screening.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/screening.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="ringTheBell">Do not ring the bell call the concerned
                             person<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/ringTheBell.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/ringTheBell.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="ppe">Proper PPE required beyond this point<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/ppe.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/ppe.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="visitors">No visitors allowed due to health safety<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/visitors.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/visitors.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="collectMasks">Please collect your masks here<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/collectMasks.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/collectMasks.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="temporarily">We are temporarily closed<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/temporarily.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/temporarily.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="dining">Temporarily closed for dining<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/dining.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/dining.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="permanently">We are permanently closed<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/permanently.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/permanently.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="responsibly">Please act responsibly<span>1</span>
-                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/responsibly.png') ?>" class="data-img"></span>
+                            <span data-img="<?= Url::to('@eyAssets/images/pages/safety-posters/responsibly.png') ?>"
+                                  class="data-img"></span>
                         </li>
                         <li class="liClick" id="sanitizer">
                             Please wash hands before returning to work
@@ -222,8 +269,9 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="download">
                     <h2>download these a4 signs for free </h2>
-                    <a href="<?= Url::to('@eyAssets/warning-posters-zip/warning-posters.zip')?>" download class="share-elem-main"><span><i class="fas fa-download"></i></span>Download All</a>
-                   </div>
+                    <a href="<?= Url::to('@eyAssets/warning-posters-zip/warning-posters.zip') ?>" download
+                       class="share-elem-main"><span><i class="fas fa-download"></i></span>Download All</a>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -231,27 +279,37 @@ use yii\helpers\Url;
                 <h1 class="share-heading">Share With Your Friends And Create Awareness</h1>
                 <div class="share-social">
                     <div class="fb-share basis">
-                        <a href="#!" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                        <a href="#!"
+                           onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
                             <span class="fb-btn"><i class="fab fa-facebook-f"></i> Facebook</span>
                         </a>
                     </div>
                     <div class="whatsapp-share basis">
-                        <a href="#!" onclick="window.open('https://api.whatsapp.com/send?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                        <a href="#!"
+                           onclick="window.open('https://api.whatsapp.com/send?text=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
                             <span><i class="fab fa-whatsapp"></i> Whatsapp</span>
                         </a>
                     </div>
                     <div class="teleg-share basis">
-                        <a href="#!" onclick="window.open('https://telegram.me/share/url?url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                        <a href="#!"
+                           onclick="window.open('https://telegram.me/share/url?url=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
                             <span><i class="fab fa-telegram-plane"></i> Telegram</span>
                         </a>
                     </div>
                     <div class="twi-share basis">
-                        <a href="#!" onclick="window.open('https://twitter.com/intent/tweet?text=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100')" class="share-elem-main">
+                        <a href="#!"
+                           onclick="window.open('https://twitter.com/intent/tweet?text=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                           class="share-elem-main">
                             <span><i class="fab fa-twitter marg"></i> Twitter</span>
                         </a>
                     </div>
                     <div class="link-share basis">
-                        <a href="#!" onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=<?= $sharingLink ?>', '_blank', 'width=800,height=400,left=200,top=100');" class="share-elem-main">
+                        <a href="#!"
+                           onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100');"
+                           class="share-elem-main">
                             <span><i class="fab fa-linkedin-in marg"></i> LinkedIn</span>
                         </a>
                     </div>
@@ -267,15 +325,16 @@ use yii\helpers\Url;
                         <h2>Customize Posters With Your Own Company's Name And Logo</h2>
                         <div class="quick-review-action" id="review_btn">
                             <?php
-                                if(Yii::$app->user->isGuest){
+                            if (Yii::$app->user->isGuest) {
                                 ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign Up & Download For Free</a>
-                            <?php
-                                }else {
-                                    ?>
-                                    <a href="/account/dashboard/">Customize & Download</a>
-                                    <?php
-                                }
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign Up &
+                                    Download For Free</a>
+                                <?php
+                            } else {
+                                ?>
+                                <a href="/account/dashboard/">Customize & Download</a>
+                                <?php
+                            }
                             ?>
                         </div>
                     </div>
@@ -299,7 +358,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/Efficiency.png') ?>">
                                 </div>
                                 <h4>Enhance your Efficiency and Effectiveness</h4>
-                                <div class="about-text">Receive multiple offers from top-level organizations and properly
+                                <div class="about-text">Receive multiple offers from top-level organizations and
+                                    properly
                                     recruited for joining an organization.
                                 </div>
                             </div>
@@ -312,7 +372,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/showcase-progress.png') ?>">
                                 </div>
                                 <h4>Showcase Your Employer Brand</h4>
-                                <div class="about-text">Showcasing our unique cultural differentiators, and then working to
+                                <div class="about-text">Showcasing our unique cultural differentiators, and then working
+                                    to
                                     amplify it so you can position yourself as a top place to work.
                                 </div>
                             </div>
@@ -325,7 +386,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/track-progress.png') ?>">
                                 </div>
                                 <h4>Track Progress</h4>
-                                <div class="about-text">Track your application process in simple steps & stay up-to-date.
+                                <div class="about-text">Track your application process in simple steps & stay
+                                    up-to-date.
                                 </div>
                             </div>
                         </a>
@@ -337,7 +399,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/free4all.png') ?>">
                                 </div>
                                 <h4>Free For All</h4>
-                                <div class="about-text">You can apply for jobs and have your learning courses without giving
+                                <div class="about-text">You can apply for jobs and have your learning courses without
+                                    giving
                                     any
                                     penny.
                                 </div>
@@ -351,7 +414,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/live-interview.png') ?>">
                                 </div>
                                 <h4>Live Interview Schedule</h4>
-                                <div class="about-text">Automates scheduling of live interactions between interviewer and
+                                <div class="about-text">Automates scheduling of live interactions between interviewer
+                                    and
                                     interview.
                                 </div>
                             </div>
@@ -364,7 +428,8 @@ use yii\helpers\Url;
                                     <img src="<?= Url::to('@eyAssets/images/pages/company-and-candidate/livechat.png') ?>">
                                 </div>
                                 <h4>Live Chat</h4>
-                                <div class="about-text">You can easily live chat with our Employers to get help & for more
+                                <div class="about-text">You can easily live chat with our Employers to get help & for
+                                    more
                                     other
                                     queries.
                                 </div>
@@ -954,8 +1019,12 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             let clickedLi = event.currentTarget;
             let dImages = clickedLi.getElementsByClassName('data-img');
             let fElem = dImages[0].getAttribute('data-img')
-
-            document.getElementById('bigPoster').setAttribute('src', fElem);
+            let bigPoster = document.getElementById('bigPoster');
+            bigPoster.setAttribute('src', '/assets/themes/ey/images/pages/safety-posters/loading-img.png');
+            function setImage(){
+                bigPoster.setAttribute('src', fElem);
+            }
+            setTimeout(setImage, 500);
 
             //add and remove active class from li
             let activeli = document.getElementsByClassName('activeLi');
@@ -975,6 +1044,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
                 div.innerHTML = '<img src="' + z + '">';
                 posterThumb.appendChild(div);
             }
+
             initializeImgClick();
         })
     }

@@ -41,10 +41,13 @@ use yii\helpers\Url;
 
 <?php
 $this->registerCss('
+.safety-links-share a{
+    color:#000;
+}
 .colorYellow{
     background: #ffcc00;
     padding: 20px 0;
-    
+    position: relative;   
 }
 .sub-btn {
      border: 2px solid #000;
