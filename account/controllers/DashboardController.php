@@ -312,9 +312,6 @@ class DashboardController extends Controller
                     'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                     'a.status' => 'Active',
                 ],
-                'having' => [
-                    '>=', 'a.last_date', date('Y-m-d')
-                ],
                 'orderBy' => [
                     'a.published_on' => SORT_DESC,
                 ],
@@ -352,9 +349,6 @@ class DashboardController extends Controller
             'where' => [
                 'a.organization_enc_id' => Yii::$app->user->identity->organization->organization_enc_id,
                 'a.status' => 'Active',
-            ],
-            'having' => [
-                '>', 'a.last_date', date('Y-m-d')
             ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
@@ -1148,7 +1142,9 @@ class DashboardController extends Controller
         return $count[0]['total_applications'];
     }
 
-
+    public function actionSafetyPosters(){
+        return $this->render('safety-posters');
+    }
 //    public function actionError(){
 //        $error = Yii::$app->errorHandler->exception;
 //        return $this->render('error',[
