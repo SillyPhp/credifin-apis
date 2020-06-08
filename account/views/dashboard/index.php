@@ -181,33 +181,7 @@ endif;
                         </a>
                     </div>
                 </div>
-                <section>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="quick-review">
-                                <h2>Start Downloading Your Safety Posters</h2>
-                                <div class="row quick-review-inner">
-                                    <div class="col-md-3 quick-review-img">
-                                        <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>">
-                                    </div>
-                                    <div class="col-md-7 col-md-offset-1 overflow-hidden set-heading-c">
-                                        <div class="col-md-12 mb-15">
-                                            <label class="cmp-name for-text">Enter Company Name</label>
-                                            <input type="text" class="form-control for-n-cmp">
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="choose-logo for-text">Choose Your Logo</label>
-                                            <input type="file" class="form-control for-choose" id="FileAttachment" required="required" multiple="multiple">
-                                        </div>
-                                        <div class="col-md-12 dwn">
-                                            <button class="download">Download <i class="fa fa-download"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+
                 <?php
                 if ($viewed == 0) {
                     ?>
@@ -278,7 +252,7 @@ endif;
                     <?php
                 }
                 ?>
-
+                <?= $this->render('/widgets/safety-widgets')?>
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
