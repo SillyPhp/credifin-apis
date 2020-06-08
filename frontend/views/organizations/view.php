@@ -239,7 +239,7 @@ $round_avg = round($overall_avg);
                                     <h4 class="sub-heading-review">Help the community by giving your valuable
                                         review</h4>
                                     <a href="/<?= $organization['slug']; ?>/reviews" class="btn-default"><i
-                                                class="fas fa-pencil-alt"></i> Write Rewiew</a>
+                                                class="fas fa-pencil-alt"></i> Write Review</a>
                                 </div>
                             </div>
                         </div>
