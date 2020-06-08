@@ -237,6 +237,7 @@ endif;
                     <?php
                 }
                 ?>
+
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">

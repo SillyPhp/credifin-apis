@@ -79,6 +79,7 @@ $this->registercss('
     font-size: 35px;
     font-family: lobster;
     color:#fff;
+    margin-top: 0px;
 }
 .e-parent {
     height: 125px;
