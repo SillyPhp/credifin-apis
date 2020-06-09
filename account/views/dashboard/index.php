@@ -237,6 +237,7 @@ endif;
                     <?php
                 }
                 ?>
+                <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
@@ -426,6 +427,57 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.dwn {
+	text-align: center;
+	margin-top: 15px;
+}
+.download {
+	background: #00a0e3;
+	border: none;
+	color: #fff;
+	padding: 5px 20px;
+	font-size: 18px;
+	font-family: roboto;
+	border-radius: 4px;
+}
+.mb-15{margin-bottom:15px;}
+
+.form-control.for-n-cmp, .form-control.for-choose {
+	height: 38px;
+}
+.safty-icon img{
+    max-width: 150px;
+}
+.safty-posters{
+    margin-top: 25px;
+    text-align: center;
+    padding: 20px 10px;
+}
+.quick-review{
+    box-shadow: 0 0 10px rgba(0,0,0,.1);     
+}
+.safty-icon-text h2{
+    font-size: 18px;
+    font-family: roboto;
+    font-weight: 500;
+}
+.quick-review-action a{  
+	text-align:center;
+	display:inline-block; 
+    padding:5px 15px; 
+//    background:#00a0e3; 
+    border-radius:4px; 
+    font-size:15px; 
+    font-weight:500; 
+    color:#fff;
+    text-decoration: none;
+    text-transform: capitalize;
+    font-family: roboto;
+}
+.quick-review-action a:hover, .quick-review-action a:focus, .quick-review-action:active{
+	outline: none;
+	box-shadow: none;
+} 
 .ps__rail-x{
     display:block !important;
 }
@@ -626,10 +678,34 @@ p{
         margin:0 auto;
     }
 } 
+.overflow-hidden{
+    overflow:hidden;
+}
+.quick-review{
+	border:2px solid #eee;
+	margin: 20px 0;
+//	background-color:  #fbfcfc ;
+	border-radius: 5px;
+}
+.quick-review-inner{
+    margin:15px;
+    display: flex;
+    align-items: center;
+}
+.quick-review-img{
+    text-align: center;
+}
+
+
+ 
 ");
-$script = <<<JS
+$script = <<< JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
 JS;
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);

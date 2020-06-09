@@ -7,7 +7,7 @@ use yii\helpers\Url;
         {{#.}}
         <div class="col-md-4 col-sm-6">
             <div class="company-main">
-                <a href="{{slug}}">
+                <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_featured}}
                         <span  data-toggle="tooltip" title="Featured">
@@ -16,37 +16,50 @@ use yii\helpers\Url;
                         {{/is_featured}}
                     </div>
                     <div class="total-vacancies">
-                        <a href="#">25 Vacancies</a>
+                        {{#total_vaccency}}
+                        <a href="#">{{total_vaccency}} Vacancies</a>
+                        {{/total_vaccency}}
+                        {{^total_vaccency}}
+                        <a href="#">No Vacancies</a>
+                        {{/total_vaccency}}
                     </div>
                     <div class="comp-logo">
                         {{#logo}}
-                        <a href="/{{slug}}">
+                        <a href="/{{profile_link}}" target="_blank">
                             <img src="{{logo}}">
                         </a>
                         {{/logo}}
                         {{^logo}}
-                        <a href="/{{slug}}">
-                            <canvas class="user-icon" name="{{name}}" width="100" height="100"
+                        <a href="/{{profile_link}}" target="_blank">
+                            <canvas class="user-icon" name="{{name}}" width="110" height="110"
                                     color="{{color}}" font="35px"></canvas>
                         </a>
                         {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{slug}}">{{name}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank">{{name}}</a></h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
-                    <div class="comp-ratings">
-                        <span><i class="fas fa-star"></i></span>
-                        <span><i class="fas fa-star"></i></span>
-                        <span><i class="fas fa-star"></i></span>
-                        <span><i class="fas fa-star"></i></span>
-                        <span><i class="fas fa-star-half-alt"></i></span>
-                        <span class="rate-in">4.0</span>
+                    {{#rating}}
+                    <div class="com-rating comp-ratings">
+                        <span class="average-star" data-score="{{rating}}"></span>
+                        <span class="stars rate-in">{{rating}}</span>
                     </div>
+                    <div class="rating">
+                    </div>
+                    {{/rating}}
+                    {{^rating}}
+                    <div class="com-rating comp-ratings">
+                        <span class="average-star" data-score="0"></span>
+                        <span class="stars rate-in">0</span>
+                    </div>
+                    <div class="rating">
+                    </div>
+                    {{/rating}}
                     <div class="comp-jobs-intern">
-                        <span class="jobs">10 Jobs</span>
-                        <span class="interns">15 Internships</span>
+                        <span class="jobs">{{total_jobs}} Jobs</span>
+                        <span class="interns">{{total_internships}} Internships</span>
                     </div>
                     <div class="follow-btn">
-                        <a href="#">Follow</a>
+                        <a href="/{{review_link}}" target="_blank">Follow</a>
                     </div>
                 </a>
             </div>
@@ -82,8 +95,8 @@ $this->registercss('
 	border-radius: 60px;
 	overflow: hidden;
 	border: 1px solid #eee;
-	padding: 20px;
 	box-shadow: 0 0 13px 4px #eee;
+	line-height:104px;
 }
 .comp-Name {
 	font-size: 24px;
@@ -123,6 +136,8 @@ $this->registercss('
 	padding: 0 5px;
 	border-radius:3px;
 	font-weight:500;
+	line-heighht:26px;
+	width: 23px;
 }
 .comp-jobs-intern {
 	display: flex;

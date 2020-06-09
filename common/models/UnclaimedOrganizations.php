@@ -32,7 +32,7 @@ namespace common\models;
  * @property int $is_deleted 1 as false and 0 for true
  * @property string $created_by By which User Organization information was added
  * @property string $created_on On which date Organization information was added to database
- *
+ * @property int $is_featured
  * @property Reviews[] $reviews
  * @property TrainingProgramApplication[] $trainingProgramApplications
  * @property TwitterJobs[] $twitterJobs
@@ -61,7 +61,7 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
         return [
             [['organization_enc_id', 'name', 'slug', 'initials_color'], 'required'],
             [['source', 'description', 'short_description', 'address', 'size'], 'string'],
-            [['status', 'is_deleted'], 'integer'],
+            [['status', 'is_deleted','is_featured'], 'integer'],
             [['created_on'], 'safe'],
             [['organization_enc_id', 'organization_type_enc_id', 'city_enc_id', 'name', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
             [['email', 'facebook_username', 'twitter_username', 'linkedin_username'], 'string', 'max' => 50],

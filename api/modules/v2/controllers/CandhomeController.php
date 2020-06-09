@@ -681,32 +681,27 @@ class CandhomeController extends ApiBaseController
                     'a.webinar_enc_id',
                     'a.title',
                     'a.start_datetime',
-                    'a.end_datetime',
+                    'a.duration',
                     'a.availability',
-                    'a.image',
-                    'a.image_location',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                     'a.description',
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
                 ->joinWith(['webinarRegistrations d' => function ($d) {
-                    $d->select(['d.webinar_enc_id',
-                        'd.register_enc_id',
+                    $d->select([
+                        'd.webinar_enc_id',
                         'd.register_enc_id',
                         'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                     ]);
                     $d->joinWith(['createdBy d1'], false);
                     $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
                 }])
-                ->joinWith(['assignedWebinarTopics c' => function ($c) {
-                    $c->select(['c.webinar_enc_id', 'c1.name']);
-                    $c->joinWith(['topicEnc c1'], false);
-                    $c->onCondition(['c.is_deleted' => 0]);
-                }])
                 ->where([
                     'b.organization_enc_id' => $college_id['organization_enc_id'],
-                    'a.is_deleted' => 0
+                    'a.is_deleted' => 0,
+                    'a.session_for' => 2
                 ])
-                ->andWhere(['>=', 'a.end_datetime', $date_now])
+//                ->andWhere(['>=', 'a.end_datetime', $date_now])
                 ->asArray()
                 ->all();
 
@@ -800,36 +795,41 @@ class CandhomeController extends ApiBaseController
                     'a.webinar_enc_id',
                     'a.title',
                     'a.start_datetime',
-                    'a.end_datetime',
                     'a.availability',
-                    'a.image',
-                    'a.image_location',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) END image',
                     'a.description',
                 ])
                 ->joinWith(['assignedWebinarTos b'], false)
-                ->joinWith(['webinarSpeakers bb' => function ($bb) {
-                    $bb->select(['bb.webinar_enc_id',
-                        'bb.user_enc_id', 'bb1.first_name',
-                        'bb1.last_name', 'bb1.username',
-                        'bb1.description',
-                        'CASE WHEN bb1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", bb1.image_location, "/", bb1.image) END image'
+                ->joinWith(['webinarSpeakers c' => function ($bb) {
+                    $bb->select([
+                        'c.webinar_enc_id',
+                        'c.speaker_enc_id',
+                        'c1.fullname',
+                        'CASE WHEN c1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", c1.image_location, "/", c1.image) END image',
+                        'c1.email',
+                        'c1.phone',
+                        'c1.facebook',
+                        'c1.twitter',
+                        'c1.linkedin',
+                        'c1.instagram',
+                        'c2.designation',
                     ]);
-                    $bb->joinWith(['userEnc bb1'], false);
-                    $bb->onCondition(['bb.is_deleted' => 0]);
+                    $bb->joinWith(['speakerEnc c1' => function ($c1) {
+                        $c1->joinWith(['designationEnc c2' => function ($c2) {
+                            $c2->onCondition(['c2.is_deleted' => 0, 'c2.status' => 'Publish']);
+                        }], false);
+                        $c1->onCondition(['c1.is_deleted' => 0]);
+                    }], false);
+                    $bb->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->joinWith(['webinarRegistrations d' => function ($d) {
-                    $d->select(['d.webinar_enc_id',
-                        'd.register_enc_id',
+                    $d->select([
+                        'd.webinar_enc_id',
                         'd.register_enc_id',
                         'CASE WHEN d1.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", d1.image_location, "/", d1.image) END image'
                     ]);
                     $d->joinWith(['createdBy d1'], false);
                     $d->onCondition(['d.status' => 1, 'd.is_deleted' => 0]);
-                }])
-                ->joinWith(['assignedWebinarTopics c' => function ($c) {
-                    $c->select(['c.webinar_enc_id', 'c1.name']);
-                    $c->joinWith(['topicEnc c1'], false);
-                    $c->onCondition(['c.is_deleted' => 0]);
                 }])
                 ->where([
                     'b.organization_enc_id' => $college_id['organization_enc_id'],
