@@ -58,6 +58,7 @@ class scriptModel extends Model
         $slug = $this->createSlug($company_name);
         $pathdir = Url::to('@rootDirectory/files/temp/' . $dir . '/');
         $zipcreated = Url::to('@rootDirectory/files/temp/' . $dir . '/' . $slug . '.zip');
+        $user_path = Url::to('@root/files/temp/' . $dir . '/' . $slug . '.zip');
         $zip = new \ZipArchive();
         if ($zip->open($zipcreated, \ZipArchive::CREATE) === TRUE) {
             $dir = opendir($pathdir);
@@ -71,7 +72,7 @@ class scriptModel extends Model
         $end = number_format((microtime(true) - $start), 2);
         return [
             'path' => $save,
-            'filename' => $zipcreated,
+            'filename' => $user_path,
             'time' => $end,
         ];
     }
