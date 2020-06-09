@@ -982,6 +982,11 @@ $this->registercss('
 .great-red a:focus {
   outline: 0;
 }
+@media screen and (max-width: 768px){
+    .safety-header h3{
+        max-width: 400px;
+    }
+}
 @media screen and (max-width: 550px){
     .download{
         flex-wrap: wrap;
