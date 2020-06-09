@@ -536,11 +536,11 @@ class CollegeProfileController extends ApiBaseController
                 ->where([
                     'a.is_deleted' => 0,
                     'a.status' => 'Active',
-                    'a.application_for' => [0, 2],
-                    'a.for_all_colleges' => 1,
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
+                    'a.application_for' => [0, 2],
+                    'a.for_all_colleges' => 1,
                 ]);
             if ($limit) {
                 $jobs->limit($limit);
