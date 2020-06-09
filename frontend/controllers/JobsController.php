@@ -1319,8 +1319,8 @@ class JobsController extends Controller
 
     public function actionImageScript()
     {
-      $model = new scriptModel();
-        if ($model->load(Yii::$app->request->post())) {
+         $model = new scriptModel();
+         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->logo = UploadedFile::getInstance($model, 'logo');
             $rand_dir = Yii::$app->getSecurity()->generateRandomString();
@@ -1331,17 +1331,25 @@ class JobsController extends Controller
                     if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
                         $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
                         if (isset($file)){
-                             $url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                             //$url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                             $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
                              return [
                                  'status'=>200,
-                                 'url'=>$url
+                                 'url'=>$url,
+                                 'time'=>$file['time'],
                              ];
                         }
+                        else{
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
             }
         }
-      return $this->render('test2',['model'=>$model]);
     }
 
 //    public function actionTest()
@@ -1355,6 +1363,6 @@ class JobsController extends Controller
 
     public function actionTestApi()
     {
-        return $this->render('test');
+        return $this->render('test2');
     }
 }

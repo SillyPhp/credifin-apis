@@ -237,7 +237,7 @@ endif;
                     <?php
                 }
                 ?>
-                <?= $this->render('/widgets/safety-widgets')?>
+                <?= $this->render('/widgets/safety-widgets',['scriptModel'=>$scriptModel])?>
                 <div class="portlet light nd-shadow">
                     <div class="portlet-title">
                         <div class="caption">
@@ -699,9 +699,13 @@ p{
 
  
 ");
-$script = <<<JS
+$script = <<< JS
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
 JS;
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.min.css');
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
