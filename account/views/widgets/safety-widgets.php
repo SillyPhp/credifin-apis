@@ -160,7 +160,9 @@ margin-top: 16px;
     color: #000;
     
 }
-input::-webkit-file-upload-button{
+input::-webkit-file-upload-button, 
+input::-moz-file-upload-button,
+input::-ms-browse{
     background: transparent !important;
     border: none; 
     height: 37px;

@@ -316,6 +316,10 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+
+        <?php
+            if (Yii::$app->user->identity->organization){
+        ?>
         <div class="row">
             <div class="quick-review">
                 <div class="row quick-review-inner">
@@ -341,6 +345,9 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+        <?php
+            }
+        ?>
     </div>
     <div class="container">
         <section class="great-bg">
@@ -1024,7 +1031,7 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             function setImage(){
                 bigPoster.setAttribute('src', fElem);
             }
-            setTimeout(setImage, 500);
+            setTimeout(setImage, 3000);
 
             //add and remove active class from li
             let activeli = document.getElementsByClassName('activeLi');
