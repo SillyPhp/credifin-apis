@@ -96,6 +96,7 @@ $this->registercss('
 	overflow: hidden;
 	border: 1px solid #eee;
 	box-shadow: 0 0 13px 4px #eee;
+	line-height:104px;
 }
 .comp-Name {
 	font-size: 24px;
