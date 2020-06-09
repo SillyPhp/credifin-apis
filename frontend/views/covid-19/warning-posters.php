@@ -316,39 +316,39 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
-
-        <?php
-        if (Yii::$app->user->identity->organization) {
-            ?>
-            <div class="row">
-                <div class="quick-review">
-                    <div class="row quick-review-inner">
-                        <div class="col-md-3 col-xs-12 quick-review-img">
-                            <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>"></div>
-                        <div class="col-md-7 col-xs-12 overflow-hidden set-heading-c">
-                            <h2>Customize Posters With Your Own Company's Name And Logo</h2>
-                            <div class="quick-review-action" id="review_btn">
+        <div class="row">
+            <div class="quick-review">
+                <div class="row quick-review-inner">
+                    <div class="col-md-3 col-xs-12 quick-review-img">
+                        <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>"></div>
+                    <div class="col-md-7 col-xs-12 overflow-hidden set-heading-c">
+                        <h2>Customize Posters With Your Own Company's Name And Logo</h2>
+                        <div class="quick-review-action" id="review_btn">
+                            <?php
+                            if (Yii::$app->user->isGuest) {
+                                ?>
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign
+                                    Up &
+                                    Download For Free</a>
                                 <?php
-                                if (Yii::$app->user->isGuest) {
+                            } else {
+                                if (!Yii::$app->user->identity->organization) {
                                     ?>
-                                    <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign
-                                        Up &
-                                        Download For Free</a>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#safetyUserModal">Customize
+                                        & Download</a>
                                     <?php
                                 } else {
                                     ?>
                                     <a href="/account/dashboard/">Customize & Download</a>
                                     <?php
                                 }
-                                ?>
-                            </div>
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
             </div>
-            <?php
-        }
-        ?>
+        </div>
     </div>
     <div class="container">
         <section class="great-bg">
@@ -496,7 +496,7 @@ use yii\helpers\Url;
 
     <?= $this->render('/widgets/our-services-safety-posters') ?>
 </section>
-
+<?= $this->render('/widgets/safetyUserModal') ?>
 <?php
 
 $this->registercss('

@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 ?>
-    <section class="">
+    <section>
         <div class="row">
             <div class="col-md-12">
                 <div class="quick-review row colorYellow">
