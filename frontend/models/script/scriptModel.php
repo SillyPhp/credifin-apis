@@ -48,13 +48,13 @@ class scriptModel extends Model
             imagecopy($img,$profile_image, 100, 100,0, 0, 300, 300);
             header("Content-type: image/png");
             $filename = Yii::$app->getSecurity()->generateRandomString().'.png';
-            $save = Url::to('@rootDirectory/assets/themes/ey/temp/'.$dir.'/'.$filename);
+            $save = Url::to('@rootDirectory/files/temp/'.$dir.'/'.$filename);
             imagepng($img,$save);
             imagedestroy($img);
         }
         $slug = $this->createSlug($company_name);
-        $pathdir = Url::to('@rootDirectory/assets/themes/ey/temp/'.$dir.'/');
-        $zipcreated = Url::to('@rootDirectory/assets/themes/ey/temp/'.$dir.'/'.$slug.'.zip');
+        $pathdir = Url::to('@rootDirectory/files/temp/'.$dir.'/');
+        $zipcreated = Url::to('@rootDirectory/files/temp/'.$dir.'/'.$slug.'.zip');
         $zip = new \ZipArchive();
         if($zip->open($zipcreated, \ZipArchive::CREATE ) === TRUE) {
             $dir = opendir($pathdir);

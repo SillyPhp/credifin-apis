@@ -1325,7 +1325,7 @@ class JobsController extends Controller
             $model->logo = UploadedFile::getInstance($model, 'logo');
             $rand_dir = Yii::$app->getSecurity()->generateRandomString();
             $file_logo = $rand_dir.'-'.$model->logo->baseName.'.'.$model->logo->extension;
-            $base_path = Url::to('@rootDirectory/assets/themes/ey/temp/'.$rand_dir);
+            $base_path = Url::to('@rootDirectory/files/temp/'.$rand_dir);
             if (!is_dir($base_path)) {
                 if (mkdir($base_path, 0755, true)) {
                     if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
