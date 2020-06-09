@@ -56,8 +56,8 @@ class scriptModel extends Model
             imagedestroy($img);
         }
         $slug = $this->createSlug($company_name);
-        $pathdir = Url::to('@root/files/temp/' . $dir . '/');
-        $zipcreated = Url::to('@root/files/temp/' . $dir . '/' . $slug . '.zip');
+        $pathdir = Url::to('@rootDirectory/files/temp/' . $dir . '/');
+        $zipcreated = Url::to('@rootDirectory/files/temp/' . $dir . '/' . $slug . '.zip');
         $zip = new \ZipArchive();
         if ($zip->open($zipcreated, \ZipArchive::CREATE) === TRUE) {
             $dir = opendir($pathdir);
