@@ -51,7 +51,7 @@ class scriptModel extends Model
             imagecopy($img, $profile_image, 100, 100, 0, 0, 300, 300);
             header("Content-type: image/png");
             $filename = Yii::$app->getSecurity()->generateRandomString() . '.png';
-            $save = Url::to('@root/files/temp/' . $dir . '/' . $filename);
+            $save = Url::to('@rootDirectory/files/temp/' . $dir . '/' . $filename);
             imagepng($img, $save);
             imagedestroy($img);
         }
