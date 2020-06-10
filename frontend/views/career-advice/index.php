@@ -110,7 +110,7 @@ $careerAdviceCategories = [
                                         </div>
                                     </div>
                                     <div class="view-btn <?= $category["buttonColor"]; ?>">
-                                        <a href="<?= Url::to("/career-advice/" . $category["slug"]); ?>">View</a>
+                                        <span>View</span>
                                     </div>
                                 </div>
                             </div>
@@ -166,6 +166,16 @@ $careerAdviceCategories = [
             </div>
         </div>
     </section>
+
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
 <?php
 $this->registerCss('
 .ca-comming-soon-icon{
@@ -249,7 +259,7 @@ body {
     bottom:10px;
     right:15px
 }
-.view-btn a{
+.view-btn span { 
     color:#333;
     font-size:15px;
 }

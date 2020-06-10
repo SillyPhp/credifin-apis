@@ -64,7 +64,7 @@ Yii::$app->view->registerJs('var application_type = "' . ucwords(Yii::$app->cont
                 <?php } ?>
             </div>
             <div class="modal-footer">
-                <?= Html::submitbutton('Save', ['class' => 'btn btn-primary sav_job']); ?>
+                <?= Html::submitbutton('Apply', ['class' => 'btn btn-primary sav_job']); ?>
                 <?= Html::button('Close', ['class' => 'btn btn-default', 'data-dismiss' => 'modal']); ?>
             </div>
             <?php ActiveForm::end(); ?>

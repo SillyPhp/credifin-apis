@@ -6,6 +6,8 @@ use api\modules\v1\models\Candidates;
 use api\modules\v1\models\Cards;
 use common\models\AppliedApplications;
 use common\models\Cities;
+use common\models\UnclaimedFollowedOrganizations;
+use common\models\UnclaimedOrganizations;
 use common\models\Utilities;
 use common\models\Countries;
 use common\models\EmployeeBenefits;
@@ -64,21 +66,21 @@ class OrganizationsController extends ApiBaseController
 
                 $options = [];
                 $options['organization_id'] = $organization['organization_enc_id'];
-                if($req['type'] == 'Jobs'){
+                if ($req['type'] == 'Jobs') {
                     $result['jobs'] = Cards::jobs($options);
-                }elseif ($req['type'] == 'Internships'){
+                } elseif ($req['type'] == 'Internships') {
                     $result['internships'] = Cards::internships($options);
-                }else{
+                } else {
                     $result['jobs'] = Cards::jobs($options);
                     $result['internships'] = Cards::internships($options);
                 }
 
                 return $this->response(200, $result);
             } else {
-                return $this->response(404,'Not Found');
+                return $this->response(404, 'Not Found');
             }
         } else {
-            return $this->response(422,'Missing Information');
+            return $this->response(422, 'Missing Information');
         }
     }
 
@@ -111,10 +113,10 @@ class OrganizationsController extends ApiBaseController
 
                 return $this->response(200, $result);
             } else {
-                return $this->response(404,'Not Found');
+                return $this->response(404, 'Not Found');
             }
         } else {
-            return $this->response(422,'Missing Information');
+            return $this->response(422, 'Missing Information');
         }
     }
 
@@ -192,16 +194,16 @@ class OrganizationsController extends ApiBaseController
                             ->one();
                         $result['follow'] = $follow;
                     } else {
-                        return $this->response(401,'unauthorized');
+                        return $this->response(401, 'unauthorized');
                     }
                 }
 
                 return $this->response(200, $result);
             } else {
-                return $this->response(404,'Not Found');
+                return $this->response(404, 'Not Found');
             }
         } else {
-            return $this->response(422,'Missing information');
+            return $this->response(422, 'Missing information');
         }
     }
 
@@ -219,48 +221,105 @@ class OrganizationsController extends ApiBaseController
                 'user_enc_id' => $token_holder_id->user_enc_id
             ]);
 
-            $chkuser = FollowedOrganizations::find()
-                ->select('followed')
-                ->where(['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+
+            $org = Organizations::find()
+                ->select(['organization_enc_id'])
+                ->where(['organization_enc_id' => $req['id']])
                 ->asArray()
-                ->one();
+                ->all();
 
-            $status = $chkuser['followed'];
+            $unclaimed_org = UnclaimedOrganizations::find()
+                ->select([])
+                ->where(['organization_enc_id' => $req['id']])
+                ->asArray()
+                ->all();
 
-            if (empty($chkuser)) {
-                $followed = new FollowedOrganizations();
-                $utilitiesModel = new Utilities();
-                $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-                $followed->followed_enc_id = $utilitiesModel->encrypt();
-                $followed->organization_enc_id = $req['id'];
-                $followed->user_enc_id = $user->user_enc_id;
-                $followed->followed = 1;
-                $followed->created_on = date('Y-m-d H:i:s');
-                $followed->created_by = $user->user_enc_id;
-                $followed->last_updated_on = date('Y-m-d H:i:s');
-                $followed->last_updated_by = $user->user_enc_id;
-                if ($followed->save()) {
-                    return $this->response(200,'saved');
-                } else {
-                    return $this->response(500,"don't saved");
+            if (!empty($org)) {
+
+                $chkuser = FollowedOrganizations::find()
+                    ->select('followed')
+                    ->where(['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                    ->asArray()
+                    ->one();
+
+                $status = $chkuser['followed'];
+
+                if (empty($chkuser)) {
+                    $followed = new FollowedOrganizations();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $followed->followed_enc_id = $utilitiesModel->encrypt();
+                    $followed->organization_enc_id = $req['id'];
+                    $followed->user_enc_id = $user->user_enc_id;
+                    $followed->followed = 1;
+                    $followed->created_on = date('Y-m-d H:i:s');
+                    $followed->created_by = $user->user_enc_id;
+                    $followed->last_updated_on = date('Y-m-d H:i:s');
+                    $followed->last_updated_by = $user->user_enc_id;
+                    if ($followed->save()) {
+                        return $this->response(200, 'saved');
+                    } else {
+                        return $this->response(500, "don't saved");
+                    }
+                } else if ($status == 1) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                        ->execute();
+                    if ($update == 1) {
+                        return $this->response(200, 'saved');
+                    }
+                } else if ($status == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                        ->execute();
+                    if ($update == 1) {
+                        return $this->response(200, 'saved');
+                    }
                 }
-            } else if ($status == 1) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(FollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
-                    ->execute();
-                if ($update == 1) {
-                    return $this->response(200,'saved');
+            } elseif ($unclaimed_org) {
+                $unchkuser = UnclaimedFollowedOrganizations::find()
+                    ->select('followed')
+                    ->where(['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                    ->asArray()
+                    ->one();
+
+                $status = $unchkuser['followed'];
+
+                if (empty($unchkuser)) {
+                    $followed = new UnclaimedFollowedOrganizations();
+                    $utilitiesModel = new Utilities();
+                    $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+                    $followed->followed_enc_id = $utilitiesModel->encrypt();
+                    $followed->organization_enc_id = $req['id'];
+                    $followed->user_enc_id = $user->user_enc_id;
+                    $followed->followed = 1;
+                    $followed->created_on = date('Y-m-d H:i:s');
+                    $followed->created_by = $user->user_enc_id;
+                    if ($followed->save()) {
+                        return $this->response(200, 'saved');
+                    } else {
+                        return $this->response(500, "don't saved");
+                    }
+                } else if ($status == 1) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UnclaimedFollowedOrganizations::tableName(), ['followed' => 0, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                        ->execute();
+                    if ($update == 1) {
+                        return $this->response(200, 'saved');
+                    }
+                } else if ($status == 0) {
+                    $update = Yii::$app->db->createCommand()
+                        ->update(UnclaimedFollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
+                        ->execute();
+                    if ($update == 1) {
+                        return $this->response(200, 'saved');
+                    }
                 }
-            } else if ($status == 0) {
-                $update = Yii::$app->db->createCommand()
-                    ->update(FollowedOrganizations::tableName(), ['followed' => 1, 'last_updated_on' => date('Y-m-d H:i:s'), 'last_updated_by' => $user->user_enc_id], ['created_by' => $user->user_enc_id, 'organization_enc_id' => $req['id']])
-                    ->execute();
-                if ($update == 1) {
-                    return $this->response(200,'saved');
-                }
+            }else{
+                return $this->response(500,'an error occurred');
             }
         } else {
-            return $this->response(422,'Missing Information');
+            return $this->response(422, 'Missing Information');
         }
 
     }

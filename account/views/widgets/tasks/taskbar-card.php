@@ -13,6 +13,7 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
             <header class="card-header bg-primary">
                 <div class="widget-profile-info">
                     <div class="profile-picture">
+                        <div class="edit-org-logo"><i class="fa fa-pencil"></i></div>
                         <?php
                         $name = $image = $link = NULL;
                         if (!empty(Yii::$app->user->identity->organization)) {
@@ -84,9 +85,37 @@ echo Html::hiddenInput('value', $viewed, ['id' => 'hidden_input']);
         </section>
     </div>
 </section>
-
+<div class="load-content">
+    <div class="modal fade bs-modal-lg in" id="loadData" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="<?= Url::to('@backendAssets/global/img/loading-spinner-grey.gif') ?>"
+                         alt="<?= Yii::t('account', 'Loading'); ?>" class="loading">
+                    <span> &nbsp;&nbsp;<?= Yii::t('account', 'Loading'); ?>... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php
 $this->registerCss("
+.modal-backdrop{
+    z-index: 9998 !Important;
+}
+.edit-org-logo{
+    position: absolute;
+    right: 10px;
+    background-color: #fff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    color: #000;
+    text-align: center;
+    line-height: 28px;
+    box-shadow: 0px 1px 5px 0px #5a5a5ac4;
+    cursor:pointer;
+}
 .pt{
     font-size: 15px;
     padding-left: 27px;
@@ -260,6 +289,7 @@ ul.widget-todo-list li .todo-actions .todo-remove {
     display: table-cell;
     vertical-align: middle;
     width: 1%;
+    position:relative;
 }
 .widget-profile-info .profile-picture img, .widget-profile-info .profile-picture canvas {
     display: block;
@@ -319,6 +349,10 @@ ul.widget-todo-list li .todo-actions .todo-remove {
 }
 ");
 $script = <<< JS
+    $(document).on('click', '.edit-org-logo', function() {
+        $("#loadData").modal('show');
+        $('.load-content').load('/account/dashboard/update-profile');
+    });
     var ps = new PerfectScrollbar('.widget-todo-list');
     var page = 0;
     var action = 1;
@@ -570,13 +604,15 @@ $this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.js', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerCssFile('@vendorAssets/tutorials/css/introjs.css', ['depends' => [\yii\bootstrap\BootstrapAsset::className()]]);
 $this->registerJsFile('/assets/themes/dashboard/tutorials/dashboard_tutorial.js', ['depends' => [\yii\web\JqueryAsset::className()], 'position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.3/croppie.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
 <script type="text/template" id="todo-template">
     {{#.}}
     <li>
         <div class="checkbox-custom checkbox-default text-left">
-            <input type="checkbox" name="task" id="{{task_id}}{{id}}" class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
+            <input type="checkbox" name="task" id="{{task_id}}{{id}}"
+                   class="{{#is_completed}} uncheck {{/is_completed}}{{^is_completed}}todo-check{{/is_completed}}"
                    {{#is_completed}} checked {{/is_completed}} />
             <label class="todo-label {{#is_completed}} line-pass {{/is_completed}}" data-type="text">{{name}}</label>
         </div>

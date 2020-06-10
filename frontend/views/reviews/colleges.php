@@ -41,6 +41,9 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+<?= $this->render('/widgets/online-classes', [
+    'model' => $model,
+]) ?>
     <section>
         <div class="container">
             <div class="row">
@@ -151,6 +154,16 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
 <?php
 
 $this->registerCss('

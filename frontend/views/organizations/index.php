@@ -11,7 +11,7 @@ use yii\helpers\Url;
                 <div class="col-md-12">
                     <div class="main-heading">
                         <div class="pos-center">
-                            <div class="main-text">Explore All Companies</div>
+                            <div class="main-text mt-50">Explore All Companies</div>
                             <div class="search-container">
                                 <form action="">
                                     <div class="load-suggestions Typeahead-spinner city-spin"
@@ -30,6 +30,13 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+<div class="container">
+    <div class="row">
+        <?php echo $this->render('/widgets/sorting-filters')?>
+    </div>
+</div>
+
     <section>
         <div class="container">
             <div class="row">
@@ -58,7 +65,7 @@ use yii\helpers\Url;
         </div>
     </section>
 <?php
-echo $this->render('/widgets/mustache/all-companies-card');
+echo $this->render('/widgets/mustache/companies-card');
 $this->registerCss('
 .sbar-head{
     text-align:center;
@@ -330,8 +337,9 @@ function getCompanies() {
             data:{keyword:keyword},
             success:function (response) {
                 if(response.status == 200){
-                    var get_companies = $('#all-companies-card').html();
+                    var get_companies = $('#companies-card-all').html();
                     $("#companies-card").html(Mustache.render(get_companies, response.organization));
+                    $('[data-toggle="tooltip"]').tooltip();
                     utilities.initials();
                 }
             }

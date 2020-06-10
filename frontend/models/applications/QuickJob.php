@@ -39,16 +39,19 @@ class QuickJob extends Model
     public $exp;
     public $skills;
     public $positions;
+    public $country = 'India';
+    public $currency;
+    public $wage_duration;
 
     public function rules()
     {
         return [
-            [['job_title', 'skills','positions','exp','description','city','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
+            [['job_title', 'skills','positions','wage_duration','exp','description','city','currency','country','email','gender', 'job_profile', 'wage_type', 'job_type', 'url', 'company_name'], 'required'],
             [['fixed_wage', 'min_salary', 'max_salary'], 'safe'],
             [['url'], 'url', 'defaultScheme' => 'http'],
             [['job_title', 'company_name'], 'string', 'max' => 50],
             [['positions'], 'integer', 'max' => 100000],
-            [['job_title', 'company_name'], 'trim'],
+            [['job_title','url','company_name','email','positions','fixed_wage','min_salary','max_salary'], 'trim'],
             ['email', 'email'],
         ];
     }
@@ -178,7 +181,9 @@ class QuickJob extends Model
             $unclaimOptions->unclaim_options_enc_id = $utilitiesModel->encrypt();
             $unclaimOptions->application_enc_id = $employerApplication->application_enc_id;
             $unclaimOptions->email = $this->email;
+            $unclaimOptions->currency_enc_id = $this->currency;
             $unclaimOptions->positions = $this->positions;
+            $unclaimOptions->wage_duration = $this->wage_duration;
             $unclaimOptions->job_url = $this->url;
             $unclaimOptions->wage_type = $wage_type;
             $unclaimOptions->fixed_wage = (($this->fixed_wage) ? str_replace(',', '', $this->fixed_wage) : null);
@@ -211,7 +216,6 @@ class QuickJob extends Model
                         ->alias('a')
                         ->select(['a.skill_enc_id'])
                         ->where(['skill' => $skill]);
-
                     $skills_set = $data_skill->asArray()->one();
                     if (!empty($skills_set)) {
                         $applicationSkillsModel = new ApplicationSkills();

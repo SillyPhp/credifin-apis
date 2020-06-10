@@ -27,7 +27,7 @@ namespace common\models;
  * @property CategoryTags[] $categoryTags
  * @property QuestionsPool[] $questionsPools
  * @property QuizPool[] $quizPools
- * @property Quizs[] $quizs
+ * @property Quizzes[] $quizzes
  * @property TrainingProgramApplication[] $trainingProgramApplications
  * @property TwitterJobs[] $twitterJobs
  * @property ApplicationTemplates[] $applicationTemplates
@@ -99,9 +99,9 @@ class AssignedCategories extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getQuizs()
+    public function getQuizzes()
     {
-        return $this->hasMany(Quizs::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
+        return $this->hasMany(Quizzes::className(), ['assigned_category_enc_id' => 'assigned_category_enc_id']);
     }
     /**
      * @return \yii\db\ActiveQuery

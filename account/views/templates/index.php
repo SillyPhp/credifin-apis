@@ -7,6 +7,92 @@ use yii\helpers\Url;
             <div class="portlet-title">
                 <div class="caption">
                     <i class=" icon-social-twitter font-dark hide"></i>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Jobs Templates'); ?></span>
+                </div>
+                <div class="actions">
+                    <?php if (count($jobs) > 4): ?>
+                        <a href="<?= Url::toRoute('/jobs/view-templates'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <?php
+                        if (count($jobs) > 0) {
+                            echo $this->render('/widgets/employer-applications/template-card', [
+                                'processes' => $jobs,
+                                'limit' => 4,
+                                'type' => "Jobs",
+                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No process to display</div>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12 col-sm-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-social-twitter font-dark hide"></i>
+                    <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Internships Templates'); ?></span>
+                </div>
+                <div class="actions">
+                    <?php if (count($internships) > 4): ?>
+                        <a href="<?= Url::toRoute('/internships/view-templates'); ?>" data-toggle="tooltip" title="View All">
+                            <img src="<?= Url::to('@eyAssets/images/pages/dashboard/viewall.png'); ?>"></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <?php
+                        if (count($internships) > 0) {
+                            echo $this->render('/widgets/employer-applications/template-card', [
+                                'processes' => $internships,
+                                'limit' => 4,
+                                'type' => "Internships",
+                                'col_width' => 'col-lg-6 col-md-6 col-sm-6',
+                            ]);
+                        } else {
+                            ?>
+                            <div class="tab-empty">
+                                <div class="tab-empty-icon">
+                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/process.png'); ?>"
+                                         class="img-responsive" alt=""/>
+                                </div>
+                                <div class="tab-empty-text">
+                                    <div class="">No process to display</div>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12 col-sm-12">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class=" icon-social-twitter font-dark hide"></i>
                     <span class="caption-subject font-dark bold uppercase"><?= Yii::t('account', 'Questionnaire Templates'); ?></span>
                 </div>
                 <div class="actions">
@@ -89,6 +175,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.p-category > a img{
+    max-height:55px !important;    
+}
 .actions > a {
     margin-right: 15px;
 }
@@ -98,7 +187,7 @@ $this->registerCss('
     transform: scale(1.2);
 }
 .actions > a > img {
-    height:22px;
+    height:20px;
     margin-top:7px;
 }
 .tab-empty{

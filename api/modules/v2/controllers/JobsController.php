@@ -34,9 +34,9 @@ class JobsController extends ApiBaseController
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'application-detail' => ['POST','OPTIONS'],
-                'shortlist-application' => ['POST','OPTIONS'],
-                'apply' => ['POST','OPTIONS'],
+                'application-detail' => ['POST', 'OPTIONS'],
+                'shortlist-application' => ['POST', 'OPTIONS'],
+                'apply' => ['POST', 'OPTIONS'],
             ]
         ];
         return $behaviors;
@@ -45,8 +45,7 @@ class JobsController extends ApiBaseController
     private function userId()
     {
 
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -65,8 +64,7 @@ class JobsController extends ApiBaseController
 
     public function actionApplicationDetail()
     {
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -77,7 +75,7 @@ class JobsController extends ApiBaseController
             $data = $this->getApplication($req['slug']);
 
             if (empty($data)) {
-                return $this->response(404);
+                return $this->response(404, ['status' => 404, 'message' => 'not found']);
             }
 
             if (Yii::$app->request->headers->get('authorization') && Yii::$app->request->headers->get('source')) {
@@ -106,7 +104,7 @@ class JobsController extends ApiBaseController
 
                     $reviewlist = ReviewedApplications::find()
                         ->select(['review'])
-                        ->where(['review' =>1,'application_enc_id'=>$data['application_enc_id'], 'created_by'=>$user->user_enc_id])
+                        ->where(['review' => 1, 'application_enc_id' => $data['application_enc_id'], 'created_by' => $user->user_enc_id])
                         ->exists();
                     $data["hasReviewed"] = $reviewlist;
                 } else {
@@ -114,7 +112,7 @@ class JobsController extends ApiBaseController
                 }
             }
 
-            if(!empty($data['timings_from']) && !empty($data['timings_to'])){
+            if (!empty($data['timings_from']) && !empty($data['timings_to'])) {
                 $data['timings_from'] = date("H:i", strtotime($data['timings_from']));
                 $data['timings_to'] = date("H:i", strtotime($data['timings_to']));
             }
@@ -256,16 +254,16 @@ class JobsController extends ApiBaseController
                 'w.initials_color color',
                 'w.email',
                 'w.website',
-                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, " / ", w.logo) END logo',
-                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, true) . '",w.cover_image_location, " / ", w.cover_image) END cover_image'
+                'w.slug org_slug',
+                'r.name application_type',
+                'CASE WHEN w.logo IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '",w.logo_location, "/", w.logo) END logo',
+                'CASE WHEN w.cover_image IS NULL THEN NULL ELSE CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->cover_image, 'https') . '",w.cover_image_location, "/", w.cover_image) END cover_image'
             ])
             ->where([
                 'a.slug' => $slug,
                 'a.is_deleted' => 0,
             ])
-//            ->joinWith(['applicationTypeEnc r' => function ($x) {
-//                $x->andWhere(['r.name' => 'Jobs']);
-//            }], false)
+            ->joinWith(['applicationTypeEnc r'], false)
             ->joinWith(['applicationOptions b'], false)
             ->joinWith(['applicationEmployeeBenefits c' => function ($x) {
                 $x->onCondition(['c.is_deleted' => 0]);
@@ -294,15 +292,16 @@ class JobsController extends ApiBaseController
                 $x->onCondition(['o.is_deleted' => 0]);
                 $x->joinWith(['locationEnc s' => function ($x) {
                     $x->joinWith(['cityEnc t'], false);
+                    $x->groupBy(['s.city_enc_id']);
                 }], false);
-                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions','s.latitude','s.longitude', 't.city_enc_id', 't.name']);
+                $x->select(['o.location_enc_id', 'o.application_enc_id', 'o.positions', 's.latitude', 's.longitude', 't.city_enc_id', 't.name']);
             }])
             ->joinWith(['applicationInterviewLocations p' => function ($x) {
                 $x->onCondition(['p.is_deleted' => 0]);
                 $x->joinWith(['locationEnc u' => function ($x) {
                     $x->joinWith(['cityEnc v'], false);
                 }], false);
-                $x->select(['p.location_enc_id', 'p.application_enc_id','u.latitude' ,'u.longitude','v.city_enc_id', 'v.name']);
+                $x->select(['p.location_enc_id', 'p.application_enc_id', 'u.latitude', 'u.longitude', 'v.city_enc_id', 'v.name']);
             }])
             ->joinWith(['organizationEnc w' => function ($s) {
                 $s->onCondition(['w.status' => 'Active', 'w.is_deleted' => 0]);
@@ -315,14 +314,13 @@ class JobsController extends ApiBaseController
     public function actionShortlistApplication()
     {
 
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
         $candidate = $this->userId();
         $parameters = \Yii::$app->request->post();
-        
+
 
         if (!empty($parameters['application_enc_id']) && isset($parameters['application_enc_id'])) {
             $id = $parameters['application_enc_id'];
@@ -359,7 +357,7 @@ class JobsController extends ApiBaseController
                         $delete_application->last_updated_on = date('Y-m-d H:i:s');
                         $delete_application->update();
                     }
-                    return $this->response(201, ['status'=>200]);
+                    return $this->response(201, ['status' => 200]);
                 } else {
                     return $this->response(500, 'not shortlisted');
                 }
@@ -372,7 +370,7 @@ class JobsController extends ApiBaseController
                 $update_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $update_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($update_shortlisted->update()) {
-                    return $this->response(200, ['status'=>200]);
+                    return $this->response(200, ['status' => 200]);
                 } else {
                     return $this->response(500, 'not shorlisted');
                 }
@@ -384,7 +382,7 @@ class JobsController extends ApiBaseController
                 $delete_shortlisted->last_updated_by = $candidate->user_enc_id;
                 $delete_shortlisted->last_updated_on = date('Y-m-d H:i:s');
                 if ($delete_shortlisted->update()) {
-                    return $this->response(200, ['status'=>201]);
+                    return $this->response(200, ['status' => 201]);
                 } else {
                     return $this->response(500, 'Job is not deleted in shortlist');
                 }
@@ -397,8 +395,7 @@ class JobsController extends ApiBaseController
     public function actionApply()
     {
 
-        if( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' )
-        {
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
             header("HTTP/1.1 202 Accepted");
             exit;
         }
@@ -469,7 +466,7 @@ class JobsController extends ApiBaseController
                 }
 
                 if ($res = $model->saveValues()) {
-                    return $this->response(200,['status'=>200]);
+                    return $this->response(200, ['status' => 200]);
                 } else {
                     return $this->response(500);
                 }

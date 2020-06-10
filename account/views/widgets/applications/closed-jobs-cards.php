@@ -70,7 +70,7 @@ if (!empty($total_applications)) {
                 <?php
                 $form = ActiveForm::begin([
                     'id'=>'extends_job',
-                    'action'=>'extends-date'
+                    'action'=>'extends-date',
                 ]);
                       echo $form->field($model, 'date')->widget(DatePicker::classname(), [
                                             'options' => ['placeholder' => 'Last Date To Apply'],
@@ -84,9 +84,9 @@ if (!empty($total_applications)) {
                                             ]])->label(false);
                       echo $form->field($model, 'application_enc_id', ['template' => '{input}'])->hiddenInput(['id' => 'application_enc_id'])->label(false);
                                         ?>
-                </div>
-                <div class="modal-footer">
-                    <?= Html::submitButton('Save',['class'=>'btn btn-c-save']) ?>
+                    <div class="modal-footer">
+                        <?= Html::submitButton('Save',['class'=>'btn btn-c-save']) ?>
+                    </div>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>

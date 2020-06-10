@@ -34,7 +34,7 @@ if (!empty($total_processes)) {
                             </div>
                             <a href="<?= Url::toRoute('hiring-processes' . DIRECTORY_SEPARATOR . $processes[$next]["id"] . DIRECTORY_SEPARATOR . 'view'); ?>">
                                 <img src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
-                                <span><?= $processes[$next]['process_name']; ?></span>
+                                <span class="proc-s"><?= $processes[$next]['process_name']; ?></span>
                             </a>
                         </div>
                     </div>
@@ -75,3 +75,15 @@ $(document).on('click','.delete_interview_process',function(e){
 });
 JS;
 $this->registerJs($script);
+$this->registercss('
+.p-category > a{
+    padding-bottom:20px !important;
+}
+.proc-s {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	height: 45px;
+}
+');

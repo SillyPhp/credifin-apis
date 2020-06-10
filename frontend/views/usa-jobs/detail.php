@@ -1,9 +1,7 @@
 <?php
-
 use yii\helpers\Url;
 use yii\helpers\Html;
-
-$link = Url::to('detail/' . $familyid . '/' . $objectid, 'https');
+$link = Url::to('/usa-jobs/detail/' . $familyid . '/' . $objectid, 'https');
 $this->params['header_dark'] = false;
 $separator = Yii::$app->params->seo_settings->title_separator;
 $this->title = $get['DepartmentName'] . ' is hiring for ' . $get['PositionTitle'];
@@ -226,19 +224,19 @@ $this->params['seo_tags'] = [
                     </div>
                     <div class="tw-share">
                         <button class="tw-btn"
-                                onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-twitter marg"></i>Twitter
                         </button>
                     </div>
                     <div class="li-share">
                         <button class="li-btn"
-                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-linkedin-in marg"></i>LinkedIn
                         </button>
                     </div>
                     <div class="wa-share">
                         <button class="wa-btn"
-                                onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
+                                onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');">
                             <i class="fab fa-whatsapp marg"></i>Whatsapp
                         </button>
                     </div>

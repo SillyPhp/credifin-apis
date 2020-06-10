@@ -1,16 +1,30 @@
 <?php
-
 namespace frontend\controllers;
-
 use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationSkills;
 use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
 use common\models\Cities;
 use common\models\Designations;
+use common\models\EmailLogs;
+use common\models\IndianGovtDepartments;
 use common\models\OrganizationLocations;
 use common\models\States;
+use common\models\TwitterJobs;
+use common\models\UnclaimAssignedIndustries;
+use common\models\UnclaimedOrganizations;
+use common\models\UnclaimOrganizationLocations;
+use common\models\UsaDepartments;
+use common\models\Usernames;
+use frontend\models\applications\PreferredApplicationCards;
+use frontend\models\curl\RollingCurl;
+use frontend\models\curl\RollingCurlRequest;
+use frontend\models\curl\RollingRequest;
+use frontend\models\script\Box;
+use frontend\models\script\Color;
+use frontend\models\script\scriptModel;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -35,7 +49,9 @@ use frontend\models\applications\CreateCompany;
 use frontend\models\applications\QuickJob;
 use frontend\models\workingProfiles\WorkingProfile;
 use account\models\applications\ApplicationForm;
-
+use yii\db\Query;
+use common\models\Utilities;
+use common\models\RandomColors;
 class JobsController extends Controller
 {
 
@@ -61,7 +77,7 @@ class JobsController extends Controller
 
     public function beforeAction($action)
     {
-        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->requestedRoute);
+        Yii::$app->view->params['sub_header'] = Yii::$app->header->getMenuHeader(Yii::$app->controller->id);
         Yii::$app->seo->setSeoByRoute(ltrim(Yii::$app->request->url, '/'), $this);
         return parent::beforeAction($action);
     }
@@ -79,20 +95,17 @@ class JobsController extends Controller
                     ->andWhere(['is_deleted' => 0])
                     ->exists();
                 if (!$applied_jobs):
-                $model = new \frontend\models\applications\JobApplied();
-                $model->id = $id;
-                $model->resume_list = NULL;
-                $model->status = 'Pending';
-                $res = $model->saveValues();
-                if ($res['status'])
-                {
-                    Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$id,$company_id=null,$unclaim_company_id=$c_id,$type="Jobs",$res['aid']);
-                    return $res;
-                }
-                else
-                {
-                    return false;
-                }
+                    $model = new \frontend\models\applications\JobApplied();
+                    $model->id = $id;
+                    $model->resume_list = NULL;
+                    $model->status = 'Pending';
+                    $res = $model->saveValues();
+                    if ($res['status']) {
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $id, $company_id = null, $unclaim_company_id = $c_id, $type = "Jobs", $res['aid']);
+                        return $res;
+                    } else {
+                        return false;
+                    }
                 endif;
             }
         }
@@ -106,7 +119,7 @@ class JobsController extends Controller
                 Yii::$app->response->format = Response::FORMAT_JSON;
                 if (Yii::$app->request->post("check") == 1) {
                     $arr_loc = Yii::$app->request->post("json_loc");
-                    $model->id =  Yii::$app->request->post("application_enc_id");
+                    $model->id = Yii::$app->request->post("application_enc_id");
                     $model->resume_list = Yii::$app->request->post("resume_enc_id");
                     $model->location_pref = $arr_loc;
                     $model->status = Yii::$app->request->post("status");
@@ -114,7 +127,7 @@ class JobsController extends Controller
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->saveValues();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ,$res['aid']);
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -129,7 +142,7 @@ class JobsController extends Controller
                     $cid = Yii::$app->request->post("org_id");
                     $res = $model->upload();
                     if ($res['status']) {
-                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id,$model->id,$company_id=$cid,$unclaim_company_id=null,$type=$application_typ,$res['aid']);
+                        Yii::$app->notificationEmails->userAppliedNotify(Yii::$app->user->identity->user_enc_id, $model->id, $company_id = $cid, $unclaim_company_id = null, $type = $application_typ, $res['aid']);
                         return $res;
                     } else {
                         return false;
@@ -143,10 +156,13 @@ class JobsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
+            $location = Yii::$app->request->post('location');
             $type = Yii::$app->request->post('type');
             $options = [];
             $options['limit'] = 6;
             $options['page'] = 1;
+            $options['type'] = $type;
+            $options['location'] = $location;
             $cards = ApplicationCards::jobs($options);
             if ($cards) {
                 $response = [
@@ -284,16 +300,39 @@ class JobsController extends Controller
             ->limit(4)
             ->all();
 
-        $tweets = $this->_getTweets(null, null,"Jobs", 4 , "");
-
+        $tweets = $this->_getTweets(null, null, "Jobs", 4, "");
+        $type = 'jobs';
         return $this->render('index', [
             'job_profiles' => $job_profiles,
             'internship_profiles' => $internship_profiles,
             'search_words' => $search_words,
             'cities' => $cities,
             'tweets' => $tweets,
-            'cities_jobs' => $cities_jobs
+            'cities_jobs' => $cities_jobs,
+            'type' => $type
         ]);
+    }
+
+    public function actionPreferredList()
+    {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $options = Yii::$app->request->post();
+            $cards = PreferredApplicationCards::employerApplications($options);
+            if ($cards) {
+                $response = [
+                    'status' => 200,
+                    'message' => 'Success',
+                    'cards' => $cards,
+                    'total' => count($cards),
+                ];
+            } else {
+                $response = [
+                    'status' => 201,
+                ];
+            }
+            return $response;
+        }
     }
 
 
@@ -303,14 +342,17 @@ class JobsController extends Controller
             Yii::$app->response->format = Response::FORMAT_JSON;
             $parameters = Yii::$app->request->post();
             $options = [];
-
+            if (Yii::$app->request->get('location') || Yii::$app->request->get('keyword')) {
+                $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
+                $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
                 $options['page'] = 1;
             }
 
-            $options['limit'] = 27;
+            $options['limit'] = 9;
 
             if ($parameters['location'] && !empty($parameters['location'])) {
                 $options['location'] = $parameters['location'];
@@ -327,13 +369,21 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
-            $cards = ApplicationCards::jobs($options);
-            if (count($cards) > 0) {
+            $cardsDb = ApplicationCards::jobs($options);
+            if (empty($options['company'])) {
+                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+                $merg = array_merge($cardsDb, $cardsApi);
+                $merg = array_slice($merg, 0, 27);
+            }
+            else
+            {
+                $merg = $cardsDb;
+            }
+            if (count($merg) > 0) {
                 $response = [
                     'status' => 200,
                     'title' => 'Success',
-                    'cards' => $cards,
+                    'cards' => $merg,
                 ];
             } else {
                 $response = [
@@ -350,49 +400,49 @@ class JobsController extends Controller
 
     public function actionDetail($eaidk)
     {
-        $application_details = EmployerApplications::find()
-            ->where([
-                'slug' => $eaidk,
-                'is_deleted' => 0
-            ])
-            ->one();
-
-        if (!$application_details) {
-            return 'Not Found';
-        }
-        $type = 'Job';
-        $object = new \account\models\applications\ApplicationForm();
-        if (!empty($application_details->unclaimed_organization_enc_id)) {
-            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
-        } else {
-            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id','name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
-        }
-        if (!Yii::$app->user->isGuest) {
-            $applied_jobs = AppliedApplications::find()
-                ->where(['application_enc_id' => $application_details->application_enc_id])
-                ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                ->andWhere(['is_deleted' => 0])
-                ->exists();
-
-            $shortlist = \common\models\ShortlistedApplications::find()
-                ->select('shortlisted')
-                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
-                ->asArray()
+            $application_details = EmployerApplications::find()
+                ->where([
+                    'slug' => $eaidk,
+                    'is_deleted' => 0
+                ])
                 ->one();
-        }
-        $model = new \frontend\models\applications\JobApplied();
-        return $this->render('/employer-applications/detail', [
-            'application_details' => $application_details,
-            'data1' => $data1,
-            'data2' => $data2,
-            'org' => $org_details,
-            'applied' => $applied_jobs,
-            'type' => $type,
-            'model' => $model,
-            'shortlist' => $shortlist,
-        ]);
+
+            if (!$application_details) {
+                return 'Not Found';
+            }
+            $type = 'Job';
+            $object = new \account\models\applications\ApplicationForm();
+            if (!empty($application_details->unclaimed_organization_enc_id)) {
+                $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+                $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
+            } else {
+                $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+                $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
+            }
+            if (!Yii::$app->user->isGuest) {
+                $applied_jobs = AppliedApplications::find()
+                    ->where(['application_enc_id' => $application_details->application_enc_id])
+                    ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->andWhere(['is_deleted' => 0])
+                    ->exists();
+
+                $shortlist = \common\models\ShortlistedApplications::find()
+                    ->select('shortlisted')
+                    ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                    ->asArray()
+                    ->one();
+            }
+            $model = new \frontend\models\applications\JobApplied();
+            return $this->render('/employer-applications/detail', [
+                'application_details' => $application_details,
+                'data1' => $data1,
+                'data2' => $data2,
+                'org' => $org_details,
+                'applied' => $applied_jobs,
+                'type' => $type,
+                'model' => $model,
+                'shortlist' => $shortlist,
+            ]);
     }
 
     public function actionFetchSkills($q)
@@ -446,21 +496,22 @@ class JobsController extends Controller
     public function actionQuickJob()
     {
         if (!Yii::$app->user->identity->organization):
-        $this->layout = 'main-secondary';
-        $model = new QuickJob();
-        $typ = 'Jobs';
-        $data = new ApplicationForm();
-        $primary_cat = $data->getPrimaryFields();
-        $job_type = $data->getApplicationTypes();
-        if ($model->load(Yii::$app->request->post())) {
-            if ($model->save($typ)) {
-                Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
-            } else {
-                Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+            $this->layout = 'main-secondary';
+            $model = new QuickJob();
+            $typ = 'Jobs';
+            $data = new ApplicationForm();
+            $primary_cat = $data->getPrimaryFields();
+            $job_type = $data->getApplicationTypes();
+            $currencies = $data->getCurrency();
+            if ($model->load(Yii::$app->request->post())) {
+                if ($model->save($typ)) {
+                    Yii::$app->session->setFlash('success', 'Your Job Has Been Posted Successfully Submitted..');
+                } else {
+                    Yii::$app->session->setFlash('error', 'Error Please Contact Supportive Team ');
+                }
+                return $this->refresh();
             }
-            return $this->refresh();
-        }
-        return $this->render('quick-job', ['typ' => $typ, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
+            return $this->render('quick-job', ['typ' => $typ, 'currencies' => $currencies, 'model' => $model, 'primary_cat' => $primary_cat, 'job_type' => $job_type]);
         else :
             return $this->redirect('/account/jobs/quick-job');
         endif;
@@ -1014,7 +1065,6 @@ class JobsController extends Controller
     {
 
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
-
             Yii::$app->response->format = Response::FORMAT_JSON;
             $activeProfiles = AssignedCategories::find()
                 ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
@@ -1062,6 +1112,13 @@ class JobsController extends Controller
             return $response;
         }
         return $this->render('working-profile');
+    }
+
+    public function actionInternational()
+    {
+        return $this->render('/employer-applications/international', [
+            'type' => 'jobs'
+        ]);
     }
 
     private function _getTweets($keywords = null, $location = null, $type = null, $limit = null, $offset = null)
@@ -1125,4 +1182,190 @@ class JobsController extends Controller
         return $result;
     }
 
+    public function actionGetStats()
+    {
+        $referrerUrl = trim(Yii::$app->request->referrer, '/');
+        $urlParts = parse_url($referrerUrl);
+        $controller_id = explode('/', $urlParts['path'])[1];
+        $actionid = explode('/', $urlParts['path'])[2];
+
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $total_jobs = $this->getData('Jobs');
+            $total_internships = $this->getData('Internships');
+            $total = $this->getData('');
+
+            switch ([$controller_id, $actionid]) {
+                case ['jobs', ''] :
+                case ['jobs', 'index'] :
+                    return [
+                        'status' => 200,
+                        'cards' => ['jobs' => $total_jobs['total_applications'], 'titles' => $total_jobs['titles'], 'location' => $total_jobs['locations'], 'companies' => $total_jobs['org']]
+                    ];
+                    break;
+                case ['internships', ''] :
+                case ['internships', 'index'] :
+                    return [
+                        'status' => 200,
+                        'cards' => ['titles' => $total_internships['titles'], 'internships' => $total_internships['total_applications'], 'location' => $total_internships['locations'], 'companies' => $total_internships['org']]
+                    ];
+                    break;
+                default :
+                    return [
+                        'status' => 200,
+                        'cards' => ['jobs' => $total_jobs['total_applications'], 'internships' => $total_internships['total_applications'], 'location' => $total['locations'], 'companies' => $total_jobs['org']]
+                    ];
+            }
+        }
+    }
+
+    private function getData($type)
+    {
+        $titles = AssignedCategories::find()
+            ->andWhere(['is_deleted' => 0])
+            ->andWhere(['not', ['parent_enc_id' => null]]);
+        if ($type == "") {
+            $titles->andWhere(['in', 'assigned_to', ['Jobs', 'Internships']]);
+        } else {
+            $titles->andWhere(['assigned_to' => $type]);
+        }
+        $titles_count = $titles->count();
+
+        $cards1 = ApplicationPlacementLocations::find()
+            ->alias('a')
+            ->joinWith(['applicationEnc b' => function ($b) use ($type) {
+                $b->andWhere(['b.status' => 'Active', 'b.is_deleted' => 0]);
+                $b->joinWith(['applicationTypeEnc c' => function ($b) use ($type) {
+                    if ($type) {
+                        $b->andWhere(['c.name' => $type]);
+                    }
+                }]);
+            }], false)
+            ->joinWith(['locationEnc d'], false)
+            ->select(['SUM(a.positions) total', 'COUNT(d.location_enc_id) locations'])
+            ->asArray()
+            ->one();
+
+        $cards2 = ApplicationUnclaimOptions::find()
+            ->alias('a')
+            ->joinWith(['applicationEnc b' => function ($b) use ($type) {
+                $b->andWhere(['b.status' => 'Active', 'b.is_deleted' => 0]);
+                $b->joinWith(['applicationTypeEnc c' => function ($b) use ($type) {
+                    if ($type) {
+                        $b->andWhere(['c.name' => $type]);
+                    }
+                }]);
+            }], false)
+            ->select(['SUM(a.positions) total'])
+            ->asArray()
+            ->one();
+        $unclaim_locations = ApplicationPlacementCities::find()->count();
+        $org_claim = Organizations::find()->count();
+        $org_unclaim = UnclaimedOrganizations::find()->count();
+
+        $twitter = TwitterJobs::find()
+            ->alias('a')
+            ->joinWith(['applicationTypeEnc b' => function ($b) use ($type) {
+                $b->andWhere(['b.name' => $type]);
+            }])
+            ->andWhere(['a.is_deleted' => 0])
+            ->asArray()
+            ->count();
+
+        if ($type == 'Jobs') {
+            $usaGov = UsaDepartments::find()
+                ->select('SUM(total_applications) as total')
+                ->asArray()
+                ->one();
+            $indianGov = IndianGovtDepartments::find()
+                ->select('SUM(total_applications) as total')
+                ->asArray()
+                ->one();
+        } else {
+            $usaGov['total'] = 0;
+            $indianGov['total'] = 0;
+        }
+
+        return [
+            'total_applications' => $cards1['total'] + $cards2['total'] + $twitter + $usaGov['total'] + $indianGov['total'],
+            'org' => $org_claim + $org_unclaim,
+            'locations' => $cards1['locations'] + $unclaim_locations,
+            'titles' => $titles_count,
+        ];
+    }
+
+    private function gitjobs($id)
+    {
+            $url = "https://jobs.github.com/positions/".$id.".json";
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+            $header = [
+                'Accept: application/json, text/plain, */*',
+                'Content-Type: application/json;charset=utf-8',
+            ];
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            $result = curl_exec($ch);
+            $result = json_decode($result,true);
+        return $result;
+    }
+
+    public function actionApi($comp,$eaidk)
+    {
+        $get = $this->gitjobs($eaidk);
+        if ($get)
+        {
+            return $this->render('git-api-jobs',['get'=>$get,'slug'=>$comp]);
+        }
+    }
+
+    public function actionImageScript()
+    {
+         $model = new scriptModel();
+         if ($model->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $model->logo = UploadedFile::getInstance($model, 'logo');
+            $rand_dir = Yii::$app->getSecurity()->generateRandomString();
+            $file_logo = $rand_dir.'-'.$model->logo->baseName.'.'.$model->logo->extension;
+            $base_path = Url::to('@rootDirectory/files/temp/'.$rand_dir);
+            if (!is_dir($base_path)) {
+                if (mkdir($base_path, 0755, true)) {
+                    if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
+                        $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
+                        if (isset($file)){
+                             //$url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                             $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
+                             return [
+                                 'status'=>200,
+                                 'url'=>$url,
+                                 'time'=>$file['time'],
+                             ];
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+//    public function actionTest()
+//    {
+//        $page = 1;
+//        $urls =["https://jobs.github.com/positions.json?page=".$page,
+//                "https://www.themuse.com/api/public/jobs?page=".$page];
+//        $rc = new RollingRequest();
+//        $rc->run($urls);
+//   }
+
+    public function actionTestApi()
+    {
+        return $this->render('test2');
+    }
 }

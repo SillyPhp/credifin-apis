@@ -2,9 +2,17 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
+use common\models\Departments;
+use common\models\EducationalRequirements;
+use common\models\ErexxSettings;
+use common\models\UserOtherDetails;
+use common\models\ErexxWhatsappInvitation;
+use http\Env\Response;
 use Yii;
-use api\modules\v1\models\Candidates;
+use yii\helpers\Url;
+use api\modules\v2\models\Candidates;
 use api\modules\v2\models\IndividualSignup;
 use api\modules\v2\models\LoginForm;
 use common\models\EmailLogs;
@@ -12,6 +20,8 @@ use common\models\Referral;
 use common\models\UserAccessTokens;
 use common\models\Usernames;
 use common\models\Users;
+use yii\filters\Cors;
+use yii\filters\auth\HttpBearerAuth;
 
 class AuthController extends ApiBaseController
 {
@@ -19,21 +29,49 @@ class AuthController extends ApiBaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'except' => [
+                'save-other-detail',
+                'login',
+                'signup',
+                'validate',
+                'username',
+                'find-user',
+                'teacher-signup'
+            ],
+            'class' => HttpBearerAuth::className()
+        ];
         $behaviors['verbs'] = [
             'class' => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'signup' => ['POST'],
-//                'login' => ['GET'],
+                'signup' => ['POST', 'OPTIONS'],
+                'save-other-detail' => ['POST', 'OPTIONS'],
+                'login' => ['POST', 'OPTIONS'],
+                'validate' => ['POST', 'OPTIONS'],
+                'username' => ['POST', 'OPTIONS'],
+                'find-user' => ['POST', 'OPTIONS'],
+                'teacher-signup' => ['POST', 'OPTIONS'],
             ]
+        ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            'cors' => [
+                'Origin' => ['https://www.myecampus.in/'],
+                'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
+                'Access-Control-Max-Age' => 86400,
+                'Access-Control-Expose-Headers' => [],
+            ],
         ];
         return $behaviors;
     }
 
-    public function actionSignup()
+    public function actionTeacherSignup()
     {
-
-        $model = new IndividualSignup();
+        $model = new TeacherSignup();
         if ($model->load(Yii::$app->request->post(), '')) {
+            if (!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
             if ($model->validate()) {
 
                 if (!$this->usernameValid($model)) {
@@ -42,18 +80,87 @@ class AuthController extends ApiBaseController
                     ]);
                 }
 
-                if($model->ref != '' && $model->invitation != ''){
-                    if($this->getRef($model) && $this->getInvitation($model)) {
-                        if ($model->saveUser()) {
-                            return $this->response(200, ['status' => 200]);
+                if ($model->ref != '' && $model->invitation != '') {
+                    $invi = EmailLogs::findOne(['email_log_enc_id' => $model->invitation]);
+                    if ($this->getRef($model) && $invi->type == 2) {
+                        if ($user_id = $model->saveTeacher()) {
+                            $token = $this->findToken($user_id, $model->source);
+                            if (empty($token)) {
+                                if ($token = $this->newToken($user_id, $model->source)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            } else {
+                                if ($token = $this->onlyTokens($token)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            }
+//                            return $this->response(200, ['status' => 200]);
                         } else {
                             return $this->response(500, ['status' => 500]);
                         }
-                    }else{
-                        return $this->response(404,['status'=>404,'message'=>'Invalid Link']);
+                    } else {
+                        return $this->response(404, ['status' => 404, 'message' => 'Invalid Link']);
                     }
-                }else{
-                    if ($model->saveUser()) {
+                }
+            }
+            return $this->response(409, $model->getErrors());
+        }
+    }
+
+    public function actionSignup()
+    {
+
+        $model = new IndividualSignup();
+        if ($model->load(Yii::$app->request->post(), '')) {
+            if (!$model->source) {
+                $model->source = Yii::$app->getRequest()->getUserIP();
+            }
+            if ($model->validate()) {
+
+                if (!$this->usernameValid($model)) {
+                    return $this->response(409, [
+                        'username' => 'Username already taken'
+                    ]);
+                }
+
+                if ($model->ref != '') {
+                    if ($this->getRef($model)) {
+                        if ($user_id = $model->saveUser()) {
+                            $token = $this->findToken($user_id, $model->source);
+                            if (empty($token)) {
+                                if ($token = $this->newToken($user_id, $model->source)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            } else {
+                                if ($token = $this->onlyTokens($token)) {
+                                    $data = $this->returnData($user_id, $token);
+                                    return $this->response(200, ['status' => 200, $data]);
+                                }
+                            }
+//                            return $this->response(200, ['status' => 200]);
+                        } else {
+                            return $this->response(500, ['status' => 500]);
+                        }
+                    } else {
+                        return $this->response(404, ['status' => 404, 'message' => 'Invalid Link']);
+                    }
+                } else {
+                    if ($user_id = $model->saveUser()) {
+                        $token = $this->findToken($user_id, $model->source);
+                        if (empty($token)) {
+                            if ($token = $this->newToken($user_id, $model->source)) {
+                                $data = $this->returnData($user_id, $token);
+                                return $this->response(200, ['status' => 200, $data]);
+                            }
+                        } else {
+                            if ($token = $this->onlyTokens($token)) {
+                                $data = $this->returnData($user_id, $token);
+                                return $this->response(200, ['status' => 200, $data]);
+                            }
+                        }
                         return $this->response(200, ['status' => 200]);
                     } else {
                         return $this->response(500, ['status' => 500]);
@@ -63,15 +170,23 @@ class AuthController extends ApiBaseController
             }
             return $this->response(409, $model->getErrors());
         }
-        return $this->response(422,'Not found');
+        return $this->response(422, 'Not found');
     }
 
-    public function actionValidate(){
+    public function actionValidate()
+    {
         $model = new ValidateUser();
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->validate()) {
-                return $this->response(200,['status'=>200]);
-            }else{
+                $username = Usernames::find()
+                    ->where(['username' => $model->username])
+                    ->exists();
+                if (!$username) {
+                    return $this->response(200, ['status' => 200]);
+                } else {
+                    return $this->response(409, ['username' => ['username already taken']]);
+                }
+            } else {
                 return $this->response(409, $model->getErrors());
             }
         }
@@ -96,11 +211,23 @@ class AuthController extends ApiBaseController
 
     private function getInvitation($model)
     {
-        $initation = EmailLogs::find()
-            ->where(['email_log_enc_id' => $model->invitation])
-            ->exists();
+        $invi = (new \yii\db\Query())
+            ->from(EmailLogs::tableName() . 'as a')
+            ->select(['email_log_enc_id id'])
+            ->where(['email_log_enc_id' => $model->invitation]);
 
-        return $initation;
+        $invi2 = (new \yii\db\Query())
+            ->from(ErexxWhatsappInvitation::tableName() . 'as a')
+            ->select(['invitation_enc_id id'])
+            ->where(['invitation_enc_id' => $model->invitation]);
+
+        $result = (new \yii\db\Query())
+            ->from([
+                $invi->union($invi2),
+            ])
+            ->one();
+
+        return $result;
     }
 
     public function actionUsername()
@@ -123,6 +250,9 @@ class AuthController extends ApiBaseController
         if ($model->load(Yii::$app->request->post(), '')) {
             if ($model->login()) {
                 $source = Yii::$app->request->post()['source'];
+                if (!$source) {
+                    $source = Yii::$app->getRequest()->getUserIP();
+                }
                 $user = $this->findUser($model);
                 if ($user->organization_enc_id) {
                     $user_type = Users::find()
@@ -194,6 +324,7 @@ class AuthController extends ApiBaseController
             ->select(['a.user_enc_id', 'b.user_type', 'c.name city_name', 'e.name org_name'])
             ->joinWith(['userTypeEnc b'], false)
             ->joinWith(['cityEnc c'], false)
+            ->joinWith(['teachers'])
             ->joinWith(['userOtherInfo d' => function ($d) {
                 $d->joinWith(['organizationEnc e']);
             }], false)
@@ -204,7 +335,8 @@ class AuthController extends ApiBaseController
         return [
             'user_id' => $source->user_enc_id,
             'username' => $user->username,
-            'user_type' => $user_type['user_type'],
+            'user_type' => (!empty($user_type['teachers']) ? 'teacher' : $user_type['user_type']),
+//            'user_type' => $user_type['user_type'],
             'city' => $user_type['city_name'],
             'college' => $user_type['org_name'],
             'email' => $user->email,
@@ -271,9 +403,21 @@ class AuthController extends ApiBaseController
 
             $user_detail = Users::find()
                 ->alias('a')
-                ->select(['a.first_name', 'a.last_name', 'a.username', 'a.phone', 'a.email', 'a.initials_color', 'b.user_type', 'c.name city_name', 'e.name org_name', 'd.organization_enc_id'])
+                ->select(['a.user_enc_id', 'a.first_name',
+                    'a.last_name',
+                    'a.organization_enc_id college_id',
+                    'cc.college_enc_id',
+                    'CASE WHEN a.image IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->users->image, 'https') . '", a.image_location, "/", a.image) ELSE NULL END image',
+                    'a.username', 'a.phone', 'a.email',
+                    'a.initials_color', 'b.user_type',
+                    'c.name city_name', 'e.name org_name', 'd.organization_enc_id',
+                    'd.cgpa', 'd.course_enc_id', 'd.section_enc_id', 'd.semester'
+                ])
                 ->joinWith(['userTypeEnc b'], false)
                 ->joinWith(['cityEnc c'], false)
+                ->joinWith(['teachers cc' => function ($cc) {
+                    $cc->joinWith(['collegeEnc c1']);
+                }])
                 ->joinWith(['userOtherInfo d' => function ($d) {
                     $d->joinWith(['organizationEnc e']);
                 }], false)
@@ -281,15 +425,53 @@ class AuthController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+            $college_id = $user_detail['college_id'];
+            if ($college_id) {
+                $college_settings = ErexxSettings::find()
+                    ->alias('a')
+                    ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                    ->joinWith(['collegeSettings b' => function ($b) use ($college_id) {
+                        $b->onCondition(['b.college_enc_id' => $college_id]);
+                    }], false)
+                    ->where(['a.status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                $j = 0;
+                foreach ($college_settings as $c) {
+                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                        if ($c['value'] == null) {
+                            $college_settings[$j]['value'] = 2;
+                        }
+                    }
+                    $j++;
+                }
+
+                $settings = [];
+                foreach ($college_settings as $c) {
+                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+            }
+
         }
 
         return [
             'user_id' => $find_user['user_enc_id'],
             'username' => $user_detail['username'],
-            'user_type' => $user_detail['user_type'],
+            'college_settings' => $settings,
+            'image' => $user_detail['image'],
+            'course_enc_id' => $user_detail['course_enc_id'],
+            'section_enc_id' => $user_detail['section_enc_id'],
+            'semester' => $user_detail['semester'],
+            'user_type' => (!empty($user_detail['teachers']) ? 'teacher' : $user_detail['user_type']),
+//            'user_type' => $user_detail['user_type'],
+            'user_other_detail' => $this->userOtherDetail($find_user['user_enc_id']),
             'city' => $user_detail['city_name'],
-            'college' => $user_detail['org_name'],
-            'college_enc_id' => $user_detail['organization_enc_id'],
+            'cgpa' => $user_detail['cgpa'],
+//            'college' => $user_detail['org_name'],
+            'college' => (!empty($user_detail['teachers'][0]['collegeEnc']) ? $user_detail['teachers'][0]['collegeEnc']['name'] : $user_detail['org_name']),
+            'college_enc_id' => (!empty($user_detail['teachers']) ? $user_detail['college_enc_id'] : $user_detail['organization_enc_id']),
+//            'college_enc_id' => $user_detail['organization_enc_id'],
             'email' => $user_detail['email'],
             'first_name' => $user_detail['first_name'],
             'last_name' => $user_detail['last_name'],
@@ -300,5 +482,105 @@ class AuthController extends ApiBaseController
             'access_token_expiry_time' => $find_user['access_token_expiration'],
             'refresh_token_expiry_time' => $find_user['refresh_token_expiration'],
         ];
+    }
+
+    private function userOtherDetail($user_id)
+    {
+        $user_other_detail = UserOtherDetails::find()
+            ->where(['user_enc_id' => $user_id])
+            ->exists();
+
+        return $user_other_detail;
+    }
+
+    public function actionSaveOtherDetail()
+    {
+
+        if ($user = $this->isAuthorized()) {
+            $user_id = $user->user_enc_id;
+        } else {
+            return $this->response(401, ['status' => 401, 'msg' => 'unauthorized']);
+        }
+
+        $data = Yii::$app->request->post();
+
+        $user_other_details = new UserOtherDetails();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $user_other_details->user_other_details_enc_id = $utilitiesModel->encrypt();
+        $user_other_details->organization_enc_id = $data['college'];
+        $user_other_details->user_enc_id = $user_id;
+
+        $d = Departments::find()
+            ->where([
+                'name' => $data['department']
+            ])
+            ->one();
+
+        if ($d) {
+            $user_other_details->department_enc_id = $d->department_enc_id;
+        } else {
+            $department = new Departments();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+            $department->department_enc_id = $utilitiesModel->encrypt();
+            $department->name = $data['department'];
+            if (!$department->save()) {
+                return false;
+            }
+            $user_other_details->department_enc_id = $department->department_enc_id;
+        }
+
+//        $e = EducationalRequirements::find()
+//            ->where([
+//                'educational_requirement' => $data['course_name']
+//            ])
+//            ->one();
+
+//        if ($e) {
+//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
+//        } else {
+//            $eduReq = new EducationalRequirements();
+//            $utilitiesModel = new \common\models\Utilities();
+//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
+//            $eduReq->educational_requirement = $data['course_name'];
+//            $eduReq->created_on = date('Y-m-d H:i:s');
+//            $eduReq->created_by = $user_id;
+//            if (!$eduReq->save()) {
+//                return false;
+//            }
+//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
+//        }
+
+        $user_other_details->course_enc_id = $data['course_id'];
+        $user_other_details->section_enc_id = $data['section_id'];
+        $user_other_details->semester = $data['semester'];
+        $user_other_details->starting_year = $data['starting_year'];
+        $user_other_details->ending_year = $data['ending_year'];
+        $user_other_details->university_roll_number = $data['roll_number'];
+
+
+        if ($data['job_start_month']) {
+            $user_other_details->job_start_month = $data['job_start_month'];
+        }
+
+        if ($data['job_year']) {
+            $user_other_details->job_year = $data['job_year'];
+        }
+
+        if ($data['internship_duration']) {
+            $user_other_details->internship_duration = $data['internship_duration'];
+        }
+
+        if ($data['internship_start_date']) {
+            $user_other_details->internship_start_date = $date = date('Y-m-d', strtotime($data['internship_start_date']));
+        }
+
+        if (!$user_other_details->save()) {
+            return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+        } else {
+            return $this->response(201, ['status' => 201, 'message' => 'successfully added']);
+        }
     }
 }

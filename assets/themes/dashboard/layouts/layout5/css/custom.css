@@ -242,21 +242,24 @@ a:hover{
    padding:5px 10px 5px 10px;
    position:absolute;
    top:0px;
-   right:55px;
+   right:60px;
    display:none;
 }
 .j-edit{
    right:85px !important;
 }
-.j-delete{
+.j-delete, .j-closed{
    background:transparent;
    border:none;
    color:#d75946;
    padding:5px 10px 5px 10px;
    position:absolute;
    top:0px;
-   right:25px;
+   right:37px;
    display:none;
+}
+.j-closed{
+    right:16px !important;
 }
 .lf-bttn{
     position: absolute;
@@ -294,7 +297,7 @@ a:hover{
     border-radius:0 0 10px 10px !important;
 }
 .hr-company-box:hover .j-edit, .hr-company-box:hover .j-clone, .hr-company-box:hover .j-delete, .hr-company-box:hover .j-fb, .hr-company-box:hover .j-linkedin,
-.hr-company-box:hover .j-twitter, .hr-company-box:hover .j-email, .hr-company-box:hover .j-whatsapp{
+.hr-company-box:hover .j-twitter, .hr-company-box:hover .j-email, .hr-company-box:hover .j-whatsapp, .hr-company-box:hover .j-closed{
     display:inline-block;
 }
 .clone-bttn{

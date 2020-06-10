@@ -188,6 +188,14 @@ use yii\helpers\Url;
         </div>
     </section>
 
+    <!--Subscribe Widget start-->
+<?php
+if (Yii::$app->user->isGuest) {
+    echo $this->render('/widgets/subscribe-section');
+}
+?>
+    <!--Subscribe Widget ends-->
+
 <?php
 $this->registerCss('
 .footer{

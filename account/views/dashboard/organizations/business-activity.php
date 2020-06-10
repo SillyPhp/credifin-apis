@@ -394,8 +394,8 @@ $script = <<<JS
         var chk1 = $('.ba-box input[type=radio]:checked').length;
         
         if(chk1 === 1){
-            $(this).css('pointer-events', 'none');
-            $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+            // $(this).css('pointer-events', 'none');
+            // $(this).html('<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
             $("#ba_submit_form").submit();
         } else {
             $('.error').html('Select at least one to continue');
