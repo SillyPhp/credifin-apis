@@ -970,7 +970,8 @@ class SiteController extends Controller
         return $this->render('transaction-table');
     }
 
-    public function actionCovid19Copy(){
-        return $this->render('covid-19-copy');
+    public function actionMentorHandbook(){
+        return $this->render('mentor-handbook');
     }
+
 }
