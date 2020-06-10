@@ -1,16 +1,18 @@
 <?php
+
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
+
 ?>
-    <section>
+    <section class="colorYellow">
         <div class="row">
             <div class="col-md-12">
-                <div class="quick-review row colorYellow">
+                <div class="safety">
                     <div class="tab" id="step-1">
-                        <div class="row quick-review-inner">
+                        <div class="row safety-inner">
                             <div class="col-md-5">
-                                <div class="quick-review-img">
+                                <div class="safety-img">
                                     <img src="<?= Url::to('@eyAssets/images/pages/safety-posters/posters-logo.png'); ?>">
                                 </div>
                             </div>
@@ -20,22 +22,22 @@ use yii\helpers\Html;
                                     <?php $form = ActiveForm::begin([
                                         'id' => 'genrate_image',
                                         'options' => ['enctype' => 'multipart/form-data'],
-                                        'action'=>'/jobs/image-script'
+                                        'action' => '/jobs/image-script'
                                     ]); ?>
                                     <div class="col-md-6 mb-15">
                                         <label class="cmp-name for-text">Enter Company Name</label>
-<!--                                        <input type="text" class="form-control for-n-cmp">-->
-                                        <?= $form->field($scriptModel, 'company_name',['template'=>'{input}{error}'])->textInput(['class' => 'capitalize form-control for-n-cmp', 'id' => 'company_name', 'placeholder' => 'Company Name'])->label(false); ?>
+                                        <!--                                        <input type="text" class="form-control for-n-cmp">-->
+                                        <?= $form->field($scriptModel, 'company_name', ['template' => '{input}{error}'])->textInput(['class' => 'capitalize form-control for-n-cmp', 'id' => 'company_name', 'placeholder' => 'Company Name'])->label(false); ?>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="choose-logo for-text">Choose Your Logo (.png)</label>
-                                        <?= $form->field($scriptModel, 'logo')->fileInput(['autocomplete' => 'off','class'=>'form-control for-choose','id'=>'logo','accept' => '.png'])->label(false); ?>
-<!--                                        <input type="file" class="form-control for-choose" id="FileAttachment"-->
-<!--                                               required="required" multiple="multiple" title="">-->
+                                        <?= $form->field($scriptModel, 'logo')->fileInput(['autocomplete' => 'off', 'class' => 'form-control for-choose', 'id' => 'logo', 'accept' => '.png'])->label(false); ?>
+                                        <!--                                        <input type="file" class="form-control for-choose" id="FileAttachment"-->
+                                        <!--                                               required="required" multiple="multiple" title="">-->
                                     </div>
                                     <div class="col-md-12 dwn">
                                         <?= Html::submitButton('Customize & Download', ['class' => 'sub-btn gnt-btn']) ?>
-<!--                                        <button class="sub-btn">Customize & Download</button>-->
+                                        <!--                                        <button class="sub-btn">Customize & Download</button>-->
                                     </div>
                                     <?php ActiveForm::end(); ?>
                                 </div>
@@ -43,14 +45,46 @@ use yii\helpers\Html;
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="div_center">
-                        <a href="" class="btn" target="_blank" id="db_f">Click Here To Download Your .Zip File</a>
-                    </div>
+            </div>
+            <div class="col-md-12">
+                <div class="div_center">
+                    <a href="" class="btn sub-btn" target="_blank" id="db_f">Download Your Customized Posters</a>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="safety-links-share">
+                    <h4>Share And Protect Your Community</h4>
+                    <a href="#!"
+                       onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                       class="share-elem-main">
+                        <span class="fb-btn"><i class="fa fa-facebook-f"></i></span>
+                    </a>
+                    <a href="#!"
+                       onclick="window.open('https://api.whatsapp.com/send?text=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                       class="share-elem-main">
+                        <span><i class="fa fa-whatsapp"></i></span>
+                    </a>
+                    <a href="#!"
+                       onclick="window.open('https://telegram.me/share/url?url=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                       class="share-elem-main">
+                        <span><i class="fa fa-telegram"></i></span>
+                    </a>
+                    <a href="#!"
+                       onclick="window.open('https://twitter.com/intent/tweet?text=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100')"
+                       class="share-elem-main">
+                        <span><i class="fa fa-twitter"></i></span>
+                    </a>
+                    <a href="#!"
+                       onclick="window.open('https://www.linkedin.com/shareArticle?mini=true&url=http://mpwr.in/o3nzm', '_blank', 'width=800,height=400,left=200,top=100');"
+                       class="share-elem-main">
+                        <span><i class="fa fa-linkedin"></i></span>
+                    </a>
+
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 progress-container">
                 <div id="prog_bar">
+                    <p>Please wait we are processing your customized posters. It generally takes around 20 seconds.</p>
                     <div class="progress progress-striped active" style="height: 18px">
                         <div class="progress-bar progress-bar-success" style="width:10%"></div>
                     </div>
@@ -80,26 +114,71 @@ use yii\helpers\Html;
     </div>
 <?php
 $this->registerCss('
+.progress-container{
+    position: absolute;
+    bottom: 0px;
+    padding: 10px 0 0 0;
+    left: 0px;
+    margin-top: 10px;
+    text-align: center;
+}
 .progress.active .progress-bar {
     -webkit-transition: none !important;
     transition: none !important;
 }
-#prog_bar
-{
-display:none;
+.progress-bar{
+    background: #000;
+}
+.progress{
+    margin-bottom: 0px;
+    background-color: #ffcc00;
+}
+.div_center{
+    width: 100%;
+    text-align: center;
+    margin-top: 30px;
+}
+#prog_bar{
+    display:none;
 }
 #db_f{
-display:none;
-color: #303096;
-margin-top: 16px;
+    display:none;
+    color: #ffcc00;
+    margin-top: 16px;
+}
+##db_f:hover{
+    color:#000;
+}
+.safety-links-share{
+    text-align: center;
+    padding:20px 0 20px 0;
+    margin: 0 0 20px 0; 
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.safety-links-share h4{
+    font-size: 18px;
+    margin: 0px;
+    font-family: roboto;
+    font-weight: 500;
+    color:#000;
 }
 .safety-links-share a{
     color:#000;
+    font-size: 22px;
+    margin: 0 10px 
+}
+.safety-links-share a:hover{
+    color: #fff;
+    transition: .3s ease;
 }
 .colorYellow{
     background: #ffcc00;
-    padding: 20px 0;
-    position: relative;   
+    padding: 20px 20px 0;
+    position: relative;
+    margin: 20px;   
 }
 .sub-btn {
      border: 2px solid #000;
@@ -119,11 +198,11 @@ margin-top: 16px;
     transition: .3s ease;
 }
 
-.quick-review-img img{
+.safety-img img{
     max-width: auto;
     width: 100%;
 }
-.quick-review h2 {
+.safety h2 {
    text-align: center;
     font-size: 18px;
     font-family: roboto;
@@ -194,15 +273,15 @@ input::-moz-file-upload-button:focus{
     text-align: center;
     padding: 20px 10px;
 }
-.quick-review{
-    box-shadow: 0 0 10px rgba(0,0,0,.1);     
-}
+//.safety{
+//    box-shadow: 0 0 10px rgba(0,0,0,.1);     
+//}
 .safty-icon-text h2{
     font-size: 18px;
     font-family: roboto;
     font-weight: 500;
 }
-.quick-review-action a{  
+.safety-action a{  
    text-align:center;
    display:inline-block; 
     padding:5px 15px; 
@@ -215,7 +294,7 @@ input::-moz-file-upload-button:focus{
     text-transform: capitalize;
     font-family: roboto;
 }
-.quick-review-action a:hover, .quick-review-action a:focus, .quick-review-action:active{
+.safety-action a:hover, .safety-action a:focus, .safety-action:active{
    outline: none;
    box-shadow: none;
 } 
@@ -301,7 +380,7 @@ $(document).on('submit','#genrate_image',function(event) {
                 if (response.status==200) 
                     {
                         //$('.gnt-btn').show();
-                        $('#db_f').css('display','block');
+                        $('#db_f').css('display','inline');
                         $('#db_f').attr('href',response.url);
                     }
                 else{ 
