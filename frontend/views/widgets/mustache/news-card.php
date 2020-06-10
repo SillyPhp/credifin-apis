@@ -276,7 +276,9 @@ $(document).on('click', '.vote-btn', function (event) {
     
     var id = btn.attr('data-id');
     var key = btn.attr('data-key');
-    var targetValue = btn.attr('data-original-title');
+    var targetValue = btn.attr('title');
+      var updateValue = parseInt(targetValue) + 1; 
+      btn.attr('title', updateValue);
     $.ajax({
         type: 'POST',
         data: {id:id,key:key},
@@ -285,11 +287,7 @@ $(document).on('click', '.vote-btn', function (event) {
         },
         success: function (response) {
             btn.attr('disabled', false);
-            if (response.status == 200) {
-                toastr.success(response.message, response.title);
-                var updateValue = parseInt(targetValue) + 1; 
-                btn.attr('data-original-title', updateValue);
-            } else {
+            if (response.status == 201) {
                 toastr.error(response.message, response.title);
             }
         },
