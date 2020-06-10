@@ -146,7 +146,7 @@ $this->registerCss('
     color: #ffcc00;
     margin-top: 16px;
 }
-##db_f:hover{
+#db_f:hover{
     color:#000;
 }
 .safety-links-share{
