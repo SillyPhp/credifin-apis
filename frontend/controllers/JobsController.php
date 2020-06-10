@@ -370,15 +370,17 @@ class JobsController extends Controller
                 $options['company'] = $parameters['company'];
             }
             $cardsDb = ApplicationCards::jobs($options);
-            if (empty($options['company'])) {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
-            }
-            else
-            {
-                $merg = $cardsDb;
-            }
+//            if (empty($options['company'])) {
+//                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+//                $merg = array_merge($cardsDb, $cardsApi);
+//                $merg = array_slice($merg, 0, 27);
+//            }
+//            else
+//            {
+//                $merg = $cardsDb;
+//            }
+            $api = $this->CollectApi();
+            $merg = array_merge($cardsDb, $api);
             if (count($merg) > 0) {
                 $response = [
                     'status' => 200,
@@ -397,49 +399,49 @@ class JobsController extends Controller
 
     public function actionDetail($eaidk)
     {
-            $application_details = EmployerApplications::find()
-                ->where([
-                    'slug' => $eaidk,
-                    'is_deleted' => 0
-                ])
+        $application_details = EmployerApplications::find()
+            ->where([
+                'slug' => $eaidk,
+                'is_deleted' => 0
+            ])
+            ->one();
+
+        if (!$application_details) {
+            return 'Not Found';
+        }
+        $type = 'Job';
+        $object = new \account\models\applications\ApplicationForm();
+        if (!empty($application_details->unclaimed_organization_enc_id)) {
+            $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
+        } else {
+            $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
+            $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
+        }
+        if (!Yii::$app->user->isGuest) {
+            $applied_jobs = AppliedApplications::find()
+                ->where(['application_enc_id' => $application_details->application_enc_id])
+                ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
+                ->andWhere(['is_deleted' => 0])
+                ->exists();
+
+            $shortlist = \common\models\ShortlistedApplications::find()
+                ->select('shortlisted')
+                ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
+                ->asArray()
                 ->one();
-
-            if (!$application_details) {
-                return 'Not Found';
-            }
-            $type = 'Job';
-            $object = new \account\models\applications\ApplicationForm();
-            if (!empty($application_details->unclaimed_organization_enc_id)) {
-                $org_details = $application_details->getUnclaimedOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-                $data1 = $object->getCloneUnclaimed($application_details->application_enc_id, $application_type = 'Jobs');
-            } else {
-                $org_details = $application_details->getOrganizationEnc()->select(['organization_enc_id', 'name org_name', 'initials_color color', 'slug', 'email', 'website', 'logo', 'logo_location', 'cover_image', 'cover_image_location'])->asArray()->one();
-                $data2 = $object->getCloneData($application_details->application_enc_id, $application_type = 'Jobs');
-            }
-            if (!Yii::$app->user->isGuest) {
-                $applied_jobs = AppliedApplications::find()
-                    ->where(['application_enc_id' => $application_details->application_enc_id])
-                    ->andWhere(['created_by' => Yii::$app->user->identity->user_enc_id])
-                    ->andWhere(['is_deleted' => 0])
-                    ->exists();
-
-                $shortlist = \common\models\ShortlistedApplications::find()
-                    ->select('shortlisted')
-                    ->where(['shortlisted' => 1, 'application_enc_id' => $application_details->application_enc_id, 'created_by' => Yii::$app->user->identity->user_enc_id])
-                    ->asArray()
-                    ->one();
-            }
-            $model = new \frontend\models\applications\JobApplied();
-            return $this->render('/employer-applications/detail', [
-                'application_details' => $application_details,
-                'data1' => $data1,
-                'data2' => $data2,
-                'org' => $org_details,
-                'applied' => $applied_jobs,
-                'type' => $type,
-                'model' => $model,
-                'shortlist' => $shortlist,
-            ]);
+        }
+        $model = new \frontend\models\applications\JobApplied();
+        return $this->render('/employer-applications/detail', [
+            'application_details' => $application_details,
+            'data1' => $data1,
+            'data2' => $data2,
+            'org' => $org_details,
+            'applied' => $applied_jobs,
+            'type' => $type,
+            'model' => $model,
+            'shortlist' => $shortlist,
+        ]);
     }
 
     public function actionFetchSkills($q)
@@ -1293,58 +1295,86 @@ class JobsController extends Controller
 
     private function gitjobs($id)
     {
-            $url = "https://jobs.github.com/positions/".$id.".json";
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            $header = [
-                'Accept: application/json, text/plain, */*',
-                'Content-Type: application/json;charset=utf-8',
-            ];
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-            $result = curl_exec($ch);
-            $result = json_decode($result,true);
+        $url = "https://jobs.github.com/positions/" . $id . ".json";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
         return $result;
     }
 
-    public function actionApi($comp,$eaidk)
+    private function musejobs($id)
     {
-        $get = $this->gitjobs($eaidk);
-        if ($get)
-        {
-            return $this->render('git-api-jobs',['get'=>$get,'slug'=>$comp]);
+        $url = "https://www.themuse.com/api/public/jobs/" . $id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        $header = [
+            'Accept: application/json, text/plain, */*',
+            'Content-Type: application/json;charset=utf-8',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+        if ($result) {
+           $result['title'] = $result['name'];
+           $result['company'] = $result['company']['name'];
+           $result['created_at'] = $result['publication_date'];
+           $result['url'] = $result['refs']['landing_page'];
+           $result['description'] = $result['contents'];
+           $result['location'] = $result['locations'];
+           unset($result['name']);
+           unset($result['publication_date']);
+           unset($result['refs']);
+           unset($result['contents']);
+           unset($result['locations']);
         }
+        return $result;
+    }
+
+    public function actionApi($source = '', $slugparams = null, $eaidk = null)
+    {
+        if ($source == 'git-hub') {
+            $get = $this->gitjobs($eaidk);
+        } else if ($source == 'muse') {
+            $get = $this->musejobs($eaidk);
+        }
+        return $this->render('api-jobs', ['get' => $get, 'slugparams' => $slugparams, 'source' => $source, 'id' => $eaidk]);
     }
 
     public function actionImageScript()
     {
-         $model = new scriptModel();
-         if ($model->load(Yii::$app->request->post())) {
+        $model = new scriptModel();
+        if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->logo = UploadedFile::getInstance($model, 'logo');
             $rand_dir = Yii::$app->getSecurity()->generateRandomString();
-            $file_logo = $rand_dir.'-'.$model->logo->baseName.'.'.$model->logo->extension;
-            $base_path = Url::to('@rootDirectory/files/temp/'.$rand_dir);
+            $file_logo = $rand_dir . '-' . $model->logo->baseName . '.' . $model->logo->extension;
+            $base_path = Url::to('@rootDirectory/files/temp/' . $rand_dir);
             if (!is_dir($base_path)) {
                 if (mkdir($base_path, 0755, true)) {
                     if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
-                        $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
-                        if (isset($file)){
-                             //$url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
-                             $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
-                             return [
-                                 'status'=>200,
-                                 'url'=>$url,
-                                 'time'=>$file['time'],
-                             ];
-                        }
-                        else{
+                        $file = $model->genrate($base_path . DIRECTORY_SEPARATOR . $file_logo, $rand_dir);
+                        if (isset($file)) {
+                            //$url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                            $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
+                            return [
+                                'status' => 200,
+                                'url' => $url,
+                                'time' => $file['time'],
+                            ];
+                        } else {
                             return false;
                         }
-                    }
-                    else
-                    {
+                    } else {
                         return false;
                     }
                 }
@@ -1352,17 +1382,86 @@ class JobsController extends Controller
         }
     }
 
-//    public function actionTest()
-//    {
-//        $page = 1;
-//        $urls =["https://jobs.github.com/positions.json?page=".$page,
-//                "https://www.themuse.com/api/public/jobs?page=".$page];
-//        $rc = new RollingRequest();
-//        $rc->run($urls);
-//   }
-
-    public function actionTestApi()
+    private function CollectApi()
     {
-        return $this->render('test2');
+        $muse_key = 'ecc017e088bb50fd3d47686f1a669033492e98111bbe1c60084214e48b45fe07';
+        $page = 1;
+        // array of curl handles
+        $multiCurl = array();
+        // data to be returned
+        $result = array();
+        // multi handle
+        $mh = curl_multi_init();
+        $ids = [0, 1];
+        foreach ($ids as $i => $id) {
+            // URL from which data will be fetched
+            $fetchURL[0] = "https://www.themuse.com/api/public/jobs?api_key=" . $muse_key . "&page=" . $page;
+            $fetchURL[1] = "https://jobs.github.com/positions.json?page=" . $page;
+            $multiCurl[$i] = curl_init();
+            curl_setopt($multiCurl[$i], CURLOPT_URL, $fetchURL[$id]);
+            curl_setopt($multiCurl[$i], CURLOPT_HEADER, 0);
+            curl_setopt($multiCurl[$i], CURLOPT_RETURNTRANSFER, 1);
+            curl_multi_add_handle($mh, $multiCurl[$i]);
+        }
+        $index = null;
+        do {
+            curl_multi_exec($mh, $index);
+        } while ($index > 0);
+        // get content and remove handles
+        foreach ($multiCurl as $k => $ch) {
+            $result[$k] = curl_multi_getcontent($ch);
+            curl_multi_remove_handle($mh, $ch);
+        }
+        // close
+        curl_multi_close($mh);
+        $r1 = json_decode($result[0], true);
+        $r1 = $r1["results"];
+        $r2 = json_decode($result[1], true);
+        if ($r2) {
+            array_walk($r2, function (&$item) {
+                $item['created_on'] = $item['created_at'];
+                $item['organization_name'] = $item['company'];
+                $item['logo'] = $item['company_logo'];
+                $item['organization_link'] = $item['company_url'];
+                $item['link'] = '/job/git-hub/' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['title']))) . '-' . strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $item['company']))) . '/' . $item['id'];
+                $item['city'] = $item['location'];
+                $item['sal'] = 1;
+                unset($item['created_at']);
+                unset($item['company']);
+                unset($item['company_logo']);
+                unset($item['company_url']);
+                unset($item['url']);
+                unset($item['description']);
+                unset($item['location']);
+            });
+        }
+        if ($r1) {
+            array_walk($r1, function (&$item) {
+                $item['created_on'] = $item['publication_date'];
+                $item['organization_name'] = $item['company']['name'];
+                $item['title'] = $item['name'];
+                $item['type'] = $item['levels'][0]['name'];
+                $item['logo'] = '';
+                $item['organization_link'] = $item['company']['short_name'];
+                $item['link'] = '/job/muse/' . $item['short_name'] . '-' . $item['company']['short_name'] . '/' . $item['id'];
+                $item['city'] = $item['locations'][0]['name'];
+                $item['sal'] = 1;
+                $item['sector'] = $item['categories'][0]['name'];
+                unset($item['contents']);
+                unset($item['company']);
+                unset($item['refs']);
+                unset($item['tags']);
+                unset($item['model_type']);
+                unset($item['publication_date']);
+                unset($item['locations']);
+                unset($item['levels']);
+                unset($item['type']);
+                unset($item['short_name']);
+                unset($item['categories']);
+            });
+        }
+        $result = array_merge($r1, $r2);
+        shuffle($result);
+        return $result;
     }
 }
