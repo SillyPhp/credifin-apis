@@ -633,6 +633,8 @@ $this->registerCss('
 	margin: 30px 0 20px;
 	border-top: 6px solid #00a0e3;
 	border-bottom: 6px solid #00a0e3;
+	border-left: 1px solid #00a0e3;
+	border-right: 1px solid #00a0e3;
 }
 .j-profiles h3 {
 	font-size: 21px;
@@ -648,7 +650,7 @@ $this->registerCss('
 }
 .pf-flex {
 	display: flex;
-	align-items: center;
+	justify-content: center;
 	flex-wrap:wrap;
 }
 .pf-all {
