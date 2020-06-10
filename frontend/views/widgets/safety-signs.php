@@ -66,5 +66,14 @@ $this->registerCSS('
     border-color: #fff;
     transition: .3s ease;
 }
+@media screen and (max-width: 550px){
+    .safety-banner-icon{
+        padding: 25px;
+    }
+    .safety-heading {
+        padding: 30px;
+        text-align: center;
+    }
+}
 ');
 ?>

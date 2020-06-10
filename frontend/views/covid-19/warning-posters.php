@@ -319,21 +319,29 @@ use yii\helpers\Url;
         <div class="row">
             <div class="quick-review">
                 <div class="row quick-review-inner">
-                    <div class="col-md-3 quick-review-img">
+                    <div class="col-md-3 col-xs-12 quick-review-img">
                         <img src="<?= Url::to('@eyAssets/images/pages/blog/DSB-law-group.png'); ?>"></div>
-                    <div class="col-md-7 overflow-hidden set-heading-c">
+                    <div class="col-md-7 col-xs-12 overflow-hidden set-heading-c">
                         <h2>Customize Posters With Your Own Company's Name And Logo</h2>
                         <div class="quick-review-action" id="review_btn">
                             <?php
                             if (Yii::$app->user->isGuest) {
                                 ?>
-                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign Up &
+                                <a href="javascript:;" data-toggle="modal" data-target="#loginModal">Login or Sign
+                                    Up &
                                     Download For Free</a>
                                 <?php
                             } else {
-                                ?>
-                                <a href="/account/dashboard/">Customize & Download</a>
-                                <?php
+                                if (!Yii::$app->user->identity->organization) {
+                                    ?>
+                                    <a href="javascript:;" data-toggle="modal" data-target="#safetyUserModal">Customize
+                                        & Download</a>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <a href="/account/dashboard/">Customize & Download</a>
+                                    <?php
+                                }
                             }
                             ?>
                         </div>
@@ -488,7 +496,7 @@ use yii\helpers\Url;
 
     <?= $this->render('/widgets/our-services-safety-posters') ?>
 </section>
-
+<?= $this->render('/widgets/safetyUserModal') ?>
 <?php
 
 $this->registercss('
@@ -974,6 +982,48 @@ $this->registercss('
 .great-red a:focus {
   outline: 0;
 }
+@media screen and (max-width: 768px){
+    .safety-header h3{
+        max-width: 400px;
+    }
+}
+@media screen and (max-width: 550px){
+    .download{
+        flex-wrap: wrap;
+        padding: 10px;
+       text-align: center;
+    }
+    .share-social{
+        flex-wrap: wrap;
+    }
+    .fb-share a, .whatsapp-share a, .teleg-share a, .twi-share a, .link-share a, .download a{
+        margin: 0px 5px 10px 5px
+    }
+    .quick-review-inner {
+        flex-wrap: wrap;
+        text-align: center;
+    }
+    .main-img{
+        max-height: auto;
+        height: 100%;
+    }
+    .main-img img{
+        height: auto;
+    }
+    .safety-header{
+        align-items: flex-start;
+    }
+    .bg-shadow{
+        height: auto;
+    }
+    .safety-header h3 {
+        font-size: 24px;
+        padding-top: 60px;
+    }
+    .safety-flex{
+        margin: 20px 0;
+    }
+}   
 ');
 $script = <<<JS
     var ps = new PerfectScrollbar('#safetyList');
@@ -1021,10 +1071,12 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
             let fElem = dImages[0].getAttribute('data-img')
             let bigPoster = document.getElementById('bigPoster');
             bigPoster.setAttribute('src', '/assets/themes/ey/images/pages/safety-posters/loading-img.png');
-            function setImage(){
+
+            function setImage() {
                 bigPoster.setAttribute('src', fElem);
             }
-            setTimeout(setImage, 500);
+
+            setTimeout(setImage, 3000);
 
             //add and remove active class from li
             let activeli = document.getElementsByClassName('activeLi');

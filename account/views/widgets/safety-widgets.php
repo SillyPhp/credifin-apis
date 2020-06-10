@@ -3,7 +3,7 @@ use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 ?>
-    <section class="">
+    <section>
         <div class="row">
             <div class="col-md-12">
                 <div class="quick-review row colorYellow">
@@ -160,7 +160,9 @@ margin-top: 16px;
     color: #000;
     
 }
-input::-webkit-file-upload-button{
+input::-webkit-file-upload-button, 
+input::-moz-file-upload-button,
+input::-ms-browse{
     background: transparent !important;
     border: none; 
     height: 37px;
