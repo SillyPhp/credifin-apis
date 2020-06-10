@@ -306,12 +306,15 @@ class CollegeIndexController extends ApiBaseController
 //                ->distinct()
 //                ->select([
 //                    'a.organization_enc_id',
-//                    'a.slug'
+//                    'a.slug',
+//                    'g.college_approvel',
+//                    'g.organization_approvel',
+//                    'g.collaboration_enc_id'
 //                ])
 //                ->joinWith(['employerApplications c' => function ($y) use ($college_id) {
 //                    $y->select(['c.organization_enc_id', 'c.application_enc_id', 'd.name']);
 //                    $y->joinWith(['applicationTypeEnc d'], false);
-//                    $y->onCondition([
+//                    $y->andWhere([
 //                        'c.status' => 'Active',
 //                        'c.is_deleted' => 0,
 //                        'c.for_all_colleges' => 1,
@@ -328,6 +331,11 @@ class CollegeIndexController extends ApiBaseController
 //                    'a.status' => 'Active',
 //                    'a.has_placement_rights' => 1,
 //                    'a.is_erexx_approved' => 1
+//                ])
+//                ->andWhere([
+//                    'or',
+//                    ['g.college_approvel' => null],
+//                    ['g.college_approvel' => 0]
 //                ])
 //                ->limit(6)
 //                ->asArray()
@@ -860,6 +868,8 @@ class CollegeIndexController extends ApiBaseController
                 $page = 1;
             }
 
+            $sort_by = $param['sort_by'];
+
             $college_id = $this->getOrgId();
 
             $companies = Organizations::find()
@@ -886,7 +896,8 @@ class CollegeIndexController extends ApiBaseController
                     'a.phone',
                     'g.college_approvel',
                     'g.organization_approvel',
-                    'g.status'
+                    'g.status',
+                    'g.is_deleted'
                 ])
                 ->joinWith(['employerApplications c' => function ($y) use ($college_id) {
                     $y->select(['c.organization_enc_id', 'c.application_type_enc_id', 'd.name type']);
@@ -914,13 +925,52 @@ class CollegeIndexController extends ApiBaseController
                     $g->onCondition(['g.college_enc_id' => $college_id]);
                 }], false)
                 ->where([
+                    'a.is_erexx_approved' => 1,
                     'a.has_placement_rights' => 1,
                     'a.status' => 'Active',
                     'a.is_deleted' => 0
                 ])
-                ->andWhere(['not', ['in', 'b.business_activity', ['College', 'Educational Institute', 'School']]])
-                ->orderBy(['g.college_approvel' => SORT_DESC, 'g.organization_approvel' => SORT_DESC, 'c.for_all_colleges' => SORT_DESC])
-                ->limit($limit)
+                ->andWhere(['not', ['in', 'b.business_activity', ['College', 'Educational Institute', 'School']]]);
+            if (!empty($sort_by)) {
+                if ($sort_by == 'approved') {
+                    $companies->orderBy([
+                        new \yii\db\Expression('FIELD (g.is_deleted, 1)ASC'),
+                        new \yii\db\Expression('FIELD (g.college_approvel, 1)DESC'),
+                        new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
+                        new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
+                    ]);
+                } elseif ($sort_by == 'rejected') {
+                    $companies->orderBy([
+                        new \yii\db\Expression('FIELD (g.is_deleted, 1)DESC'),
+                        new \yii\db\Expression('FIELD (g.college_approvel, 1)DESC'),
+                        new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
+                        new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
+                    ]);
+                } elseif ($sort_by == 'pending') {
+                    $companies->orderBy([
+                        new \yii\db\Expression('FIELD (g.is_deleted, 1)ASC'),
+                        new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
+                        new \yii\db\Expression('FIELD (g.college_approvel, 1)ASC'),
+                        new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
+                    ]);
+                } elseif ($sort_by == 'invite') {
+                    $companies->orderBy([
+                        new \yii\db\Expression('FIELD (g.is_deleted, 1)ASC'),
+                        new \yii\db\Expression('FIELD (c.for_all_colleges, 1)ASC'),
+                        new \yii\db\Expression('FIELD (g.organization_approvel, 1)ASC'),
+                        new \yii\db\Expression('FIELD (g.college_approvel, 1)ASC'),
+                    ]);
+                }
+            } else {
+                $companies->orderBy([
+                    new \yii\db\Expression('FIELD (g.is_deleted, 1)ASC'),
+                    new \yii\db\Expression('FIELD (g.college_approvel, 1)DESC'),
+                    new \yii\db\Expression('FIELD (c.for_all_colleges, 1)DESC'),
+                    new \yii\db\Expression('FIELD (g.organization_approvel, 1)DESC'),
+                ]);
+            }
+
+            $companies = $companies->limit($limit)
                 ->offset(($page - 1) * $limit)
                 ->asArray()
                 ->all();
@@ -947,6 +997,12 @@ class CollegeIndexController extends ApiBaseController
                         ->asArray()
                         ->all();
 
+                    if ($c['status'] == null && !empty($c['employerApplications'])) {
+                        $companies[$i]['status'] = 'Active';
+                        $companies[$i]['organization_approvel'] = '1';
+                        $companies[$i]['college_approvel'] = '0';
+                    }
+
                     if ($c['employerApplications']) {
                         foreach ($c['employerApplications'] as $cc) {
                             if ($cc['type'] == 'Jobs') {
@@ -958,6 +1014,7 @@ class CollegeIndexController extends ApiBaseController
                     }
                     $companies[$i]['jobs_count'] = $jobs_cnt;
                     $companies[$i]['internships_count'] = $intern_cnt;
+
                     $jobs_cnt = 0;
                     $intern_cnt = 0;
 

@@ -166,11 +166,11 @@ use yii\widgets\Pjax;
                                 <div class="col-md-3 pl-0">
                                     <div class="pr-user-actions">
                                         <div class="pr-top-actions text-right">
-                                            <a href="<?= '/' . $arr['username'] ?>">View Profile</a>
+                                            <a href="<?= Url::to($arr['username'],true) ?>" target="_blank">View Profile</a>
                                             <?php
                                             $cv = Yii::$app->params->upload_directories->resume->file . $arr['resume_location'] . DIRECTORY_SEPARATOR . $arr['resume'];
                                             ?>
-                                            <a href="<?= $cv ?>">Download Resume</a>
+                                            <a href="<?= Url::to($cv,true); ?>" target="_blank">Download Resume</a>
                                         </div>
                                         <ul>
                                             <!--                                        <li>-->
