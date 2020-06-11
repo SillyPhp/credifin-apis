@@ -20,7 +20,8 @@ use yii\helpers\Url;
                     <ul>
                         <li class="hbNav active" data-id="started"><a href="javascript:;">Getting Started</a></li>
                         <li class="hbNav" data-id="earning"><a href="javascript:;">Earning Revenue</a></li>
-
+                        <li class="hbNav" data-id="planning"><a href="javascript:;">Planning Your Class</a></li>
+                        <li class="hbNav" data-id="producing"><a href="javascript:;">Producing Your Class</a></li>
                     </ul>
                 </div>
             </div>
@@ -119,6 +120,81 @@ use yii\helpers\Url;
                             <div class="tab-pane" id="startedFour">
                                 <h3>Class Quality Guidelines</h3>
 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="planning" class="detailDivs">
+            <div class="row">
+                <div class="padd15">
+                    <div class="col-xs-3 padd-0">
+                        <h5>Earning Revenue</h5>
+                        <ul class="nav nav-tabs tabs-left">
+                            <li class="active"><a href="#planningOne" data-toggle="tab">Planning Your Class</a></li>
+                            <li><a href="#planningTwo" data-toggle="tab">Choosing Your Class Topic</a></li>
+                            <li><a href="#planningThree" data-toggle="tab">Choosing Your Class Project</a></li>
+                            <li><a href="#planningFour" data-toggle="tab">Earning FAQs</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-9 padd-0">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="planningOne">
+                                <h3>Planning Your Class</h3>
+                                <p>Planning is the first and most important part of creating your Skillshare class. This is when you decide on your topic, come up with a fun and engaging class project, and get your thoughts organized. Great planning makes production much easier (and faster). If you put the time into planning at the start, the whole class creation process will go more smoothly!</p>
+                            </div>
+                            <div class="tab-pane" id="planningTwo">
+                                <h3>Choosing Your Class Topic</h3>
+                            </div>
+                            <div class="tab-pane" id="planningThree">
+                                <h3>Choosing Your Class Project</h3>
+                            </div>
+                            <div class="tab-pane" id="planningFour">
+                                <h3>Drafting Your Class Outline</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="producing" class="detailDivs">
+            <div class="row">
+                <div class="padd15">
+                    <div class="col-xs-3 padd-0">
+                        <h5>Producing Your Class</h5>
+                        <ul class="nav nav-tabs tabs-left">
+                            <li class="active"><a href="#producingOne" data-toggle="tab">Getting Started</a></li>
+                            <li><a href="#producingTwo" data-toggle="tab">Teaching with Confidence</a></li>
+                            <li><a href="#producingThree" data-toggle="tab">Equipment</a></li>
+                            <li><a href="#producingFour" data-toggle="tab">Teaching Approach: Screencast, Talking Head, Demonstration</a></li>
+                            <li><a href="#producingFive" data-toggle="tab">Preparing to Film</a></li>
+                            <li><a href="#producingSix" data-toggle="tab">Editing Your Class</a></li>
+                            <li><a href="#producingSeven" data-toggle="tab">Exporting and Uploading</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-9 padd-0">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="producingOne">
+                                <h3>Getting Started</h3>
+                            </div>
+                            <div class="tab-pane" id="producingTwo">
+                                <h3>Teaching with Confidence</h3>
+                            </div>
+                            <div class="tab-pane" id="producingThree">
+                                <h3>Equipment</h3>
+                            </div>
+                            <div class="tab-pane" id="producingFour">
+                                <h3>Teaching Approach: Screencast, Talking Head, Demonstration</h3>
+                            </div>
+                            <div class="tab-pane" id="producingFive">
+                                <h3>Preparing to Film</h3>
+                            </div>
+                            <div class="tab-pane" id="producingSix">
+                                <h3>Editing Your Class</h3>
+                            </div>
+                            <div class="tab-pane" id="producingSeven">
+                                <h3>Exporting and Uploading</h3>
                             </div>
                         </div>
                     </div>
