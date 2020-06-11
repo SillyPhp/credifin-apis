@@ -67,7 +67,7 @@ class TemplatesController extends Controller
             }], false)
             ->joinWith(['applicationTypeEnc f'], false)
             ->where(['f.name' => $type, 'a.is_deleted' => 0, 'a.status' => "Active"])
-//            ->groupBy('zz.name')
+            ->orderBy(['a.created_on' => SORT_DESC])
             ->asArray()
             ->all();
 
