@@ -1,7 +1,6 @@
 <?php
 use yii\helpers\Url;
 ?>
-<section>
     <div class="row">
         <div class="h-job-main">
             <div class="h-logo">
@@ -19,7 +18,6 @@ use yii\helpers\Url;
             </div>
         </div>
     </div>
-</section>
 <?php
 $this->RegisterCss('
 .h-job-main {

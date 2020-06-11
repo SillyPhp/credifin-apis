@@ -400,81 +400,6 @@ class CollegeProfileController extends ApiBaseController
             $limit = Yii::$app->request->post('limit');
             $type = Yii::$app->request->post('type');
 
-//            $jobs = ErexxEmployerApplications::find()
-//                ->alias('a')
-//                ->distinct()
-//                ->select([
-//                    'bb.name',
-//                    'bb.slug org_slug',
-//                    'CASE WHEN bb.logo IS NOT NULL THEN CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo, 'https') . '", bb.logo_location, "/", bb.logo) ELSE CONCAT("https://ui-avatars.com/api/?name=", bb.name, "&size=200&rounded=false&background=", REPLACE(bb.initials_color, "#", ""), "&color=ffffff") END logo',
-//                    'b.last_date',
-//                    'b.joining_date',
-//                    'b.slug',
-//                    'e.name parent_category',
-//                    'ee.name title',
-//                    'a.employer_application_enc_id',
-//                    'a.is_college_approved',
-//                    'm.fixed_wage as fixed_salary',
-//                    'm.wage_type salary_type',
-//                    'm.max_wage as max_salary',
-//                    'm.min_wage as min_salary',
-//                    'm.wage_duration as salary_duration',
-//                    'dd.designation',
-//                    'z.name job_type'
-//                ])
-//                ->joinWith(['employerApplicationEnc b' => function ($b) {
-//                    $b->joinWith(['organizationEnc bb'], false);
-//                    $b->select(['b.application_enc_id', 'b.slug', 'y.interview_process_enc_id']);
-//                    $b->joinWith(['interviewProcessEnc y' => function ($y) {
-//                        $y->select(['y.interview_process_enc_id']);
-//                        $y->joinWith(['interviewProcessFields yy' => function ($yy) {
-//                            $yy->select(['yy.interview_process_enc_id', 'yy.sequence', 'yy.field_name']);
-//                        }]);
-//                    }]);
-//                    $b->joinWith(['applicationEducationalRequirements bc' => function ($bc) {
-//                        $bc->select(['bc.application_enc_id', 'cb.educational_requirement']);
-//                        $bc->joinWith(['educationalRequirementEnc cb'], false);
-//                    }]);
-//                    $b->joinWith(['applicationSkills bbc' => function ($bbc) {
-//                        $bbc->select(['bbc.application_enc_id', 'skill']);
-//                        $bbc->joinWith(['skillEnc cbb'], false);
-//                    }]);
-//                    $b->joinWith(['designationEnc dd'], false);
-//                    $b->joinWith(['title d' => function ($d) {
-//                        $d->joinWith(['parentEnc e']);
-//                        $d->joinWith(['categoryEnc ee']);
-//                    }], false);
-//                    $b->joinWith(['applicationOptions m'], false);
-//                    $b->joinWith(['applicationPlacementLocations f' => function ($f) {
-//                        $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
-//                        $f->joinWith(['locationEnc ff' => function ($z) {
-//                            $z->joinWith(['cityEnc g']);
-//                            $z->groupBy(['ff.city_enc_id']);
-//                        }], false);
-//                        $f->onCondition(['f.is_deleted' => 0]);
-//                        $f->groupBy(['f.placement_location_enc_id']);
-//                    }], true);
-//                    $b->joinWith(['applicationTypeEnc z']);
-//                }], true)
-//                ->where([
-//                    'a.college_enc_id' => $college_id,
-//                    'a.is_deleted' => 0,
-//                    'b.is_deleted' => 0,
-//                    'bb.is_deleted' => 0,
-//                    'a.status' => 'Active',
-//                    'bb.is_erexx_approved' => 1,
-//                    'bb.has_placement_rights' => 1,
-//                ]);
-//            if ($type) {
-//                $jobs->andWhere(['z.name' => $type]);
-//            }
-//            if ($limit) {
-//                $jobs->limit($limit);
-//            }
-//            $result = $jobs->
-//            asArray()
-//                ->all();
-
             $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -497,7 +422,8 @@ class CollegeProfileController extends ApiBaseController
                     'm.min_wage as min_salary',
                     'm.wage_duration as salary_duration',
                     'dd.designation',
-                    'z.name job_type'
+                    'z.name job_type',
+                    'b.is_deleted'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
@@ -618,6 +544,7 @@ class CollegeProfileController extends ApiBaseController
                 $skills = [];
                 $positions = 0;
                 $data['name'] = $j['name'];
+                $data['is_deleted'] = $j['is_deleted'];
                 $data['job_type'] = $j['job_type'];
                 $data['logo'] = $j['logo'];
                 $data['org_slug'] = $j['org_slug'];
@@ -644,7 +571,7 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $data['process'] = $j['interviewProcessEnc']['interviewProcessFields'];
-                $data['location'] = implode(',', $locations);
+                $data['location'] = $locations? implode(',', $locations): 'Work From Home';
                 $data['positions'] = $positions;
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
@@ -652,7 +579,16 @@ class CollegeProfileController extends ApiBaseController
                 array_push($resultt, $data);
             }
 
-            return $this->response(200, ['status' => 200, 'jobs' => $resultt]);
+            $data = [];
+            $j = 0;
+            foreach ($resultt as $r) {
+                if ($r['is_deleted'] != 1) {
+                    array_push($data, $resultt[$j]);
+                }
+                $j++;
+            }
+
+            return $this->response(200, ['status' => 200, 'jobs' => $data]);
         } else {
             return $this->response(401);
         }

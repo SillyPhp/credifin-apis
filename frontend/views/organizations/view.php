@@ -214,19 +214,19 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-                                <div class="j-profiles">
-                                    <h3>Job Profiles</h3>
-                                    <div class="row" style="padding: 0 15px;">
-                                        <div class="pf-flex">
-                                            <div class="pf-all">Infromation technology</div>
-                                            <div class="pf-all">marketing</div>
-                                            <div class="pf-all">sales</div>
-                                            <div class="pf-all">Engineering</div>
-                                            <div class="pf-all">accounting</div>
-                                            <div class="pf-all">others</div>
-                                        </div>
-                                    </div>
-                                </div>
+<!--                                <div class="j-profiles">-->
+<!--                                    <h3>Job Profiles</h3>-->
+<!--                                    <div class="row" style="padding: 0 15px;">-->
+<!--                                        <div class="pf-flex">-->
+<!--                                            <div class="pf-all">Infromation technology</div>-->
+<!--                                            <div class="pf-all">marketing</div>-->
+<!--                                            <div class="pf-all">sales</div>-->
+<!--                                            <div class="pf-all">Engineering</div>-->
+<!--                                            <div class="pf-all">accounting</div>-->
+<!--                                            <div class="pf-all">others</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             <div class="col-md-12 col-sm-12">
                                 <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
                                 <div class="sub-review-box">
@@ -240,8 +240,7 @@ $round_avg = round($overall_avg);
                                         <div class="reviewers"><?= $reviews_count ?> Reviews</div>
                                     </div>
                                     <div class="write-rv">
-                                        <a href="/<?= $organization['slug']; ?>/reviews"><i
-                                                    class="fas fa-pencil-alt"></i> Write Review</a>
+                                        <a href="/<?= $organization['slug']; ?>/reviews">Write Review</a>
                                     </div>
                                 </div>
                                 <!--                                --><?php
