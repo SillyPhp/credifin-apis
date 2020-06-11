@@ -60,7 +60,7 @@ if (!empty($total_applications)) {
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn" type="button" >
                                 <i class="fa fa-twitter"></i>
                             </a>
@@ -70,7 +70,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-whatsapp share_btn" type="button">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
