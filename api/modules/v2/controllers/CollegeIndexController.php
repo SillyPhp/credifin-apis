@@ -232,14 +232,14 @@ class CollegeIndexController extends ApiBaseController
 
     public function pendingJobsCount($type, $college_id)
     {
-        return EmployerApplications::find()
+        $count = EmployerApplications::find()
             ->alias('a')
             ->distinct()
+            ->select(['a.application_enc_id', 'b.is_deleted'])
             ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                 $b->onCondition([
                     'b.college_enc_id' => $college_id,
                     'b.status' => 'Active',
-                    'b.is_deleted' => 0,
                 ]);
                 $b->andWhere([
                     'or',
@@ -258,7 +258,19 @@ class CollegeIndexController extends ApiBaseController
                 'bb.is_erexx_approved' => 1,
                 'bb.has_placement_rights' => 1,
             ])
-            ->count();
+            ->asArray()
+            ->all();
+
+        $i = 0;
+        $counts = [];
+        foreach ($count as $c) {
+            if ($c['is_deleted'] != 1) {
+                array_push($counts, $count[$i]);
+            }
+            $i++;
+        }
+
+        return count($counts);
     }
 
     public function actionCompanySelection()
@@ -573,7 +585,7 @@ class CollegeIndexController extends ApiBaseController
                         $positions += $l['positions'];
                     }
                 }
-                $data['location'] = $locations? implode(',', $locations): 'Work From Home';
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions;
                 array_push($result, $data);
             }

@@ -465,6 +465,8 @@ class CollegeProfileController extends ApiBaseController
                     'z.name' => $type,
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
+                    'bb.is_deleted' => 0,
+                    'bb.status' => 'Active',
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
                 ]);
@@ -571,10 +573,10 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $data['process'] = $j['interviewProcessEnc']['interviewProcessFields'];
-                $data['location'] = $locations? implode(',', $locations): 'Work From Home';
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions;
-                $data['education'] = implode(',', $educational_requirement);
-                $data['skills'] = implode(',', $skills);
+                $data['education'] = implode(', ', $educational_requirement);
+                $data['skills'] = implode(', ', $skills);
                 $data['applied_count'] = $count['count'];
                 array_push($resultt, $data);
             }
@@ -772,7 +774,7 @@ class CollegeProfileController extends ApiBaseController
                 }
 
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
-                $data['location'] = implode(',', $locations);
+                $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
                 $data['positions'] = $positions;
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
