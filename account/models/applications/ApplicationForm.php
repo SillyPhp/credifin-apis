@@ -1011,13 +1011,5 @@ class ApplicationForm extends Model
             'out'=>$output_array,
             'ret'=>$ret_code
         ];
-//        if ($ret_code)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
     }
 }
