@@ -10,7 +10,7 @@ use yii\helpers\Url;
                 <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_featured}}
-                        <span  data-toggle="tooltip" title="Featured">
+                        <span data-toggle="tooltip" title="Featured">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/featured.png') ?>"/>
                         </span>
                         {{/is_featured}}
@@ -58,8 +58,13 @@ use yii\helpers\Url;
                         <span class="jobs">{{total_jobs}} Jobs</span>
                         <span class="interns">{{total_internships}} Internships</span>
                     </div>
-                    <div class="follow-btn">
-                        <a href="/{{review_link}}" target="_blank">Follow</a>
+                    <div class="flw-rvw">
+                        <div class="follow-btn">
+                            <a href="/{{review_link}}" target="_blank">Follow</a>
+                        </div>
+                        <div class="review-btn">
+                            <a href="#">Review</a>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -68,6 +73,12 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registercss('
+.flw-rvw {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .company-main {
 	border: 1px solid #eee;
 	box-shadow:0px 2px 10px rgba(0,0,0,0.10);
@@ -164,18 +175,31 @@ $this->registercss('
 	font-weight: 500;
 	display: block;
 }
-.follow-btn {
-    margin:5px 0;
+.follow-btn, .review-btn {
+    margin:10px;
 }
-.follow-btn a {
-    background-color: #ff7803;
-    color: #fff;
-    font-size: 20px;
-    font-family: roboto;
-    padding: 5px 20px;
-    border-radius: 4px;
-    font-weight: 500;
+.follow-btn a, .review-btn a {
+	color: #fff;
+	font-size: 17px;
+	font-family: roboto;
+	padding: 6px 22px;
+	border-radius: 3px;
+	font-weight: 500;
+	text-transform: uppercase;
+	border: 1px dashed;
 }
+.follow-btn a:hover {
+	background-color: #fff;
+	color: #ff7803;
+	transition: all .3s;
+}
+.review-btn a:hover {
+    background-color:#fff;
+    color:#00a0e3;
+    transition:all .3s;
+}
+.follow-btn a{background-color:#ff7803;}
+.review-btn a{background-color:#00a0e3;}
 ');
 
 
