@@ -969,5 +969,8 @@ class SiteController extends Controller
     {
         return $this->render('transaction-table');
     }
+    public function actionCreatorHandbook(){
+        return $this->render('creator-handbook');
+    }
 
 }
