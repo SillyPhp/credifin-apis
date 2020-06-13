@@ -269,8 +269,7 @@ use yii\helpers\Url;
             <div class="col-md-12">
                 <div class="download">
                     <h2>download these a4 signs for free </h2>
-                    <a href="<?= Url::to('@eyAssets/warning-posters-zip/warning-posters.zip') ?>" download
-                       class="share-elem-main"><span><i class="fas fa-download"></i></span>Download All</a>
+                    <a href="javascript:;" data-toggle="modal" data-target="#before-download"><span><i class="fas fa-download"></i></span>Download All</a>
                 </div>
             </div>
         </div>
@@ -497,6 +496,7 @@ use yii\helpers\Url;
     <?= $this->render('/widgets/our-services-safety-posters') ?>
 </section>
 <?= $this->render('/widgets/safetyUserModal') ?>
+<?= $this->render('/widgets/before-download') ?>
 <?php
 
 $this->registercss('

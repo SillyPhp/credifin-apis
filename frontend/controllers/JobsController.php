@@ -1331,7 +1331,6 @@ class JobsController extends Controller
                     if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
                         $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
                         if (isset($file)){
-                             //$url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
                              $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
                              return [
                                  'status'=>200,
@@ -1350,19 +1349,5 @@ class JobsController extends Controller
                 }
             }
         }
-    }
-
-//    public function actionTest()
-//    {
-//        $page = 1;
-//        $urls =["https://jobs.github.com/positions.json?page=".$page,
-//                "https://www.themuse.com/api/public/jobs?page=".$page];
-//        $rc = new RollingRequest();
-//        $rc->run($urls);
-//   }
-
-    public function actionTestApi()
-    {
-        return $this->render('test2');
     }
 }

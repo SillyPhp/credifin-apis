@@ -214,20 +214,20 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-                                <div class="j-profiles">
-                                    <h3>Job Profiles</h3>
-                                    <div class="row" style="padding: 0 15px;">
-                                        <div class="pf-flex">
-                                            <div class="pf-all">Infromation technology</div>
-                                            <div class="pf-all">marketing</div>
-                                            <div class="pf-all">sales</div>
-                                            <div class="pf-all">Engineering</div>
-                                            <div class="pf-all">accounting</div>
-                                            <div class="pf-all">others</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <div class="col-md-12 col-sm-12">
+<!--                                <div class="j-profiles">-->
+<!--                                    <h3>Job Profiles</h3>-->
+<!--                                    <div class="row" style="padding: 0 15px;">-->
+<!--                                        <div class="pf-flex">-->
+<!--                                            <div class="pf-all">Infromation technology</div>-->
+<!--                                            <div class="pf-all">marketing</div>-->
+<!--                                            <div class="pf-all">sales</div>-->
+<!--                                            <div class="pf-all">Engineering</div>-->
+<!--                                            <div class="pf-all">accounting</div>-->
+<!--                                            <div class="pf-all">others</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            <div>
                                 <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
                                 <div class="sub-review-box">
                                     <div class="rating-large"><?= $round_avg ?>/5</div>
@@ -240,8 +240,7 @@ $round_avg = round($overall_avg);
                                         <div class="reviewers"><?= $reviews_count ?> Reviews</div>
                                     </div>
                                     <div class="write-rv">
-                                        <a href="/<?= $organization['slug']; ?>/reviews"><i
-                                                    class="fas fa-pencil-alt"></i> Write Review</a>
+                                        <a href="/<?= $organization['slug']; ?>/reviews">Write Review</a>
                                     </div>
                                 </div>
                                 <!--                                --><?php
@@ -627,14 +626,10 @@ echo $this->render('/widgets/mustache/organization-reviews', [
 $this->registerCss('
 .mv-text{text-align:justify;font-family:roboto;}
 .j-profiles {
-	box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
 	position: relative;
 	border-radius: 15px;
 	margin: 30px 0 20px;
-	border-top: 6px solid #00a0e3;
-	border-bottom: 6px solid #00a0e3;
-	border-left: 1px solid #00a0e3;
-	border-right: 1px solid #00a0e3;
 }
 .j-profiles h3 {
 	font-size: 21px;
@@ -655,7 +650,7 @@ $this->registerCss('
 }
 .pf-all {
 	text-align: center;
-	font-size: 15px;
+	font-size: 16px;
 	text-transform: capitalize;
 	font-family: roboto;
 	font-weight: 500;
@@ -667,11 +662,8 @@ $this->registerCss('
 //	border: 1px solid #aaaaaa;
 }
 .pf-all:hover {
-	/* color: #00a0e3; */
-	border-radius:15px 2px 15px 2px;
-	background-color: #00a0e3;
-	color: #fff;
-	border-color: transparent;
+	color: #00a0e3;
+	transform:translateY(-3px);
 }
 .write-rv {
     position: absolute;

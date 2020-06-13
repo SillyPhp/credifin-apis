@@ -1,11 +1,11 @@
 <?php
 $this->params['header_dark'] = false;
-$this->title = "Aquire And Find Best Courses From Top Institutes";
+$this->title = "Acquire And Find Best Courses From Top Institutes";
 use yii\helpers\Url;
 
 $keywords = "Best Courses from Top Institutes,  ";
 
-$description = "Learn anything , anytime , Aquire and find best courses from top institutes";
+$description = "Learn anything , anytime , Acquire and find best courses from top institutes";
 
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
 
@@ -48,7 +48,7 @@ $this->params['seo_tags'] = [
                 <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
-                        <div class="jumbo-heading">Aquire and Find best courses from top institutes</div>
+                        <div class="jumbo-heading">Acquire and Find best courses from top institutes</div>
                         <div class="search-box1">
                             <form action="<?= Url::to('/courses/courses-list') ?>">
                                 <input type="text" placeholder="Search" name="keyword" id="get-courses-list">

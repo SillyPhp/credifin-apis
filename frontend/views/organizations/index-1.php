@@ -401,7 +401,7 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                  $('#loading_img').css('display','block');
                     }
             },
-            success:function (response) {
+            success:function (response) { 
                  $('.load-more-bttn').show();
                  $('#load_review_card_btn').html('Load More');
                  $('#load_review_card_btn').removeAttr('disabled');
@@ -411,8 +411,8 @@ function getCompanies(params={'business_activity':activities},template=$("#compa
                     var get_companies = $('#companies-card-all').html();
                     template.append(Mustache.render(get_companies, response.cards));
                     $('[data-toggle="tooltip"]').tooltip();
-                    utilities.initials();
-                    $.fn.raty.defaults.path = '/assets/vendor/raty-master/new_stars'; 
+                    utilities.initials(); 
+                    $.fn.raty.defaults.path = '/assets/common/new_stars'; 
                     $('.average-star').raty({
                    readOnly: true, 
                    hints:['','','','',''], 
