@@ -901,6 +901,9 @@ $this->registercss('
 .great-red a:focus {
   outline: 0;
 }
+.tab-content{
+    padding: 15px 25px;
+}
 ');
 $script = <<<JS
     var ps = new PerfectScrollbar('#safetyList');
