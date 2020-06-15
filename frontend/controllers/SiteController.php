@@ -969,5 +969,8 @@ class SiteController extends Controller
     {
         return $this->render('transaction-table');
     }
+    public function actionSkillVideo(){
+        return $this->render('skill-video');
+    }
 
 }
