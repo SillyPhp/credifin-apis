@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', htmlspecialchars_decode($organization['name']));
 $keywords = $industry['industry'] . "," . $organization['tag_line'];
@@ -147,11 +147,39 @@ $round_avg = round($overall_avg);
                             About <?= htmlspecialchars_decode($organization['name']) ?>
                         </div>
                         <div class="divider"></div>
-
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description more">
                                 <?= htmlspecialchars_decode($organization['description']) ?>
                             </div>
+                            <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
+                                <div class="row">
+                                    <div class="heading-style">Mission & Vision</div>
+                                    <div class="divider"></div>
+                                    <div class="mv-box">
+                                        <div class="col-md-12">
+                                            <?php if (!empty($organization['mission'])) { ?>
+                                                <div class="mv-heading">
+                                                    Mission
+                                                </div>
+                                                <div class="mv-text">
+                                                    <?= htmlspecialchars_decode($organization['mission']) ?>
+                                                </div>
+                                            <?php }
+                                            if (!empty($organization['vision'])) {
+                                                ?>
+                                                <div class="vission-box">
+                                                    <div class="mv-heading">
+                                                        Vision
+                                                    </div>
+                                                    <div class="mv-text">
+                                                        <?= htmlspecialchars_decode($organization['vision']) ?>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
@@ -186,7 +214,20 @@ $round_avg = round($overall_avg);
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-sm-4">
+<!--                                <div class="j-profiles">-->
+<!--                                    <h3>Job Profiles</h3>-->
+<!--                                    <div class="row" style="padding: 0 15px;">-->
+<!--                                        <div class="pf-flex">-->
+<!--                                            <div class="pf-all">Infromation technology</div>-->
+<!--                                            <div class="pf-all">marketing</div>-->
+<!--                                            <div class="pf-all">sales</div>-->
+<!--                                            <div class="pf-all">Engineering</div>-->
+<!--                                            <div class="pf-all">accounting</div>-->
+<!--                                            <div class="pf-all">others</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            <div class="col-md-12 col-sm-12">
                                 <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
                                 <div class="sub-review-box">
                                     <div class="rating-large"><?= $round_avg ?>/5</div>
@@ -196,84 +237,63 @@ $round_avg = round($overall_avg);
                                                 <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
                                             <?php } ?>
                                         </div>
-                                        <div class="reviewers"><?= $reviews_count?> Reviews</div>
+                                        <div class="reviewers"><?= $reviews_count ?> Reviews</div>
+                                    </div>
+                                    <div class="write-rv">
+                                        <a href="/<?= $organization['slug']; ?>/reviews">Write Review</a>
                                     </div>
                                 </div>
-<!--                                --><?php
-//                                if ($round_avg != 0) {
-//                                    ?>
-<!--                                    <div class="col-md-12 user-rating">-->
-<!--                                        <div class="ur-bg padd-lr-5">-->
-<!--                                            <div class="urating">--><?//= $review_stats['job_avg']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Job Security</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg light-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['growth_avg']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Career Growth</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['avg_cult']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Company Culture</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg light-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['avg_compensation']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Salary & Benefits</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['avg_work']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Work Satisfaction</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg light-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['avg_work_life']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Work-Life Balance</div>-->
-<!--                                        </div>-->
-<!--                                        <div class="ur-bg">-->
-<!--                                            <div class="urating">--><?//= $review_stats['avg_skill']; ?><!--/5</div>-->
-<!--                                            <div class="uratingtitle">Skill Development</div>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    --><?php
-//                                }
-//                                ?>
+                                <!--                                --><?php
+                                //                                if ($round_avg != 0) {
+                                //                                    ?>
+                                <!--                                    <div class="col-md-12 user-rating">-->
+                                <!--                                        <div class="ur-bg padd-lr-5">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['job_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Job Security</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['growth_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Career Growth</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_cult']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Company Culture</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_compensation']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Salary & Benefits</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work Satisfaction</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work_life']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work-Life Balance</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_skill']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Skill Development</div>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    --><?php
+                                //                                }
+                                //                                ?>
                                 <div class="review-sidebar-main text-center">
                                     <h4 class="sub-heading-review">Help the community by giving your valuable
                                         review</h4>
-                                    <a href="/<?= $organization['slug']; ?>/reviews" class="btn-default"><i
-                                                class="fas fa-pencil-alt"></i> Write Review</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
-                        <div class="row">
-                            <div class="mv-box">
-                                <div class="heading-style">Mission & Vision</div>
-                                <div class="divider"></div>
-                                <div class="col-md-12">
-                                    <?php if (!empty($organization['mission'])) { ?>
-                                        <div class="mv-heading">
-                                            Mission
-                                        </div>
-                                        <div class="mv-text">
-                                            <?= htmlspecialchars_decode($organization['mission']) ?>
-                                        </div>
-                                    <?php }
-                                    if (!empty($organization['vision'])) {
-                                        ?>
-                                        <div class="vission-box">
-                                            <div class="mv-heading">
-                                                Vision
-                                            </div>
-                                            <div class="mv-text">
-                                                <?= htmlspecialchars_decode($organization['vision']) ?>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                            </div>
-                        </div>
-                    <?php }
-                    if (!empty($benefit)) {
+                   <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
                             <div class="company-benefits">
@@ -604,6 +624,71 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.mv-text{text-align:justify;font-family:roboto;}
+.j-profiles {
+	box-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+	position: relative;
+	border-radius: 15px;
+	margin: 30px 0 20px;
+	border-top: 6px solid #00a0e3;
+	border-bottom: 6px solid #00a0e3;
+	border-left: 1px solid #00a0e3;
+	border-right: 1px solid #00a0e3;
+}
+.j-profiles h3 {
+	font-size: 21px;
+//	background-color: #00a0e3;
+	padding: 12px 20px 0px;
+	text-transform: uppercase;
+	color: #00a0e3;
+	margin: 0 0 15px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius: 4px 4px 0 0;
+	text-align: center;
+}
+.pf-flex {
+	display: flex;
+	justify-content: center;
+	flex-wrap:wrap;
+}
+.pf-all {
+	text-align: center;
+	font-size: 15px;
+	text-transform: capitalize;
+	font-family: roboto;
+	font-weight: 500;
+	cursor: pointer;
+	flex-basis: 45%;
+	margin: 0px 8px 8px;
+	padding: 10px;
+	transition: all .3s;
+//	border: 1px solid #aaaaaa;
+}
+.pf-all:hover {
+	/* color: #00a0e3; */
+	border-radius:15px 2px 15px 2px;
+	background-color: #00a0e3;
+	color: #fff;
+	border-color: transparent;
+}
+.write-rv {
+    position: absolute;
+    right:15px;
+    bottom: 5px;
+}
+.write-rv a {
+    color: #fff;
+    font-weight: 500;
+    font-family: roboto;
+    transition:all .3s;
+}
+.write-rv:hover a {
+    color: #00a0e3;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 2px;
+}
 .warn-img {
 	width: 300px;
 	margin: auto;
@@ -659,19 +744,18 @@ $this->registerCss('
     padding-top:10px;
     text-transform:uppercase;
     font-size:15px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:roboto;
 }
 /*----company benefits ends----*/
 /*----mission & vission----*/
-.mv-heading{
-    font-size:20px;
-    font-weight:bold;
-    text-transform:uppercase;
+.mv-heading {
+	font-size: 20px;
+	font-weight: 500;
+	text-transform: uppercase;
+	font-family: roboto;
 }
 .vission-box{
-    padding-top:20px;
-}
-.mv-box{
     padding-top:20px;
 }
 /*----mission & vission end----*/
@@ -799,6 +883,7 @@ $this->registerCss('
     font-size:15px;
     text-align:justify;
     line-height:22px;
+    font-family:roboto;
 }
 .com-des-list{
     padding:10px 25px;
@@ -831,11 +916,13 @@ $this->registerCss('
     left:50%;
     transform:translate(-50%,-50%); 
 }
-.det-heading{
-    font-size:13px;
-    font-weight:bold;
+.det-heading {
+	font-size: 15px;
+	font-weight: 500;
+	font-family: roboto;
 }
 .det{
+    font-family: roboto;
     font-size:16px;
     color:#00a0e3;
 }
@@ -893,6 +980,7 @@ a.web{
     text-transform: capitalize;
     color: #00a0e3;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    font-family:roboto;
 }
 .follow:hover{
     background:#00a0e3;
@@ -909,7 +997,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background-color: #00a0e3 !important;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
      transition:.2s all;
-     
+     font-family:roboto;
 }
 .nav-tabs > li > a:hover{
    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
@@ -917,6 +1005,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .nav-tabs>li>a{
     border:none;
+    font-family:roboto;
 }
 .nav-tabs>li>a:hover{
     border:none;
@@ -986,7 +1075,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .com-name{
     font-size:40px;
-    font-family:lobster;
+    font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
 }
@@ -994,6 +1083,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     color:#fff;
     padding: 0 0 0 30px; 
     font-size:15px;
+    font-family:roboto;
 }
 .com-establish .detail-title{
     font-weight:bold;
@@ -1108,10 +1198,12 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     padding: 10px 20px;
     color: #fff;
     margin-top:20px;
+    position:relative;
 }
-.reviewers{
-    text-align: left;
-    padding-left: 10px;
+.reviewers {
+	text-align: left;
+	padding-left: 10px;
+	font-family: roboto;
 }
 .rs-main{
     max-width: 200px;
@@ -1122,15 +1214,15 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     display: inline-block;
     float: left;
     width: 100%;
-    margin-right: 15px;
 }
 .com-rating-1{
     margin-top:15px;
 }
-.sub-heading-review{
-    font-size: 17px;
-    font-weight: 600;
-    margin: 20px 0px;
+.sub-heading-review {
+	font-size: 17px;
+	font-weight: 500;
+	margin: 10px 0px;
+	font-family: roboto;
 }
 .btn-default{
     background-color:#fff;
@@ -1156,6 +1248,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     color:#ccc;
     padding:7px 5px;
     border-radius:5px;
+    margin-bottom:5px;
 }
 .com-rating-1 i.active{
     background:#fff;

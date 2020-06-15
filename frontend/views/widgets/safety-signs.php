@@ -46,25 +46,36 @@ $this->registerCSS('
     padding-bottom: 30px;
 }
 .safety-heading h3{
-    font-size: 25px;
+    font-size: 40px;
     font-family: lora;
     font-weight: 600;
     color: #000;
+    margin-top: 0px;
 } 
 .safety-heading a{
     border: 2px solid #000;
-    background: #ffcc00;
-    color: #000;
+    background: #000;
+    color: #ffcc00;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     text-transform: uppercase;
     padding: 10px 20px;
     letter-spacing: .5px; 
 }
 .safety-heading a:hover{
-    color: #fff;
-    border-color: #fff;
+    color: #000;
+    border-color: #000;
+    background: #ffcc00;
     transition: .3s ease;
+}
+@media screen and (max-width: 550px){
+    .safety-banner-icon{
+        padding: 25px;
+    }
+    .safety-heading {
+        padding: 30px;
+        text-align: center;
+    }
 }
 ');
 ?>
