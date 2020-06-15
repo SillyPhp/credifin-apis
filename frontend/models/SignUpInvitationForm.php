@@ -12,6 +12,7 @@ class SignUpInvitationForm extends Model {
     public function rules() {
         return [
             [['email'], 'email'],
+            [['email'], 'trim'],
         ];
     }
 
