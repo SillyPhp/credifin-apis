@@ -4,13 +4,21 @@ use yii\helpers\Url;
 
 $this->params['header_dark'] = true;
 ?>
-
+<section class="our-bg">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="our-heading">
+                    <h3>Our Partners</h3>
+                </div>
+            </div>
+            <div class="col-md-6"></div>
+        </div>
+    </div>
+</section>
     <section>
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <h3 class="our-part">Our Partners</h3>
-                </div>
                 <div id="side-bar-main" class="col-md-3">
                     <div class="search-main">
                         <h3>Find an Integration</h3>
@@ -25,9 +33,6 @@ $this->params['header_dark'] = true;
                                 <li>
                                     <a href="#training" class="scroll-to-sec">courses integration</a>
                                 </li>
-                                <li>
-                                    <a href="#blogs" class="scroll-to-sec">Blogs integration</a>
-                                </li>
                             </ul>
                         </div>
                     </div>
@@ -35,64 +40,45 @@ $this->params['header_dark'] = true;
                 <div id="integration-main" class="col-md-8 col-md-offset-1">
                     <div class="cont-main row">
                         <div class="col-md-12">
-                            <h3 id="jobs">Jobs Integration</h3>
+                            <h3 id="jobs" class="heading-style">Jobs Integration</h3>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
                                 <img src="<?= Url::to('@eyAssets/images/pages/our-partners/github.png') ?>"/>
-                                <h2>github</h2>
+                                <h2><a href="https://github.com/">github</a></h2>
                                 <p>GitHub is built for collaboration. Set up an organization to improve the way your
                                     team works together, and get access to more features.</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/themuse.jpg') ?>"/>
-                                <h2>muse</h2>
+                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/the-muse.png') ?>"/>
+                                <h2><a href="https://www.themuse.com/">themuse</a></h2>
                                 <p>Find everything you need to succeed from dream jobs to career advice.</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/themuse.jpg') ?>"/>
-                                <h2>Careerjet</h2>
+                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/careerjet2.png') ?>"/>
+                                <h2><a href="https://www.careerjet.co.in/">Careerjet</a></h2>
                                 <p>Careerjet is an employment search engine. In just one search access 19,277,026 jobs published on 49,057 websites in the world.</p>
                             </div>
                         </div>
-                        <div class="col-md-12">
-                            <h3 id="training">courses integration</h3>
+                        <div class="col-md-12 col-sm-12">
+                            <h3 id="training" class="heading-style">courses integration</h3>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udemy.jpg') ?>"/>
-                                <h2>Udemy</h2>
+                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udemy.png') ?>"/>
+                                <h2><a href="https://www.udemy.com/">Udemy</a></h2>
                                 <p>Udemy is the world’s largest selection of courses Choose from over 100,000 online video courses with new additions published every month.</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udacity.jpg') ?>"/>
-                                <h2>udacity</h2>
+                                <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udacity1.png') ?>"/>
+                                <h2><a href="https://www.udacity.com/">udacity</a></h2>
                                 <p>Udacity is the world’s fastest, most efficient way to master the skills tech companies want. 100% online, part-time & self-paced.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <h3 id="blogs">Blogs integration</h3>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"/>
-                                <h2>github</h2>
-                                <p>GitHub is built for collaboration. Set up an organization to improve the way your
-                                    team works together, and get access to more features. </p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="jobs-main box">
-                                <img src="<?= Url::to('@eyAssets/images/pages/index2/nslider-image1.jpg') ?>"/>
-                                <h2>github</h2>
-                                <p>GitHub is built for collaboration. Set up an organization to improve the way your
-                                    team works together, and get access to more features. </p>
                             </div>
                         </div>
                     </div>
@@ -102,9 +88,17 @@ $this->params['header_dark'] = true;
     </section>
 <?php
 $this->registercss('
-.our-part {
-	font-family: lora;
+.our-bg{
+    background:url(' . Url::to('@eyAssets/images/pages/our-partners/our-partner.png') . ');
+    min-height: 380px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center; 
+}
+.our-heading h3 {
 	font-size: 55px;
+	font-family: lora;
+	margin-top: 110px;
 }
 .form-control {
     border-radius: 8px;
@@ -121,11 +115,9 @@ $this->registercss('
 	text-transform: capitalize;
 	margin-bottom: 8px;
 	font-family: roboto;
-	font-weight: ;
 }
+.p-listing ul li a:hover {color:#00a0e3;}
 .cont-main h3 {
-	font-size: 35px;
-	font-family: lora;
 	text-transform: capitalize;
 	margin-bottom:20px;
 }
@@ -135,7 +127,7 @@ $this->registercss('
 	padding-bottom: 10px;
 	overflow:hidden;
 	margin-bottom:20px;
-	height:380px;
+	height:390px;
 }
 
 .box img {
@@ -143,15 +135,17 @@ $this->registercss('
     object-fit: cover;
     height:200px;
     width:100%;
+    border-bottom:1px solid #eee; 
 }
-.box h2{
+.box h2 a{
 	font-size: 25px;
 	margin: 10px 0 0 15px;
 	text-transform: capitalize;
 	font-family: lora;
+	color:#00a0e3;
 }
 .box p {
-	margin: 10px 15px 5px;
+	margin: 5px 15px 5px;
 	font-size: 16px;
 	font-family: roboto;
 	text-transform: capitalize;
