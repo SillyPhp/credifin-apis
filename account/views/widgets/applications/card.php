@@ -60,7 +60,7 @@ if (!empty($total_applications)) {
                         <div class="lf-bttn">
                             <?php $link = Url::to($applications[$next]["link"], "https"); ?>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://twitter.com/home?status=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-twitter share_btn" type="button" >
                                 <i class="fa fa-twitter"></i>
                             </a>
@@ -70,7 +70,7 @@ if (!empty($total_applications)) {
                                 <i class="fa fa-envelope-o"></i>
                             </a>
                             <a href=""
-                               onclick="window.open('<?= Url::to('https://wa.me/?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
+                               onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"
                                class="j-whatsapp share_btn" type="button">
                                 <i class="fa fa-whatsapp"></i>
                             </a>
@@ -118,14 +118,15 @@ if (!empty($total_applications)) {
                             </div>
                         </a>
                         <div class="hr-com-jobs">
-                            <div class="col-md-6 minus-15-pad" style="font-family: roboto;">
-                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id']); ?>">
-                                    <?= sizeof($applications[$next]['appliedApplications']); ?>
-                                    Applications
+                            <div class="row">
+                            <div class="col-md-12" style="font-family: roboto;">
+                                <a href="<?= Url::toRoute('process-applications' . DIRECTORY_SEPARATOR . $applications[$next]['application_enc_id'],true); ?>">
+                                    <?= sizeof($applications[$next]['appliedApplications']).' Applications'; ?>
                                 </a>
                             </div>
-                            <div class="col-md-6 minus-15-pad j-grid"><a
-                                        href="<?= Url::to($applications[$next]["link"]); ?>"><?= Yii::t('account', 'VIEW JOB'); ?></a>
+                            <div class="col-md-12 j-grid"><a
+                                        href="<?= Url::to($applications[$next]["link"],true); ?>"><?= Yii::t('account', 'VIEW '.strtoupper($applications[$next]['application_type'])); ?></a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -236,6 +237,9 @@ $this->registerCss("
 .topic-con{
     position:relative;
 }
+.j-grid > a{ 
+    margin-top:0px;
+} 
 ");
 $script = <<<JS
 $(document).on('click','.j-delete',function(e){
@@ -285,6 +289,6 @@ $(document).on('click','.j-closed',function(e){
                  }
           });
     }
-});
+}); 
 JS;
 $this->registerJs($script);
