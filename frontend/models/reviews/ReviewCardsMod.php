@@ -92,7 +92,7 @@ class ReviewCardsMod
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs',
                 'COUNT(CASE WHEN h.name = "Internships" THEN 1 END) as total_internships',
-                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
+                'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND(average_rating) rating','u.positions total_vaccency'])

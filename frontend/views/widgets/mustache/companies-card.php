@@ -125,7 +125,7 @@ $this->registercss('
 .comp-ratings {
 	display: inline-flex;
 	border: 1px solid #eee;
-	padding:5px;
+	padding:3px 5px 5px;
 	box-shadow: 0 2px 6px rgba(0,0,0,0.10);
 	margin: 15px 0 5px;
 	border-radius:3px;
@@ -147,6 +147,7 @@ $this->registercss('
 	font-weight:500;
 	line-heighht:26px;
 	width: 23px;
+	font-size:15px;
 }
 .comp-jobs-intern {
 	display: flex;
@@ -194,11 +195,14 @@ $this->registercss('
 	color: #ff7803;
 	transition: all .3s;
 }
+.follow-btn a{background-color:#f78726;}
+.review-btn a{background-color:#29ace3;}
 .review-btn a:hover {
     background-color:#fff;
     color:#00a0e3;
     transition:all .3s;
 }
-.follow-btn a{background-color:#f78726;}
-.review-btn a{background-color:#29ace3;}
+.com-rating.comp-ratings img {
+    width: 20px;
+}
 ');
