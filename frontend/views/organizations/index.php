@@ -12,7 +12,7 @@ use yii\helpers\Url;
                             <div class="main-text mt-50">Explore All Companies</div>
                             <div class="search-container">
                                 <form action="" id="form_search_cmp">
-                                    <input id="company_search" type="text" placeholder="Search Companies" name="search">
+                                    <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
                                     <button id="search"><i class="fas fa-search"></i></button>
                                 </form>
                             </div>
