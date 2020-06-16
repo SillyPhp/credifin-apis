@@ -30,7 +30,7 @@ if (!empty($total_processes)) {
                                 </a>
                             </div>
                                 <a href="#" onclick="window.open('<?= Url::to('/internships/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
+                                    <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
@@ -42,7 +42,7 @@ if (!empty($total_processes)) {
                                     </a>
                                 </div>
                                 <a href="#" onclick="window.open('<?= Url::to('/jobs/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
+                                    <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
@@ -113,6 +113,9 @@ $script = <<<JS
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.profile_img{
+width:115px;
+}
 .click {
 font-size: 33px;
     color: rgba(0,0,0,.5);
