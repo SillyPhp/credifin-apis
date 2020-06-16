@@ -1,7 +1,5 @@
 <?php
-
 use yii\helpers\Url;
-
 ?>
     <script id="companies-card-all" type="text/template">
         {{#.}}
@@ -10,7 +8,7 @@ use yii\helpers\Url;
                 <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
                         {{#is_featured}}
-                        <span  data-toggle="tooltip" title="Featured">
+                        <span data-toggle="tooltip" title="Featured">
                             <img src="<?= Url::to('@eyAssets/images/job-profiles/featured.png') ?>"/>
                         </span>
                         {{/is_featured}}
@@ -36,7 +34,7 @@ use yii\helpers\Url;
                         </a>
                         {{/logo}}
                     </div>
-                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank">{{name}}</a></h3>
+                    <h3 class="comp-Name"><a href="{{profile_link}}" target="_blank">{{{name}}}</a></h3>
                     <h3 class="comp-relate">{{business_activity}}</h3>
                     {{#rating}}
                     <div class="com-rating comp-ratings">
@@ -55,11 +53,16 @@ use yii\helpers\Url;
                     </div>
                     {{/rating}}
                     <div class="comp-jobs-intern">
-                        <span class="jobs">{{total_jobs}} Jobs</span>
-                        <span class="interns">{{total_internships}} Internships</span>
+                        <a href="/jobs/list?slug={{profile_link}}" target="_blank"><span class="jobs">{{total_jobs}} Jobs</span></a>
+                        <a href="/internships/list?slug={{profile_link}}" target="_blank"><span class="interns">{{total_internships}} Internships</span></a>
                     </div>
-                    <div class="follow-btn">
-                        <a href="/{{review_link}}" target="_blank">Follow</a>
+                    <div class="flw-rvw">
+                        <div class="follow-btn">
+                            <a href="/{{review_link}}" target="_blank">Follow</a>
+                        </div>
+                        <div class="review-btn">
+                            <a href="/{{review_link}}" target="_blank">Review</a>
+                        </div>
                     </div>
                 </a>
             </div>
@@ -68,6 +71,12 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registercss('
+.flw-rvw {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
 .company-main {
 	border: 1px solid #eee;
 	box-shadow:0px 2px 10px rgba(0,0,0,0.10);
@@ -147,7 +156,7 @@ $this->registercss('
 	font-family: roboto;
 	flex: 1 1;
 	align-items: center;
-	justify-content: space-around;
+	justify-content: center;
 }
 .total-vacancies {
 	position: absolute;
@@ -164,18 +173,32 @@ $this->registercss('
 	font-weight: 500;
 	display: block;
 }
-.follow-btn {
-    margin:5px 0;
+.comp-jobs-intern a {
+    margin: 0 15px;
 }
-.follow-btn a {
-    background-color: #ff7803;
-    color: #fff;
-    font-size: 20px;
-    font-family: roboto;
-    padding: 5px 20px;
-    border-radius: 4px;
-    font-weight: 500;
+.follow-btn, .review-btn {
+    margin:10px;
 }
+.follow-btn a, .review-btn a {
+	color: #fff;
+	font-size: 17px;
+	font-family: roboto;
+	padding: 6px 22px;
+	border-radius: 3px;
+	font-weight: 500;
+	text-transform: uppercase;
+	border: 1px solid;
+}
+.follow-btn a:hover {
+	background-color: #fff;
+	color: #ff7803;
+	transition: all .3s;
+}
+.review-btn a:hover {
+    background-color:#fff;
+    color:#00a0e3;
+    transition:all .3s;
+}
+.follow-btn a{background-color:#f78726;}
+.review-btn a{background-color:#29ace3;}
 ');
-
-
