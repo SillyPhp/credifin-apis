@@ -226,7 +226,7 @@ class SiteController extends Controller
 
     public function actionCovid19()
     {
-       return $this->redirect('/covid-19/warning-posters');
+        return $this->redirect('/covid-19/warning-posters');
     }
 
     public function actionSocialCommunity()
@@ -974,8 +974,9 @@ class SiteController extends Controller
     {
         return $this->render('transaction-table');
     }
-    public function actionCreatorHandbook(){
-        return $this->render('creator-handbook');
-    }
 
+    public function actionTeachersHandbook()
+    {
+        return $this->render('teachers-handbook');
+    }
 }
