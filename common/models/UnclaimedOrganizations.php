@@ -1,6 +1,5 @@
 <?php
 namespace common\models;
-
 /**
  * This is the model class for table "{{%unclaimed_organizations}}".
  *
@@ -9,7 +8,7 @@ namespace common\models;
  * @property string $organization_type_enc_id Foreign Key to Business Activities Table
  * @property string $city_enc_id Foreign Key to CitiesTable
  * @property string $name Organization Name
- * @property string $source source from where its created
+ * @property int $source 0 as EY, 1 as GIT, 2 as Muse
  * @property string $logo Organization Logo
  * @property string $logo_location Location of the Logo
  * @property string $cover_image cover_image
@@ -32,7 +31,7 @@ namespace common\models;
  * @property int $is_deleted 1 as false and 0 for true
  * @property string $created_by By which User Organization information was added
  * @property string $created_on On which date Organization information was added to database
- * @property int $is_featured
+ *
  * @property Reviews[] $reviews
  * @property TrainingProgramApplication[] $trainingProgramApplications
  * @property TwitterJobs[] $twitterJobs
@@ -52,7 +51,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return '{{%unclaimed_organizations}}';
     }
-
     /**
      * @inheritdoc
      */
@@ -60,8 +58,8 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return [
             [['organization_enc_id', 'name', 'slug', 'initials_color'], 'required'],
-            [['source', 'description', 'short_description', 'address', 'size'], 'string'],
-            [['status', 'is_deleted','is_featured'], 'integer'],
+            [['source', 'status', 'is_deleted', 'is_featured'], 'integer'],
+            [['description', 'short_description', 'address', 'size'], 'string'],
             [['created_on'], 'safe'],
             [['organization_enc_id', 'organization_type_enc_id', 'city_enc_id', 'name', 'logo', 'logo_location', 'cover_image', 'cover_image_location', 'slug', 'website', 'created_by'], 'string', 'max' => 100],
             [['email', 'facebook_username', 'twitter_username', 'linkedin_username'], 'string', 'max' => 50],
@@ -79,13 +77,10 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
             [['organization_type_enc_id'], 'exist', 'skipOnError' => true, 'targetClass' => BusinessActivities::className(), 'targetAttribute' => ['organization_type_enc_id' => 'business_activity_enc_id']],
         ];
     }
-
-
     public function getEmployerApplications()
     {
         return $this->hasMany(EmployerApplications::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -93,7 +88,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(NewOrganizationReviews::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -101,7 +95,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Reviews::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -109,7 +102,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UnclaimedFollowedOrganizations::className(), ['organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -117,7 +109,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Users::className(), ['user_enc_id' => 'user_enc_id'])->viaTable('{{%unclaimed_followed_organizations}}', ['organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -125,7 +116,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Users::className(), ['user_enc_id' => 'created_by']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -133,8 +123,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasOne(BusinessActivities::className(), ['business_activity_enc_id' => 'organization_type_enc_id']);
     }
-
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -142,7 +130,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TrainingProgramApplication::className(), ['unclaimed_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -150,7 +137,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TwitterJobs::className(), ['unclaim_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -158,7 +144,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UnclaimAssignedIndustries::className(), ['unclaim_oragnizations_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -166,7 +151,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UnclaimOrganizationImages::className(), ['unclaim_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -174,7 +158,6 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasMany(UnclaimOrganizationLocations::className(), ['unclaim_organization_enc_id' => 'organization_enc_id']);
     }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -182,5 +165,4 @@ class UnclaimedOrganizations extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Cities::className(), ['city_enc_id' => 'city_enc_id']);
     }
-
 }
