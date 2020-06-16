@@ -30,7 +30,7 @@ if (!empty($total_processes)) {
                                 </a>
                             </div>
                                 <a href="#" onclick="window.open('<?= Url::to('/internships/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/internship-template.png'); ?>">
+                                    <img src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
@@ -42,7 +42,7 @@ if (!empty($total_processes)) {
                                     </a>
                                 </div>
                                 <a href="#" onclick="window.open('<?= Url::to('/jobs/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
-                                    <img src="<?= Url::to('@eyAssets/images/pages/dashboard/job-template.png'); ?>">
+                                    <img src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
                                 <?php
