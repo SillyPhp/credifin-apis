@@ -7,7 +7,7 @@ use yii\helpers\Url;
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1>Creator Handbook</h1>
+                <h1>Teacher Handbook</h1>
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@ use yii\helpers\Url;
                                 <h3>Earning Royalties</h3>
                                 <p>Empower Youth teachers earn revenue based on a royalty system. Each month, 30% of Empower Youth's total Membership revenue goes to a royalty pool for teachers.
                                     Teachers are paid from the royalty pool based on their share of the minutes watched by the students (only paying members) across the platform each month. For example, if a teacher's classes receive 5% of the minutes-watched by Paid members, that teacher receives 5% of the royalty pool. Because we are a subscription service, the size of the royalty pool and the number of minutes watched on Empower Youth fluctuates from month-to-month.</p>
-                                <p>On average, first-time teachers earn Rs.300 in their first month on EY, with top teachers earning upto. Rs 3,000.</p>
+                                <p>In Order to avoid duplicity or Spamming we will count one users view per course content only once a month. It will be resent again I.e if a person watched your video twice in one month then it will be counted only once but if he watches once in one month and then watched the same video in subsequent month it shall be counted once per month. Although we trust all of our teachers but still it is to avoid spamming if someone tries to do it.</p>
                                 <p>To receive a payment for a month you must get a minimum total of 30 Premium minutes-watched across all of your classes within a month. Please note, minutes watched by students through a free class or through a free access link do not count towards royalty payments.</p>
                             </div>
                         </div>
@@ -68,6 +68,7 @@ use yii\helpers\Url;
                 </div>
             </div>
         </div>
+
         <div id="started" class="detailDivs showDiv">
             <div class="row">
                 <div class="padd15">
@@ -306,6 +307,19 @@ use yii\helpers\Url;
                                         <p>When you are thinking about the topic, simultaneously give a thought about the project that you will give to your students. This approach will in understanding the practical aspects of the topic that you are planning to teach the students.</p>
                                     </li>
                                 </ul>
+                                <h4>Our 4E thumb rule</h4>
+                                <p>Empower Youth is a platform looks to focus on 4E's while delivering any content to its user
+                                    it is a good case practice if you could follow the same.
+                                </p>
+                                <h4>Exposure</h4>
+                                <p>Creating a space for holistic outreach and showcasing various opportunities in one place.</p>
+                                <h4>Engagement</h4>
+                                <p>Engaging each and every sector of society and enhancing the value proposition for them.</p>
+                                <h4>Employment</h4>
+                                <p>Promoting and enhancing employment opportunities along with exposure to In's and Out's of every profession.</p>
+                                <h4>Empowerment</h4>
+                                <p>Strengthening & Imparting knowledge to choose the right path along with enhancing technical and skilled development
+                                to grow.</p>
                             </div>
                             <div class="tab-pane" id="planningThree">
                                 <h3>Choosing Your Class Project</h3>
