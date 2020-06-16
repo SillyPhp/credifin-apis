@@ -1557,7 +1557,7 @@ class JobsController extends Controller
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','zz.icon_png'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
                 }], false)
