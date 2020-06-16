@@ -23,7 +23,7 @@ $this->params['header_dark'] = true;
                     <div class="search-main">
                         <h3>Find an Integration</h3>
                         <div class="search-b">
-                            <input type="search" placeholder="Search by Name" class="form-control">
+                            <input type="text" id="searchForm" placeholder="Search by Name" class="form-control" onkeyup="search()">
                         </div>
                         <div class="p-listing">
                             <ul>
@@ -68,16 +68,16 @@ $this->params['header_dark'] = true;
                             <h3 id="training" class="heading-style">courses integration</h3>
                         </div>
                         <div class="col-md-6 col-sm-6">
-                            <div class="jobs-main box">
+                            <div class="jobs-main box" id="udemy">
                                 <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udemy.png') ?>"/>
-                                <h2><a href="https://www.udemy.com/">Udemy</a></h2>
+                                <h2 class="provider"><a href="https://www.udemy.com/">Udemy</a></h2>
                                 <p>Udemy is the world’s largest selection of courses Choose from over 100,000 online video courses with new additions published every month.</p>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6">
                             <div class="jobs-main box">
                                 <img src="<?= Url::to('@eyAssets/images/pages/our-partners/udacity1.png') ?>"/>
-                                <h2><a href="https://www.udacity.com/">udacity</a></h2>
+                                <h2 class="provider"><a href="https://www.udacity.com/">udacity</a></h2>
                                 <p>Udacity is the world’s fastest, most efficient way to master the skills tech companies want. 100% online, part-time & self-paced.</p>
                             </div>
                         </div>
@@ -170,3 +170,24 @@ $(document).on('click', '.scroll-to-sec', function(e) {
 });
 JS;
 $this->registerJs($script);
+?>
+<script>
+    function search() {
+
+        var name = document.getElementById("searchForm").value;
+        var pattern = name.toLowerCase();
+        var targetId = "";
+
+        var divs = document.getElementsByClassName("jobs-main");
+        for (var i = 0; i < divs.length; i++) {
+            var para = divs[i].getElementsByTagName("h2");
+            var index = para[0].innerText.toLowerCase().indexOf(pattern);
+            if (index != -1) {
+                targetId = divs[i].parentNode;
+                    targetId.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // document.getElementById(targetId).scrollIntoView();
+                break;
+            }
+        }
+    }
+</script>
