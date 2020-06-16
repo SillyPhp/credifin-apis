@@ -395,6 +395,13 @@ class AuthController extends ApiBaseController
             ->asArray()
             ->one();
 
+        $today_date = new \DateTime();
+        $today_date = $today_date->format('Y-m-d H:i:s');
+
+        if($today_date > $find_user['access_token_expiration']){
+            return false;
+        }
+
         if (!empty($find_user)) {
             $user_type = Users::find()
                 ->where(['!=', 'organization_enc_id', 'null'])
