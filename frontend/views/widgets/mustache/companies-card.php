@@ -176,9 +176,11 @@ $this->registercss('
 .comp-jobs-intern a {
     margin: 0 15px;
 }
+
 .follow-btn, .review-btn {
     margin:10px;
 }
+
 .follow-btn a, .review-btn a {
 	color: #fff;
 	font-size: 17px;
@@ -193,6 +195,20 @@ $this->registercss('
 	background-color: #fff;
 	color: #ff7803;
 	transition: all .3s;
+.follow-btn a, .review-btn a {
+	color: #fff;
+	font-size: 17px;
+	font-family: roboto;
+	padding: 6px 22px;
+	border-radius: 3px;
+	font-weight: 500;
+	text-transform: uppercase;
+	border: 1px dashed;
+}
+.follow-btn a:hover {
+	background-color: #fff;
+	color: #ff7803;
+	transition: all .3s;
 }
 .review-btn a:hover {
     background-color:#fff;
@@ -201,4 +217,11 @@ $this->registercss('
 }
 .follow-btn a{background-color:#f78726;}
 .review-btn a{background-color:#29ace3;}
+.review-btn a:hover {
+    background-color:#fff;
+    color:#00a0e3;
+    transition:all .3s;
+}
+.follow-btn a{background-color:#ff7803;}
+.review-btn a{background-color:#00a0e3;}
 ');

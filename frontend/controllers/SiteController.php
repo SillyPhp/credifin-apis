@@ -219,6 +219,11 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
+    public function actionOurPartners()
+    {
+        return $this->render('our-partners');
+    }
+
     public function actionCovid19()
     {
        return $this->redirect('/covid-19/warning-posters');
