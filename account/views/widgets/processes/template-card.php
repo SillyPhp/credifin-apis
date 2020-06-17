@@ -24,7 +24,7 @@ if (!empty($total_processes)) {
                                 </a>
                             </div>
                             <a href="#" onclick="window.open('<?= Url::to('/account/templates/hiring-process' . DIRECTORY_SEPARATOR . $processes[$next]["id"]); ?>/view', '_blank');" >
-                                <img src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
+                                <img class="proccess_img" src="<?= Url::to('@eyAssets/images/pages/dashboard/execution.png'); ?>">
                                 <span><?= $processes[$next]['process_name']; ?></span>
                             </a>
                         </div>
@@ -92,6 +92,9 @@ function run_ajax(id,url) {
 JS;
 $this->registerJs($script);
 $this->registerCss("
+.proccess_img{
+     max-height: 55px !important;
+}
 .click {
 font-size: 33px;
     color: rgba(0,0,0,.5);

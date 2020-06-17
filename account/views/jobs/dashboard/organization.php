@@ -421,6 +421,28 @@ if (Yii::$app->user->identity->businessActivity->business_activity != "College" 
 
 <?php
 $this->registerCss('
+.total-jobs{
+    background: linear-gradient(145deg, #3cc4a4, #43f0d0);
+}
+.total-int-p{
+    background: linear-gradient(145deg, #f41ea0, #f08143);
+}
+.total-qn{
+    background: linear-gradient(145deg, #1ea4f4, #4ed0d0);
+}
+.total-appl{
+    background: linear-gradient(145deg, #1e21f4, #43c7f0);
+}
+.widget-thumb .widget-thumb-heading{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    color:#fff;
+    font-size:32px !important;
+}
+.widget-thumb .widget-thumb-wrap .widget-thumb-icon{
+    font-size:45px ;
+}
 .create-new-j a {
 	background: #00a0e3;
 	color: #fff;

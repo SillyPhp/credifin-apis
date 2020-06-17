@@ -346,6 +346,9 @@ class JobsController extends Controller
                 $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
                 $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
             }
+            if (Yii::$app->request->get('slug')) {
+                $parameters['slug'] = Yii::$app->request->get('slug');
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -369,15 +372,18 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
+            if ($parameters['slug'] && !empty($parameters['slug'])) {
+                $options['slug'] = $parameters['slug'];
+            }
             $cardsDb = ApplicationCards::jobs($options);
-            if (empty($options['company'])) {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
+            if (!empty($options['company'])||!empty($options['slug'])) {
+                $merg = $cardsDb;
             }
             else
             {
-                $merg = $cardsDb;
+                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+                $merg = array_merge($cardsDb, $cardsApi);
+                $merg = array_slice($merg, 0, 27);
             }
             if (count($merg) > 0) {
                 $response = [

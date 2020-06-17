@@ -29,7 +29,7 @@ use yii\helpers\Url;
         <div id="earning" class="detailDivs">
             <div class="row">
                 <div class="padd15">
-                    <div class="col-md-3 col-sm-4 col-xs-12 padd-0">
+                    <div class="col-xs-3 padd-0">
                         <h5>Earning Revenue</h5>
                         <ul class="nav nav-tabs tabs-left">
                             <li class="active"><a href="#earningOne" data-toggle="tab">How Earning Works</a></li>
@@ -37,7 +37,7 @@ use yii\helpers\Url;
                             <li><a href="#earningThree" data-toggle="tab">Earning Royalties</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-9 col-sm-8 col-xs-12 padd-0">
+                    <div class="col-xs-9 padd-0">
                         <div class="tab-content">
                             <div class="tab-pane active" id="earningOne">
                                 <h3>How Earning Works</h3>
@@ -71,7 +71,7 @@ use yii\helpers\Url;
         <div id="started" class="detailDivs showDiv">
             <div class="row">
                 <div class="padd15">
-                    <div class="col-md-3 col-sm-4 col-xs-12 padd-0">
+                    <div class="col-xs-3 padd-0">
                         <h5>Getting Started</h5>
                         <ul class="nav nav-tabs tabs-left">
                             <li class="active"><a href="#startedOne" data-toggle="tab">Welcome to the Teacher
@@ -82,7 +82,7 @@ use yii\helpers\Url;
                             <li><a href="#startedFour" data-toggle="tab">Class Quality Guidelines</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-9 col-sm-8 col-xs-12 padd-0">
+                    <div class="col-xs-9 padd-0">
                         <div class="tab-content">
                             <div class="tab-pane active" id="startedOne">
                                 <h3>Welcome to the Empower Youth Teacher Handbook</h3>
@@ -271,7 +271,7 @@ use yii\helpers\Url;
         <div id="planning" class="detailDivs">
             <div class="row">
                 <div class="padd15">
-                    <div class="col-md-3 col-sm-4 col-xs-12 padd-0">
+                    <div class="col-xs-3 padd-0">
                         <h5>Planning</h5>
                         <ul class="nav nav-tabs tabs-left">
                             <li class="active"><a href="#planningOne" data-toggle="tab">Planning Your Class</a></li>
@@ -279,12 +279,12 @@ use yii\helpers\Url;
                             <li><a href="#planningThree" data-toggle="tab">Choosing Your Class Project</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-9 col-sm-8 col-xs-12 padd-0">
+                    <div class="col-xs-9 padd-0">
                         <div class="tab-content">
                             <div class="tab-pane active" id="planningOne">
                                 <h3>Planning Your Class</h3>
-                                <p>Planning is the first and foremost important part of creating class at our platform. You have to plan the topic of the class in such a manner that when you come up with it, the class turns to be fun and engaging projects. So, we advise you to get your thoughts organised and synchronise them in such a manner that the purpose of planning is fulfilled.
-                                    We understand that the planning may take some time in the beginning but ultimately the whole process will go more smoothly and the production will be much easier.</p>
+                               <p>Planning is the first and foremost important part of creating class at our platform. You have to plan the topic of the class in such a manner that when you come up with it, the class turns to be fun and engaging projects. So, we advise you to get your thoughts organised and synchronise them in such a manner that the purpose of planning is fulfilled.
+                                   We understand that the planning may take some time in the beginning but ultimately the whole process will go more smoothly and the production will be much easier.</p>
                             </div>
                             <div class="tab-pane" id="planningTwo">
                                 <h3>Choosing Your Class Topic</h3>
@@ -295,7 +295,7 @@ use yii\helpers\Url;
                                 <ul>
                                     <li>
                                         <h4>Be specific</h4>
-                                        <p> Specificity will help to differentiate your class from others on the platform. So, we suggest to keep your class focused on a specific subject that you know well .Along with specificity, keep your class short (we typically recommend between 20-60 minutes), focused, and manageable.  </p>
+                                       <p> Specificity will help to differentiate your class from others on the platform. So, we suggest to keep your class focused on a specific subject that you know well .Along with specificity, keep your class short (we typically recommend between 20-60 minutes), focused, and manageable.  </p>
                                     </li>
                                     <li>
                                         <h4>Try to put yourself in students shoes</h4>
@@ -329,13 +329,13 @@ use yii\helpers\Url;
         <div id="producing" class="detailDivs">
             <div class="row">
                 <div class="padd15">
-                    <div class="col-md-3 col-sm-4 col-xs-12 padd-0">
+                    <div class="col-xs-3 padd-0">
                         <h5>Producing Your Class</h5>
                         <ul class="nav nav-tabs tabs-left">
                             <li class="active"><a href="#producingOne" data-toggle="tab">Producing</a></li>
                         </ul>
                     </div>
-                    <div class="col-md-9 col-sm-8 col-xs-12 padd-0">
+                    <div class="col-xs-9 padd-0">
                         <div class="tab-content">
                             <div class="tab-pane active" id="producingOne">
                                 <h3>Producing</h3>

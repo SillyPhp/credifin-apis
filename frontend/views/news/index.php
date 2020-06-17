@@ -6,7 +6,7 @@ $this->title = 'News';
 $keywords = 'Empower Youth News: Get Latest and Breaking News Updates of world';
 $description = 'Get Latest and Breaking News Updates of India and world, live world and India news headlines, and Read all latest India and world news & top news on Empower Youth.
 breaking news updates in hindi,breaking news updates india, 24/7 latest breaking news update,www breaking news,News Updates.';
-$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/logos/empower_fb.png');
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/themes/ey/images/pages/landing/news_update.png');
 $this->params['seo_tags'] = [
     'rel' => [
         'canonical' => Yii::$app->request->getAbsoluteUrl(),
