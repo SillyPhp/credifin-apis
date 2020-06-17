@@ -104,4 +104,6 @@ $this->registerCss("
    font-size: 14px;
 }
 ");
+
 $this->registerJs($script);
+$this->registerCssFile('@eyAssets/fonts/fontawesome-5/css/all.css');

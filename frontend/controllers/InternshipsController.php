@@ -273,6 +273,9 @@ class InternshipsController extends Controller
                 $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
                 $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
             }
+            if (Yii::$app->request->get('slug')) {
+                $parameters['slug'] = Yii::$app->request->get('slug');
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -296,7 +299,9 @@ class InternshipsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
+            if ($parameters['slug'] && !empty($parameters['slug'])) {
+                $options['slug'] = $parameters['slug'];
+            }
             $cards = ApplicationCards::internships($options);
             if (count($cards) > 0) {
                 $response = [

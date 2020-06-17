@@ -346,6 +346,9 @@ class JobsController extends Controller
                 $parameters['keyword'] = str_replace("-", " ", Yii::$app->request->get('keyword'));
                 $parameters['location'] = str_replace("-", " ", Yii::$app->request->get('location'));
             }
+            if (Yii::$app->request->get('slug')) {
+                $parameters['slug'] = Yii::$app->request->get('slug');
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -369,15 +372,18 @@ class JobsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
+            if ($parameters['slug'] && !empty($parameters['slug'])) {
+                $options['slug'] = $parameters['slug'];
+            }
             $cardsDb = ApplicationCards::jobs($options);
-            if (empty($options['company'])) {
-                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
-                $merg = array_merge($cardsDb, $cardsApi);
-                $merg = array_slice($merg, 0, 27);
+            if (!empty($options['company'])||!empty($options['slug'])) {
+                $merg = $cardsDb;
             }
             else
             {
-                $merg = $cardsDb;
+                $cardsApi = ApplicationCards::gitjobs($options['page'], $options['keyword'], $options['location']);
+                $merg = array_merge($cardsDb, $cardsApi);
+                $merg = array_slice($merg, 0, 27);
             }
             if (count($merg) > 0) {
                 $response = [
@@ -1319,42 +1325,35 @@ class JobsController extends Controller
 
     public function actionImageScript()
     {
-      $model = new scriptModel();
-        if ($model->load(Yii::$app->request->post())) {
+         $model = new scriptModel();
+         if ($model->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $model->logo = UploadedFile::getInstance($model, 'logo');
             $rand_dir = Yii::$app->getSecurity()->generateRandomString();
             $file_logo = $rand_dir.'-'.$model->logo->baseName.'.'.$model->logo->extension;
-            $base_path = Url::to('@rootDirectory/assets/themes/ey/temp/'.$rand_dir);
+            $base_path = Url::to('@rootDirectory/files/temp/'.$rand_dir);
             if (!is_dir($base_path)) {
                 if (mkdir($base_path, 0755, true)) {
                     if ($model->logo->saveAs($base_path . DIRECTORY_SEPARATOR . $file_logo)) {
                         $file = $model->genrate($base_path.DIRECTORY_SEPARATOR.$file_logo,$rand_dir);
                         if (isset($file)){
-                             $url = Yii::$app->urlManager->createAbsoluteUrl('assets/themes/ey/temp/'.$rand_dir.'/'.$file['filename']);
+                             $url = Yii::$app->urlManager->createAbsoluteUrl($file['filename']);
                              return [
                                  'status'=>200,
-                                 'url'=>$url
+                                 'url'=>$url,
+                                 'time'=>$file['time'],
                              ];
                         }
+                        else{
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
             }
         }
-      return $this->render('test2',['model'=>$model]);
-    }
-
-//    public function actionTest()
-//    {
-//        $page = 1;
-//        $urls =["https://jobs.github.com/positions.json?page=".$page,
-//                "https://www.themuse.com/api/public/jobs?page=".$page];
-//        $rc = new RollingRequest();
-//        $rc->run($urls);
-//   }
-
-    public function actionTestApi()
-    {
-        return $this->render('test');
     }
 }

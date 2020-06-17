@@ -154,7 +154,7 @@ $careerAdviceCategories = [
                                 We are launching a detailed space for you to understand the in and out of each
                                 profession.
                             </div>
-                            <div class="ca-coming-text">Be exited</div>
+                            <div class="ca-coming-text">Be excited</div>
                         </div>
                     </div>
                 </div>

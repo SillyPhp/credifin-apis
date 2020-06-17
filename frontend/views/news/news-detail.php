@@ -3,119 +3,160 @@ $this->params['header_dark'] = true;
 
 use yii\helpers\Url;
 
+$this->title = $newsDetail['title'] . ' ' . Yii::$app->params->seo_settings->title_separator . ' Empower Youth';
+$link = Url::to($newsDetail->slug . '/news', true);
+$keywords = 'Empower Youth News: Get Latest and Breaking News Updates of world';
+$description = 'Get Latest and Breaking News Updates of India and world, live world and India news headlines, and Read all latest India and world news & top news on Empower Youth.
+breaking news updates in hindi,breaking news updates india, 24/7 latest breaking news update,www breaking news,News Updates.';
+$image = Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image);
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="cb-blog-box">
-                            <div class="cb-blog-icon header-banner">
-                                <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
-                            </div>
-                            <div class="cb-blog-title">
-                                <?= $newsDetail->title ?>
-                            </div>
-                            <div class="vots">
-                                <span class="upv"><i class="fas fa-thumbs-up vote-btn" data-id="upvoteBtn" data-key="<?= $newsDetail->news_enc_id ?>"></i> <font class="vote_value"><?= $newsDetail->upvote ?></font> upvotes</span>
-                                <span class="downv"><i class="fas fa-thumbs-down vote-btn" data-id="downvoteBtn" data-key="<?= $newsDetail->news_enc_id ?>"></i> <font class="vote_value"><?= $newsDetail->downvote ?></font> downvotes</span>
-                            </div>
-                            <div class="cb-quick-summery">
-                                <?= $newsDetail->description ?>
-                            </div>
-                            <?php
-                            if ($newsDetail->newsTags) {
-                                ?>
-                                <div class="news-tags">
-                                    <ul>
-                                        <?php
-                                        foreach ($newsDetail->newsTags as $tag) {
-                                            if ($tag->is_deleted == 0) {
-                                                $t = $tag->assignedTagEnc->tagEnc;
-                                                ?>
-                                                <li><?= $t->name ?></li>
-                                                <?php
-                                            }
-                                        }
-                                        ?>
-                                    </ul>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                            <?php $sharingLink = Url::base(true) . '/news/' . $newsDetail->slug ?>
-                            <?= $this->render('/widgets/sharing-widget-new', [
-                                'sharingLink' => $sharingLink
-                            ]) ?>
-                            <?php
-                            if ($newsDetail->source) {
-                                ?>
-                                <div class="source-name">
-                                    <span class="src-name"><?= $newsDetail->source ?></span>
-                                </div>
-                                <?php
-                            }
-                            ?>
-                            <div class="cb-ori-artical-link">
-                                <a href="<?= $newsDetail->link ?>" target="_blank">Read orignal News</a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-md-4">
-                <?php
-                if (Yii::$app->user->isGuest) {
-                    echo $this->render('/widgets/subscribe-newsletter', [
-                        'subscribersForm' => $newsletterForm
-                    ]);
-                }
-                ?>
-
-                <?php
-                echo $this->render('/widgets/sharing-box');
-                ?>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="related-heading">Related News</div>
-                    </div>
-                    <?php
-                    if ($relatedNews) {
-                        $moreNews = $relatedNews;
-                    } else {
-                        $moreNews = $latestNews;
-                    }
-                    foreach ($moreNews as $r) {
-                        ?>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
                         <div class="col-md-12">
-                            <div class="cb-blog-box cb-blog-box-small">
-                                <div class="cb-blog-icon">
-                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $r->image_location . '/' . $r->image); ?>"/>
+                            <div class="cb-blog-box">
+                                <div class="cb-blog-icon header-banner">
+                                    <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $newsDetail->image_location . '/' . $newsDetail->image); ?>"/>
                                 </div>
-                                <div class="cb-blog-title cb-blog-title-small">
-                                    <?= $r->title ?>
+                                <div class="cb-blog-title">
+                                    <?= $newsDetail->title ?>
                                 </div>
-                                <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r->created_on)) ?></div>
-                                <div class="cb-blob-web-name cb-blob-web-name-small">
-                                    <a href="<?= $r->slug ?>">Read</a>
+                                <div class="vots">
+                                    <span class="upv"><i class="fas fa-thumbs-up vote-btn" data-id="upvoteBtn"
+                                                         data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
+                                                class="vote_value"><?= $newsDetail->upvote ?></font> upvotes</span>
+                                    <span class="downv"><i class="fas fa-thumbs-down vote-btn" data-id="downvoteBtn"
+                                                           data-key="<?= $newsDetail->news_enc_id ?>"></i> <font
+                                                class="vote_value"><?= $newsDetail->downvote ?></font> downvotes</span>
                                 </div>
+                                <div class="cb-quick-summery">
+                                    <?= $newsDetail->description ?>
+                                </div>
+                                <?php
+                                if ($newsDetail->newsTags) {
+                                    ?>
+                                    <div class="news-tags">
+                                        <ul>
+                                            <?php
+                                            foreach ($newsDetail->newsTags as $tag) {
+                                                if ($tag->is_deleted == 0) {
+                                                    $t = $tag->assignedTagEnc->tagEnc;
+                                                    ?>
+                                                    <li><?= $t->name ?></li>
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+                                        </ul>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <?php $sharingLink = Url::base(true) . '/news/' . $newsDetail->slug ?>
+                                <?= $this->render('/widgets/sharing-widget-new', [
+                                    'sharingLink' => $sharingLink,
+                                    'news_title' => $this->title,
+                                    'link' => $link,
+                                ]) ?>
+                                <?php
+                                if ($newsDetail->source) {
+                                    ?>
+                                    <div class="source-name">
+                                        <span class="src-name"><?= $newsDetail->source ?></span>
+                                    </div>
+                                    <?php
+                                }
+                                ?>
+                                <div class="cb-ori-artical-link">
+                                    <a href="<?= $newsDetail->link ?>" target="_blank">Read orignal News</a>
+                                </div>
+
                             </div>
                         </div>
-                        <?php
+                    </div>
+
+                </div>
+                <div class="col-md-4">
+                    <?php
+                    if (Yii::$app->user->isGuest) {
+                        echo $this->render('/widgets/subscribe-newsletter', [
+                            'subscribersForm' => $newsletterForm
+                        ]);
                     }
                     ?>
+
+                    <?php
+                    echo $this->render('/widgets/sharing-box', [
+                        'news_title' => $this->title,
+                        'link' => $link,
+                    ]);
+                    ?>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="related-heading">Related News</div>
+                        </div>
+                        <?php
+                        if ($relatedNews) {
+                            $moreNews = $relatedNews;
+                        } else {
+                            $moreNews = $latestNews;
+                        }
+                        foreach ($moreNews as $r) {
+                            ?>
+                            <div class="col-md-12">
+                                <a href="<?= $r->slug ?>">
+                                    <div class="cb-blog-box cb-blog-box-small">
+                                        <div class="cb-blog-icon">
+                                            <img src="<?= Url::to(Yii::$app->params->upload_directories->posts->featured_image . $r->image_location . '/' . $r->image); ?>"/>
+                                        </div>
+                                        <div class="cb-blog-title cb-blog-title-small">
+                                            <?= $r->title ?>
+                                        </div>
+                                        <div class="cb-blog-time"><?= date('d-M-Y', strtotime($r->created_on)) ?></div>
+                                        <div class="cb-blob-web-name cb-blob-web-name-small">
+                                            Read
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                    <?= $this->render("/widgets/square_ads"); ?>
                 </div>
-                <?= $this->render("/widgets/square_ads"); ?>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
+    <input type="hidden" value="<?= Yii::$app->user->identity->user_enc_id; ?>" id="user_id">
 
 <?php
 $this->registerCss('
@@ -355,13 +396,12 @@ $(document).on('click', '.vote-btn', function (event) {
         data: {id:id,key:key},
         beforeSend: function () {
             btn.attr('disabled', true);
+            var updateValue = parseInt(targetValue) + 1; 
+             valBox.text(updateValue);
         },
         success: function (response) {
             btn.attr('disabled', false);
-            if (response.status == 200) {
-                var updateValue = parseInt(targetValue) + 1; 
-                valBox.text(updateValue);
-            } else {
+            if (response.status == 201) {
                 toastr.error(response.message, response.title);
             }
         },

@@ -65,7 +65,7 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-
+<?= $this->render('/widgets/safety-signs')?>
     <?php
         echo $this->render('/widgets/e-campus')
     ?>

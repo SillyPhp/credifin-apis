@@ -219,9 +219,14 @@ class SiteController extends Controller
         return $this->render('mentor-career');
     }
 
+    public function actionOurPartners()
+    {
+        return $this->render('our-partners');
+    }
+
     public function actionCovid19()
     {
-        return $this->render('covid-19');
+        return $this->redirect('/covid-19/warning-posters');
     }
 
     public function actionSocialCommunity()
@@ -970,7 +975,8 @@ class SiteController extends Controller
         return $this->render('transaction-table');
     }
 
-    public function actionCovid19Copy(){
-        return $this->render('covid-19-copy');
+    public function actionTeachersHandbook()
+    {
+        return $this->render('teachers-handbook');
     }
 }
