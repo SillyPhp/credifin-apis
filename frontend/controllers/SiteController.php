@@ -972,5 +972,8 @@ class SiteController extends Controller
     public function actionSkillVideo(){
         return $this->render('skill-video');
     }
+    public function actionCreatorHandbook(){
+        return $this->render('creator-handbook');
+    }
 
 }
