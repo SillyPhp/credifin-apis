@@ -58,11 +58,11 @@ use yii\helpers\Url;
                             </div>
                             <div class="news-btns">
                                 <button data-id="upvoteBtn" data-key="{{news_enc_id}}" class="vote-btn"
-                                        title="{{upvote}}" data-toggle="tooltip"><i
+                                        title="{{rand_upvote}}" data-toggle="tooltip"><i
                                             class="fas fa-thumbs-up"></i>
                                 </button>
                                 <button data-id="downvoteBtn" data-key="{{news_enc_id}}" class="vote-btn"
-                                        title="{{downvote}}" data-toggle="tooltip"><i
+                                        title="{{rand_downvote}}" data-toggle="tooltip"><i
                                             class="fas fa-thumbs-down"></i>
                                 </button>
                             </div>
@@ -241,6 +241,7 @@ function fetchNews(template,limit_dept,offset,loader,loader_btn) {
   beforeSend: function(){
      if (loader_btn)
           { 
+              $('#loader').attr('disabled', true);
               $('#loader').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
           }
      if (loader) {
@@ -251,6 +252,7 @@ function fetchNews(template,limit_dept,offset,loader,loader_btn) {
       $('.img_load').css('display','none');
       $('#loader').html('Load   More');
       $('#loader').css('display','initial');
+      $('#loader').attr('disabled', false);
        match_dept = match_dept+body.count;
       if (body.total<3||body.total==match_dept) 
           {
@@ -302,6 +304,7 @@ $(document).on('click', '.vote-btn', function (event) {
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
+
 JS;
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJs($script);
