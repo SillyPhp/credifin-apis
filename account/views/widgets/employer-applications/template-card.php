@@ -29,7 +29,7 @@ if (!empty($total_processes)) {
                                     <i class="fa fa-files-o"></i>
                                 </a>
                             </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/internships/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/internships/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
@@ -41,7 +41,7 @@ if (!empty($total_processes)) {
                                         <i class="fa fa-files-o"></i>
                                     </a>
                                 </div>
-                                <a href="#" onclick="window.open('<?= Url::to('/jobs/template?view=' . $processes[$next]["application_enc_id"]); ?>', '_blank');">
+                                <a href="#" onclick="window.open('<?= Url::to('/account/jobs/clone-template?aidk=' . $processes[$next]["application_enc_id"]);?>', '_blank');">
                                     <img class="profile_img" src="/assets/common/categories/profile/<?= $processes[$next]["icon_png"]; ?>">
                                     <span><?= $processes[$next]['cat_name']; ?></span>
                                 </a>
