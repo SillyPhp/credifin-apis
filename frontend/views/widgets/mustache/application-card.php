@@ -72,9 +72,9 @@ switch ([$controller_id, $action_id]) {
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
-                                {{^experience}}
-                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
-                                {{/experience}}
+                                {{#sector}}
+                                <h5 class="salary"><i class="fas fa-puzzle-piece"></i>: {{sector}}</h5>
+                                {{/sector}}
                             </div>
                             <div class="clear"></div>
                         </div>
