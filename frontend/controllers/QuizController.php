@@ -203,4 +203,8 @@ class QuizController extends Controller
             ];
         }
     }
+
+    public function actionPlayQuiz(){
+        return $this->render('play-quiz');
+    }
 }
