@@ -832,7 +832,7 @@ class InternshipsController extends Controller
     public function actionProfiles()
     {
         $activeProfiles = AssignedCategories::find()
-            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(CASE WHEN d.application_enc_id IS NOT NULL AND d.is_deleted = 0 Then 1 END) as total'])
             ->alias('a')
             ->distinct()
             ->innerJoinWith(['parentEnc b' => function ($b) {
