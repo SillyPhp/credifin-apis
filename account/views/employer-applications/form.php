@@ -1635,6 +1635,7 @@ height:17px !important;
 .load-suggestions span:nth-child(3){
   animation: bounce 1s ease-in-out 0.66s infinite;
 }
+#wh_vacancy{display:none}
 #wage_type-error .color_red
 {font-size:13px}
 @keyframes bounce{
@@ -1798,10 +1799,16 @@ function work_from_home(job_type_str) {
   if(job_type_str == "Work From Home")  
         {
         $('.placement_location_hide').hide();
+        $('#wh_vacancy').show();
+        $('#wh_type').removeClass('col-md-12');
+        $('#wh_type').addClass('col-md-7');
         }
    else
      { 
        $('.placement_location_hide').show();
+       $('#wh_vacancy').hide();
+       $('#wh_type').removeClass('col-md-7');
+        $('#wh_type').addClass('col-md-12');
          }
 }
  function ChildFunction()
