@@ -128,10 +128,10 @@ endif;
                 <div class="row marg">
                     <div class="col-md-4 col-sm-6">
                         <a href="javascript:;">
-                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                            <div class="jobs_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-app">
                                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Active Applications'); ?></h4>
                                 <div class="widget-thumb-wrap">
-                                    <i class="widget-thumb-icon bg-green fa fa-building-o"></i>
+                                    <i class="widget-thumb-icon fa fa-building-o"></i>
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-body-stat"><?= $org_applications['total'] ?></span>
                                     </div>
@@ -141,10 +141,10 @@ endif;
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <a href="javascript:;">
-                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow">
+                            <div class="processes_count widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 nd-shadow actv-resume">
                                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Dropped Resumes'); ?></h4>
                                 <div class="widget-thumb-wrap">
-                                    <i class="widget-thumb-icon bg-red fa fa-users"></i>
+                                    <i class="widget-thumb-icon fa fa-users"></i>
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-body-stat"><?= $dropResume; ?></span>
                                     </div>
@@ -154,10 +154,10 @@ endif;
                     </div>
                     <div class="col-md-4 col-sm-6">
                         <a href="javascript:;">
-                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 employees_count nd-shadow actv-applicants">
                                 <h4 class="widget-thumb-heading"><?= Yii::t('account', 'Total Applicants'); ?></h4>
                                 <div class="widget-thumb-wrap">
-                                    <i class="widget-thumb-icon bg-blue icon-bar-chart"></i>
+                                    <i class="widget-thumb-icon icon-bar-chart"></i>
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-subtitle"></span>
                                         <span class="widget-thumb-body-stat"><?= $total_org_applied ?></span>
@@ -427,6 +427,24 @@ endif;
     </script>
 <?php
 $this->registerCss("
+.actv-app{
+    background-image:linear-gradient(to top left, #70c6ea, #06729f);
+}
+.actv-resume{
+    background-image: linear-gradient(to top left, #ffbb80, #ff7803);
+}
+.actv-applicants{
+    background-image: linear-gradient(to top left, #d5dfa2, #28838c);
+}
+.widget-thumb .widget-thumb-heading{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-body .widget-thumb-body-stat{
+    color:#fff;
+}
+.widget-thumb .widget-thumb-wrap .widget-thumb-icon{
+    font-size:45px ;
+}
 .dwn {
 	text-align: center;
 	margin-top: 15px;

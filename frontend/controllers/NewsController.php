@@ -65,12 +65,15 @@ class NewsController extends Controller
                 ->all();
             if ($dataDetail) {
                 array_walk($dataDetail, function (&$item) {
+                    $item['rand_upvote'] = rand(40,100) + $item['upvote'];
+                    $item['rand_downvote'] = rand(0,40) + $item['downvote'];
                     $item['news_slug'] = Url::to('/news/' . $item['slug']);
                     $item['news_time'] = date('d M Y', strtotime($item['created_on']));
                     $item['news_title'] = Url::to('/news/' . $item['title']);
                     $item['news_description'] = strip_tags($item['description']);
                     $item['sharing_link'] = Url::base(true) . '/news/' . $item['slug'];
                     $item['news_image'] = Url::to(Yii::$app->params->upload_directories->posts->featured_image . $item['image_location'] . '/' . $item['image']);
+                    unset($item['upvote']);
                     unset($item['image']);
                     unset($item['image_location']);
                     unset($item['slug']);

@@ -20,6 +20,7 @@ use frontend\models\reviews\EditUnclaimedInstituteOrg;
 use frontend\models\reviews\EditUnclaimedSchoolOrg;
 use frontend\models\reviews\RegistrationForm;
 use frontend\models\reviews\ReviewCards;
+use frontend\models\reviews\ReviewCardsMod;
 use Yii;
 use yii\web\HttpException;
 use yii\web\Controller;
@@ -71,7 +72,7 @@ class OrganizationsController extends Controller
     {
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            $get = new ReviewCards();
+            $get = new ReviewCardsMod();
             $options = [];
             $options = Yii::$app->request->post('params');
             if (Yii::$app->request->get('keyword')){
@@ -81,7 +82,7 @@ class OrganizationsController extends Controller
                 $options['sortBy'] = trim(Yii::$app->request->get('sortBy'));
             }
             $options['limit'] = 27;
-            $cards = $get->getReviewCards($options);
+            $cards = $get->getAllCompanies($options);
             if (count($cards['cards']) > 0) {
                 $response = [
                     'status' => 200,
@@ -96,7 +97,7 @@ class OrganizationsController extends Controller
             }
             return $response;
         }
-        return $this->render('index-1');
+        return $this->render('index');
     }
 
     public function actionCompanies($q = null)
