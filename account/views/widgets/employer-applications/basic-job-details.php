@@ -45,7 +45,16 @@ use kartik\widgets\DatePicker;
         </div>
     </div>
     <div class="col-md-3">
-        <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+        <div class="row">
+            <div class="col-md-12" id="wh_type">
+                <?= $form->field($model, 'type')->dropDownList(['Full time' => 'Full time', 'Part Time' => 'Part time', 'Work From Home' => 'Work from home'])->label(false); ?>
+            </div>
+            <div id="wh_vacancy">
+                <div class="col-md-5">
+                    <?= $form->field($model, 'vacancy')->textInput(['class' => 'capitalize form-control', 'placeholder' => 'Positions', 'id' => 'wh_positions','maxLength'=>7])->label(false); ?>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -306,6 +315,7 @@ function wage_type(sl_type)
 });
 $('#fixed_wage, #ctc').mask("#,#0,#00", {reverse: true});
 $('#max_wage, #min_wage').mask("#,#0,#00", {reverse: true});
+$('#wh_positions').mask("#", {reverse: true});   
 $('#designations').typeahead(null, {
   name: 'designations_test',
   display: 'designation',

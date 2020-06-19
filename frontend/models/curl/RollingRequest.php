@@ -4,13 +4,14 @@ namespace frontend\models\curl;
 class RollingRequest
 {
     private $rc;
+    public $collect = [];
 
     function __construct(){
         $this->rc = new RollingCurl(array($this, 'processPage'));
     }
 
     function processPage($response, $info){
-        print_r($response);
+        $collect[] = $response;
     }
 
     function run($urls){
