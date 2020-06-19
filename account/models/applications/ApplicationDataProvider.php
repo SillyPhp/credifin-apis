@@ -31,7 +31,7 @@ class ApplicationDataProvider extends Model
                 WHEN b.wage_type = "Fixed" THEN 1
                 WHEN b.wage_type = "Negotiable" THEN 2
                 WHEN b.wage_type = "Performance Based" THEN 3
-                END) as wage_type', 'b.working_days'])
+                END) as wage_type', 'b.working_days','b.positions'])
             ->joinwith(['title k' => function ($b) {
                 $b->joinWith(['parentEnc l'], false);
                 $b->joinWith(['categoryEnc m'], false);
@@ -101,6 +101,7 @@ class ApplicationDataProvider extends Model
         $model->industry = $object['preferred_industry'];
         $model->pref_indus = $object['preferred_industry'];
         $model->wage_type = $object['wage_type'];
+        $model->vacancy = $object['positions'];
         $model->wage_duration = $object['wage_duration'];
         $model->min_wage = utf8_encode(money_format('%!.0n', $object['min_wage']));
         $model->max_wage = utf8_encode(money_format('%!.0n', $object['max_wage']));
@@ -146,7 +147,7 @@ class ApplicationDataProvider extends Model
         {
             $typ = 'Jobs';
         }
-        elseif ($type=='Clone_Internships')
+        elseif ($type=='Edit_Internships')
         {
             $typ = 'Internships';
         }
@@ -468,6 +469,9 @@ class ApplicationDataProvider extends Model
         $applicationoptionsModel->interview_end_date = $interview_end_date;
         $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
         $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
+        if ($model->type == "Work From Home") {
+            $applicationoptionsModel->positions = (($model->vacancy) ? str_replace(',', '', $model->vacancy) : null);
+        }
         if (!$applicationoptionsModel->save())
         {
             return false;

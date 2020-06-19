@@ -106,6 +106,7 @@ class ApplicationForm extends Model
     public $questionfields = [];
     public $benefit_selection;
     public $questionnaire_selection;
+    public $vacancy = null;
 
     public function formName()
     {
@@ -171,6 +172,7 @@ class ApplicationForm extends Model
                 'placement_locations',
                 'fill_quesio_on',
                 'fixed_wage', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'title', 'type', 'interviewdate', 'interviewcity', 'description', 'ctc', 'interradio', 'quesradio'], 'required'],
+                [['vacancy'],'safe'],
         ];
     }
 
@@ -382,14 +384,16 @@ class ApplicationForm extends Model
             $applicationoptionsModel->interview_end_date = $interview_end_date;
             $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
             $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$applicationoptionsModel->save()) {
-                return false;
-            }
             if ($this->type == "Work From Home") {
+                $applicationoptionsModel->positions = (($this->vacancy) ? str_replace(',', '', $this->vacancy) : null);
                 $locations = [];
             } else {
                 $locations = json_decode($this->placement_loc);
             }
+            if (!$applicationoptionsModel->save()) {
+                return false;
+            }
+
             if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
