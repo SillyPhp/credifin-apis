@@ -465,11 +465,28 @@ if ($settings["showNewPositionsWidget"]):
         </div>
     </section>
 <?php endif; ?>
-<div style="display:none">
-<?php if (!empty($popular_videos)) { ?>
+
+<?php if (!empty($popular_videos)) {
+    if (!empty($cat_name)) {
+        $ctt =  ucfirst(strtolower($cat_name));
+        $category_name = str_replace(' ','-',$ctt);
+    }
+    ?>
     <div class="container">
         <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-12">
             <div class="heading-style">Enhance Your Skills With Free Learning Videos </div>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="type-1">
+                    <div>
+                        <a href="<?= (!empty($cat_name)) ? Url::to('/learning/videos/category/'.$category_name) :  Url::to('/learning')?>" class="btn btn-3">
+                            <span class="txt-v"><?= Yii::t('frontend', 'View all'); ?></span>
+                            <span class="round"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div>
@@ -485,44 +502,15 @@ if ($settings["showNewPositionsWidget"]):
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
                             </div>
                             <div class="lc-item-desciption">
-                                <!--                                <a class="lc-item-user-icon" href="#">-->
-                                <!--                                    <img src="https://s.cdpn.io/profiles/user/1531686/80.jpg?1511402852" alt=""-->
-                                <!--                                         width="40" height="40">-->
-                                <!--                                </a>-->
                                 <div class="lc-item-user-detail">
                                     <h3 class="lc-item-video-title">
                                         <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="ml-20">
                                             <?= Yii::t('frontend', $p['title']); ?>
                                         </a>
                                     </h3>
-                                    <!--                                    <div class="lc-item-user-sub-main">-->
-                                    <!--                                        <a class="lc-item-user-sub-detail" href="#">-->
-                                    <!--                                            <span>casper392945</span>-->
-                                    <!--                                        </a>-->
-                                    <!--                                    </div>-->
                                 </div>
-                                <!--                                <div class="lc-item-video-actions">-->
-                                <!--                                    <button class="lc-item-video-menu" aria-expanded="false">-->
-                                <!--                                        <i class="fas fa-ellipsis-v"></i>-->
-                                <!--                                    </button>-->
-                                <!--                                </div>-->
                             </div>
                             <div class="lc-item-video-stats">
-                                <!--                                <a class="lc-item-video-stat" href="#">-->
-                                <!--                                    <span>-->
-                                <!--                                        <i class="fas fa-heart"></i> 5-->
-                                <!--                                    </span>-->
-                                <!--                                </a>-->
-                                <!--                                <a class="lc-item-video-stat" href="#">-->
-                                <!--                                    <span>-->
-                                <!--                                        <i class="far fa-comments"></i> 0-->
-                                <!--                                    </span>-->
-                                <!--                                </a>-->
-                                <!--                                <a class="lc-item-video-stat" href="#">-->
-                                <!--                                    <span>-->
-                                <!--                                        <i class="fas fa-eye"></i> 0-->
-                                <!--                                    </span>-->
-                                <!--                                </a>-->
                                 <span class="lc-item-video-stat marg">
                                     <?php
                                     $link = Url::to('learning/video/' . $p['slug'], 'https');
@@ -550,15 +538,11 @@ if ($settings["showNewPositionsWidget"]):
                         </div>
                     <?php } ?>
                 </div>
-                <!--                <div class="MS-controls">-->
-                <!--                    <button class="MS-left"><i class="fas fa-angle-left" aria-hidden="true"></i></button>-->
-                <!--                    <button class="MS-right"><i class="fas fa-angle-right" aria-hidden="true"></i></button>-->
-                <!--                </div>-->
             </div>
         </div>
     </div> 
 <?php } ?>
-</div>
+
 <script>
     function copyToClipboard() {
         var copyText = document.getElementById("share_manually");

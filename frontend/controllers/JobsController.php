@@ -439,15 +439,52 @@ class JobsController extends Controller
                 ->one();
         }
         $model = new \frontend\models\applications\JobApplied();
-        $popular_videos = LearningVideos::find()
-            ->where([
-                'is_deleted' => 0,
-                'status' => 1
-            ])
+        $desi_name = $application_details->designationEnc->designation;
+        $pro_name = $application_details->title0->parentEnc->name;
+        $cat_name = $application_details->title0->categoryEnc->name;
+        $related_videos = LearningVideos::find()
+            ->alias('z')
+            ->where(['z.is_deleted' => 0,
+                'z.status' => 1])
             ->orderBy(new Expression('rand()'))
-            ->limit(6)
-            ->asArray()
-            ->all();
+            ->limit(6);
+
+        $popular_videos =  $related_videos
+               ->joinWith(['assignedCategoryEnc a'=>function($a){
+                   $a->joinWith(['parentEnc a1'],false);
+                   $a->joinWith(['categoryEnc a2'],false);
+                   $a->joinWith(['employerApplications b' => function($b){
+                       $b->joinWith(['designationEnc c'],false);
+                   }],false);
+               }],false)
+             ->andFilterWhere(['or',
+                 ['like','c.designation',$desi_name],
+                 ['like','a1.name',$pro_name],
+                 ['like','a2.name',$cat_name],
+             ])
+               ->asArray()->all();
+        if(count($popular_videos) < 6) {
+            $limit = 6 - count($popular_videos);
+            $xyz = LearningVideos::find()
+                ->alias('z')
+                ->where(['z.is_deleted' => 0,
+                    'z.status' => 1])
+                ->orderBy(new Expression('rand()'))
+                ->limit($limit);
+            $xz = $xyz->asArray()->all();
+            $popular_videos = array_merge($popular_videos, $xz);
+        }
+           if (empty($popular_videos) )
+           {
+               $xyz = LearningVideos::find()
+                   ->alias('z')
+                   ->where(['z.is_deleted' => 0,
+                       'z.status' => 1])
+                   ->orderBy(new Expression('rand()'))
+                   ->limit(6);
+               $popular_videos = $xyz->asArray()->all();
+           }
+
         return $this->render('/employer-applications/detail', [
             'application_details' => $application_details,
             'data1' => $data1,
@@ -458,6 +495,7 @@ class JobsController extends Controller
             'model' => $model,
             'shortlist' => $shortlist,
             'popular_videos' => $popular_videos,
+            'cat_name' => $cat_name,
         ]);
     }
 
