@@ -27,7 +27,7 @@ class ReviewCardsMod
             $offset = ($options['page'] - 1) * $options['limit'];
         }
         $q1 = (new \yii\db\Query())
-            ->select(['(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs',
@@ -87,7 +87,7 @@ class ReviewCardsMod
         }
 
         $q2 = (new \yii\db\Query())
-            ->select(['(CASE WHEN a.is_featured = "1" THEN "1"
+            ->select(['a.slug','(CASE WHEN a.is_featured = "1" THEN "1"
                 ELSE NULL   
                 END) as is_featured','a.organization_enc_id','a.name','a.initials_color color',
                 'a.created_on','COUNT(CASE WHEN h.name = "Jobs" THEN 1 END) as total_jobs',
