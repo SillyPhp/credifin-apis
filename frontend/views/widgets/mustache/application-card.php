@@ -49,7 +49,7 @@ switch ([$controller_id, $action_id]) {
                         <span class="job-fill application-card-type location city" data-lat="{{latitude}}"
                               data-long="{{longitude}}"
                               data-locations="">
-                        <i class="fas fa-map-marker-alt"></i>&nbsp;All India
+                        <i class="fas fa-map-marker-alt"></i>&nbsp;Work From Home
                         </span>
                         {{/city}}
                         </span>
@@ -362,7 +362,6 @@ $this->registerCss('
 text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    width: 40%;
 }
 
 .application-card-description h5{
