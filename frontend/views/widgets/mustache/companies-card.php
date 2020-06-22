@@ -7,11 +7,31 @@ use yii\helpers\Url;
             <div class="company-main">
                 <a href="{{profile_link}}" target="_blank">
                     <div class="comp-featured">
+                        {{#is_new}}
+                        <span class="new-j" data-toggle="tooltip" title="Featured">
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/new-job.png') ?>"/>
+                        </span>
+                        {{/is_new}}
                         {{#is_featured}}
                         <span data-toggle="tooltip" title="Featured">
-                            <img src="<?= Url::to('@eyAssets/images/job-profiles/featured.png') ?>"/>
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/featured-job.png') ?>"/>
                         </span>
                         {{/is_featured}}
+                        {{#is_promoted}}
+                        <span data-toggle="tooltip" title="Featured">
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/promoted-job.png') ?>"/>
+                        </span>
+                        {{/is_promoted}}
+                        {{#is_hot}}
+                        <span data-toggle="tooltip" title="Featured">
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/hot-job.png') ?>"/>
+                        </span>
+                        {{/is_hot}}
+                        {{#is_trending}}
+                        <span data-toggle="tooltip" title="Featured">
+                            <img src="<?= Url::to('@eyAssets/images/job-profiles/trending-job.png') ?>"/>
+                        </span>
+                        {{/is_trending}}
                     </div>
                     <div class="total-vacancies">
                         {{#total_vaccency}}
@@ -53,8 +73,8 @@ use yii\helpers\Url;
                     </div>
                     {{/rating}}
                     <div class="comp-jobs-intern">
-                        <a href="/jobs/list?slug={{profile_link}}" target="_blank"><span class="jobs">{{total_jobs}} Jobs</span></a>
-                        <a href="/internships/list?slug={{profile_link}}" target="_blank"><span class="interns">{{total_internships}} Internships</span></a>
+                        <a href="/jobs/list?slug={{slug}}" target="_blank"><span class="jobs">{{total_jobs}} Jobs</span></a>
+                        <a href="/internships/list?slug={{slug}}" target="_blank"><span class="interns">{{total_internships}} Internships</span></a>
                     </div>
                     <div class="flw-rvw">
                         <div class="follow-btn">
@@ -71,6 +91,12 @@ use yii\helpers\Url;
     </script>
 <?php
 $this->registercss('
+.new-j {
+	margin-left: -5px;
+}
+.new-j img{
+    width:55px !important;
+}
 .flw-rvw {
 	display: flex;
 	justify-content: center;
@@ -106,6 +132,7 @@ $this->registercss('
 	border: 1px solid #eee;
 	box-shadow: 0 0 13px 4px #eee;
 	line-height:104px;
+	margin-top:12px;
 }
 .comp-Name {
 	font-size: 24px;

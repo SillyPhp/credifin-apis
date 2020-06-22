@@ -853,7 +853,15 @@ $(document).on('submit','#search_bar_form',function(e) {
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
       }
-}) 
+});
+
+ $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+ 
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -886,9 +894,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
 
     function showMoreEvent() {
         hideMore('searches');
@@ -897,23 +902,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
+
 
     function showLessEvent() {
         hideLess('searches');
