@@ -13,6 +13,7 @@ use common\models\CollegeCourses;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
 use common\models\EmployerApplications;
+use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
@@ -400,6 +401,17 @@ class CollegeProfileController extends ApiBaseController
             $limit = Yii::$app->request->post('limit');
             $type = Yii::$app->request->post('type');
 
+            $rejected_companies = ErexxCollaborators::find()
+                ->select(['organization_enc_id'])
+                ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+                ->asArray()
+                ->all();
+
+            $ids = [];
+            foreach ($rejected_companies as $r) {
+                array_push($ids, $r['organization_enc_id']);
+            }
+
             $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -470,6 +482,7 @@ class CollegeProfileController extends ApiBaseController
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
                 ]);
+//                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if ($limit) {
                 $jobs->limit($limit);
             }
