@@ -1,97 +1,324 @@
 <?php
 
 use yii\helpers\Url;
+
 ?>
-<section class="quiz-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="quiz-name">Predicted JEE Main 2019 (April)</div>
+    <section class="quiz-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="quiz-name">Predicted JEE Main 2019 (April)</div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="question-section">
-                    <div class="ques">
-                        <p>A hollow vertical cylinder of radius r and height h has a smooth internal surface.
-                            A small particle is placed in contact with the inner side of the upper rim, at point A,
-                            and given a horizontal speed u, tangential to the rim. It leaves the lower rim at point B,
-                            vertically below A. If n is an integer then.</p>
-                    </div>
-                        <form>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                <label class="labl">
-                                    <input type="radio" name="radioname" value="one_value" checked="checked"/>
-                                    <div>
-                                        <span>1</span>
-                                        Radius r and height h has a smooth internal surface
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="tab-content">
+                        <div class="question-section tab-pane active" id="one">
+                            <div class="ques">
+                                <p>A hollow vertical cylinder of radius r and height h has a smooth internal surface.
+                                    A small particle is placed in contact with the inner side of the upper rim, at point
+                                    A,
+                                    and given a horizontal speed u, tangential to the rim. It leaves the lower rim at
+                                    point B,
+                                    vertically below A. If n is an integer then.</p>
+                            </div>
+                            <form>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="one_value" checked="checked"/>
+                                            <div class="ans-option">
+                                                <span>1</span>
+                                                <p>Radius r and height h has a smooth internal surface</p>
+                                            </div>
+                                        </label>
                                     </div>
-                                </label>
-                            </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                <label class="labl">
-                                    <input type="radio" name="radioname" value="another" />
-                                    <div>
-                                        <span>2</span>
-                                        A hollow vertical cylinder
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>2</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
                                     </div>
-                                </label>
-                            </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="labl">
-                                        <input type="radio" name="radioname" value="another" />
-                                        <div>
-                                            <span>3</span>
-                                            A hollow vertical cylinder
-                                        </div>
-                                    </label>
                                 </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="labl">
-                                        <input type="radio" name="radioname" value="another" />
-                                        <div>
-                                            <span>4</span>
-                                            A hollow vertical cylinder
-                                        </div>
-                                    </label>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>3</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
                                 </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>4</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="ques-bts">
+                            <span></span>
+                        </div>
+                        <div class="question-section tab-pane" id="two">
+                            <div class="ques">
+                                <p>A hollow vertical cylinder of radius r and height h has a smooth internal surface.
+                                    A small particle is placed in contact with the inner side of the upper rim, at point.
+                                </p>
                             </div>
-                        </form>
-                    </div>
-                    <div class="ques-bts">
-                        <div class="">
-
+                            <form>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="one_value" checked="checked"/>
+                                            <div class="ans-option">
+                                                <span>1</span>
+                                                <p>Radius r and height h has a smooth internal surface</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>2</span>
+                                                <p>A hollow vertical</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>3</span>
+                                                <p>A hollow cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div>
+                                                <span>4</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="question-section tab-pane" id="three">
+                            <div class="ques">
+                                <p>Where can I get some?</p>
+                            </div>
+                            <form>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="one_value" checked="checked"/>
+                                            <div class="ans-option">
+                                                <span>1</span>
+                                                <p>There are many variations of passages</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>2</span>
+                                                <p>Lorem Ipsum available</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>3</span>
+                                                <p>majority have suffered alteration in some form</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>4</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="ques-bts">
+                            <span></span>
+                        </div>
+                        <div class="question-section tab-pane" id="four">
+                            <div class="ques">
+                                <p>Where does it come from?</p>
+                            </div>
+                            <form>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="one_value" checked="checked"/>
+                                            <div class="ans-option">
+                                                <span>1</span>
+                                                <p>Lorem ipsum dolor sit amet..</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div>
+                                                <span>2</span>
+                                                Lorem Ipsum available
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>3</span>
+                                                <p>The standard chunk of Lorem Ipsum</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>4</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="ques-bts">
+                            <span></span>
+                        </div>
+                        <div class="question-section tab-pane" id="five">
+                            <div class="ques">
+                                <p>Why do we use it?</p>
+                            </div>
+                            <form>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="one_value" checked="checked"/>
+                                            <div class="ans-option">
+                                                <span>1</span>
+                                                <p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>2</span>
+                                                <p>'Content here, content here', making it look like readable English</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>3</span>
+                                                <p>Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="labl">
+                                            <input type="radio" name="radioname" value="another"/>
+                                            <div class="ans-option">
+                                                <span>4</span>
+                                                <p>A hollow vertical cylinder</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="ques-bts">
+                            <span></span>
                         </div>
                     </div>
                 </div>
-            <div class="col-md-4">
-                <div class="ques-indi">
-                    <h3>Total Questions</h3>
-                    <ul>
-                        <li><a href="">1</a></li>
-                        <li><a href="">2</a></li>
-                        <li><a href="">3</a></li>
-                        <li><a href="">4</a></li>
-                        <li><a href="">5</a></li>
-                    </ul>
+                <div class="col-md-4">
+                    <div class="ques-indi">
+                        <h3>Total Questions</h3>
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a data-toggle="tab" href="#one" data-id="one">1</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#two" data-id="two">2</a>
+                            </li>
+                            <li>
+                                <a data-toggle="tab" href="#three" data-id="three">3</a>
+                            </li>
+                            <li><a data-toggle="tab" href="#four" data-id="four">4</a></li>
+                            <li><a data-toggle="tab" href="#five" data-id="five">5</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 <?php
 $this->registerCss('
+.ans-option{
+    display: flex;
+}
 .quiz-header{
     color: #fff;
     background: #00a0e3;
@@ -128,10 +355,12 @@ $this->registerCss('
 }
 .labl > input + div span{
     background: #00a0e3;
-    padding: 5px 8px;
+    padding: 0px 8px;
     color: #fff;
     border-radius: 5px;
     margin-right: 10px;
+    height: 25px;
+    width: 25px;    
 }
 .labl > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
     background-color: #00a0e3;
@@ -140,9 +369,9 @@ $this->registerCss('
 }
 .labl > input:checked + div span{
     background: #fff;
-    padding: 5px 8px;
+    padding: 0px 8px;
     color: #00a0e3;
-    border-radius: 5px;
+    border-radius: 0px;
 }
 .ques-indi{
     box-shadow: 0 0 10px rgba(0,0,0,.1);
@@ -158,6 +387,8 @@ $this->registerCss('
     padding: 5px 10px;
     background: #eee;
     border-radius: 5px;
+    border: none;
+    font-size: 16px;
 }
 .ques-indi ul li a:hover{
     background: #00a0e3;
@@ -168,6 +399,11 @@ $this->registerCss('
     color:#fff;
     font-size: 18px;
     padding: 8px 10px;    
+}
+.nav-tabs > li.active a, .nav-tabs > li.active a:hover, .nav-tabs > li.active a:focus{
+    color: #fff;
+    background-color: #00a0e3;
+    padding: 5px 10px;
 }
 ');
 $script = <<<JS
