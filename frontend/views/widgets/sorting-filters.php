@@ -44,16 +44,20 @@ $this->registercss('
   justify-content:center;
 }
 .flex-container > li {
-	background-color:#a5c7e5;
 	width: 28px;
 	margin: 7px;
 	text-align: center;
 	line-height: 25px;
-	font-size: 16px;
+	font-size: 18px;
 	font-family: roboto;
 	border-radius: 4px;
 	font-weight: 500;
 }
-.flex-container > li a{color:#fff;display:block;}
+.flex-container > li a{display:block;transition:all .2s;}
+.flex-container > li a:hover {
+	color: #fff;
+	background-color: #00a0e3;
+	border-radius: 2px;
+}
 ');
 
