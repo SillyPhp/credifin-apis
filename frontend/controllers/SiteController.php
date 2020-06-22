@@ -775,7 +775,7 @@ class SiteController extends Controller
                     ->leftJoin(ApplicationPlacementCities::tableName() . 'as d', 'd.city_enc_id = c.city_enc_id')
                     ->leftJoin(EmployerApplications::tableName() . 'as e', 'e.application_enc_id = d.application_enc_id')
                     ->innerJoin(ApplicationTypes::tableName() . 'as f', 'f.application_type_enc_id = e.application_type_enc_id')
-                    ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
+//                    ->innerJoin(Users::tableName() . 'as g', 'g.user_enc_id = e.created_by')
                     ->andWhere(['e.is_deleted' => 0, 'b.name' => 'India'])
                     ->andWhere(['in', 'c.name', ['Ludhiana', 'Mainpuri', 'Jalandhar']]);
                 $other_jobs_city_wise = $other_jobs->addSelect('c.name city_name')->groupBy('c.id');

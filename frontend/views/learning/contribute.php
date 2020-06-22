@@ -100,7 +100,7 @@ use yii\helpers\Url;
                                 <div class="img-box-fit">
                                     <img src="<?= Url::to('@eyAssets/images/pages/Colabraters-img/top into new audience.png'); ?>"/>
                                 </div>
-                                <h2 class="heading">Top into New Audience</h2>
+                                <h2 class="heading">Tap into New Audience</h2>
                                 <P class="paragraph">We use the lead scoring techniques for you to filter out the
                                     best audience!</P>
                             </div>
