@@ -542,7 +542,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['applicationSkills bbc' => function ($bbc) {
                     $bbc->select(['bbc.application_enc_id', 'skill']);
                     $bbc->joinWith(['skillEnc cbb'], false);
-                    $bbc->onCodition(['bbc.is_deleted' => 0]);
+                    $bbc->onCondition(['bbc.is_deleted' => 0]);
                 }])
                 ->joinWith(['designationEnc dd'], false)
                 ->joinWith(['title d' => function ($d) {
