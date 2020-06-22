@@ -36,7 +36,7 @@ switch ([$controller_id, $action_id]) {
                                 </a>
                             </span>
                             <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
-                                <h4 class="org_name comp-name org_name">{{organization_name}}</h4>
+                                <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
                         {{#city}}
