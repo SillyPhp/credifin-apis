@@ -12,7 +12,8 @@
                         <div class="course-fees">{{#price_detail}}{{currency_symbol}}{{/price_detail}}</i>
                             {{#price_detail}}
                                 {{amount}}
-                            {{/price_detail}}</div>
+                            {{/price_detail}}
+                            {{^price_detail}}free{{/price_detail}}</div>
                         <div class="course-start"><i class="far fa-user"></i>
                             <span class="c-author">
                                 {{#visible_instructors}}
