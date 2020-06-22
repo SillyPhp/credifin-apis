@@ -495,6 +495,11 @@ class CollegeIndexController extends ApiBaseController
                 ->asArray()
                 ->all();
 
+            $ids = [];
+            foreach ($rejected_companies as $r) {
+                array_push($ids, $r['organization_enc_id']);
+            }
+
             $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -537,6 +542,7 @@ class CollegeIndexController extends ApiBaseController
                 ->joinWith(['applicationSkills bbc' => function ($bbc) {
                     $bbc->select(['bbc.application_enc_id', 'skill']);
                     $bbc->joinWith(['skillEnc cbb'], false);
+                    $bbc->onCodition(['bbc.is_deleted' => 0]);
                 }])
                 ->joinWith(['designationEnc dd'], false)
                 ->joinWith(['title d' => function ($d) {
@@ -563,6 +569,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                 ])
+//                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
                 ->asArray()
                 ->all();
 

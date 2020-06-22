@@ -203,20 +203,21 @@ class JobsController extends ApiBaseController
 
             if ($this->getOrgId()) {
                 $is_approve = ErexxEmployerApplications::find()
-                    ->select(['is_college_approved'])
+                    ->select(['is_college_approved', 'is_deleted'])
                     ->where(['employer_application_enc_id' => $data['application_enc_id'], 'college_enc_id' => $this->getOrgId()])
                     ->asArray()
                     ->one();
 
                 $data['is_college_approved'] = $is_approve['is_college_approved'];
+                $data['is_college_deleted'] = $is_approve['is_deleted'];
             }
 
             $application_process = OrganizationInterviewProcess::find()
                 ->alias('a')
                 ->distinct()
                 ->select(['a.interview_process_enc_id'])
-                ->joinWith(['interviewProcessFields b'=>function($b){
-                    $b->select(['b.interview_process_enc_id','b.field_enc_id', 'b.field_name', '(CASE
+                ->joinWith(['interviewProcessFields b' => function ($b) {
+                    $b->select(['b.interview_process_enc_id', 'b.field_enc_id', 'b.field_name', '(CASE
                         WHEN b.icon = "fa fa-sitemap" THEN "fas fa-sitemap"
                         WHEN b.icon = "fa fa-phone" THEN "fas fa-phone"
                         WHEN b.icon = "fa fa-user" THEN "fas fa-user"
@@ -330,6 +331,7 @@ class JobsController extends ApiBaseController
             ->joinWith(['applicationSkills g' => function ($x) {
                 $x->joinWith(['skillEnc h'], false);
                 $x->select(['g.application_enc_id', 'h.skill_enc_id', 'h.skill']);
+                $x->onCondition(['g.is_deleted' => 0]);
             }])
             ->joinWith(['applicationJobDescriptions i' => function ($x) {
                 $x->onCondition(['i.is_deleted' => 0]);
