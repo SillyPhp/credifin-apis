@@ -19,13 +19,13 @@ Yii::$app->view->registerJs('var _type = "' . $type . '"', \yii\web\View::POS_HE
                             <input type="text" name="keyword" class="form-control" id="keywords"
                                    placeholder="Job Title or Skill or Company"/>
                         </div>
-                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5">
+                        <div class="input-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 sett-marg">
                             <span class="input-group-addon"><i class="fas fa-map-marker-alt fa-lg"></i></span>
                             <input type="text" id="cities" name="location" class="form-control" autocomplete="off"
                                    placeholder="City or State"/>
                             <i class="Typeahead-spinner fas fa-circle-notch fa-spin fa-fw"></i>
                         </div>
-                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn">
+                        <div class="form-group mb-10 set-col-2 col-xs-6 pl-5 pr-5 in-s-btn sett-marg">
                             <input type="submit" class="form-control submit-next" id="form_control_1"
                                    value="Search">
                         </div>
@@ -796,6 +796,11 @@ $this->registerCss('
         width:90%;
     }
 }
+@media only screen and (max-width: 991px) and (min-width: 375px){
+.sett-marg{
+	margin-top: 15px;
+}
+}
 ');
 echo $this->render('/widgets/blogs/whats-new', [
     'size' => 'col-md-3',
@@ -848,7 +853,15 @@ $(document).on('submit','#search_bar_form',function(e) {
       {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
       }
-}) 
+});
+
+ $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent();
+    });
+ 
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -881,9 +894,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
 
     function showMoreEvent() {
         hideMore('searches');
@@ -892,23 +902,28 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
     }
 
     function hideMore(elem) {
-        var i = 0;
-        i += 5;
-        var k = 4;
+        var ll = 0;
+        var zz = 0;
+        var tt = 0;
+        var f = true;
         var listElementsLength = document.getElementById(elem).getElementsByTagName('li').length;
-        while (k < listElementsLength) {
-            if (document.getElementById(elem)) {
-                document.getElementById(elem).children[k].classList.remove('hide');
+        while (ll < listElementsLength) {
+            if (document.getElementById(elem).children[ll]) {
+                if (document.getElementById(elem).children[ll].classList.contains('hide') && zz < 5) {
+                    document.getElementById(elem).children[ll].classList.remove('hide');
+                    zz += 1;
+                    f = false;
+                }
             }
-            k += 1;
+            ll += 1;
         }
-        document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
-        document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        if (f) {
+            document.getElementById(elem).parentNode.children[2].innerHTML = 'Less';
+            document.getElementById(elem).parentNode.children[2].classList.add('hideElem');
+        }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
+
 
     function showLessEvent() {
         hideLess('searches');

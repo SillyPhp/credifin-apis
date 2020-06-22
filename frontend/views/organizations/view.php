@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = Yii::t('frontend', htmlspecialchars_decode($organization['name']));
 $keywords = $industry['industry'] . "," . $organization['tag_line'];
@@ -50,6 +50,8 @@ if ($organization['cover_image']) {
 } else {
     $cover_image = "/assets/themes/ey/images/backgrounds/default_cover.png";
 }
+$overall_avg = array_sum($review_stats) / count($review_stats);
+$round_avg = round($overall_avg);
 ?>
     <section>
         <div class="header-bg" style='background-image:url("<?= Url::to($cover_image); ?>");'>
@@ -102,7 +104,7 @@ if ($organization['cover_image']) {
                     <ul class="nav nav-tabs nav-padd-20">
                         <li class="active"><a data-toggle="tab" href="#home">Overview</a></li>
                         <li><a data-toggle="tab" href="#menu1">Opportunities</a></li>
-                        <li><a data-toggle="tab" href="#tab4">Locations</a></li>
+                        <li><a data-toggle="tab" href="#tab4" class="location_tab">Locations</a></li>
                         <li><a data-toggle="tab" href="#menu4">Reviews</a></li>
                     </ul>
                 </div>
@@ -120,17 +122,17 @@ if ($organization['cover_image']) {
                     </div>
                     <div class="social-btns">
                         <?php if (!empty($organization['facebook'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook" target="_blank"><i
-                                        class="fab fa-facebook-f"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['facebook']) ?>" class="facebook"
+                            target="_blank"><i class="fab fa-facebook-f"></i> </a><?php } ?>
                         <?php if (!empty($organization['twitter'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter" target="_blank"><i
-                                        class="fab fa-twitter"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['twitter']) ?>" class="twitter"
+                            target="_blank"><i class="fab fa-twitter"></i> </a><?php } ?>
                         <?php if (!empty($organization['linkedin'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin" target="_blank"><i
-                                        class="fab fa-linkedin-in"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['linkedin']) ?>" class="linkedin"
+                            target="_blank"><i class="fab fa-linkedin-in"></i> </a><?php } ?>
                         <?php if (!empty($organization['website'])) { ?><a
-                            href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank"><i
-                                        class="fas fa-link"></i> </a><?php } ?>
+                            href="<?= htmlspecialchars_decode($organization['website']) ?>" class="web" target="_blank">
+                                <i class="fas fa-link"></i> </a><?php } ?>
                     </div>
                 </div>
             </div>
@@ -145,11 +147,39 @@ if ($organization['cover_image']) {
                             About <?= htmlspecialchars_decode($organization['name']) ?>
                         </div>
                         <div class="divider"></div>
-
                         <div class="col-md-7 col-xs-12">
                             <div class="com-description more">
                                 <?= htmlspecialchars_decode($organization['description']) ?>
                             </div>
+                            <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
+                                <div class="row">
+                                    <div class="heading-style">Mission & Vision</div>
+                                    <div class="divider"></div>
+                                    <div class="mv-box">
+                                        <div class="col-md-12">
+                                            <?php if (!empty($organization['mission'])) { ?>
+                                                <div class="mv-heading">
+                                                    Mission
+                                                </div>
+                                                <div class="mv-text">
+                                                    <?= htmlspecialchars_decode($organization['mission']) ?>
+                                                </div>
+                                            <?php }
+                                            if (!empty($organization['vision'])) {
+                                                ?>
+                                                <div class="vission-box">
+                                                    <div class="mv-heading">
+                                                        Vision
+                                                    </div>
+                                                    <div class="mv-text">
+                                                        <?= htmlspecialchars_decode($organization['vision']) ?>
+                                                    </div>
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
                         </div>
                         <div class="col-md-5 col-xs-12">
                             <div class="a-boxs">
@@ -184,38 +214,86 @@ if ($organization['cover_image']) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <?php if (!empty($organization['mission']) || !empty($organization['vision'])) { ?>
-                        <div class="row">
-                            <div class="mv-box">
-                                <div class="heading-style">Mission & Vision</div>
-                                <div class="divider"></div>
-                                <div class="col-md-12">
-                                    <?php if (!empty($organization['mission'])) { ?>
-                                        <div class="mv-heading">
-                                            Mission
+<!--                                <div class="j-profiles">-->
+<!--                                    <h3>Job Profiles</h3>-->
+<!--                                    <div class="row" style="padding: 0 15px;">-->
+<!--                                        <div class="pf-flex">-->
+<!--                                            <div class="pf-all">Infromation technology</div>-->
+<!--                                            <div class="pf-all">marketing</div>-->
+<!--                                            <div class="pf-all">sales</div>-->
+<!--                                            <div class="pf-all">Engineering</div>-->
+<!--                                            <div class="pf-all">accounting</div>-->
+<!--                                            <div class="pf-all">others</div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+                            <div>
+                                <!--                                <h1 class="heading-style">Overall Ratings</h1>-->
+                                <div class="sub-review-box">
+                                    <div class="rating-large"><?= $round_avg ?>/5</div>
+                                    <div class="rs-main">
+                                        <div class="com-rating-1">
+                                            <?php for ($i = 1; $i <= 5; $i++) { ?>
+                                                <i class="fas fa-star <?= (($round_avg < $i) ? '' : 'active') ?>"></i>
+                                            <?php } ?>
                                         </div>
-                                        <div class="mv-text">
-                                            <?= htmlspecialchars_decode($organization['mission']) ?>
-                                        </div>
-                                    <?php }
-                                    if (!empty($organization['vision'])) {
-                                        ?>
-                                        <div class="vission-box">
-                                            <div class="mv-heading">
-                                                Vision
-                                            </div>
-                                            <div class="mv-text">
-                                                <?= htmlspecialchars_decode($organization['vision']) ?>
-                                            </div>
-                                        </div>
-                                    <?php } ?>
+                                        <div class="reviewers"><?= $reviews_count ?> Reviews</div>
+                                    </div>
+                                    <div class="write-rv">
+                                        <a href="/<?= $organization['slug']; ?>/reviews">Write Review</a>
+                                    </div>
+                                </div>
+                                <!--                                --><?php
+                                //                                if ($round_avg != 0) {
+                                //                                    ?>
+                                <!--                                    <div class="col-md-12 user-rating">-->
+                                <!--                                        <div class="ur-bg padd-lr-5">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['job_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Job Security</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['growth_avg']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Career Growth</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_cult']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Company Culture</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_compensation']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Salary & Benefits</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work Satisfaction</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg light-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_work_life']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Work-Life Balance</div>-->
+                                <!--                                        </div>-->
+                                <!--                                        <div class="ur-bg">-->
+                                <!--                                            <div class="urating">-->
+                                <? //= $review_stats['avg_skill']; ?><!--/5</div>-->
+                                <!--                                            <div class="uratingtitle">Skill Development</div>-->
+                                <!--                                        </div>-->
+                                <!--                                    </div>-->
+                                <!--                                    --><?php
+                                //                                }
+                                //                                ?>
+                                <div class="review-sidebar-main text-center">
+                                    <h4 class="sub-heading-review">Help the community by giving your valuable
+                                        review</h4>
                                 </div>
                             </div>
                         </div>
-                    <?php }
-                    if (!empty($benefit)) {
+                    </div>
+                   <?php if (!empty($benefit)) {
                         ?>
                         <div class="row">
                             <div class="company-benefits">
@@ -382,7 +460,7 @@ if ($organization['cover_image']) {
                     <?php } ?>
                 </div>
                 <div id="menu1" class="tab-pane fade">
-                    <div class="row">
+                    <div id="jobs-cards-main" class="row">
                         <div class="heading-style">
                             Available Jobs
                             <div class="pull-right">
@@ -399,7 +477,7 @@ if ($organization['cover_image']) {
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div id="internships-cards-main" class="row">
                         <div class="internships-block">
                             <div class="heading-style">
                                 Available Internships
@@ -417,7 +495,7 @@ if ($organization['cover_image']) {
                         </div>
                     </div>
                 </div>
-                <div id="tab4" class="tab-pane fade">
+                <div id="tab4" class="tab-pane fade location_tab">
                     <div class="row">
                         <div class="address-division">
                             <div class="heading-style">
@@ -457,7 +535,6 @@ if ($organization['cover_image']) {
                 </div>
             </div>
         </div>
-        </div>
     </section>
     <div class="modal fade bs-modal-lg in" id="modal" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -470,7 +547,8 @@ if ($organization['cover_image']) {
             </div>
         </div>
     </div>
-    <input type="hidden" id="organisation_id" value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
+    <input type="hidden" id="organisation_id"
+           value="<?= htmlspecialchars_decode($organization['organization_enc_id']) ?>"/>
     <section>
         <div class="container">
             <div class="empty-field">
@@ -546,6 +624,64 @@ echo $this->render('/widgets/mustache/organization-reviews', [
     'org_slug' => $organization['slug'],
 ]);
 $this->registerCss('
+.mv-text{text-align:justify;font-family:roboto;}
+.j-profiles {
+	box-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+	position: relative;
+	border-radius: 15px;
+	margin: 30px 0 20px;
+}
+.j-profiles h3 {
+	font-size: 21px;
+//	background-color: #00a0e3;
+	padding: 12px 20px 0px;
+	text-transform: uppercase;
+	color: #00a0e3;
+	margin: 0 0 15px;
+	font-family: roboto;
+	font-weight: 500;
+	border-radius: 4px 4px 0 0;
+	text-align: center;
+}
+.pf-flex {
+	display: flex;
+	justify-content: center;
+	flex-wrap:wrap;
+}
+.pf-all {
+	text-align: center;
+	font-size: 16px;
+	text-transform: capitalize;
+	font-family: roboto;
+	font-weight: 500;
+	cursor: pointer;
+	flex-basis: 45%;
+	margin: 0px 8px 8px;
+	padding: 10px;
+	transition: all .3s;
+//	border: 1px solid #aaaaaa;
+}
+.pf-all:hover {
+	color: #00a0e3;
+	transform:translateY(-3px);
+}
+.write-rv {
+    position: absolute;
+    right:15px;
+    bottom: 5px;
+}
+.write-rv a {
+    color: #fff;
+    font-weight: 500;
+    font-family: roboto;
+    transition:all .3s;
+}
+.write-rv:hover a {
+    color: #00a0e3;
+    background-color: #fff;
+    padding: 5px 8px;
+    border-radius: 2px;
+}
 .warn-img {
 	width: 300px;
 	margin: auto;
@@ -601,19 +737,18 @@ $this->registerCss('
     padding-top:10px;
     text-transform:uppercase;
     font-size:15px;
-    font-weight:bold;
+    font-weight:500;
+    font-family:roboto;
 }
 /*----company benefits ends----*/
 /*----mission & vission----*/
-.mv-heading{
-    font-size:20px;
-    font-weight:bold;
-    text-transform:uppercase;
+.mv-heading {
+	font-size: 20px;
+	font-weight: 500;
+	text-transform: uppercase;
+	font-family: roboto;
 }
 .vission-box{
-    padding-top:20px;
-}
-.mv-box{
     padding-top:20px;
 }
 /*----mission & vission end----*/
@@ -741,6 +876,7 @@ $this->registerCss('
     font-size:15px;
     text-align:justify;
     line-height:22px;
+    font-family:roboto;
 }
 .com-des-list{
     padding:10px 25px;
@@ -773,11 +909,13 @@ $this->registerCss('
     left:50%;
     transform:translate(-50%,-50%); 
 }
-.det-heading{
-    font-size:13px;
-    font-weight:bold;
+.det-heading {
+	font-size: 15px;
+	font-weight: 500;
+	font-family: roboto;
 }
 .det{
+    font-family: roboto;
     font-size:16px;
     color:#00a0e3;
 }
@@ -835,6 +973,7 @@ a.web{
     text-transform: capitalize;
     color: #00a0e3;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
+    font-family:roboto;
 }
 .follow:hover{
     background:#00a0e3;
@@ -851,7 +990,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     background-color: #00a0e3 !important;
     box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
      transition:.2s all;
-     
+     font-family:roboto;
 }
 .nav-tabs > li > a:hover{
    box-shadow: 2px 4px 17px rgba(221, 216, 216, 0.8);
@@ -859,6 +998,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .nav-tabs>li>a{
     border:none;
+    font-family:roboto;
 }
 .nav-tabs>li>a:hover{
     border:none;
@@ -928,7 +1068,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
 }
 .com-name{
     font-size:40px;
-    font-family:lobster;
+    font-family:lora;
     color:#fff;
     padding: 0 0 0 30px; 
 }
@@ -936,6 +1076,7 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     color:#fff;
     padding: 0 0 0 30px; 
     font-size:15px;
+    font-family:roboto;
 }
 .com-establish .detail-title{
     font-weight:bold;
@@ -1032,6 +1173,80 @@ a.twitter, .twitter:hover, a.linkedin, .linkedin:hover, a.web, .web:hover{
     position: absolute;
     background-color: #00000057;
 }
+.user-rating{
+    padding: 20px 0px;
+    flex-flow: row wrap;
+}
+.ur-bg {
+    padding: 10px 6px;
+    margin-bottom:10px;
+}
+.sub-review-box{
+    display: flex;
+    flex: 1 auto;
+    align-items: center;
+    justify-content: center;
+    background: #00a0e3;
+    border-radius: 6px;
+    padding: 10px 20px;
+    color: #fff;
+    margin-top:20px;
+    position:relative;
+}
+.reviewers {
+	text-align: left;
+	padding-left: 10px;
+	font-family: roboto;
+}
+.rs-main{
+    max-width: 200px;
+    padding: 10px 13px 15px 14px;
+    text-align: center;
+    color: #fff;
+    border-radius: 6px;
+    display: inline-block;
+    float: left;
+    width: 100%;
+}
+.com-rating-1{
+    margin-top:15px;
+}
+.sub-heading-review {
+	font-size: 17px;
+	font-weight: 500;
+	margin: 10px 0px;
+	font-family: roboto;
+}
+.btn-default{
+    background-color:#fff;
+    border-radius:4px;
+    padding: 12px 20px;
+    display: inline-block;
+    -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.12);
+    color: #00a0e3;
+}
+.btn-default:hover, .btn-default:focus{
+    background-color:#fff;
+    -webkit-box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.18);
+    box-shadow: 0 2px 48px 0 rgba(0, 0, 0, 0.18);
+    color: #00a0e3;
+}
+.rating-large{
+    font-size:60px;
+}
+.com-rating-1 i{ 
+    font-size:16px;
+    background:#fff;
+    color:#ccc;
+    padding:7px 5px;
+    border-radius:5px;
+    margin-bottom:5px;
+}
+.com-rating-1 i.active{
+    background:#fff;
+    color:#00a0e3;
+}   
 .more{
     display:none;
 }
@@ -1091,7 +1306,7 @@ $(document).on('mouseover', '.p-img-thumbnail', function(){
 });
 $(document).ready(function() {
     // Configure/customize these variables.
-    var showChar = 800;  // How many characters are shown by default
+    var showChar = 1500;  // How many characters are shown by default
     var ellipsestext = "...";
     var moretext = "Show more";
     var lesstext = "Show less";
@@ -1123,6 +1338,9 @@ $(document).ready(function() {
 });
 JS;
 $this->registerJs("
+return_message = true;
+jobs_parent = '#jobs-cards-main';
+internships_parent = '#internships-cards-main';
 getCards('Jobs','.blogbox','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 getCards('Internships','.internships_main','/organizations/organization-opportunities/?org=" . $organization['slug'] . "');
 ");

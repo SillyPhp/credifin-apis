@@ -72,9 +72,9 @@ switch ([$controller_id, $action_id]) {
                                 {{#experience}}
                                 <h5 class="salary"><i class="far fa-clock"></i>&nbsp;{{experience}}</h5>
                                 {{/experience}}
-                                {{^experience}}
-                                <h5 class="salary"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
-                                {{/experience}}
+                                {{#sector}}
+                                <h5 class="salary"><i class="fas fa-puzzle-piece"></i>: {{sector}}</h5>
+                                {{/sector}}
                             </div>
                             <div class="clear"></div>
                         </div>
@@ -113,6 +113,9 @@ function gitHubJobs() {
 let loader = false;
 let draggable = false;
 let review_list_draggable = false;
+let return_message = false;
+let jobs_parent;
+let internships_parent;
 let page = 0;
 function renderCards(cards, container){
     var card = $('#application-card').html();
@@ -174,6 +177,18 @@ function getCards(type = 'Jobs',container = '.blogbox', url = window.location.pa
                     }
                     $('#loadMore').hide();
                     load_more_cards = false;
+                } else {
+                    if(return_message === true){
+                        if(type === 'Jobs'){
+                            $(jobs_parent).addClass('hidden');
+                        } else {
+                            $(internships_parent).addClass('hidden');
+                        }
+                        if($(jobs_parent).hasClass('hidden') && $(internships_parent).hasClass('hidden')){
+                            $(jobs_parent).html('<h2 class="text-center">The company has not created any jobs or internships yet</h2>');
+                            $(jobs_parent).removeClass('hidden');
+                        }
+                    }
                 }
             }
         }
@@ -370,6 +385,7 @@ text-overflow: ellipsis;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
@@ -380,7 +396,7 @@ text-overflow: ellipsis;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -423,6 +439,7 @@ text-overflow: ellipsis;
     position:absolute !important;
     right: -4px !important;
     top: -3px !important;
+    max-width:255px;
 }
 .clear{
     clear:both;

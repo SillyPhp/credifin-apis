@@ -15,7 +15,7 @@ use yii\helpers\Url;
                             <div class="e-icon">
                                 <img src="<?= Url::to('@eyAssets/images/pages/employers/jobq.png') ?>" alt=""/>
                             </div>
-                            <div class="e-text" style="padding-top:10px;">campus Jobs</div>
+                            <div class="e-text">campus Jobs Recruitment</div>
                         </div>
                     </div>
                     <div class="col-md-2 col-sm-4 col-xs-6">
@@ -79,6 +79,7 @@ $this->registercss('
     font-size: 35px;
     font-family: lobster;
     color:#fff;
+    margin-top: 0px;
 }
 .e-parent {
     height: 125px;

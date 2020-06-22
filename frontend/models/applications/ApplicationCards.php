@@ -401,6 +401,10 @@ class ApplicationCards
                 ['like', 'i.name', $options['category']],
             ]);
         }
+        if (isset($options['slug'])) {
+            $cards1->andWhere(['d.slug'=>$options['slug']]);
+            $cards2->andWhere(['d.slug'=>$options['slug']]);
+        }
         if (isset($options['keyword'])) {
             $search = trim($options['keyword'], " ");
             $search_pattern = self::makeSQL_search_pattern($search);
@@ -515,7 +519,6 @@ class ApplicationCards
                 ->orderBy(['created_on' => SORT_DESC])
                 ->all();
         }
-
         $i = 0;
         foreach ($result as $val) {
             $result[$i]['last_date'] = date('d-m-Y', strtotime($val['last_date']));
@@ -727,6 +730,10 @@ class ApplicationCards
                 ['REGEXP', 'ct.name', $search_pattern_location],
                 ['REGEXP', 'ct.abbreviation', $search_pattern_location],
             ]);
+        }
+        if (isset($options['slug'])) {
+            $cards1->andWhere(['d.slug'=>$options['slug']]);
+            $cards2->andWhere(['d.slug'=>$options['slug']]);
         }
         if (isset($options['keyword'])) {
             $options['keyword'] = trim($options['keyword'], " ");

@@ -106,6 +106,7 @@ class ApplicationForm extends Model
     public $questionfields = [];
     public $benefit_selection;
     public $questionnaire_selection;
+    public $vacancy = null;
 
     public function formName()
     {
@@ -171,6 +172,7 @@ class ApplicationForm extends Model
                 'placement_locations',
                 'fill_quesio_on',
                 'fixed_wage', 'weekoptsat', 'custom_job_title', 'weekoptsund', 'title', 'type', 'interviewdate', 'interviewcity', 'description', 'ctc', 'interradio', 'quesradio'], 'required'],
+                [['vacancy'],'safe'],
         ];
     }
 
@@ -261,58 +263,6 @@ class ApplicationForm extends Model
                 $employerApplicationsModel->slug = $utilitiesModel->create_slug();
             }
         }
-
-//        $script_image_location = Yii::$app->getSecurity()->generateRandomString();
-//        $script_image = Yii::$app->getSecurity()->generateRandomString() . '.png';
-//        $base_path = Yii::$app->params->upload_directories->employer_applications->ai->image_path.$script_image_location;
-//        if (!is_dir($base_path)) {
-//            if (mkdir($base_path, 0755, true)) {
-//                if (!empty(Yii::$app->user->identity->organization->logo)) {
-//                    $res = $this->genrateImage(
-//                        $this->title,
-//                        Yii::$app->user->identity->organization->name,
-//                        Yii::$app->params->upload_directories->organizations->logo_path . Yii::$app->user->identity->organization->logo_location . DIRECTORY_SEPARATOR . Yii::$app->user->identity->organization->logo,
-//                        $base_path.DIRECTORY_SEPARATOR.$script_image,
-//                        Url::to('@rootDirectory/assets/common/images/image_script/share-orignal-image.png')
-//                    );
-//                }
-//                else
-//                {
-//                    $res =  $this->genrateImage(
-//                        $this->title,
-//                        Yii::$app->user->identity->organization->name,
-//                        '',
-//                        $base_path.DIRECTORY_SEPARATOR.$script_image,
-//                        Url::to('@rootDirectory/assets/common/images/image_script/share-orignal-image.png')
-//                    );
-//                }
-//            }
-//        }
-//
-//        return $res;
-//
-//        if ($res)
-//        {
-//          $employerApplicationsModel->image_location = $script_image_location;
-//          $employerApplicationsModel->image = $script_image;
-//        }
-//        else
-//        {
-//            $employerApplicationsModel->image_location = '0';
-//            $employerApplicationsModel->image = '0';
-//        }
-
-//        $image_information = $this->_createSharingImage($employerApplicationsModel->title, $type);
-//        if (!$image_information) {
-//            return false;
-//        } else {
-//            $employerApplicationsModel->image_location = $image_information['image_location'];
-//            $employerApplicationsModel->image = $image_information['image'];
-//        }
-
-//        $employerApplicationsModel->image_location = 1;
-//        $employerApplicationsModel->image = 1;
-
         if (!empty($this->designations)) {
             $chk_d = Designations::find()
                 ->select(['designation_enc_id', 'designation'])
@@ -434,14 +384,16 @@ class ApplicationForm extends Model
             $applicationoptionsModel->interview_end_date = $interview_end_date;
             $applicationoptionsModel->created_on = date('Y-m-d H:i:s');
             $applicationoptionsModel->created_by = Yii::$app->user->identity->user_enc_id;
-            if (!$applicationoptionsModel->save()) {
-                return false;
-            }
             if ($this->type == "Work From Home") {
+                $applicationoptionsModel->positions = (($this->vacancy) ? str_replace(',', '', $this->vacancy) : null);
                 $locations = [];
             } else {
                 $locations = json_decode($this->placement_loc);
             }
+            if (!$applicationoptionsModel->save()) {
+                return false;
+            }
+
             if (!empty($locations)) {
                 foreach ($locations as $array) {
                     $applicationPlacementLocationsModel = new ApplicationPlacementLocations();
@@ -1063,13 +1015,5 @@ class ApplicationForm extends Model
             'out'=>$output_array,
             'ret'=>$ret_code
         ];
-//        if ($ret_code)
-//        {
-//            return true;
-//        }
-//        else
-//        {
-//            return false;
-//        }
     }
 }

@@ -1,8 +1,6 @@
 <?php
 $this->params['header_dark'] = false;
-
 use yii\helpers\Url;
-
 ?>
     <section class="headerbg">
         <div class="bg-vector"></div>
@@ -13,14 +11,8 @@ use yii\helpers\Url;
                         <div class="pos-center">
                             <div class="main-text mt-50">Explore All Companies</div>
                             <div class="search-container">
-                                <form action="">
-                                    <div class="load-suggestions Typeahead-spinner city-spin"
-                                         style="display: none;">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                    <input id="company_search" type="text" placeholder="Search Companies" name="search">
+                                <form action="" id="form_search_cmp">
+                                    <input id="company_search" type="text" value="<?= ((Yii::$app->request->get('keyword'))?Yii::$app->request->get('keyword'):'') ?>" placeholder="Search Companies" name="keyword">
                                     <button id="search"><i class="fas fa-search"></i></button>
                                 </form>
                             </div>
@@ -30,36 +22,96 @@ use yii\helpers\Url;
             </div>
         </div>
     </section>
+
+    <div class="container">
+        <div class="row">
+            <?php echo $this->render('/widgets/sorting-filters')?>
+        </div>
+    </div>
+
     <section>
         <div class="container">
             <div class="row">
                 <div class="padd-top-20">
+                    <div id="loading_img">
+                        <img src="/assets/themes/ey/images/loader/91.gif">
+                    </div>
                     <div id="companies-card"></div>
+                    <div class="col-md-12">
+                        <div class="load-more-bttn">
+                            <button type="button" id="load_review_card_btn">Load More</button>
+                        </div>
+                    </div>
+                    <div class="empty">
+                        <div class="es-img">
+                            <img src="<?= Url::to('@eyAssets/images/pages/review/nofound.png') ?>">
+                        </div>
+                        <div class="es-text">
+                            Opps !! We Currently No Result Having For This Keyword
+                        </div>
+                    </div>
                 </div>
-                <!--            <div class="col-md-4">-->
-                <!--                <div class="com-box">-->
-                <!--                    <a href="">-->
-                <!--                        <div class="com-icon">-->
-                <!--                            <div class="icon"><img src="-->
-                <? //= Url::to('@commonAssets/logos/logo.svg') ?><!--"></div>-->
-                <!--                            <div class="follow">-->
-                <!--                                <button><i class="fa fa-heart-o"></i></button>-->
-                <!--                            </div>-->
-                <!--                            <div class="featured">Featured</div>-->
-                <!--                        </div>-->
-                <!--                        <div class="com-det">-->
-                <!--                            <div class="com-name">Empower Youth Foundation</div>-->
-                <!--                            <div class="com-cate">Information Technology</div>-->
-                <!--                        </div>-->
-                <!--                    </a>-->
-                <!--                </div>-->
-                <!--            </div>-->
             </div>
         </div>
     </section>
 <?php
-echo $this->render('/widgets/mustache/all-companies-card');
+echo $this->render('/widgets/mustache/companies-card');
 $this->registerCss('
+.load-more-bttn
+{
+display:none;
+text-align:center;
+}
+#load_review_card_btn
+{
+background-color: #228b22;
+    color: #fff;
+    font-size: 20px;
+    font-family: roboto;
+    padding: 5px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    border:none;
+}
+.empty{
+    text-align:center;
+    display:none;
+}
+.es-text{
+     font-family: roboto;
+    font-size: 20px;
+    padding-top: 20px;
+    font-weight:bold;
+}
+.es-text2{
+     font-family: roboto;
+}
+#loading_img
+{
+  display:none;
+}
+#loading_img img
+{
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width:100px;
+    height:100px
+}
+#loading_img.show
+{
+    display: block;
+    position: fixed;
+    z-index: 100;
+    opacity: 1;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    left: 10%;
+    right: 0;
+    top: 50%;
+}
 .sbar-head{
     text-align:center;
     font-size:20px;
@@ -322,66 +374,101 @@ form {
 ');
 
 $script = <<<JS
-function getCompanies() {
-    var keyword = $('#company_search').val();
+let page = 0;
+let total=0;
+function getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=true,is_clear=false,loader_btn=false) {
+        page += 1;
+        params['page'] = page;
         $.ajax({
             url:window.location.href,
             method:"POST",
-            data:{keyword:keyword},
-            success:function (response) {
+            data:{'params':params},
+            dataType:'JSON',
+            beforeSend:function()
+            {
+                $('.empty').css('display','none');
+                if (loader_btn)
+                    {
+                        $('#load_review_card_btn').html('<i class="fas fa-circle-notch fa-spin fa-fw"></i>');
+                        $('#load_review_card_btn').attr('disabled',true);
+                    }
+                 if (is_clear)
+                    { 
+                        template.html('');
+                    }
+                if (loader)
+                    {
+                 $('#loading_img').css('display','block');
+                    }
+            },
+            success:function (response) { 
+                 $('.load-more-bttn').show();
+                 $('#load_review_card_btn').html('Load More');
+                 $('#load_review_card_btn').removeAttr('disabled');
+                 $('#loading_img').css('display','none');
                 if(response.status == 200){
-                    var get_companies = $('#all-companies-card').html();
-                    $("#companies-card").html(Mustache.render(get_companies, response.organization));
-                    utilities.initials();
+                    total=total+response.cards.length;
+                    var get_companies = $('#companies-card-all').html();
+                    template.append(Mustache.render(get_companies, response.cards));
+                    $('[data-toggle="tooltip"]').tooltip();
+                    utilities.initials(); 
+                    $.fn.raty.defaults.path = '/assets/common/new_stars'; 
+                    $('.average-star').raty({
+                   readOnly: true, 
+                   hints:['','','','',''], 
+                  score: function() {
+                    return $(this).attr('data-score');
+                  }
+                });
+                    if (total==response.total){
+                        $('.load-more-bttn').hide();
+                    }
                 }
+                else
+                    {
+                    if(page === 1) {
+                        $('.empty').css('display','block');
+                    }
+                    $('.load-more-bttn').hide();
+                    }
             }
         })
-    }
-    
-    getCompanies();
-
-$(document).on('click','#search',function(e) {
+    } 
+var activities = [
+    'Recruiter',
+    'Business',
+    'Scholarship Fund',
+    'Banking & Finance Company',
+    'Others',
+    ];
+getCompanies();
+$(document).on('submit','#form_search_cmp',function(e)
+{
+    var k = $('input[name="search"]').val().trim().replace(/[^a-z0-9\s]/gi, '');
     e.preventDefault();
-  getCompanies();
-});
-
-$('#search').on('keyup',function(e) {
-  if(e.which == 13){
-      getCompanies();
-  }
-});
-
-var global = [];
-var org = new Bloodhound({
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('text'),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-  prefetch: '',
-  remote: {
-    url:'/organizations/companies?q=%QUERY',  
-    wildcard: '%QUERY',
-    filter: function(list) {
-            global = list;
-             return list;
+    if (k.length==0||k=='')
+        {
+         swal({
+             title:"",
+             text: "Please Enter Some Keyword To Search",
+         });
+            return false
         }
-  }
-});
-       
-$('#company_search').typeahead(null, {
-  name: 'company_search',
-  highlight: true,       
-  display: 'text',
-  source: org,
-   limit: 15,
-   hint:false,
-}).on('typeahead:asyncrequest', function() {
-    $('.city-spin').show();
-  }).on('typeahead:asynccancel typeahead:asyncreceive', function() {
-    $('.city-spin').hide();
-  }).on('typeahead:selected',function(e,datum) {
-    window.location.replace('/'+datum.slug);
-  });
+    window.location.assign('?keyword='+k);
+ });
 
+$(document).on('click','.filters li a',function(e) {
+  e.preventDefault();
+  window.location.assign('?sortBy='+$(this).data("id"));
+})
+$(document).on('click','#load_review_card_btn',function(e) {
+  e.preventDefault();
+  getCompanies(params={'business_activity':activities},template=$("#companies-card"),loader=false,is_clear=false,loader_btn=true); 
+})
 JS;
 $this->registerJs($script);
+$this->registerCssFile('@root/assets/vendor/raty-master/css/jquery.raty.css');
+$this->registerJsFile('@root/assets/vendor/raty-master/js/jquery.raty.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
+$this->registerCssFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.css');
+$this->registerJsFile('@backendAssets/global/plugins/bootstrap-sweetalert/sweetalert.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 $this->registerJsFile('https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
-$this->registerJsFile('@backendAssets/global/plugins/typeahead/typeahead.bundle.min.js', ['depends' => [\yii\web\JqueryAsset::className()]]);

@@ -38,9 +38,61 @@ class NewsController extends Controller
         return parent::beforeAction($action);
     }
 
+    public function actionGetNews()
+    {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $limit = Yii::$app->request->post('limit');
+            $offset = Yii::$app->request->post('offset');
+            $newsDetail = ExternalNewsUpdate::find()
+                ->alias('z')
+                ->select(['z.news_enc_id', 'z.title','z.link', 'z.downvote', 'z.upvote', 'z.created_on', 'z.slug', 'z.description', 'z.image', 'z.image_location', 'z.status', 'z.is_deleted'])
+                ->where(['z.is_deleted' => 0, 'z.status' => 1])
+                ->joinWith(['newsTags a'=> function($a){
+                    $a->select(['a.news_tag_enc_id','a.news_enc_id','a.assigned_tag_enc_id','c.name tag_name']);
+                    $a->andWhere(['a.is_deleted' => 0]);
+                    $a->joinWith(['assignedTagEnc b'=>function($b){
+                        $b->joinWith(['tagEnc c'=>function($c){
+                        }],false);
+                    }],false);
+                }])
+                ->asArray()
+                ->distinct()
+                ->orderBy(['z.created_on' => SORT_DESC]);
+            $totalNewsCount = $newsDetail->count();
+            $dataDetail = $newsDetail->limit($limit)
+                ->offset($offset)
+                ->all();
+            if ($dataDetail) {
+                array_walk($dataDetail, function (&$item) {
+                    $item['rand_upvote'] = rand(40,100) + $item['upvote'];
+                    $item['rand_downvote'] = rand(0,40) + $item['downvote'];
+                    $item['news_slug'] = Url::to('/news/' . $item['slug']);
+                    $item['news_time'] = date('d M Y', strtotime($item['created_on']));
+                    $item['news_title'] = Url::to('/news/' . $item['title']);
+                    $item['news_description'] = strip_tags($item['description']);
+                    $item['sharing_link'] = Url::base(true) . '/news/' . $item['slug'];
+                    $item['news_image'] = Url::to(Yii::$app->params->upload_directories->posts->featured_image . $item['image_location'] . '/' . $item['image']);
+                    unset($item['upvote']);
+                    unset($item['image']);
+                    unset($item['image_location']);
+                    unset($item['slug']);
+                    unset($item['description']);
+                    unset($item['created_on']);
+                    unset($item['link']);
+                });
+            }
+            return [
+                'status' => 200,
+                'cards' => $dataDetail,
+                'total' => $totalNewsCount,
+                'count' => sizeof($dataDetail)
+            ];
+        }
+    }
+
     public function actionIndex()
     {
-        $news = ExternalNewsUpdate::findAll(['is_deleted' => 0, 'status' => 1]); // status 1 as published
         if (Yii::$app->request->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             $id = Yii::$app->request->post('id');
@@ -74,9 +126,7 @@ class NewsController extends Controller
                 ];
             }
         }
-        return $this->render('index', [
-            'news' => $news
-        ]);
+        return $this->render('index');
     }
 
     public function actionDetail($slug)
@@ -96,6 +146,7 @@ class NewsController extends Controller
             ->andWhere(['not', ['in', 'z.slug', $slug]])
             ->andWhere(['z.is_deleted' => 0])
             ->groupBy('z.news_enc_id')
+            ->limit(5)
             ->all();
         $latestNews = ExternalNewsUpdate::find()
             ->where(['is_deleted' => 0, 'status' => 1])

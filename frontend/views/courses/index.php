@@ -1,8 +1,38 @@
 <?php
 $this->params['header_dark'] = false;
-
+$this->title = "Acquire And Find Best Courses From Top Institutes";
 use yii\helpers\Url;
 
+$keywords = "Best Courses from Top Institutes,  ";
+
+$description = "Learn anything , anytime , Acquire and find best courses from top institutes";
+
+$image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/fb-image.png');
+
+$this->params['seo_tags'] = [
+    'rel' => [
+        'canonical' => Yii::$app->request->getAbsoluteUrl(),
+    ],
+    'name' => [
+        'keywords' => $keywords,
+        'description' => $description,
+        'twitter:card' => 'summary_large_image',
+        'twitter:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'twitter:site' => '@EmpowerYouthin',
+        'twitter:creator' => '@EmpowerYouthin',
+        'twitter:image' => $image,
+    ],
+    'property' => [
+        'og:locale' => 'en',
+        'og:type' => 'website',
+        'og:site_name' => 'Empower Youth',
+        'og:url' => Yii::$app->request->getAbsoluteUrl(),
+        'og:title' => Yii::t('frontend', $this->title) . ' ' . Yii::$app->params->seo_settings->title_separator . ' ' . Yii::$app->params->site_name,
+        'og:description' => $description,
+        'og:image' => $image,
+        'fb:app_id' => '973766889447403'
+    ],
+];
 ?>
     <section style="background: #061540;">
         <div class="container headsec">
@@ -18,7 +48,7 @@ use yii\helpers\Url;
                 <div class="col-md-6 col-sm-6 col-xs-12 topp-pad">
                     <div class="main-heading-set">
                         <div class="min-heading">Learn anything, anytime, anywhere</div>
-                        <div class="jumbo-heading">Aquire and Find best courses from top institutes</div>
+                        <div class="jumbo-heading">Acquire and Find best courses from top institutes</div>
                         <div class="search-box1">
                             <form action="<?= Url::to('/courses/courses-list') ?>">
                                 <input type="text" placeholder="Search" name="keyword" id="get-courses-list">
@@ -34,7 +64,7 @@ use yii\helpers\Url;
     <section>
         <div class="container">
             <div class="row">
-                <div class="heading-style">Learning Hub Category</div>
+                <div class="heading-style">Courses By Category</div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -108,7 +138,7 @@ use yii\helpers\Url;
 <?php if (!empty($popular_videos)) { ?>
     <div class="container">
         <div class="row">
-            <div class="heading-style">Learning Videos</div>
+            <div class="heading-style">Free Learning Videos</div>
         </div>
     </div>
     <div>

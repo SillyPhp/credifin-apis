@@ -1149,9 +1149,9 @@ class InternshipsController extends Controller
                 ['a.application_for' => 0],
                 ['a.application_for' => 2]
             ],
-            'having' => [
-                '>=', 'a.last_date', date('Y-m-d')
-            ],
+//            'having' => [
+//                '>=', 'a.last_date', date('Y-m-d')
+//            ],
             'orderBy' => [
                 'a.published_on' => SORT_DESC,
             ],
@@ -1307,9 +1307,10 @@ class InternshipsController extends Controller
         if (!empty(Yii::$app->user->identity->organization)) {
             $application = \common\models\ApplicationTemplates::find()
                 ->alias('a')
-                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name'])
+                ->select(['a.application_enc_id', 'a.title', 'zz.name as cat_name','z1.icon_png'])
                 ->joinWith(['title0 z' => function ($z) {
                     $z->joinWith(['categoryEnc zz']);
+                    $z->joinWith(['parentEnc z1']);
                 }], false)
                 ->joinWith(['applicationTypeEnc f'], false)
                 ->where(['f.name' => "Internships"])

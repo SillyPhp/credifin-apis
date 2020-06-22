@@ -65,7 +65,7 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
-
+<?= $this->render('/widgets/safety-signs')?>
     <?php
         echo $this->render('/widgets/e-campus')
     ?>
@@ -163,6 +163,7 @@ if (Yii::$app->user->isGuest) {
             </div>
         </div>
     </section>
+
     <section class="fixed-bttn">
         <div class="container">
             <div class="row">

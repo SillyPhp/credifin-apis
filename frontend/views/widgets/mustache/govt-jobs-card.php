@@ -40,10 +40,10 @@
                             <h5 class="last_date"><i class="far fa-calendar-alt"></i> Last_date: {{Last_date}}</h5>
                             {{/Last_date}}
                             {{#Eligibility}}
-                            <h5><i class="fas fa-graduation-cap"></i>: {{Eligibility}}</h5>
+                            <h5 class="stdy"><i class="fas fa-graduation-cap"></i>: {{Eligibility}}</h5>
                             {{/Eligibility}}
                             {{^Eligibility}}
-                            <h5><i class="fas fa-graduation-cap"></i>: View In Details</h5>
+                            <h5 class="stdy"><i class="fas fa-graduation-cap"></i>: View In Details</h5>
                             {{/Eligibility}}
                         </div>
                         <div class="clear"></div>
@@ -151,6 +151,10 @@ color:#3d80d4;
 .last_date
 {
 font-weight:normal !important;
+padding-left:15px;
+}
+.stdy{
+    padding-left:15px;
 }
 .application-card-description h5{
     margin-top:0px !important;
@@ -172,6 +176,7 @@ font-weight:normal !important;
     border-radius: 10px;
     position:relative;
     background:#fff;
+    height:170px;
 }
 .img{
     max-width: 66px;
@@ -182,7 +187,7 @@ font-weight:normal !important;
 }
 .comps-name-1{
     padding-left: 15px;
-    padding-top: 15px;
+    padding-top: 20px;
 }
 .org_name{display:block;}
 .skill a{
@@ -225,6 +230,7 @@ font-weight:normal !important;
     position:absolute !important;
     right: -4px !important;
     top: -3px !important;
+    max-width:265px;
 }
 .clear{
     clear:both;

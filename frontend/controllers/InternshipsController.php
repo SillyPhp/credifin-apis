@@ -7,6 +7,7 @@ use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTemplates;
 use common\models\ApplicationTypes;
 use common\models\Cities;
+use common\models\LearningVideos;
 use common\models\OrganizationLocations;
 use common\models\States;
 use Yii;
@@ -14,6 +15,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\helpers\Url;
+use yii\db\Expression;
 use common\models\EmployerApplications;
 use common\models\Categories;
 use common\models\Industries;
@@ -273,6 +275,9 @@ class InternshipsController extends Controller
                 $parameters['keyword'] = str_replace("-"," ",Yii::$app->request->get('keyword'));
                 $parameters['location'] =str_replace("-"," ",Yii::$app->request->get('location'));
             }
+            if (Yii::$app->request->get('slug')) {
+                $parameters['slug'] = Yii::$app->request->get('slug');
+            }
             if ($parameters['page'] && (int)$parameters['page'] >= 1) {
                 $options['page'] = $parameters['page'];
             } else {
@@ -296,7 +301,9 @@ class InternshipsController extends Controller
             if ($parameters['company'] && !empty($parameters['company'])) {
                 $options['company'] = $parameters['company'];
             }
-
+            if ($parameters['slug'] && !empty($parameters['slug'])) {
+                $options['slug'] = $parameters['slug'];
+            }
             $cards = ApplicationCards::internships($options);
             if (count($cards) > 0) {
                 $response = [
@@ -365,6 +372,52 @@ class InternshipsController extends Controller
         }
         if (!empty($application_details)) {
             $model = new \frontend\models\applications\JobApplied();
+            $desi_name = $application_details->designationEnc->designation;
+            $pro_name = $application_details->title0->parentEnc->name;
+            $cat_name = $application_details->title0->categoryEnc->name;
+            $related_videos = LearningVideos::find()
+                ->alias('z')
+                ->where(['z.is_deleted' => 0,
+                    'z.status' => 1])
+                ->orderBy(new Expression('rand()'))
+                ->limit(6);
+
+            $popular_videos =  $related_videos
+                ->joinWith(['assignedCategoryEnc a'=>function($a){
+                    $a->joinWith(['parentEnc a1'],false);
+                    $a->joinWith(['categoryEnc a2'],false);
+                    $a->joinWith(['employerApplications b' => function($b){
+                        $b->joinWith(['designationEnc c'],false);
+                    }],false);
+                }],false)
+                ->andFilterWhere(['or',
+                    ['like','c.designation',$desi_name],
+                    ['like','a1.name',$pro_name],
+                    ['like','a2.name',$cat_name],
+                ])
+                ->asArray()->all();
+            if(count($popular_videos) < 6) {
+                $limit = 6 - count($popular_videos);
+                $xyz = LearningVideos::find()
+                    ->alias('z')
+                    ->where(['z.is_deleted' => 0,
+                        'z.status' => 1])
+                    ->orderBy(new Expression('rand()'))
+                    ->limit($limit);
+                $xz = $xyz->asArray()->all();
+                $popular_videos = array_merge($popular_videos, $xz);
+            }
+            if (empty($popular_videos) )
+            {
+                $xyz = LearningVideos::find()
+                    ->alias('z')
+                    ->where(['z.is_deleted' => 0,
+                        'z.status' => 1])
+                    ->orderBy(new Expression('rand()'))
+                    ->limit(6);
+                $popular_videos = $xyz->asArray()->all();
+            }
+
             return $this->render('/employer-applications/detail', [
                 'application_details' => $application_details,
                 'data1' => $data1,
@@ -376,6 +429,8 @@ class InternshipsController extends Controller
                 'resume' => $resumes,
                 'que' => $app_que,
                 'shortlist' => $shortlist,
+                'popular_videos' => $popular_videos,
+                'cat_name' => $cat_name,
             ]);
         } else {
             return 'Not Found';
@@ -827,7 +882,7 @@ class InternshipsController extends Controller
     public function actionProfiles()
     {
         $activeProfiles = AssignedCategories::find()
-            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(d.id) as total'])
+            ->select(['b.name', 'b.slug', 'CONCAT("' . Url::to('@commonAssets/categories/svg/', 'https') . '", b.icon) icon', 'COUNT(CASE WHEN d.application_enc_id IS NOT NULL AND d.is_deleted = 0 Then 1 END) as total'])
             ->alias('a')
             ->distinct()
             ->innerJoinWith(['parentEnc b' => function ($b) {

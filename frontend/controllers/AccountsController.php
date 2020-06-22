@@ -87,6 +87,10 @@ class AccountsController extends Controller
             if ($loginFormModel->isMaster) {
                 Yii::$app->session->set('userSessionTimeout', time() + Yii::$app->params->session->timeout);
             }
+            if (Yii::$app->user->identity->organization)
+            {
+                Yii::$app->session->set("backURL", '/account/dashboard');
+            }
             return $this->redirect(Yii::$app->session->get("backURL"));
         }
 

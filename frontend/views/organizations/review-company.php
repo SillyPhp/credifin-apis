@@ -8,7 +8,7 @@ Yii::$app->view->registerJs('var slug = "'. $slug.'"',  \yii\web\View::POS_HEAD)
 $overall_avg = array_sum($stats)/count($stats);
 $round_avg = round($overall_avg);
 $link = Url::to($slug . '/reviews', true);
-$logo_image = Yii::$app->params->upload_directories->organizations->logo . $org_details['logo_location'] . DIRECTORY_SEPARATOR . $org_details['logo'];
+$logo_image = $org_details['logo'];
 $keywords = 'Jobs,Jobs in Ludhiana,Jobs in Jalandhar,Jobs in Chandigarh,Government Jobs,IT Jobs,Part Time Jobs,Top 10 Websites for jobs,Top lists of job sites,Jobs services in india,top 50 job portals in india,jobs in india for freshers';
 $description = 'Empower Youth is a career development platform where you can find your dream job and give wings to your career.';
 $image = Yii::$app->urlManager->createAbsoluteUrl('/assets/common/images/review_share.png');
@@ -69,8 +69,9 @@ $this->params['seo_tags'] = [
                     <button id="sb">Share</button>
                         <ul class="sd-btns share-hidden">
                            <li><a href="#" onclick="window.open('<?= Url::to('https://www.facebook.com/sharer/sharer.php?u=' . $link . ''); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-facebook-f"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?url='.$link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
-                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://twitter.com/intent/tweet?text='.$this->title.'&url=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-twitter"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://www.linkedin.com/shareArticle?mini=true&url=' . $link.'&title='.$this->title.'&summary='.$this->title.'&source='.Url::base(true)); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-linkedin-in"></i></a> </li>
+                           <li><a href="#" onclick="window.open('<?= Url::to('https://api.whatsapp.com/send?text=' . $link); ?>', '_blank', 'width=800,height=400,left=200,top=100');"><i class="fab fa-whatsapp marg"></i></a> </li>
                         </ul>
                 </div>
             </div>
@@ -243,7 +244,9 @@ $this->params['seo_tags'] = [
                         </div>
                     </div>
                 </div>
+                <div class="review-summary mt-40">
                 <?= $this->render("/widgets/square_ads");?>
+                </div>
             </div>
         </div>
     </div>
@@ -489,12 +492,10 @@ $this->params['seo_tags'] = [
 if ($review_type=='claimed')
 {
     echo $this->render('/widgets/mustache/organization-reviews',[
-        'org_slug'=>$slug
     ]);
 }else
 {
     echo $this->render('/widgets/mustache/organization-unclaimed-reviews',[
-        'org_slug'=>$slug
     ]);
 }
 
@@ -649,14 +650,14 @@ border: 2px solid #cadfe8 !important;
 .logo-box{
     height: 150px;
     width: 150px;
-    padding: 0 10px;
     background: #fff;
     text-align: center;
     overflow: hidden;
     position: relative;
 }
 .logo-box canvas{
-    border-radius:6px;
+    width:100%;
+    height:100%;
 }
 .logo-box img{
     width: 100%;
