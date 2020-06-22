@@ -79,40 +79,40 @@ $this->params['seo_tags'] = [
         <div class="container" id="popular-category"></div>
     </section>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="heading-style">Top Course Provider</div>
-            </div>
-            <div class="row">
-                <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="p-parent">
-                        <div class="p-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/courses/udemy.png'); ?>" align="right"
-                                 class="responsive"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="p-parent">
-                        <div class="p-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/courses/coursera-vector-logo.png'); ?>"
-                                 align="right"
-                                 class="responsive"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="p-parent">
-                        <div class="p-logo">
-                            <img src="<?= Url::to('@eyAssets/images/pages/courses/Udacity_logo.png'); ?>" align="right"
-                                 class="responsive"/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!--    <section>-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="heading-style">Top Course Provider</div>-->
+<!--            </div>-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/udemy.png'); ?><!--" align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/coursera-vector-logo.png'); ?><!--"-->
+<!--                                 align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-2 col-sm-3 col-xs-6">-->
+<!--                    <div class="p-parent">-->
+<!--                        <div class="p-logo">-->
+<!--                            <img src="--><?//= Url::to('@eyAssets/images/pages/courses/Udacity_logo.png'); ?><!--" align="right"-->
+<!--                                 class="responsive"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </section>-->
 
     <section>
         <div class="container">
