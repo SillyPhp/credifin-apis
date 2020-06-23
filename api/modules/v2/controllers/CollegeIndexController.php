@@ -291,10 +291,8 @@ class CollegeIndexController extends ApiBaseController
                 $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                 $f->joinWith(['locationEnc ff' => function ($z) {
                     $z->joinWith(['cityEnc g']);
-                    $z->groupBy(['ff.city_enc_id']);
                 }], false);
                 $f->onCondition(['f.is_deleted' => 0]);
-                $f->groupBy(['f.placement_location_enc_id']);
             }], true)
             ->joinWith(['applicationTypeEnc z'])
             ->where([
@@ -533,7 +531,8 @@ class CollegeIndexController extends ApiBaseController
                     'ee.name title',
                     'dd.designation',
                     'z.name job_type',
-                    'b.is_deleted'
+                    'b.is_deleted',
+                    'm.positions'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition([
@@ -567,10 +566,8 @@ class CollegeIndexController extends ApiBaseController
                     $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                     $f->joinWith(['locationEnc ff' => function ($z) {
                         $z->joinWith(['cityEnc g']);
-                        $z->groupBy(['ff.city_enc_id']);
                     }], false);
                     $f->onCondition(['f.is_deleted' => 0]);
-                    $f->groupBy(['f.placement_location_enc_id']);
                 }], true)
                 ->joinWith(['applicationTypeEnc z'])
                 ->where([
@@ -610,7 +607,11 @@ class CollegeIndexController extends ApiBaseController
                     }
                 }
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
-                $data['positions'] = $positions;
+                if($positions) {
+                    $data['positions'] = $positions;
+                }else{
+                    $data['positions'] = $j['positions'];
+                }
                 array_push($result, $data);
             }
 
