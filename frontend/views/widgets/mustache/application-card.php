@@ -19,7 +19,7 @@ switch ([$controller_id, $action_id]) {
                 <div class="app-box">
                     <div class="row">
                         <div class="application-card-img">
-                            <a href="{{organization_link}}" title="{{organization_name}}">
+                            <a href="{{organization_link}}" target="_blank" title="{{organization_name}}">
                                 {{#logo}}
                                 <img src="{{logo}}" alt="{{organization_name}}" title="{{organization_name}}">
                                 {{/logo}}
@@ -35,7 +35,7 @@ switch ([$controller_id, $action_id]) {
                                     {{title}}
                                 </a>
                             </span>
-                            <a href="{{link}}" title="{{organization_name}}" style="text-decoration:none;">
+                            <a href="{{link}}" target="_blank" title="{{organization_name}}" style="text-decoration:none;">
                                 <h4 class="org_name comp-name org_name">{{{organization_name}}}</h4>
                             </a>
                         </div>
@@ -80,7 +80,7 @@ switch ([$controller_id, $action_id]) {
                         </div>
                     </div>
                     <div class="application-card-wrapper">
-                        <a href="{{link}}" class="application-card-open" title="View Detail">View Detail</a>
+                        <a href="{{link}}" class="application-card-open" target="_blank" title="View Detail">View Detail</a>
                         <a href="#" class="<?= $btn_id ?>" title="Add to Review List">&nbsp;<i class="fas fa-plus"></i>&nbsp;</a>
                     </div>
                 </div>

@@ -2,7 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\models\ApplicationPlacementCities;
+use common\models\ApplicationTypes;
+use common\models\ApplicationUnclaimOptions;
 use common\models\BusinessActivities;
+use common\models\EmployerApplications;
 use frontend\models\referral\ReferralReviewsTracking;
 use common\models\AssignedCategories;
 use common\models\Categories;
@@ -122,7 +126,6 @@ class OrganizationsController extends Controller
         }
 
     }
-
     public function actionProfile($slug)
     {
         $organization = Organizations::find()
