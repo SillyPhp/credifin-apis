@@ -21,4 +21,7 @@ class EducationLoansController extends Controller
     public function actionEducationLoanView(){
         return $this->render('education-loan-view');
     }
+    public function actionLoanViewCollege(){
+        return $this->render('loan-view-college');
+    }
 }
