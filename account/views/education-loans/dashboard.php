@@ -90,8 +90,6 @@ use yii\helpers\Url;
             </div>
             <div class="actions">
                 <div class="btn-group dashboard-button">
-                    <button title="" class="viewall-jobs" onclick="countryHide()">India</button>
-                    <button title="" class="viewall-jobs" onclick="countryShow()">Other Country</button>
                 </div>
             </div>
             <div class="row">
@@ -143,18 +141,17 @@ use yii\helpers\Url;
                                             <th class="loanAction">Move To Next Phase</th>
                                             <th class="moveToNext">Current Phase</th>
                                             <th class="applicantName">Applicant Name</th>
-                                            <th class="dobwidth">DOB</th>
-                                            <th class="country">Country</th>
-                                            <th class="city">City</th>
+                                            <th class="loanAmount">Loan Amount</th>
                                             <th class="degree">Degree</th>
                                             <th class="courseName">Course Name</th>
                                             <th class="collegeName">College/University Name</th>
-                                            <th class="startDate">Start Date</th>
-                                            <th class="endDate">End Date</th>
+                                            <th class="startDate">Semester</th>
+                                            <th class="endDate">Year</th>
                                             <th class="phoneNumber">Phone Number</th>
                                             <th class="applicantEmail">Email Address</th>
+                                            <th class="city">City</th>
                                             <th class="applicantGender">Gender</th>
-                                            <th class="loanAmount">Loan Amount</th>
+                                            <th class="dobwidth">DOB</th>
                                             <th class="coApplicantWidth">Co-Applicant</th>
                                             <th class="coName">Co-Applicant's Name</th>
                                             <th class="coEmployment">Co-Applicant's employment type</th>
@@ -191,18 +188,17 @@ use yii\helpers\Url;
                                                 <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
-                                            <td>28-Sept-1993</td>
-                                            <td class="country">India</td>
-                                            <td>Ludhiana</td>
+                                            <td>5,00,000</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>28-sept-2020</td>
-                                            <td>28-sept-2022</td>
+                                            <td>6</td>
+                                            <td>3</td>
                                             <td>+91 7837394374</td>
                                             <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
                                             <td>Male</td>
-                                            <td>5,00,000</td>
+                                            <td>28-Sept-1993</td>
                                             <td>Father</td>
                                             <td>Ashiwini Kumar Vasisht</td>
                                             <td>Salaried</td>
@@ -237,157 +233,108 @@ use yii\helpers\Url;
                                                 <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
-                                            <td>28-Sept-1993</td>
-                                            <td class="country">India</td>
-                                            <td>Ludhiana</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>28-sept-2020</td>
-                                            <td>28-sept-2022</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Male</td>
                                             <td>5,00,000</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
-                                                    </div>
-                                                </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
-                                                <span class="currentState">Accepted</span>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>28-Sept-1993</td>
-                                            <td class="country">India</td>
-                                            <td>Ludhiana</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>28-sept-2020</td>
-                                            <td>28-sept-2022</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Male</td>
-                                            <td>5,00,000</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
-                                                    </div>
-                                                </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
-                                                <span class="currentState">Accepted</span>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>28-Sept-1993</td>
-                                            <td class="country">India</td>
-                                            <td>Ludhiana</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>28-sept-2020</td>
-                                            <td>28-sept-2022</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Male</td>
-                                            <td>5,00,000</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
-                                                    </div>
-                                                </div>
-                                                <button class="nextState">Pre Verification</button>
 
+                                            <td>Professional Course</td>
+                                            <td>Charted Accountant</td>
+                                            <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>2</td>
+                                            <td>1</td>
+                                            <td>+91 7837394374</td>
+                                            <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
+                                            <td>Male</td>
+                                            <td>28-Sept-1993</td>
+                                            <td>Father</td>
+                                            <td>Ashiwini Kumar Vasisht</td>
+                                            <td>Salaried</td>
+                                            <td>13,00,000</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                        </tr>
+                                        <tr>
+                                            <td>22 Aug 2020</td>
+                                            <td class="actionColoum">
+                                                <div class="dropdown">
+                                                    <button onclick="actionStats(this)" class="dropbtn"><i
+                                                                class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-content myDropdown">
+                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                    </div>
+                                                </div>
+                                                <button class="nextState">Pre Verification</button>
                                             </td>
                                             <td>
                                                 <span class="currentState">Accepted</span>
                                             </td>
                                             <td>Shshank Vasisht</td>
-                                            <td>28-Sept-1993</td>
-                                            <td class="country">India</td>
-                                            <td>Ludhiana</td>
+                                            <td>5,00,000</td>
                                             <td>Professional Course</td>
                                             <td>Charted Accountant</td>
                                             <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>28-sept-2020</td>
-                                            <td>28-sept-2022</td>
+                                            <td>4</td>
+                                            <td>2</td>
                                             <td>+91 7837394374</td>
                                             <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
                                             <td>Male</td>
+                                            <td>28-Sept-1993</td>
+                                            <td>Father</td>
+                                            <td>Ashiwini Kumar Vasisht</td>
+                                            <td>Salaried</td>
+                                            <td>13,00,000</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                            <td> -</td>
+                                        </tr>
+                                        <tr>
+                                            <td>22 Aug 2020</td>
+                                            <td class="actionColoum">
+                                                <div class="dropdown">
+                                                    <button onclick="actionStats(this)" class="dropbtn"><i
+                                                                class="fa fa-ellipsis-v"></i></button>
+                                                    <div class="dropdown-content myDropdown">
+                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
+                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
+                                                        <button class="actionBtn ab-last-btn">Reject</button>
+                                                    </div>
+                                                </div>
+                                                <button class="nextState">Pre Verification</button>
+                                            </td>
+                                            <td>
+                                                <span class="currentState">Accepted</span>
+                                            </td>
+                                            <td>Shshank Vasisht</td>
                                             <td>5,00,000</td>
+                                            <td>Professional Course</td>
+                                            <td>Charted Accountant</td>
+                                            <td>Guru Nanak Institute of Management And Technology</td>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>+91 7837394374</td>
+                                            <td>vasishtshshank@gmail.com</td>
+                                            <td>Ludhiana</td>
+                                            <td>Male</td>
+                                            <td>28-Sept-1993</td>
                                             <td>Father</td>
                                             <td>Ashiwini Kumar Vasisht</td>
                                             <td>Salaried</td>
