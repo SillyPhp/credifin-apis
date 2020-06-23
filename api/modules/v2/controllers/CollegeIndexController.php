@@ -243,6 +243,18 @@ class CollegeIndexController extends ApiBaseController
 
     public function pendingJobsCount($type, $college_id)
     {
+
+        $rejected_companies = ErexxCollaborators::find()
+            ->select(['organization_enc_id'])
+            ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+            ->asArray()
+            ->all();
+
+        $ids = [];
+        foreach ($rejected_companies as $r) {
+            array_push($ids, $r['organization_enc_id']);
+        }
+
         $count = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -279,10 +291,8 @@ class CollegeIndexController extends ApiBaseController
                 $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                 $f->joinWith(['locationEnc ff' => function ($z) {
                     $z->joinWith(['cityEnc g']);
-                    $z->groupBy(['ff.city_enc_id']);
                 }], false);
                 $f->onCondition(['f.is_deleted' => 0]);
-                $f->groupBy(['f.placement_location_enc_id']);
             }], true)
             ->joinWith(['applicationTypeEnc z'])
             ->where([
@@ -296,6 +306,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.application_for' => [0, 2],
                 'a.for_all_colleges' => 1,
             ])
+            ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
             ->asArray()
             ->all();
 
@@ -520,7 +531,8 @@ class CollegeIndexController extends ApiBaseController
                     'ee.name title',
                     'dd.designation',
                     'z.name job_type',
-                    'b.is_deleted'
+                    'b.is_deleted',
+                    'm.positions'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition([
@@ -554,10 +566,8 @@ class CollegeIndexController extends ApiBaseController
                     $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                     $f->joinWith(['locationEnc ff' => function ($z) {
                         $z->joinWith(['cityEnc g']);
-                        $z->groupBy(['ff.city_enc_id']);
                     }], false);
                     $f->onCondition(['f.is_deleted' => 0]);
-                    $f->groupBy(['f.placement_location_enc_id']);
                 }], true)
                 ->joinWith(['applicationTypeEnc z'])
                 ->where([
@@ -569,7 +579,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                 ])
-//                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
+                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
                 ->asArray()
                 ->all();
 
@@ -597,7 +607,11 @@ class CollegeIndexController extends ApiBaseController
                     }
                 }
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
-                $data['positions'] = $positions;
+                if($positions) {
+                    $data['positions'] = $positions;
+                }else{
+                    $data['positions'] = $j['positions'];
+                }
                 array_push($result, $data);
             }
 

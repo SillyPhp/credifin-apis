@@ -78,6 +78,8 @@ class IndividualSignup extends Model
             $user = new Candidates();
             $username = new Usernames();
             $user_other_details = new UserOtherDetails();
+            $utilitiesModel = new \common\models\Utilities();
+            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
 
             $username->username = $this->username;
             $username->assigned_to = 1;
@@ -91,7 +93,7 @@ class IndividualSignup extends Model
             $user->last_name = $this->last_name;
             $user->phone = preg_replace("/\s+/", "", $this->phone);
             $user->email = $this->email;
-            $user->user_enc_id = time() . mt_rand(10, 99);
+            $user->user_enc_id = $utilitiesModel->encrypt();
             $user->user_type_enc_id = UserTypes::findOne(['user_type' => 'Individual'])->user_type_enc_id;
             $user->initials_color = RandomColors::one();
             $user->created_on = date('Y-m-d H:i:s', strtotime('now'));
@@ -101,11 +103,12 @@ class IndividualSignup extends Model
             if (!$user->save()) {
                 $transaction->rollback();
                 return false;
-            } else {
-                if (!$this->newToken($user->user_enc_id, $this->source)) {
-                    return false;
-                }
             }
+//            else {
+//                if (!$this->newToken($user->user_enc_id, $this->source)) {
+//                    return false;
+//                }
+//            }
 
             $utilitiesModel = new \common\models\Utilities();
             $utilitiesModel->variables['string'] = time() . rand(100, 100000);
@@ -219,7 +222,9 @@ class IndividualSignup extends Model
     {
         $token = new UserAccessTokens();
         $time_now = date('Y-m-d H:i:s', time('now'));
-        $token->access_token_enc_id = time() . mt_rand(10, 99);
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
+        $token->access_token_enc_id = $utilitiesModel->encrypt();
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
