@@ -444,7 +444,7 @@ var activities = [
 getCompanies();
 $(document).on('submit','#form_search_cmp',function(e)
 {
-    var k = $('input[name="search"]').val().trim().replace(/[^a-z0-9\s]/gi, '');
+    var k = $('input[name="keyword"]').val().trim().replace(/[^a-z0-9\s]/gi, '');
     e.preventDefault();
     if (k.length==0||k=='')
         {

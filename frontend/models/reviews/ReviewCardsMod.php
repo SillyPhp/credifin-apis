@@ -2,6 +2,7 @@
 
 namespace frontend\models\reviews;
 
+use common\models\ApplicationOptions;
 use common\models\ApplicationPlacementCities;
 use common\models\ApplicationPlacementLocations;
 use common\models\ApplicationTypes;
@@ -36,10 +37,11 @@ class ReviewCardsMod
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'a.slug profile_link','CONCAT(a.slug, "/reviews") review_link',
                 'ROUND((skill_development+work+work_life+compensation+organization_culture+job_security+growth)/7) rating',
-                'SUM(e.positions) total_vaccency'])
+                '(SUM(IFNULL(e.positions, 0))+IFNULL(ab.positions, 0)) as total_vaccency'])
             ->distinct()
             ->from(Organizations::tableName() . 'as a')
-            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id')
+            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.organization_enc_id = a.organization_enc_id AND b.is_deleted = 0')
+            ->leftJoin(ApplicationOptions::tableName() . 'as ab', 'ab.application_enc_id = b.application_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as h', 'h.application_type_enc_id = b.application_type_enc_id')
             ->leftJoin(ApplicationPlacementLocations::tableName() . 'as e', 'e.application_enc_id = b.application_enc_id AND e.is_deleted = 0')
             ->leftJoin(OrganizationLocations::tableName() . 'as f', 'f.location_enc_id = e.location_enc_id')
@@ -49,7 +51,7 @@ class ReviewCardsMod
             ->leftJoin(BusinessActivities::tableName() . 'as y', 'y.business_activity_enc_id = a.business_activity_enc_id')
             ->leftJoin(OrganizationReviews::tableName() . 'as z', 'z.organization_enc_id = a.organization_enc_id')
             ->where(['a.is_deleted' => 0])
-            ->andWhere(['a.status' => 'Active','b.is_deleted'=>0])
+            ->andWhere(['a.status' => 'Active'])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
 
@@ -61,12 +63,12 @@ class ReviewCardsMod
         }
         if (isset($options['keyword'])) {
             $search = trim($options['keyword']);
-            $search_pattern = self::makeSQL_search_pattern($search);
             $q1->andWhere([
                 'or',
-                ['REGEXP', 'a.name', $search_pattern],
-                ['REGEXP', 'g.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
+                ['like','a.name',$search],
+                ['like','x.name',$search],
+                ['like','g.name',$search],
+                ['like','a.slug',$search],
             ]);
         }
         if (isset($options['city'])) {
@@ -95,10 +97,10 @@ class ReviewCardsMod
                 'CASE WHEN a.logo IS NOT NULL THEN  CONCAT("' . Url::to(Yii::$app->params->upload_directories->unclaimed_organizations->logo) . '",a.logo_location, "/", a.logo) END logo',
                 'y.business_activity','COUNT(distinct z.review_enc_id) total_reviews',
                 'CONCAT(a.slug, "/reviews") profile_link','CONCAT(a.slug, "/reviews") review_link',
-                'ROUND(average_rating) rating','u.positions total_vaccency'])
-            ->distinct()
+                'ROUND(average_rating) rating','IFNULL(u.positions, 0) total_vaccency'])
+            ->distinct() 
             ->from(UnclaimedOrganizations::tableName() . 'as a')
-            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.unclaimed_organization_enc_id = a.organization_enc_id')
+            ->leftJoin(EmployerApplications::tableName() . 'as b', 'b.unclaimed_organization_enc_id = a.organization_enc_id AND b.is_deleted = 0')
             ->leftJoin(ApplicationUnclaimOptions::tableName() . 'as u', 'u.application_enc_id = b.application_enc_id')
             ->leftJoin(ApplicationTypes::tableName() . 'as h', 'h.application_type_enc_id = b.application_type_enc_id')
             ->leftJoin(ApplicationPlacementCities::tableName() . 'as t', 't.application_enc_id = b.application_enc_id AND t.is_deleted = 0')
@@ -106,7 +108,6 @@ class ReviewCardsMod
             ->leftJoin(BusinessActivities::tableName() . 'as y', 'y.business_activity_enc_id = a.organization_type_enc_id')
             ->leftJoin(NewOrganizationReviews::tableName() . 'as z', 'z.organization_enc_id = a.organization_enc_id')
             ->where(['a.is_deleted' => 0])
-            ->andWhere(['b.is_deleted'=>0])
             ->groupBy(['a.organization_enc_id'])
             ->orderBy(['a.created_on' => SORT_DESC]);
         if (isset($options['business_activity'])) {
@@ -117,11 +118,11 @@ class ReviewCardsMod
         }
         if (isset($options['keyword'])) {
             $search = trim($options['keyword']);
-            $search_pattern = self::makeSQL_search_pattern($search);
             $q2->andWhere([
                 'or',
-                ['REGEXP', 'a.name', $search_pattern],
-                ['REGEXP', 'x.name', $search_pattern],
+                ['like','a.name',$search],
+                ['like','x.name',$search],
+                ['like','a.slug',$search],
             ]);
         }
         if (isset($options['most_reviewed'])) {
