@@ -41,7 +41,7 @@ use yii\helpers\Url;
                         <div class="tab-content">
                             <div class="tab-pane active" id="earningOne">
                                 <h3>How Earning Works</h3>
-                                <p>Emower Youth Class model is based on subscription model. Here students will get a free trial period of 15 DAYS  after which they have to subscribe to EY classes membership and pay a monthly or annual membership fee. During the free trial the students will be allowed to view the video once but after paying the membership fee they can watch the video for multiple times for the period they have paid the fees.</p>
+                                <p>Empower Youth Class model is based on subscription model. Here students will get a free trial period of 15 DAYS  after which they have to subscribe to EY classes membership and pay a monthly or annual membership fee. During the free trial the students will be allowed to view the video once but after paying the membership fee they can watch the video for multiple times for the period they have paid the fees.</p>
                                 <p>We compensate teachers for actual time the student plays their video like if the video is of 10 minutes and students plays it at 2x speed then the compensation is made for 5 minutes. Also if student views the same video multiple times it will be counted as single view on the basis of which compensation will be made</p>
                             </div>
                             <div class="tab-pane" id="earningTwo">
@@ -103,7 +103,7 @@ use yii\helpers\Url;
                                 <p>All classes on Empower Youth are target based and these targets are accomplished by students via fun projects which help in their overall growth and development. Creating and sharing projects, and giving and receiving feedback, are the heart and soul of engaged learning. For teachers, seeing their students work
                                     and for students receiving teacher’s and peer’s feedback is an important aspect of Empower Youth classes.</p>
                                 <h4>Personal, Honest, and Human </h4>
-                                <p>Empower Youth being the world’s first integrated career platform is different from other online platforms. Here,open, personal, real connection makes everyone feel included and welcome, and makes sharing feel safe. We work hard to cultivate trust in our community and so we expect the same from all of our teachers. It is reflected in everything task we do: from our class guidelines to our brand identity. And so it should also be reflected in everything you do, too: from the classes you make to the way you communicate with your students.</p>
+                                <p>Empower Youth being the world’s first integrated career platform is different from other online platforms. Here,open, personal, real connection makes everyone feel included and welcome, and makes sharing feel safe. We work hard to cultivate trust in our community and so we expect the same from all of our teachers. It is reflected in every task we do: from our class guidelines to our brand identity. And so it should also be reflected in everything you do, too: from the classes you make to the way you communicate with your students.</p>
                             </div>
                             <div class="tab-pane" id="startedThree">
                                 <h3>Teacher Guide</h3>
@@ -304,13 +304,11 @@ use yii\helpers\Url;
                                     </li>
                                     <li>
                                         <h4>Think for the project</h4>
-                                        <p>When you are thinking about the topic, simultaneously give a thought about the project that you will give to your students. This approach will in understanding the practical aspects of the topic that you are planning to teach the students.</p>
+                                        <p>When you are thinking about the topic, simultaneously give a thought about the project that you will give to your students. This approach will help in understanding the practical aspects of the topic that you are planning to teach the students.</p>
                                     </li>
                                 </ul>
                                 <h4>Our 4E thumb rule</h4>
-                                <p>Empower Youth is a platform looks to focus on 4E's while delivering any content to its user
-                                    it is a good case practice if you could follow the same.
-                                </p>
+                                <p>Empower Youth is a platform that focuses on the 4E's while delivering content to its users. It is regarded as a good practice which should be followed by everyone.</p>
                                 <h4>Exposure</h4>
                                 <p>Creating a space for holistic outreach and showcasing various opportunities in one place.</p>
                                 <h4>Engagement</h4>
