@@ -69,7 +69,7 @@ class AccountsController extends Controller
             if ($loginFormModel->load(Yii::$app->request->post()) && $loginFormModel->login()) {
                 if (Yii::$app->user->identity->organization)
                 {
-                    return $this->redirect('/account/dashboard'); 
+                    return $this->redirect('/account/dashboard');
                 }
                 return $response = [
                     'status' => 200,
