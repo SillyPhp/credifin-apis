@@ -481,8 +481,8 @@ class CollegeProfileController extends ApiBaseController
                     'bb.status' => 'Active',
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
-                ]);
-//                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
+                ])
+                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if ($limit) {
                 $jobs->limit($limit);
             }

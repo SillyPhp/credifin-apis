@@ -243,6 +243,18 @@ class CollegeIndexController extends ApiBaseController
 
     public function pendingJobsCount($type, $college_id)
     {
+
+        $rejected_companies = ErexxCollaborators::find()
+            ->select(['organization_enc_id'])
+            ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+            ->asArray()
+            ->all();
+
+        $ids = [];
+        foreach ($rejected_companies as $r) {
+            array_push($ids, $r['organization_enc_id']);
+        }
+
         $count = EmployerApplications::find()
             ->alias('a')
             ->distinct()
@@ -296,6 +308,7 @@ class CollegeIndexController extends ApiBaseController
                 'a.application_for' => [0, 2],
                 'a.for_all_colleges' => 1,
             ])
+            ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
             ->asArray()
             ->all();
 
@@ -569,7 +582,7 @@ class CollegeIndexController extends ApiBaseController
                     'bb.is_erexx_approved' => 1,
                     'bb.has_placement_rights' => 1,
                 ])
-//                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
+                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]])
                 ->asArray()
                 ->all();
 
