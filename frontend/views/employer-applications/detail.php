@@ -496,7 +496,7 @@ if ($settings["showNewPositionsWidget"]):
                     <?php foreach ($popular_videos as $p) { ?>
                         <div class="item lc-single-item-main">
                             <div class="lc-item-img">
-                                <a href="<?= Url::to('learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
+                                <a href="<?= Url::to('/learning/video/' . $p['slug']); ?>" class="lc-item-video-link">
                                 </a>
                                 <div class="lc-item-video-img"
                                      style="background-image: url(<?= Url::to($p['cover_image']); ?>);"></div>
