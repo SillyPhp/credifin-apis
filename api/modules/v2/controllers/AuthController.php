@@ -2,6 +2,7 @@
 
 namespace api\modules\v2\controllers;
 
+use api\modules\v2\models\ChangePassword;
 use api\modules\v2\models\TeacherSignup;
 use api\modules\v2\models\ValidateUser;
 use common\models\Departments;
@@ -451,6 +452,34 @@ class AuthController extends ApiBaseController
                 ->asArray()
                 ->one();
 
+            $student_college_id = $user_detail['organization_enc_id'];
+            if ($student_college_id) {
+                $college_settings = ErexxSettings::find()
+                    ->alias('a')
+                    ->select(['a.setting', 'a.title', 'b.college_settings_enc_id', 'b.value'])
+                    ->joinWith(['collegeSettings b' => function ($b) use ($student_college_id) {
+                        $b->onCondition(['b.college_enc_id' => $student_college_id]);
+                    }], false)
+                    ->where(['a.status' => 'Active'])
+                    ->asArray()
+                    ->all();
+
+                $j = 0;
+                foreach ($college_settings as $c) {
+                    if ($c['setting'] == 'show_jobs' || $c['setting'] == 'show_internships') {
+                        if ($c['value'] == null) {
+                            $college_settings[$j]['value'] = 2;
+                        }
+                    }
+                    $j++;
+                }
+
+                $settings = [];
+                foreach ($college_settings as $c) {
+                    $settings[$c['setting']] = $c['value'] == 2 ? true : false;
+                }
+            }
+
             $college_id = $user_detail['college_id'];
             if ($college_id) {
                 $college_settings = ErexxSettings::find()
@@ -557,28 +586,6 @@ class AuthController extends ApiBaseController
             $user_other_details->department_enc_id = $department->department_enc_id;
         }
 
-//        $e = EducationalRequirements::find()
-//            ->where([
-//                'educational_requirement' => $data['course_name']
-//            ])
-//            ->one();
-
-//        if ($e) {
-//            $user_other_details->educational_requirement_enc_id = $e->educational_requirement_enc_id;
-//        } else {
-//            $eduReq = new EducationalRequirements();
-//            $utilitiesModel = new \common\models\Utilities();
-//            $utilitiesModel->variables['string'] = time() . rand(100, 100000);
-//            $eduReq->educational_requirement_enc_id = $utilitiesModel->encrypt();
-//            $eduReq->educational_requirement = $data['course_name'];
-//            $eduReq->created_on = date('Y-m-d H:i:s');
-//            $eduReq->created_by = $user_id;
-//            if (!$eduReq->save()) {
-//                return false;
-//            }
-//            $user_other_details->educational_requirement_enc_id = $eduReq->educational_requirement_enc_id;
-//        }
-
         $user_other_details->course_enc_id = $data['course_id'];
         $user_other_details->section_enc_id = $data['section_id'];
         $user_other_details->semester = $data['semester'];
@@ -607,6 +614,28 @@ class AuthController extends ApiBaseController
             return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
         } else {
             return $this->response(201, ['status' => 201, 'message' => 'successfully added']);
+        }
+    }
+
+    public function actionResetPassword()
+    {
+        if ($user = $this->isAuthorized()) {
+            $model = new ChangePassword();
+            if ($model->load(Yii::$app->request->post(), '')) {
+                if ($model->validate()) {
+                    if ($model->changePassword($user->user_enc_id)) {
+                        return $this->response(200, ['status' => 200, 'message' => 'Successfully updated']);
+                    } else {
+                        return $this->response(500, ['status' => 500, 'message' => 'an error occurred']);
+                    }
+                } else {
+                    return $this->response(409, $model->getErrors());
+                }
+            } else {
+                return $this->response(422, ['message' => 'data not found']);
+            }
+        } else {
+            return $this->response(401, ['status' => 401, 'message' => 'unauthorized']);
         }
     }
 }
