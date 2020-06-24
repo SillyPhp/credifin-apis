@@ -302,8 +302,10 @@ class AuthController extends ApiBaseController
     private function newToken($user_id, $source)
     {
         $token = new UserAccessTokens();
+        $utilitiesModel = new \common\models\Utilities();
+        $utilitiesModel->variables['string'] = time() . rand(100, 100000);
         $time_now = date('Y-m-d H:i:s', time('now'));
-        $token->access_token_enc_id = time() . mt_rand(10, 99);
+        $token->access_token_enc_id = $utilitiesModel->encrypt();
         $token->user_enc_id = $user_id;
         $token->access_token = \Yii::$app->security->generateRandomString(32);
         $token->access_token_expiration = date('Y-m-d H:i:s', strtotime("+43200 minute", strtotime($time_now)));
@@ -394,6 +396,13 @@ class AuthController extends ApiBaseController
             ->where(['access_token' => $access_token, 'source' => $source])
             ->asArray()
             ->one();
+
+        $today_date = new \DateTime();
+        $today_date = $today_date->format('Y-m-d H:i:s');
+
+        if($today_date > $find_user['access_token_expiration']){
+            return false;
+        }
 
         if (!empty($find_user)) {
             $user_type = Users::find()

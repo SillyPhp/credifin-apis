@@ -913,6 +913,16 @@ $(document).on('submit','#search_bar_form',function(e) {
           window.location.assign('/'+kname.replace(/\s+/g, '-')+'-'+_type);
       }
 }) 
+
+
+    $(document).on('click', '.showHideBtn', function () {
+        showMoreEvent()
+    });
+
+  $(document).on('click', '.hideElem', function () {
+        showLessEvent();
+    });
+
 JS;
 $this->registerJs($script);
 $this->registerCssFile('@eyAssets/css/blog.css');
@@ -945,9 +955,7 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.showHideBtn', function () {
-        showMoreEvent();
-    });
+
 
     function showMoreEvent() {
         hideMore('searches');
@@ -980,9 +988,6 @@ $this->registerJsFile('@backendAssets/global/plugins/bootstrap-toastr/toastr.min
         }
     }
 
-    $(document).on('click', '.hideElem', function () {
-        showLessEvent();
-    });
 
     function showLessEvent() {
         hideLess('searches');

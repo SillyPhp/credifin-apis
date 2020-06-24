@@ -13,6 +13,7 @@ use common\models\CollegeCourses;
 use common\models\CollegeSections;
 use common\models\CollegeSettings;
 use common\models\EmployerApplications;
+use common\models\ErexxCollaborators;
 use common\models\ErexxEmployerApplications;
 use common\models\OrganizationOtherDetails;
 use common\models\Organizations;
@@ -400,6 +401,17 @@ class CollegeProfileController extends ApiBaseController
             $limit = Yii::$app->request->post('limit');
             $type = Yii::$app->request->post('type');
 
+            $rejected_companies = ErexxCollaborators::find()
+                ->select(['organization_enc_id'])
+                ->where(['college_enc_id' => $college_id, 'is_deleted' => 1])
+                ->asArray()
+                ->all();
+
+            $ids = [];
+            foreach ($rejected_companies as $r) {
+                array_push($ids, $r['organization_enc_id']);
+            }
+
             $jobs = EmployerApplications::find()
                 ->alias('a')
                 ->distinct()
@@ -423,7 +435,8 @@ class CollegeProfileController extends ApiBaseController
                     'm.wage_duration as salary_duration',
                     'dd.designation',
                     'z.name job_type',
-                    'b.is_deleted'
+                    'b.is_deleted',
+                    'm.positions'
                 ])
                 ->joinWith(['erexxEmployerApplications b' => function ($b) use ($college_id) {
                     $b->onCondition(['b.college_enc_id' => $college_id]);
@@ -453,10 +466,8 @@ class CollegeProfileController extends ApiBaseController
                     $f->select(['f.application_enc_id', 'g.name', 'f.placement_location_enc_id', 'f.positions']);
                     $f->joinWith(['locationEnc ff' => function ($z) {
                         $z->joinWith(['cityEnc g']);
-                        $z->groupBy(['ff.city_enc_id']);
                     }], false);
                     $f->onCondition(['f.is_deleted' => 0]);
-                    $f->groupBy(['f.placement_location_enc_id']);
                 }], true)
                 ->joinWith(['applicationTypeEnc z'])
                 ->where([
@@ -469,7 +480,8 @@ class CollegeProfileController extends ApiBaseController
                     'bb.status' => 'Active',
                     'a.application_for' => [0, 2],
                     'a.for_all_colleges' => 1,
-                ]);
+                ])
+                ->andWhere(['NOT', ['bb.organization_enc_id' => $ids]]);
             if ($limit) {
                 $jobs->limit($limit);
             }
@@ -574,7 +586,7 @@ class CollegeProfileController extends ApiBaseController
 
                 $data['process'] = $j['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
-                $data['positions'] = $positions;
+                $data['positions'] = $positions ? $positions : $j['positions'];
                 $data['education'] = implode(', ', $educational_requirement);
                 $data['skills'] = implode(', ', $skills);
                 $data['applied_count'] = $count['count'];
@@ -622,7 +634,8 @@ class CollegeProfileController extends ApiBaseController
                     'm.min_wage as min_salary',
                     'm.wage_duration as salary_duration',
                     'dd.designation',
-                    'z.name job_type'
+                    'z.name job_type',
+                    'm.positions'
                 ])
                 ->joinWith(['employerApplicationEnc b' => function ($b) {
                     $b->joinWith(['organizationEnc bb'], false);
@@ -652,7 +665,6 @@ class CollegeProfileController extends ApiBaseController
                         $f->joinWith(['locationEnc ff' => function ($z) {
                             $z->joinWith(['cityEnc g']);
                         }], false);
-                        $f->groupBy(['f.placement_location_enc_id']);
                     }], true);
                     $b->joinWith(['applicationTypeEnc z']);
                 }], true)
@@ -775,7 +787,7 @@ class CollegeProfileController extends ApiBaseController
 
                 $data['process'] = $j['employerApplicationEnc']['interviewProcessEnc']['interviewProcessFields'];
                 $data['location'] = $locations ? implode(',', $locations) : 'Work From Home';
-                $data['positions'] = $positions;
+                $data['positions'] = $positions ? $positions : $j['positions'];
                 $data['education'] = implode(',', $educational_requirement);
                 $data['skills'] = implode(',', $skills);
                 $data['applied_count'] = $count['count'];
