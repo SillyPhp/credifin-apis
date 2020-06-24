@@ -178,7 +178,7 @@ use yii\helpers\Url;
                                             <li class="service-list">
                                                 <input type="checkbox" name="name" id="tuition"
                                                        class="checkbox-input services"/>
-                                                <label for="hostel">Tuition Fee</label>
+                                                <label for="tuition">Tuition Fee</label>
                                             </li>
                                             <li class="service-list">
                                                 <input type="checkbox" name="name" id="hostel"

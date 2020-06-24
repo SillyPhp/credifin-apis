@@ -138,8 +138,7 @@ use yii\helpers\Url;
                                         <thead class="positionSticky">
                                         <tr>
                                             <th class="dateApplied">Date Applied</th>
-                                            <th class="loanAction">Move To Next Phase</th>
-                                            <th class="moveToNext">Current Phase</th>
+                                            <th class="loanAction">Loan Status</th>
                                             <th class="applicantName">Applicant Name</th>
                                             <th class="loanAmount">Loan Amount</th>
                                             <th class="degree">Degree</th>
@@ -182,10 +181,9 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
                                                 <span class="currentState">Accepted</span>
+                                                <button class="nextState" onclick="nextPhase()"><i class="fa fa-arrow-circle-right"></i></button>
+                                                <button class="viewStatus">View Status</button>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>5,00,000</td>
@@ -227,10 +225,9 @@ use yii\helpers\Url;
                                                         <button class="actionBtn ab-last-btn">Reject</button>
                                                     </div>
                                                 </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
                                                 <span class="currentState">Accepted</span>
+                                                <button class="nextState" onclick="nextPhase()"><i class="fa fa-arrow-circle-right"></i></button>
+                                                <button class="viewStatus">View Status</button>
                                             </td>
                                             <td>Shshank Vasisht</td>
                                             <td>5,00,000</td>
@@ -240,96 +237,6 @@ use yii\helpers\Url;
                                             <td>Guru Nanak Institute of Management And Technology</td>
                                             <td>2</td>
                                             <td>1</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
-                                                    </div>
-                                                </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
-                                                <span class="currentState">Accepted</span>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>4</td>
-                                            <td>2</td>
-                                            <td>+91 7837394374</td>
-                                            <td>vasishtshshank@gmail.com</td>
-                                            <td>Ludhiana</td>
-                                            <td>Male</td>
-                                            <td>28-Sept-1993</td>
-                                            <td>Father</td>
-                                            <td>Ashiwini Kumar Vasisht</td>
-                                            <td>Salaried</td>
-                                            <td>13,00,000</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                            <td> -</td>
-                                        </tr>
-                                        <tr>
-                                            <td>22 Aug 2020</td>
-                                            <td class="actionColoum">
-                                                <div class="dropdown">
-                                                    <button onclick="actionStats(this)" class="dropbtn"><i
-                                                                class="fa fa-ellipsis-v"></i></button>
-                                                    <div class="dropdown-content myDropdown">
-                                                        <button class="actionBtn" onclick="nextRound(this)">Accepted</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Pre Verification</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Under Process</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Sanctioned</button>
-                                                        <button class="actionBtn" onclick="nextRound(this)">Disbursed</button>
-                                                        <button class="actionBtn ab-last-btn">Reject</button>
-                                                    </div>
-                                                </div>
-                                                <button class="nextState">Pre Verification</button>
-                                            </td>
-                                            <td>
-                                                <span class="currentState">Accepted</span>
-                                            </td>
-                                            <td>Shshank Vasisht</td>
-                                            <td>5,00,000</td>
-                                            <td>Professional Course</td>
-                                            <td>Charted Accountant</td>
-                                            <td>Guru Nanak Institute of Management And Technology</td>
-                                            <td>1</td>
-                                            <td>2</td>
                                             <td>+91 7837394374</td>
                                             <td>vasishtshshank@gmail.com</td>
                                             <td>Ludhiana</td>
@@ -361,6 +268,9 @@ use yii\helpers\Url;
 </div>
 <?php
 $this->registerCss('
+.viewStatus{
+    display: none;
+}
 .statusFilters li{
     display:inline;
 }
@@ -370,6 +280,14 @@ $this->registerCss('
 .dropbtn, .nextState{
     background: transparent;
     border:none;
+}
+.actionColoum{
+    position: relative;
+}
+.nextState{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
 }
 .ab-last-btn{
     border-bottom: none !important;
@@ -635,10 +553,38 @@ $this->registerJsFile('@eyAssets/js/perfect-scrollbar.js', ['depends' => [\yii\w
 
     function nextRound(e) {
         let currentRoundName = e.innerHTML;
-        let nextRoundName = e.nextElementSibling.innerHTML;
-        e.closest('.actionColoum').nextElementSibling.firstElementChild.innerHTML = currentRoundName;
-        e.closest('.dropdown').nextElementSibling.innerHTML =  nextRoundName;
-        e.closest('.dropdown-content').classList.remove('show');
+        let parElement = e.closest('.actionColoum');
+        let currentState = parElement.querySelector('.currentState');
+        currentState.innerHTML = currentRoundName;
+
+        if(currentState.innerHTML == 'Disbursed'){
+            parElement.querySelector('.nextState').style.display = "none";
+            parElement.querySelector('.dropdown').style.display = "none";
+        }
+    }
+
+    function nextPhase(){
+        console.log(event);
+        let parElement = event.currentTarget.parentElement;
+        let curElement = parElement.getElementsByClassName('currentState');
+        let curPhase = curElement[0].innerHTML;
+
+
+        let phases = parElement.getElementsByClassName('actionBtn');
+        let pVal = [];
+        for (let i = 0; i < phases.length; i++){
+            pVal.push(phases[i].innerHTML);
+            let nextIndex = pVal.indexOf(curPhase) + 1;
+            let nextElem = pVal[nextIndex];
+            curElement[0].innerHTML = nextElem;
+
+            if(curElement[0].innerHTML == 'Disbursed'){
+                parElement.querySelector('.nextState').style.display = "none";
+                parElement.querySelector('.dropdown').style.display = "none";
+                parElement.querySelector('.viewStatus').style.display = "block";
+            }
+        }
+
     }
 
     function countryHide() {
