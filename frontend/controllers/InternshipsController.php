@@ -202,7 +202,7 @@ class InternshipsController extends Controller
             ->select(['city_name', 'SUM(internship_count) as internships'])
             ->groupBy('city_enc_id')
             ->orderBy(['internships' => SORT_DESC])
-            ->limit(4)
+            ->limit(3)
             ->all();
 
 
