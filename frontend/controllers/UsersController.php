@@ -2,33 +2,24 @@
 
 namespace frontend\controllers;
 
-use common\models\Countries;
-use common\models\Industries;
-use common\models\Skills;
-use common\models\User;
+use common\models\Categories;
+use common\models\Cities;
+use common\models\States;
 use common\models\UserAchievements;
 use common\models\UserEducation;
 use common\models\UserHobbies;
 use common\models\UserInterests;
 use common\models\UserPreferences;
-use common\models\UserPreferredIndustries;
-use common\models\UserPreferredJobProfile;
-use common\models\UserPreferredLocations;
-use common\models\UserPreferredSkills;
-use common\models\UserTypes;
+use common\models\Users;
 use common\models\UserWorkExperience;
+use frontend\models\profile\UserProfileBasicEdit;
+use frontend\models\profile\UserProfilePictureEdit;
+use frontend\models\profile\UserProfileSocialEdit;
 use Yii;
 use yii\web\Controller;
-use yii\web\Response;
 use yii\web\HttpException;
+use yii\web\Response;
 use yii\web\UploadedFile;
-use frontend\models\profile\UserProfileBasicEdit;
-use frontend\models\profile\UserProfileSocialEdit;
-use common\models\Categories;
-use common\models\Cities;
-use common\models\States;
-use common\models\Users;
-use frontend\models\profile\UserProfilePictureEdit;
 
 class UsersController extends Controller
 {
@@ -93,19 +84,27 @@ class UsersController extends Controller
         $countries = [];
         $profiles_name = [];
         $industry = [];
-        foreach ($p['userPreferredIndustries'] as $i_slug) {
-            array_push($industry, $i_slug['industry']);
+        if ($p['userPreferredIndustries']) {
+            foreach ($p['userPreferredIndustries'] as $i_slug) {
+                array_push($industry, $i_slug['industry']);
+            }
         }
-        foreach ($p['userPreferredJobProfiles'] as $p_slug) {
-            array_push($profiles_name, $p_slug['profile_name']);
+        if ($p['userPreferredJobProfiles']) {
+            foreach ($p['userPreferredJobProfiles'] as $p_slug) {
+                array_push($profiles_name, $p_slug['profile_name']);
+            }
         }
-        foreach ($p['userPreferredSkills'] as $s) {
-            array_push($skills, $s['skill']);
+        if ($p['userPreferredSkills']) {
+            foreach ($p['userPreferredSkills'] as $s) {
+                array_push($skills, $s['skill']);
+            }
         }
-        foreach ($p['userPreferredLocations'] as $l) {
-            array_push($cities, $l['city_name']);
-            array_push($states, $l['state_name']);
-            array_push($countries, $l['country_name']);
+        if ($p['userPreferredLocations']) {
+            foreach ($p['userPreferredLocations'] as $l) {
+                array_push($cities, $l['city_name']);
+                array_push($states, $l['state_name']);
+                array_push($countries, $l['country_name']);
+            }
         }
         return [
             'profiles_name' => implode(', ', array_unique($profiles_name)),
