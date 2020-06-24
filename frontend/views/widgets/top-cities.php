@@ -33,7 +33,7 @@ use yii\helpers\Url;
                                         <?php
                                         if ($type == 'jobs' || $type == 'internships') {
                                             ?>
-                                            Total Openings
+                                            Total Vacancies
                                             <?php
                                         } else {
                                             ?>
